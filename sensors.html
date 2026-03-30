@@ -6,65 +6,40 @@
     <title>MBC 戰術裝備庫 | Advanced Robotics</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
-        :root {
-            --primary: #0ABAB5; /* Tiffany Green */
-            --bg-dark: #050a10;
-            --text-light: #e0e0e0;
-            --card-bg: rgba(15, 25, 35, 0.7);
-            --card-border: rgba(10, 186, 181, 0.3);
-        }
+        :root { --primary: #0ABAB5; --bg-dark: #050a10; --text-light: #e0e0e0; --card-bg: rgba(15, 25, 35, 0.7); --card-border: rgba(10, 186, 181, 0.3); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Orbitron', Tahoma, sans-serif; }
         body { background-color: var(--bg-dark); color: var(--text-light); overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; }
-        
-        /* 動態背景 */
         .bg-grid { position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(10, 186, 181, 0.05) 50px), repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(10, 186, 181, 0.05) 50px); z-index: -1; pointer-events: none; }
         .vignette { position: fixed; inset: 0; background: radial-gradient(circle at center, transparent 30%, #050a10 100%); z-index: -1; pointer-events: none; }
-
-        /* 導覽列 */
         nav { background: rgba(5, 10, 16, 0.85); backdrop-filter: blur(10px); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--primary); position: sticky; top: 0; z-index: 100; }
         nav img { height: 35px; border-radius: 3px; filter: drop-shadow(0 0 5px var(--primary)); }
         nav a { color: white; text-decoration: none; font-weight: bold; font-family: monospace; letter-spacing: 2px; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
         nav a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
-
-        /* 標題區 */
         header { text-align: center; padding: 60px 20px 30px; }
         h1 { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; color: white; text-shadow: 0 0 15px var(--primary); letter-spacing: 4px; margin-bottom: 10px; }
         .subtitle { color: var(--primary); font-family: monospace; letter-spacing: 3px; font-size: 1rem; }
-
-        /* 產品網格 (自動排列) */
         .catalog-container { flex: 1; padding: 40px 5%; max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; width: 100%; }
-
-        /* 產品卡片 */
         .sensor-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; text-decoration: none; color: white; display: flex; flex-direction: column; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; opacity: 0; transform: translateY(30px); }
         .sensor-card:hover { transform: translateY(-10px) scale(1.02); border-color: var(--primary); box-shadow: 0 10px 30px rgba(10, 186, 181, 0.2); z-index: 10; }
         .sensor-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--primary); transform: scaleX(0); transition: transform 0.4s; transform-origin: left; z-index: 5; }
         .sensor-card:hover::before { transform: scaleX(1); }
-
-        /* 卡片圖片區 */
         .card-img-wrapper { height: 220px; background: #000; position: relative; display: flex; justify-content: center; align-items: center; overflow: hidden; border-bottom: 1px solid #222; }
         .card-img-wrapper img { max-width: 80%; max-height: 80%; object-fit: contain; transition: transform 0.5s; z-index: 2; }
         .sensor-card:hover .card-img-wrapper img { transform: scale(1.1); }
         .img-grid-overlay { position: absolute; inset: 0; background: linear-gradient(transparent 50%, rgba(10, 186, 181, 0.05) 50%); background-size: 100% 4px; z-index: 1; pointer-events: none; }
-
-        /* 狀態標籤 */
         .status-badge { position: absolute; top: 15px; right: 15px; font-family: monospace; font-size: 0.75rem; padding: 4px 8px; border-radius: 3px; z-index: 3; font-weight: bold; letter-spacing: 1px; }
         .status-active { background: rgba(10, 186, 181, 0.2); color: var(--primary); border: 1px solid var(--primary); }
         .status-hot { background: rgba(255, 69, 0, 0.2); color: #ff4500; border: 1px solid #ff4500; }
         .status-new { background: rgba(0, 210, 255, 0.2); color: #00d2ff; border: 1px solid #00d2ff; }
-
-        /* 卡片文字區 */
         .card-content { padding: 25px; flex: 1; display: flex; flex-direction: column; }
         .card-id { font-family: monospace; color: #666; font-size: 0.85rem; margin-bottom: 5px; }
         .card-title { font-size: 1.4rem; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px; color: #fff; }
         .card-desc { color: #aaa; font-size: 0.95rem; line-height: 1.6; margin-bottom: 15px; flex: 1; }
-        
         .platform-tags { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
         .platform-tags span { background: #1a2630; color: #888; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; border: 1px solid #333; font-family: monospace; }
         .sensor-card:hover .platform-tags span { color: var(--primary); border-color: rgba(10, 186, 181, 0.5); }
-
         .card-btn { margin-top: auto; padding: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.2); font-family: monospace; letter-spacing: 2px; transition: 0.3s; color: white; background: rgba(255,255,255,0.02); }
         .sensor-card:hover .card-btn { background: var(--primary); color: #000; border-color: var(--primary); font-weight: bold; }
-
         footer { text-align: center; padding: 20px; background: #020508; border-top: 1px solid #111; font-family: monospace; color: #555; font-size: 0.8rem; margin-top: 40px; }
     </style>
 </head>
@@ -75,7 +50,7 @@
 
     <nav>
         <a href="index.html">
-            <img src="mbc-pro-logo (1).jpg" alt="MBC Logo">
+            <img src="mbc-pro-logo.png" alt="MBC Logo">
             <span>&lt; 返回實驗室大廳</span>
         </a>
     </nav>
@@ -86,7 +61,6 @@
     </header>
 
     <div class="catalog-container">
-        
         <a href="sensor-line5.html" class="sensor-card">
             <div class="card-img-wrapper">
                 <div class="img-grid-overlay"></div>
@@ -97,9 +71,7 @@
                 <div class="card-id">ID: LNS-05-PRO</div>
                 <h2 class="card-title">五路循線感應器</h2>
                 <p class="card-desc">循線比賽專用。提供 ±100 高解析度平滑誤差值輸出，搭載硬體級「一鍵智能校準」極值記憶技術，告別數位抖動。</p>
-                <div class="platform-tags">
-                    <span>EV3</span><span>SPIKE Prime</span><span>mBot</span>
-                </div>
+                <div class="platform-tags"><span>EV3</span><span>SPIKE Prime</span><span>mBot</span></div>
                 <div class="card-btn">INITIALIZE MODULE_</div>
             </div>
         </a>
@@ -114,9 +86,7 @@
                 <div class="card-id">ID: LNS-08-MAX</div>
                 <h2 class="card-title">八路循線感應器</h2>
                 <p class="card-desc">任務型競賽與十字路口定位專用。擁有更寬廣的偵測視角，精準捕捉銳角彎與複雜軌跡特徵，定位零死角。</p>
-                <div class="platform-tags">
-                    <span>EV3</span><span>SPIKE Prime</span><span>mBot</span>
-                </div>
+                <div class="platform-tags"><span>EV3</span><span>SPIKE Prime</span><span>mBot</span></div>
                 <div class="card-btn">INITIALIZE MODULE_</div>
             </div>
         </a>
@@ -131,9 +101,7 @@
                 <div class="card-id">ID: LSR-08-TOF</div>
                 <h2 class="card-title">八路雷射測距感應器</h2>
                 <p class="card-desc">多維度空間距離感知陣列。提供極高精度的毫米級測距，適用於迷宮地形解算、無人機避障與進階空間定位。</p>
-                <div class="platform-tags">
-                    <span>EV3</span><span>SPIKE Prime</span><span>mBot</span>
-                </div>
+                <div class="platform-tags"><span>EV3</span><span>SPIKE Prime</span><span>mBot</span></div>
                 <div class="card-btn">INITIALIZE MODULE_</div>
             </div>
         </a>
@@ -148,9 +116,7 @@
                 <div class="card-id">ID: CMD-PS2-RX</div>
                 <h2 class="card-title">PS2 無線遙控模組</h2>
                 <p class="card-desc">工業級低延遲無線接收器。賦予機器人雙搖桿與全實體按鍵的盲操作優勢，格鬥與遙控賽事的絕佳操控方案。</p>
-                <div class="platform-tags">
-                    <span>EV3</span><span>SPIKE Prime</span><span>mBot</span>
-                </div>
+                <div class="platform-tags"><span>EV3</span><span>SPIKE Prime</span><span>mBot</span></div>
                 <div class="card-btn">INITIALIZE MODULE_</div>
             </div>
         </a>
@@ -165,9 +131,7 @@
                 <div class="card-id">ID: CMD-PS4-BT</div>
                 <h2 class="card-title">PS4 藍牙遙控模組</h2>
                 <p class="card-desc">原生支援 PS4 DualShock 無線控制器。提供更細膩的類比扳機控制，為你的競技機器人注入次世代主機級的精準手感。</p>
-                <div class="platform-tags">
-                    <span>EV3</span><span>SPIKE Prime</span><span>mBot</span>
-                </div>
+                <div class="platform-tags"><span>EV3</span><span>SPIKE Prime</span><span>mBot</span></div>
                 <div class="card-btn">INITIALIZE MODULE_</div>
             </div>
         </a>
