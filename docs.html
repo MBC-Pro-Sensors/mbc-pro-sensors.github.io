@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>技術文件 | MBC 五路循線感應器</title>
+    <style>
+        :root { --primary: #0ABAB5; --bg-dark: #0a0f16; --text-light: #d4d4d4; --code-bg: #1e242c; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-light); line-height: 1.6; padding-top: 80px; }
+        
+        nav { background: #050a10; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--primary); position: fixed; width: 100%; top: 0; z-index: 100; }
+        nav img { height: 30px; border-radius: 3px; }
+        nav a { color: white; text-decoration: none; font-weight: bold; font-family: monospace; transition: 0.3s; }
+        nav a:hover { color: var(--primary); }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        h1 { color: white; border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 30px; font-size: 2.5rem; }
+        h2 { color: var(--primary); margin: 30px 0 15px 0; font-family: monospace; font-size: 1.5rem; }
+        p, li { margin-bottom: 15px; color: #bbb; font-size: 1.1rem; }
+        ul { margin-left: 20px; }
+
+        .highlight-box { border-left: 4px solid #ffaa00; background: rgba(255, 170, 0, 0.1); padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0; }
+        
+        pre { background: var(--code-bg); padding: 20px; border-radius: 8px; overflow-x: auto; border: 1px solid #333; margin-bottom: 20px; }
+        code { font-family: 'Courier New', Courier, monospace; color: #56b6c2; }
+        .comment { color: #7f848e; }
+        .keyword { color: #c678dd; }
+        .string { color: #98c379; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" style="display: flex; align-items: center; gap: 10px;">
+            <img src="mbc-pro-logo (1).jpg" alt="Logo">
+            <span>&lt; 返回首頁</span>
+        </a>
+        <a href="LineSensor5_DemoForTainan.llsp3" download style="color: var(--primary);">📥 下載 SPIKE 範例檔</a>
+    </nav>
+
+    <div class="container">
+        <h1>技術文件與快速上手指引</h1>
+        
+        <h2>01. 一鍵智能校準 (SOP)</h2>
+        <p>為確保高解析度數值的準確性，每次更換場地或開機時，請務必執行校準：</p>
+        <div class="highlight-box">
+            <ul>
+                <li><strong>步驟一：</strong> 將感應器安裝至機器人上，並確保感應器底部距離地面約 <strong>0.8 公分</strong>。</li>
+                <li><strong>步驟二：</strong> 按住感應器上的實體「校準按鈕」。</li>
+                <li><strong>步驟三：</strong> 將機器人平移，讓感應器完整掃過場地上的「最黑的線」與「最白的底色」區域。</li>
+                <li><strong>步驟四：</strong> 掃描完成後，放開按鈕。系統會自動將極值寫入 EEPROM，校準即刻生效。</li>
+            </ul>
+        </div>
+
+        <h2>02. PyBricks Python 開發指南</h2>
+        <p>匯入我們提供的 <code>lineSensorPyFunc.py</code> 後，您可以在 SPIKE / EV3 的 Python 環境中輕鬆呼叫高階函式：</p>
+        
+        <pre><code><span class="keyword">from</span> pybricks.iodevices <span class="keyword">import</span> PUPDevice
+<span class="keyword">from</span> pybricks.parameters <span class="keyword">import</span> Port
+<span class="keyword">from</span> lineSensorPyFunc <span class="keyword">import</span> getLineBlackError, getLineSensor5
+
+<span class="comment"># 初始化感應器 (連接至 Port C)</span>
+lineSensorDevice = PUPDevice(Port.C)
+
+<span class="keyword">while True</span>:
+    <span class="comment"># 1. 取得高解析度位置誤差 (範圍: -100 到 100)</span>
+    <span class="comment"># 完美適用於 PID 循線演算法的 Error 值</span>
+    error = getLineBlackError()
+    
+    <span class="comment"># 2. 讀取單顆感應器的原始反射值 (索引 1~5，數值 0~100)</span>
+    sensor_left = getLineSensor5(1)
+    sensor_right = getLineSensor5(5)
+    
+    <span class="keyword">print</span>(<span class="string">"誤差值:"</span>, error, <span class="string">" | 最左側數值:"</span>, sensor_left)
+</code></pre>
+
+        <h2>03. 核心數據定義</h2>
+        <ul>
+            <li><code>getLineBlackError()</code>：回傳黑線的中心位置誤差。數值若為 0 表示正中心，正負值對應偏移方向（依您設定的軟硬體方向而定，通常為 ±50 或 ±100）。</li>
+            <li><code>getLineBlackWidth()</code>：回傳當前偵測到的黑線寬度，範圍 0~5。</li>
+            <li><code>getLineSensor5(index)</code>：讀取指定感應器（1左至5右）的紅外線反射量，黑線通常接近 0，白底接近 100。</li>
+        </ul>
+    </div>
+
+</body>
+</html>
