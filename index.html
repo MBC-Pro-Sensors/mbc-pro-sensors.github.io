@@ -7,125 +7,715 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>   
 
 <style>
-/* --- 全局變數與基礎設定 --- */
+/* --- 0. 全局變數與基礎設定 --- */
 :root {
+    /* 1. 核心底色與漸層 */
     --bg-dark: #050a10;
     --bg-gradient: linear-gradient(135deg, #0f1720 0%, #000000 100%);
     --glass-bg: rgba(20, 30, 40, 0.4);
     --glass-border: rgba(255, 255, 255, 0.1);
     --tiffany-green: #0ABAB5;
+
+    /* 2. 重新定義的四個面主題色 */
     --color-home: #00d2ff;
     --color-sensor: #ffff00;
     --color-motor: #ff4500;
     --color-contact: #b026ff;
+
+    /* 3. 動態變更的主題色 */
     --current-theme: var(--color-home);
 }
-* { box-sizing: border-box; cursor: none; }
-body { margin: 0; padding: 0; background: var(--bg-dark); font-family: 'Segoe UI', 'Orbitron', sans-serif; color: white; overflow: hidden; height: 100vh; }
 
-/* --- 鼠標引力燈特效 --- */
-#cursor-light { position: fixed; top: 0; left: 0; width: 400px; height: 400px; background: radial-gradient(circle, rgba(10,186,181,0.15) 0%, transparent 70%); transform: translate(-50%, -50%); pointer-events: none; z-index: 9999; transition: width 0.1s, height 0.1s; mix-blend-mode: screen; }
-#cursor-ring { position: fixed; top: 0; left: 0; width: 20px; height: 20px; border: 2px solid var(--tiffany-green); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 9999; box-shadow: 0 0 10px var(--tiffany-green); transition: all 0.1s ease-out; }
-.click-active #cursor-ring { transform: translate(-50%, -50%) scale(0.8); background: var(--tiffany-green); box-shadow: 0 0 30px var(--tiffany-green); }
+* {
+    box-sizing: border-box;
+    cursor: none;
+}
 
-/* --- 生物辨識開場 --- */
-#bio-layer { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: background-color 0.5s ease; }
-.bio-scanner-line { position: absolute; width: 100%; height: 5px; background: var(--tiffany-green); box-shadow: 0 0 20px var(--tiffany-green); animation: scanDown 2s infinite linear; z-index: 10001; transition: background 0.3s, box-shadow 0.3s; }
-.bio-center { text-align: center; z-index: 10002; }
-.fingerprint-scan { width: 120px; height: 120px; border: 3px solid var(--tiffany-green); border-radius: 50%; margin: 0 auto 20px; animation: spin 4s infinite linear; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; }
-.bio-text { font-family: 'Orbitron', monospace; color: var(--tiffany-green); letter-spacing: 3px; font-size: 1.2rem; margin-bottom: 5px; transition: color 0.3s; }
-.bio-id-info { font-family: monospace; color: rgba(255,255,255,0.5); font-size: 0.8rem; letter-spacing: 2px; }
-.scanning-active { background-color: rgba(255, 204, 0, 0.1) !important; animation: screenShake 0.1s infinite !important; }
-@keyframes screenShake { 0% { transform: translate(1px, 1px); } 25% { transform: translate(-1px, -2px); } 50% { transform: translate(-2px, 1px); } 100% { transform: translate(1px, -1px); } }
-.data-stream { position: absolute; top: 10%; width: 150px; height: 80%; font-family: monospace; font-size: 10px; color: var(--tiffany-green); overflow: hidden; opacity: 0.3; pointer-events: none; }
-#data-stream-left { left: 5%; } #data-stream-right { right: 5%; }
-#auto-check-btn { display: none; margin-top: 25px; padding: 10px 30px; border: 1px solid #33ff33; color: #33ff33; font-family: 'Orbitron', sans-serif; font-size: 14px; background: rgba(51, 255, 51, 0.1); }
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg-dark);
+    font-family: 'Segoe UI', 'Orbitron', sans-serif;
+    color: white;
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* --- 1. 鼠標引力燈特效 (Tiffany Green) --- */
+#cursor-light {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(10,186,181,0.15) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9999;
+    transition: width 0.1s, height 0.1s;
+    mix-blend-mode: screen;
+}
+
+#cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--tiffany-green);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9999;
+    box-shadow: 0 0 10px var(--tiffany-green);
+    transition: all 0.1s ease-out;
+}
+
+.click-active #cursor-ring {
+    transform: translate(-50%, -50%) scale(0.8);
+    background: var(--tiffany-green);
+    box-shadow: 0 0 30px var(--tiffany-green);
+}
+
+/* --- 2. 生物辨識開場 --- */
+#bio-layer {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.5s ease;
+}
+
+.bio-scanner-line {
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    background: var(--tiffany-green);
+    box-shadow: 0 0 20px var(--tiffany-green);
+    animation: scanDown 2s infinite linear;
+    z-index: 10001;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+
+.bio-center {
+    text-align: center;
+    z-index: 10002;
+}
+
+.fingerprint-scan {
+    width: 120px;
+    height: 120px;
+    border: 3px solid var(--tiffany-green);
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: spin 4s infinite linear;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bio-text {
+    font-family: 'Orbitron', monospace;
+    color: var(--tiffany-green);
+    letter-spacing: 3px;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    transition: color 0.3s;
+}
+
+.bio-id-info {
+    font-family: monospace;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+}
+
+.scanning-active {
+    background-color: rgba(255, 204, 0, 0.1) !important;
+    animation: screenShake 0.1s infinite !important;
+}
+
+@keyframes screenShake {
+    0% { transform: translate(1px, 1px); }
+    25% { transform: translate(-1px, -2px); }
+    50% { transform: translate(-2px, 1px); }
+    100% { transform: translate(1px, -1px); }
+}
+
+.data-stream {
+    position: absolute;
+    top: 10%;
+    width: 150px;
+    height: 80%;
+    font-family: monospace;
+    font-size: 10px;
+    color: var(--tiffany-green);
+    overflow: hidden;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+#data-stream-left { left: 5%; }
+#data-stream-right { right: 5%; }
+
+#auto-check-btn {
+    display: none;
+    margin-top: 25px;
+    padding: 10px 30px;
+    border: 1px solid #33ff33;
+    color: #33ff33;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    background: rgba(51, 255, 51, 0.1);
+}
 
 /* --- 實驗室大門層 --- */
-#lab-door-container { position: fixed; inset: 0; z-index: 9999; display: flex; pointer-events: none; }
-.door-panel { width: 50%; height: 100%; background: #050a10; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; }
-.left-door { border-right: 4px solid #1a1a1a; } .right-door { border-left: 4px solid #1a1a1a; }
+#lab-door-container {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    pointer-events: none;
+}
 
-/* --- 影片背景 --- */
-.video-wrapper { position: fixed; inset: 0; z-index: -1; overflow: hidden; }
-#bg-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transform: scale(1.05); }
-.scan-overlay { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0, 255, 255, 0.03) 2px, rgba(0, 255, 255, 0.03) 3px); pointer-events: none; }
-.vignette-overlay { position: absolute; inset: 0; background: radial-gradient(circle, transparent 40%, #050a10 100%); }
+.door-panel {
+    width: 50%;
+    height: 100%;
+    background: #050a10;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-/* --- 戰術導覽列 --- */
-#tactical-nav { position: fixed; top: 0; width: 100%; height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; background: linear-gradient(to bottom, rgba(5,10,16,0.9), rgba(5,10,16,0)); backdrop-filter: blur(5px); z-index: 500; border-bottom: 1px solid rgba(255,255,255,0.1); }
-.nav-brand { font-size: 24px; font-weight: bold; letter-spacing: 2px; color: white; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; }
+.left-door { border-right: 4px solid #1a1a1a; }
+.right-door { border-left: 4px solid #1a1a1a; }
+
+/* --- 3. 影片背景與掃描線 --- */
+.video-wrapper {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+}
+
+#bg-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.5;
+    transform: scale(1.05);
+}
+
+.scan-overlay {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg, transparent, transparent 1px, rgba(0, 255, 255, 0.03) 2px, rgba(0, 255, 255, 0.03) 3px
+    );
+    pointer-events: none;
+}
+
+.vignette-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, transparent 40%, #050a10 100%);
+}
+
+/* --- 4. 戰術導覽列 --- */
+#tactical-nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    background: linear-gradient(to bottom, rgba(5,10,16,0.9), rgba(5,10,16,0));
+    backdrop-filter: blur(5px);
+    z-index: 500;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-brand {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
 .nav-menu { display: flex; gap: 30px; }
-.nav-item { text-decoration: none; color: #888; font-size: 14px; letter-spacing: 1px; transition: color 0.5s, text-shadow 0.5s; position: relative; }
-.nav-item.active { color: var(--current-theme); text-shadow: 0 0 10px var(--current-theme); }
-.nav-progress-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.1); }
-.nav-progress-bar { height: 100%; width: 0%; background: var(--current-theme); transition: width 0.5s ease, background 0.5s ease; box-shadow: 0 0 10px var(--current-theme); }
-.id-tag { text-align: right; font-size: 10px; color: #555; border-left: 2px solid var(--current-theme); padding-left: 10px; }
-.id-tag .code { display: block; color: var(--current-theme); }
-.subtitle { letter-spacing: 5px; color: var(--current-theme); font-size: 0.9rem; margin-top: 10px; }
 
-/* --- 立方體與內容 --- */
-.scene { width: 400px; height: 400px; perspective: 1200px; position: relative; display: flex; align-items: center; justify-content: center; margin: 120px auto 0; pointer-events: none; z-index: 10; }
-.cube { width: 400px; height: 400px; position: relative; transform-style: preserve-3d; transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; }
-.cube-face { position: absolute; width: 400px; height: 400px; background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); backface-visibility: hidden !important; -webkit-backface-visibility: hidden !important; display: flex; align-items: center; justify-content: center; transform-style: preserve-3d; pointer-events: auto !important; }
-.cube-front { transform: rotateY(0deg) translateZ(200px); } .cube-right { transform: rotateY(90deg) translateZ(200px); } .cube-back  { transform: rotateY(180deg) translateZ(200px); } .cube-left  { transform: rotateY(-90deg) translateZ(200px); }
-.corner { position: absolute; width: 20px; height: 20px; border: 2px solid var(--current-theme); transition: 0.5s ease; }
-.tl { top: -1px; left: -1px; border-right: none; border-bottom: none; } .tr { top: -1px; right: -1px; border-left: none; border-bottom: none; } .bl { bottom: -1px; left: -1px; border-right: none; border-top: none; } .br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
-.contact-wrapper { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; transform: translateZ(60px) !important; pointer-events: auto !important; }
-.cube-left .contact-wrapper { transform: translateZ(1px); }
-.module-title { color: var(--current-theme); font-family: 'Orbitron', sans-serif; letter-spacing: 4px; font-size: 16px; margin-bottom: 35px; text-shadow: 0 0 15px var(--current-theme); }
-.social-grid { display: flex !important; flex-direction: row !important; gap: 35px; justify-content: center; }
-.social-hex { position: relative; width: 65px; height: 65px; text-decoration: none; z-index: 1001; pointer-events: auto !important; cursor: pointer !important; display: flex; align-items: center; justify-content: center; transform: translateZ(1px); }
-.social-hex:hover { transform: translateY(-12px) scale(1.1); }
-.social-hex::after { content: attr(data-label); position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); font-size: 11px; font-family: 'Orbitron', sans-serif; color: var(--current-theme); opacity: 0; transition: 0.3s; letter-spacing: 1px; white-space: nowrap; pointer-events: none; }
+.nav-item {
+    text-decoration: none;
+    color: #888;
+    font-size: 14px;
+    letter-spacing: 1px;
+    transition: color 0.5s, text-shadow 0.5s;
+    position: relative;
+}
+
+.nav-item.active {
+    color: var(--current-theme);
+    text-shadow: 0 0 10px var(--current-theme);
+}
+
+.nav-progress-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(255,255,255,0.1);
+}
+
+.nav-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--current-theme);
+    transition: width 0.5s ease, background 0.5s ease;
+    box-shadow: 0 0 10px var(--current-theme);
+}
+
+.id-tag {
+    text-align: right;
+    font-size: 10px;
+    color: #555;
+    border-left: 2px solid var(--current-theme);
+    padding-left: 10px;
+}
+
+.id-tag .code {
+    display: block;
+    color: var(--current-theme);
+}
+
+.subtitle {
+    letter-spacing: 5px;
+    color: var(--current-theme);
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+/* --- 5. 立方體與內容 --- */
+.scene {
+    width: 400px;
+    height: 400px;
+    perspective: 1200px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 120px auto 0;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.cube {
+    width: 400px;
+    height: 400px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+}
+
+.cube-face {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+    pointer-events: auto !important;
+}
+
+/* 四面座標 */
+.cube-front { transform: rotateY(0deg) translateZ(200px); }
+.cube-right { transform: rotateY(90deg) translateZ(200px); }
+.cube-back  { transform: rotateY(180deg) translateZ(200px); }
+.cube-left  { transform: rotateY(-90deg) translateZ(200px); }
+
+/* L型對焦框 */
+.corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--current-theme);
+    transition: 0.5s ease;
+}
+.tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+.tr { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+.bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+.br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+/* 聯絡面補強 */
+.contact-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transform: translateZ(60px) !important;
+    pointer-events: auto !important;
+}
+
+.cube-left .contact-wrapper {
+    transform: translateZ(1px);
+}
+
+.module-title {
+    color: var(--current-theme);
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 4px;
+    font-size: 16px;
+    margin-bottom: 35px;
+    text-shadow: 0 0 15px var(--current-theme);
+}
+
+.social-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 35px;
+    justify-content: center;
+}
+
+.social-hex {
+    position: relative;
+    width: 65px;
+    height: 65px;
+    text-decoration: none;
+    z-index: 1001;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateZ(1px);
+}
+
+.social-hex:hover {
+    transform: translateY(-12px) scale(1.1);
+}
+
+.social-hex::after {
+    content: attr(data-label);
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    font-family: 'Orbitron', sans-serif;
+    color: var(--current-theme);
+    opacity: 0;
+    transition: 0.3s;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
 .social-hex:hover::after { opacity: 1; }
-.hex-inner { background: rgba(0, 0, 0, 0.6) !important; width: 65px; height: 65px; clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); display: flex; align-items: center; justify-content: center; border: 1px solid var(--current-theme); }
-.tech-icon { width: 35px !important; height: 35px !important; object-fit: contain; z-index: 5; filter: drop-shadow(0 0 8px var(--current-theme)); transition: all 0.3s ease; opacity: 1 !important; display: block; }
-.social-hex:hover .tech-icon { filter: drop-shadow(0 0 12px var(--current-theme)) brightness(1.2); }
-.product-content { text-align: center; transform: translateZ(20px); pointer-events: auto !important; }
-.product-visual { width: 200px; height: 200px; background: rgba(0,0,0,0.5); margin: 0 auto 20px; position: relative; border: 1px solid var(--current-theme); box-shadow: 0 0 30px rgba(0,0,0,0.5); transition: transform 0.3s; display: flex !important; align-items: center !important; justify-content: center !important; overflow: hidden; }
-.product-visual:hover { transform: perspective(500px) rotateX(-5deg) rotateY(5deg) scale(1.05); }
-.product-visual img { max-width: 90% !important; max-height: 90% !important; width: auto !important; height: auto !important; object-fit: contain; pointer-events: none; }
-.product-name { margin-top: 15px !important; font-size: 1.2rem; white-space: nowrap; }
 
-/* --- 機械臂系統 --- */
-.robotic-arms-system { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none !important; z-index: 0 !important; }
-.arm-wrapper { position: absolute; bottom: -350px; width: 400px; height: 800px; filter: drop-shadow(0 30px 50px rgba(0,0,0,1)); transition: filter 0.5s ease; }
-#arm-left-container { left: -120px; transform-origin: bottom left; transform: rotate(15deg); }
-#arm-right-container { right: -120px; transform-origin: bottom right; transform: rotate(-15deg); }
-.advanced-arm-svg { width: 100%; height: 100%; overflow: visible; filter: contrast(1.1) brightness(0.9); }
-#left-shoulder-group, #right-shoulder-group { transform-origin: 150px 650px; } #left-elbow-group, #right-elbow-group { transform-origin: 150px 350px; } #left-claw-mechanism, #right-claw-mechanism { transform-origin: 150px 150px; }
-.energy-flow-path { stroke-dashoffset: 0; animation: flowAnimation 1.2s linear infinite; opacity: 0.9; filter: drop-shadow(0 0 8px var(--current-theme)); }
-@keyframes flowAnimation { to { stroke-dashoffset: -100; } }
-.claw-core-light { animation: energyPulse 2s infinite ease-in-out; filter: blur(2px) brightness(1.5); }
-@keyframes energyPulse { 0%, 100% { opacity: 0.6; filter: brightness(1) blur(2px); } 50% { opacity: 1; filter: brightness(2) blur(3px); } }
+.hex-inner {
+    background: rgba(0, 0, 0, 0.6) !important;
+    width: 65px;
+    height: 65px;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--current-theme);
+}
 
-/* --- 控制與導覽互動 --- */
-.controls { position: fixed !important; bottom: 50px !important; left: 50% !important; transform: translateX(-50%) !important; display: flex; gap: 30px; z-index: 999999 !important; pointer-events: auto !important; }
-.ctrl-btn { background: transparent; border: 1px solid var(--current-theme); color: white; padding: 10px 20px; font-family: inherit; transition: 0.3s; pointer-events: auto !important; cursor: pointer !important; }
-.ctrl-btn:hover { background: var(--current-theme); color: black; }
-.brand-logo { height: 35px; width: auto; filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.3)); transition: transform 0.3s ease; }
-.brand-text { font-family: 'Orbitron', sans-serif; letter-spacing: 2px; font-weight: bold; color: var(--tiffany-green); white-space: nowrap; }
-.nav-brand:hover .brand-logo { transform: scale(1.1) rotate(-5deg); filter: drop-shadow(0 0 12px var(--tiffany-green)); }
-.nav-brand:hover .brand-text { text-shadow: 0 0 15px var(--tiffany-green); letter-spacing: 3px; }
+.tech-icon {
+    width: 35px !important;
+    height: 35px !important;
+    object-fit: contain;
+    z-index: 5;
+    filter: drop-shadow(0 0 8px var(--current-theme));
+    transition: all 0.3s ease;
+    opacity: 1 !important;
+    display: block;
+}
+
+.social-hex:hover .tech-icon {
+    filter: drop-shadow(0 0 12px var(--current-theme)) brightness(1.2);
+}
+
+/* 產品內容樣式 */
+.product-content {
+    text-align: center;
+    transform: translateZ(20px);
+    pointer-events: auto !important;
+}
+
+.product-visual {
+    width: 200px;
+    height: 200px;
+    background: rgba(0,0,0,0.5);
+    margin: 0 auto 20px;
+    position: relative;
+    border: 1px solid var(--current-theme);
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    transition: transform 0.3s;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden; 
+}
+
+.product-visual:hover {
+    transform: perspective(500px) rotateX(-5deg) rotateY(5deg) scale(1.05);
+}
+
+.product-visual img {
+    max-width: 90% !important; 
+    max-height: 90% !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain; 
+    pointer-events: none; 
+}
+
+.product-name {
+    margin-top: 15px !important;
+    font-size: 1.2rem;
+    white-space: nowrap;
+}
+
+/* --- 6. 機械臂系統 --- */
+.robotic-arms-system {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none !important;
+    z-index: 0 !important;
+}
+
+.arm-wrapper {
+    position: absolute;
+    bottom: -350px;
+    width: 400px;
+    height: 800px;
+    filter: drop-shadow(0 30px 50px rgba(0,0,0,1));
+    transition: filter 0.5s ease;
+}
+
+#arm-left-container {
+    left: -120px;
+    transform-origin: bottom left;
+    transform: rotate(15deg);
+}
+
+#arm-right-container {
+    right: -120px;
+    transform-origin: bottom right;
+    transform: rotate(-15deg);
+}
+
+.advanced-arm-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    filter: contrast(1.1) brightness(0.9);
+}
+
+#left-shoulder-group, #right-shoulder-group { transform-origin: 150px 650px; }
+#left-elbow-group, #right-elbow-group { transform-origin: 150px 350px; }
+#left-claw-mechanism, #right-claw-mechanism { transform-origin: 150px 150px; }
+
+.energy-flow-path {
+    stroke-dashoffset: 0;
+    animation: flowAnimation 1.2s linear infinite;
+    opacity: 0.9;
+    filter: drop-shadow(0 0 8px var(--current-theme));
+}
+
+@keyframes flowAnimation {
+    to { stroke-dashoffset: -100; }
+}
+
+.claw-core-light {
+    animation: energyPulse 2s infinite ease-in-out;
+    filter: blur(2px) brightness(1.5);
+}
+
+@keyframes energyPulse {
+    0%, 100% { opacity: 0.6; filter: brightness(1) blur(2px); }
+    50% { opacity: 1; filter: brightness(2) blur(3px); }
+}
+
+/* --- 7. 控制與導覽互動 --- */
+.controls {
+    position: fixed !important;
+    bottom: 50px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    display: flex;
+    gap: 30px;
+    z-index: 999999 !important;
+    pointer-events: auto !important;
+}
+
+.ctrl-btn {
+    background: transparent;
+    border: 1px solid var(--current-theme);
+    color: white;
+    padding: 10px 20px;
+    font-family: inherit;
+    transition: 0.3s;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+.ctrl-btn:hover {
+    background: var(--current-theme);
+    color: black;
+}
+
+.brand-logo {
+    height: 35px;
+    width: auto;
+    filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.brand-text {
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 2px;
+    font-weight: bold;
+    color: var(--tiffany-green);
+    white-space: nowrap;
+}
+
+.nav-brand:hover .brand-logo {
+    transform: scale(1.1) rotate(-5deg);
+    filter: drop-shadow(0 0 12px var(--tiffany-green));
+}
+
+.nav-brand:hover .brand-text {
+    text-shadow: 0 0 15px var(--tiffany-green);
+    letter-spacing: 3px;
+}
 
 /* --- 手機版樣式 --- */
 @media screen and (max-width: 768px) {
-    #bio-layer, #lab-door-container, .scan-overlay, .robotic-arms-system, .arm-hud, .id-tag { display: none !important; }
-    #tactical-nav { padding: 5px 10px; height: 50px; } .nav-brand { font-size: 0 !important; } .nav-brand::before { content: "MBC"; font-size: 1.2rem; color: var(--tiffany-green); font-weight: bold; } .nav-menu { gap: 8px; } .nav-item { font-size: 0.7rem !important; padding: 4px 6px; }
-    .hero-title { position: fixed !important; top: 12% !important; left: 50% !important; transform: translateX(-50%) !important; width: 100% !important; z-index: 200; text-align: center; } .hero-title h1 { font-size: 1.6rem !important; }
-    .scene { position: fixed !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) scale(0.6) !important; width: 300px !important; height: 300px !important; margin: 0 !important; z-index: 10 !important; perspective: 1000px !important; padding: 0 !important; }
-    .cube { width: 100% !important; height: 100% !important; position: relative !important; transform-style: preserve-3d !important; transform-origin: center center 0 !important; }
-    .cube-face { position: absolute !important; width: 300px !important; height: 300px !important; top: 0 !important; left: 0 !important; background: rgba(255, 255, 255, 0.05) !important; }
-    .cube-front { transform: rotateY(0deg) translateZ(150px) !important; } .cube-right { transform: rotateY(90deg) translateZ(150px) !important; } .cube-back  { transform: rotateY(180deg) translateZ(150px) !important; } .cube-left  { transform: rotateY(-90deg) translateZ(150px) !important; }
-    .product-content, .contact-wrapper { position: absolute !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) translateZ(5px) !important; width: 260px !important; }
-    .product-visual img { max-width: 160px !important; height: auto !important; }
-    .controls { position: fixed !important; bottom: 40px !important; left: 50% !important; transform: translateX(-50%) !important; width: 90% !important; display: flex !important; gap: 10px; z-index: 200; }
-    .ctrl-btn { padding: 12px 5px !important; font-size: 10px !important; flex: 1; white-space: nowrap; }
+    #bio-layer, #lab-door-container, .scan-overlay,
+    .robotic-arms-system, .arm-hud, .id-tag {
+        display: none !important;
+    }
+
+    #tactical-nav { padding: 5px 10px; height: 50px; }
+    .nav-brand { font-size: 0 !important; }
+    .nav-brand::before { content: "MBC"; font-size: 1.2rem; color: var(--tiffany-green); font-weight: bold; }
+    .nav-menu { gap: 8px; }
+    .nav-item { font-size: 0.7rem !important; padding: 4px 6px; }
+
+    .hero-title {
+        position: fixed !important;
+        top: 12% !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 100% !important;
+        z-index: 200;
+        text-align: center;
+    }
+    .hero-title h1 { font-size: 1.6rem !important; }
+
+    .scene {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) scale(0.6) !important;
+        width: 300px !important;
+        height: 300px !important;
+        margin: 0 !important;
+        z-index: 10 !important;
+        perspective: 1000px !important;
+        padding: 0 !important;
+    }
+
+    .cube {
+        width: 100% !important;
+        height: 100% !important;
+        position: relative !important;
+        transform-style: preserve-3d !important;
+        transform-origin: center center 0 !important;
+    }
+
+    .cube-face {
+        position: absolute !important;
+        width: 300px !important;
+        height: 300px !important;
+        top: 0 !important;
+        left: 0 !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .cube-front { transform: rotateY(0deg) translateZ(150px) !important; }
+    .cube-right { transform: rotateY(90deg) translateZ(150px) !important; }
+    .cube-back  { transform: rotateY(180deg) translateZ(150px) !important; }
+    .cube-left  { transform: rotateY(-90deg) translateZ(150px) !important; }
+
+    .product-content, .contact-wrapper {
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) translateZ(5px) !important;
+        width: 260px !important;
+    }
+
+    .product-visual img {
+        max-width: 160px !important;
+        height: auto !important;
+    }
+
+    .controls {
+        position: fixed !important;
+        bottom: 40px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 90% !important;
+        display: flex !important;
+        gap: 10px;
+        z-index: 200;
+    }
+
+    .ctrl-btn {
+        padding: 12px 5px !important;
+        font-size: 10px !important;
+        flex: 1;
+        white-space: nowrap;
+    }
+
     body { overflow: hidden !important; position: fixed; width: 100%; height: 100%; }
 }
+
+/* 核心 Keyframes */
 @keyframes scanDown { 0% { top: -10%; opacity: 0; } 50% { opacity: 1; } 100% { top: 110%; opacity: 0; } }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
 </style>
 </head>
 <body>
@@ -134,7 +724,9 @@ body { margin: 0; padding: 0; background: var(--bg-dark); font-family: 'Segoe UI
     <audio id="sfx-access" src="access-granted.mp3" preload="auto"></audio>
 
     <div id="start-overlay" style="position:fixed; inset:0; background:#000; z-index:10005; display:flex; align-items:center; justify-content:center; cursor:pointer;">
-        <div style="color:var(--tiffany-green); font-family:monospace; letter-spacing:5px; border:1px solid var(--tiffany-green); padding:20px 40px;">點擊後啟動系統程式</div>
+        <div style="color:var(--tiffany-green); font-family:monospace; letter-spacing:5px; border:1px solid var(--tiffany-green); padding:20px 40px;">
+            點擊後啟動系統程式
+        </div>
     </div>
 
     <div id="cursor-light"></div>
@@ -158,7 +750,9 @@ body { margin: 0; padding: 0; background: var(--bg-dark); font-family: 'Segoe UI
     </div>
 
     <div class="video-wrapper">
-        <video autoplay muted loop playsinline id="bg-video"><source src="lab-bg.mp4" type="video/mp4"></video>
+        <video autoplay muted loop playsinline id="bg-video">
+            <source src="lab-bg.mp4" type="video/mp4">
+        </video>
         <div class="scan-overlay"></div>
         <div class="vignette-overlay"></div>
     </div>
@@ -174,11 +768,17 @@ body { margin: 0; padding: 0; background: var(--bg-dark); font-family: 'Segoe UI
             <a href="#" class="nav-item" data-cat="2" data-color="var(--color-motor)">MOTOR</a>
             <a href="#" class="nav-item" data-cat="3" data-color="var(--color-contact)">CONTACT</a>
         </div>
-        <div class="nav-progress-container"><div class="nav-progress-bar"></div></div>
-        <div class="id-tag"><span class="label">CHIEF ENGINEER</span><span class="code">ID: 031-SPARK</span></div>
+        <div class="nav-progress-container">
+            <div class="nav-progress-bar"></div>
+        </div>
+        <div class="id-tag">
+            <span class="label">CHIEF ENGINEER</span>
+            <span class="code">ID: 031-SPARK</span>
+        </div>
     </nav>
 
     <main class="lab-stage" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; pointer-events: auto; z-index: 5; opacity: 0; display: none;">
+        
         <div class="robotic-arms-system" style="pointer-events: none !important; position: absolute; inset: 0; z-index: 0;">
             <div id="arm-left-container" class="arm-wrapper">
                 <svg viewBox="0 0 400 800" class="advanced-arm-svg">
@@ -193,7 +793,9 @@ body { margin: 0; padding: 0; background: var(--bg-dark); font-family: 'Segoe UI
                             <feGaussianBlur stdDeviation="4" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
                         </filter>
                     </defs>
-                    <g class="arm-base"><rect x="50" y="700" width="200" height="80" rx="10" fill="url(#metal-grad)" stroke="#111" stroke-width="2"/></g>
+                    <g class="arm-base">
+                        <rect x="50" y="700" width="200" height="80" rx="10" fill="url(#metal-grad)" stroke="#111" stroke-width="2"/>
+                    </g>
                     <g id="left-shoulder-group" class="rotatable-joint">
                         <circle cx="150" cy="650" r="40" fill="url(#joint-grad)" stroke="#222" stroke-width="3"/>
                         <g id="left-upper-arm">
@@ -214,6 +816,7 @@ body { margin: 0; padding: 0; background: var(--bg-dark); font-family: 'Segoe UI
                     </g>
                 </svg>
             </div>
+
             <div id="arm-right-container" class="arm-wrapper">
                 <svg viewBox="0 0 400 800" class="advanced-arm-svg" style="transform: scaleX(-1);">
                     <defs>
@@ -221,7 +824,9 @@ body { margin: 0; padding: 0; background: var(--bg-dark); font-family: 'Segoe UI
                             <stop offset="0%" stop-color="#2a2a2a"/><stop offset="50%" stop-color="#777"/><stop offset="100%" stop-color="#2a2a2a"/>
                         </linearGradient>
                     </defs>
-                    <g class="arm-base"><rect x="50" y="700" width="200" height="80" rx="10" fill="url(#metal-grad-r)" stroke="#111" stroke-width="2"/></g>
+                    <g class="arm-base">
+                        <rect x="50" y="700" width="200" height="80" rx="10" fill="url(#metal-grad-r)" stroke="#111" stroke-width="2"/>
+                    </g>
                     <g id="right-shoulder-group" class="rotatable-joint">
                         <circle cx="150" cy="650" r="40" fill="url(#joint-grad)" stroke="#222" stroke-width="3"/>
                         <g id="right-upper-arm">
@@ -252,22 +857,29 @@ body { margin: 0; padding: 0; background: var(--bg-dark); font-family: 'Segoe UI
 
         <div class="scene" style="pointer-events: auto; position: relative; z-index: 10; width: 400px; height: 400px; display: flex; justify-content: center; align-items: center; perspective: 2000px;">
           <div class="cube" id="cube">
-                <div class="cube-face cube-front">
-                    <div class="corner tl"></div><div class="corner tr"></div>
-                    <div class="corner bl"></div><div class="corner br"></div>
-                    <div class="product-content">
-                        <div class="product-visual"><img src="mbc-pro-logo.png" alt="Main Logo"></div>
-                        <h2 class="product-name">LAB FACILITY</h2>
-                        <p class="product-desc">READY FOR OPERATION</p>
-                    </div>
-                </div>
+        <div class="cube-face cube-front">
+            
+    <div class="corner tl"></div><div class="corner tr"></div>
+    <div class="corner bl"></div><div class="corner br"></div>
+    
+    <div class="product-content">
+        <div class="product-visual">
+            <img src="mbc-pro-logo.png" alt="Main Logo">
+        </div>
+        
+        <h2 class="product-name">LAB FACILITY</h2>
+        <p class="product-desc">READY FOR OPERATION</p>
+    </div>
+</div>
 
                 <div class="cube-face cube-right">
                     <div class="corner tl"></div><div class="corner tr"></div>
                     <div class="corner bl"></div><div class="corner br"></div>
                     <div class="product-content">
                         <a href="sensors.html" target="_self" style="text-decoration: none; color: inherit; display: block;">
-                            <div class="product-visual"><img src="sensor_main.jpg" alt="MBC Sensor"></div>
+                            <div class="product-visual">
+                                <img src="sensor_main.jpg" alt="MBC Sensor">
+                            </div>
                             <h2 class="product-name">MBC SENSORS</h2>
                         </a>
                     </div>
@@ -278,7 +890,9 @@ body { margin: 0; padding: 0; background: var(--bg-dark); font-family: 'Segoe UI
                     <div class="corner bl"></div><div class="corner br"></div>
                     <div class="product-content">
                         <a href="motor.html" target="_self" style="text-decoration: none; color: inherit; display: block;">
-                            <div class="product-visual"><img src="motor_main.png" alt="Technic Motor"></div>
+                            <div class="product-visual">
+                                <img src="motor_main.png" alt="Technic Motor">
+                            </div>
                             <h2 class="product-name">TECHNIC MOTOR</h2>
                         </a>
                     </div>
@@ -290,9 +904,21 @@ body { margin: 0; padding: 0; background: var(--bg-dark); font-family: 'Segoe UI
                     <div class="contact-wrapper" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: translateZ(30px); pointer-events: none;">
                         <h3 class="module-title" style="margin-bottom: 20px;">SECURE COMMS</h3>
                         <div class="social-grid" style="pointer-events: auto;">
-                            <a href="你的FB連結" target="_blank" class="social-hex" data-label="FACEBOOK"><div class="hex-inner"><img src="path-to-your-fb-icon.png" class="tech-icon" alt="FB"></div></a>
-                            <a href="你的IG連結" target="_blank" class="social-hex" data-label="INSTAGRAM"><div class="hex-inner"><img src="path-to-your-ig-icon.png" class="tech-icon" alt="IG"></div></a>
-                            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mbc.robot89@gmail.com" target="_blank" class="social-hex" data-label="G-MAIL"><div class="hex-inner"><img src="path-to-your-gmail-icon.jpg" class="tech-icon" alt="Mail"></div></a>
+                            <a href="你的FB連結" target="_blank" class="social-hex" data-label="FACEBOOK">
+                                <div class="hex-inner">
+                                    <img src="path-to-your-fb-icon.png" class="tech-icon" alt="FB">
+                                </div>
+                            </a>
+                            <a href="你的IG連結" target="_blank" class="social-hex" data-label="INSTAGRAM">
+                                <div class="hex-inner">
+                                    <img src="path-to-your-ig-icon.png" class="tech-icon" alt="IG">
+                                </div>
+                            </a>
+                            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mbc.robot89@gmail.com" target="_blank" class="social-hex" data-label="G-MAIL">
+                                <div class="hex-inner">
+                                    <img src="path-to-your-gmail-icon.png" class="tech-icon" alt="Mail">
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -307,6 +933,7 @@ body { margin: 0; padding: 0; background: var(--bg-dark); font-family: 'Segoe UI
     
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+
     const categories = [
         { name: "LAB FACILITY", desc: "READY FOR OPERATION", color: "var(--color-home)", texture: "texture-lab" },
         { name: "MBC SENSOR", desc: "Precision Tracking / Cyan Core", color: "var(--color-sensor)", texture: "texture-circuit" },
@@ -356,20 +983,40 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             if (bioLayer) bioLayer.classList.add('scanning-active');
             const yellow = "#ffcc00";
-            if (statusText) { statusText.innerText = "警報：正在分析生物辨識特徵..."; statusText.style.color = yellow; }
-            if (idInfo) { idInfo.innerText = "偵測神經脈衝頻率中..."; idInfo.style.color = yellow; }
+            if (statusText) { 
+                statusText.innerText = "警報：正在分析生物辨識特徵..."; 
+                statusText.style.color = yellow; 
+            }
+            if (idInfo) { 
+                idInfo.innerText = "偵測神經脈衝頻率中..."; 
+                idInfo.style.color = yellow; 
+            }
             if (mainScanner) mainScanner.style.borderColor = yellow;
             if (scannerLine) { scannerLine.style.background = yellow; scannerLine.style.boxShadow = `0 0 20px ${yellow}`; }
 
             setTimeout(() => {
-                if (bioLayer) { bioLayer.classList.remove('scanning-active'); bioLayer.style.backgroundColor = "rgba(51, 255, 51, 0.05)"; }
+                if (bioLayer) {
+                    bioLayer.classList.remove('scanning-active');
+                    bioLayer.style.backgroundColor = "rgba(51, 255, 51, 0.05)";
+                }
                 const green = "#33ff33";
-                if (statusText) { statusText.innerText = "身分驗證成功：首席工程師"; statusText.style.color = green; }
-                if (idInfo) { idInfo.innerText = "授權存取 // 歡迎回來 SPARK-031"; idInfo.style.color = green; }
+                if (statusText) { 
+                    statusText.innerText = "身分驗證成功：首席工程師"; 
+                    statusText.style.color = green; 
+                }
+                if (idInfo) { 
+                    idInfo.innerText = "授權存取 // 歡迎回來 SPARK-031"; 
+                    idInfo.style.color = green; 
+                }
                 if (mainScanner) mainScanner.style.borderColor = green;
                 if (scannerLine) { scannerLine.style.background = green; scannerLine.style.boxShadow = `0 0 20px ${green}`; }
+
                 if (accessSfx) { accessSfx.volume = 0.6; accessSfx.play().catch(e => { }); }
-                if (checkBtn) { checkBtn.innerHTML = '<span class="check-icon"></span>存取授權成功'; checkBtn.style.display = "block"; gsap.from(checkBtn, { scale: 0, opacity: 0, duration: 0.5, ease: "back.out" }); }
+                if (checkBtn) {
+                    checkBtn.innerHTML = '<span class="check-icon"></span>存取授權成功'; 
+                    checkBtn.style.display = "block";
+                    gsap.from(checkBtn, { scale: 0, opacity: 0, duration: 0.5, ease: "back.out" });
+                }
 
                 setTimeout(() => {
                     clearInterval(streamInterval);
@@ -381,7 +1028,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         const doorCont = document.getElementById('lab-door-container');
                         if (doorCont) doorCont.remove();
                         if (bioLayer) bioLayer.remove();
+                        
                         sessionStorage.setItem('introPlayed', 'true');
+                        
                         initLab();
                     }});
                 }, 3000);
@@ -392,59 +1041,148 @@ document.addEventListener('DOMContentLoaded', () => {
     function initLab() {
         gsap.set(".lab-stage", { opacity: 1, display: "flex" });
         gsap.from(".hero-title", { y: 30, opacity: 0, duration: 1 });
+        
         if (cube) {
-            gsap.from(cube, { opacity: 0, rotationY: 180, duration: 1.5, ease: "back.out(1.7)", onComplete: () => { updateSystem(0); gsap.from(".controls", { opacity: 0, y: 20, duration: 0.5 }); } });
+            gsap.from(cube, {
+                opacity: 0,
+                rotationY: 180,
+                duration: 1.5,
+                ease: "back.out(1.7)",
+                onComplete: () => {
+                    updateSystem(0);
+                    gsap.from(".controls", { opacity: 0, y: 20, duration: 0.5 });
+                }
+            });
         }
     }
 
     function updateSystem(index) {
         if (index < 0) index = categories.length - 1;
         if (index >= categories.length) index = 0;
+
         currentIndex = index;
         const data = categories[currentIndex];
         root.style.setProperty('--current-theme', data.color);
 
-        if (cube) { categories.forEach(cat => cube.classList.remove(cat.texture)); cube.classList.add(data.texture); }
+        if (cube) {
+            categories.forEach(cat => cube.classList.remove(cat.texture));
+            cube.classList.add(data.texture);
+        }
+
         navItems.forEach((item, i) => item.classList.toggle('active', i === currentIndex));
-        if (progressBar) { const progress = ((currentIndex + 1) / categories.length) * 100; progressBar.style.width = `${progress}%`; }
+        if (progressBar) {
+            const progress = ((currentIndex + 1) / categories.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
 
         const allFaces = document.querySelectorAll('.cube-face');
         const facesClass = ['.cube-front', '.cube-right', '.cube-back', '.cube-left'];
-        allFaces.forEach((face) => { face.style.pointerEvents = 'auto'; const wrapper = face.querySelector('.product-content') || face.querySelector('.contact-wrapper'); if (wrapper) wrapper.style.pointerEvents = 'none'; });
+
+        allFaces.forEach((face) => {
+            face.style.pointerEvents = 'auto'; 
+            const wrapper = face.querySelector('.product-content') || face.querySelector('.contact-wrapper');
+            if (wrapper) wrapper.style.pointerEvents = 'none';
+        });
+
         const targetFace = document.querySelector(facesClass[currentIndex]);
-        if (targetFace) { const activeWrapper = targetFace.querySelector('.product-content') || targetFace.querySelector('.contact-wrapper'); if (activeWrapper) { activeWrapper.style.pointerEvents = 'auto'; gsap.to(activeWrapper, { translateZ: 25, duration: 0.3, overwrite: true }); } }
+        if (targetFace) {
+            const activeWrapper = targetFace.querySelector('.product-content') || targetFace.querySelector('.contact-wrapper');
+            if (activeWrapper) {
+                activeWrapper.style.pointerEvents = 'auto'; 
+                gsap.to(activeWrapper, { translateZ: 25, duration: 0.3, overwrite: true });
+            }
+        }
     }
 
-    function rotateCube() { if (cube) { gsap.to(cube, { rotationY: currentRotation, duration: 1.2, ease: "expo.out", overwrite: "auto" }); } }
+    function rotateCube() {
+        if (cube) {
+            gsap.to(cube, {
+                rotationY: currentRotation,
+                duration: 1.2,
+                ease: "expo.out",
+                overwrite: "auto"
+            });
+        }
+    }
 
     function animateComplexArm(side) {
         const container = side === 'left' ? '#arm-left-container' : '#arm-right-container';
         const shoulder = side === 'left' ? '#left-shoulder-group' : '#right-shoulder-group';
         const elbow = side === 'left' ? '#left-elbow-group' : '#right-elbow-group';
         const claw = side === 'left' ? '#left-claw-mechanism' : '#right-claw-mechanism';
-        let shoulderRot = side === 'left' ? 40 : 45; let elbowRot = side === 'left' ? 50 : 60; let containerMoveX = side === 'left' ? 80 : 40; let containerMoveY = side === 'left' ? -350 : -480;
 
-        currentArmTL = gsap.timeline({ onComplete: () => { currentArmTL = null; }, defaults: { ease: "power2.inOut" } });
-        currentArmTL.to(container, { y: containerMoveY, x: containerMoveX, duration: 0.6 }).to(shoulder, { rotation: shoulderRot, duration: 0.5 }, "-=0.3").to(elbow, { rotation: elbowRot, duration: 0.5 }, "<").to(claw, { scale: 0.6, duration: 0.2 }).to(claw, { scale: 1.0, duration: 0.3, ease: "back.out(2)" }).to([shoulder, elbow], { rotation: 0, duration: 0.5, delay: 0.2 }).to(container, { y: 0, x: 0, duration: 0.6 }, "-=0.2");
+        let shoulderRot = side === 'left' ? 40 : 45;
+        let elbowRot = side === 'left' ? 50 : 60;
+        let containerMoveX = side === 'left' ? 80 : 40;
+        let containerMoveY = side === 'left' ? -350 : -480;
+
+        currentArmTL = gsap.timeline({
+            onComplete: () => { currentArmTL = null; },
+            defaults: { ease: "power2.inOut" }
+        });
+
+        currentArmTL
+            .to(container, { y: containerMoveY, x: containerMoveX, duration: 0.6 })
+            .to(shoulder, { rotation: shoulderRot, duration: 0.5 }, "-=0.3")
+            .to(elbow, { rotation: elbowRot, duration: 0.5 }, "<")
+            .to(claw, { scale: 0.6, duration: 0.2 })
+            .to(claw, { scale: 1.0, duration: 0.3, ease: "back.out(2)" })
+            .to([shoulder, elbow], { rotation: 0, duration: 0.5, delay: 0.2 })
+            .to(container, { y: 0, x: 0, duration: 0.6 }, "-=0.2");
     }
 
     const nextBtn = document.querySelector('.next-btn');
     const prevBtn = document.querySelector('.prev-btn');
-    if (nextBtn) nextBtn.addEventListener('click', () => { if (currentArmTL && currentArmTL.isActive()) return; let nextIndex = (currentIndex + 1) % categories.length; currentRotation -= 90; updateSystem(nextIndex); rotateCube(); animateComplexArm('left'); });
-    if (prevBtn) prevBtn.addEventListener('click', () => { if (currentArmTL && currentArmTL.isActive()) return; let prevIndex = (currentIndex - 1 + categories.length) % categories.length; currentRotation += 90; updateSystem(prevIndex); rotateCube(); animateComplexArm('right'); });
+
+    if (nextBtn) nextBtn.addEventListener('click', () => {
+        if (currentArmTL && currentArmTL.isActive()) return;
+        let nextIndex = (currentIndex + 1) % categories.length;
+        currentRotation -= 90;
+        updateSystem(nextIndex);
+        rotateCube();
+        animateComplexArm('left');
+    });
+
+    if (prevBtn) prevBtn.addEventListener('click', () => {
+        if (currentArmTL && currentArmTL.isActive()) return;
+        let prevIndex = (currentIndex - 1 + categories.length) % categories.length;
+        currentRotation += 90;
+        updateSystem(prevIndex);
+        rotateCube();
+        animateComplexArm('right');
+    });
 
     navItems.forEach((item, index) => {
-        item.addEventListener('click', (e) => { e.preventDefault(); if (currentArmTL && currentArmTL.isActive()) return; const diff = index - currentIndex; if (diff === 0) return; currentRotation -= (90 * diff); index > currentIndex ? animateComplexArm('left') : animateComplexArm('right'); updateSystem(index); rotateCube(); });
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (currentArmTL && currentArmTL.isActive()) return;
+            const diff = index - currentIndex;
+            if (diff === 0) return;
+            currentRotation -= (90 * diff);
+            index > currentIndex ? animateComplexArm('left') : animateComplexArm('right');
+            updateSystem(index);
+            rotateCube();
+        });
     });
 
     document.addEventListener('mouseover', (e) => {
         const visual = e.target.closest('.product-visual');
-        if (visual) { const pins = visual.querySelectorAll('.pin'); const mockup = visual.querySelector('.sensor-mockup'); if (pins.length > 0) gsap.to(pins, { opacity: 1, scale: 1, stagger: 0.05, duration: 0.4, ease: "back.out(2)" }); if (mockup) gsap.to(mockup, { x: 10, y: -10, duration: 0.5, ease: "power2.out" }); }
+        if (visual) {
+            const pins = visual.querySelectorAll('.pin');
+            const mockup = visual.querySelector('.sensor-mockup');
+            if (pins.length > 0) gsap.to(pins, { opacity: 1, scale: 1, stagger: 0.05, duration: 0.4, ease: "back.out(2)" });
+            if (mockup) gsap.to(mockup, { x: 10, y: -10, duration: 0.5, ease: "power2.out" });
+        }
     });
 
     document.addEventListener('mouseout', (e) => {
         const visual = e.target.closest('.product-visual');
-        if (visual) { const pins = visual.querySelectorAll('.pin'); const mockup = visual.querySelector('.sensor-mockup'); if (pins.length > 0) gsap.to(pins, { opacity: 0, scale: 0.5, duration: 0.3 }); if (mockup) gsap.to(mockup, { x: 0, y: 0, duration: 0.5 }); }
+        if (visual) {
+            const pins = visual.querySelectorAll('.pin');
+            const mockup = visual.querySelector('.sensor-mockup');
+            if (pins.length > 0) gsap.to(pins, { opacity: 0, scale: 0.5, duration: 0.3 });
+            if (mockup) gsap.to(mockup, { x: 0, y: 0, duration: 0.5 });
+        }
     });
 
     const startOverlay = document.getElementById('start-overlay');
@@ -457,8 +1195,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (doorCont) doorCont.remove();
         initLab(); 
     } else {
-        if (startOverlay) { startOverlay.addEventListener('click', () => { gsap.to(startOverlay, { opacity: 0, duration: 0.5, onComplete: () => startOverlay.remove() }); startAutomatedBioScan(); }); }
+        if (startOverlay) {
+            startOverlay.addEventListener('click', () => {
+                gsap.to(startOverlay, { opacity: 0, duration: 0.5, onComplete: () => startOverlay.remove() });
+                startAutomatedBioScan();
+            });
+        }
     }
+
 });
 </script>
 </body>
