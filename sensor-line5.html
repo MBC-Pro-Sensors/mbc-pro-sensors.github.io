@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBC 五路循線感應器 | Advanced Robotics</title>
+    <style>
+        :root { --primary: #0ABAB5; --bg-dark: #050a10; --text-light: #e0e0e0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-light); overflow-x: hidden; }
+        #bg-video { position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; z-index: -1; opacity: 0.25; object-fit: cover; }
+        nav { background: rgba(5, 10, 16, 0.8); backdrop-filter: blur(10px); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(10, 186, 181, 0.3); position: fixed; width: 100%; top: 0; z-index: 100; }
+        nav img { height: 40px; border-radius: 5px; }
+        nav ul { list-style: none; display: flex; gap: 20px; }
+        nav a { color: white; text-decoration: none; font-weight: bold; font-family: monospace; letter-spacing: 1px; transition: 0.3s; }
+        nav a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 20px; margin-top: 60px; }
+        .hero h1 { font-size: 3.5rem; color: white; margin-bottom: 20px; text-shadow: 0 0 20px rgba(10, 186, 181, 0.5); }
+        .hero p { font-size: 1.2rem; max-width: 600px; line-height: 1.8; margin-bottom: 40px; color: #aaa; }
+        .hero-img { max-width: 400px; width: 100%; border: 2px solid var(--primary); box-shadow: 0 0 30px rgba(10, 186, 181, 0.2); border-radius: 10px; margin-bottom: 40px; transition: transform 0.3s; }
+        .hero-img:hover { transform: scale(1.05); }
+        .btn { padding: 15px 30px; font-size: 1.2rem; font-family: monospace; font-weight: bold; text-decoration: none; color: var(--bg-dark); background: var(--primary); border: none; border-radius: 5px; cursor: pointer; transition: 0.3s; box-shadow: 0 0 15px var(--primary); }
+        .btn:hover { background: white; box-shadow: 0 0 25px white; transform: translateY(-3px); }
+        .features { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; padding: 80px 5%; background: rgba(0,0,0,0.6); }
+        .card { background: rgba(20, 30, 40, 0.7); border-left: 4px solid var(--primary); padding: 30px; border-radius: 8px; max-width: 350px; flex: 1 1 300px; }
+        .card h3 { color: var(--primary); margin-bottom: 15px; font-size: 1.4rem; }
+        footer { text-align: center; padding: 40px; background: #020508; border-top: 1px solid #111; }
+    </style>
+</head>
+<body>
+
+    <video autoplay muted loop id="bg-video">
+        <source src="lab-bg.mp4" type="video/mp4">
+    </video>
+
+    <nav>
+        <a href="index.html" style="display: flex; align-items: center; gap: 10px;">
+            <img src="mbc-pro-logo (1).jpg" alt="Logo">
+            <span style="color: white; font-family: monospace; font-weight: bold;">&lt; 返回實驗室大廳</span>
+        </a>
+        <ul>
+            <li><a href="docs.html">技術文件</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <h1>五路循線感應器</h1>
+        <p>專為 LEGO EV3、SPIKE、Makeblock 競技機器人設計。告別數位抖動，迎接 ±100 高解析度平滑控制，並搭載極致的「一鍵智能校準」技術。</p>
+        <img src="sensor_main.jpg" alt="MBC 5-Way Line Sensor" class="hero-img">
+        <a href="docs.html" class="btn">ACCESS DOCUMENTATION_</a>
+    </section>
+
+    <section class="features">
+        <div class="card">
+            <h3>[01] 一鍵智能校準</h3>
+            <p>將感應器維持離地 0.8 公分高，按下實體按鈕並掃描黑白區域，系統自動寫入極值，完美適應任何賽場燈光與反光材質。</p>
+        </div>
+        <div class="card">
+            <h3>[02] 極致解析度輸出</h3>
+            <p>不再是非 0 即 1！提供高達 ±100 的循線位置誤差值、0~5 的線寬資料，以及五路獨立的 0~100 反射數值，讓你的 PID 演算法發揮 100% 實力。</p>
+        </div>
+        <div class="card">
+            <h3>[03] 跨平台霸主</h3>
+            <p>一套硬體打通所有賽事。提供完整的 PyBricks 支援模組與 SPIKE 積木匯入檔，隨插即用，無縫接軌你的開發環境。</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 MBC Robotics. Engineered for Champions.</p>
+    </footer>
+
+</body>
+</html>
