@@ -934,26 +934,7 @@ body {
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- A. 啟動層與記憶邏輯 (新增 SessionStorage 判斷) ---
-    const startOverlay = document.getElementById('start-overlay');
-    const bioLayer = document.getElementById('bio-layer');
-    const doorCont = document.getElementById('lab-door-container');
-
-    if (sessionStorage.getItem('introPlayed') === 'true') {
-        if (startOverlay) startOverlay.remove();
-        if (bioLayer) bioLayer.remove();
-        if (doorCont) doorCont.remove();
-        initLab(); 
-    } else {
-        if (startOverlay) {
-            startOverlay.addEventListener('click', () => {
-                gsap.to(startOverlay, { opacity: 0, duration: 0.5, onComplete: () => startOverlay.remove() });
-                startAutomatedBioScan();
-            });
-        }
-    }
-
-    // --- 0. 資料庫定義 ---
+    // --- 0. 資料庫與變數定義 ---
     const categories = [
         { name: "LAB FACILITY", desc: "READY FOR OPERATION", color: "var(--color-home)", texture: "texture-lab" },
         { name: "MBC SENSOR", desc: "Precision Tracking / Cyan Core", color: "var(--color-sensor)", texture: "texture-circuit" },
@@ -979,6 +960,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 2. 自動化生物辨識系統 ---
     function startAutomatedBioScan() {
+        const bioLayer = document.getElementById('bio-layer');
         const statusText = document.getElementById('bio-status-text');
         const idInfo = document.getElementById('bio-id-info');
         const mainScanner = document.getElementById('main-scanner');
@@ -1046,6 +1028,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     gsap.to(".left-door", { x: "-100%", duration: 3.0, ease: "power2.inOut" });
                     gsap.to(".right-door", { x: "100%", duration: 3.0, ease: "power2.inOut", onComplete: () => {
+                        const doorCont = document.getElementById('lab-door-container');
                         if (doorCont) doorCont.remove();
                         if (bioLayer) bioLayer.remove();
                         
@@ -1205,6 +1188,28 @@ document.addEventListener('DOMContentLoaded', () => {
             if (mockup) gsap.to(mockup, { x: 0, y: 0, duration: 0.5 });
         }
     });
+
+    // --- 🎯 最終關鍵修復：啟動層與記憶邏輯 (移到最後面，確保所有變數跟滑鼠功能都已經載入完畢) ---
+    const startOverlay = document.getElementById('start-overlay');
+    const bioLayer = document.getElementById('bio-layer');
+    const doorCont = document.getElementById('lab-door-container');
+
+    if (sessionStorage.getItem('introPlayed') === 'true') {
+        // 如果已經看過動畫，直接把擋路的門和掃描層刪掉，並啟動大廳
+        if (startOverlay) startOverlay.remove();
+        if (bioLayer) bioLayer.remove();
+        if (doorCont) doorCont.remove();
+        initLab(); 
+    } else {
+        // 第一次來，等待點擊啟動
+        if (startOverlay) {
+            startOverlay.addEventListener('click', () => {
+                gsap.to(startOverlay, { opacity: 0, duration: 0.5, onComplete: () => startOverlay.remove() });
+                startAutomatedBioScan();
+            });
+        }
+    }
+
 });
 </script>
 </body>
