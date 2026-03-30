@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBC 感應器模組庫 | Advanced Robotics</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        :root {
+            --primary: #0ABAB5; /* Tiffany Green */
+            --bg-dark: #050a10;
+            --text-light: #e0e0e0;
+            --card-bg: rgba(15, 25, 35, 0.7);
+            --card-border: rgba(10, 186, 181, 0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Orbitron', Tahoma, sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-light); overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* 動態背景 */
+        .bg-grid { position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(10, 186, 181, 0.05) 50px), repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(10, 186, 181, 0.05) 50px); z-index: -1; pointer-events: none; }
+        .vignette { position: fixed; inset: 0; background: radial-gradient(circle at center, transparent 30%, #050a10 100%); z-index: -1; pointer-events: none; }
+
+        /* 導覽列 */
+        nav { background: rgba(5, 10, 16, 0.85); backdrop-filter: blur(10px); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--primary); position: sticky; top: 0; z-index: 100; }
+        nav img { height: 35px; border-radius: 3px; filter: drop-shadow(0 0 5px var(--primary)); }
+        nav a { color: white; text-decoration: none; font-weight: bold; font-family: monospace; letter-spacing: 2px; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
+        nav a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+
+        /* 標題區 */
+        header { text-align: center; padding: 60px 20px 30px; }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; color: white; text-shadow: 0 0 15px var(--primary); letter-spacing: 4px; margin-bottom: 10px; }
+        .subtitle { color: var(--primary); font-family: monospace; letter-spacing: 3px; font-size: 1rem; }
+
+        /* 產品網格 (核心擴充區) */
+        .catalog-container { flex: 1; padding: 40px 5%; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; width: 100%; }
+
+        /* 產品卡片 */
+        .sensor-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; text-decoration: none; color: white; display: flex; flex-direction: column; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; opacity: 0; transform: translateY(30px); }
+        .sensor-card:hover { transform: translateY(-10px) scale(1.02); border-color: var(--primary); box-shadow: 0 10px 30px rgba(10, 186, 181, 0.2); }
+        .sensor-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--primary); transform: scaleX(0); transition: transform 0.4s; transform-origin: left; }
+        .sensor-card:hover::before { transform: scaleX(1); }
+
+        /* 卡片圖片區 */
+        .card-img-wrapper { height: 220px; background: #000; position: relative; display: flex; justify-content: center; align-items: center; overflow: hidden; border-bottom: 1px solid #222; }
+        .card-img-wrapper img { max-width: 80%; max-height: 80%; object-fit: contain; transition: transform 0.5s; z-index: 2; }
+        .sensor-card:hover .card-img-wrapper img { transform: scale(1.1); }
+        .img-grid-overlay { position: absolute; inset: 0; background: linear-gradient(transparent 50%, rgba(10, 186, 181, 0.05) 50%); background-size: 100% 4px; z-index: 1; pointer-events: none; }
+
+        /* 狀態標籤 */
+        .status-badge { position: absolute; top: 15px; right: 15px; font-family: monospace; font-size: 0.75rem; padding: 4px 8px; border-radius: 3px; z-index: 3; font-weight: bold; letter-spacing: 1px; }
+        .status-active { background: rgba(10, 186, 181, 0.2); color: var(--primary); border: 1px solid var(--primary); }
+        .status-dev { background: rgba(255, 170, 0, 0.2); color: #ffaa00; border: 1px solid #ffaa00; }
+        .status-classified { background: rgba(255, 50, 50, 0.2); color: #ff3232; border: 1px solid #ff3232; }
+
+        /* 卡片文字區 */
+        .card-content { padding: 25px; flex: 1; display: flex; flex-direction: column; }
+        .card-id { font-family: monospace; color: #666; font-size: 0.85rem; margin-bottom: 5px; }
+        .card-title { font-size: 1.4rem; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px; }
+        .card-desc { color: #aaa; font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px; flex: 1; }
+        
+        .card-btn { margin-top: auto; padding: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.2); font-family: monospace; letter-spacing: 2px; transition: 0.3s; color: white; }
+        .sensor-card:hover .card-btn { background: var(--primary); color: #000; border-color: var(--primary); font-weight: bold; }
+
+        footer { text-align: center; padding: 20px; background: #020508; border-top: 1px solid #111; font-family: monospace; color: #555; font-size: 0.8rem; margin-top: 40px; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-grid"></div>
+    <div class="vignette"></div>
+
+    <nav>
+        <a href="index.html">
+            <img src="mbc-pro-logo (1).png" alt="MBC Logo">
+            <span>&lt; SYSTEM.RETURN("LOBBY")</span>
+        </a>
+    </nav>
+
+    <header>
+        <h1>SENSOR MODULES</h1>
+        <div class="subtitle">SELECT HARDWARE FOR DEPLOYMENT</div>
+    </header>
+
+    <div class="catalog-container">
+        
+        <a href="sensor-line5.html" class="sensor-card">
+            <div class="card-img-wrapper">
+                <div class="img-grid-overlay"></div>
+                <div class="status-badge status-active">AVAILABLE</div>
+                <img src="sensor_main.jpg" alt="五路循線感應器">
+            </div>
+            <div class="card-content">
+                <div class="card-id">ID: LNS-05-PRO</div>
+                <h2 class="card-title">五路循線感應器</h2>
+                <p class="card-desc">提供 ±100 高解析度平滑控制，支援 EV3/SPIKE/mBot，搭載硬體級「一鍵智能校準」極值記憶技術。</p>
+                <div class="card-btn">INITIALIZE MODULE_</div>
+            </div>
+        </a>
+
+        <a href="#" class="sensor-card" style="pointer-events: none;">
+            <div class="card-img-wrapper">
+                <div class="img-grid-overlay"></div>
+                <div class="status-badge status-dev">IN DEVELOPMENT</div>
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='1'><path d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6'/></svg>" alt="開發中" style="opacity: 0.5;">
+            </div>
+            <div class="card-content">
+                <div class="card-id">ID: USN-X1-ARRAY</div>
+                <h2 class="card-title">陣列超音波感應器</h2>
+                <p class="card-desc">多維度空間建模與精準避障。目前正在進行高頻噪聲濾波演算法的最佳化測試，敬請期待。</p>
+                <div class="card-btn" style="color: #666;">ACCESS DENIED_</div>
+            </div>
+        </a>
+
+        <a href="#" class="sensor-card" style="pointer-events: none;">
+            <div class="card-img-wrapper">
+                <div class="img-grid-overlay"></div>
+                <div class="status-badge status-classified">CLASSIFIED</div>
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='1'><circle cx='12' cy='12' r='10'/><circle cx='12' cy='12' r='3'/></svg>" alt="機密" style="opacity: 0.5;">
+            </div>
+            <div class="card-content">
+                <div class="card-id">ID: AIV-CAM-PRO</div>
+                <h2 class="card-title">AI 神經視覺模組</h2>
+                <p class="card-desc">具備邊緣運算能力的特徵辨識鏡頭。專案目前處於機密階段，需最高權限方可存取硬體規格。</p>
+                <div class="card-btn" style="color: #666;">RESTRICTED_</div>
+            </div>
+        </a>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 MBC Robotics. SECURE CATALOG SYSTEM.</p>
+    </footer>
+
+    <script>
+        // 進入頁面時的卡片浮現動畫
+        document.addEventListener("DOMContentLoaded", (event) => {
+            gsap.to(".sensor-card", {
+                y: 0,
+                opacity: 1,
+                duration: 0.8,
+                stagger: 0.15,
+                ease: "back.out(1.2)"
+            });
+        });
+    </script>
+</body>
+</html>
