@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MBC-Pro-Sensors | Advanced Robotics Lab</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>   
 
- <style>
+<style>
 /* --- 0. 全局變數與基礎設定 --- */
 :root {
     /* 1. 核心底色與漸層 */
@@ -478,10 +477,29 @@ body {
     border: 1px solid var(--current-theme);
     box-shadow: 0 0 30px rgba(0,0,0,0.5);
     transition: transform 0.3s;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden; 
 }
 
 .product-visual:hover {
     transform: perspective(500px) rotateX(-5deg) rotateY(5deg) scale(1.05);
+}
+
+.product-visual img {
+    max-width: 90% !important; 
+    max-height: 90% !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain; 
+    pointer-events: none; 
+}
+
+.product-name {
+    margin-top: 15px !important;
+    font-size: 1.2rem;
+    white-space: nowrap;
 }
 
 /* --- 6. 機械臂系統 --- */
@@ -697,36 +715,17 @@ body {
 /* 核心 Keyframes */
 @keyframes scanDown { 0% { top: -10%; opacity: 0; } 50% { opacity: 1; } 100% { top: 110%; opacity: 0; } }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-     /* --- 修正圖片排版崩潰 --- */
-.product-visual {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    overflow: hidden; /* 確保圖片不溢出邊框 */
-}
 
-.product-visual img {
-    /* 這裡覆蓋掉行內樣式的 250px，確保不超過父容器 */
-    max-width: 90% !important; 
-    max-height: 90% !important;
-    width: auto !important;
-    height: auto !important;
-    object-fit: contain; /* 保持圖片比例不變形 */
-    pointer-events: none; /* 防止圖片被滑鼠點擊拖動影響 3D 旋轉 */
-}
-
-/* 為了讓文字不被擠壓，固定標題位置 */
-.product-name {
-    margin-top: 15px !important;
-    font-size: 1.2rem;
-    white-space: nowrap;
-}
 </style>
 </head>
 <body>
+    
+    <audio id="sfx-door" src="door-open.mp3" preload="auto"></audio>
+    <audio id="sfx-access" src="access-granted.mp3" preload="auto"></audio>
+
     <div id="start-overlay" style="position:fixed; inset:0; background:#000; z-index:10005; display:flex; align-items:center; justify-content:center; cursor:pointer;">
         <div style="color:var(--tiffany-green); font-family:monospace; letter-spacing:5px; border:1px solid var(--tiffany-green); padding:20px 40px;">
-            點擊後啟動程式
+            點擊後啟動系統程式
         </div>
     </div>
 
@@ -760,9 +759,9 @@ body {
 
     <nav id="tactical-nav">
         <div class="nav-brand" style="display: flex; align-items: center; gap: 15px;">
-    <img src="mbc-pro-logo (1).png" alt="MBC Logo" class="brand-logo">
-    <span class="brand-text">MBC-PRO-SENSORS</span>
-</div>
+            <img src="mbc-pro-logo (1).jpg" alt="MBC Logo" class="brand-logo">
+            <span class="brand-text">MBC-PRO-SENSORS</span>
+        </div>
         <div class="nav-menu">
             <a href="#" class="nav-item active" data-cat="0" data-color="var(--color-home)">HOME</a>
             <a href="#" class="nav-item" data-cat="1" data-color="var(--color-sensor)">MBC SENSOR</a>
@@ -778,7 +777,7 @@ body {
         </div>
     </nav>
 
-    <main class="lab-stage" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; pointer-events: auto; z-index: 5;">
+    <main class="lab-stage" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; pointer-events: auto; z-index: 5; opacity: 0; display: none;">
         
         <div class="robotic-arms-system" style="pointer-events: none !important; position: absolute; inset: 0; z-index: 0;">
             <div id="arm-left-container" class="arm-wrapper">
@@ -865,7 +864,7 @@ body {
     
     <div class="product-content">
         <div class="product-visual">
-            <img src="mbc-pro-logo (1).png" alt="Main Logo">
+            <img src="mbc-pro-logo (1).jpg" alt="Main Logo">
         </div>
         
         <h2 class="product-name">LAB FACILITY</h2>
@@ -874,12 +873,15 @@ body {
 </div>
 
                 <div class="cube-face cube-right">
+                    <div class="corner tl"></div><div class="corner tr"></div>
+                    <div class="corner bl"></div><div class="corner br"></div>
                     <div class="product-content">
                         <a href="sensors.html" target="_self" style="text-decoration: none; color: inherit; display: block;">
                             <div class="product-visual">
                                 <img src="sensor_main.jpg" alt="MBC Sensor">
                             </div>
-                            <h2 class="product-name">MBC SENSORS</h2> </a>
+                            <h2 class="product-name">MBC SENSORS</h2>
+                        </a>
                     </div>
                 </div>
 
@@ -914,7 +916,7 @@ body {
                             </a>
                             <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mbc.robot89@gmail.com" target="_blank" class="social-hex" data-label="G-MAIL">
                                 <div class="hex-inner">
-                                    <img src="path-to-your-gmail-icon.png" class="tech-icon" alt="Mail">
+                                    <img src="path-to-your-gmail-icon.jpg" class="tech-icon" alt="Mail">
                                 </div>
                             </a>
                         </div>
@@ -932,13 +934,23 @@ body {
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- A. 啟動層邏輯 ---
+    // --- A. 啟動層與記憶邏輯 (新增 SessionStorage 判斷) ---
     const startOverlay = document.getElementById('start-overlay');
-    if (startOverlay) {
-        startOverlay.addEventListener('click', () => {
-            gsap.to(startOverlay, { opacity: 0, duration: 0.5, onComplete: () => startOverlay.remove() });
-            startAutomatedBioScan();
-        });
+    const bioLayer = document.getElementById('bio-layer');
+    const doorCont = document.getElementById('lab-door-container');
+
+    if (sessionStorage.getItem('introPlayed') === 'true') {
+        if (startOverlay) startOverlay.remove();
+        if (bioLayer) bioLayer.remove();
+        if (doorCont) doorCont.remove();
+        initLab(); 
+    } else {
+        if (startOverlay) {
+            startOverlay.addEventListener('click', () => {
+                gsap.to(startOverlay, { opacity: 0, duration: 0.5, onComplete: () => startOverlay.remove() });
+                startAutomatedBioScan();
+            });
+        }
     }
 
     // --- 0. 資料庫定義 ---
@@ -965,88 +977,87 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cursorRing) gsap.to(cursorRing, { x: e.clientX, y: e.clientY, duration: 0.2 });
     });
 
-  // --- 2. 自動化生物辨識系統 (中文化修正版) ---
-function startAutomatedBioScan() {
-    const bioLayer = document.getElementById('bio-layer');
-    const statusText = document.getElementById('bio-status-text');
-    const idInfo = document.getElementById('bio-id-info');
-    const mainScanner = document.getElementById('main-scanner');
-    const checkBtn = document.getElementById('auto-check-btn');
-    const leftStream = document.getElementById('data-stream-left');
-    const rightStream = document.getElementById('data-stream-right');
-    const scannerLine = document.querySelector('.bio-scanner-line');
-    const doorSfx = document.getElementById('sfx-door');
-    const accessSfx = document.getElementById('sfx-access');
+    // --- 2. 自動化生物辨識系統 ---
+    function startAutomatedBioScan() {
+        const statusText = document.getElementById('bio-status-text');
+        const idInfo = document.getElementById('bio-id-info');
+        const mainScanner = document.getElementById('main-scanner');
+        const checkBtn = document.getElementById('auto-check-btn');
+        const leftStream = document.getElementById('data-stream-left');
+        const rightStream = document.getElementById('data-stream-right');
+        const scannerLine = document.querySelector('.bio-scanner-line');
+        const doorSfx = document.getElementById('sfx-door');
+        const accessSfx = document.getElementById('sfx-access');
 
-    const generateCode = () => {
-        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>[]{}_+=-*&^%$#@!Ω≈ç";
-        let str = "";
-        for (let i = 0; i < 20; i++) str += chars.charAt(Math.floor(Math.random() * chars.length)) + (i % 2 === 0 ? " " : "<br>");
-        return str;
-    };
+        const generateCode = () => {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>[]{}_+=-*&^%$#@!Ω≈ç";
+            let str = "";
+            for (let i = 0; i < 20; i++) str += chars.charAt(Math.floor(Math.random() * chars.length)) + (i % 2 === 0 ? " " : "<br>");
+            return str;
+        };
 
-    const streamInterval = setInterval(() => {
-        if (leftStream) leftStream.innerHTML = generateCode();
-        if (rightStream) rightStream.innerHTML = generateCode();
-    }, 80);
+        const streamInterval = setInterval(() => {
+            if (leftStream) leftStream.innerHTML = generateCode();
+            if (rightStream) rightStream.innerHTML = generateCode();
+        }, 80);
 
-    // --- 第一階段：掃描中 (黃色) ---
-    setTimeout(() => {
-        if (bioLayer) bioLayer.classList.add('scanning-active');
-        const yellow = "#ffcc00";
-        if (statusText) { 
-            statusText.innerText = "警報：正在分析生物辨識特徵..."; // 原: WARNING: ANALYZING BIOMETRIC PATTERNS...
-            statusText.style.color = yellow; 
-        }
-        if (idInfo) { 
-            idInfo.innerText = "偵測神經脈衝頻率中..."; // 原: SENSING NEURAL FREQUENCY...
-            idInfo.style.color = yellow; 
-        }
-        if (mainScanner) mainScanner.style.borderColor = yellow;
-        if (scannerLine) { scannerLine.style.background = yellow; scannerLine.style.boxShadow = `0 0 20px ${yellow}`; }
-
-        // --- 第二階段：通過 (綠色) ---
         setTimeout(() => {
-            if (bioLayer) {
-                bioLayer.classList.remove('scanning-active');
-                bioLayer.style.backgroundColor = "rgba(51, 255, 51, 0.05)";
-            }
-            const green = "#33ff33";
+            if (bioLayer) bioLayer.classList.add('scanning-active');
+            const yellow = "#ffcc00";
             if (statusText) { 
-                statusText.innerText = "身分驗證成功：首席工程師"; // 原: IDENTITY VERIFIED: CHIEF ENGINEER
-                statusText.style.color = green; 
+                statusText.innerText = "警報：正在分析生物辨識特徵..."; 
+                statusText.style.color = yellow; 
             }
             if (idInfo) { 
-                idInfo.innerText = "授權存取 // 歡迎回來 SPARK-031"; // 原: ACCESS GRANTED // WELCOME SPARK-031
-                idInfo.style.color = green; 
+                idInfo.innerText = "偵測神經脈衝頻率中..."; 
+                idInfo.style.color = yellow; 
             }
-            if (mainScanner) mainScanner.style.borderColor = green;
-            if (scannerLine) { scannerLine.style.background = green; scannerLine.style.boxShadow = `0 0 20px ${green}`; }
+            if (mainScanner) mainScanner.style.borderColor = yellow;
+            if (scannerLine) { scannerLine.style.background = yellow; scannerLine.style.boxShadow = `0 0 20px ${yellow}`; }
 
-            if (accessSfx) { accessSfx.volume = 0.6; accessSfx.play().catch(e => { }); }
-            if (checkBtn) {
-                checkBtn.innerHTML = '<span class="check-icon"></span>存取授權成功'; // 修改按鈕文字
-                checkBtn.style.display = "block";
-                gsap.from(checkBtn, { scale: 0, opacity: 0, duration: 0.5, ease: "back.out" });
-            }
-
-            // --- 第三階段：開門 ---
             setTimeout(() => {
-                clearInterval(streamInterval);
-                if (bioLayer) gsap.to(bioLayer, { opacity: 0, duration: 1.2 });
-                if (doorSfx) { doorSfx.volume = 0.7; doorSfx.play().catch(e => { }); }
+                if (bioLayer) {
+                    bioLayer.classList.remove('scanning-active');
+                    bioLayer.style.backgroundColor = "rgba(51, 255, 51, 0.05)";
+                }
+                const green = "#33ff33";
+                if (statusText) { 
+                    statusText.innerText = "身分驗證成功：首席工程師"; 
+                    statusText.style.color = green; 
+                }
+                if (idInfo) { 
+                    idInfo.innerText = "授權存取 // 歡迎回來 SPARK-031"; 
+                    idInfo.style.color = green; 
+                }
+                if (mainScanner) mainScanner.style.borderColor = green;
+                if (scannerLine) { scannerLine.style.background = green; scannerLine.style.boxShadow = `0 0 20px ${green}`; }
 
-                gsap.to(".left-door", { x: "-100%", duration: 3.0, ease: "power2.inOut" });
-                gsap.to(".right-door", { x: "100%", duration: 3.0, ease: "power2.inOut", onComplete: () => {
-                    const doorCont = document.getElementById('lab-door-container');
-                    if (doorCont) doorCont.remove();
-                    if (bioLayer) bioLayer.remove();
-                    initLab();
-                }});
-            }, 3000);
-        }, 2500);
-    }, 1500);
-}
+                if (accessSfx) { accessSfx.volume = 0.6; accessSfx.play().catch(e => { }); }
+                if (checkBtn) {
+                    checkBtn.innerHTML = '<span class="check-icon"></span>存取授權成功'; 
+                    checkBtn.style.display = "block";
+                    gsap.from(checkBtn, { scale: 0, opacity: 0, duration: 0.5, ease: "back.out" });
+                }
+
+                setTimeout(() => {
+                    clearInterval(streamInterval);
+                    if (bioLayer) gsap.to(bioLayer, { opacity: 0, duration: 1.2 });
+                    if (doorSfx) { doorSfx.volume = 0.7; doorSfx.play().catch(e => { }); }
+
+                    gsap.to(".left-door", { x: "-100%", duration: 3.0, ease: "power2.inOut" });
+                    gsap.to(".right-door", { x: "100%", duration: 3.0, ease: "power2.inOut", onComplete: () => {
+                        if (doorCont) doorCont.remove();
+                        if (bioLayer) bioLayer.remove();
+                        
+                        // 寫入已看過通行證
+                        sessionStorage.setItem('introPlayed', 'true');
+                        
+                        initLab();
+                    }});
+                }, 3000);
+            }, 2500);
+        }, 1500);
+    }
 
     function initLab() {
         gsap.set(".lab-stage", { opacity: 1, display: "flex" });
@@ -1102,7 +1113,7 @@ function startAutomatedBioScan() {
                 gsap.to(activeWrapper, { translateZ: 25, duration: 0.3, overwrite: true });
             }
         }
-    } // <-- 補上這個大括號！
+    }
 
     function rotateCube() {
         if (cube) {
