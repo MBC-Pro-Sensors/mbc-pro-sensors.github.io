@@ -138,16 +138,22 @@
             background: #0a1520; color: var(--primary); padding: 2px 6px;
             border-radius: 3px; font-family: monospace; font-size: 0.85rem;
         }
-        .py-code {
-            background: #0a1520; color: #e0e0e0; padding: 1rem 1.5rem;
-            border-radius: 6px; font-family: monospace; font-size: 0.85rem;
-            overflow-x: auto; margin: 0.8rem 0; line-height: 1.6;
-            border: 1px solid rgba(10,186,181,0.2);
+
+        /* ── 圖片佔位區塊 ── */
+        .img-placeholder {
+            background: rgba(10,186,181,0.05);
+            border: 2px dashed rgba(10,186,181,0.25);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1rem 0;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            font-family: monospace;
         }
-        .py-code .kw { color: #ff6b35; }
-        .py-code .fn { color: #0ABAB5; }
-        .py-code .cm { color: #666; }
-        .py-code .str { color: #a0d020; }
+        .img-placeholder strong {
+            color: var(--primary);
+        }
 
         /* ── 下載按鈕 ── */
         .download-grid {
@@ -197,14 +203,14 @@
 
 <nav>
     <div class="nav-left">
-        <a href="sensors.html"><img src="mbc-pro-logo.png" alt="MBC Logo"></a>
-        <a href="sensors.html">&lt; 返回裝備庫</a>
+        <a href="../index.html"><img src="../mbc-pro-logo.png" alt="MBC Logo"></a>
+        <a href="../sensors.html">&lt; 返回裝備庫</a>
     </div>
 </nav>
 
 <section class="hero">
     <div class="badge">LNS-16-PRO · 競賽級</div>
-    <img src="lineSensor16.jpg" alt="循行者16路感應器" class="product-img">
+    <img src="../images/sensors/line16/product.jpg" alt="循行者16路感應器" class="product-img">
     <h1>循行者<span class="highlight">16路</span>感應器</h1>
     <p class="subtitle">
         LineSensor16 · 16 通道高密度光反射陣列<br>
@@ -238,6 +244,12 @@
         <h2>② 硬體接線</h2>
         <h3>就像連接樂高感應器一樣！</h3>
         <p>循行者使用標準的連接線，直接插上 SPIKE 或 EV3 主機，跟接樂高馬達完全一樣。</p>
+
+        <div class="img-placeholder">
+            <strong>📷 圖片位置：</strong>感應器連接主機示意圖<br>
+            請將圖片命名為 <code>connect.jpg</code> 放入 <code>images/sensors/line16/</code>
+        </div>
+
         <div class="step-grid">
             <div class="step-card"><div class="step-num">1</div><h4>找到連接孔</h4><p>感應器上的連接孔在側邊，跟樂高感應器一樣</p></div>
             <div class="step-card"><div class="step-num">2</div><h4>拿出連接線</h4><p>使用內附的標準連接線（或樂高原廠線）</p></div>
@@ -253,6 +265,12 @@
         <h3>什麼是校準？為什麼要做？</h3>
         <p>每一種地面（白紙、木板、比賽場地圖）反射的光量都不同。校準就是「讓感應器認識你的場地」，告訴它：「這個亮度是白色地面，那個亮度是黑色線。」</p>
         <div class="tip-box"><strong>比喻時間 🧠</strong><br>就像你換了新鞋子，要先走幾步適應腳感。校準就是讓機器人先「適應場地」，知道什麼叫亮、什麼叫暗。</div>
+
+        <div class="img-placeholder">
+            <strong>📷 圖片位置：</strong>校準按鈕與校準指示燈位置標示圖<br>
+            請將圖片命名為 <code>calib-button.jpg</code> 放入 <code>images/sensors/line16/</code>
+        </div>
+
         <h3>校準步驟（超簡單！）</h3>
         <div class="step-grid">
             <div class="step-card"><div class="step-num">1</div><h4>按下校準按鈕</h4><p>按住感應器上的校準按鈕（約 2~3 秒），直到校準指示燈亮起</p></div>
@@ -286,8 +304,19 @@
                 因此你在軟體中會看到 Infrared Sensor 的各種模式，請依照下方說明選擇對應的模式讀取資料。
             </div>
 
+            <div class="img-placeholder">
+                <strong>📷 圖片位置：</strong>EV3 軟體中 Infrared Sensor 選單截圖<br>
+                請將圖片命名為 <code>ev3-infrared-menu.png</code> 放入 <code>images/ui/</code>
+            </div>
+
             <h4>讀取線位置 — Proximity 模式</h4>
             <p>使用感應器積木，選擇 <strong>Proximity（接近）模式</strong>，讀取 <code>數值</code> 即可取得線位置。</p>
+
+            <div class="img-placeholder">
+                <strong>📷 圖片位置：</strong>EV3 Proximity 模式積木截圖<br>
+                請將圖片命名為 <code>ev3-proximity-block.png</code> 放入 <code>images/ui/</code>
+            </div>
+
             <table>
                 <tr><th>回傳值</th><th>範圍</th><th>說明</th></tr>
                 <tr><td>線位置</td><td>-16 ~ +16</td><td>0 = 表示黑線在正中央，負數表示黑線偏左邊，正數表示黑線偏右邊；±16 表示線在感應器最邊緣</td></tr>
@@ -295,6 +324,12 @@
 
             <h4>讀取 16 路光電反射值 — Beacon 模式</h4>
             <p>使用感應器積木，選擇 <strong>Beacon（信標）模式</strong>，讀取 <code>數值列表</code>（8 bytes）。</p>
+
+            <div class="img-placeholder">
+                <strong>📷 圖片位置：</strong>EV3 Beacon 模式積木截圖<br>
+                請將圖片命名為 <code>ev3-beacon-block.png</code> 放入 <code>images/ui/</code>
+            </div>
+
             <table>
                 <tr><th>Byte</th><th>內容</th><th>範圍</th><th>解碼方式</th></tr>
                 <tr><td>0</td><td>光電反射值0 + 1</td><td>11 ~ 99</td><td>十位數=通道0，個位數=通道1</td></tr>
@@ -310,6 +345,12 @@
 
             <h4>讀取位置 + 寬度 + 高解析度 — Remote 模式</h4>
             <p>使用感應器積木，選擇 <strong>Remote（遙控）模式</strong>，讀取 <code>數值列表</code>（4 bytes）。</p>
+
+            <div class="img-placeholder">
+                <strong>📷 圖片位置：</strong>EV3 Remote 模式積木截圖<br>
+                請將圖片命名為 <code>ev3-remote-block.png</code> 放入 <code>images/ui/</code>
+            </div>
+
             <table>
                 <tr><th>Byte</th><th>內容</th><th>範圍</th></tr>
                 <tr><td>0</td><td>黑線高解析度位置</td><td>-100 ~ +100</td></tr>
@@ -327,6 +368,12 @@
 
             <h4>讀取完整感應器資料</h4>
             <p>使用 <code>感應器積木</code> → 讀取數值列表（16 bytes）。</p>
+
+            <div class="img-placeholder">
+                <strong>📷 圖片位置：</strong>SPIKE App 感應器積木截圖<br>
+                請將圖片命名為 <code>spike-sensor-block.png</code> 放入 <code>images/ui/</code>
+            </div>
+
             <table>
                 <tr><th>Byte</th><th>內容</th><th>範圍</th><th>說明</th></tr>
                 <tr><td>0</td><td>黑線寬度</td><td>0 ~ 16</td><td>觸發感應器數量</td></tr>
@@ -348,6 +395,12 @@
 
             <h4>讀取感應器資料</h4>
             <p>使用 <code>感應器積木</code> → 讀取數值列表（8 bytes）。</p>
+
+            <div class="img-placeholder">
+                <strong>📷 圖片位置：</strong>Robot Inventor 感應器積木截圖<br>
+                請將圖片命名為 <code>ri-sensor-block.png</code> 放入 <code>images/ui/</code>
+            </div>
+
             <table>
                 <tr><th>Byte</th><th>內容</th><th>範圍</th><th>說明</th></tr>
                 <tr><td>0</td><td>黑線位置</td><td>0 ~ 32</td><td>實際值 = 讀取值 - 16（範圍 -16 ~ +16）</td></tr>
@@ -376,6 +429,12 @@
 
             <h4>圖控模式：反射光 + 位置（Mode 5）</h4>
             <p>讀取 8 bytes。資料內容為 <code>(黑線位置+16) × 100 + 黑線寬度</code> 的編碼值。</p>
+
+            <div class="img-placeholder">
+                <strong>📷 圖片位置：</strong>pyBricks Mode 5 圖控積木截圖<br>
+                請將圖片命名為 <code>pybricks-mode5-block.png</code> 放入 <code>images/ui/</code>
+            </div>
+
             <table>
                 <tr><th>Byte</th><th>內容</th><th>說明</th></tr>
                 <tr><td>0, 2, 4</td><td>低 byte</td><td>編碼值的低位元組</td></tr>
@@ -386,6 +445,12 @@
 
             <h4>圖控模式：環境光 + 位置寬度（Mode 7）</h4>
             <p>讀取 8 bytes，包含黑線與白線的完整位置與寬度。</p>
+
+            <div class="img-placeholder">
+                <strong>📷 圖片位置：</strong>pyBricks Mode 7 圖控積木截圖<br>
+                請將圖片命名為 <code>pybricks-mode7-block.png</code> 放入 <code>images/ui/</code>
+            </div>
+
             <table>
                 <tr><th>Byte</th><th>內容</th><th>範圍</th></tr>
                 <tr><td>0</td><td>黑線位置</td><td>0 ~ 32（實際 = 讀取值 - 16）</td></tr>
@@ -398,6 +463,12 @@
 
             <h4>最強模式：一次讀取全部資料（Mode 9）</h4>
             <p>MicroPython 專用，使用 <code>hub.port.X.device.mode(9)</code> 讀取 16 bytes 完整資料。</p>
+
+            <div class="img-placeholder">
+                <strong>📷 圖片位置：</strong>pyBricks Mode 9 程式碼截圖<br>
+                請將圖片命名為 <code>pybricks-mode9-code.png</code> 放入 <code>images/ui/</code>
+            </div>
+
             <table>
                 <tr><th>Byte</th><th>內容</th><th>範圍</th><th>解碼說明</th></tr>
                 <tr><td>0</td><td>光電反射值1 + 0</td><td>每路 0~15</td><td>bit[7:4]=通道1, bit[3:0]=通道0</td></tr>
@@ -424,6 +495,11 @@
     <!-- ⑤ 硬體指示燈與按鈕說明 -->
     <div class="section">
         <h2>⑤ 硬體指示燈與按鈕說明</h2>
+
+        <div class="img-placeholder">
+            <strong>📷 圖片位置：</strong>感應器 LED 陣列與按鈕位置標示圖<br>
+            請將圖片命名為 <code>led-array.jpg</code> 放入 <code>images/sensors/line16/</code>
+        </div>
 
         <table>
             <tr><th>元件</th><th>行為</th><th>說明</th></tr>
@@ -481,13 +557,13 @@
         <h3>範例程式下載</h3>
         <p>以下範例程式涵蓋各平台的使用方式，下載後可直接開啟使用：</p>
         <div class="download-grid">
-            <a href="examples/ev3-line16.ev3" class="download-btn">📥 EV3<br>範例 (.ev3)</a>
-            <a href="examples/spike-line16.llsp" class="download-btn">📥 SPIKE App<br>積木範例 (.llsp)</a>
-            <a href="examples/pybricks-line16-mode9.py" class="download-btn">📥 pyBricks<br>Mode 9 完整範例 (.py)</a>
-            <a href="examples/pybricks-line16-lib.py" class="download-btn">📥 pyBricks<br>圖控 lib.py (.py)</a>
+            <a href="../examples/line16/ev3/line16-demo.ev3" class="download-btn">📥 EV3<br>範例 (.ev3)</a>
+            <a href="../examples/line16/spike/line16-demo.llsp" class="download-btn">📥 SPIKE App<br>積木範例 (.llsp)</a>
+            <a href="../examples/line16/pybricks/line16-mode9.py" class="download-btn">📥 pyBricks<br>Mode 9 完整範例 (.py)</a>
+            <a href="../examples/line16/pybricks/line16-lib.py" class="download-btn">📥 pyBricks<br>圖控 lib.py (.py)</a>
         </div>
         <p style="font-size:0.85rem; color:#666;">
-            （範例檔案請放到 GitHub repo 的 <code>/examples/</code> 資料夾中，連結會自動生效）
+            （範例檔案請放入 <code>examples/line16/</code> 對應資料夾，連結會自動生效）
         </p>
     </div>
 
