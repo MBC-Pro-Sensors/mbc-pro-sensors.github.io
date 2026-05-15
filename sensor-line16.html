@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>循行者16路感應器 | LineSensor16</title>
+    <style>
+        /* ==========================================
+           深色科技風全域樣式
+        ========================================== */
+        :root {
+            --primary: #0ABAB5;
+            --accent: #ff6b35;
+            --bg-dark: #050a10;
+            --bg-card: rgba(15, 25, 35, 0.7);
+            --border: rgba(10, 186, 181, 0.3);
+            --text: #e0e0e0;
+            --text-dim: #aaa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text);
+            font-family: 'Segoe UI', 'Noto Sans TC', sans-serif;
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+
+        /* ── 背景效果 ── */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background:
+                repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(10, 186, 181, 0.03) 50px),
+                repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(10, 186, 181, 0.03) 50px);
+            z-index: -1;
+            pointer-events: none;
+        }
+        .vignette {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 30%, #050a10 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ── 導覽列 ── */
+        nav {
+            background: rgba(5, 10, 16, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 12px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        nav .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        nav img {
+            height: 35px;
+            filter: drop-shadow(0 0 5px var(--primary));
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-family: monospace;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+        nav a:hover {
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary);
+        }
+        nav .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        nav .nav-links a {
+            padding: 6px 12px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        nav .nav-links a:hover {
+            border-color: var(--primary);
+        }
+        .nav-student-link { color: var(--accent) !important; }
+        .nav-student-link:hover { border-color: var(--accent) !important; text-shadow: 0 0 10px var(--accent) !important; }
+
+        /* ── 主視覺區 ── */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem 3rem;
+            background: linear-gradient(135deg, #0f1720 0%, #050a10 100%);
+            border-bottom: 1px solid #1a2a3a;
+        }
+        .hero .badge {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            padding: 0.3rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            font-family: monospace;
+        }
+        .hero h1 {
+            font-size: 2.8rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+        .hero h1 .highlight {
+            color: var(--primary);
+        }
+        .hero .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            margin-bottom: 2.5rem;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+        .hero .product-img {
+            width: 280px;
+            height: 280px;
+            object-fit: contain;
+            margin: 0 auto 2rem;
+            display: block;
+            filter: drop-shadow(0 0 30px rgba(10, 186, 181, 0.2));
+        }
+
+        /* ── 雙入口按鈕 ── */
+        .hero .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .cta-btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+        .btn-student {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-teacher {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        .btn-teacher:hover {
+            background: var(--primary);
+            color: #000;
+        }
+
+        /* ── 內容區容器 ── */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        .section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        .section h2 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section h2.student-heading {
+            color: var(--accent);
+        }
+        .section h3 {
+            color: #fff;
+            margin: 1.5rem 0 0.5rem;
+            font-size: 1.1rem;
+        }
+        .section p, .section li {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+        .section ul, .section ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .section ul li, .section ol li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* ── 步驟卡片 ── */
+        .step-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .step-card {
+            background: rgba(10, 186, 181, 0.05);
+            border: 1px solid rgba(10, 186, 181, 0.15);
+            border-radius: 8px;
+            padding: 1.2rem;
+            text-align: center;
+        }
+        .step-card .step-num {
+            display: inline-block;
+            width: 36px;
+            height: 36px;
+            line-height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #000;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        .step-card .step-num.student-step {
+            background: var(--accent);
+            color: #fff;
+        }
+        .step-card h4 {
+            color: #fff;
+            margin-bottom: 0.3rem;
+            font-size: 0.95rem;
+        }
+        .step-card p {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        /* ── 提示框 ── */
+        .tip-box {
+            background: rgba(255, 107, 53, 0.08);
+            border-left: 3px solid var(--accent);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .tip-box strong {
+            color: var(--accent);
+        }
+        .info-box {
+            background: rgba(10, 186, 181, 0.08);
+            border-left: 3px solid var(--primary);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .info-box strong {
+            color: var(--primary);
+        }
+
+        /* ── 常見問題 ── */
+        .faq-item {
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 1rem 0;
+        }
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        .faq-q {
+            color: #fff;
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+            font-size: 0.95rem;
+        }
+        .faq-a {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        /* ── 頁尾 ── */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #020508;
+            border-top: 1px solid #111;
+            font-family: monospace;
+            color: #555;
+            font-size: 0.8rem;
+            margin-top: 3rem;
+        }
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* ── 分隔線 ── */
+        .divider {
+            border: none;
+            border-top: 1px solid rgba(10, 186, 181, 0.2);
+            margin: 3rem 0;
+            position: relative;
+        }
+        .divider::after {
+            content: '◆';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-dark);
+            padding: 0 15px;
+            color: var(--primary);
+            font-size: 0.7rem;
+        }
+
+        /* ── 手機版 ── */
+        @media screen and (max-width: 768px) {
+            .hero h1 { font-size: 1.8rem; }
+            .hero .product-img { width: 200px; height: 200px; }
+            .cta-btn { padding: 0.8rem 1.5rem; font-size: 0.95rem; }
+            .container { padding: 1.5rem 1rem; }
+            .section { padding: 1.2rem; }
+            nav .nav-links { gap: 8px; }
+            nav .nav-links a { font-size: 0.75rem; padding: 4px 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-grid"></div>
+    <div class="vignette"></div>
+
+    <!-- ========== 導覽列 ========== -->
+    <nav>
+        <div class="nav-left">
+            <a href="sensors.html">
+                <img src="mbc-pro-logo.png" alt="MBC Logo">
+            </a>
+            <a href="sensors.html">&lt; 返回裝備庫</a>
+        </div>
+        <div class="nav-links">
+            <a href="#student" class="nav-student-link">🎓 學生上手區</a>
+            <a href="#teacher">📚 教師備課區</a>
+        </div>
+    </nav>
+
+    <!-- ========== 主視覺區 ========== -->
+    <section class="hero">
+        <div class="badge">LNS-16-PRO · 競賽級</div>
+        <img src="lineSensor16.jpg" alt="循行者16路感應器" class="product-img">
+        <h1>
+            循行者<span class="highlight">16路</span>感應器
+        </h1>
+        <p class="subtitle">
+            LineSensor16 · 16 通道高密度光反射陣列<br>
+            一鍵校準 · SPIKE / EV3 即插即用 · 循線競賽終極方案
+        </p>
+        <div class="cta-buttons">
+            <a href="#student" class="cta-btn btn-student">🎓 我是學生，開始上手</a>
+            <a href="#teacher" class="cta-btn btn-teacher">📚 我是老師，看備課指引</a>
+        </div>
+    </section>
+
+    <!-- ========== 內容區 ========== -->
+    <div class="container">
+
+        <!-- ========================================
+             🎓 學生上手區
+        ========================================= -->
+        <div class="section" id="student">
+            <h2 class="student-heading">🎓 學生上手區</h2>
+            <p>歡迎！這頁會帶你一步一步學會使用循行者16路感應器。別擔心，超簡單的！</p>
+        </div>
+
+        <!-- 1. 認識循行者 -->
+        <div class="section">
+            <h2 class="student-heading">① 認識循行者</h2>
+            <h3>它是什麼？</h3>
+            <p>
+                循行者是一排 <strong>16 顆光感應器</strong>，像機器人的「腳底感官」，能偵測地面的亮暗。<br>
+                把它裝在機器人底部，機器人就能知道：「喔！我現在壓在黑線上了嗎？還是偏離了？」
+            </p>
+
+            <h3>比喻時間 🧠</h3>
+            <div class="tip-box">
+                <strong>想像你在矇著眼睛走路……</strong><br>
+                你只能用腳底感受「這裡是地毯？還是木頭地板？」來判斷方向。<br>
+                循行者就是機器人的腳底感覺——它同時有 16 根腳趾頭！每一根都在問：「這裡亮嗎？暗嗎？」
+            </div>
+
+            <h3>它能做什麼？</h3>
+            <ul>
+                <li><strong>循線前進</strong>：讓機器人沿著地上的黑色軌跡走</li>
+                <li><strong>判斷線的位置</strong>：知道黑線在機器人的正下方、左邊還是右邊</li>
+                <li><strong>測量線的寬度</strong>：感應器偵測到幾顆觸發，就是線有多粗</li>
+                <li><strong>高解析度定位</strong>：不只是「偏左」或「偏右」，而是精確到「偏移了多少」</li>
+            </ul>
+        </div>
+
+        <!-- 2. 硬體接線 -->
+        <div class="section">
+            <h2 class="student-heading">② 硬體接線</h2>
+            <h3>就像連接樂高感應器一樣！</h3>
+            <p>
+                循行者使用標準的連接線，直接插上 SPIKE 或 EV3 主機，跟接樂高馬達完全一樣。
+            </p>
+
+            <div class="step-grid">
+                <div class="step-card">
+                    <div class="step-num student-step">1</div>
+                    <h4>找到連接孔</h4>
+                    <p>感應器上的連接孔在側邊，跟樂高感應器一樣</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num student-step">2</div>
+                    <h4>拿出連接線</h4>
+                    <p>使用內附的標準連接線（或樂高原廠線）</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num student-step">3</div>
+                    <h4>插入主機</h4>
+                    <p>SPIKE 插任一 Port（A~F），EV3 插 1~4 號 Port</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num student-step">4</div>
+                    <h4>確認燈號</h4>
+                    <p>通電後感應器上的綠色 LED 會開始閃爍（心跳指示燈）</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>💡 小提醒</strong><br>
+                接線時不要用力硬插！連接頭有方向性，卡榫朝上，輕輕推進去就好。
+            </div>
+        </div>
+
+        <!-- 3. 校準教學 -->
+        <div class="section">
+            <h2 class="student-heading">③ 校準教學</h2>
+            <h3>什麼是校準？為什麼要做？</h3>
+            <p>
+                每一種地面（白紙、木板、比賽場地圖）反射的光量都不同。<br>
+                校準就是「讓感應器認識你的場地」，告訴它：「這個亮度是白色地面，那個亮度是黑色線。」
+            </p>
+
+            <div class="tip-box">
+                <strong>比喻時間 🧠</strong><br>
+                就像你換了新鞋子，要先走幾步適應腳感。<br>
+                校準就是讓機器人先「適應場地」，知道什麼叫亮、什麼叫暗。
+            </div>
+
+            <h3>校準步驟（超簡單！）</h3>
+            <div class="step-grid">
+                <div class="step-card">
+                    <div class="step-num student-step">1</div>
+                    <h4>按下校準按鈕</h4>
+                    <p>按住感應器上的校準按鈕（約 2~3 秒），直到校準指示燈亮起</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num student-step">2</div>
+                    <h4>開始掃描</h4>
+                    <p>指示燈亮起後，將感應器在場地黑線與白色區塊上來回移動</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num student-step">3</div>
+                    <h4>保持高度</h4>
+                    <p>感應器距離地面 <strong>0.5 ~ 1.2 公分</strong>，不要太高也不要貼地</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num student-step">4</div>
+                    <h4>等待完成</h4>
+                    <p>5 秒後校準指示燈熄滅，校準完成！數值已自動儲存</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>⚠ 校準注意事項</strong>
+                <ul style="margin-top:0.5rem;">
+                    <li>掃描時要同時覆蓋 <strong>最黑的黑線</strong> 和 <strong>最白的白色區域</strong></li>
+                    <li>高度請維持在 0.5~1.2 公分之間，太高會讀不準</li>
+                    <li>校準完成後，數值會自動存入感應器記憶體，下次開機不用重做（除非換場地）</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 4. 程式範例下載 -->
+        <div class="section">
+            <h2 class="student-heading">④ 程式範例下載</h2>
+            <p>
+                我們準備好了現成的程式，下載後打開就能用！不用從零開始寫。
+            </p>
+            <ul>
+                <li>📥 <a href="examples/spike-line16.llsp" style="color:var(--primary);">SPIKE App 積木範例 (.llsp)</a></li>
+                <li>📥 <a href="examples/pybricks-line16.py" style="color:var(--primary);">pyBricks Python 範例 (.py)</a></li>
+                <li>📥 <a href="examples/ev3-line16.ev3" style="color:var(--primary);">EV3 範例 (.ev3)</a></li>
+            </ul>
+            <p style="font-size:0.85rem; color:#666;">
+                （範例檔案請放到 GitHub repo 的 <code>/examples/</code> 資料夾中，連結會自動生效）
+            </p>
+        </div>
+
+        <!-- 5. 常見問題排解 -->
+        <div class="section" id="faq">
+            <h2 class="student-heading">⑤ 問題排解 FAQ</h2>
+            <p style="color:var(--text-dim); margin-bottom:1rem;">
+                大部分問題都是因為「跳過說明書」造成的——請先確認你已經做完上面步驟！
+            </p>
+
+            <div class="faq-item">
+                <div class="faq-q">❓ 感應器插上去沒反應？</div>
+                <div class="faq-a">
+                    → 先確認綠色 LED 有沒有在閃爍（心跳指示燈）。<br>
+                    → 如果沒閃：檢查連接線是否插緊，換一個 Port 試試。<br>
+                    → 如果換 Port 也沒反應：換一條連接線交叉測試。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">❓ 機器人沿著線走一直晃來晃去？</div>
+                <div class="faq-a">
+                    → 最常見原因：<strong>還沒校準</strong>。請回到步驟③重新校準。<br>
+                    → 如果已校準但還是晃：檢查感應器高度，太近或太遠都會不準。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">❓ 校準完還是讀不到線？</div>
+                <div class="faq-a">
+                    → 確認校準時有掃到「最黑」和「最白」的區域。<br>
+                    → 檢查場地光線是否均勻（強光直射或陰影會影響判讀）。<br>
+                    → 確認感應器高度在 0.5~1.2 公分範圍內。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">❓ 程式範例下載後打不開？</div>
+                <div class="faq-a">
+                    → .llsp 檔請用 LEGO SPIKE App 開啟。<br>
+                    → .py 檔請用 pyBricks 或任何文字編輯器開啟。<br>
+                    → .ev3 檔請用 LEGO MINDSTORMS EV3 軟體開啟。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-q">❓ 感應器上的紅色 LED 亮了？</div>
+                <div class="faq-a">
+                    → 紅色 LED 是錯誤指示燈。請先確認是否已完成校準。<br>
+                    → 如果校準後仍亮紅燈，請重新校準一次。
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================
+             📚 教師備課區
+        ========================================= -->
+        <hr class="divider">
+
+        <div class="section" id="teacher">
+            <h2>📚 教師備課區</h2>
+            <p>以下內容提供給帶領課程的老師，包含教案架構、學習目標與課堂引導建議。</p>
+        </div>
+
+        <!-- 教案 45 分鐘版 -->
+        <div class="section">
+            <h2>📋 課程教案（45 分鐘版）</h2>
+
+            <table style="width:100%; border-collapse:collapse; margin:1rem 0; font-size:0.9rem;">
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                    <td style="padding:8px; color:var(--primary); font-weight:bold; width:30%;">適用年級</td>
+                    <td style="padding:8px;">國小四年級以上</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                    <td style="padding:8px; color:var(--primary); font-weight:bold;">先備知識</td>
+                    <td style="padding:8px;">會操作 SPIKE / EV3 主機開機與連接感應器</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                    <td style="padding:8px; color:var(--primary); font-weight:bold;">材料</td>
+                    <td style="padding:8px;">循行者16路感應器 ×1、SPIKE/EV3 主機 ×1、連接線 ×1、黑線場地圖</td>
+                </tr>
+            </table>
+
+            <h3>學習目標（可量化）</h3>
+            <ol>
+                <li>學生能正確將感應器連接至主機，並確認通電狀態</li>
+                <li>學生能獨立完成一鍵校準操作</li>
+                <li>學生能下載並執行範例程式，讓機器人沿黑線前進</li>
+                <li>學生能說出「感應器為什麼需要校準」的原因</li>
+            </ol>
+
+            <h3>教學流程</h3>
+            <table style="width:100%; border-collapse:collapse; margin:1rem 0; font-size:0.9rem;">
+                <thead>
+                    <tr style="border-bottom:2px solid var(--primary);">
+                        <th style="padding:8px; text-align:left;">時間</th>
+                        <th style="padding:8px; text-align:left;">環節</th>
+                        <th style="padding:8px; text-align:left;">內容</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                        <td style="padding:8px;">5 分鐘</td>
+                        <td style="padding:8px;">引起動機</td>
+                        <td style="padding:8px;">播放循線機器人競賽影片，提問：「機器人怎麼知道要沿著線走？」</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                        <td style="padding:8px;">5 分鐘</td>
+                        <td style="padding:8px;">認識感應器</td>
+                        <td style="padding:8px;">展示循行者，說明 16 路光反射陣列原理，用「腳底感覺」比喻</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                        <td style="padding:8px;">5 分鐘</td>
+                        <td style="padding:8px;">硬體接線</td>
+                        <td style="padding:8px;">示範連接，強調「像接樂高一樣」，提醒卡榫方向</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                        <td style="padding:8px;">10 分鐘</td>
+                        <td style="padding:8px;">校準操作</td>
+                        <td style="padding:8px;">示範一鍵校準，說明高度 0.5~1.2cm，讓每位學生輪流操作</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                        <td style="padding:8px;">15 分鐘</td>
+                        <td style="padding:8px;">程式實作</td>
+                        <td style="padding:8px;">下載範例，讓機器人跑黑線，觀察結果</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px;">5 分鐘</td>
+                        <td style="padding:8px;">總結討論</td>
+                        <td style="padding:8px;">回顧學習重點，問：「如果沒校準會怎樣？」</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 教師提問引導 -->
+        <div class="section">
+            <h2>💬 課堂提問引導範例</h2>
+
+            <div class="info-box">
+                <strong>🔍 認識階段</strong>
+                <ul style="margin-top:0.5rem;">
+                    <li>「你覺得機器人用什麼方法知道自己在黑線上？」</li>
+                    <li>「如果你閉著眼睛，只能用一根手指頭摸地板，你能判斷自己在線上面嗎？」</li>
+                    <li>「那如果有 16 根手指頭呢？會不會更準？」</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <strong>🔍 校準階段</strong>
+                <ul style="margin-top:0.5rem;">
+                    <li>「為什麼要先讓感應器看過黑色和白色？」</li>
+                    <li>「如果換了一個場地（例如從白紙換成木桌），還需要重新校準嗎？」</li>
+                    <li>「感應器拿太高或太低會發生什麼事？」</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <strong>🔍 反思階段</strong>
+                <ul style="margin-top:0.5rem;">
+                    <li>「如果你的機器人一直偏離黑線，你第一個要檢查什麼？」</li>
+                    <li>「16 路跟 5 路感應器有什麼不同？什麼情況需要用 16 路？」</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 評量標準 -->
+        <div class="section">
+            <h2>📊 評量標準</h2>
+            <table style="width:100%; border-collapse:collapse; margin:1rem 0; font-size:0.9rem;">
+                <thead>
+                    <tr style="border-bottom:2px solid var(--primary);">
+                        <th style="padding:8px; text-align:left;">等級</th>
+                        <th style="padding:8px; text-align:left;">標準</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                        <td style="padding:8px;">⭐ 優秀</td>
+                        <td style="padding:8px;">獨立完成接線、校準、程式執行。能說出校準原理並幫助同學。</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                        <td style="padding:8px;">✅ 通過</td>
+                        <td style="padding:8px;">能在引導下完成接線與校準，機器人能正常循線。</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px;">🔄 加油</td>
+                        <td style="padding:8px;">需協助才能完成接線或校準，對原理理解較模糊。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 常見錯誤預防（教師版） -->
+        <div class="section">
+            <h2>🛡️ 常見錯誤預防（教師指引）</h2>
+            <div class="tip-box">
+                <strong>課前先提醒學生：</strong>
+                <ol style="margin-top:0.5rem;">
+                    <li><strong>不要跳過校準！</strong>90% 的「感應器壞掉」其實是沒校準。</li>
+                    <li><strong>連接線有方向</strong>，卡榫朝上，硬插會壞。</li>
+                    <li><strong>高度是關鍵</strong>，太低會拖地、太高會讀不到，0.5~1.2cm 是最佳範圍。</li>
+                    <li><strong>場地光線要均勻</strong>，避免窗戶強光直射或人影遮擋。</li>
+                    <li><strong>換場地就要重新校準</strong>，舊的校準值不適用新場地。</li>
+                </ol>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========== 頁尾 ========== -->
+    <footer>
+        <p>© 2026 MBC Robotics · 循行者16路感應器 LineSensor16</p>
+        <p style="margin-top:0.3rem;">
+            網站架設於 <a href="https://github.com" target="_blank">GitHub Pages</a> ·
+            範例檔案請至 <a href="https://github.com">GitHub repo /examples/</a> 下載
+        </p>
+    </footer>
+
+</body>
+</html>
