@@ -1,1 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>循行者16路感應器 | LineSensor16</title>
+    <style>
+        :root {
+            --primary: #0ABAB5;
+            --accent: #ff6b35;
+            --bg-dark: #050a10;
+            --bg-card: rgba(15, 25, 35, 0.7);
+            --border: rgba(10, 186, 181, 0.3);
+            --text: #e0e0e0;
+            --text-dim: #aaa;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text);
+            font-family: 'Segoe UI', 'Noto Sans TC', sans-serif;
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+        .bg-grid {
+            position: fixed; inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(10,186,181,0.03) 50px),
+                        repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(10,186,181,0.03) 50px);
+            z-index: -1; pointer-events: none;
+        }
+        .vignette {
+            position: fixed; inset: 0;
+            background: radial-gradient(circle at center, transparent 30%, #050a10 100%);
+            z-index: -1; pointer-events: none;
+        }
+        nav {
+            background: rgba(5,10,16,0.85); backdrop-filter: blur(10px);
+            padding: 12px 5%; display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 1px solid var(--primary);
+            position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 10px;
+        }
+        nav .nav-left { display: flex; align-items: center; gap: 15px; }
+        nav img { height: 35px; filter: drop-shadow(0 0 5px var(--primary)); }
+        nav a {
+            color: white; text-decoration: none; font-weight: bold;
+            font-family: monospace; letter-spacing: 1px; transition: 0.3s; font-size: 0.9rem;
+        }
+        nav a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+        .hero {
+            text-align: center; padding: 4rem 2rem 3rem;
+            background: linear-gradient(135deg, #0f1720 0%, #050a10 100%);
+            border-bottom: 1px solid #1a2a3a;
+        }
+        .hero .badge {
+            display: inline-block; background: var(--accent); color: #fff;
+            padding: 0.3rem 1.2rem; border-radius: 20px; font-size: 0.85rem;
+            letter-spacing: 2px; margin-bottom: 1rem; font-family: monospace;
+        }
+        .hero h1 { font-size: 2.8rem; color: #fff; margin-bottom: 0.5rem; letter-spacing: 2px; }
+        .hero h1 .highlight { color: var(--primary); }
+        .hero .subtitle { font-size: 1.1rem; color: var(--text-dim); margin-bottom: 1.5rem; font-family: monospace; letter-spacing: 1px; }
+        .hero .product-img {
+            width: 280px; height: 280px; object-fit: contain;
+            margin: 0 auto 1.5rem; display: block;
+            filter: drop-shadow(0 0 30px rgba(10,186,181,0.2));
+        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; }
+        .section {
+            margin-bottom: 2.5rem; padding: 2rem;
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+        }
+        .section h2 {
+            color: var(--accent); font-size: 1.4rem;
+            margin-bottom: 0.5rem; letter-spacing: 1px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .section h3 { color: #fff; margin: 1.5rem 0 0.5rem; font-size: 1.1rem; }
+        .section p, .section li { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 0.5rem; }
+        .section ul, .section ol { padding-left: 1.5rem; margin-bottom: 1rem; }
 
+        /* ── 特性卡片 ── */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem;
+            margin: 1rem 0;
+        }
+        .feature-card {
+            background: rgba(10,186,181,0.04);
+            border: 1px solid rgba(10,186,181,0.15);
+            border-radius: 10px;
+            padding: 1.5rem 1.2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%; transform: translateX(-50%);
+            width: 0; height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        .feature-card:hover::before { width: 100%; }
+        .feature-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 25px rgba(10,186,181,0.15);
+            transform: translateY(-4px);
+        }
+        .feature-card .f-icon { font-size: 2.2rem; margin-bottom: 0.6rem; display: block; }
+        .feature-card .f-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+            letter-spacing: 1px;
+        }
+        .feature-card .f-label {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            line-height: 1.4;
+        }
+
+        /* ── 主機選擇卡片 ── */
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 1.5rem 0;
+            max-width: 750px;
+        }
+        .platform-card {
+            background: rgba(10,186,181,0.04);
+            border: 2px solid rgba(10,186,181,0.2);
+            border-radius: 16px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        .platform-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 40px rgba(10,186,181,0.25);
+            transform: translateY(-8px);
+            background: rgba(10,186,181,0.08);
+        }
+        .platform-card .p-icon {
+            font-size: 4rem;
+            line-height: 1;
+        }
+        .platform-card .p-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.4rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+        .platform-card .p-desc {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+        .platform-card .p-arrow {
+            margin-top: 0.5rem;
+            color: var(--primary);
+            font-family: monospace;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            border: 1px solid var(--primary);
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        .platform-card:hover .p-arrow {
+            background: var(--primary);
+            color: #000;
+        }
+
+        /* ── 通用元件 ── */
+        .step-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem; margin: 1rem 0;
+        }
+        .step-card {
+            background: rgba(255,107,53,0.05); border: 1px solid rgba(255,107,53,0.15);
+            border-radius: 8px; padding: 1.2rem; text-align: center;
+        }
+        .step-card .step-num {
+            display: inline-block; width: 36px; height: 36px; line-height: 36px;
+            border-radius: 50%; background: var(--accent); color: #fff;
+            font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem;
+        }
+        .step-card h4 { color: #fff; margin-bottom: 0.3rem; font-size: 0.95rem; }
+        .step-card p { font-size: 0.85rem; color: var(--text-dim); }
+        .tip-box {
+            background: rgba(255,107,53,0.08); border-left: 3px solid var(--accent);
+            padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0;
+        }
+        .tip-box strong { color: var(--accent); }
+        .info-box {
+            background: rgba(10,186,181,0.08); border-left: 3px solid var(--primary);
+            padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0;
+        }
+        .info-box strong { color: var(--primary); }
+        .faq-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 1rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-q { color: #fff; font-weight: bold; margin-bottom: 0.3rem; font-size: 0.95rem; }
+        .faq-a { color: var(--text-dim); font-size: 0.9rem; }
+
+        table {
+            width: 100%; border-collapse: collapse; margin: 0.8rem 0;
+            font-size: 0.9rem;
+        }
+        table th {
+            background: rgba(10,186,181,0.1); color: var(--primary);
+            padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border);
+        }
+        table td {
+            padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-dim);
+        }
+        table td:first-child { color: #fff; font-family: monospace; white-space: nowrap; }
+
+        footer {
+            text-align: center; padding: 20px; background: #020508;
+            border-top: 1px solid #111; font-family: monospace;
+            color: #555; font-size: 0.8rem; margin-top: 3rem;
+        }
+        footer a { color: var(--primary); text-decoration: none; }
+
+        @media screen and (max-width: 900px) {
+            .feature-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media screen and (max-width: 600px) {
+            .hero h1 { font-size: 1.8rem; }
+            .hero .product-img { width: 200px; height: 200px; }
+            .container { padding: 1.5rem 1rem; }
+            .section { padding: 1.2rem; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .platform-grid { grid-template-columns: 1fr; max-width: 100%; }
+            table { font-size: 0.78rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="vignette"></div>
+
+<nav>
+    <div class="nav-left">
+        <a href="../../index.html"><img src="../../mbc-pro-logo.png" alt="MBC Logo"></a>
+        <a href="../../sensors.html">&lt; 返回裝備庫</a>
+    </div>
+</nav>
+
+<!-- ========== ① 主視覺 ========== -->
+<section class="hero">
+    <div class="badge">LNS-16-PRO · 競賽級</div>
+    <img src="../../images/sensors/line16/product.jpg" alt="循行者16路感應器" class="product-img">
+    <h1>循行者<span class="highlight">16路</span>感應器</h1>
+    <p class="subtitle">
+        LineSensor16 · 16 通道高密度光反射陣列<br>
+        一鍵校準 · SPIKE / EV3 即插即用 · 循線競賽終極方案
+    </p>
+</section>
+
+<div class="container">
+
+    <!-- ========== ② 核心特性 ========== -->
+    <div class="section">
+        <h2>核心特性</h2>
+        <p style="color:var(--text-dim); margin-bottom:1rem;">循行者內建智能算法，接上主機就能直接讀取以下資料，不需要自己寫複雜的影像處理程式。</p>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <span class="f-icon">🎯</span>
+                <div class="f-value">-16 ~ +16</div>
+                <div class="f-label">精確線位置<br>0=正中，負=偏左，正=偏右</div>
+            </div>
+            <div class="feature-card">
+                <span class="f-icon">🔬</span>
+                <div class="f-value">-100 ~ +100</div>
+                <div class="f-label">高解析度位置<br>更細膩的偏移量，適合精準控制</div>
+            </div>
+            <div class="feature-card">
+                <span class="f-icon">📏</span>
+                <div class="f-value">0 ~ 16</div>
+                <div class="f-label">線寬度偵測<br>知道有幾顆感測元件看到黑線</div>
+            </div>
+            <div class="feature-card">
+                <span class="f-icon">👁️</span>
+                <div class="f-value">16 通道</div>
+                <div class="f-label">獨立光電數值<br>每顆感測元件都能個別讀取</div>
+            </div>
+            <div class="feature-card">
+                <span class="f-icon">🧱</span>
+                <div class="f-value">EV3</div>
+                <div class="f-label">支援 LEGO MINDSTORMS EV3<br>官方軟體 / Classroom / clev3r</div>
+            </div>
+            <div class="feature-card">
+                <span class="f-icon">🧱</span>
+                <div class="f-value">SPIKE</div>
+                <div class="f-label">支援 SPIKE Prime<br>教育版 / Robot Inventor / pyBricks</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== ③ 認識循行者 ========== -->
+    <div class="section">
+        <h2>認識循行者</h2>
+        <h3>它是什麼？</h3>
+        <p>循行者是一排 <strong>16 顆光感應器</strong>，像機器人的「腳底感官」，能偵測地面的亮暗。把它裝在機器人底部，機器人就能知道：「喔！我現在壓在黑線上了嗎？還是偏離了？」</p>
+        <h3>比喻時間 🧠</h3>
+        <div class="tip-box">
+            <strong>想像你在矇著眼睛走路……</strong><br>
+            你只能用腳底感受「這裡是地毯？還是木頭地板？」來判斷方向。循行者就是機器人的腳底感覺——它同時有 16 根腳趾頭！每一根都在問：「這裡亮嗎？暗嗎？」
+        </div>
+        <h3>它能做什麼？</h3>
+        <ul>
+            <li><strong>循線前進</strong>：讓機器人沿著地上的黑色軌跡走</li>
+            <li><strong>判斷線的位置</strong>：知道黑線在機器人的正下方、左邊還是右邊</li>
+            <li><strong>測量線的寬度</strong>：感應器偵測到幾顆觸發，就是線有多粗</li>
+            <li><strong>高解析度定位</strong>：不只是「偏左」或「偏右」，而是精確到「偏移了多少」</li>
+        </ul>
+    </div>
+
+    <!-- ========== ④ 硬體接線 ========== -->
+    <div class="section">
+        <h2>硬體接線</h2>
+        <h3>就像連接樂高感應器一樣！</h3>
+        <p>循行者使用標準的連接線，直接插上 SPIKE 或 EV3 主機，跟接樂高馬達完全一樣。</p>
+        <div class="step-grid">
+            <div class="step-card"><div class="step-num">1</div><h4>找到連接孔</h4><p>感應器上的連接孔在側邊，跟樂高感應器一樣</p></div>
+            <div class="step-card"><div class="step-num">2</div><h4>拿出連接線</h4><p>使用內附的標準連接線（或樂高原廠線）</p></div>
+            <div class="step-card"><div class="step-num">3</div><h4>插入主機</h4><p>SPIKE 插任一 Port（A~F），EV3 插 1~4 號 Port</p></div>
+            <div class="step-card"><div class="step-num">4</div><h4>確認燈號</h4><p>通電後感應器上的綠色 LED 會開始閃爍（心跳指示燈）</p></div>
+        </div>
+        <div class="info-box"><strong>💡 小提醒</strong><br>接線時不要用力硬插！連接頭有方向性，卡榫朝上，輕輕推進去就好。</div>
+    </div>
+
+    <!-- ========== ⑤ 校準教學 ========== -->
+    <div class="section">
+        <h2>校準教學</h2>
+        <h3>什麼是校準？為什麼要做？</h3>
+        <p>每一種地面（白紙、木板、比賽場地圖）反射的光量都不同。校準就是「讓感應器認識你的場地」，告訴它：「這個亮度是白色地面，那個亮度是黑色線。」</p>
+        <div class="tip-box"><strong>比喻時間 🧠</strong><br>就像你換了新鞋子，要先走幾步適應腳感。校準就是讓機器人先「適應場地」，知道什麼叫亮、什麼叫暗。</div>
+        <h3>校準步驟（超簡單！）</h3>
+        <div class="step-grid">
+            <div class="step-card"><div class="step-num">1</div><h4>按下校準按鈕</h4><p>按住感應器上的校準按鈕（約 2~3 秒），直到校準指示燈亮起</p></div>
+            <div class="step-card"><div class="step-num">2</div><h4>開始掃描</h4><p>指示燈亮起後，將感應器在場地黑線與白色區塊上來回移動</p></div>
+            <div class="step-card"><div class="step-num">3</div><h4>保持高度</h4><p>感應器距離地面 <strong>0.5 ~ 1.2 公分</strong>，不要太高也不要貼地</p></div>
+            <div class="step-card"><div class="step-num">4</div><h4>等待完成</h4><p>5 秒後校準指示燈熄滅，校準完成！數值已自動儲存</p></div>
+        </div>
+        <div class="info-box">
+            <strong>⚠ 校準注意事項</strong>
+            <ul style="margin-top:0.5rem;">
+                <li>掃描時要同時覆蓋 <strong>最黑的黑線</strong> 和 <strong>最白的白色區域</strong></li>
+                <li>高度請維持在 0.5~1.2 公分之間，太高會讀不準</li>
+                <li>校準完成後，數值會自動存入感應器記憶體，下次開機不用重做（除非換場地）</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ========== ⑥ 硬體指示燈與按鈕 ========== -->
+    <div class="section">
+        <h2>硬體指示燈與按鈕</h2>
+        <table>
+            <tr><th>元件</th><th>行為</th><th>說明</th></tr>
+            <tr><td>🟢 綠色 LED</td><td>每秒閃爍一次</td><td><strong>心跳指示燈</strong>：持續閃爍表示感應器正常運作中。</td></tr>
+            <tr><td>🔴 紅色 LED</td><td>通訊失敗時持續亮起</td><td><strong>通訊除錯指示燈</strong>：亮紅燈表示與主機通訊失敗。檢查連接線是否插緊。</td></tr>
+            <tr><td>🟡 校準指示燈</td><td>校準中亮起，完成熄滅</td><td><strong>校準狀態燈</strong>：亮起 = 校準進行中（5 秒），熄滅 = 完成或待命中。</td></tr>
+            <tr><td>🔘 校準按鈕</td><td>按住 2~3 秒後放開</td><td><strong>一鍵校準按鈕</strong>：按住直到校準燈亮起，5 秒內在黑線與白色區域來回移動。</td></tr>
+            <tr><td>💡 16 路 LED 陣列</td><td>即時顯示觸發狀態</td><td><strong>狀態顯示燈</strong>：燈亮 = 該通道偵測到黑線，可直觀看到黑線位置。</td></tr>
+        </table>
+        <div class="info-box">
+            <strong>💡 通電正常狀態檢查</strong>
+            <ul style="margin-top:0.5rem;">
+                <li>🟢 綠燈每秒閃爍 → 運作正常</li>
+                <li>🔴 紅燈熄滅 → 通訊正常</li>
+                <li>🟡 校準燈熄滅 → 待命中</li>
+                <li>💡 16 路 LED 依黑線位置亮起 → 感應中</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ========== ⑦ 選擇主機 ========== -->
+    <div class="section">
+        <h2>選擇你的主機</h2>
+        <p style="color:var(--text-dim); margin-bottom:1.5rem;">請先選擇你使用的是 EV3 還是 SPIKE 主機，我們會帶你到對應的軟體環境說明。</p>
+        <div class="platform-grid" style="margin: 1.5rem auto;">
+            <a href="ev3-official.html" class="platform-card">
+                <span class="p-icon">🧱</span>
+                <span class="p-name">EV3 主機</span>
+                <span class="p-desc">
+                    官方 EV3 軟體<br>
+                    Classroom App<br>
+                    clev3r<br>
+                    pyBricks
+                </span>
+                <span class="p-arrow">選擇 EV3 →</span>
+            </a>
+            <a href="spike-education.html" class="platform-card">
+                <span class="p-icon">🧱</span>
+                <span class="p-name">SPIKE 主機</span>
+                <span class="p-desc">
+                    SPIKE 教育版 App<br>
+                    Robot Inventor 家用版<br>
+                    pyBricks
+                </span>
+                <span class="p-arrow">選擇 SPIKE →</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- ========== ⑧ 通用提示 ========== -->
+    <div class="section">
+        <h2>通用提示</h2>
+        <h3>切換追蹤黑線或白線</h3>
+        <p>
+            感應器上電啟動時，<strong>按住校準按鈕再放開</strong>，即可切換追蹤模式：<br>
+            預設為 <strong>黑線模式</strong>（追蹤深色線），切換後變為 <strong>白線模式</strong>（追蹤淺色線）。
+        </p>
+        <p style="color:var(--text-dim); font-size:0.85rem;">
+            此設定會保留到下次重新上電。重新上電後會恢復為預設的黑線模式。
+        </p>
+    </div>
+
+    <!-- ========== ⑨ FAQ ========== -->
+    <div class="section">
+        <h2>常見問題 FAQ</h2>
+        <div class="faq-item"><div class="faq-q">❓ 感應器插上去沒反應？</div><div class="faq-a">→ 先確認綠色 LED 有沒有在閃爍。如果沒閃：檢查連接線是否插緊，換一個 Port 試試。換 Port 也沒反應：換一條連接線交叉測試。</div></div>
+        <div class="faq-item"><div class="faq-q">❓ 機器人沿著線走一直晃來晃去？</div><div class="faq-a">→ 最常見原因：<strong>還沒校準</strong>。請回到校準步驟重新校準。如果已校準但還是晃：檢查感應器高度是否在 0.5~1.2 公分。</div></div>
+        <div class="faq-item"><div class="faq-q">❓ 校準完還是讀不到線？</div><div class="faq-a">→ 確認校準時有掃到「最黑」和「最白」的區域。檢查場地光線是否均勻。確認感應器高度在 0.5~1.2 公分。</div></div>
+        <div class="faq-item"><div class="faq-q">❓ 不同 App 讀到的數值不一樣？</div><div class="faq-a">→ 教育版（黃色主機）和家用版（藍綠色主機）的回傳格式不同。請確認你用的是哪個版本，再參考對應的平台說明頁。</div></div>
+        <div class="faq-item"><div class="faq-q">❓ 紅色 LED 亮了怎麼辦？</div><div class="faq-a">→ 紅燈持續亮 = 與主機通訊失敗。檢查連接線是否插緊，或換一條線測試。如果仍亮紅燈，請聯絡我們。</div></div>
+    </div>
+
+</div>
+
+<footer>
+    <p>© 2026 MBC Robotics · 循行者16路感應器 LineSensor16</p>
+    <p style="margin-top:0.3rem;">網站架設於 <a href="https://github.com" target="_blank">GitHub Pages</a></p>
+</footer>
+
+</body>
+</html>
