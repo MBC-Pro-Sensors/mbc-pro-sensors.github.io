@@ -64,6 +64,28 @@
             margin: 0 auto 1.5rem; display: block;
             filter: drop-shadow(0 0 30px rgba(10,186,181,0.2));
         }
+
+        /* ── 快速跳轉按鈕區 ── */
+        .quick-jump {
+            text-align: center; padding: 1.5rem 2rem;
+            background: rgba(10,186,181,0.04);
+            border-bottom: 1px solid rgba(10,186,181,0.15);
+        }
+        .quick-jump span {
+            color: var(--text-dim); font-family: monospace;
+            letter-spacing: 1px; margin-right: 1rem;
+        }
+        .quick-jump a {
+            display: inline-block; padding: 0.6rem 1.8rem;
+            border: 2px solid var(--primary); border-radius: 8px;
+            color: var(--primary); text-decoration: none;
+            font-family: 'Orbitron', monospace; font-weight: bold;
+            letter-spacing: 2px; margin: 0.3rem 0.5rem; transition: 0.3s;
+        }
+        .quick-jump a:hover {
+            background: var(--primary); color: #000;
+        }
+
         .container { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; }
         .section {
             margin-bottom: 2.5rem; padding: 2rem;
@@ -274,6 +296,13 @@
     </p>
 </section>
 
+<!-- ========== 快速跳轉主機選擇 ========== -->
+<div class="quick-jump">
+    <span>選擇主機快速跳轉 →</span>
+    <a href="#platform-section">🧱 EV3 主機</a>
+    <a href="#platform-section">🧱 SPIKE 主機</a>
+</div>
+
 <div class="container">
 
     <!-- ========== ② 核心特性 ========== -->
@@ -393,7 +422,7 @@
     </div>
 
     <!-- ========== ⑦ 選擇主機 ========== -->
-    <div class="section">
+    <div class="section" id="platform-section">
         <h2>選擇你的主機</h2>
         <p style="color:var(--text-dim); margin-bottom:1.5rem;">請先選擇你使用的是 EV3 還是 SPIKE 主機，我們會帶你到對應的軟體環境說明。</p>
         <div class="platform-grid" style="margin: 1.5rem auto;">
