@@ -1,1 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV3 官方軟體 | 循行者16路</title>
+    <style>
+        :root {
+            --primary: #0ABAB5;
+            --accent: #ff6b35;
+            --bg-dark: #050a10;
+            --bg-card: rgba(15, 25, 35, 0.7);
+            --border: rgba(10, 186, 181, 0.3);
+            --text: #e0e0e0;
+            --text-dim: #aaa;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text);
+            font-family: 'Segoe UI', 'Noto Sans TC', sans-serif;
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+        .bg-grid {
+            position: fixed; inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(10,186,181,0.03) 50px),
+                        repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(10,186,181,0.03) 50px);
+            z-index: -1; pointer-events: none;
+        }
+        .vignette {
+            position: fixed; inset: 0;
+            background: radial-gradient(circle at center, transparent 30%, #050a10 100%);
+            z-index: -1; pointer-events: none;
+        }
+        nav {
+            background: rgba(5,10,16,0.85); backdrop-filter: blur(10px);
+            padding: 12px 5%; display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 1px solid var(--primary);
+            position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 10px;
+        }
+        nav .nav-left { display: flex; align-items: center; gap: 15px; }
+        nav img { height: 35px; filter: drop-shadow(0 0 5px var(--primary)); }
+        nav a {
+            color: white; text-decoration: none; font-weight: bold;
+            font-family: monospace; letter-spacing: 1px; transition: 0.3s; font-size: 0.9rem;
+        }
+        nav a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+        .sub-nav {
+            background: rgba(5,10,16,0.6); backdrop-filter: blur(8px);
+            padding: 8px 5%; display: flex; gap: 6px; flex-wrap: wrap;
+            border-bottom: 1px solid rgba(10,186,181,0.2);
+            position: sticky; top: 58px; z-index: 99;
+        }
+        .sub-nav a {
+            color: var(--text-dim); text-decoration: none;
+            font-family: monospace; font-size: 0.8rem;
+            padding: 5px 12px; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px; transition: 0.3s;
+        }
+        .sub-nav a:hover, .sub-nav a.active {
+            color: #000; background: var(--primary); border-color: var(--primary);
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+        .section {
+            margin-bottom: 2rem; padding: 1.8rem;
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+        }
+        .section h2 {
+            color: var(--accent); font-size: 1.3rem;
+            margin-bottom: 0.3rem; letter-spacing: 1px;
+        }
+        .section h3 { color: #fff; margin: 1.2rem 0 0.5rem; font-size: 1.05rem; }
+        .section p, .section li { color: var(--text-dim); font-size: 0.93rem; margin-bottom: 0.4rem; }
+        .platform-badge {
+            display: inline-block; background: rgba(10,186,181,0.2);
+            color: var(--primary); padding: 4px 12px; border-radius: 12px;
+            font-size: 0.8rem; font-family: monospace; margin-bottom: 0.8rem;
+        }
+        table {
+            width: 100%; border-collapse: collapse; margin: 0.8rem 0;
+            font-size: 0.88rem;
+        }
+        table th {
+            background: rgba(10,186,181,0.1); color: var(--primary);
+            padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border);
+        }
+        table td {
+            padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-dim);
+        }
+        table td:first-child { color: #fff; font-family: monospace; white-space: nowrap; }
+        .info-box {
+            background: rgba(10,186,181,0.08); border-left: 3px solid var(--primary);
+            padding: 1rem 1.5rem; margin: 1rem 0; border-radius: 0 8px 8px 0;
+        }
+        .info-box strong { color: var(--primary); }
+        .img-placeholder {
+            background: rgba(10,186,181,0.05);
+            border: 2px dashed rgba(10,186,181,0.25);
+            border-radius: 8px; padding: 1.2rem; text-align: center;
+            margin: 1rem 0; color: var(--text-dim); font-size: 0.85rem; font-family: monospace;
+        }
+        .img-placeholder strong { color: var(--primary); }
+        .download-btn {
+            display: inline-block; text-align: center;
+            padding: 0.8rem 1.5rem; border: 1px solid var(--primary);
+            border-radius: 6px; color: var(--primary); text-decoration: none;
+            font-family: monospace; letter-spacing: 1px; transition: 0.3s; font-size: 0.9rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+        }
+        .download-btn:hover { background: var(--primary); color: #000; }
+        footer {
+            text-align: center; padding: 20px; background: #020508;
+            border-top: 1px solid #111; font-family: monospace;
+            color: #555; font-size: 0.8rem; margin-top: 2rem;
+        }
+        @media screen and (max-width: 600px) {
+            .container { padding: 1rem 0.8rem; }
+            .section { padding: 1.2rem; }
+            table { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
 
+<div class="bg-grid"></div>
+<div class="vignette"></div>
+
+<nav>
+    <div class="nav-left">
+        <a href="../../index.html"><img src="../../mbc-pro-logo.png" alt="MBC Logo"></a>
+        <a href="index.html">&lt; 返回循行者介紹</a>
+    </div>
+</nav>
+
+<!-- ========== EV3 系列子導覽 ========== -->
+<div class="sub-nav">
+    <a href="ev3-official.html" class="active">官方 EV3 軟體</a>
+    <a href="ev3-classroom.html">Classroom App</a>
+    <a href="ev3-clev3r.html">clev3r</a>
+    <a href="ev3-pybricks.html">pyBricks</a>
+</div>
+
+<div class="container">
+
+    <!-- ========== 軟體資訊 ========== -->
+    <div class="section">
+        <span class="platform-badge">EV3 主機 · 官方軟體</span>
+        <h2>LEGO MINDSTORMS EV3</h2>
+        <p>適用於 LEGO MINDSTORMS EV3 官方軟體（LabView 風格介面）。循行者在此環境中會模擬成 <strong>Infrared Sensor（紅外線感應器）</strong>。</p>
+        <div class="info-box">
+            <strong>📌 模擬說明</strong><br>
+            在 EV3 官方軟體中，感應器會被辨識為 Infrared Sensor。請依照下方說明選擇 Proximity / Beacon / Remote 模式來讀取不同資料。
+        </div>
+    </div>
+
+    <!-- ========== Proximity 模式 ========== -->
+    <div class="section">
+        <h3>讀取線位置 — Proximity 模式</h3>
+        <p>使用感應器積木，選擇 <strong>Proximity（接近）模式</strong>，讀取 <code>數值</code> 即可取得線位置。</p>
+
+        <div class="img-placeholder">
+            <strong>📷 圖片位置：</strong>EV3 Proximity 模式積木截圖<br>
+            請將圖片命名為 <code>ev3-proximity-block.png</code> 放入 <code>images/ui/</code>
+        </div>
+
+        <table>
+            <tr><th>回傳值</th><th>範圍</th><th>說明</th></tr>
+            <tr><td>線位置</td><td>-16 ~ +16</td><td>0 = 黑線在正中央，負數偏左，正數偏右；±16 表示線在感應器最邊緣</td></tr>
+        </table>
+    </div>
+
+    <!-- ========== Beacon 模式 ========== -->
+    <div class="section">
+        <h3>讀取 16 路光電反射值 — Beacon 模式</h3>
+        <p>使用感應器積木，選擇 <strong>Beacon（信標）模式</strong>，讀取 <code>數值列表</code>（8 bytes）。</p>
+
+        <div class="img-placeholder">
+            <strong>📷 圖片位置：</strong>EV3 Beacon 模式積木截圖<br>
+            請將圖片命名為 <code>ev3-beacon-block.png</code> 放入 <code>images/ui/</code>
+        </div>
+
+        <table>
+            <tr><th>Byte</th><th>內容</th><th>範圍</th><th>解碼方式</th></tr>
+            <tr><td>0</td><td>光電反射值0 + 1</td><td>11 ~ 99</td><td>十位數=通道0，個位數=通道1</td></tr>
+            <tr><td>1</td><td>光電反射值2 + 3</td><td>11 ~ 99</td><td>十位數=通道2，個位數=通道3</td></tr>
+            <tr><td>2</td><td>光電反射值4 + 5</td><td>11 ~ 99</td><td>十位數=通道4，個位數=通道5</td></tr>
+            <tr><td>3</td><td>光電反射值6 + 7</td><td>11 ~ 99</td><td>十位數=通道6，個位數=通道7</td></tr>
+            <tr><td>4</td><td>光電反射值8 + 9</td><td>11 ~ 99</td><td>十位數=通道8，個位數=通道9</td></tr>
+            <tr><td>5</td><td>光電反射值10 + 11</td><td>11 ~ 99</td><td>十位數=通道10，個位數=通道11</td></tr>
+            <tr><td>6</td><td>光電反射值12 + 13</td><td>11 ~ 99</td><td>十位數=通道12，個位數=通道13</td></tr>
+            <tr><td>7</td><td>光電反射值14 + 15</td><td>11 ~ 99</td><td>十位數=通道14，個位數=通道15</td></tr>
+        </table>
+        <p style="font-size:0.85rem; color:var(--text-dim);">每路光電反射值已被量化為 1~9（1=最暗，9=最亮），兩路合併為一個兩位數。</p>
+    </div>
+
+    <!-- ========== Remote 模式 ========== -->
+    <div class="section">
+        <h3>讀取位置 + 寬度 + 高解析度 — Remote 模式</h3>
+        <p>使用感應器積木，選擇 <strong>Remote（遙控）模式</strong>，讀取 <code>數值列表</code>（4 bytes）。</p>
+
+        <div class="img-placeholder">
+            <strong>📷 圖片位置：</strong>EV3 Remote 模式積木截圖<br>
+            請將圖片命名為 <code>ev3-remote-block.png</code> 放入 <code>images/ui/</code>
+        </div>
+
+        <table>
+            <tr><th>Byte</th><th>內容</th><th>範圍</th></tr>
+            <tr><td>0</td><td>黑線高解析度位置</td><td>-100 ~ +100</td></tr>
+            <tr><td>1</td><td>黑線寬度</td><td>0 ~ 16</td></tr>
+            <tr><td>2</td><td>白線高解析度位置</td><td>-100 ~ +100</td></tr>
+            <tr><td>3</td><td>白線寬度</td><td>0 ~ 16</td></tr>
+        </table>
+    </div>
+
+    <!-- ========== 範例下載 ========== -->
+    <div class="section">
+        <h3>📥 範例程式下載</h3>
+        <a href="../../examples/line16/ev3/line16-demo.ev3" class="download-btn">📥 EV3 範例 (.ev3)</a>
+        <p style="font-size:0.85rem; color:#666; margin-top:0.5rem;">下載後用 EV3 官方軟體開啟即可使用。</p>
+    </div>
+
+</div>
+
+<footer>
+    <p>© 2026 MBC Robotics · 循行者16路感應器 LineSensor16</p>
+</footer>
+
+</body>
+</html>
