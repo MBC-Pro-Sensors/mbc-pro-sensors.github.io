@@ -1,1 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pyBricks for EV3 | 循行者16路</title>
+    <style>
+        :root {
+            --primary: #0ABAB5;
+            --accent: #ff6b35;
+            --bg-dark: #050a10;
+            --bg-card: rgba(15, 25, 35, 0.7);
+            --border: rgba(10, 186, 181, 0.3);
+            --text: #e0e0e0;
+            --text-dim: #aaa;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text);
+            font-family: 'Segoe UI', 'Noto Sans TC', sans-serif;
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+        .bg-grid {
+            position: fixed; inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(10,186,181,0.03) 50px),
+                        repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(10,186,181,0.03) 50px);
+            z-index: -1; pointer-events: none;
+        }
+        .vignette {
+            position: fixed; inset: 0;
+            background: radial-gradient(circle at center, transparent 30%, #050a10 100%);
+            z-index: -1; pointer-events: none;
+        }
+        nav {
+            background: rgba(5,10,16,0.85); backdrop-filter: blur(10px);
+            padding: 12px 5%; display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 1px solid var(--primary);
+            position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 10px;
+        }
+        nav .nav-left { display: flex; align-items: center; gap: 15px; }
+        nav img { height: 35px; filter: drop-shadow(0 0 5px var(--primary)); }
+        nav a {
+            color: white; text-decoration: none; font-weight: bold;
+            font-family: monospace; letter-spacing: 1px; transition: 0.3s; font-size: 0.9rem;
+        }
+        nav a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+        .sub-nav {
+            background: rgba(5,10,16,0.6); backdrop-filter: blur(8px);
+            padding: 8px 5%; display: flex; gap: 6px; flex-wrap: wrap;
+            border-bottom: 1px solid rgba(10,186,181,0.2);
+            position: sticky; top: 58px; z-index: 99;
+        }
+        .sub-nav a {
+            color: var(--text-dim); text-decoration: none;
+            font-family: monospace; font-size: 0.8rem;
+            padding: 5px 12px; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px; transition: 0.3s;
+        }
+        .sub-nav a:hover, .sub-nav a.active {
+            color: #000; background: var(--primary); border-color: var(--primary);
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+        .section {
+            margin-bottom: 2rem; padding: 1.8rem;
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+        }
+        .section h2 {
+            color: var(--accent); font-size: 1.3rem;
+            margin-bottom: 0.3rem; letter-spacing: 1px;
+        }
+        .section h3 { color: #fff; margin: 1.2rem 0 0.5rem; font-size: 1.05rem; }
+        .section p, .section li { color: var(--text-dim); font-size: 0.93rem; margin-bottom: 0.4rem; }
+        .platform-badge {
+            display: inline-block; background: rgba(10,186,181,0.2);
+            color: var(--primary); padding: 4px 12px; border-radius: 12px;
+            font-size: 0.8rem; font-family: monospace; margin-bottom: 0.8rem;
+        }
+        table {
+            width: 100%; border-collapse: collapse; margin: 0.8rem 0;
+            font-size: 0.88rem;
+        }
+        table th {
+            background: rgba(10,186,181,0.1); color: var(--primary);
+            padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border);
+        }
+        table td {
+            padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-dim);
+        }
+        table td:first-child { color: #fff; font-family: monospace; white-space: nowrap; }
+        .info-box {
+            background: rgba(10,186,181,0.08); border-left: 3px solid var(--primary);
+            padding: 1rem 1.5rem; margin: 1rem 0; border-radius: 0 8px 8px 0;
+        }
+        .info-box strong { color: var(--primary); }
+        .img-placeholder {
+            background: rgba(10,186,181,0.05);
+            border: 2px dashed rgba(10,186,181,0.25);
+            border-radius: 8px; padding: 1.2rem; text-align: center;
+            margin: 1rem 0; color: var(--text-dim); font-size: 0.85rem; font-family: monospace;
+        }
+        .img-placeholder strong { color: var(--primary); }
+        .py-code {
+            background: #0a1520; color: #e0e0e0; padding: 1rem 1.5rem;
+            border-radius: 6px; font-family: monospace; font-size: 0.85rem;
+            overflow-x: auto; margin: 0.8rem 0; line-height: 1.6;
+            border: 1px solid rgba(10,186,181,0.2);
+        }
+        .py-code .kw { color: #ff6b35; }
+        .py-code .fn { color: #0ABAB5; }
+        .py-code .cm { color: #666; }
+        .py-code .str { color: #a0d020; }
+        .download-btn {
+            display: inline-block; text-align: center;
+            padding: 0.8rem 1.5rem; border: 1px solid var(--primary);
+            border-radius: 6px; color: var(--primary); text-decoration: none;
+            font-family: monospace; letter-spacing: 1px; transition: 0.3s; font-size: 0.9rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+        }
+        .download-btn:hover { background: var(--primary); color: #000; }
+        footer {
+            text-align: center; padding: 20px; background: #020508;
+            border-top: 1px solid #111; font-family: monospace;
+            color: #555; font-size: 0.8rem; margin-top: 2rem;
+        }
+        @media screen and (max-width: 600px) {
+            .container { padding: 1rem 0.8rem; }
+            .section { padding: 1.2rem; }
+            table { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
 
+<div class="bg-grid"></div>
+<div class="vignette"></div>
+
+<nav>
+    <div class="nav-left">
+        <a href="../../index.html"><img src="../../mbc-pro-logo.png" alt="MBC Logo"></a>
+        <a href="index.html">&lt; 返回循行者介紹</a>
+    </div>
+</nav>
+
+<!-- ========== EV3 系列子導覽 ========== -->
+<div class="sub-nav">
+    <a href="ev3-official.html">官方 EV3 軟體</a>
+    <a href="ev3-classroom.html">Classroom App</a>
+    <a href="ev3-clev3r.html">clev3r</a>
+    <a href="ev3-pybricks.html" class="active">pyBricks</a>
+</div>
+
+<div class="container">
+
+    <!-- ========== 軟體資訊 ========== -->
+    <div class="section">
+        <span class="platform-badge">EV3 主機 · MicroPython</span>
+        <h2>pyBricks for EV3</h2>
+        <p>適用於在 EV3 主機上安裝 pyBricks 韌體的使用者。支援圖控 lib.py 模式與 MicroPython Mode 9 完整資料讀取。</p>
+        <div class="info-box">
+            <strong>📌 說明</strong><br>
+            在 EV3 主機上使用 pyBricks 時，循行者一樣會模擬成 Infrared Sensor。可使用以下 Mode 讀取不同資料。
+        </div>
+    </div>
+
+    <!-- ========== Mode 5 ========== -->
+    <div class="section">
+        <h3>圖控模式：反射光 + 位置（Mode 5）</h3>
+        <p>讀取 8 bytes。資料內容為 <code>(黑線位置+16) × 100 + 黑線寬度</code> 的編碼值。</p>
+
+        <div class="img-placeholder">
+            <strong>📷 圖片位置：</strong>pyBricks Mode 5 圖控積木截圖<br>
+            請將圖片命名為 <code>pybricks-mode5-block.png</code> 放入 <code>images/ui/</code>
+        </div>
+
+        <table>
+            <tr><th>Byte</th><th>內容</th><th>說明</th></tr>
+            <tr><td>0, 2, 4</td><td>低 byte</td><td>編碼值的低位元組</td></tr>
+            <tr><td>1, 3, 5</td><td>高 byte</td><td>編碼值的高位元組</td></tr>
+            <tr><td>6~7</td><td>保留</td><td>0</td></tr>
+        </table>
+        <p style="font-size:0.85rem; color:var(--text-dim);">黑線位置範圍 -16~+16，寬度 0~16。範例程式會幫你自動解碼。</p>
+    </div>
+
+    <!-- ========== Mode 7 ========== -->
+    <div class="section">
+        <h3>圖控模式：環境光 + 位置寬度（Mode 7）</h3>
+        <p>讀取 8 bytes，包含黑線與白線的完整位置與寬度。</p>
+
+        <div class="img-placeholder">
+            <strong>📷 圖片位置：</strong>pyBricks Mode 7 圖控積木截圖<br>
+            請將圖片命名為 <code>pybricks-mode7-block.png</code> 放入 <code>images/ui/</code>
+        </div>
+
+        <table>
+            <tr><th>Byte</th><th>內容</th><th>範圍</th></tr>
+            <tr><td>0</td><td>黑線位置</td><td>0 ~ 32（實際 = 讀取值 - 16）</td></tr>
+            <tr><td>1</td><td>黑線寬度</td><td>0 ~ 16</td></tr>
+            <tr><td>2</td><td>白線位置</td><td>0 ~ 32（實際 = 讀取值 - 16）</td></tr>
+            <tr><td>3</td><td>白線寬度</td><td>0 ~ 16</td></tr>
+            <tr><td>4~5</td><td>白線組合值</td><td>16-bit 低位元組優先</td></tr>
+            <tr><td>6~7</td><td>黑線組合值</td><td>16-bit 低位元組優先</td></tr>
+        </table>
+    </div>
+
+    <!-- ========== Mode 9 ========== -->
+    <div class="section">
+        <h3>最強模式：一次讀取全部資料（Mode 9）</h3>
+        <p>MicroPython 專用，使用 <code>hub.port.X.device.mode(9)</code> 讀取 16 bytes 完整資料。</p>
+
+        <div class="img-placeholder">
+            <strong>📷 圖片位置：</strong>pyBricks Mode 9 程式碼截圖<br>
+            請將圖片命名為 <code>pybricks-mode9-code.png</code> 放入 <code>images/ui/</code>
+        </div>
+
+        <table>
+            <tr><th>Byte</th><th>內容</th><th>範圍</th><th>解碼說明</th></tr>
+            <tr><td>0</td><td>光電反射值1 + 0</td><td>每路 0~15</td><td>bit[7:4]=通道1, bit[3:0]=通道0</td></tr>
+            <tr><td>1</td><td>光電反射值3 + 2</td><td>每路 0~15</td><td>bit[7:4]=通道3, bit[3:0]=通道2</td></tr>
+            <tr><td>2</td><td>光電反射值5 + 4</td><td>每路 0~15</td><td>bit[7:4]=通道5, bit[3:0]=通道4</td></tr>
+            <tr><td>3</td><td>光電反射值7 + 6</td><td>每路 0~15</td><td>bit[7:4]=通道7, bit[3:0]=通道6</td></tr>
+            <tr><td>4</td><td>光電反射值9 + 8</td><td>每路 0~15</td><td>bit[7:4]=通道9, bit[3:0]=通道8</td></tr>
+            <tr><td>5</td><td>光電反射值11 + 10</td><td>每路 0~15</td><td>bit[7:4]=通道11, bit[3:0]=通道10</td></tr>
+            <tr><td>6</td><td>光電反射值13 + 12</td><td>每路 0~15</td><td>bit[7:4]=通道13, bit[3:0]=通道12</td></tr>
+            <tr><td>7</td><td>光電反射值15 + 14</td><td>每路 0~15</td><td>bit[7:4]=通道15, bit[3:0]=通道14</td></tr>
+            <tr><td>8</td><td>黑線位置</td><td>0 ~ 32</td><td>實際值 = 讀取值 - 16（-16 ~ +16）</td></tr>
+            <tr><td>9</td><td>黑線寬度</td><td>0 ~ 16</td><td>觸發感應器數量</td></tr>
+            <tr><td>10</td><td>黑線高解析度位置</td><td>0 ~ 200</td><td>0=最左, 100=中央, 200=最右</td></tr>
+            <tr><td>11</td><td>白線位置</td><td>0 ~ 32</td><td>實際值 = 讀取值 - 16（-16 ~ +16）</td></tr>
+            <tr><td>12</td><td>白線寬度</td><td>0 ~ 16</td><td>觸發感應器數量</td></tr>
+            <tr><td>13</td><td>白線高解析度位置</td><td>0 ~ 200</td><td>0=最左, 100=中央, 200=最右</td></tr>
+            <tr><td>14~15</td><td>保留</td><td>0</td><td>—</td></tr>
+        </table>
+
+        <div class="py-code">
+<span class="kw">from</span> pybricks.hubs <span class="kw">import</span> EV3Brick<br>
+<span class="kw">from</span> pybricks.parameters <span class="kw">import</span> Port<br><br>
+<span class="fn">hub</span> = EV3Brick()<br><br>
+<span class="cm"># 讀取 Mode 9 全部資料</span><br>
+<span class="fn">data</span> = <span class="fn">hub</span>.port.S1.device.mode(<span class="str">9</span>)<br><br>
+<span class="cm"># 解析黑線位置（Byte 8）</span><br>
+<span class="fn">blackPos</span> = <span class="fn">data</span>[<span class="str">8</span>] - <span class="str">16</span>  <span class="cm"># → 範圍 -16 ~ +15</span><br><br>
+<span class="cm"># 解析高解析度黑線位置（Byte 10）</span><br>
+<span class="fn">blackHR</span> = <span class="fn">data</span>[<span class="str">10</span>]  <span class="cm"># → 範圍 0 ~ 200</span>
+        </div>
+    </div>
+
+    <!-- ========== 範例下載 ========== -->
+    <div class="section">
+        <h3>📥 範例程式下載</h3>
+        <a href="../../examples/line16/pybricks/line16-lib.py" class="download-btn">📥 圖控 lib.py (.py)</a>
+        <a href="../../examples/line16/pybricks/line16-mode9.py" class="download-btn">📥 Mode 9 完整範例 (.py)</a>
+        <p style="font-size:0.85rem; color:#666; margin-top:0.5rem;">下載後在 pyBricks 環境中開啟即可使用。</p>
+    </div>
+
+</div>
+
+<footer>
+    <p>© 2026 MBC Robotics · 循行者16路感應器 LineSensor16</p>
+</footer>
+
+</body>
+</html>
