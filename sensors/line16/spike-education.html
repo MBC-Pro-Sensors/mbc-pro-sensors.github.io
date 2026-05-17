@@ -1,1 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPIKE Education | 循行者16路</title>
+    <style>
+        :root {
+            --primary: #0ABAB5;
+            --accent: #ff6b35;
+            --bg-dark: #050a10;
+            --bg-card: rgba(15, 25, 35, 0.7);
+            --border: rgba(10, 186, 181, 0.3);
+            --text: #e0e0e0;
+            --text-dim: #aaa;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text);
+            font-family: 'Segoe UI', 'Noto Sans TC', sans-serif;
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+        .bg-grid {
+            position: fixed; inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(10,186,181,0.03) 50px),
+                        repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(10,186,181,0.03) 50px);
+            z-index: -1; pointer-events: none;
+        }
+        .vignette {
+            position: fixed; inset: 0;
+            background: radial-gradient(circle at center, transparent 30%, #050a10 100%);
+            z-index: -1; pointer-events: none;
+        }
+        nav {
+            background: rgba(5,10,16,0.85); backdrop-filter: blur(10px);
+            padding: 12px 5%; display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 1px solid var(--primary);
+            position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 10px;
+        }
+        nav .nav-left { display: flex; align-items: center; gap: 15px; }
+        nav img { height: 35px; filter: drop-shadow(0 0 5px var(--primary)); }
+        nav a {
+            color: white; text-decoration: none; font-weight: bold;
+            font-family: monospace; letter-spacing: 1px; transition: 0.3s; font-size: 0.9rem;
+        }
+        nav a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+        .sub-nav {
+            background: rgba(5,10,16,0.6); backdrop-filter: blur(8px);
+            padding: 8px 5%; display: flex; gap: 6px; flex-wrap: wrap;
+            border-bottom: 1px solid rgba(10,186,181,0.2);
+            position: sticky; top: 58px; z-index: 99;
+        }
+        .sub-nav a {
+            color: var(--text-dim); text-decoration: none;
+            font-family: monospace; font-size: 0.8rem;
+            padding: 5px 12px; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px; transition: 0.3s;
+        }
+        .sub-nav a:hover, .sub-nav a.active {
+            color: #000; background: var(--primary); border-color: var(--primary);
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+        .section {
+            margin-bottom: 2rem; padding: 1.8rem;
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+        }
+        .section h2 {
+            color: var(--accent); font-size: 1.3rem;
+            margin-bottom: 0.3rem; letter-spacing: 1px;
+        }
+        .section h3 { color: #fff; margin: 1.2rem 0 0.5rem; font-size: 1.05rem; }
+        .section p, .section li { color: var(--text-dim); font-size: 0.93rem; margin-bottom: 0.4rem; }
+        .platform-badge {
+            display: inline-block; background: rgba(10,186,181,0.2);
+            color: var(--primary); padding: 4px 12px; border-radius: 12px;
+            font-size: 0.8rem; font-family: monospace; margin-bottom: 0.8rem;
+        }
+        table {
+            width: 100%; border-collapse: collapse; margin: 0.8rem 0;
+            font-size: 0.88rem;
+        }
+        table th {
+            background: rgba(10,186,181,0.1); color: var(--primary);
+            padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border);
+        }
+        table td {
+            padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-dim);
+        }
+        table td:first-child { color: #fff; font-family: monospace; white-space: nowrap; }
+        .info-box {
+            background: rgba(10,186,181,0.08); border-left: 3px solid var(--primary);
+            padding: 1rem 1.5rem; margin: 1rem 0; border-radius: 0 8px 8px 0;
+        }
+        .info-box strong { color: var(--primary); }
+        .img-placeholder {
+            background: rgba(10,186,181,0.05);
+            border: 2px dashed rgba(10,186,181,0.25);
+            border-radius: 8px; padding: 1.2rem; text-align: center;
+            margin: 1rem 0; color: var(--text-dim); font-size: 0.85rem; font-family: monospace;
+        }
+        .img-placeholder strong { color: var(--primary); }
+        .download-btn {
+            display: inline-block; text-align: center;
+            padding: 0.8rem 1.5rem; border: 1px solid var(--primary);
+            border-radius: 6px; color: var(--primary); text-decoration: none;
+            font-family: monospace; letter-spacing: 1px; transition: 0.3s; font-size: 0.9rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+        }
+        .download-btn:hover { background: var(--primary); color: #000; }
+        footer {
+            text-align: center; padding: 20px; background: #020508;
+            border-top: 1px solid #111; font-family: monospace;
+            color: #555; font-size: 0.8rem; margin-top: 2rem;
+        }
+        @media screen and (max-width: 600px) {
+            .container { padding: 1rem 0.8rem; }
+            .section { padding: 1.2rem; }
+            table { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
 
+<div class="bg-grid"></div>
+<div class="vignette"></div>
+
+<nav>
+    <div class="nav-left">
+        <a href="../../index.html"><img src="../../mbc-pro-logo.png" alt="MBC Logo"></a>
+        <a href="index.html">&lt; 返回循行者介紹</a>
+    </div>
+</nav>
+
+<!-- ========== SPIKE 系列子導覽 ========== -->
+<div class="sub-nav">
+    <a href="spike-education.html" class="active">SPIKE 教育版</a>
+    <a href="spike-ri.html">Robot Inventor</a>
+    <a href="spike-pybricks.html">pyBricks</a>
+</div>
+
+<div class="container">
+
+    <!-- ========== 軟體資訊 ========== -->
+    <div class="section">
+        <span class="platform-badge">SPIKE 主機 · 教育版黃色主機</span>
+        <h2>LEGO Education SPIKE 3.4.3</h2>
+        <p>適用於 SPIKE App 積木模式，教育版黃色主機。循行者在此環境中提供完整的 16 bytes 感應器資料。</p>
+    </div>
+
+    <!-- ========== 讀取資料 ========== -->
+    <div class="section">
+        <h3>讀取完整感應器資料</h3>
+        <p>使用 <code>感應器積木</code> → 讀取數值列表（16 bytes）。</p>
+
+        <div class="img-placeholder">
+            <strong>📷 圖片位置：</strong>SPIKE App 感應器積木截圖<br>
+            請將圖片命名為 <code>spike-sensor-block.png</code> 放入 <code>images/ui/</code>
+        </div>
+
+        <table>
+            <tr><th>Byte</th><th>內容</th><th>範圍</th><th>說明</th></tr>
+            <tr><td>0</td><td>黑線寬度</td><td>0 ~ 16</td><td>觸發感應器數量</td></tr>
+            <tr><td>1</td><td>黑線位置</td><td>0 ~ 32</td><td>實際值 = 讀取值 - 16（範圍 -16 ~ +16）</td></tr>
+            <tr><td>2~3</td><td>白線組合值</td><td>—</td><td>= (白線位置+16) × 100 + 白線寬度（16-bit 低位元組優先）</td></tr>
+            <tr><td>4</td><td>光電反射值0~3</td><td>每路 0~3</td><td>bit[7:6]=通道0, [5:4]=通道1, [3:2]=通道2, [1:0]=通道3</td></tr>
+            <tr><td>5</td><td>光電反射值4~7</td><td>每路 0~3</td><td>bit[7:6]=通道4, [5:4]=通道5, [3:2]=通道6, [1:0]=通道7</td></tr>
+            <tr><td>6</td><td>光電反射值8~11</td><td>每路 0~3</td><td>bit[7:6]=通道8, [5:4]=通道9, [3:2]=通道10, [1:0]=通道11</td></tr>
+            <tr><td>7</td><td>光電反射值12~15</td><td>每路 0~3</td><td>bit[7:6]=通道12, [5:4]=通道13, [3:2]=通道14, [1:0]=通道15</td></tr>
+            <tr><td>8~15</td><td>保留</td><td>0</td><td>—</td></tr>
+        </table>
+        <div class="info-box"><strong>💡 光電反射值 2-bit 解碼</strong><br>0 = 非常暗（黑線上），3 = 非常亮（白色地面）。每 byte 含 4 路，用位元移位取出：<code>值 = (byte >> shift) & 0x03</code>。<br>例如 Byte 4 的通道0 在 bit[7:6]：<code>通道0 = (byte4 >> 6) & 0x03</code></div>
+    </div>
+
+    <!-- ========== 範例下載 ========== -->
+    <div class="section">
+        <h3>📥 範例程式下載</h3>
+        <a href="../../examples/line16/spike/line16-demo.llsp" class="download-btn">📥 SPIKE 範例 (.llsp)</a>
+        <p style="font-size:0.85rem; color:#666; margin-top:0.5rem;">下載後用 LEGO Education SPIKE App 開啟即可使用。</p>
+    </div>
+
+</div>
+
+<footer>
+    <p>© 2026 MBC Robotics · 循行者16路感應器 LineSensor16</p>
+</footer>
+
+</body>
+</html>
