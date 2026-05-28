@@ -100,3 +100,149 @@ Please select your controller system first, then select your software environmen
     <p style="font-size: 1.1rem;">Arduino / ESP32 / Raspberry Pi / Custom Boards</p>
   </a>
 </div>
+
+---
+
+## 🧠 Core Data Features & Algorithms
+
+To achieve competition-level smoothness and stability, the onboard hardware processes all 16 raw reflection signals in the background with real-time calibration, binarization, and continuity filtering, producing four core data features:
+
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 25px 0;">
+  <div style="background: rgba(10,186,181,0.05); border: 1px solid rgba(10,186,181,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <h4 style="color: var(--theme-color); margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">📊 Absolute Physical Light Value (0 ~ 100)</h4>
+    <p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">Reflects the truest physical reflection intensity. <strong>100 = pure white (high reflectance), 0 = pure black (no reflectance)</strong>. This value remains physically accurate and does not invert when switching between black/white line modes. Ideal for building real-time bar graph visualization dashboards.</p>
+  </div>
+  <div style="background: rgba(242,194,0,0.05); border: 1px solid rgba(242,194,0,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <h4 style="color: var(--accent-color); margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">🎯 Sub-Pixel High-Resolution Smooth Position (0 ~ 200)</h4>
+    <p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">Uses high-precision geometric interpolation of adjacent sensor reflection intensities to output a <strong>super-smooth continuous position from 0 ~ 200 (100 = dead center)</strong>. Designed specifically for advanced PID control algorithms to completely eliminate micro-jitter.</p>
+  </div>
+  <div style="background: rgba(255,107,53,0.05); border: 1px solid rgba(255,107,53,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <h4 style="color: #ff6b35; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">📐 Feature Line Width & Binarized Matrix</h4>
+    <p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">Reports the number of currently triggered sensors (line width — useful for detecting intersections, T-junctions, and right angles), as well as the 0/1 binarized trigger state matrix of all 16 sensors for fine trajectory reconstruction.</p>
+  </div>
+  <div style="background: rgba(0,210,255,0.05); border: 1px solid rgba(0,210,255,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+    <h4 style="color: #00d2ff; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">🛡️ Boundary Defense & Anti-Derailment Memory</h4>
+    <p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">The system continuously monitors the physical light intensity of the leftmost and rightmost sensors, instantly detecting track splits or the robot's nose accidentally going off-track. Combined with a directional memory algorithm, it enables high-speed cornering without losing the line!</p>
+  </div>
+</div>
+
+<style>
+  @media (max-width: 768px) {
+    div[style*="grid-template-columns: repeat(2, 1fr)"] {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>
+
+---
+
+## 🚦 Hardware Indicator LEDs & Button
+
+To ensure excellent visual readability across all theme backgrounds, the sensor features a high-contrast, color-coded status dashboard. **Note: The heartbeat LED and the calibration LED are two physically separate, independent indicators!**
+
+<div style="display: flex; flex-direction: column; gap: 12px; margin: 20px 0;">
+  <div style="display: flex; align-items: center; gap: 15px; background: rgba(0, 255, 100, 0.06); border: 1px solid rgba(0, 255, 100, 0.25); border-radius: 8px; padding: 12px 15px;">
+    <span style="font-size: 1.5rem; filter: drop-shadow(0 0 5px rgba(0,255,100,0.5)); line-height: 1;">🟢</span>
+    <div style="flex: 1;">
+      <strong style="color: #00ff64; font-size: 1.05rem;">Green Heartbeat LED (near the socket)</strong>
+      <div style="color: #ddd; font-size: 0.95rem; margin-top: 4px; line-height: 1.5;">
+        <strong>Heartbeat Blinking</strong>: Flashes once per second — indicates the sensor is powered and the system is operating normally.
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 15px; background: rgba(0, 255, 100, 0.06); border: 1px solid rgba(0, 255, 100, 0.25); border-radius: 8px; padding: 12px 15px;">
+    <span style="font-size: 1.5rem; filter: drop-shadow(0 0 5px rgba(0,255,100,0.5)); line-height: 1;">🟢</span>
+    <div style="flex: 1;">
+      <strong style="color: #00ff64; font-size: 1.05rem;">Green Calibration LED (near the calibration button)</strong>
+      <div style="color: #ddd; font-size: 0.95rem; margin-top: 4px; line-height: 1.5;">
+        <strong>Calibration Steady-On</strong>: Stays lit for 5 seconds after holding the button for 0.5 sec — indicates calibration is in progress. Turns off when calibration completes successfully.
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 15px; background: rgba(255, 50, 50, 0.06); border: 1px solid rgba(255, 50, 50, 0.25); border-radius: 8px; padding: 12px 15px;">
+    <span style="font-size: 1.5rem; filter: drop-shadow(0 0 5px rgba(255,50,50,0.5)); line-height: 1;">🔴</span>
+    <div style="flex: 1;">
+      <strong style="color: #ff4a4a; font-size: 1.05rem;">Red LED (Communication Debug Indicator)</strong>
+      <div style="color: #ddd; font-size: 0.95rem; margin-top: 4px; line-height: 1.5;">
+        <strong>Normal state</strong>: Off.<br>
+        <strong>Red LED steady-on</strong>: Indicates communication failure with the hub. Check that the cable is firmly connected, or try a different hub port / replacement cable.
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 15px; background: rgba(242, 194, 0, 0.06); border: 1px solid rgba(242, 194, 0, 0.25); border-radius: 8px; padding: 12px 15px;">
+    <span style="font-size: 1.5rem; filter: drop-shadow(0 0 5px rgba(242,194,0,0.5)); line-height: 1;">🔘</span>
+    <div style="flex: 1;">
+      <strong style="color: #f2c200; font-size: 1.05rem;">One-Click Calibration Button</strong>
+      <div style="color: #ddd; font-size: 0.95rem; margin-top: 4px; line-height: 1.5;">
+        Hold for <strong>0.5 seconds</strong> then release to enter automatic sweep calibration mode (green calibration LED stays on for 5 seconds).
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 15px; background: rgba(0, 210, 255, 0.06); border: 1px solid rgba(0, 210, 255, 0.25); border-radius: 8px; padding: 12px 15px;">
+    <span style="font-size: 1.5rem; filter: drop-shadow(0 0 5px rgba(0,210,255,0.5)); line-height: 1;">💡</span>
+    <div style="flex: 1;">
+      <strong style="color: #00d2ff; font-size: 1.05rem;">Onboard 16-Channel Status LED Array</strong>
+      <div style="color: #ddd; font-size: 0.95rem; margin-top: 4px; line-height: 1.5;">
+        <strong>Real-time trigger display</strong>: LED on = that channel detects a black line (black-line tracking mode). Provides an extremely intuitive view of the black line's absolute position relative to each channel from below.
+      </div>
+    </div>
+  </div>
+</div>
+
+---
+
+## ⚙️ General Tips
+
+### 🛠️ One-Click Auto Sweep Calibration
+
+To get the best comparison gain from all 16 photoelectric sensors, this product provides a simple and efficient auto-calibration system:
+*   **Trigger**: Hold the **🔘 Calibration Button for 0.5 seconds** until the **🟢 Green Calibration LED (near the calibration button)** stays steadily lit.
+*   **Procedure**: Within the **5-second window** while the green LED is on, sweep the robot's front across the black line and white ground area (make sure all sensors cross both the black line and the white surface).
+*   **Completion**: After 5 seconds, the **🟢 Green Calibration LED** turns off — calibration is complete, and the data is automatically saved to non-volatile memory asynchronously.
+
+### 🎨 Switch Between Black Line and White Line Tracking
+While the sensor is powered on, **hold the calibration button and then release** to toggle the tracking mode:
+Default is **Black Line Mode** (tracking dark lines). After switching, it becomes **White Line Mode** (tracking light lines).
+
+> **💡 Data Polarity Auto-Sync**: After switching tracking mode, the sensor's output reflection intensity and high-precision continuous position data **also automatically flip in polarity**. This means your program logic (e.g., PID line-following algorithm) requires absolutely zero modifications — it just works!
+> This setting persists until the next power cycle. After a power cycle, the sensor resets to the default black-line tracking mode.
+
+---
+
+## ❓ Frequently Asked Questions (FAQ)
+
+- **❓ Sensor plugged in but no response?**
+  → First check whether the **🟢 Green Heartbeat LED (near the socket)** is blinking. If there is no blinking at all, follow these steps in order:
+  1. Check that both ends of the connection cable are firmly plugged in.
+  2. Try a different port on the hub.
+  3. Swap to a different cable for cross-testing.
+  4. **Test the sensor on a different hub** to rule out a faulty port on your original hub.
+
+- **❓ Robot wobbles while following the line?**
+  → The most common cause: **not yet calibrated**, or calibration did not succeed. Return to the calibration steps and recalibrate.
+  *If already calibrated but still wobbling, check:*
+  1. Is the sensor height between **0.5 and 1.2 cm** above the ground?
+
+- **❓ Calibrated but still can't detect the line?**
+  → Make sure calibration covered both "the darkest black line" and "the whitest white area". Check that lighting is even and that sensor height is 0.5 to 1.2 cm.
+
+- **❓ Different apps return different values?**
+  → The Education Edition (yellow hub) and Home Edition (teal hub) return data in different formats. Confirm which version you are using and refer to the corresponding platform documentation page.
+
+- **❓ Red LED is staying on — what do I do?**
+  → **🔴 Red LED steady-on** means communication with the hub has failed. Check the cable connection, try a different port, or swap the cable. If the red LED remains on after changing ports, cables, and hubs, please contact our technical support.
+
+---
+
+### 🌐 Dedicated Online Support
+
+If you've tried all the above steps and still can't resolve the issue, please contact us anytime! To help our engineers pinpoint the problem as quickly as possible, please prepare the following:
+1. **📸 Video/Photo**: Record a short clip of your **robot running or the sensor indicator LED status** (so we can visually verify the signal lights and physical operation).
+2. **💻 Program**: Provide a screenshot of your **block program, project file (.lms / .ev3), or source code**.
+3. **💬 Contact Us**: Send the above to our technical support email, or directly message us via the official LINE support.
+
+Our professional R&D engineers will respond immediately to assist with online diagnosis and program tuning — fully committed to powering your success in every competition!
