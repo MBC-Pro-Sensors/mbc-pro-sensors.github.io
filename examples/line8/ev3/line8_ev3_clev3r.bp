@@ -1,0 +1,88 @@
+' ========================================================
+' Example: MBC Line8 - 3 Library Functions Demonstration
+' Author : MBC robotics
+' Date   : 2026.05
+' ========================================================
+folder "prjs""Line8_Clev3r_Demo"
+
+SENSOR_PORT = 4
+LCD.Clear()
+
+MotorB.SetReversPolarity()
+MotorC.SetDirectPolarity()
+PosLast = 0
+
+Function LinePos8_dataUpdate(in number port, out number pos8)
+  Sensor.SetMode(port, 0)
+  pos16 = Sensor.ReadRawValue(port, 0)
+EndFunction
+
+Function LineCh8_dataUpdate(in number port, out number[] light8)
+  Sensor.SetMode(port, 1)
+  raw = Sensor.ReadRaw(port, 8)
+  For i = 0 To 7
+    light8[i] = raw[i]
+  EndFor
+EndFunction
+
+Function LinePos100_dataUpdate(in number port, out number pos100, out number width, out number ch1, out number ch8)
+  Sensor.SetMode(port, 2)
+  raw = Sensor.ReadRaw(port, 4)
+  pos100 = raw[0]
+  width  = raw[1]
+  ch1    = raw[2]
+  ch8   = raw[3]
+EndFunction
+
+
+While "True"
+  
+  ' --------------------------------------------------------
+  ' [Example 1] Basic 8-Segment Position (GetLinePos8)
+  ' Usage: Beginner line following, simple Left/Right turning
+  ' --------------------------------------------------------
+  'LinePos8_dataUpdate(SENSOR_PORT, pos8)
+  'LCD.Text(1, 0, 10, 2, "Pos8: " + pos8 + "   ")
+  'PID = pos8 * 7 + (pos8 - PosLast) * 21
+  'MotorB.StartPower(75+PID)
+  'MotorC.StartPower(75-PID)
+  'PosLast = pos8
+
+  ' --------------------------------------------------------
+  ' [Example 2] High-Res & Junction Detection (GetLineHighRes)
+  ' Usage: Advanced PD following, intersection stop, edge protection
+  ' --------------------------------------------------------
+  LinePos100_dataUpdate(SENSOR_PORT, pos100, width, ch1, ch8)
+  LCD.Text(1, 0, 40, 2, "Pos100:" + pos100 + "   ")
+  LCD.Text(1, 0, 60, 2, "Width: " + width + "   ")
+  LCD.Text(1, 0, 80, 2, "CH1 :" + ch1 + "  ")
+  LCD.Text(1, 0, 100, 2, "CH8:" + ch8 + "  ")
+  IF width > 10 Then
+    MotorB.StartPower(0)
+    MotorC.StartPower(0)
+  Else
+    PID = pos100 * 1.2 + (pos100 - PosLast) * 3.6
+    MotorB.StartPower(75+PID)
+    MotorC.StartPower(75-PID)
+  EndIf
+  PosLast = pos100
+
+  ' --------------------------------------------------------
+  ' [Example 3] Independent 8-LED Array (GetLineArray8)
+  ' Usage: Custom intersection logic, drawing sensors on LCD
+  ' Print the values of the 1st (far-left) and 8th (far-right) sensors
+  ' Value range is 1 to 9 (1=Black, 9=White)
+  ' --------------------------------------------------------
+  'LineCh16_dataUpdate(SENSOR_PORT, light8)
+  'LCD.Text(1, 0, 0, 2, "Arr[0]: " + light16[0] + "  ")
+  'LCD.Text(1, 0, 20, 2, "Arr[1]: " + light16[1] + "  ")
+  'LCD.Text(1, 0, 40, 2, "Arr[2]: " + light16[2] + "  ")
+  'LCD.Text(1, 0, 60, 2, "Arr[3]: " + light16[3] + "  ")
+  'LCD.Text(1, 0, 80, 2, "Arr[4]: " + light16[4] + "  ")
+  'LCD.Text(1, 0, 100, 2, "Arr[5]: " + light16[5] + "  ")
+
+
+  ' Update screen smoothly without overloading the EV3 CPU
+  Program.Delay(5)
+  
+EndWhile

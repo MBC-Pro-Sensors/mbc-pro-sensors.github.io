@@ -1,51 +1,325 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MBC 戰術裝備庫 | Advanced Robotics</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
-        :root { --primary: #0ABAB5; --bg-dark: #050a10; --text-light: #e0e0e0; --card-bg: rgba(15, 25, 35, 0.7); --card-border: rgba(10, 186, 181, 0.3); }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Orbitron', Tahoma, sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-light); overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; }
-        .bg-grid { position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(10, 186, 181, 0.05) 50px), repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(10, 186, 181, 0.05) 50px); z-index: -1; pointer-events: none; }
-        .vignette { position: fixed; inset: 0; background: radial-gradient(circle at center, transparent 30%, #050a10 100%); z-index: -1; pointer-events: none; }
-        nav { background: rgba(5, 10, 16, 0.85); backdrop-filter: blur(10px); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--primary); position: sticky; top: 0; z-index: 100; }
-        nav img { height: 35px; border-radius: 3px; filter: drop-shadow(0 0 5px var(--primary)); }
-        nav a { color: white; text-decoration: none; font-weight: bold; font-family: monospace; letter-spacing: 2px; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
-        nav a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
-        header { text-align: center; padding: 60px 20px 20px; }
-        h1 { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; color: white; text-shadow: 0 0 15px var(--primary); letter-spacing: 4px; margin-bottom: 10px; }
-        .subtitle { color: var(--primary); font-family: monospace; letter-spacing: 3px; font-size: 1rem; }
-        .category-section { max-width: 1400px; margin: 0 auto 20px; padding: 0 5%; }
-        .category-title { color: var(--primary); font-family: 'Orbitron', sans-serif; font-size: 1.3rem; letter-spacing: 3px; padding: 25px 0 15px; border-bottom: 1px solid rgba(10, 186, 181, 0.3); margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
-        .category-title .cat-icon { font-size: 1.5rem; }
-        .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
-        .sensor-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; text-decoration: none; color: white; display: flex; flex-direction: column; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; opacity: 0; transform: translateY(30px); }
-        .sensor-card:hover { transform: translateY(-10px) scale(1.02); border-color: var(--primary); box-shadow: 0 10px 30px rgba(10, 186, 181, 0.2); z-index: 10; }
-        .sensor-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--primary); transform: scaleX(0); transition: transform 0.4s; transform-origin: left; z-index: 5; }
-        .sensor-card:hover::before { transform: scaleX(1); }
-        .card-img-wrapper { height: 220px; background: #000; position: relative; display: flex; justify-content: center; align-items: center; overflow: hidden; border-bottom: 1px solid #222; }
-        .card-img-wrapper img { max-width: 80%; max-height: 80%; object-fit: contain; transition: transform 0.5s; z-index: 2; }
-        .sensor-card:hover .card-img-wrapper img { transform: scale(1.1); }
-        .img-grid-overlay { position: absolute; inset: 0; background: linear-gradient(transparent 50%, rgba(10, 186, 181, 0.05) 50%); background-size: 100% 4px; z-index: 1; pointer-events: none; }
-        .status-badge { position: absolute; top: 15px; right: 15px; font-family: monospace; font-size: 0.75rem; padding: 4px 8px; border-radius: 3px; z-index: 3; font-weight: bold; letter-spacing: 1px; }
-        .status-active { background: rgba(10, 186, 181, 0.2); color: var(--primary); border: 1px solid var(--primary); }
-        .status-hot { background: rgba(255, 69, 0, 0.2); color: #ff4500; border: 1px solid #ff4500; }
-        .status-new { background: rgba(0, 210, 255, 0.2); color: #00d2ff; border: 1px solid #00d2ff; }
-        .card-content { padding: 25px; flex: 1; display: flex; flex-direction: column; }
-        .card-id { font-family: monospace; color: #666; font-size: 0.85rem; margin-bottom: 5px; }
-        .card-title { font-size: 1.4rem; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px; color: #fff; }
-        .card-desc { color: #aaa; font-size: 0.95rem; line-height: 1.6; margin-bottom: 15px; flex: 1; }
-        .platform-tags { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-        .platform-tags span { background: #1a2630; color: #888; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; border: 1px solid #333; font-family: monospace; }
-        .sensor-card:hover .platform-tags span { color: var(--primary); border-color: rgba(10, 186, 181, 0.5); }
-        .card-btn { margin-top: auto; padding: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.2); font-family: monospace; letter-spacing: 2px; transition: 0.3s; color: white; background: rgba(255,255,255,0.02); }
-        .sensor-card:hover .card-btn { background: var(--primary); color: #000; border-color: var(--primary); font-weight: bold; }
-        footer { text-align: center; padding: 20px; background: #020508; border-top: 1px solid #111; font-family: monospace; color: #555; font-size: 0.8rem; margin-top: 40px; }
+        :root {
+            --primary: #0ABAB5;
+            --bg-dark: #050a10;
+            --text-light: #e0e0e0;
+            --card-bg: rgba(15, 25, 35, 0.7);
+            --card-border: rgba(10, 186, 181, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Orbitron', Tahoma, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(10, 186, 181, 0.05) 50px), repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(10, 186, 181, 0.05) 50px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .vignette {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 30%, #050a10 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        nav {
+            background: rgba(5, 10, 16, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav img {
+            height: 35px;
+            border-radius: 3px;
+            filter: drop-shadow(0 0 5px var(--primary));
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-family: monospace;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary);
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px 20px;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: white;
+            text-shadow: 0 0 15px var(--primary);
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--primary);
+            font-family: monospace;
+            letter-spacing: 3px;
+            font-size: 1rem;
+        }
+
+        .category-section {
+            max-width: 1400px;
+            margin: 0 auto 20px;
+            padding: 0 5%;
+        }
+
+        .category-title {
+            color: var(--primary);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            letter-spacing: 3px;
+            padding: 25px 0 15px;
+            border-bottom: 1px solid rgba(10, 186, 181, 0.3);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-title .cat-icon {
+            font-size: 1.5rem;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .sensor-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            overflow: hidden;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .sensor-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(10, 186, 181, 0.2);
+            z-index: 10;
+        }
+
+        .sensor-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transition: transform 0.4s;
+            transform-origin: left;
+            z-index: 5;
+        }
+
+        .sensor-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-img-wrapper {
+            height: 220px;
+            background: #000;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border-bottom: 1px solid #222;
+        }
+
+        .card-img-wrapper img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+            transition: transform 0.5s;
+            z-index: 2;
+        }
+
+        .sensor-card:hover .card-img-wrapper img {
+            transform: scale(1.1);
+        }
+
+        .img-grid-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(transparent 50%, rgba(10, 186, 181, 0.05) 50%);
+            background-size: 100% 4px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 3px;
+            z-index: 3;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .status-active {
+            background: rgba(10, 186, 181, 0.2);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .status-hot {
+            background: rgba(255, 69, 0, 0.2);
+            color: #ff4500;
+            border: 1px solid #ff4500;
+        }
+
+        .status-new {
+            background: rgba(0, 210, 255, 0.2);
+            color: #00d2ff;
+            border: 1px solid #00d2ff;
+        }
+
+        .card-content {
+            padding: 25px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-id {
+            font-family: monospace;
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+
+        .card-desc {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            flex: 1;
+        }
+
+        .platform-tags {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .platform-tags span {
+            background: #1a2630;
+            color: #888;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid #333;
+            font-family: monospace;
+        }
+
+        .sensor-card:hover .platform-tags span {
+            color: var(--primary);
+            border-color: rgba(10, 186, 181, 0.5);
+        }
+
+        .card-btn {
+            margin-top: auto;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-family: monospace;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            color: white;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .sensor-card:hover .card-btn {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #020508;
+            border-top: 1px solid #111;
+            font-family: monospace;
+            color: #555;
+            font-size: 0.8rem;
+            margin-top: 40px;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="bg-grid"></div>
@@ -68,11 +342,11 @@
         <h2 class="category-title"><span class="cat-icon">🛤️</span> 循線感應器</h2>
         <div class="category-grid">
 
-            <a href="sensors/line8.html" class="sensor-card">
+            <a href="sensors/line8/" class="sensor-card">
                 <div class="card-img-wrapper">
                     <div class="img-grid-overlay"></div>
                     <div class="status-badge status-hot">COMPETITION</div>
-                    <img src="images/sensors/line8/product.jpg" alt="循行者8路循線器">
+                    <img src="images/sensors/line8/line8-product-spike.webp" alt="循行者8路循線器">
                 </div>
                 <div class="card-content">
                     <div class="card-id">ID: LNS-08-PRO</div>
@@ -87,7 +361,7 @@
                 <div class="card-img-wrapper">
                     <div class="img-grid-overlay"></div>
                     <div class="status-badge status-hot">COMPETITION</div>
-                    <img src="images/sensors/line16/product.jpg" alt="循行者16路循線器">
+                    <img src="images/sensors/line16/line16-product-spike.webp" alt="循行者16路循線器">
                 </div>
                 <div class="card-content">
                     <div class="card-id">ID: LNS-16-PRO</div>
@@ -110,7 +384,7 @@
                 <div class="card-img-wrapper">
                     <div class="img-grid-overlay"></div>
                     <div class="status-badge status-active">ADVANCED</div>
-                    <img src="images/sensors/tof2/product.jpg" alt="測距者2路雷射測距">
+                    <img src="images/sensors/tof2/tof2-product.webp" alt="測距者2路雷射測距">
                 </div>
                 <div class="card-content">
                     <div class="card-id">ID: TOF-02-LSR</div>
@@ -125,7 +399,7 @@
                 <div class="card-img-wrapper">
                     <div class="img-grid-overlay"></div>
                     <div class="status-badge status-active">ADVANCED</div>
-                    <img src="images/sensors/tof8/product.jpg" alt="測距者8路雷射測距">
+                    <img src="images/sensors/tof8/tof8-product.webp" alt="測距者8路雷射測距">
                 </div>
                 <div class="card-content">
                     <div class="card-id">ID: TOF-08-LSR</div>
@@ -148,7 +422,7 @@
                 <div class="card-img-wrapper">
                     <div class="img-grid-overlay"></div>
                     <div class="status-badge status-active">CONTROL</div>
-                    <img src="images/sensors/ps2/product.jpg" alt="掌控者PS2遙控接收器">
+                    <img src="images/sensors/ps2/ps2-product.webp" alt="掌控者PS2遙控接收器">
                 </div>
                 <div class="card-content">
                     <div class="card-id">ID: CMD-PS2-RX</div>
@@ -163,7 +437,7 @@
                 <div class="card-img-wrapper">
                     <div class="img-grid-overlay"></div>
                     <div class="status-badge status-active">PRO CONTROL</div>
-                    <img src="images/sensors/ps4/product.jpg" alt="掌控者PS4遙控接收器">
+                    <img src="images/sensors/ps4/ps4-product.webp" alt="掌控者PS4遙控接收器">
                 </div>
                 <div class="card-content">
                     <div class="card-id">ID: CMD-PS4-BT</div>
@@ -186,7 +460,7 @@
                 <div class="card-img-wrapper">
                     <div class="img-grid-overlay"></div>
                     <div class="status-badge status-new">NEW DEPLOYMENT</div>
-                    <img src="images/sensors/esp32cam/product.jpg" alt="神攝手ESP32CAM">
+                    <img src="images/sensors/esp32cam/esp32cam-product.webp" alt="神攝手ESP32CAM">
                 </div>
                 <div class="card-content">
                     <div class="card-id">ID: CAM-ESP32</div>
@@ -209,7 +483,7 @@
                 <div class="card-img-wrapper">
                     <div class="img-grid-overlay"></div>
                     <div class="status-badge status-new">NEW DEPLOYMENT</div>
-                    <img src="images/sensors/ext6/product.jpg" alt="SPIKE專用6路擴充器">
+                    <img src="images/sensors/ext6/ext6-product.webp" alt="SPIKE專用6路擴充器">
                 </div>
                 <div class="card-content">
                     <div class="card-id">ID: EXT-06-HUB</div>
@@ -239,4 +513,5 @@
         });
     </script>
 </body>
+
 </html>

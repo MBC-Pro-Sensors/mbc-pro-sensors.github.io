@@ -1,0 +1,90 @@
+' ========================================================
+' Example: MBC Line16 - 3 Library Functions Demonstration
+' Author : MBC robotics
+' Date   : 2026.05
+' ========================================================
+folder "prjs""Line16_Clev3r_Demo"
+
+SENSOR_PORT = 4
+LCD.Clear()
+
+MotorB.SetReversPolarity()
+MotorC.SetDirectPolarity()
+PosLast = 0
+
+Function LinePos16_dataUpdate(in number port, out number pos16)
+  Sensor.SetMode(port, 0)
+  pos16 = Sensor.ReadRawValue(port, 0)
+EndFunction
+
+Function LineCh16_dataUpdate(in number port, out number[] light16)
+  Sensor.SetMode(port, 1)
+  raw = Sensor.ReadRaw(port, 8)
+  For i = 0 To 7
+    val = raw[i]
+    light16[i * 2] = Math.Floor(val / 10)
+    light16[i * 2 + 1] = Math.Remainder(val, 10)
+  EndFor
+EndFunction
+
+Function LinePos100_dataUpdate(in number port, out number pos100, out number width, out number ch1, out number ch16)
+  Sensor.SetMode(port, 2)
+  raw = Sensor.ReadRaw(port, 4)
+  pos100 = raw[0]
+  width  = raw[1]
+  ch1    = raw[2]
+  ch16   = raw[3]
+EndFunction
+
+
+While "True"
+  
+  ' --------------------------------------------------------
+  ' [Example 1] Basic 16-Segment Position (GetLinePos16)
+  ' Usage: Beginner line following, simple Left/Right turning
+  ' --------------------------------------------------------
+  'LinePos16_dataUpdate(SENSOR_PORT, pos16)
+  'LCD.Text(1, 0, 10, 2, "Pos16: " + pos16 + "   ")
+  'PID = pos16 * 7 + (pos16 - PosLast) * 21
+  'MotorB.StartPower(75+PID)
+  'MotorC.StartPower(75-PID)
+  'PosLast = pos16
+
+  ' --------------------------------------------------------
+  ' [Example 2] High-Res & Junction Detection (GetLineHighRes)
+  ' Usage: Advanced PD following, intersection stop, edge protection
+  ' --------------------------------------------------------
+  LinePos100_dataUpdate(SENSOR_PORT, pos100, width, ch1, ch16)
+  LCD.Text(1, 0, 40, 2, "Pos100:" + pos100 + "   ")
+  LCD.Text(1, 0, 60, 2, "Width: " + width + "   ")
+  LCD.Text(1, 0, 80, 2, "CH1 :" + ch1 + "  ")
+  LCD.Text(1, 0, 100, 2, "CH16:" + ch16 + "  ")
+  IF width > 10 Then
+    MotorB.StartPower(0)
+    MotorC.StartPower(0)
+  Else
+    PID = pos100 * 1.2 + (pos100 - PosLast) * 3.6
+    MotorB.StartPower(75+PID)
+    MotorC.StartPower(75-PID)
+  EndIf
+  PosLast = pos100
+
+  ' --------------------------------------------------------
+  ' [Example 3] Independent 16-LED Array (GetLineArray16)
+  ' Usage: Custom intersection logic, drawing sensors on LCD
+  ' Print the values of the 1st (far-left) and 16th (far-right) sensors
+  ' Value range is 1 to 9 (1=Black, 9=White)
+  ' --------------------------------------------------------
+  'LineCh16_dataUpdate(SENSOR_PORT, light16)
+  'LCD.Text(1, 0, 0, 2, "Arr[0]: " + light16[0] + "  ")
+  'LCD.Text(1, 0, 20, 2, "Arr[1]: " + light16[1] + "  ")
+  'LCD.Text(1, 0, 40, 2, "Arr[2]: " + light16[2] + "  ")
+  'LCD.Text(1, 0, 60, 2, "Arr[3]: " + light16[3] + "  ")
+  'LCD.Text(1, 0, 80, 2, "Arr[4]: " + light16[4] + "  ")
+  'LCD.Text(1, 0, 100, 2, "Arr[5]: " + light16[5] + "  ")
+
+
+  ' Update screen smoothly without overloading the EV3 CPU
+  Program.Delay(5)
+  
+EndWhile
