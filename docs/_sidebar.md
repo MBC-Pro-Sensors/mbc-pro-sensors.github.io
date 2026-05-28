@@ -46,3 +46,6 @@
 - **🔌 擴充模組**
   - **SPIKE 6 路擴充器 (EXT6)**
     - [📖 產品介紹](/sensors/ext6/index.md)
+
+- **📞 聯絡我們**
+  - [💬 聯絡 & 支援](/contact.md)

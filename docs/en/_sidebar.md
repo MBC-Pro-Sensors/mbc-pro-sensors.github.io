@@ -46,3 +46,6 @@
 - **🔌 Expansion Modules**
   - **SPIKE 6-Way Multiplexer (EXT6)**
     - [📖 Product Overview](/en/sensors/ext6/index.md)
+
+- **📞 Contact Us**
+  - [💬 Contact & Support](/en/contact.md)
