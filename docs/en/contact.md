@@ -217,11 +217,8 @@
     <h3>School & Educational Institution Partnerships</h3>
     <p>Bring cutting-edge hardware into your curriculum, host on-campus robotics workshops, or apply for special educational pricing.</p>
   </div>
-  <div class="reason-card">
-    <span class="reason-icon">🏆</span>
-    <h3>Competition Team Technical Support</h3>
-    <p>Competing in WRO, FLL, or other international events? We offer dedicated competition technical consulting and pre-event tuning services.</p>
-  </div>
+
+
   <div class="reason-card">
     <span class="reason-icon">🌏</span>
     <h3>International Markets & Cross-Border Collaboration</h3>

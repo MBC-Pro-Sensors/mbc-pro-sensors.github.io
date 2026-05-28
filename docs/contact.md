@@ -217,11 +217,7 @@
     <h3>學校與教育機構合作</h3>
     <p>為課程導入頂尖硬體設備、舉辦校內機器人技術工作坊，或申請教育機構特別折扣，歡迎與我們攜手。</p>
   </div>
-  <div class="reason-card">
-    <span class="reason-icon">🏆</span>
-    <h3>競賽隊伍技術支援</h3>
-    <p>即將參加 WRO、FLL 或其他國際機器人賽事？我們提供專屬的競賽技術諮詢與賽前調校服務。</p>
-  </div>
+
   <div class="reason-card">
     <span class="reason-icon">🌏</span>
     <h3>海外市場與國際合作</h3>
