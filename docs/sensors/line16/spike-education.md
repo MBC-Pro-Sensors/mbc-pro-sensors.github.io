@@ -86,7 +86,7 @@
 
 ---
 
-## [📥 範例程式下載](../examples/line16/spike/line16-demo.llsp3)
+## <a href="../examples/line16/spike/line16-demo.llsp3" target="_blank" data-ignore="true" download>📥 範例程式下載</a>
 
 <div style="text-align: center; margin: 25px 0;">
   <img src="../images/sensors/line16/spike-education-example.webp" alt="LEGO® Education SPIKE™ App 範例程式圖控積木範例" style="max-width: 100%; border-radius: 8px; border: 1px solid rgba(10,186,181,0.25); box-shadow: 0 10px 30px rgba(0,0,0,0.5); filter: drop-shadow(0 0 15px rgba(10,186,181,0.15));" />

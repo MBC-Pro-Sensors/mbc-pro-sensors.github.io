@@ -36,7 +36,7 @@ In the EV3 Pybricks environment, this line follower provides two flexible data r
 
 ---
 
-## [📥 Example Programs and Functions Download (Packaged Download)](../examples/line16/line16_pybricks_ev3.zip)
+## <a href="../examples/line16/line16_pybricks_ev3.zip" target="_blank" data-ignore="true" download>📥 Example Programs and Functions Download (Packaged Download)</a>
 
 We have provided core example programs and exclusive library functions. Please choose according to your development habits:
 
@@ -211,7 +211,7 @@ We have provided core example programs and exclusive library functions. Please c
         <h3 style="margin: 0 0 10px 0; color: #0abab5; font-size: 1.15rem; font-weight: bold;">🧩 Block Mode (Import Library)</h3>
         <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #aaa; line-height: 1.5;">Graphical blocks combined with the exclusive library functions we developed for you, allowing easy access to high-resolution and high-precision values within block development.</p>
       </div>
-      <a href="../examples/line16/ev3/line16_ev3_block_with_lib.py" target="_blank" download="line16_ev3_block_with_lib.py" class="btn-download" style="display: block; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 Download Example (.py)</a>
+      <a href="../examples/line16/ev3/line16_ev3_block_with_lib.py" target="_blank" download="line16_ev3_block_with_lib.py" data-ignore="true" class="btn-download" style="display: block; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 Download Example (.py)</a>
     </div>
     <!-- Card 4: Python with Lib -->
     <div class="download-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: space-between;">
@@ -222,7 +222,7 @@ We have provided core example programs and exclusive library functions. Please c
         <h3 style="margin: 0 0 10px 0; color: #0abab5; font-size: 1.15rem; font-weight: bold;">🐍 Python Mode (Import Library)</h3>
         <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #aaa; line-height: 1.5;">The best solution for advanced competitors! Import the exclusive library for the most underlying complete data calls and high-frequency PID line-following algorithm development.</p>
       </div>
-      <a href="../examples/line16/ev3/line16_ev3_python_with_lib.py" target="_blank" download="line16_ev3_python_with_lib.py" class="btn-download" style="display: block; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 Download Example (.py)</a>
+      <a href="../examples/line16/ev3/line16_ev3_python_with_lib.py" target="_blank" download="line16_ev3_python_with_lib.py" data-ignore="true" class="btn-download" style="display: block; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 Download Example (.py)</a>
     </div>
   </div>
 
@@ -240,7 +240,7 @@ We have provided core example programs and exclusive library functions. Please c
             This is the indispensable driver core for the "Import Exclusive Library" examples. Download this library file to perfectly enable high-level interpolated position and 16-channel photoelectric fine reading.
           </p>
         </div>
-        <a href="../examples/line16/ev3/MBC_line16_EV3_Lib.py" target="_blank" download="MBC_line16_EV3_Lib.py" class="btn-download-lib" style="display: block; text-align: center; padding: 12px 20px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 Download Exclusive Library (MBC_line16_EV3_Lib.py)</a>
+        <a href="../examples/line16/ev3/MBC_line16_EV3_Lib.py" target="_blank" download="MBC_line16_EV3_Lib.py" data-ignore="true" class="btn-download-lib" style="display: block; text-align: center; padding: 12px 20px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 Download Exclusive Library (MBC_line16_EV3_Lib.py)</a>
       </div>
       <!-- Right: Important tips and screenshots -->
       <div style="flex: 1.2; min-width: 280px; display: flex;">

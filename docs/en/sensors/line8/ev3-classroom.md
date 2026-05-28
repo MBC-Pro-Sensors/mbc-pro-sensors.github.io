@@ -184,7 +184,7 @@ Use the sensor block, select **Remote mode**, and read the `value list` (4 bytes
 
 ---
 
-## [📥 Download Example Programs](../examples/line8/ev3/line8_ev3_classroom.lmsp)
+## <a href="../examples/line8/ev3/line8_ev3_classroom.lmsp" target="_blank" data-ignore="true" download>📥 Download Example Programs</a>
 
 <div style="text-align: center; margin: 25px 0;">
   <img src="../images/sensors/line8/ev3-classroom-example.webp" alt="LEGO® MINDSTORMS® EV3 Classroom Block Example" style="max-width: 100%; border-radius: 8px; border: 1px solid rgba(10,186,181,0.25); box-shadow: 0 10px 30px rgba(0,0,0,0.5); filter: drop-shadow(0 0 15px rgba(10,186,181,0.15));" />
