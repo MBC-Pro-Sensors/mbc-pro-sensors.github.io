@@ -353,6 +353,12 @@ body {
 .cube-back  { transform: rotateY(180deg) translateZ(200px); }
 .cube-left  { transform: rotateY(-90deg) translateZ(200px); }
 
+/* 修正 cube-back 內容鏡像翻轉問題：背面旋轉 180 度後內容會反向，需補正 */
+.cube-back .product-content,
+.cube-back .contact-wrapper {
+    transform: rotateY(180deg) translateZ(20px);
+}
+
 /* L型對焦框 */
 .corner {
     position: absolute;
@@ -763,10 +769,10 @@ body {
             <span class="brand-text">MBC-PRO-SENSORS</span>
         </div>
         <div class="nav-menu">
-            <a href="#" class="nav-item active" data-cat="0" data-color="var(--color-home)">HOME</a>
-            <a href="#" class="nav-item" data-cat="1" data-color="var(--color-sensor)">MBC SENSOR</a>
-            <a href="#" class="nav-item" data-cat="2" data-color="var(--color-motor)">MOTOR</a>
-            <a href="#" class="nav-item" data-cat="3" data-color="var(--color-contact)">CONTACT</a>
+            <a href="javascript:void(0)" class="nav-item active" data-cat="0" data-color="var(--color-home)">HOME</a>
+            <a href="javascript:void(0)" class="nav-item" data-cat="1" data-color="var(--color-sensor)">MBC SENSOR</a>
+            <a href="javascript:void(0)" class="nav-item" data-cat="2" data-color="var(--color-motor)">MOTOR</a>
+            <a href="javascript:void(0)" class="nav-item" data-cat="3" data-color="var(--color-contact)">CONTACT</a>
         </div>
         <div class="nav-progress-container">
             <div class="nav-progress-bar"></div>
@@ -1155,6 +1161,18 @@ document.addEventListener('DOMContentLoaded', () => {
     navItems.forEach((item, index) => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
+            // 如果 lab-stage 尚未顯示（用戶還沒完成開場動畫），直接跳過開場進入
+            const labStage = document.querySelector('.lab-stage');
+            if (labStage && (labStage.style.display === 'none' || labStage.style.opacity === '0')) {
+                const startOverlay = document.getElementById('start-overlay');
+                const bioLayerEl = document.getElementById('bio-layer');
+                const doorContEl = document.getElementById('lab-door-container');
+                if (startOverlay) startOverlay.remove();
+                if (bioLayerEl) bioLayerEl.remove();
+                if (doorContEl) doorContEl.remove();
+                sessionStorage.setItem('introPlayed', 'true');
+                initLab();
+            }
             if (currentArmTL && currentArmTL.isActive()) return;
             const diff = index - currentIndex;
             if (diff === 0) return;
