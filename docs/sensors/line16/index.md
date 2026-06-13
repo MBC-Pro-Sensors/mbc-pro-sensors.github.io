@@ -39,7 +39,7 @@ MBC 16路循線感應器是一款專為樂高 (LEGO) 及各式高階機器人競
 
 為了讓您的循線車達到比賽級的極致平滑與穩定，底層硬體會將 16 路原始反射訊號在背景進行即時校準、二值化與連續性濾波，產出以下四個核心數據特徵：
 
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 25px 0;">
+<div class="responsive-grid-2" style="gap: 20px; margin: 25px 0;">
   <div style="background: rgba(10,186,181,0.05); border: 1px solid rgba(10,186,181,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
     <h4 style="color: var(--theme-color); margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">📊 絕對物理光值 (0 ~ 100)</h4>
     <p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">反應最真實的物理反射光強度。<strong>100 代表純白高反光，0 代表純黑無反光</strong>。此數值保持物理真實，不隨黑白線模式切換而反轉，非常適合開發即時長條圖視覺化儀表板。</p>

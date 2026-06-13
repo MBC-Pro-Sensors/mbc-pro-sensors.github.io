@@ -15,7 +15,7 @@
 
 歡迎來到 SPIKE 專區！循行者 16 路感應器完美支援以下兩款樂高旗艦主機系統：
 
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 25px 0;">
+<div class="responsive-grid-2" style="gap: 20px; margin: 25px 0;">
   <!-- 黃色主機卡片 -->
   <div style="background: rgba(242,194,0,0.04); border: 1px solid rgba(242,194,0,0.25); border-radius: 12px; padding: 25px; display: flex; flex-direction: column; align-items: center; text-align: center;">
     <img src="../images/hubs/spike-hub.webp" alt="SPIKE Prime Hub" style="max-height: 120px; object-fit: contain; filter: drop-shadow(0 0 20px rgba(242,194,0,0.3)); margin-bottom: 15px;" />

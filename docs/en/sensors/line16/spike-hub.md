@@ -15,7 +15,7 @@
 
 Welcome to the SPIKE zone! The Pathfinder 16-Way Sensor perfectly supports the following two flagship LEGO hub systems:
 
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 25px 0;">
+<div class="responsive-grid-2" style="gap: 20px; margin: 25px 0;">
   <!-- Yellow Hub Card -->
   <div style="background: rgba(242,194,0,0.04); border: 1px solid rgba(242,194,0,0.25); border-radius: 12px; padding: 25px; display: flex; flex-direction: column; align-items: center; text-align: center;">
     <img src="../images/hubs/spike-hub.webp" alt="SPIKE Prime Hub" style="max-height: 120px; object-fit: contain; filter: drop-shadow(0 0 20px rgba(242,194,0,0.3)); margin-bottom: 15px;" />

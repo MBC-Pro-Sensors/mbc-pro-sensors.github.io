@@ -160,7 +160,7 @@
   <!-- 🔵 模式 2 -->
   <div style="margin-bottom: 12px;">
     <div style="font-size: 0.82rem; color: #0abab5; font-weight: bold; margin-bottom: 8px; padding-left: 2px;">🔵 模式 2 (競技/PID 循線專用)</div>
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+    <div class="responsive-grid-2">
       <div class="func-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(10,186,181,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
           <code style="color: #0abab5; font-size: 0.95rem; font-weight: bold;"><span style="background: rgba(255,255,255,0.15); color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; margin-right: 6px;">[模式 2: 競技]</span>line_pos100()</code>

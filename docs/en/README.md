@@ -40,7 +40,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
 
   <a href="#/en/sensors/line8/index" style="text-decoration:none;">
-    <div style="background:#0a111a; border:1px solid rgba(255,69,0,0.4); border-radius:10px; padding:20px; display:flex; align-items:center; justify-content:space-between; gap:20px; overflow:hidden;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(255,69,0,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#ff4500; font-size:1.5rem;">🛤️</div>
         <h4 style="color:#ff4500; margin:8px 0 8px; font-size:1.2rem;">Pathfinder 8-Way (Line8)</h4>
@@ -53,7 +53,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
   </a>
 
   <a href="#/en/sensors/line16/index" style="text-decoration:none;">
-    <div style="background:#0a111a; border:1px solid rgba(255,107,53,0.4); border-radius:10px; padding:20px; display:flex; align-items:center; justify-content:space-between; gap:20px; overflow:hidden;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(255,107,53,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#ff6b35; font-size:1.5rem;">🛤️</div>
         <h4 style="color:#ff6b35; margin:8px 0 8px; font-size:1.2rem;">Pathfinder 16-Way (Line16)</h4>
@@ -72,7 +72,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
 
   <a href="#/en/sensors/tof2/index" style="text-decoration:none;">
-    <div style="background:#0a111a; border:1px solid rgba(10,186,181,0.4); border-radius:10px; padding:20px; display:flex; align-items:center; justify-content:space-between; gap:20px; overflow:hidden;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(10,186,181,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#0ABAB5; font-size:1.5rem;">📡</div>
         <h4 style="color:#0ABAB5; margin:8px 0 8px; font-size:1.2rem;">Ranger 2-Way (TOF2) (To be updated)</h4>
@@ -85,7 +85,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
   </a>
 
   <a href="#/en/sensors/tof8/index" style="text-decoration:none;">
-    <div style="background:#0a111a; border:1px solid rgba(10,186,181,0.4); border-radius:10px; padding:20px; display:flex; align-items:center; justify-content:space-between; gap:20px; overflow:hidden;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(10,186,181,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#0ABAB5; font-size:1.5rem;">📡</div>
         <h4 style="color:#0ABAB5; margin:8px 0 8px; font-size:1.2rem;">Ranger 8-Way (TOF8) (To be updated)</h4>
@@ -104,7 +104,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
 
   <a href="#/en/sensors/ps2/index" style="text-decoration:none;">
-    <div style="background:#0a111a; border:1px solid rgba(242,194,0,0.4); border-radius:10px; padding:20px; display:flex; align-items:center; justify-content:space-between; gap:20px; overflow:hidden;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(242,194,0,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#F2C200; font-size:1.5rem;">🎮</div>
         <h4 style="color:#F2C200; margin:8px 0 8px; font-size:1.2rem;">Controller 2.4G (PS2) (To be updated)</h4>
@@ -117,7 +117,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
   </a>
 
   <a href="#/en/sensors/ps4/index" style="text-decoration:none;">
-    <div style="background:#0a111a; border:1px solid rgba(242,194,0,0.4); border-radius:10px; padding:20px; display:flex; align-items:center; justify-content:space-between; gap:20px; overflow:hidden;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(242,194,0,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#F2C200; font-size:1.5rem;">🎮</div>
         <h4 style="color:#F2C200; margin:8px 0 8px; font-size:1.2rem;">Controller Bluetooth Pro (PS4) (To be updated)</h4>
@@ -136,7 +136,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
 
   <a href="#/en/sensors/esp32cam/index" style="text-decoration:none;">
-    <div style="background:#0a111a; border:1px solid rgba(0,210,255,0.4); border-radius:10px; padding:20px; display:flex; align-items:center; justify-content:space-between; gap:20px; overflow:hidden;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(0,210,255,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#00d2ff; font-size:1.5rem;">👁️</div>
         <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">Sharpshooter Vision (ESP32CAM) (To be updated)</h4>
@@ -155,7 +155,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
 
   <a href="#/en/sensors/ext6/index" style="text-decoration:none;">
-    <div style="background:#0a111a; border:1px solid rgba(0,210,255,0.4); border-radius:10px; padding:20px; display:flex; align-items:center; justify-content:space-between; gap:20px; overflow:hidden;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(0,210,255,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#00d2ff; font-size:1.5rem;">🔌</div>
         <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">SPIKE 6-Way Multiplexer (EXT6) (To be updated)</h4>

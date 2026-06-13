@@ -60,7 +60,7 @@
         <span style="font-size: 0.85rem; color: #00d2ff; font-weight: bold;">🎯 基礎組合</span>
         <span style="font-size: 0.72rem; color: #777; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 8px;">開箱即用，不需校準，適合快速開發與初學者</span>
       </div>
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+      <div class="responsive-grid-2">
         <div class="func-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
             <code style="color: #00d2ff; font-size: 0.95rem; font-weight: bold;">getLinePos16()</code>
@@ -83,7 +83,7 @@
         <span style="font-size: 0.85rem; color: #00d2ff; font-weight: bold;">🔬 高精度組合</span>
         <span style="font-size: 0.72rem; color: #777; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 8px;">建議先完成感應器校準，校準越精確數值越準確</span>
       </div>
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+      <div class="responsive-grid-2">
         <div class="func-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
             <code style="color: #00d2ff; font-size: 0.95rem; font-weight: bold;">getLinePos100()</code>
@@ -218,7 +218,7 @@
     <!-- 🔀 路口偵測與二進位數據 -->
     <div style="margin-bottom: 12px;">
       <div style="font-size: 0.82rem; color: #0abab5; font-weight: bold; margin-bottom: 8px; padding-left: 2px;">🔀 路口偵測與二進位數據</div>
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+      <div class="responsive-grid-2">
         <div class="func-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(10,186,181,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
             <code style="color: #0abab5; font-size: 0.95rem; font-weight: bold;">line_junction()</code>

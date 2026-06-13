@@ -40,7 +40,7 @@
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
 
   <a href="#/sensors/line8/index" style="text-decoration:none;">
-    <div style="background:#0a111a; border:1px solid rgba(255,69,0,0.4); border-radius:10px; padding:20px; display:flex; align-items:center; justify-content:space-between; gap:20px; overflow:hidden;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(255,69,0,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#ff4500; font-size:1.5rem;">🛤️</div>
         <h4 style="color:#ff4500; margin:8px 0 8px; font-size:1.2rem;">循行者 8 路 (Line8)</h4>
@@ -53,7 +53,7 @@
   </a>
 
   <a href="#/sensors/line16/index" style="text-decoration:none;">
-    <div style="background:#0a111a; border:1px solid rgba(255,107,53,0.4); border-radius:10px; padding:20px; display:flex; align-items:center; justify-content:space-between; gap:20px; overflow:hidden;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(255,107,53,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#ff6b35; font-size:1.5rem;">🛤️</div>
         <h4 style="color:#ff6b35; margin:8px 0 8px; font-size:1.2rem;">循行者 16 路 (Line16)</h4>
@@ -72,7 +72,7 @@
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
 
   <a href="#/sensors/tof2/index" style="text-decoration:none;">
-    <div style="background:#0a111a; border:1px solid rgba(10,186,181,0.4); border-radius:10px; padding:20px; display:flex; align-items:center; justify-content:space-between; gap:20px; overflow:hidden;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(10,186,181,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#0ABAB5; font-size:1.5rem;">📡</div>
         <h4 style="color:#0ABAB5; margin:8px 0 8px; font-size:1.2rem;">測距者 2 路 (TOF2) (待更新)</h4>
@@ -85,7 +85,7 @@
   </a>
 
   <a href="#/sensors/tof8/index" style="text-decoration:none;">
-    <div style="background:#0a111a; border:1px solid rgba(10,186,181,0.4); border-radius:10px; padding:20px; display:flex; align-items:center; justify-content:space-between; gap:20px; overflow:hidden;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(10,186,181,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#0ABAB5; font-size:1.5rem;">📡</div>
         <h4 style="color:#0ABAB5; margin:8px 0 8px; font-size:1.2rem;">測距者 8 路 (TOF8) (待更新)</h4>
@@ -104,7 +104,7 @@
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
 
   <a href="#/sensors/ps2/index" style="text-decoration:none;">
-    <div style="background:#0a111a; border:1px solid rgba(242,194,0,0.4); border-radius:10px; padding:20px; display:flex; align-items:center; justify-content:space-between; gap:20px; overflow:hidden;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(242,194,0,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#F2C200; font-size:1.5rem;">🎮</div>
         <h4 style="color:#F2C200; margin:8px 0 8px; font-size:1.2rem;">掌控者 2.4G (PS2) (待更新)</h4>
@@ -117,7 +117,7 @@
   </a>
 
   <a href="#/sensors/ps4/index" style="text-decoration:none;">
-    <div style="background:#0a111a; border:1px solid rgba(242,194,0,0.4); border-radius:10px; padding:20px; display:flex; align-items:center; justify-content:space-between; gap:20px; overflow:hidden;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(242,194,0,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#F2C200; font-size:1.5rem;">🎮</div>
         <h4 style="color:#F2C200; margin:8px 0 8px; font-size:1.2rem;">掌控者高階藍牙 (PS4) (待更新)</h4>
@@ -136,7 +136,7 @@
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
 
   <a href="#/sensors/esp32cam/index" style="text-decoration:none;">
-    <div style="background:#0a111a; border:1px solid rgba(0,210,255,0.4); border-radius:10px; padding:20px; display:flex; align-items:center; justify-content:space-between; gap:20px; overflow:hidden;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(0,210,255,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#00d2ff; font-size:1.5rem;">👁️</div>
         <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">神攝手視覺感應器 (待更新)</h4>
@@ -155,7 +155,7 @@
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
 
   <a href="#/sensors/ext6/index" style="text-decoration:none;">
-    <div style="background:#0a111a; border:1px solid rgba(0,210,255,0.4); border-radius:10px; padding:20px; display:flex; align-items:center; justify-content:space-between; gap:20px; overflow:hidden;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(0,210,255,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#00d2ff; font-size:1.5rem;">🔌</div>
         <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">SPIKE 6 路多工器 (EXT6) (待更新)</h4>

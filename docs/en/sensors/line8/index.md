@@ -107,7 +107,7 @@ Please select your controller system first, then select your software environmen
 
 To achieve competition-level smoothness and stability, the onboard hardware processes all 8 raw reflection signals in the background with real-time calibration, binarization, and continuity filtering, producing four core data features:
 
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 25px 0;">
+<div class="responsive-grid-2" style="gap: 20px; margin: 25px 0;">
   <div style="background: rgba(10,186,181,0.05); border: 1px solid rgba(10,186,181,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
     <h4 style="color: var(--theme-color); margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">📊 Absolute Physical Light Value (0 ~ 100)</h4>
     <p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">Reflects the truest physical reflection intensity. <strong>100 = pure white (high reflectance), 0 = pure black (no reflectance)</strong>. This value remains physically accurate and does not invert when switching between black/white line modes. Ideal for building real-time bar graph visualization dashboards.</p>

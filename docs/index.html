@@ -142,6 +142,28 @@
       font-size: 0.9rem;
       color: #aaa;
     }
+    /* --- 響應式佈局 CSS --- */
+    .product-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      overflow: hidden;
+    }
+    .responsive-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 767px) {
+      .product-card {
+        flex-direction: column-reverse;
+        text-align: center;
+      }
+      .responsive-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
