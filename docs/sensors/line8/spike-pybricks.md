@@ -114,7 +114,7 @@
         <h3 style="margin: 0 0 10px 0; color: #00d2ff; font-size: 1.15rem; font-weight: bold;">🧩 Block 模式 (內建指令)</h3>
         <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #aaa; line-height: 1.5;">使用 Pybricks 內建的圖形化積木指令讀取感應器，適合初學者快速上手基本循線邏輯。</p>
       </div>
-      <div style="display: flex; gap: 8px;">
+      <div class="download-btn-group">
         <a href="../examples/line8/pybricks/For%20firmware%203.6.1/line8_block_native.py" target="_blank" download="line8_block_native.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #00d2ff, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(0,210,255,0.25); transition: transform 0.2s ease;">📥 3.6.1 版</a>
         <a href="../examples/line8/pybricks/For%20firmware%204.0.0/line8_block_native.py" target="_blank" download="line8_block_native.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 4.0.0 版</a>
       </div>
@@ -128,7 +128,7 @@
         <h3 style="margin: 0 0 10px 0; color: #00d2ff; font-size: 1.15rem; font-weight: bold;">🐍 Python 模式 (內建指令)</h3>
         <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #aaa; line-height: 1.5;">使用 Pybricks 原生 MicroPython 內建感應器指令直接讀取，兼顧程式靈活性與純文字開發體驗。</p>
       </div>
-      <div style="display: flex; gap: 8px;">
+      <div class="download-btn-group">
         <a href="../examples/line8/pybricks/For%20firmware%203.6.1/line8_python_native.py" target="_blank" download="line8_python_native.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #00d2ff, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(0,210,255,0.25); transition: transform 0.2s ease;">📥 3.6.1 版</a>
         <a href="../examples/line8/pybricks/For%20firmware%204.0.0/line8_python_native.py" target="_blank" download="line8_python_native.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 4.0.0 版</a>
       </div>
@@ -273,7 +273,7 @@
         <h3 style="margin: 0 0 10px 0; color: #0abab5; font-size: 1.15rem; font-weight: bold;">🧩 Block 模式 (導入專屬庫)</h3>
         <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #aaa; line-height: 1.5;">圖形化積木結合我們為您開發的專屬庫函數，在積木開發下輕鬆取得高解析度高精度數值。</p>
       </div>
-      <div style="display: flex; gap: 8px;">
+      <div class="download-btn-group">
         <a href="../examples/line8/pybricks/For%20firmware%203.6.1/line8_block_with_lib.py" target="_blank" download="line8_block_with_lib.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 3.6.1 版</a>
         <a href="../examples/line8/pybricks/For%20firmware%204.0.0/line8_block_with_lib.py" target="_blank" download="line8_block_with_lib.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 4.0.0 版</a>
       </div>
@@ -287,7 +287,7 @@
         <h3 style="margin: 0 0 10px 0; color: #0abab5; font-size: 1.15rem; font-weight: bold;">🐍 Python 模式 (導入專屬庫)</h3>
         <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #aaa; line-height: 1.5;">高階選手的最佳方案！導入專屬庫進行最底層的完整數據調用與高頻 PID 循線算法開發。</p>
       </div>
-      <div style="display: flex; gap: 8px;">
+      <div class="download-btn-group">
         <a href="../examples/line8/pybricks/For%20firmware%203.6.1/line8_python_with_lib.py" target="_blank" download="line8_python_with_lib.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 3.6.1 版</a>
         <a href="../examples/line8/pybricks/For%20firmware%204.0.0/line8_python_with_lib.py" target="_blank" download="line8_python_with_lib.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 4.0.0 版</a>
       </div>
@@ -308,7 +308,7 @@
             這是配合「導入專屬庫」範例不可或缺的驅動核心。請下載此庫檔案，即可完美啟用高階插值位置與 8 路光電數值精細讀取。
           </p>
         </div>
-        <div style="display: flex; gap: 8px;">
+        <div class="download-btn-group">
           <a href="../examples/line8/pybricks/For%20firmware%203.6.1/MBC_line8_Lib.py" target="_blank" download="MBC_line8_Lib.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 3.6.1 版庫函數</a>
           <a href="../examples/line8/pybricks/For%20firmware%204.0.0/MBC_line8_Lib.py" target="_blank" download="MBC_line8_Lib.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 4.0.0 版庫函數</a>
         </div>
@@ -355,5 +355,22 @@
     border-color: rgba(0,210,255,0.35) !important;
     box-shadow: 0 8px 25px rgba(0,210,255,0.12) !important;
     background: rgba(255,255,255,0.04) !important;
+  }
+
+  /* Responsive Dual Buttons */
+  .download-btn-group {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+  @media (max-width: 767px) {
+    .download-btn-group {
+      flex-direction: column;
+    }
+    .download-card .download-btn-group a,
+    .library-download-box .download-btn-group a {
+      padding: 12px 8px !important;
+      font-size: 0.9rem !important;
+    }
   }
 </style>
