@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>正在跳轉至新版首頁...</title>
+    <script>
+        // 將原本包含 /docs/ 的網址，連同後面的 hash (#/...) 完美帶回根目錄
+        // 例如: /docs/#/sensors/line16 變成 /#/sensors/line16
+        var hash = window.location.hash;
+        window.location.replace("/" + hash);
+    </script>
+</head>
+<body style="background-color: #050a10; color: #0ABAB5; font-family: sans-serif; text-align: center; margin-top: 20%;">
+    <p>網站已經全面升級！正在為您導向至新版首頁...</p>
+    <p>如果畫面沒有自動跳轉，請 <a id="manual-link" href="/" style="color: #F2C200;">點擊這裡</a>。</p>
+    <script>
+        document.getElementById('manual-link').href = "/" + window.location.hash;
+    </script>
+</body>
+</html>
