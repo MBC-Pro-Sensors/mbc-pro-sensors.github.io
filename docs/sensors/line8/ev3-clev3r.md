@@ -166,6 +166,10 @@
 
 > 💡 **戰術防呆技巧**：Remote 模式的 Byte 2 與 Byte 3 能讓您在 clev3r (BASIC) 中直接獲得感測器兩側的最邊緣光值。如果兩個數值同時小於 20，表示車頭完全進入十字路口的橫線中；如果其中一邊數值突變，表示即將進入分岔，是防掉線的終極法寶！
 
+
+
+
+
 <style>
   .table-hover-row:hover {
     background: rgba(0,0,0,0.04) !important;
@@ -211,3 +215,24 @@
 > [!TIP]
 > **💡 開發小提醒**
 > 這三個函數的底層技術，是巧妙利用了 EV3 內建紅外線感應器（設定於 Port 4）的多頻道切換（Channel 1~4）來傳輸大量資料。實際開發時，**只要將這些專屬副程式放入「無限迴圈（Loop）」中**，即可確保循線車隨時掌握最即時的賽道資訊！
+
+<br>
+
+!!! success "🚀 想要學更厲害的循線控制方法嗎？"
+    可以找這幾位厲害的教練上課唷！他們有非常豐富的比賽與教學經驗，保證讓你收穫滿滿～ 💯
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 15px; margin-bottom: 30px;">
+  <div style="flex: 1; min-width: 250px; max-width: 320px; display: flex; flex-direction: column; align-items: center;">
+    <h4 style="margin: 0 0 10px 0; text-align: center;">🏆 <a href="https://www.youtube.com/@LegoLauXiao" target="_blank" style="color: inherit; text-decoration: none;">LegoLauXiao 教練</a></h4>
+    <div style="width: 100%; aspect-ratio: 9/16; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,210,255,0.2); box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+      <iframe src="https://www.youtube.com/embed/WgacdWLatbk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="width: 100%; height: 100%; border: none;"></iframe>
+    </div>
+  </div>
+  <div style="flex: 1; min-width: 250px; max-width: 320px; display: flex; flex-direction: column; align-items: center;">
+    <h4 style="margin: 0 0 10px 0; text-align: center;">🏆 <a href="https://www.youtube.com/@legolaumo" target="_blank" style="color: inherit; text-decoration: none;">legolaumo 教練</a></h4>
+    <div style="width: 100%; aspect-ratio: 9/16; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,210,255,0.2); box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+      <iframe src="https://www.youtube.com/embed/T9bcndBNQvQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="width: 100%; height: 100%; border: none;"></iframe>
+    </div>
+  </div>
+</div>
+

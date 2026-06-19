@@ -176,6 +176,10 @@ Use the sensor block, select **Remote mode**, and read the `value list` (4 bytes
 
 > 💡 **Tactical Fool-Proofing Tip**: Byte 2 and Byte 3 in Remote mode allow you to directly obtain the extreme edge light values on both sides of the sensor within EV3-G blocks. If both values are simultaneously less than 20, it means the front of the car has completely entered the horizontal line of an intersection; if one side's value suddenly changes, it means a fork is approaching. This is the ultimate weapon to prevent losing the line!
 
+
+
+
+
 <style>
   .table-hover-row:hover {
     background: rgba(0,0,0,0.04) !important;
@@ -217,3 +221,24 @@ Here is an introduction to the functions and usage timings of the three core My 
 ### 3. Full Array Expansion Block: `LineCh8`
 * **Purpose**: Thoroughly decode the 8 sensors into independent states. Applicable for writing custom special intersection judgment algorithms, or drawing the status of the 8 sensors directly on the screen of the EV3 hub.
 * **Output Nodes**: Outputs 8 independent values from `s1` to `s8` in one go, perfectly corresponding to the real-time readings of each sensor from left to right.
+
+<br>
+
+!!! success "🚀 Want to learn more advanced line-following control methods?"
+    You can take classes from these awesome coaches! They have rich experience in competitions and teaching, guaranteeing you'll learn a lot! 💯
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 15px; margin-bottom: 30px;">
+  <div style="flex: 1; min-width: 250px; max-width: 320px; display: flex; flex-direction: column; align-items: center;">
+    <h4 style="margin: 0 0 10px 0; text-align: center;">🏆 <a href="https://www.youtube.com/@LegoLauXiao" target="_blank" style="color: inherit; text-decoration: none;">Coach LegoLauXiao</a></h4>
+    <div style="width: 100%; aspect-ratio: 9/16; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,210,255,0.2); box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+      <iframe src="https://www.youtube.com/embed/WgacdWLatbk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="width: 100%; height: 100%; border: none;"></iframe>
+    </div>
+  </div>
+  <div style="flex: 1; min-width: 250px; max-width: 320px; display: flex; flex-direction: column; align-items: center;">
+    <h4 style="margin: 0 0 10px 0; text-align: center;">🏆 <a href="https://www.youtube.com/@legolaumo" target="_blank" style="color: inherit; text-decoration: none;">Coach legolaumo</a></h4>
+    <div style="width: 100%; aspect-ratio: 9/16; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,210,255,0.2); box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+      <iframe src="https://www.youtube.com/embed/T9bcndBNQvQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="width: 100%; height: 100%; border: none;"></iframe>
+    </div>
+  </div>
+</div>
+
