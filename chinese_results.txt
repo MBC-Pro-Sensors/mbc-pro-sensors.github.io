@@ -1,0 +1,1 @@
+Found Chinese in docs/en\README.md:4, line: <p style="font-size:1.2rem; color:#aaa; font-family:monospace; letter-spacing:1px;">即插即用 · Native Block Support · 從初學者到競賽頂尖選手的唯一選擇</p>
