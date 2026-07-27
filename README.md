@@ -1,3 +1,4 @@
+<!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # MBC-Pro Sensors — 樂高機器人的競賽級感應器
 
 <div style="text-align:center; margin: 1.5rem 0;">

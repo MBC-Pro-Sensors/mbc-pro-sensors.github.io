@@ -1,3 +1,4 @@
+<!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # 掌控者 2.4G 遙控接收器 (PS2)
 
 <div style="text-align: center;">

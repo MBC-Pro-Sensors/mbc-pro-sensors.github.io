@@ -1,3 +1,4 @@
+<!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <style>
   .contact-hero {
     background: linear-gradient(135deg, rgba(0,210,255,0.06) 0%, rgba(10,186,181,0.04) 50%, rgba(255,107,53,0.04) 100%);
