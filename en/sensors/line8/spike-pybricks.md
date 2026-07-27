@@ -311,7 +311,7 @@ We have provided four core example programs and exclusive library functions. Ple
         </div>
         <div class="download-btn-group">
           <a href="../examples/line8/pybricks/For%20firmware%203.6.1/MBC_line8_Lib.py" target="_blank" download="MBC_line8_Lib.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 v3.6.1 Library</a>
-          <a href="../examples/line8/pybricks/For%20firmware%204.0.0/MBC_line8_Lib.py" target="_blank" download="MBC_line8_Lib.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 v4.0.0 Library</a>
+          <a href="../examples/line8/pybricks/For%20firmware%204.0.0/MBC_line8_obj_Lib.py" target="_blank" download="MBC_line8_obj_Lib.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 v4.0.0 Library</a>
         </div>
       </div>
       <!-- Right: Important tips and screenshots -->

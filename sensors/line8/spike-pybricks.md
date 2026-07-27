@@ -311,7 +311,7 @@
         </div>
         <div class="download-btn-group">
           <a href="../examples/line8/pybricks/For%20firmware%203.6.1/MBC_line8_Lib.py" target="_blank" download="MBC_line8_Lib.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 3.6.1 版庫函數</a>
-          <a href="../examples/line8/pybricks/For%20firmware%204.0.0/MBC_line8_Lib.py" target="_blank" download="MBC_line8_Lib.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 4.0.0 版庫函數</a>
+          <a href="../examples/line8/pybricks/For%20firmware%204.0.0/MBC_line8_obj_Lib.py" target="_blank" download="MBC_line8_obj_Lib.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 4.0.0 版庫函數</a>
         </div>
       </div>
       <!-- 右側：重要提示與截圖 -->
@@ -319,7 +319,7 @@
         <div style="background: rgba(255,107,53,0.08); border-left: 4px solid #ff6b35; border-radius: 0 8px 8px 0; padding: 15px 20px; flex-grow: 1;">
           <h4 style="margin: 0 0 8px 0; color: #ff6b35; font-size: 1.05rem; display: flex; align-items: center; gap: 6px;">⚠️ 重要提示：檔案放置位置</h4>
           <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #ddd; line-height: 1.6;">
-            您<strong>必須將此庫檔案 (<code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line8_Lib.py</code>) 與您的主程式放在同一個專案列表下</strong>。否則程式執行時將會報錯找不到庫檔案！
+            您<strong>必須將下載的庫檔案（依韌體版本而定，例如 <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line8_Lib.py</code> 或 <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line8_obj_Lib.py</code>）與您的主程式放在同一個專案列表下</strong>。否則程式執行時將會報錯找不到庫檔案！
           </p>
           <div style="border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,107,53,0.3); background: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 50%; margin: 0 auto;">
             <img src="../images/sensors/line8/pybricks-upload-lib.webp" alt="檔案放置位置" style="width: 100%; display: block; opacity: 0.9;" />
