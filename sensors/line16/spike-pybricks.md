@@ -116,8 +116,8 @@
         <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #aaa; line-height: 1.5;">使用 Pybricks 內建的圖形化積木指令讀取感應器，適合初學者快速上手基本循線邏輯。</p>
       </div>
       <div class="download-btn-group">
-        <a href="../examples/line16/pybricks/For%20firmware%203.6.1/line16_block_native.py" target="_blank" download="line16_block_native.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #00d2ff, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(0,210,255,0.25); transition: transform 0.2s ease;">📥 3.6.1 版</a>
-        <a href="../examples/line16/pybricks/For%20firmware%204.0.0/line16_block_native.py" target="_blank" download="line16_block_native.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 4.0.0 版</a>
+        <a href="../examples/line16/pybricks/For%20firmware%203.6.1/line16_block_native_v361.py" target="_blank" download="line16_block_native_v361.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #00d2ff, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(0,210,255,0.25); transition: transform 0.2s ease;">📥 3.6.1 版</a>
+        <a href="../examples/line16/pybricks/For%20firmware%204.0.0/line16_block_native_v400.py" target="_blank" download="line16_block_native_v400.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 4.0.0 版</a>
       </div>
     </div>
     <!-- Card 2: Python 內建 -->
@@ -130,8 +130,8 @@
         <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #aaa; line-height: 1.5;">使用 Pybricks 原生 MicroPython 內建感應器指令直接讀取，兼顧程式靈活性與純文字開發體驗。</p>
       </div>
       <div class="download-btn-group">
-        <a href="../examples/line16/pybricks/For%20firmware%203.6.1/line16_python_native.py" target="_blank" download="line16_python_native.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #00d2ff, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(0,210,255,0.25); transition: transform 0.2s ease;">📥 3.6.1 版</a>
-        <a href="../examples/line16/pybricks/For%20firmware%204.0.0/line16_python_native.py" target="_blank" download="line16_python_native.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 4.0.0 版</a>
+        <a href="../examples/line16/pybricks/For%20firmware%203.6.1/line16_python_native_v361.py" target="_blank" download="line16_python_native_v361.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #00d2ff, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(0,210,255,0.25); transition: transform 0.2s ease;">📥 3.6.1 版</a>
+        <a href="../examples/line16/pybricks/For%20firmware%204.0.0/line16_python_native_v400.py" target="_blank" download="line16_python_native_v400.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 4.0.0 版</a>
       </div>
     </div>
   </div>
@@ -275,8 +275,8 @@
         <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #aaa; line-height: 1.5;">圖形化積木結合我們為您開發的專屬庫函數，在積木開發下輕鬆取得高解析度高精度數值。</p>
       </div>
       <div class="download-btn-group">
-        <a href="../examples/line16/pybricks/For%20firmware%203.6.1/line16_block_with_lib.py" target="_blank" download="line16_block_with_lib.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 3.6.1 版</a>
-        <a href="../examples/line16/pybricks/For%20firmware%204.0.0/line16_block_with_lib.py" target="_blank" download="line16_block_with_lib.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 4.0.0 版</a>
+        <a href="../examples/line16/pybricks/For%20firmware%203.6.1/line16_block_with_lib_v361.py" target="_blank" download="line16_block_with_lib_v361.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 3.6.1 版</a>
+        <a href="../examples/line16/pybricks/For%20firmware%204.0.0/line16_block_with_lib_v400.py" target="_blank" download="line16_block_with_lib_v400.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 4.0.0 版</a>
       </div>
     </div>
     <!-- Card 4: Python 專屬庫 -->
@@ -289,8 +289,8 @@
         <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #aaa; line-height: 1.5;">高階選手的最佳方案！導入專屬庫進行最底層的完整數據調用與高頻 PID 循線算法開發。</p>
       </div>
       <div class="download-btn-group">
-        <a href="../examples/line16/pybricks/For%20firmware%203.6.1/line16_python_with_lib.py" target="_blank" download="line16_python_with_lib.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 3.6.1 版</a>
-        <a href="../examples/line16/pybricks/For%20firmware%204.0.0/line16_python_with_lib.py" target="_blank" download="line16_python_with_lib.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 4.0.0 版</a>
+        <a href="../examples/line16/pybricks/For%20firmware%203.6.1/line16_python_with_lib_v361.py" target="_blank" download="line16_python_with_lib_v361.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 3.6.1 版</a>
+        <a href="../examples/line16/pybricks/For%20firmware%204.0.0/line16_python_with_lib_v400.py" target="_blank" download="line16_python_with_lib_v400.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 4.0.0 版</a>
       </div>
     </div>
   </div>
@@ -310,8 +310,8 @@
           </p>
         </div>
         <div class="download-btn-group">
-          <a href="../examples/line16/pybricks/For%20firmware%203.6.1/MBC_line16_Lib.py" target="_blank" download="MBC_line16_Lib.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 3.6.1 版庫函數</a>
-          <a href="../examples/line16/pybricks/For%20firmware%204.0.0/MBC_line16_obj_Lib.py" target="_blank" download="MBC_line16_obj_Lib.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 4.0.0 版庫函數</a>
+          <a href="../examples/line16/pybricks/For%20firmware%203.6.1/MBC_line16_Lib_v361.py" target="_blank" download="MBC_line16_Lib_v361.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 3.6.1 版庫函數</a>
+          <a href="../examples/line16/pybricks/For%20firmware%204.0.0/MBC_line16_obj_Lib_v400.py" target="_blank" download="MBC_line16_obj_Lib_v400.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 4.0.0 版庫函數</a>
         </div>
       </div>
       <!-- 右側：重要提示與截圖 -->
@@ -319,7 +319,7 @@
         <div style="background: rgba(255,107,53,0.08); border-left: 4px solid #ff6b35; border-radius: 0 8px 8px 0; padding: 15px 20px; flex-grow: 1;">
           <h4 style="margin: 0 0 8px 0; color: #ff6b35; font-size: 1.05rem; display: flex; align-items: center; gap: 6px;">⚠️ 重要提示：檔案放置位置</h4>
           <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #ddd; line-height: 1.6;">
-            您<strong>必須將下載的庫檔案（依韌體版本而定，例如 <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line16_Lib.py</code> 或 <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line16_obj_Lib.py</code>）與您的主程式放在同一個專案列表下</strong>。請參考下方截圖確認，否則程式執行時將會報錯找不到庫檔案！
+            您<strong>必須將下載的庫檔案（依韌體版本而定，例如 <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line16_Lib_v361.py</code> 或 <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line16_obj_Lib_v400.py</code>）與您的主程式放在同一個專案列表下</strong>。請參考下方截圖確認，否則程式執行時將會報錯找不到庫檔案！
           </p>
           <div style="border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,107,53,0.3); background: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 50%; margin: 0 auto;">
             <img src="../images/sensors/line16/pybricks-upload-lib.webp" alt="Pybricks 檔案列表截圖說明" style="width: 100%; display: block; opacity: 0.9;" />
