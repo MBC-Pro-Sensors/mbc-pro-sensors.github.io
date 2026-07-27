@@ -3,41 +3,39 @@ from pybricks.parameters import Direction, Port
 from pybricks.pupdevices import Motor
 from pybricks.tools import multitask, run_task, wait
 
-from MBC_line8_Lib import line_bin_raw, line_init_port_multitask, line_ir_calibration, line_ir_ch, line_junction, line_junction_name, line_on_sensors, line_pos100, line_pos8, line_read_all, line_width
+from MBC_line8_obj_Lib import MBC_LINE8
 
-# Set up all devices.
+# Set up.
+line8 = MBC_LINE8(3, True)
 prime_hub = PrimeHub()
 motorL = Motor(Port.E, Direction.COUNTERCLOCKWISE)
 motorR = Motor(Port.F, Direction.CLOCKWISE)
-
-# Initialize variables.
 PD = 0
 posLast = 0
 
 async def subtask():
     while True:
         await wait(0)
-        print(await line_pos8(), await line_pos100(), await line_ir_ch(1))
+        print(await line8.pos8(), await line8.pos100(), await line8.ir_ch(1))
         await wait(10)
 
 async def subtask2():
     global PD, posLast
     while True:
         await wait(0)
-        if await line_width() > 6:
+        if await line8.width() > 6:
             motorL.dc(0)
             motorR.dc(0)
         else:
-            PD = await line_pos100() * 1.2 + (await line_pos100() - posLast) * 3.6
+            PD = await line8.pos100() * 1.2 + (await line8.pos100() - posLast) * 3.6
             motorL.dc(75 + PD)
             motorR.dc(75 - PD)
-            posLast = await line_pos100()
+            posLast = await line8.pos100()
             await wait(10)
 
 async def main():
     global PD, posLast
-    # Connect Line16 sensor to port C (3) and enable multitasking (true).
-    await line_init_port_multitask(3, True)
+    # Connect Line8 sensor to port C (3) and enable multitasking (true).
     await multitask(
         subtask(),
         subtask2(),

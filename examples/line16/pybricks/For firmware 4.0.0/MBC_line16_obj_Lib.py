@@ -53,16 +53,16 @@ def _hi(word):
     return (_u16(word) >> 8) & 0xFF
 
 # ════════════════════════════════════════════════════════════════
-#  Pre-build PUPDevice for all ports at the module level
-#  ★ Must be created here; calling PUPDevice() after run_task() is prohibited
+#  PUPDevice is built lazily, only for the port actually passed to
+#  line_init_port_multitask() -- never touches the other 5 ports.
+#  ★ For multitask=True, call line_init_port_multitask() at the top level,
+#    BEFORE run_task(main()) -- not from inside async def main(). Building
+#    a device object after run_task() has started is not safe (same rule
+#    as MBC_LINE16/MBC_EXP6). For multitask=False (sync) this restriction
+#    does not apply -- call it anywhere.
 # ════════════════════════════════════════════════════════════════
 
 _devices = {}
-for _port_num, _port_obj in _PORT_MAP.items():
-    try:
-        _devices[_port_num] = PUPDevice(_port_obj)
-    except Exception:
-        _devices[_port_num] = None
 
 # ════════════════════════════════════════════════════════════════
 #  Internal state
@@ -236,14 +236,152 @@ def line_init_port_multitask(port, multitask=False):
     Initialize sensor and select mode.
       port      : int 1~6  (1=A, 2=B, 3=C, 4=D, 5=E, 6=F)
       multitask : bool, True for use inside async/multitask programs
+
+    ★ For multitask=True, call this at the top level BEFORE run_task(main()),
+    not from inside async def main() -- building the port's device object
+    must happen before the event loop starts (same rule as MBC_LINE16(...)).
+    Only the requested port is touched; the other 5 ports are left alone.
     Returns an awaitable no-op so it can safely be used with
     'await line_init_port_multitask(...)'.
     """
     global _selected_dev, _async_mode, _selected_port
     global _cache, _cache_time
     _selected_port = port
-    _selected_dev  = _devices.get(port)
     _async_mode    = bool(multitask)
     _cache         = None   # ★ Cache resets upon port switch
     _cache_time    = 0
+    if port not in _devices:
+        try:
+            _devices[port] = PUPDevice(_PORT_MAP[port])
+        except Exception:
+            _devices[port] = None
+    _selected_dev = _devices.get(port)
     return _noop()
+
+# ════════════════════════════════════════════════════════════════
+#  Object-style API (MBC_LINE16 class)
+#
+#  Same reason MBC_EXP6 is a class: graphical block tools place object
+#  construction ("object block") in the Setup canvas, before run_task(),
+#  while the free functions above are called from an "imported function"
+#  block that only lands inside async def main() (after run_task() has
+#  already started). Building a PUPDevice there is too late/unsafe.
+#
+#  MBC_LINE16(port, multitask) builds a PUPDevice for ONLY that one port,
+#  in __init__ (before run_task()) -- it never touches the other 5 ports,
+#  so it can't collide with another device (e.g. an EXP6 board) that is
+#  already streaming on one of them.
+#
+#  Kept fully independent of the module-level globals above so mixing the
+#  old function-style calls with this class in the same program can't
+#  cause cross-talk.
+# ════════════════════════════════════════════════════════════════
+
+class MBC_LINE16:
+    def __init__(self, port, multitask=False):
+        self._selected_port = port
+        self._async_mode    = bool(multitask)
+        self._cache         = None
+        self._cache_time    = 0
+        try:
+            self._selected_dev = PUPDevice(_PORT_MAP[port])
+        except Exception:
+            self._selected_dev = None
+
+    def _check_init(self):
+        if self._selected_dev is None:
+            letter = _PORT_LETTER.get(self._selected_port, str(self._selected_port))
+            raise RuntimeError(
+                "Sensor not found on Port {} (port={}). Please check the connection.".format(
+                    letter, self._selected_port
+                )
+            )
+
+    async def _read_async(self):
+        now = _watch.time()
+        if self._cache is None or (now - self._cache_time) >= _CACHE_MS:
+            self._cache      = await self._selected_dev.read(_MODE)
+            self._cache_time = now
+        return self._cache
+
+    def _read_sync(self):
+        now = _watch.time()
+        if self._cache is None or (now - self._cache_time) >= _CACHE_MS:
+            self._cache      = self._selected_dev.read(_MODE)
+            self._cache_time = now
+        return self._cache
+
+    def _get(self, parse_fn):
+        self._check_init()
+        if self._async_mode:
+            return self._get_async(parse_fn)
+        return parse_fn(self._read_sync())
+
+    async def _get_async(self, parse_fn):
+        return parse_fn(await self._read_async())
+
+    def ir_calibration(self):
+        return self._get(_parse_ir_calibration)
+
+    def pos16(self):
+        return self._get(_parse_line_pos16)
+
+    def width(self):
+        return self._get(_parse_line_width)
+
+    def pos100(self):
+        return self._get(_parse_line_pos100)
+
+    def bin_raw(self):
+        return self._get(_parse_bin_raw)
+
+    def on_sensors(self):
+        return self._get(_parse_on_sensors)
+
+    def junction(self):
+        return self._get(_parse_junction)
+
+    def junction_name(self):
+        return self._get(_parse_junction_name)
+
+    def read_all(self):
+        return self._get(_parse_read_all)
+
+    def ir_ch(self, ch):
+        """
+        Returns IR calibration value of a single channel (0~15).
+        ch : int 1~16  (1=leftmost, 16=rightmost)
+        """
+        if ch < 1 or ch > 16:
+            raise ValueError("ch must be 1~16, got {}".format(ch))
+        return self._get(_IR_CH_PARSERS[ch - 1])
+
+# ════════════════════════════════════════════════════════════════
+#  MBC_LINE16 -- callable methods (object-style API)
+#
+#  line16 = MBC_LINE16(port, multitask)   -- call BEFORE run_task(main())
+#    port      : int 1~6  (1=A, 2=B, 3=C, 4=D, 5=E, 6=F)
+#    multitask : False -> sync (call methods directly)
+#                True  -> async (await every method call)
+#
+#  line16.pos16()            -16~+16   line position, coarse (center=0)
+#  line16.pos100()           -100~+100  line position, high-resolution (center=0)
+#  line16.width()            0~16     number of triggered sensors
+#  line16.bin_raw()          0~65535  raw 16-bit sensor bitmap
+#  line16.on_sensors()       [int]    1-indexed channels currently on the line
+#  line16.junction()         0~2+     0=no line, 1=single line, 2+=junction
+#  line16.junction_name()    str      "none" / "line" / "junction"
+#  line16.ir_calibration()   [int]*16 all 16 channels' calibrated IR value (0~15)
+#  line16.ir_ch(ch)          0~15     single channel's calibrated IR value, ch=1~16
+#  line16.read_all()         dict     all of the above in one dict, one hardware read
+#
+#  Example (sync):
+#      line16 = MBC_LINE16(3, False)
+#      print(line16.pos16(), line16.width())
+#
+#  Example (async / multitask):
+#      line16 = MBC_LINE16(3, True)
+#      async def main():
+#          print(await line16.pos16(), await line16.width())
+#      run_task(main())
+# ════════════════════════════════════════════════════════════════
