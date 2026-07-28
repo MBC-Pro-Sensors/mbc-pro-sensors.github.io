@@ -155,7 +155,7 @@
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
 
-  <a href="#/sensors/EXP6/index" style="text-decoration:none;">
+  <a href="#/sensors/exp6/index" style="text-decoration:none;">
     <div class="product-card" style="background:#0a111a; border:1px solid rgba(0,210,255,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#00d2ff; font-size:1.5rem;">🔌</div>
@@ -163,7 +163,7 @@
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">突破主機孔位極限：自帶隔離電源保護的 6 路擴充神兵</p>
       </div>
       <div style="flex:0 0 auto;">
-        <img src="/images/sensors/EXP6/EXP6-product.webp" alt="SPIKE 6 路擴充器" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(0,210,255,0.6));">
+        <img src="/images/sensors/exp6/exp6-product.webp" alt="SPIKE 6 路擴充器" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(0,210,255,0.6));">
       </div>
     </div>
   </a>
