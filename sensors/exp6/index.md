@@ -20,10 +20,14 @@
 </p>
 </div>
 
-> [!IMPORTANT]
-> **⚠️ 購買與相容性重要聲明**
-> 本擴充器為**「SPIKE 系列專用」**設計，採用 LPF2 (Lego 6-pin) 介面。
-> 僅相容於 SPIKE Prime 主機。**不支援 Robot Inventor 與 EV3 主機！**
+> [!WARNING]
+> **⚠️ 重要限制說明**
+> 請在購買前確認您的使用場景符合以下規格：
+>
+> | 項目 | 說明 |
+> | :--- | :--- |
+> | **相容主機** | SPIKE Prime 限定（不支援 Robot Inventor 與 EV3） |
+> | **SPIKE 官方軟體** | 僅支援 Python 文字模式，不支援圖控積木模式 |
 
 ---
 
