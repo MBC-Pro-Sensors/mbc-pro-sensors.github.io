@@ -5,9 +5,9 @@
 
 <div style="display: flex; align-items: center; justify-content: center; gap: 30px; margin: 30px 0; flex-wrap: wrap;">
   <div style="background: rgba(0,210,255,0.03); border: 1px solid rgba(0,210,255,0.25); border-radius: 12px; padding: 15px 35px; display: flex; align-items: center; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-    <img src="../images/hubs/ev3-hub.webp" alt="EV3 Hub" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(0,210,255,0.35));" />
+    <img src="/images/hubs/ev3-hub.webp" alt="EV3 Hub" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(0,210,255,0.35));" />
     <span style="font-size: 2.2rem; color: #666; font-weight: 300; line-height: 1;">+</span>
-    <img src="../images/hubs/ev3-pybricks-logo.webp" alt="EV3 pyBricks" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(0,210,255,0.25));" />
+    <img src="/images/hubs/ev3-pybricks-logo.webp" alt="EV3 pyBricks" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(0,210,255,0.25));" />
   </div>
 </div>
 
@@ -37,7 +37,7 @@
 
 ---
 
-## <a href="../examples/line16/line16_pybricks_ev3.zip" target="_blank" data-ignore="true" download>📥 範例程式與函數下載 (打包下載)</a>
+## <a href="/examples/line16/line16_pybricks_ev3.zip" target="_blank" data-ignore="true" download>📥 範例程式與函數下載 (打包下載)</a>
 
 我們為您提供了核心範例程式以及專屬庫函數。請依照您的開發習慣選擇：
 
@@ -117,7 +117,7 @@
                 <span style="display: inline-block; width: 8px; height: 8px; background: #ff6b35; border-radius: 50%;"></span>
                 非多工狀態設定 (常規使用)
               </div>
-              <img src="../images/sensors/line16/ev3-pybricks-non-multitask.webp" alt="非多工狀態設定" style="width: 100%; border-radius: 6px; border: 1px solid rgba(255,107,53,0.2);" />
+              <img src="/images/sensors/line16/ev3-pybricks-non-multitask.webp" alt="非多工狀態設定" style="width: 100%; border-radius: 6px; border: 1px solid rgba(255,107,53,0.2);" />
             </div>
             
             <!-- 多工狀態 -->
@@ -126,7 +126,7 @@
                 <span style="display: inline-block; width: 8px; height: 8px; background: #0abab5; border-radius: 50%;"></span>
                 多工狀態設定 (非同步 / await)
               </div>
-              <img src="../images/sensors/line16/ev3-pybricks-multitask.webp" alt="多工狀態設定" style="width: 100%; border-radius: 6px; border: 1px solid rgba(10,186,181,0.2);" />
+              <img src="/images/sensors/line16/ev3-pybricks-multitask.webp" alt="多工狀態設定" style="width: 100%; border-radius: 6px; border: 1px solid rgba(10,186,181,0.2);" />
             </div>
           </div>
         </div>
@@ -207,23 +207,23 @@
     <div class="download-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: space-between;">
       <div>
         <div style="width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); background: #000; margin-bottom: 15px;">
-          <img src="../images/sensors/line16/ev3-pybricks-block-with-lib.webp" alt="Block 模式 (專屬庫函數)" style="width: 100%; height: 160px; object-fit: cover; opacity: 0.85; transition: opacity 0.3s ease;" />
+          <img src="/images/sensors/line16/ev3-pybricks-block-with-lib.webp" alt="Block 模式 (專屬庫函數)" style="width: 100%; height: 160px; object-fit: cover; opacity: 0.85; transition: opacity 0.3s ease;" />
         </div>
         <h3 style="margin: 0 0 10px 0; color: #0abab5; font-size: 1.15rem; font-weight: bold;">🧩 Block 模式 (導入專屬庫)</h3>
         <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #aaa; line-height: 1.5;">圖形化積木結合我們為您開發的專屬庫函數，在積木開發下輕鬆取得高解析度高精度數值。</p>
       </div>
-      <a href="../examples/line16/ev3/line16_ev3_block_with_lib.py" target="_blank" download="line16_ev3_block_with_lib.py" data-ignore="true" class="btn-download" style="display: block; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 下載範例 (.py)</a>
+      <a href="/examples/line16/ev3/line16_ev3_block_with_lib.py" target="_blank" download="line16_ev3_block_with_lib.py" data-ignore="true" class="btn-download" style="display: block; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 下載範例 (.py)</a>
     </div>
     <!-- Card 4: Python 專屬庫 -->
     <div class="download-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: space-between;">
       <div>
         <div style="width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); background: #000; margin-bottom: 15px;">
-          <img src="../images/sensors/line16/ev3-pybricks-python-with-lib.webp" alt="MicroPython 模式 (專屬庫函數)" style="width: 100%; height: 160px; object-fit: cover; opacity: 0.85; transition: opacity 0.3s ease;" />
+          <img src="/images/sensors/line16/ev3-pybricks-python-with-lib.webp" alt="MicroPython 模式 (專屬庫函數)" style="width: 100%; height: 160px; object-fit: cover; opacity: 0.85; transition: opacity 0.3s ease;" />
         </div>
         <h3 style="margin: 0 0 10px 0; color: #0abab5; font-size: 1.15rem; font-weight: bold;">🐍 Python 模式 (導入專屬庫)</h3>
         <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #aaa; line-height: 1.5;">高階選手的最佳方案！導入專屬庫進行最底層的完整數據調用與高頻 PID 循線算法開發。</p>
       </div>
-      <a href="../examples/line16/ev3/line16_ev3_python_with_lib.py" target="_blank" download="line16_ev3_python_with_lib.py" data-ignore="true" class="btn-download" style="display: block; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 下載範例 (.py)</a>
+      <a href="/examples/line16/ev3/line16_ev3_python_with_lib.py" target="_blank" download="line16_ev3_python_with_lib.py" data-ignore="true" class="btn-download" style="display: block; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 下載範例 (.py)</a>
     </div>
   </div>
 
@@ -235,13 +235,13 @@
       <div style="flex: 1; min-width: 260px; display: flex; flex-direction: column; justify-content: space-between;">
         <div>
           <div style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(10,186,181,0.2); background: #000; margin-bottom: 15px;">
-            <img src="../images/sensors/line16/ev3-pybricks-lib-icon.webp" alt="16路循線感應器專屬 Pybricks 庫函數" style="width: 100%; height: 160px; object-fit: cover; opacity: 0.9;" />
+            <img src="/images/sensors/line16/ev3-pybricks-lib-icon.webp" alt="16路循線感應器專屬 Pybricks 庫函數" style="width: 100%; height: 160px; object-fit: cover; opacity: 0.9;" />
           </div>
           <p style="font-size: 0.85rem; color: #ccc; line-height: 1.6; margin-bottom: 15px;">
             這是配合「導入專屬庫」範例不可或缺的驅動核心。請下載此庫檔案，即可完美啟用高階插值位置與 16 路光電數值精細讀取。
           </p>
         </div>
-        <a href="../examples/line16/ev3/MBC_line16_EV3_Lib.py" target="_blank" download="MBC_line16_EV3_Lib.py" data-ignore="true" class="btn-download-lib" style="display: block; text-align: center; padding: 12px 20px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 下載專屬庫函數 (MBC_line16_EV3_Lib.py)</a>
+        <a href="/examples/line16/ev3/MBC_line16_EV3_Lib.py" target="_blank" download="MBC_line16_EV3_Lib.py" data-ignore="true" class="btn-download-lib" style="display: block; text-align: center; padding: 12px 20px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 下載專屬庫函數 (MBC_line16_EV3_Lib.py)</a>
       </div>
       <!-- 右側：重要提示與截圖 -->
       <div style="flex: 1.2; min-width: 280px; display: flex;">
@@ -251,7 +251,7 @@
             請確保將 <code>MBC_line16_EV3_Lib.py</code> 檔案直接匯入到您的 Pybricks 專案中，<strong>且檔案名稱必須完全一致</strong>，主程式的 <code>import</code> 指令才能正確載入函數！
           </p>
           <div style="border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,107,53,0.3); background: #000; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
-            <img src="../images/sensors/line16/ev3-pybricks-upload-lib.webp" alt="Pybricks 匯入庫檔案示範" style="width: 100%; height: auto; display: block;" />
+            <img src="/images/sensors/line16/ev3-pybricks-upload-lib.webp" alt="Pybricks 匯入庫檔案示範" style="width: 100%; height: auto; display: block;" />
           </div>
         </div>
       </div>

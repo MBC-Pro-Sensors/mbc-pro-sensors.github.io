@@ -4,7 +4,7 @@
 <div style="text-align: center;">
   <span style="display:inline-block; background:#0ABAB5; color:#fff; padding:3px 12px; border-radius:20px; font-family:monospace; margin-bottom:1rem; font-size: 0.85rem;">TOF-02-LSR · ADVANCED</span>
   <br>
-  <img src="../images/sensors/tof2/tof2-product.webp" alt="Ranger 2-Way Laser Ranging" style="max-width: 280px; margin: 1rem auto; display: block; filter: drop-shadow(0 0 30px rgba(10,186,181,0.2));" />
+  <img src="/images/sensors/tof2/tof2-product.webp" alt="Ranger 2-Way Laser Ranging" style="max-width: 280px; margin: 1rem auto; display: block; filter: drop-shadow(0 0 30px rgba(10,186,181,0.2));" />
   <p style="font-family: monospace; color: #aaa; letter-spacing: 1px;">
     <strong>Dual-Beam Laser Ranging Module</strong><br>
     Lightweight and agile · Accurately capture object lateral movements · Say goodbye to bulky ultrasonics

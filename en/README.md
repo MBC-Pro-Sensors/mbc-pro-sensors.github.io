@@ -1,4 +1,4 @@
-<!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
+﻿<!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # MBC-Pro Sensors — Competition-Grade Sensors for LEGO Robots
 
 <div style="text-align:center; margin: 1.5rem 0;">
@@ -48,7 +48,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Ignores track noise. The ultimate anti-interference line follower designed for complex maps.</p>
       </div>
       <div style="flex:0 0 auto;">
-        <img src="../images/sensors/line8/line8-product-spike.webp" alt="循行者 8 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(255,69,0,0.6));">
+        <img src="/images/sensors/line8/line8-product-spike.webp" alt="循行者 8 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(255,69,0,0.6));">
       </div>
     </div>
   </a>
@@ -61,7 +61,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Say goodbye to patching. Unleash ports with double the field of view: the king of high-speed line following.</p>
       </div>
       <div style="flex:0 0 auto;">
-        <img src="../images/sensors/line16/line16-product-spike.webp" alt="循行者 16 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(255,107,53,0.6));">
+        <img src="/images/sensors/line16/line16-product-spike.webp" alt="循行者 16 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(255,107,53,0.6));">
       </div>
     </div>
   </a>
@@ -80,7 +80,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Lightweight and agile. A micro-laser that accurately captures the left and right movements of objects.</p>
       </div>
       <div style="flex:0 0 auto;">
-        <img src="../images/sensors/tof2/tof2-product.webp" alt="測距者 2 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(10,186,181,0.6));">
+        <img src="/images/sensors/tof2/tof2-product.webp" alt="測距者 2 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(10,186,181,0.6));">
       </div>
     </div>
   </a>
@@ -93,7 +93,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Say goodbye to ultrasonic ghosts: 180-degree zero blind spots. The LiDAR for sumo battles and high-speed obstacle avoidance.</p>
       </div>
       <div style="flex:0 0 auto;">
-        <img src="../images/sensors/tof8/tof8-product.webp" alt="測距者 8 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(10,186,181,0.6));">
+        <img src="/images/sensors/tof8/tof8-product.webp" alt="測距者 8 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(10,186,181,0.6));">
       </div>
     </div>
   </a>
@@ -112,7 +112,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Cost-effective entry-level choice. The wireless tool to easily expand your control buttons.</p>
       </div>
       <div style="flex:0 0 auto;">
-        <img src="../images/sensors/ps2/ps2-product.webp" alt="掌控者 2.4G" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(242,194,0,0.6));">
+        <img src="/images/sensors/ps2/ps2-product.webp" alt="掌控者 2.4G" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(242,194,0,0.6));">
       </div>
     </div>
   </a>
@@ -125,7 +125,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Fear no arena interference: Top-tier remote with pairing memory and 100-meter stable connection.</p>
       </div>
       <div style="flex:0 0 auto;">
-        <img src="../images/sensors/ps4/ps4-product.webp" alt="掌控者高階藍牙" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(242,194,0,0.6));">
+        <img src="/images/sensors/ps4/ps4-product.webp" alt="掌控者高階藍牙" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(242,194,0,0.6));">
       </div>
     </div>
   </a>
@@ -144,7 +144,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Grant your robot true vision: High-end camera specializing in color tracking and precise coordinate positioning.</p>
       </div>
       <div style="flex:0 0 auto;">
-        <img src="../images/sensors/esp32cam/esp32cam-product.webp" alt="神攝手視覺感應器" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(0,210,255,0.6));">
+        <img src="/images/sensors/esp32cam/esp32cam-product.webp" alt="神攝手視覺感應器" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(0,210,255,0.6));">
       </div>
     </div>
   </a>
@@ -155,17 +155,18 @@ Use the sidebar navigation or click the cards below to view specific product doc
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
 
-  <a href="#/en/sensors/ext6/index" style="text-decoration:none;">
+  <a href="#/en/sensors/EXP6/index" style="text-decoration:none;">
     <div class="product-card" style="background:#0a111a; border:1px solid rgba(0,210,255,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#00d2ff; font-size:1.5rem;">🔌</div>
-        <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">SPIKE 6-Way Multiplexer (EXT6) (To be updated)</h4>
+        <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">SPIKE 6-Way Expander (EXP6) (To be updated)</h4>
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Break the limits of hub ports: The 6-way expansion artifact with built-in isolated power protection.</p>
       </div>
       <div style="flex:0 0 auto;">
-        <img src="../images/sensors/ext6/ext6-product.webp" alt="SPIKE 6 路多工器" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(0,210,255,0.6));">
+        <img src="/images/sensors/EXP6/EXP6-product.webp" alt="SPIKE 6 路擴充器" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(0,210,255,0.6));">
       </div>
     </div>
   </a>
 
 </div>
+

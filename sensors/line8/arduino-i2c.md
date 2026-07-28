@@ -5,7 +5,7 @@
 
 <div style="display: flex; align-items: center; justify-content: center; gap: 30px; margin: 30px 0; flex-wrap: wrap;">
   <div style="background: rgba(10,186,181,0.03); border: 1px solid rgba(10,186,181,0.25); border-radius: 12px; padding: 25px 45px; display: flex; align-items: center; gap: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-    <img src="../images/sensors/line8/line8-product-arduino.webp" alt="循行者8路感應器 (通用 I2C 版)" style="max-height: 144px; object-fit: contain; filter: drop-shadow(0 0 20px rgba(10,186,181,0.75)) drop-shadow(0 0 45px rgba(10,186,181,0.45));" />
+    <img src="/images/sensors/line8/line8-product-arduino.webp" alt="循行者8路感應器 (通用 I2C 版)" style="max-height: 144px; object-fit: contain; filter: drop-shadow(0 0 20px rgba(10,186,181,0.75)) drop-shadow(0 0 45px rgba(10,186,181,0.45));" />
     <span style="font-size: 2.5rem; color: #777; font-weight: 300; line-height: 1;">+</span>
     <div style="display: flex; gap: 15px; align-items: center;">
       <svg viewBox="0 0 100 40" style="height: 60px; fill: none; stroke: #00d2ff; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 10px rgba(0, 210, 255, 0.4));">

@@ -5,9 +5,9 @@
 
 <div style="display: flex; align-items: center; justify-content: center; gap: 30px; margin: 30px 0; flex-wrap: wrap;">
   <div style="background: rgba(10,186,181,0.03); border: 1px solid rgba(10,186,181,0.25); border-radius: 12px; padding: 15px 35px; display: flex; align-items: center; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-    <img src="../images/hubs/inventor-hub.webp" alt="MINDSTORMS Hub" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.35));" />
+    <img src="/images/hubs/inventor-hub.webp" alt="MINDSTORMS Hub" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.35));" />
     <span style="font-size: 2.2rem; color: #666; font-weight: 300; line-height: 1;">+</span>
-    <img src="../images/hubs/spike-mindstorms-app.webp" alt="LEGO MINDSTORMS Inventor App" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.15));" />
+    <img src="/images/hubs/spike-mindstorms-app.webp" alt="LEGO MINDSTORMS Inventor App" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.15));" />
   </div>
 </div>
 
@@ -95,14 +95,14 @@ You can directly pull the official **"Reflected Light"** or **"RGB Value"** bloc
 
 ---
 
-## <a href="../examples/line16/spike/line16-demo.lms" target="_blank" data-ignore="true" download>📥 Download Example Programs</a>
+## <a href="/examples/line16/spike/line16-demo.lms" target="_blank" data-ignore="true" download>📥 Download Example Programs</a>
 
 <div style="text-align: center; margin: 25px 0;">
-  <img src="../images/sensors/line16/spike-ri-example.webp" alt="LEGO® MINDSTORMS® Robot Inventor App Block Example" style="max-width: 100%; border-radius: 8px; border: 1px solid rgba(10,186,181,0.25); box-shadow: 0 10px 30px rgba(0,0,0,0.5); filter: drop-shadow(0 0 15px rgba(10,186,181,0.15));" />
+  <img src="/images/sensors/line16/spike-ri-example.webp" alt="LEGO® MINDSTORMS® Robot Inventor App Block Example" style="max-width: 100%; border-radius: 8px; border: 1px solid rgba(10,186,181,0.25); box-shadow: 0 10px 30px rgba(0,0,0,0.5); filter: drop-shadow(0 0 15px rgba(10,186,181,0.15));" />
   <p style="font-size: 0.85rem; color: #888; margin-top: 10px;">💡 The image above demonstrates the classic PID line-following program structure in the LEGO® MINDSTORMS® Robot Inventor App for the 16-Way Line Follower.</p>
 </div>
 
-* <a href="../examples/line16/spike/line16-demo.lms" target="_blank" download="line16-demo.lms" style="color: #0abab5; font-weight: bold; text-decoration: none;">📥 Robot Inventor Example (.lms)</a>
+* <a href="/examples/line16/spike/line16-demo.lms" target="_blank" download="line16-demo.lms" style="color: #0abab5; font-weight: bold; text-decoration: none;">📥 Robot Inventor Example (.lms)</a>
 
 > After downloading, open it directly using the LEGO® MINDSTORMS® Robot Inventor App.
 

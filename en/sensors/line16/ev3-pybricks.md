@@ -5,9 +5,9 @@
 
 <div style="display: flex; align-items: center; justify-content: center; gap: 30px; margin: 30px 0; flex-wrap: wrap;">
   <div style="background: rgba(0,210,255,0.03); border: 1px solid rgba(0,210,255,0.25); border-radius: 12px; padding: 15px 35px; display: flex; align-items: center; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-    <img src="../images/hubs/ev3-hub.webp" alt="EV3 Hub" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(0,210,255,0.35));" />
+    <img src="/images/hubs/ev3-hub.webp" alt="EV3 Hub" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(0,210,255,0.35));" />
     <span style="font-size: 2.2rem; color: #666; font-weight: 300; line-height: 1;">+</span>
-    <img src="../images/hubs/ev3-pybricks-logo.webp" alt="EV3 pyBricks" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(0,210,255,0.25));" />
+    <img src="/images/hubs/ev3-pybricks-logo.webp" alt="EV3 pyBricks" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(0,210,255,0.25));" />
   </div>
 </div>
 
@@ -37,7 +37,7 @@ In the EV3 Pybricks environment, this line follower provides two flexible data r
 
 ---
 
-## <a href="../examples/line16/line16_pybricks_ev3.zip" target="_blank" data-ignore="true" download>📥 Example Programs and Functions Download (Packaged Download)</a>
+## <a href="/examples/line16/line16_pybricks_ev3.zip" target="_blank" data-ignore="true" download>📥 Example Programs and Functions Download (Packaged Download)</a>
 
 We have provided core example programs and exclusive library functions. Please choose according to your development habits:
 
@@ -117,7 +117,7 @@ We have provided core example programs and exclusive library functions. Please c
                 <span style="display: inline-block; width: 8px; height: 8px; background: #ff6b35; border-radius: 50%;"></span>
                 Non-multitask State Settings (Normal use)
               </div>
-              <img src="../images/sensors/line16/ev3-pybricks-non-multitask.webp" alt="Non-multitask state settings" style="width: 100%; border-radius: 6px; border: 1px solid rgba(255,107,53,0.2);" />
+              <img src="/images/sensors/line16/ev3-pybricks-non-multitask.webp" alt="Non-multitask state settings" style="width: 100%; border-radius: 6px; border: 1px solid rgba(255,107,53,0.2);" />
             </div>
             
             <!-- Multitask State -->
@@ -126,7 +126,7 @@ We have provided core example programs and exclusive library functions. Please c
                 <span style="display: inline-block; width: 8px; height: 8px; background: #0abab5; border-radius: 50%;"></span>
                 Multitask State Settings (Async / await)
               </div>
-              <img src="../images/sensors/line16/ev3-pybricks-multitask.webp" alt="Multitask state settings" style="width: 100%; border-radius: 6px; border: 1px solid rgba(10,186,181,0.2);" />
+              <img src="/images/sensors/line16/ev3-pybricks-multitask.webp" alt="Multitask state settings" style="width: 100%; border-radius: 6px; border: 1px solid rgba(10,186,181,0.2);" />
             </div>
           </div>
         </div>
@@ -207,23 +207,23 @@ We have provided core example programs and exclusive library functions. Please c
     <div class="download-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: space-between;">
       <div>
         <div style="width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); background: #000; margin-bottom: 15px;">
-          <img src="../images/sensors/line16/ev3-pybricks-block-with-lib.webp" alt="Block Mode (Import Exclusive Library)" style="width: 100%; height: 160px; object-fit: cover; opacity: 0.85; transition: opacity 0.3s ease;" />
+          <img src="/images/sensors/line16/ev3-pybricks-block-with-lib.webp" alt="Block Mode (Import Exclusive Library)" style="width: 100%; height: 160px; object-fit: cover; opacity: 0.85; transition: opacity 0.3s ease;" />
         </div>
         <h3 style="margin: 0 0 10px 0; color: #0abab5; font-size: 1.15rem; font-weight: bold;">🧩 Block Mode (Import Library)</h3>
         <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #aaa; line-height: 1.5;">Graphical blocks combined with the exclusive library functions we developed for you, allowing easy access to high-resolution and high-precision values within block development.</p>
       </div>
-      <a href="../examples/line16/ev3/line16_ev3_block_with_lib.py" target="_blank" download="line16_ev3_block_with_lib.py" data-ignore="true" class="btn-download" style="display: block; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 Download Example (.py)</a>
+      <a href="/examples/line16/ev3/line16_ev3_block_with_lib.py" target="_blank" download="line16_ev3_block_with_lib.py" data-ignore="true" class="btn-download" style="display: block; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 Download Example (.py)</a>
     </div>
     <!-- Card 4: Python with Lib -->
     <div class="download-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: space-between;">
       <div>
         <div style="width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); background: #000; margin-bottom: 15px;">
-          <img src="../images/sensors/line16/ev3-pybricks-python-with-lib.webp" alt="Python Mode (Import Exclusive Library)" style="width: 100%; height: 160px; object-fit: cover; opacity: 0.85; transition: opacity 0.3s ease;" />
+          <img src="/images/sensors/line16/ev3-pybricks-python-with-lib.webp" alt="Python Mode (Import Exclusive Library)" style="width: 100%; height: 160px; object-fit: cover; opacity: 0.85; transition: opacity 0.3s ease;" />
         </div>
         <h3 style="margin: 0 0 10px 0; color: #0abab5; font-size: 1.15rem; font-weight: bold;">🐍 Python Mode (Import Library)</h3>
         <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #aaa; line-height: 1.5;">The best solution for advanced competitors! Import the exclusive library for the most underlying complete data calls and high-frequency PID line-following algorithm development.</p>
       </div>
-      <a href="../examples/line16/ev3/line16_ev3_python_with_lib.py" target="_blank" download="line16_ev3_python_with_lib.py" data-ignore="true" class="btn-download" style="display: block; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 Download Example (.py)</a>
+      <a href="/examples/line16/ev3/line16_ev3_python_with_lib.py" target="_blank" download="line16_ev3_python_with_lib.py" data-ignore="true" class="btn-download" style="display: block; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 Download Example (.py)</a>
     </div>
   </div>
 
@@ -235,13 +235,13 @@ We have provided core example programs and exclusive library functions. Please c
       <div style="flex: 1; min-width: 260px; display: flex; flex-direction: column; justify-content: space-between;">
         <div>
           <div style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(10,186,181,0.2); background: #000; margin-bottom: 15px;">
-            <img src="../images/sensors/line16/ev3-pybricks-lib-icon.webp" alt="16-Way Line Follower Exclusive Pybricks Library Function" style="width: 100%; height: 160px; object-fit: cover; opacity: 0.9;" />
+            <img src="/images/sensors/line16/ev3-pybricks-lib-icon.webp" alt="16-Way Line Follower Exclusive Pybricks Library Function" style="width: 100%; height: 160px; object-fit: cover; opacity: 0.9;" />
           </div>
           <p style="font-size: 0.85rem; color: #ccc; line-height: 1.6; margin-bottom: 15px;">
             This is the indispensable driver core for the "Import Exclusive Library" examples. Download this library file to perfectly enable high-level interpolated position and 16-channel photoelectric fine reading.
           </p>
         </div>
-        <a href="../examples/line16/ev3/MBC_line16_EV3_Lib.py" target="_blank" download="MBC_line16_EV3_Lib.py" data-ignore="true" class="btn-download-lib" style="display: block; text-align: center; padding: 12px 20px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 Download Exclusive Library (MBC_line16_EV3_Lib.py)</a>
+        <a href="/examples/line16/ev3/MBC_line16_EV3_Lib.py" target="_blank" download="MBC_line16_EV3_Lib.py" data-ignore="true" class="btn-download-lib" style="display: block; text-align: center; padding: 12px 20px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 Download Exclusive Library (MBC_line16_EV3_Lib.py)</a>
       </div>
       <!-- Right: Important tips and screenshots -->
       <div style="flex: 1.2; min-width: 280px; display: flex;">
@@ -251,7 +251,7 @@ We have provided core example programs and exclusive library functions. Please c
             Please ensure you import the <code>MBC_line16_EV3_Lib.py</code> file directly into your Pybricks project, <strong>and the file name must be exactly the same</strong>, so the <code>import</code> command in the main program can load the functions correctly!
           </p>
           <div style="border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,107,53,0.3); background: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 50%; margin: 0 auto;">
-            <img src="../images/sensors/line16/ev3-pybricks-upload-lib.webp" alt="Pybricks File List Screenshot Explanation" style="width: 100%; display: block; opacity: 0.9;" />
+            <img src="/images/sensors/line16/ev3-pybricks-upload-lib.webp" alt="Pybricks File List Screenshot Explanation" style="width: 100%; display: block; opacity: 0.9;" />
           </div>
         </div>
       </div>

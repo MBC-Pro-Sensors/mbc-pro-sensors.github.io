@@ -4,7 +4,7 @@
 <div style="text-align: center;">
   <span style="display:inline-block; background:#F2C200; color:#0a0a0a; padding:3px 12px; border-radius:20px; font-family:monospace; margin-bottom:1rem; font-size: 0.85rem;">CMD-BT-PRO · PRO CONTROL</span>
   <br>
-  <img src="../images/sensors/ps4/ps4-product.webp" alt="掌控者PS4遙控接收器" style="max-width: 280px; margin: 1rem auto; display: block; filter: drop-shadow(0 0 30px rgba(242,194,0,0.2));" />
+  <img src="/images/sensors/ps4/ps4-product.webp" alt="掌控者PS4遙控接收器" style="max-width: 280px; margin: 1rem auto; display: block; filter: drop-shadow(0 0 30px rgba(242,194,0,0.2));" />
   <p style="font-family: monospace; color: #aaa; letter-spacing: 1px;">
     <strong>高階藍牙無線遙控接收器</strong><br>
     無懼賽場干擾 · 配對記憶 · 實測 100 公尺穩定連線

@@ -4,7 +4,7 @@
 <div style="text-align: center;">
   <span style="display:inline-block; background:#0ABAB5; color:#fff; padding:3px 12px; border-radius:20px; font-family:monospace; margin-bottom:1rem; font-size: 0.85rem;">TOF-08-LSR · ADVANCED</span>
   <br>
-  <img src="../images/sensors/tof8/tof8-product.webp" alt="Ranger 8-Way Laser Ranging" style="max-width: 280px; margin: 1rem auto; display: block; filter: drop-shadow(0 0 30px rgba(10,186,181,0.2));" />
+  <img src="/images/sensors/tof8/tof8-product.webp" alt="Ranger 8-Way Laser Ranging" style="max-width: 280px; margin: 1rem auto; display: block; filter: drop-shadow(0 0 30px rgba(10,186,181,0.2));" />
   <p style="font-family: monospace; color: #aaa; letter-spacing: 1px;">
     <strong>8-Channel Full-Angle Laser Ranging Array</strong><br>
     Say goodbye to ultrasonic ghosts · 180-degree zero blind spots · The LiDAR for sumo battles and high-speed obstacle avoidance

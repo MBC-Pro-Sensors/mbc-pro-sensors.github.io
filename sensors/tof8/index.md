@@ -4,7 +4,7 @@
 <div style="text-align: center;">
   <span style="display:inline-block; background:#0ABAB5; color:#fff; padding:3px 12px; border-radius:20px; font-family:monospace; margin-bottom:1rem; font-size: 0.85rem;">TOF-08-LSR · ADVANCED</span>
   <br>
-  <img src="../images/sensors/tof8/tof8-product.webp" alt="測距者8路雷射測距" style="max-width: 280px; margin: 1rem auto; display: block; filter: drop-shadow(0 0 30px rgba(10,186,181,0.2));" />
+  <img src="/images/sensors/tof8/tof8-product.webp" alt="測距者8路雷射測距" style="max-width: 280px; margin: 1rem auto; display: block; filter: drop-shadow(0 0 30px rgba(10,186,181,0.2));" />
   <p style="font-family: monospace; color: #aaa; letter-spacing: 1px;">
     <strong>8 通道全角度雷射測距陣列</strong><br>
     告別超音波鬼影 · 180度零死角 · 相撲對戰與極速避障的雷射雷達

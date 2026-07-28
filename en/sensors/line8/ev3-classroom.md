@@ -5,9 +5,9 @@
 
 <div style="display: flex; align-items: center; justify-content: center; gap: 30px; margin: 30px 0; flex-wrap: wrap;">
   <div style="background: rgba(10,186,181,0.03); border: 1px solid rgba(10,186,181,0.25); border-radius: 12px; padding: 15px 35px; display: flex; align-items: center; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-    <img src="../images/hubs/ev3-hub.webp" alt="EV3 Hub" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.35));" />
+    <img src="/images/hubs/ev3-hub.webp" alt="EV3 Hub" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.35));" />
     <span style="font-size: 2.2rem; color: #666; font-weight: 300; line-height: 1;">+</span>
-    <img src="../images/hubs/ev3-classroom-app.webp" alt="EV3 Classroom App" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.15));" />
+    <img src="/images/hubs/ev3-classroom-app.webp" alt="EV3 Classroom App" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.15));" />
   </div>
 </div>
 
@@ -30,7 +30,7 @@ Applicable to the **LEGO® MINDSTORMS® EV3 Classroom App** (Scratch block style
 ## Read Line Position — Proximity Mode
 
 <div style="text-align: center; margin: 15px 0;">
-  <img src="../images/sensors/ev3-blocks/classroom/mode-proximity.webp" alt="EV3 Classroom Proximity Mode Block" style="max-height: 80px; border-radius: 8px; filter: drop-shadow(0 5px 15px rgba(10,186,181,0.2));" />
+  <img src="/images/sensors/ev3-blocks/classroom/mode-proximity.webp" alt="EV3 Classroom Proximity Mode Block" style="max-height: 80px; border-radius: 8px; filter: drop-shadow(0 5px 15px rgba(10,186,181,0.2));" />
 </div>
 
 Use the sensor block, select **Proximity mode**, and read the `value` to get the line position.
@@ -63,7 +63,7 @@ Use the sensor block, select **Proximity mode**, and read the `value` to get the
 ## Read 8-Channel Photoelectric Reflection Values — Beacon Mode
 
 <div style="text-align: center; margin: 15px 0;">
-  <img src="../images/sensors/ev3-blocks/classroom/mode-beacon.webp" alt="EV3 Classroom Beacon Mode Block" style="max-height: 80px; border-radius: 8px; filter: drop-shadow(0 5px 15px rgba(10,186,181,0.2));" />
+  <img src="/images/sensors/ev3-blocks/classroom/mode-beacon.webp" alt="EV3 Classroom Beacon Mode Block" style="max-height: 80px; border-radius: 8px; filter: drop-shadow(0 5px 15px rgba(10,186,181,0.2));" />
 </div>
 
 Use the sensor block, select **Beacon mode**, and read the `value list` (4 bytes).
@@ -115,7 +115,7 @@ Use the sensor block, select **Beacon mode**, and read the `value list` (4 bytes
 ## Read Position + Width + Boundary Defense — Remote Mode (Recommended for Tactical Competition!)
 
 <div style="text-align: center; margin: 15px 0;">
-  <img src="../images/sensors/ev3-blocks/classroom/mode-remote.webp" alt="EV3 Classroom Remote Mode Block" style="max-height: 80px; border-radius: 8px; filter: drop-shadow(0 5px 15px rgba(10,186,181,0.2));" />
+  <img src="/images/sensors/ev3-blocks/classroom/mode-remote.webp" alt="EV3 Classroom Remote Mode Block" style="max-height: 80px; border-radius: 8px; filter: drop-shadow(0 5px 15px rgba(10,186,181,0.2));" />
 </div>
 
 Use the sensor block, select **Remote mode**, and read the `value list` (4 bytes).
@@ -189,14 +189,14 @@ Use the sensor block, select **Remote mode**, and read the `value list` (4 bytes
 
 ---
 
-## <a href="../examples/line8/ev3/line8_ev3_classroom.lmsp" target="_blank" data-ignore="true" download>📥 Download Example Programs</a>
+## <a href="/examples/line8/ev3/line8_ev3_classroom.lmsp" target="_blank" data-ignore="true" download>📥 Download Example Programs</a>
 
 <div style="text-align: center; margin: 25px 0;">
-  <img src="../images/sensors/line8/ev3-classroom-example.webp" alt="LEGO® MINDSTORMS® EV3 Classroom Block Example" style="max-width: 100%; border-radius: 8px; border: 1px solid rgba(10,186,181,0.25); box-shadow: 0 10px 30px rgba(0,0,0,0.5); filter: drop-shadow(0 0 15px rgba(10,186,181,0.15));" />
+  <img src="/images/sensors/line8/ev3-classroom-example.webp" alt="LEGO® MINDSTORMS® EV3 Classroom Block Example" style="max-width: 100%; border-radius: 8px; border: 1px solid rgba(10,186,181,0.25); box-shadow: 0 10px 30px rgba(0,0,0,0.5); filter: drop-shadow(0 0 15px rgba(10,186,181,0.15));" />
   <p style="font-size: 0.85rem; color: #888; margin-top: 10px;">💡 The image above demonstrates the classic PID line-following program structure in EV3 Classroom for the 8-Way Line Follower.</p>
 </div>
 
-* <a href="../examples/line8/ev3/line8_ev3_classroom.lmsp" target="_blank" download="line8_ev3_classroom.lmsp" style="color: #0abab5; font-weight: bold; text-decoration: none;">📥 Classroom Example (.lmsp) </a>
+* <a href="/examples/line8/ev3/line8_ev3_classroom.lmsp" target="_blank" download="line8_ev3_classroom.lmsp" style="color: #0abab5; font-weight: bold; text-decoration: none;">📥 Classroom Example (.lmsp) </a>
 
 ---
 

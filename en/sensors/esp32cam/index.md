@@ -4,7 +4,7 @@
 <div style="text-align: center;">
   <span style="display:inline-block; background:#00d2ff; color:#0a0a0a; padding:3px 12px; border-radius:20px; font-family:monospace; margin-bottom:1rem; font-size: 0.85rem;">CAM-VIS-PRO · VISION</span>
   <br>
-  <img src="../images/sensors/esp32cam/esp32cam-product.webp" alt="Sharpshooter Vision Sensor" style="max-width: 280px; margin: 1rem auto; display: block; filter: drop-shadow(0 0 30px rgba(0,210,255,0.2));" />
+  <img src="/images/sensors/esp32cam/esp32cam-product.webp" alt="Sharpshooter Vision Sensor" style="max-width: 280px; margin: 1rem auto; display: block; filter: drop-shadow(0 0 30px rgba(0,210,255,0.2));" />
   <p style="font-family: monospace; color: #aaa; letter-spacing: 1px;">
     <strong>High-End Robot Vision Camera Module</strong><br>
     Grant your robot true vision · Precise color tracking · Coordinate positioning

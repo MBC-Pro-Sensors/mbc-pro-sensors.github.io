@@ -6,7 +6,7 @@
   
   <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 30px; margin: 20px 0;">
     <div style="flex: 1; min-width: 250px; text-align: center;">
-      <img src="../images/sensors/line8/line8-product-spike.webp" alt="循行者8路感應器" style="max-width: 280px; width: 100%; display: block; margin: 0 auto; filter: drop-shadow(0 0 20px rgba(255,69,0,0.65)) drop-shadow(0 0 40px rgba(255,69,0,0.35));" />
+      <img src="/images/sensors/line8/line8-product-spike.webp" alt="循行者8路感應器" style="max-width: 280px; width: 100%; display: block; margin: 0 auto; filter: drop-shadow(0 0 20px rgba(255,69,0,0.65)) drop-shadow(0 0 40px rgba(255,69,0,0.35));" />
     </div>
     <div style="flex: 1; min-width: 300px; max-width: 480px; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,69,0,0.2); box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
       <iframe src="https://www.youtube.com/embed/MuG9kp2-8FY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="width: 100%; height: 100%; border: none;"></iframe>
@@ -174,8 +174,8 @@ MBC 8 路循線感應器針對此痛點進行了專項優化，搭載高度抗�
 <div class="env-hub-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
   <a href="#/sensors/line8/spike-hub" class="env-card spike" style="padding: 40px 20px;">
     <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
-      <img src="../images/hubs/spike-hub.webp" alt="SPIKE Prime Hub" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(242,194,0,0.3));" />
-      <img src="../images/hubs/inventor-hub.webp" alt="Robot Inventor Hub" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.3));" />
+      <img src="/images/hubs/spike-hub.webp" alt="SPIKE Prime Hub" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(242,194,0,0.3));" />
+      <img src="/images/hubs/inventor-hub.webp" alt="Robot Inventor Hub" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.3));" />
     </div>
     <h3 style="font-size: 1.8rem; margin-bottom: 15px !important;">🧱 SPIKE 系列主機</h3>
     <p style="font-size: 1.1rem;">教育版 (SPIKE 3) / 家用版 (Robot Inventor) / pyBricks</p>
@@ -183,7 +183,7 @@ MBC 8 路循線感應器針對此痛點進行了專項優化，搭載高度抗�
   
   <a href="#/sensors/line8/ev3-hub" class="env-card ev3" style="padding: 40px 20px;">
     <div style="display: flex; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
-      <img src="../images/hubs/ev3-hub.webp" alt="EV3 Hub" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.3));" />
+      <img src="/images/hubs/ev3-hub.webp" alt="EV3 Hub" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.3));" />
     </div>
     <h3 style="font-size: 1.8rem; margin-bottom: 15px !important;">🧱 EV3 系列主機</h3>
     <p style="font-size: 1.1rem;">官方軟體 / Classroom / clev3r / pyBricks</p>

@@ -1,4 +1,4 @@
-<!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
+﻿<!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # MBC-Pro Sensors — 樂高機器人的競賽級感應器
 
 <div style="text-align:center; margin: 1.5rem 0;">
@@ -48,7 +48,7 @@
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">無視賽道雜訊，專為花俏地圖打造的抗干擾循線神機</p>
       </div>
       <div style="flex:0 0 auto;">
-        <img src="../images/sensors/line8/line8-product-spike.webp" alt="循行者 8 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(255,69,0,0.6));">
+        <img src="/images/sensors/line8/line8-product-spike.webp" alt="循行者 8 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(255,69,0,0.6));">
       </div>
     </div>
   </a>
@@ -61,7 +61,7 @@
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">告別拼湊，釋放孔位：擁有兩倍視野的極速循線王者</p>
       </div>
       <div style="flex:0 0 auto;">
-        <img src="../images/sensors/line16/line16-product-spike.webp" alt="循行者 16 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(255,107,53,0.6));">
+        <img src="/images/sensors/line16/line16-product-spike.webp" alt="循行者 16 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(255,107,53,0.6));">
       </div>
     </div>
   </a>
@@ -80,7 +80,7 @@
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">輕巧且敏銳，精準捕捉物體左右動向的微型雷射</p>
       </div>
       <div style="flex:0 0 auto;">
-        <img src="../images/sensors/tof2/tof2-product.webp" alt="測距者 2 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(10,186,181,0.6));">
+        <img src="/images/sensors/tof2/tof2-product.webp" alt="測距者 2 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(10,186,181,0.6));">
       </div>
     </div>
   </a>
@@ -93,7 +93,7 @@
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">告別超音波鬼影：180度零死角，相撲對戰與極速避障的雷射雷達</p>
       </div>
       <div style="flex:0 0 auto;">
-        <img src="../images/sensors/tof8/tof8-product.webp" alt="測距者 8 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(10,186,181,0.6));">
+        <img src="/images/sensors/tof8/tof8-product.webp" alt="測距者 8 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(10,186,181,0.6));">
       </div>
     </div>
   </a>
@@ -112,7 +112,7 @@
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">高性價比入門首選，輕鬆擴充控制按鍵的無線利器</p>
       </div>
       <div style="flex:0 0 auto;">
-        <img src="../images/sensors/ps2/ps2-product.webp" alt="掌控者 2.4G" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(242,194,0,0.6));">
+        <img src="/images/sensors/ps2/ps2-product.webp" alt="掌控者 2.4G" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(242,194,0,0.6));">
       </div>
     </div>
   </a>
@@ -125,7 +125,7 @@
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">無懼賽場干擾：配對記憶與 100 公尺穩定連線的頂級遙控器</p>
       </div>
       <div style="flex:0 0 auto;">
-        <img src="../images/sensors/ps4/ps4-product.webp" alt="掌控者高階藍牙" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(242,194,0,0.6));">
+        <img src="/images/sensors/ps4/ps4-product.webp" alt="掌控者高階藍牙" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(242,194,0,0.6));">
       </div>
     </div>
   </a>
@@ -144,7 +144,7 @@
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">賦予機器人真實視界：專精色塊追蹤與精準座標定位的高階視覺鏡頭</p>
       </div>
       <div style="flex:0 0 auto;">
-        <img src="../images/sensors/esp32cam/esp32cam-product.webp" alt="神攝手視覺感應器" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(0,210,255,0.6));">
+        <img src="/images/sensors/esp32cam/esp32cam-product.webp" alt="神攝手視覺感應器" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(0,210,255,0.6));">
       </div>
     </div>
   </a>
@@ -155,17 +155,18 @@
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
 
-  <a href="#/sensors/ext6/index" style="text-decoration:none;">
+  <a href="#/sensors/EXP6/index" style="text-decoration:none;">
     <div class="product-card" style="background:#0a111a; border:1px solid rgba(0,210,255,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#00d2ff; font-size:1.5rem;">🔌</div>
-        <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">SPIKE 6 路多工器 (EXT6) (待更新)</h4>
+        <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">SPIKE 6 路擴充器 (EXP6) (待更新)</h4>
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">突破主機孔位極限：自帶隔離電源保護的 6 路擴充神兵</p>
       </div>
       <div style="flex:0 0 auto;">
-        <img src="../images/sensors/ext6/ext6-product.webp" alt="SPIKE 6 路多工器" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(0,210,255,0.6));">
+        <img src="/images/sensors/EXP6/EXP6-product.webp" alt="SPIKE 6 路擴充器" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(0,210,255,0.6));">
       </div>
     </div>
   </a>
 
 </div>
+

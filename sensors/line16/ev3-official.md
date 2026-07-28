@@ -5,9 +5,9 @@
 
 <div style="display: flex; align-items: center; justify-content: center; gap: 30px; margin: 30px 0; flex-wrap: wrap;">
   <div style="background: rgba(10,186,181,0.03); border: 1px solid rgba(10,186,181,0.25); border-radius: 12px; padding: 15px 35px; display: flex; align-items: center; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-    <img src="../images/hubs/ev3-hub.webp" alt="EV3 Hub" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.35));" />
+    <img src="/images/hubs/ev3-hub.webp" alt="EV3 Hub" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.35));" />
     <span style="font-size: 2.2rem; color: #666; font-weight: 300; line-height: 1;">+</span>
-    <img src="../images/hubs/ev3-official-app.webp" alt="EV3 Official App" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.15));" />
+    <img src="/images/hubs/ev3-official-app.webp" alt="EV3 Official App" style="max-height: 90px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.15));" />
   </div>
 </div>
 
@@ -30,7 +30,7 @@
 ## 讀取線位置 — Proximity 模式
 
 <div style="text-align: center; margin: 15px 0;">
-  <img src="../images/sensors/ev3-blocks/official/mode-proximity.webp" alt="EV3 Proximity 模式積木" style="max-height: 80px; border-radius: 8px; filter: drop-shadow(0 5px 15px rgba(10,186,181,0.2));" />
+  <img src="/images/sensors/ev3-blocks/official/mode-proximity.webp" alt="EV3 Proximity 模式積木" style="max-height: 80px; border-radius: 8px; filter: drop-shadow(0 5px 15px rgba(10,186,181,0.2));" />
 </div>
 
 使用感應器積木，選擇 **Proximity（接近）模式**，讀取 `數值` 即可取得線位置。
@@ -63,7 +63,7 @@
 ## 讀取 16 路光電反射值 — Beacon 模式
 
 <div style="text-align: center; margin: 15px 0;">
-  <img src="../images/sensors/ev3-blocks/official/mode-beacon.webp" alt="EV3 Beacon 模式積木" style="max-height: 80px; border-radius: 8px; filter: drop-shadow(0 5px 15px rgba(10,186,181,0.2));" />
+  <img src="/images/sensors/ev3-blocks/official/mode-beacon.webp" alt="EV3 Beacon 模式積木" style="max-height: 80px; border-radius: 8px; filter: drop-shadow(0 5px 15px rgba(10,186,181,0.2));" />
 </div>
 
 使用感應器積木，選擇 **Beacon（信標）模式**，讀取 `數值列表`（8 bytes）。
@@ -139,7 +139,7 @@
 ## 讀取位置 + 寬度 + 邊界防禦 — Remote 模式 (競技戰術推薦！)
 
 <div style="text-align: center; margin: 15px 0;">
-  <img src="../images/sensors/ev3-blocks/official/mode-remote.webp" alt="EV3 Remote 模式積木" style="max-height: 80px; border-radius: 8px; filter: drop-shadow(0 5px 15px rgba(10,186,181,0.2));" />
+  <img src="/images/sensors/ev3-blocks/official/mode-remote.webp" alt="EV3 Remote 模式積木" style="max-height: 80px; border-radius: 8px; filter: drop-shadow(0 5px 15px rgba(10,186,181,0.2));" />
 </div>
 
 使用感應器積木，選擇 **Remote（遙控）模式**，讀取 `數值列表`（4 bytes）。
@@ -213,14 +213,14 @@
 
 ---
 
-## <a href="../examples/line16/ev3/line16_ev3_official.ev3" target="_blank" data-ignore="true" download>📥 範例程式下載</a>
+## <a href="/examples/line16/ev3/line16_ev3_official.ev3" target="_blank" data-ignore="true" download>📥 範例程式下載</a>
 
 <div style="text-align: center; margin: 25px 0;">
-  <img src="../images/sensors/line16/ev3-official-example.webp" alt="LEGO® MINDSTORMS® EV3-G 官方軟體範例程式圖控積木範例" style="max-width: 100%; border-radius: 8px; border: 1px solid rgba(10,186,181,0.25); box-shadow: 0 10px 30px rgba(0,0,0,0.5); filter: drop-shadow(0 0 15px rgba(10,186,181,0.15));" />
+  <img src="/images/sensors/line16/ev3-official-example.webp" alt="LEGO® MINDSTORMS® EV3-G 官方軟體範例程式圖控積木範例" style="max-width: 100%; border-radius: 8px; border: 1px solid rgba(10,186,181,0.25); box-shadow: 0 10px 30px rgba(0,0,0,0.5); filter: drop-shadow(0 0 15px rgba(10,186,181,0.15));" />
   <p style="font-size: 0.85rem; color: #888; margin-top: 10px;">💡 上圖為 16路循線感應器於 LEGO® MINDSTORMS® EV3-G 官方軟體中的經典 PID 循線程式結構示範</p>
 </div>
 
-* <a href="../examples/line16/ev3/line16_ev3_official.ev3" target="_blank" download="line16_ev3_official.ev3" style="color: #0abab5; font-weight: bold; text-decoration: none;">📥 EV3 範例 (.ev3)</a>
+* <a href="/examples/line16/ev3/line16_ev3_official.ev3" target="_blank" download="line16_ev3_official.ev3" style="color: #0abab5; font-weight: bold; text-decoration: none;">📥 EV3 範例 (.ev3)</a>
 
 > 下載後用 EV3 官方軟體開啟即可使用。
 

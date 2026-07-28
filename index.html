@@ -48,12 +48,12 @@
       padding: 3px 6px;
     }
     
-    .markdown-section pre { 
-      border-radius: 12px; 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-      border: 1px solid rgba(10,186,181,0.2);
-    }
-    
+&#32;&#32;&#32;&#32;.markdown-section pre { 
+&#32;&#32;&#32;&#32;&#32;&#32;border-radius: 12px; 
+&#32;&#32;&#32;&#32;&#32;&#32;box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+&#32;&#32;&#32;&#32;&#32;&#32;border: 1px solid rgba(10,186,181,0.2);
+&#32;&#32;&#32;&#32;}
+&#32;&#32;&#32;&#32;
     /* 讓表格也更有科技感與圓潤度 */
     .markdown-section table th {
       background: rgba(10,186,181,0.15);
@@ -228,6 +228,11 @@
               }
             });
           });
+        },
+        function(hook, vm) {
+          hook.doneEach(function() {
+            // plugin moved to scratchblocks-init.js
+          });
         }
       ]
     }
@@ -236,6 +241,9 @@
   <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
   <!-- Search Plugin -->
   <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+  <!-- Scratchblocks Plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/scratchblocks@3.6.4/build/scratchblocks.min.js"></script>
+  <script src="./scratchblocks-init.js"></script>
   <!-- 語法高亮 -->
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
   <!-- Floating Language Toggle Button -->

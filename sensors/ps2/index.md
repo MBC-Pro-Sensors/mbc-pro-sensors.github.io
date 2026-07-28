@@ -4,7 +4,7 @@
 <div style="text-align: center;">
   <span style="display:inline-block; background:#F2C200; color:#0a0a0a; padding:3px 12px; border-radius:20px; font-family:monospace; margin-bottom:1rem; font-size: 0.85rem;">CMD-2.4G-RX · CONTROL</span>
   <br>
-  <img src="../images/sensors/ps2/ps2-product.webp" alt="掌控者PS2遙控接收器" style="max-width: 280px; margin: 1rem auto; display: block; filter: drop-shadow(0 0 30px rgba(242,194,0,0.2));" />
+  <img src="/images/sensors/ps2/ps2-product.webp" alt="掌控者PS2遙控接收器" style="max-width: 280px; margin: 1rem auto; display: block; filter: drop-shadow(0 0 30px rgba(242,194,0,0.2));" />
   <p style="font-family: monospace; color: #aaa; letter-spacing: 1px;">
     <strong>2.4G 無線遙控接收器</strong><br>
     高性價比入門首選 · 擴充控制按鍵 · 教學與小型專題的無線利器
