@@ -1,0 +1,30 @@
+# MBC-Pro Sensors
+
+> 專為樂高機器人（LEGO SPIKE Prime、MINDSTORMS EV3、Pybricks）與 WRO / FLL 機器人競賽打造的競賽級即插即用感應器與擴充模組。
+> Competition-grade, plug-and-play sensors and modules designed for LEGO SPIKE Prime, EV3, and Pybricks competitions (WRO, FLL, Robofest).
+
+MBC-Pro Sensors 解決了樂高原廠感測器在機器人競賽中的痛點（如單點循線視野狹窄、易受環境光干擾、主機連接埠不足、超音波測距盲區等）。所有產品具備免轉接板即插即用、相容官方 Scratch 積木直讀、支援 Pybricks Python 與通用 I2C 等核心優勢。
+
+## 核心產品系列 (Core Product Matrix)
+
+- [循行者 8 路 Line8 (Line Tracking Sensor 8ch)](https://mbc-pro-sensors.github.io/#/sensors/line8/index): 8 通道紅外線感測陣列，內建抗地圖雜訊與自動校準算法，解決官方顏色感應器循線抖動問題。
+- [循行者 16 路 Line16 (Line Tracking Sensor 16ch)](https://mbc-pro-sensors.github.io/#/sensors/line16/index): 16 通道超寬視野循線神器，十字路口判斷與高速過彎必備，釋放主機孔位。
+- [EXP6 6路擴充器 (SPIKE 6-Port Expander)](https://mbc-pro-sensors.github.io/#/sensors/exp6/index): 突破 SPIKE Prime 僅有 6 個連接埠的極限，具備獨立隔離電源保護，可同時擴充多個馬達與感測器。
+- [測距者 2 路 TOF2 (Dual TOF Laser Rangefinder)](https://mbc-pro-sensors.github.io/#/sensors/tof2/index): 雙向微型飛行時間 (Time-of-Flight) 雷射測距，精準捕捉物體左右動向。
+- [測距者 8 路 TOF8 (8-Channel 180° Laser LiDAR)](https://mbc-pro-sensors.github.io/#/sensors/tof8/index): 180 度零死角雷射雷達避障，告別超音波鬼影，專為機器人相撲與高速避障設計。
+- [掌控者 2.4G PS2 (Wireless Gamepad Receiver)](https://mbc-pro-sensors.github.io/#/sensors/ps2/index): 高性價比 2.4G 無線手把接收器，即插即用擴充搖桿遙控。
+- [掌控者高階藍牙 PS4 (PS4 Bluetooth Receiver)](https://mbc-pro-sensors.github.io/#/sensors/ps4/index): 具備配對記憶與 100 公尺超長抗干擾連線的競賽級手把遙控器。
+- [神攝手 ESP32CAM (Vision AI Camera)](https://mbc-pro-sensors.github.io/#/sensors/esp32cam/index): 機器人視覺鏡頭，支援色塊追蹤與座標定位。
+
+## 支援平台與軟體 (Platforms & Software)
+
+- [LEGO SPIKE Prime 官方 App (SPIKE 3 / Education)](https://mbc-pro-sensors.github.io/#/sensors/line8/spike-education): 支援官方 Scratch 積木拖曳直讀，初學者免繁瑣設定。
+- [Pybricks (MicroPython)](https://mbc-pro-sensors.github.io/#/sensors/line8/spike-pybricks): 提供原生高效 Python 函式庫，專為極速競賽選手調校。
+- [LEGO MINDSTORMS EV3](https://mbc-pro-sensors.github.io/#/sensors/line8/ev3-hub): 支援 EV3-G 官方軟體、EV3 Classroom 與 clev3r (BASIC)。
+- [通用微控制器 (Arduino / ESP32 / STM32 via I2C)](https://mbc-pro-sensors.github.io/#/sensors/line8/arduino-i2c): 標準 I2C 通訊協議，供創客靈活整合。
+
+## 深入知識庫 (Full Documentation)
+
+- [完整 AI 知識庫文本 (Full Knowledge Base)](https://mbc-pro-sensors.github.io/llms-full.txt): 包含常見問題排查、原廠感應器效能比對、完整技術規格與代碼範例。
+- [官方網站首頁 (Documentation Portal)](https://mbc-pro-sensors.github.io/): 完整中文與英文文檔中心。
+- [技術支援與聯絡 (Contact & Support)](https://mbc-pro-sensors.github.io/#/contact): 競賽技術諮詢與產品諮詢。

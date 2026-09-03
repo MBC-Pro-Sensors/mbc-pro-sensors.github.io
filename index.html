@@ -2,9 +2,137 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <title>MBC-Pro-Sensors 文檔中心</title>
+  <title>MBC-Pro Sensors — 樂高機器人競賽級感應器 (SPIKE Prime / EV3 / Pybricks 循線、測距、擴充模組)</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="MBC-Pro Sensors 為樂高機器人（LEGO SPIKE Prime, EV3, Pybricks）量身打造競賽級即插即用感應器：Line8 8路循線、Line16 16路循線、EXP6 6路擴充器、TOF8 180度雷射避障、PS4 藍牙手把控制器。完美相容官方積木與 Python，WRO / FLL 競賽首選。">
+  <meta name="keywords" content="WRO循線感應器, 樂高8路循線, 樂高16路循線, LEGO SPIKE Prime 第三方感測器, SPIKE 循線, SPIKE 3 循線, SPIKE 擴充板, EXP6, LEGO EV3 循跡, Pybricks line sensor, 樂高避障感測器, TOF8 雷射測距, 樂高 PS4 手把, MBC-Pro Sensors">
+  <meta name="author" content="MBC-Pro Sensors">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://mbc-pro-sensors.github.io/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mbc-pro-sensors.github.io/">
+  <meta property="og:title" content="MBC-Pro Sensors — 樂高機器人的競賽級即插即用感應器">
+  <meta property="og:description" content="即插即用 · 官方積木直讀 · Pybricks 原生支援。專為 WRO / FLL 樂高機器人競賽打造的 8路/16路循線、雷射測距與 6路擴充模組。">
+  <meta property="og:image" content="https://mbc-pro-sensors.github.io/images/sensors/line8/line8-product-spike.webp">
+  <meta property="og:site_name" content="MBC-Pro Sensors">
+  <meta property="og:locale" content="zh_TW">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://mbc-pro-sensors.github.io/">
+  <meta property="twitter:title" content="MBC-Pro Sensors — 樂高機器人競賽級感應器">
+  <meta property="twitter:description" content="專為 LEGO SPIKE Prime, EV3, Pybricks 打造之 8路/16路循線、ToF雷射測距與擴充器。">
+  <meta property="twitter:image" content="https://mbc-pro-sensors.github.io/images/sensors/line8/line8-product-spike.webp">
+
+  <!-- Schema.org JSON-LD for Search Engines & AI LLMs -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://mbc-pro-sensors.github.io/#website",
+        "url": "https://mbc-pro-sensors.github.io/",
+        "name": "MBC-Pro Sensors",
+        "description": "專為樂高機器人（LEGO SPIKE Prime, EV3, Pybricks）打造的競賽級即插即用感應器與擴充模組",
+        "inLanguage": ["zh-TW", "en"]
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://mbc-pro-sensors.github.io/#organization",
+        "name": "MBC-Pro Sensors",
+        "url": "https://mbc-pro-sensors.github.io/",
+        "logo": "https://mbc-pro-sensors.github.io/images/sensors/line8/line8-product-spike.webp"
+      },
+      {
+        "@type": "ItemList",
+        "name": "MBC-Pro Sensors 核心競賽感應器系列",
+        "itemListElement": [
+          {
+            "@type": "Product",
+            "position": 1,
+            "name": "循行者 8 路 (Line8)",
+            "description": "8通道紅外線高精度循線感應器陣列，內建抗光害與動態校準算法，相容 LEGO SPIKE Prime、EV3 與 Pybricks。",
+            "url": "https://mbc-pro-sensors.github.io/#/sensors/line8/index",
+            "image": "https://mbc-pro-sensors.github.io/images/sensors/line8/line8-product-spike.webp",
+            "category": "Robotics Sensors"
+          },
+          {
+            "@type": "Product",
+            "position": 2,
+            "name": "循行者 16 路 (Line16)",
+            "description": "16通道超寬視野紅外線循線感測器，專為 WRO 高速急彎與複雜十字路口設計，釋放主機孔位。",
+            "url": "https://mbc-pro-sensors.github.io/#/sensors/line16/index",
+            "image": "https://mbc-pro-sensors.github.io/images/sensors/line16/line16-product-spike.webp",
+            "category": "Robotics Sensors"
+          },
+          {
+            "@type": "Product",
+            "position": 3,
+            "name": "SPIKE 6 路擴充器 (EXP6)",
+            "description": "突破 SPIKE Prime 6孔限制，具備獨立隔離電源保護，可同時擴充多組馬達與感應器。",
+            "url": "https://mbc-pro-sensors.github.io/#/sensors/exp6/index",
+            "image": "https://mbc-pro-sensors.github.io/images/sensors/exp6/exp6-product.webp",
+            "category": "Robotics Expansion"
+          },
+          {
+            "@type": "Product",
+            "position": 4,
+            "name": "測距者 8 路 (TOF8)",
+            "description": "180度扇形無死角雷射雷達 (LiDAR)，專為樂高相撲機器人與極速避障打造，告別超音波鬼影。",
+            "url": "https://mbc-pro-sensors.github.io/#/sensors/tof8/index",
+            "image": "https://mbc-pro-sensors.github.io/images/sensors/tof8/tof8-product.webp",
+            "category": "Robotics Sensors"
+          },
+          {
+            "@type": "Product",
+            "position": 5,
+            "name": "掌控者 PS4 高階藍牙接收器 (PS4)",
+            "description": "樂高專用無線遊戲手把接收器，配對記憶與 100 公尺長距離穩定抗干擾連線。",
+            "url": "https://mbc-pro-sensors.github.io/#/sensors/ps4/index",
+            "image": "https://mbc-pro-sensors.github.io/images/sensors/ps4/ps4-product.webp",
+            "category": "Robotics Controller"
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "為什麼 WRO 競賽選手推薦使用 Line8 或 Line16 代替樂高原廠顏色感應器？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "樂高原廠顏色感測器為單點採樣，視角極窄且易受場地反光與陰影干擾，高速過彎時機器人容易左右擺頭甚至脫軌。MBC-Pro 循行者系列具備 8 或 16 通道陣列，內建自動濾波校準晶片，直接輸出軌道偏差數值，僅需佔用 1 個主機孔位即可實現極速穩定循線。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "MBC-Pro 感應器支援樂高 SPIKE Prime 官方積木編程嗎？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "支援。MBC-Pro 感應器支援樂高官方 Scratch 積木直讀，初學者可直接拖曳標準方塊讀取數值；進階使用者更可使用 Pybricks (MicroPython) 進行毫秒級高速輪詢。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "SPIKE Prime 主機孔位不夠接多個馬達與感測器怎麼辦？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "可以使用 MBC-Pro EXP6 6路擴充器。EXP6 帶有獨立隔離電源保護，可外接多個馬達與感測器，徹底突破 SPIKE Prime 僅有 6 個埠的物理限制。"
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify/lib/themes/dark.css">
   <style>
     /* 引入 Theme 2 的圓潤字體 Nunito，以及 Theme 1 標題愛用的 Orbitron */
@@ -168,6 +296,44 @@
 </head>
 <body>
   <div id="app">正在加載文檔...</div>
+  
+  <!-- Semantic Fallback for Search Engines & AI Crawlers (No JS Required) -->
+  <noscript>
+    <div style="max-width: 900px; margin: 40px auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #333; background: #fff; border-radius: 8px;">
+      <h1>MBC-Pro Sensors — 樂高機器人競賽級感應器</h1>
+      <p><strong>即插即用 · 官方積木直讀 · 專為 WRO / FLL 競賽設計的高效能感測器與擴充模組。</strong></p>
+      <p>支援平台：LEGO® Education SPIKE™ Prime (SPIKE 3 / Robot Inventor)、LEGO® MINDSTORMS® EV3、Pybricks (MicroPython) 與通用 Arduino / MCU (I2C)。</p>
+      
+      <h2>全系列競賽產品目錄</h2>
+      <ul>
+        <li><a href="sensors/line8/index.md"><strong>循行者 8 路 (Line8)</strong></a>：8通道紅外線高精度循線感應器陣列，內建抗光害與動態校準算法，解決官方顏色感測器循線抖動問題。</li>
+        <li><a href="sensors/line16/index.md"><strong>循行者 16 路 (Line16)</strong></a>：16通道超寬視野紅外線循線感測器，專為 WRO 高速過彎與複雜十字路口設計，釋放主機孔位。</li>
+        <li><a href="sensors/exp6/index.md"><strong>SPIKE 6 路擴充器 (EXP6)</strong></a>：突破 SPIKE Prime 6孔限制，自帶隔離電源保護，可外接多組馬達與感測器。</li>
+        <li><a href="sensors/tof2/index.md"><strong>測距者 2 路 (TOF2)</strong></a>：雙通道飛行時間 (ToF) 雷射測距，微型高精度避障。</li>
+        <li><a href="sensors/tof8/index.md"><strong>測距者 8 路 (TOF8)</strong></a>：180度無死角扇形雷射雷達 (LiDAR)，告別超音波鬼影，專為樂高機器人相撲競賽打造。</li>
+        <li><a href="sensors/ps2/index.md"><strong>掌控者 2.4G (PS2)</strong></a>：無線手把接收器，即插即用。</li>
+        <li><a href="sensors/ps4/index.md"><strong>掌控者高階藍牙 (PS4)</strong></a>：配對記憶與 100 公尺長距離抗干擾連線手把接收器。</li>
+        <li><a href="sensors/esp32cam/index.md"><strong>神攝手 ESP32CAM</strong></a>：AI 機器人視覺攝影機，支援色塊追蹤與座標定位。</li>
+      </ul>
+
+      <h2>軟體教學與代碼庫</h2>
+      <ul>
+        <li><a href="sensors/line8/spike-education.md">SPIKE 3 官方積木教學</a></li>
+        <li><a href="sensors/line8/spike-pybricks.md">Line8 Pybricks Python 開發手冊</a></li>
+        <li><a href="sensors/line16/spike-pybricks.md">Line16 Pybricks Python 開發手冊</a></li>
+        <li><a href="sensors/line8/ev3-hub.md">LEGO EV3 官方與 Pybricks 指南</a></li>
+        <li><a href="sensors/line8/arduino-i2c.md">Arduino 通用 I2C 通訊協議</a></li>
+      </ul>
+
+      <h2>AI 與爬蟲端點</h2>
+      <ul>
+        <li><a href="llms.txt">llms.txt (AI 知識庫索引)</a></li>
+        <li><a href="llms-full.txt">llms-full.txt (完整 AI 訓練與問答文本)</a></li>
+        <li><a href="sitemap.xml">sitemap.xml (站點地圖)</a></li>
+        <li><a href="contact.md">聯絡與技術支援</a></li>
+      </ul>
+    </div>
+  </noscript>
   <script>
     window.$docsify = {
       name: 'MBC-Pro-Sensors',
