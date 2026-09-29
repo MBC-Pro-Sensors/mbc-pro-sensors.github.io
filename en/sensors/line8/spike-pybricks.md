@@ -205,12 +205,12 @@ We have provided four core example programs and exclusive library functions. Ple
             <code style="color: #0abab5; font-size: 0.95rem; font-weight: bold;">line_ir_calibration()</code>
             <span style="background: rgba(217,163,0,0.15); color: #d9a300; padding: 3px 10px; border-radius: 20px; font-family: monospace; font-size: 0.75rem; white-space: nowrap;">list[8]</span>
           </div>
-          <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;">Return the array of 8 calibrated infrared reflected light values (each value 0~15). index 0 = rightmost (ch1), index 7 = leftmost (ch8).</p>
+          <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;">Return the array of 8 calibrated infrared reflected light values (each value 0~100). index 0 = rightmost (ch1), index 7 = leftmost (ch8).</p>
         </div>
         <div class="func-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(10,186,181,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
             <code style="color: #0abab5; font-size: 0.95rem; font-weight: bold;">line_ir_ch(ch)</code>
-            <span style="background: rgba(217,163,0,0.15); color: #d9a300; padding: 3px 10px; border-radius: 20px; font-family: monospace; font-size: 0.75rem; white-space: nowrap;">0 ~ 15</span>
+            <span style="background: rgba(217,163,0,0.15); color: #d9a300; padding: 3px 10px; border-radius: 20px; font-family: monospace; font-size: 0.75rem; white-space: nowrap;">0 ~ 100</span>
           </div>
           <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;">Get the calibrated light value of a single channel. <code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">ch</code>=1~8, can be called continuously with high efficiency (shared cache).</p>
         </div>
