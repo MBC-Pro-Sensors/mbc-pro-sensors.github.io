@@ -131,9 +131,58 @@ run_task(main())
 </div>
 </section>
 
+<!-- SECTION 2: Motor -->
+<section id="motor">
+<h1>⚙️ 2. Motor Control (Motor Control)</h1>
+<p>Control SPIKE motors connected to the EXP6 expander: set speed, PID closed-loop control, braking, PID tuning and dual-motor synchronized driving.</p>
+<!-- Motor Power -->
+<h3>⚡ Start Motor (Power)</h3>
+<p>Drive the motor with raw power (open-loop PWM). No speed compensation, but the most direct and fastest response.</p>
+<div class="code-example">
+<h4><code>exp6.motor_power(port, power)</code></h4>
+<ul>
+<li><code>port</code>: Port on the expander (1~6)</li>
+<li><code>power</code>: Motor power (-100 ~ 100). Positive is clockwise, negative is counter-clockwise.</li>
+</ul>
+<div class="block-label">Normal Block</div>
+<pre v-pre class="blocks">@greenFlag [exp6 v] [call v] [motor_power] (5) (50) ‹ › :: #FF6680</pre>
+<div class="code-block-wrapper">
+<div class="code-header"><span>Normal Mode</span><span class="code-badge sync">Normal</span></div>
+
+
+```python
+# Run the motor on expander port 5 at 50% power
+exp6.motor_power(5, 50)
+```
+
+
+</div>
+<div class="block-label" style="margin-top: 1rem;">Async Block</div>
+<pre v-pre class="blocks">@greenFlag [exp6 v] [await v] [motor_power] (5) (50) ‹ › :: #FF6680</pre>
+<div class="code-block-wrapper">
+<div class="code-header"><span>Async Mode</span><span class="code-badge async">Async</span></div>
+
+
+```python
+await exp6.motor_power(5, 50)
+```
+
+
+</div>
+</div>
+<!-- Motor Run -->
+<h3>🔄 Closed-loop Run (Run)</h3>
+<p>Uses PID closed-loop control: the expander automatically adjusts power to the load so the speed stays at the set value.</p>
+<div class="code-example">
+<h4><code>exp6.motor_run(port, speed)</code></h4>
+<ul>
+<li><code>port</code>: Port on the expander (1~6)</li>
+<li><code>speed</code>: Target speed (-100 ~ 100). Positive is clockwise, negative is counter-clockwise.</li>
+</ul>
+<div class="block-label">Normal Block</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [call v] [motor_run] (1) (30) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Normal模式</span><span class="code-badge sync">Normal</span></div>
+<div class="code-header"><span>Normal Mode</span><span class="code-badge sync">Normal</span></div>
 
 
 ```python
@@ -146,7 +195,7 @@ exp6.motor_run(1, 30)
 <div class="block-label" style="margin-top: 1rem;">Async Block</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [await v] [motor_run] (1) (30) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Async模式</span><span class="code-badge async">Async</span></div>
+<div class="code-header"><span>Async Mode</span><span class="code-badge async">Async</span></div>
 
 
 ```python
@@ -180,7 +229,7 @@ await exp6.motor_run(1, 30)
 <pre v-pre class="blocks">@greenFlag [exp6 v] [call v] [motor_run_degrees] (1) (30) (360) (3) ‹ › :: #FF6680
 @greenFlag [exp6 v] [call v] [motor_track_target] (1) (30) (90) (3) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Normal模式</span><span class="code-badge sync">Normal</span></div>
+<div class="code-header"><span>Normal Mode</span><span class="code-badge sync">Normal</span></div>
 
 
 ```python
@@ -197,7 +246,7 @@ exp6.motor_track_target(1, 30, 90, 3)
 <pre v-pre class="blocks">@greenFlag [exp6 v] [await v] [motor_run_degrees] (1) (30) (360) (3) ‹ › :: #FF6680
 @greenFlag [exp6 v] [await v] [motor_track_target] (1) (30) (90) (3) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Async模式</span><span class="code-badge async">Async</span></div>
+<div class="code-header"><span>Async Mode</span><span class="code-badge async">Async</span></div>
 
 
 ```python
@@ -216,7 +265,7 @@ await exp6.motor_track_target(1, 30, 90, 3)
 <div class="block-label">Normal Block</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [call v] [motor_set_pid] (1) (50) (50) (50) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Normal模式</span><span class="code-badge sync">Normal</span></div>
+<div class="code-header"><span>Normal Mode</span><span class="code-badge sync">Normal</span></div>
 
 
 ```python
@@ -229,7 +278,7 @@ exp6.motor_set_pid(1, 50, 50, 50)
 <div class="block-label" style="margin-top: 1rem;">Async Block</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [await v] [motor_set_pid] (1) (50) (50) (50) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Async模式</span><span class="code-badge async">Async</span></div>
+<div class="code-header"><span>Async Mode</span><span class="code-badge async">Async</span></div>
 
 
 ```python
@@ -240,7 +289,7 @@ await exp6.motor_set_pid(1, 50, 50, 50)
 </div>
 </div>
 <!-- Motor Stop & Brake -->
-<h3>🛑 停止與Brake (Stop &amp; Brake)</h3>
+<h3>🛑 Stop and Brake (Stop &amp; Brake)</h3>
 <p>你可以選擇讓馬達自然Coast停止，或是用力咬死Brake (鎖定維持在當前角度)。</p>
 <div class="code-example">
 <h4><code>exp6.motor_stop(port, stop)</code> 與 <code>exp6.stop_all(stop)</code></h4>
@@ -259,7 +308,7 @@ await exp6.motor_set_pid(1, 50, 50, 50)
 @greenFlag [exp6 v] [call v] [motor_stop] (1) (3) ‹ › :: #FF6680
 @greenFlag [exp6 v] [call v] [stop_all] (1) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Normal模式</span><span class="code-badge sync">Normal</span></div>
+<div class="code-header"><span>Normal Mode</span><span class="code-badge sync">Normal</span></div>
 
 
 ```python
@@ -275,7 +324,7 @@ exp6.stop_all(1)       # 緊急停止！讓擴充板上所有馬達Coast停止
 @greenFlag [exp6 v] [await v] [motor_stop] (1) (3) ‹ › :: #FF6680
 @greenFlag [exp6 v] [await v] [stop_all] (1) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Async模式</span><span class="code-badge async">Async</span></div>
+<div class="code-header"><span>Async Mode</span><span class="code-badge async">Async</span></div>
 
 
 ```python
@@ -299,7 +348,7 @@ await exp6.stop_all(1)
 <div class="block-label">Normal Block</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [call v] [set_motor_inverted] (1) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Normal模式</span><span class="code-badge sync">Normal</span></div>
+<div class="code-header"><span>Normal Mode</span><span class="code-badge sync">Normal</span></div>
 
 
 ```python
@@ -312,7 +361,7 @@ exp6.set_motor_inverted(1, True)
 <div class="block-label" style="margin-top: 1rem;">Async Block</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [await v] [set_motor_inverted] (1) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Async模式</span><span class="code-badge async">Async</span></div>
+<div class="code-header"><span>Async Mode</span><span class="code-badge async">Async</span></div>
 
 
 ```python
@@ -331,7 +380,7 @@ await exp6.set_motor_inverted(1, True)
 <pre v-pre class="blocks">@greenFlag [exp6 v] [call v] [drive] (1) (2) (50) (40) ‹ › :: #FF6680
 @greenFlag [exp6 v] [call v] [drive_stop] (1) (2) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Normal模式</span><span class="code-badge sync">Normal</span></div>
+<div class="code-header"><span>Normal Mode</span><span class="code-badge sync">Normal</span></div>
 
 
 ```python
@@ -348,7 +397,7 @@ exp6.drive_stop(1, 2)
 <pre v-pre class="blocks">@greenFlag [exp6 v] [await v] [drive] (1) (2) (50) (40) ‹ › :: #FF6680
 @greenFlag [exp6 v] [await v] [drive_stop] (1) (2) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Async模式</span><span class="code-badge async">Async</span></div>
+<div class="code-header"><span>Async Mode</span><span class="code-badge async">Async</span></div>
 
 
 ```python
@@ -383,7 +432,7 @@ await exp6.drive_stop(1, 2)
 (@greenFlag [exp6 v] [call v] [get_motor_abs_angle] (1) ‹ › :: #FF6680)
 (@greenFlag [exp6 v] [call v] [get_motor_speed] (1) ‹ › :: #FF6680)</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Normal模式</span><span class="code-badge sync">Normal</span></div>
+<div class="code-header"><span>Normal Mode</span><span class="code-badge sync">Normal</span></div>
 
 
 ```python
@@ -405,7 +454,7 @@ print("累積角度:", angle, "絕對角度:", abs_angle, "速度:", speed)
 (@greenFlag [exp6 v] [await v] [get_motor_abs_angle] (1) ‹ › :: #FF6680)
 (@greenFlag [exp6 v] [await v] [get_motor_speed] (1) ‹ › :: #FF6680)</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Async模式</span><span class="code-badge async">Async</span></div>
+<div class="code-header"><span>Async Mode</span><span class="code-badge async">Async</span></div>
 
 
 ```python
@@ -432,7 +481,7 @@ print(angle, abs_angle, speed)
 <pre v-pre class="blocks">(@greenFlag [exp6 v] [call v] [get_color_color] (3) ‹ › :: #FF6680)
 (@greenFlag [exp6 v] [call v] [get_color_reflection] (3) ‹ › :: #FF6680)</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Normal模式</span><span class="code-badge sync">Normal</span></div>
+<div class="code-header"><span>Normal Mode</span><span class="code-badge sync">Normal</span></div>
 
 
 ```python
@@ -449,7 +498,7 @@ reflection = exp6.get_color_reflection(3)
 <pre v-pre class="blocks">(@greenFlag [exp6 v] [await v] [get_color_color] (3) ‹ › :: #FF6680)
 (@greenFlag [exp6 v] [await v] [get_color_reflection] (3) ‹ › :: #FF6680)</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Async模式</span><span class="code-badge async">Async</span></div>
+<div class="code-header"><span>Async Mode</span><span class="code-badge async">Async</span></div>
 
 
 ```python
@@ -472,7 +521,7 @@ reflection = await exp6.get_color_reflection(3)
 <pre v-pre class="blocks">(@greenFlag [exp6 v] [call v] [get_color_rgb] (3) ‹ › :: #FF6680)
 (@greenFlag [exp6 v] [call v] [get_color_hsv] (3) ‹ › :: #FF6680)</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Normal模式</span><span class="code-badge sync">Normal</span></div>
+<div class="code-header"><span>Normal Mode</span><span class="code-badge sync">Normal</span></div>
 
 
 ```python
@@ -489,7 +538,7 @@ hsv = exp6.get_color_hsv(3)
 <pre v-pre class="blocks">(@greenFlag [exp6 v] [await v] [get_color_rgb] (3) ‹ › :: #FF6680)
 (@greenFlag [exp6 v] [await v] [get_color_hsv] (3) ‹ › :: #FF6680)</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Async模式</span><span class="code-badge async">Async</span></div>
+<div class="code-header"><span>Async Mode</span><span class="code-badge async">Async</span></div>
 
 
 ```python
@@ -509,7 +558,7 @@ hsv = await exp6.get_color_hsv(3)
 <pre v-pre class="blocks">(@greenFlag [exp6 v] [call v] [get_color_red] (3) ‹ › :: #FF6680)
 (@greenFlag [exp6 v] [call v] [get_color_hue] (3) ‹ › :: #FF6680)</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Normal模式</span><span class="code-badge sync">Normal</span></div>
+<div class="code-header"><span>Normal Mode</span><span class="code-badge sync">Normal</span></div>
 
 
 ```python
@@ -530,7 +579,7 @@ v = exp6.get_color_val(3)
 <pre v-pre class="blocks">(@greenFlag [exp6 v] [await v] [get_color_red] (3) ‹ › :: #FF6680)
 (@greenFlag [exp6 v] [await v] [get_color_hue] (3) ‹ › :: #FF6680)</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Async模式</span><span class="code-badge async">Async</span></div>
+<div class="code-header"><span>Async Mode</span><span class="code-badge async">Async</span></div>
 
 
 ```python
@@ -557,7 +606,7 @@ v = await exp6.get_color_val(3)
 <pre v-pre class="blocks">(@greenFlag [exp6 v] [call v] [get_ultrasonic_distance] (4) ‹ › :: #FF6680)
 (@greenFlag [exp6 v] [call v] [get_touch_force] (5) ‹ › :: #FF6680)</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Normal模式</span><span class="code-badge sync">Normal</span></div>
+<div class="code-header"><span>Normal Mode</span><span class="code-badge sync">Normal</span></div>
 
 
 ```python
@@ -574,7 +623,7 @@ force = exp6.get_touch_force(5)
 <pre v-pre class="blocks">(@greenFlag [exp6 v] [await v] [get_ultrasonic_distance] (4) ‹ › :: #FF6680)
 (@greenFlag [exp6 v] [await v] [get_touch_force] (5) ‹ › :: #FF6680)</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Async模式</span><span class="code-badge async">Async</span></div>
+<div class="code-header"><span>Async Mode</span><span class="code-badge async">Async</span></div>
 
 
 ```python
@@ -598,7 +647,7 @@ force = await exp6.get_touch_force(5)
 (@greenFlag [exp6 v] [call v] [get_voltage] ‹ › :: #FF6680)
 (@greenFlag [exp6 v] [call v] [get_port_raw] (1) ‹ › :: #FF6680)</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Normal模式</span><span class="code-badge sync">Normal</span></div>
+<div class="code-header"><span>Normal Mode</span><span class="code-badge sync">Normal</span></div>
 
 
 ```python
@@ -619,7 +668,7 @@ raw_data = exp6.get_port_raw(1)
 (@greenFlag [exp6 v] [await v] [get_voltage] ‹ › :: #FF6680)
 (@greenFlag [exp6 v] [await v] [get_port_raw] (1) ‹ › :: #FF6680)</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Async模式</span><span class="code-badge async">Async</span></div>
+<div class="code-header"><span>Async Mode</span><span class="code-badge async">Async</span></div>
 
 
 ```python
@@ -635,10 +684,10 @@ raw_data = await exp6.get_port_raw(1)
 
 <section id="heartbeat">
 <h1>💓 4. System Heartbeat (Keep Alive) (Heartbeat)</h1>
-<p>EXP6 擴充板需要與主控端維持通訊的「心跳訊號」。如果您在初始化時設定了 <code>multitask=True</code>，系統會在背景自動發送心跳，您不需要使用以下指令。但如果您使用Normal模式 (<code>multitask=False</code>)，請務必使用以下指令來維持通訊，否則擴充板0.5秒內沒有收到心跳訊號會自動關閉馬達電力輸出。</p>
+<p>EXP6 擴充板需要與主控端維持通訊的「心跳訊號」。如果您在初始化時設定了 <code>multitask=True</code>，系統會在背景自動發送心跳，您不需要使用以下指令。但如果您使用Normal Mode (<code>multitask=False</code>)，請務必使用以下指令來維持通訊，否則擴充板0.5秒內沒有收到心跳訊號會自動關閉馬達電力輸出。</p>
 <!-- keep_alive_wait -->
 <h3>⏳ Heartbeat Wait (Wait)</h3>
-<p>在Normal模式下，請使用這個指令來取代原本系統的 <code>wait</code> 或 <code>sleep</code>，它會在等待期間自動幫你維持與擴充板的通訊。</p>
+<p>在Normal Mode下，請使用這個指令來取代原本系統的 <code>wait</code> 或 <code>sleep</code>，它會在等待期間自動幫你維持與擴充板的通訊。</p>
 <div class="code-example">
 <h4><code>exp6.keep_alive_wait(ms)</code></h4>
 <ul>
@@ -647,7 +696,7 @@ raw_data = await exp6.get_port_raw(1)
 <div class="block-label">Normal Block</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [call v] [keep_alive_wait] (1000) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Normal模式</span><span class="code-badge sync">Normal</span></div>
+<div class="code-header"><span>Normal Mode</span><span class="code-badge sync">Normal</span></div>
 
 
 ```python
@@ -666,7 +715,7 @@ exp6.keep_alive_wait(1000)
 <div class="block-label">Normal Block</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [call v] [keep_alive] ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
-<div class="code-header"><span>Normal模式</span><span class="code-badge sync">Normal</span></div>
+<div class="code-header"><span>Normal Mode</span><span class="code-badge sync">Normal</span></div>
 
 
 ```python
@@ -710,7 +759,5 @@ angle = exp_get_motor_angle(5)
 
 
 </div>
-</div>
-</section>
 </div>
 </section>

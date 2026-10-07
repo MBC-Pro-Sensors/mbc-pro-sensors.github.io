@@ -1,0 +1,12 @@
+{
+  "name": "mbc-pro-sensors-site-build",
+  "private": true,
+  "description": "Renders the Markdown docs into static HTML pages (see build.mjs)",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "marked": "1.2.9",
+    "prismjs": "1.29.0"
+  }
+}

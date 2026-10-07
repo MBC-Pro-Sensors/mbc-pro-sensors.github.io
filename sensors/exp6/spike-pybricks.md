@@ -131,6 +131,55 @@ run_task(main())
 </div>
 </section>
 
+<!-- SECTION 2: Motor -->
+<section id="motor">
+<h1>⚙️ 2. 馬達控制 (Motor Control)</h1>
+<p>控制接在 EXP6 擴充板上的 SPIKE 馬達，支援指定轉速、PID 閉迴路控制、煞車、PID 參數調整以及雙馬達同步驅動。</p>
+<!-- Motor Power -->
+<h3>⚡ 啟動馬達 (Power)</h3>
+<p>使用純粹的電力 (開迴路 PWM) 驅動馬達。沒有速度補償，但反應最直接快速。</p>
+<div class="code-example">
+<h4><code>exp6.motor_power(port, power)</code></h4>
+<ul>
+<li><code>port</code>: 擴充板上的孔位 (1~6)</li>
+<li><code>power</code>: 馬達動力 (-100 ~ 100)。正數順時針，負數逆時針。</li>
+</ul>
+<div class="block-label">一般積木</div>
+<pre v-pre class="blocks">@greenFlag [exp6 v] [call v] [motor_power] (5) (50) ‹ › :: #FF6680</pre>
+<div class="code-block-wrapper">
+<div class="code-header"><span>一般模式</span><span class="code-badge sync">一般</span></div>
+
+
+```python
+# 讓接在擴充板孔 5 的馬達以 50% 動力轉動
+exp6.motor_power(5, 50)
+```
+
+
+</div>
+<div class="block-label" style="margin-top: 1rem;">多工積木</div>
+<pre v-pre class="blocks">@greenFlag [exp6 v] [await v] [motor_power] (5) (50) ‹ › :: #FF6680</pre>
+<div class="code-block-wrapper">
+<div class="code-header"><span>多工模式</span><span class="code-badge async">多工</span></div>
+
+
+```python
+await exp6.motor_power(5, 50)
+```
+
+
+</div>
+</div>
+<!-- Motor Run -->
+<h3>🔄 閉迴路轉動 (Run)</h3>
+<p>使用 PID 閉迴路控制，擴充板會自動根據負載調整力量，確保轉速維持在設定值。</p>
+<div class="code-example">
+<h4><code>exp6.motor_run(port, speed)</code></h4>
+<ul>
+<li><code>port</code>: 擴充板上的孔位 (1~6)</li>
+<li><code>speed</code>: 目標速度 (-100 ~ 100)。正數順時針，負數逆時針。</li>
+</ul>
+<div class="block-label">一般積木</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [call v] [motor_run] (1) (30) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
 <div class="code-header"><span>一般模式</span><span class="code-badge sync">一般</span></div>
@@ -710,7 +759,5 @@ angle = exp_get_motor_angle(5)
 
 
 </div>
-</div>
-</section>
 </div>
 </section>

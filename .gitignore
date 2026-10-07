@@ -12,3 +12,7 @@ chinese_results.txt
 S__*.png
 ADHD提示詞.md
 CLAUDE提示詞.md
+
+# Static site build output
+_site/
+_build/node_modules/

@@ -25,6 +25,16 @@ When working on this repository (`mbc-pro-sensors.github.io`), always strictly f
    - When linking between markdown pages, you may use absolute paths (e.g. `[link](/sensors/exp6/index.md)`).
    - If linking inside the same directory, simple relative links are acceptable (e.g. `[link](spike-pybricks.md)`) but always verify case sensitivity.
 
-4. **Docsify Sidebar and Caching:**
-   - `_sidebar.md` and page contents are heavily cached by Docsify and browsers.
+4. **Sidebar and Caching:**
+   - `_sidebar.md` and page contents are cached by browsers and the GitHub Pages CDN.
    - If a user reports that a link is still pointing to an old location (like `ext6` instead of `exp6`) but you have verified via `git grep` that the old name no longer exists in the codebase, it is a caching issue. Instruct the user to wait 1-3 minutes for GitHub Actions to deploy and to perform a Hard Refresh (`Ctrl + F5`).
+
+## Static Site Build (since 2026-10-07 — Docsify is no longer used in production)
+- The site is deployed by `.github/workflows/deploy.yml`: on every push to `main`, `_build/build.mjs` renders each `.md` page into its own HTML page in `_site/` and GitHub Pages serves that. Never commit `_site/`.
+- URL scheme: `README.md` -> `/`, `en/README.md` -> `/en/`, `sensors/x/index.md` -> `/sensors/x/`, `sensors/x/foo.md` -> `/sensors/x/foo.html`, `contact.md` -> `/contact.html`. Old Docsify links (`/#/sensors/...`) and old `.md` URLs auto-redirect.
+- Keep writing pages exactly as before (Markdown + raw HTML, links like `/sensors/line8/index.md`); the build rewrites links to the static URLs.
+- **Raw HTML in Markdown must be balanced** (every `<div>`/`<section>` closed). Docsify used to hide broken tags; static pages will show broken layout. The build prints `WARN ... <div> vs </div>` — fix any warning before pushing.
+- New page: create the `.md` file and add it to `_sidebar.md` (and `en/_sidebar.md`). Add the English twin at `en/<same path>` so the language toggle and hreflang link them.
+- Page `<title>` comes from the page's first H1; the meta description from the first paragraph after the H1. Home page metadata and JSON-LD live in `_build/home.json`. Shared CSS/JS: `_build/assets/site.css`, `_build/assets/site.js`.
+- Product share images (1200x630): `images/brand/og/<product>.jpg`, used automatically for that product's pages.
+- Local preview: `cd _build && npm ci && node build.mjs`, then `python -m http.server 8000 -d _site` and open http://localhost:8000/

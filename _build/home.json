@@ -1,0 +1,175 @@
+{
+  "/": {
+    "title": "MBC-Pro Sensors — 樂高機器人競賽級感應器 (SPIKE Prime / EV3 / Pybricks 循線、測距、擴充模組)",
+    "description": "MBC-Pro Sensors 為樂高機器人（LEGO SPIKE Prime, EV3, Pybricks）量身打造競賽級即插即用感應器：Line8 8路循線、Line16 16路循線、EXP6 6路擴充器、TOF8 180度雷射避障、PS4 藍牙手把控制器。完美相容官方積木與 Python，WRO / FLL 競賽首選。",
+    "keywords": "WRO循線感應器, 樂高8路循線, 樂高16路循線, LEGO SPIKE Prime 第三方感測器, SPIKE 循線, SPIKE 3 循線, SPIKE 擴充板, EXP6, LEGO EV3 循跡, Pybricks line sensor, 樂高避障感測器, TOF8 雷射測距, 樂高 PS4 手把, MBC-Pro Sensors",
+    "jsonLd": {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://mbc-pro-sensors.github.io/#website",
+          "url": "https://mbc-pro-sensors.github.io/",
+          "name": "MBC-Pro Sensors",
+          "description": "專為樂高機器人（LEGO SPIKE Prime, EV3, Pybricks）打造的競賽級即插即用感應器與擴充模組",
+          "inLanguage": [
+            "zh-TW",
+            "en"
+          ]
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://mbc-pro-sensors.github.io/#organization",
+          "name": "MBC-Pro Sensors",
+          "url": "https://mbc-pro-sensors.github.io/",
+          "logo": "https://mbc-pro-sensors.github.io/images/brand/mbc-logo.png",
+          "email": "mbc.robot89@gmail.com"
+        },
+        {
+          "@type": "ItemList",
+          "name": "MBC-Pro Sensors 核心競賽感應器系列",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "循行者 8 路 (Line8)",
+              "description": "8通道紅外線高精度循線感應器陣列，內建抗光害與動態校準算法，相容 LEGO SPIKE Prime、EV3 與 Pybricks。",
+              "url": "https://mbc-pro-sensors.github.io/sensors/line8/",
+              "image": "https://mbc-pro-sensors.github.io/images/sensors/line8/line8-product-spike.webp"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "循行者 16 路 (Line16)",
+              "description": "16通道超寬視野紅外線循線感測器，專為 WRO 高速急彎與複雜十字路口設計，釋放主機孔位。",
+              "url": "https://mbc-pro-sensors.github.io/sensors/line16/",
+              "image": "https://mbc-pro-sensors.github.io/images/sensors/line16/line16-product-spike.webp"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "SPIKE 6 路擴充器 (EXP6)",
+              "description": "突破 SPIKE Prime 6孔限制，具備獨立隔離電源保護，可同時擴充多組馬達與感應器。",
+              "url": "https://mbc-pro-sensors.github.io/sensors/exp6/",
+              "image": "https://mbc-pro-sensors.github.io/images/sensors/exp6/exp6-product.webp"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "測距者 8 路 (TOF8)",
+              "description": "180度扇形無死角雷射雷達 (LiDAR)，專為樂高相撲機器人與極速避障打造，告別超音波鬼影。",
+              "url": "https://mbc-pro-sensors.github.io/sensors/tof8/",
+              "image": "https://mbc-pro-sensors.github.io/images/sensors/tof8/tof8-product.webp"
+            },
+            {
+              "@type": "ListItem",
+              "position": 5,
+              "name": "掌控者 PS4 高階藍牙接收器 (PS4)",
+              "description": "樂高專用無線遊戲手把接收器，配對記憶與 100 公尺長距離穩定抗干擾連線。",
+              "url": "https://mbc-pro-sensors.github.io/sensors/ps4/",
+              "image": "https://mbc-pro-sensors.github.io/images/sensors/ps4/ps4-product.webp"
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "為什麼 WRO 競賽選手推薦使用 Line8 或 Line16 代替樂高原廠顏色感應器？",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "樂高原廠顏色感測器為單點採樣，視角極窄且易受場地反光與陰影干擾，高速過彎時機器人容易左右擺頭甚至脫軌。MBC-Pro 循行者系列具備 8 或 16 通道陣列，內建自動濾波校準晶片，直接輸出軌道偏差數值，僅需佔用 1 個主機孔位即可實現極速穩定循線。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "MBC-Pro 感應器支援樂高 SPIKE Prime 官方積木編程嗎？",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "支援。MBC-Pro 感應器支援樂高官方 Scratch 積木直讀，初學者可直接拖曳標準方塊讀取數值；進階使用者更可使用 Pybricks (MicroPython) 進行毫秒級高速輪詢。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "SPIKE Prime 主機孔位不夠接多個馬達與感測器怎麼辦？",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "可以使用 MBC-Pro EXP6 6路擴充器。EXP6 帶有獨立隔離電源保護，可外接多個馬達與感測器，徹底突破 SPIKE Prime 僅有 6 個埠的物理限制。"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "/en/": {
+    "title": "MBC-Pro Sensors — Competition-grade sensors for LEGO SPIKE Prime, EV3 & Pybricks",
+    "description": "Plug-and-play, competition-grade sensors for LEGO robotics: Line8 / Line16 line followers, TOF laser ranging, EXP6 port expander and PS4 gamepad receiver. Works with official LEGO blocks and Pybricks — built for WRO and FLL.",
+    "keywords": "LEGO line follower sensor, SPIKE Prime third-party sensor, SPIKE Prime port expander, EV3 line sensor, Pybricks line sensor, WRO line following, LEGO laser distance sensor, LEGO PS4 controller",
+    "jsonLd": {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://mbc-pro-sensors.github.io/en/#webpage",
+          "url": "https://mbc-pro-sensors.github.io/en/",
+          "name": "MBC-Pro Sensors — Competition-grade sensors for LEGO robotics",
+          "inLanguage": "en",
+          "isPartOf": {
+            "@id": "https://mbc-pro-sensors.github.io/#website"
+          },
+          "publisher": {
+            "@id": "https://mbc-pro-sensors.github.io/#organization"
+          }
+        },
+        {
+          "@type": "ItemList",
+          "name": "MBC-Pro Sensors product line",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Pathfinder 8-Way Line Sensor (Line8)",
+              "description": "8-channel IR line-following array with built-in ambient-light rejection and auto-calibration for LEGO SPIKE Prime, EV3 and Pybricks.",
+              "url": "https://mbc-pro-sensors.github.io/en/sensors/line8/",
+              "image": "https://mbc-pro-sensors.github.io/images/sensors/line8/line8-product-spike.webp"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Pathfinder 16-Way Line Sensor (Line16)",
+              "description": "16-channel wide-view line sensor built for high-speed WRO turns and complex intersections, using a single hub port.",
+              "url": "https://mbc-pro-sensors.github.io/en/sensors/line16/",
+              "image": "https://mbc-pro-sensors.github.io/images/sensors/line16/line16-product-spike.webp"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "SPIKE 6-Way Expander (EXP6)",
+              "description": "Breaks the 6-port limit of SPIKE Prime with isolated power protection, so you can add more motors and sensors.",
+              "url": "https://mbc-pro-sensors.github.io/en/sensors/exp6/",
+              "image": "https://mbc-pro-sensors.github.io/images/sensors/exp6/exp6-product.webp"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Ranger 8-Way Laser LiDAR (TOF8)",
+              "description": "180° laser ranging array for LEGO sumo and fast obstacle avoidance — no more ultrasonic ghost readings.",
+              "url": "https://mbc-pro-sensors.github.io/en/sensors/tof8/",
+              "image": "https://mbc-pro-sensors.github.io/images/sensors/tof8/tof8-product.webp"
+            },
+            {
+              "@type": "ListItem",
+              "position": 5,
+              "name": "Controller Bluetooth Pro Receiver (PS4)",
+              "description": "Wireless gamepad receiver for LEGO robots with pairing memory and long-range, interference-resistant link.",
+              "url": "https://mbc-pro-sensors.github.io/en/sensors/ps4/",
+              "image": "https://mbc-pro-sensors.github.io/images/sensors/ps4/ps4-product.webp"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

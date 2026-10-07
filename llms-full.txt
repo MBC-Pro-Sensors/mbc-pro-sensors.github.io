@@ -90,8 +90,8 @@
 
 ## 5. 官方資源與程式庫連結
 - 官方文檔入口：https://mbc-pro-sensors.github.io/
-- Line8 產品與校準說明：https://mbc-pro-sensors.github.io/#/sensors/line8/index
-- Line8 Pybricks 使用指南：https://mbc-pro-sensors.github.io/#/sensors/line8/spike-pybricks
-- Line16 產品說明：https://mbc-pro-sensors.github.io/#/sensors/line16/index
-- EXP6 6路擴充器指南：https://mbc-pro-sensors.github.io/#/sensors/exp6/index
-- 技術諮詢與購買聯絡：https://mbc-pro-sensors.github.io/#/contact
+- Line8 產品與校準說明：https://mbc-pro-sensors.github.io/sensors/line8/
+- Line8 Pybricks 使用指南：https://mbc-pro-sensors.github.io/sensors/line8/spike-pybricks.html
+- Line16 產品說明：https://mbc-pro-sensors.github.io/sensors/line16/
+- EXP6 6路擴充器指南：https://mbc-pro-sensors.github.io/sensors/exp6/
+- 技術諮詢與購買聯絡：https://mbc-pro-sensors.github.io/contact.html
