@@ -76,7 +76,7 @@
     <div class="product-card" style="background:#0a111a; border:1px solid rgba(10,186,181,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#0ABAB5; font-size:1.5rem;">📡</div>
-        <h4 style="color:#0ABAB5; margin:8px 0 8px; font-size:1.2rem;">測距者 2 路 (TOF2) (待更新)</h4>
+        <h4 style="color:#0ABAB5; margin:8px 0 8px; font-size:1.2rem;">測距者 2 路 (TOF2)</h4>
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">輕巧且敏銳，精準捕捉物體左右動向的微型雷射</p>
       </div>
       <div style="flex:0 0 auto;">
@@ -89,7 +89,7 @@
     <div class="product-card" style="background:#0a111a; border:1px solid rgba(10,186,181,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#0ABAB5; font-size:1.5rem;">📡</div>
-        <h4 style="color:#0ABAB5; margin:8px 0 8px; font-size:1.2rem;">測距者 8 路 (TOF8) (待更新)</h4>
+        <h4 style="color:#0ABAB5; margin:8px 0 8px; font-size:1.2rem;">測距者 8 路 (TOF8)</h4>
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">告別超音波鬼影：180度零死角，相撲對戰與極速避障的雷射雷達</p>
       </div>
       <div style="flex:0 0 auto;">
@@ -108,7 +108,7 @@
     <div class="product-card" style="background:#0a111a; border:1px solid rgba(242,194,0,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#F2C200; font-size:1.5rem;">🎮</div>
-        <h4 style="color:#F2C200; margin:8px 0 8px; font-size:1.2rem;">掌控者 2.4G (PS2) (待更新)</h4>
+        <h4 style="color:#F2C200; margin:8px 0 8px; font-size:1.2rem;">掌控者 2.4G (PS2)</h4>
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">高性價比入門首選，輕鬆擴充控制按鍵的無線利器</p>
       </div>
       <div style="flex:0 0 auto;">
@@ -121,8 +121,8 @@
     <div class="product-card" style="background:#0a111a; border:1px solid rgba(242,194,0,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#F2C200; font-size:1.5rem;">🎮</div>
-        <h4 style="color:#F2C200; margin:8px 0 8px; font-size:1.2rem;">掌控者高階藍牙 (PS4) (待更新)</h4>
-        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">無懼賽場干擾：配對記憶與 100 公尺穩定連線的頂級遙控器</p>
+        <h4 style="color:#F2C200; margin:8px 0 8px; font-size:1.2rem;">掌控者 PS4/PS5 藍牙</h4>
+        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">支援 PS4 / PS5 手把：只綁定你的手把、斷訊自動停車，大型賽場也穩定</p>
       </div>
       <div style="flex:0 0 auto;">
         <img src="/images/sensors/ps4/ps4-product.webp" alt="掌控者高階藍牙" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(242,194,0,0.6));">
@@ -140,11 +140,27 @@
     <div class="product-card" style="background:#0a111a; border:1px solid rgba(0,210,255,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#00d2ff; font-size:1.5rem;">👁️</div>
-        <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">神攝手視覺感應器 (待更新)</h4>
-        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">賦予機器人真實視界：專精色塊追蹤與精準座標定位的高階視覺鏡頭</p>
+        <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">神攝手 ESP32CAM 視覺感應器</h4>
+        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">內建螢幕即時預覽：色塊追蹤、座標取色、動態偵測，機身直接設定</p>
       </div>
       <div style="flex:0 0 auto;">
         <img src="/images/sensors/esp32cam/esp32cam-product.webp" alt="神攝手視覺感應器" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(0,210,255,0.6));">
+      </div>
+    </div>
+  </a>
+
+</div>
+
+### 🧭 姿態感測
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
+
+  <a href="/sensors/imu/index.md" style="text-decoration:none;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(163,113,247,0.45); border-radius:10px; padding:20px; ">
+      <div style="flex:1; min-width:0;">
+        <div style="color:#a371f7; font-size:1.5rem;">🧭</div>
+        <h4 style="color:#a371f7; margin:8px 0 8px; font-size:1.2rem;">陀螺儀 IMU 九軸（即將推出）</h4>
+        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">任意角度安裝、磁力計融合長距離不飄移，EV3 直接當原廠陀螺儀用</p>
       </div>
     </div>
   </a>
@@ -159,7 +175,7 @@
     <div class="product-card" style="background:#0a111a; border:1px solid rgba(0,210,255,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#00d2ff; font-size:1.5rem;">🔌</div>
-        <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">SPIKE 6 路擴充器 (EXP6) (待更新)</h4>
+        <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">SPIKE 6 路擴充器 (EXP6)</h4>
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">突破主機孔位極限：自帶隔離電源保護的 6 路擴充神兵</p>
       </div>
       <div style="flex:0 0 auto;">
@@ -170,3 +186,16 @@
 
 </div>
 
+---
+
+## 🧩 支援平台
+
+| 平台 | 說明 |
+| :--- | :--- |
+| LEGO SPIKE Prime / Robot Inventor | 官方 App 積木、Pybricks |
+| LEGO MINDSTORMS EV3 | EV3 官方軟體、EV3 Classroom、Pybricks |
+| Arduino / ESP32 / 樹莓派 | [通用 I2C 協議](/i2c-protocol.md)：全系列共用同一套暫存器規則 |
+| MATRIX Mini R4 | 循線、測距、陀螺儀、視覺感應器 |
+| MakeBlock | 循線、測距、遙控接收器 |
+
+> 每個平台是不同的出廠版本（接頭與韌體不同），請依主機選購。不確定請 [聯絡我們](/contact.md)。

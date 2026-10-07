@@ -1,6 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 - **Product Documentation**
   - [Home](/en/README.md)
+  - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#00d2ff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px rgba(0,210,255,0.5));"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>Universal I2C Protocol](/en/i2c-protocol.md)
 
 - **🛤️ Line Followers**
   - **Pathfinder 8-Way (Line8)**
@@ -37,18 +38,23 @@
 - **🎮 Remote Control Receiver**
   - **Controller 2.4G (PS2)**
     - [📖 Product Overview](/en/sensors/ps2/index.md)
-  - **Controller Bluetooth Pro (PS4)**
+  - **Controller PS4/PS5**
     - [📖 Product Overview](/en/sensors/ps4/index.md)
 
 - **👁️ Robot Vision**
   - **Sharpshooter Vision (ESP32CAM)**
     - [📖 Product Overview](/en/sensors/esp32cam/index.md)
 
+- **🧭 Motion Sensing**
+  - **IMU 9-Axis Gyro (Coming Soon)**
+    - [📖 Product Overview](/en/sensors/imu/index.md)
+
 - **🔌 Expansion Modules**
   - **SPIKE 6-Way Expander (EXP6)**
     - [📖 Product Overview](/en/sensors/exp6/index.md)
     - [🎮 Official App](/en/sensors/exp6/spike-official.md)
     - [🚀 Pybricks Environment](/en/sensors/exp6/spike-pybricks.md)
+    - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#00d2ff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px rgba(0,210,255,0.5));"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>Universal I2C Edition](/en/sensors/exp6/arduino-i2c.md)
 
 - **📞 Contact Us**
   - [💬 Contact & Support](/en/contact.md)

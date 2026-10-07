@@ -1,6 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 - **產品文檔**
   - [首頁](/README.md)
+  - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#00d2ff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px rgba(0,210,255,0.5));"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>通用 I2C 協議](/i2c-protocol.md)
 
 - **🛤️ 循線感應器**
   - **循行者 8 路 (Line8)**
@@ -37,18 +38,23 @@
 - **🎮 遙控接收器**
   - **掌控者 PS2 (PS2)**
     - [📖 產品介紹](/sensors/ps2/index.md)
-  - **掌控者 PS4 (PS4)**
+  - **掌控者 PS4/PS5**
     - [📖 產品介紹](/sensors/ps4/index.md)
 
 - **👁️ 機器人視覺**
   - **神攝手 ESP32CAM (ESP32CAM)**
     - [📖 產品介紹](/sensors/esp32cam/index.md)
 
+- **🧭 姿態感測**
+  - **陀螺儀 IMU（即將推出）**
+    - [📖 產品介紹](/sensors/imu/index.md)
+
 - **🔌 擴充模組**
   - **SPIKE 6 路擴充器 (EXP6)**
     - [📖 產品介紹](/sensors/exp6/index.md)
     - [🐍 官方 SPIKE App](/sensors/exp6/spike-official.md)
     - [🚀 Pybricks 環境](/sensors/exp6/spike-pybricks.md)
+    - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#00d2ff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px rgba(0,210,255,0.5));"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>通用 I2C 版本](/sensors/exp6/arduino-i2c.md)
 
 - **📞 聯絡我們**
   - [💬 聯絡 & 支援](/contact.md)

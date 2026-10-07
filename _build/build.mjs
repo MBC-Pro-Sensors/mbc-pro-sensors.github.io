@@ -19,6 +19,8 @@ const require = createRequire(import.meta.url);
 const marked = require('marked'); // v1.2.9 — same version Docsify 4.13 bundles
 const Prism = require('prismjs');
 require('prismjs/components/prism-python');
+require('prismjs/components/prism-c');
+require('prismjs/components/prism-cpp');
 
 const BUILD = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(BUILD, '..');
@@ -27,10 +29,10 @@ const SITE = 'https://mbc-pro-sensors.github.io';
 const DEFAULT_OG = '/images/brand/og-image.jpg';
 
 const git = (args) => execSync(`git ${args}`, { cwd: ROOT, encoding: 'utf8' });
-const tracked = git('-c core.quotepath=off ls-files').split('\n').filter(Boolean);
+const tracked = git('-c core.quotepath=off ls-files --cached --others --exclude-standard').split('\n').filter(Boolean);
 
 // ---------------------------------------------------------------- URL mapping
-const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact)\.md$/.test(f) || /^(en\/)?sensors\//.test(f));
+const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol)\.md$/.test(f) || /^(en\/)?sensors\//.test(f));
 const pages = tracked.filter(isPage);
 
 function urlFor(mdPath) {
@@ -103,6 +105,8 @@ function renderMarkdown(src, file, lang) {
   renderer.image = (href, title, text) =>
     `<img src="${href}" alt="${text || ''}"${title ? ` title="${title}"` : ''}>`;
 
+  // MkDocs-style admonition (!!! success "Title" + one line) -> GitHub-style tip callout
+  src = src.replace(/^!!! \w+ "([^"]+)"\r?\n([^\r\n]+)/gm, (all, title, body) => `> [!TIP]\n> **${title}**\n> ${body}`);
   let html = marked(src, { renderer, gfm: true });
 
   // Raw-HTML links inside the Markdown (e.g. product cards on the home page)

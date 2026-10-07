@@ -20,111 +20,133 @@
 
 ---
 
-## 1. 通用 MCU 平台 (Arduino / ESP32 / 樹莓派)
+> [!IMPORTANT]
+> **本頁為新版 v1 協議（位址 `0x16`）。** 所有 MBC 產品共用的讀寫規則、狀態暫存器與 Arduino 共用函式，請先看 [MBC 通用 I2C 協議](/i2c-protocol.md)。
 
-*   **通訊協定**：標準 I2C
-*   **預設從機位址 (Slave Address)**：`0x08`
+## 📡 基本資訊
 
-### 📥 寫入暫存器 (I2C Write - 控制指令)
-寫入格式為：`[從機位址 0x08] + [暫存器位址] + [設定值]`
+| 項目 | 內容 |
+| :--- | :--- |
+| I2C 位址 | `0x16`（循線系列共用） |
+| 型號字串 `0x07` | `LINE8` |
+| 款式 `0x06` | `[8, PCB 版次]`（第 1 byte = 通道數） |
+| 通道順序 | **CH0 = 最右邊**，CH7 = 最左邊 |
+| 線位置方向 | **負數 = 線在右邊、正數 = 線在左邊**，0 = 正中央 |
 
-<div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 30px;">
-<div class="reg-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,107,53,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-<code style="color: #ff6b35; font-size: 1.1rem; font-weight: bold;">0x10</code>
-<span style="background: rgba(255,107,53,0.15); color: #ff6b35; padding: 3px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">切換目標線模式</span>
-</div>
-<ul style="margin: 0; padding-left: 20px; font-size: 0.85rem; color: #aaa; line-height: 1.6;">
-<li>寫入 <strong><code>0</code></strong>：循黑線模式。</li>
-<li>寫入 <strong><code>1</code></strong>：循白線模式。</li>
-</ul>
-</div>
-<div class="reg-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,107,53,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-<code style="color: #ff6b35; font-size: 1.1rem; font-weight: bold;">0x20</code>
-<span style="background: rgba(255,107,53,0.15); color: #ff6b35; padding: 3px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">觸發校準指令</span>
-</div>
-<div style="font-size: 0.85rem; color: #aaa; line-height: 1.6;">
-<div style="color: #0abab5; font-weight: bold; margin-bottom: 4px;">⚡ 秒殺校準法（免移動車體）：</div>
-<ul style="margin: 0 0 8px 0; padding-left: 20px;">
-<li>寫入 <strong><code>1</code></strong>：啟動 5 秒動態校準（需在賽道上移動車體）。</li>
-<li>寫入 <strong><code>2</code></strong>：觸發「靜態單步白色校準」👉 將當下畫面記為白色極值（車體需停在白地上）。</li>
-<li>寫入 <strong><code>3</code></strong>：觸發「靜態單步黑色校準」👉 將當下畫面記為黑色極值（車體需壓在黑線上）。</li>
-</ul>
-<div style="font-size: 0.75rem; color: #888;">*(註：寫入 2 與 3 會觸發底層 EEPROM 非同步寫入與增益重算)*</div>
-</div>
-</div>
-<div class="reg-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,107,53,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-<code style="color: #ff6b35; font-size: 1.1rem; font-weight: bold;">0x30</code>
-<span style="background: rgba(255,107,53,0.15); color: #ff6b35; padding: 3px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">動態閾值 (LSA Threshold)</span>
-</div>
-<p style="margin: 0; font-size: 0.85rem; color: #aaa; line-height: 1.6;">寫入 <strong><code>0 ~ 100</code></strong> (預設為 <code>50</code>)。數值越高越容易判定為黑線，可於網頁端控制面板即時調校。</p>
-</div>
-</div>
+## 1️⃣ 循線結果（最常用）
 
-### 📤 讀取暫存器 (I2C Read - 獲取數據)
-讀取格式為：先 I2C 寫入欲讀取的 `[暫存器位址]` (不發送 Stop)，接著執行 `I2C RequestFrom` 對應的位元組長度。
+| 暫存器 | 方向 | 長度 | 內容 |
+| :---: | :---: | :---: | :--- |
+| `0x10` | W | 1 | 循線目標：`0` = 黑線、`1` = 白線（重開機後回到按鈕設定） |
+| `0x11` | R | 7 | **循線合併包**（= `0x12` ~ `0x17`，一次讀完最方便） |
+| `0x12` | R | 1 | 線位置 int8：`-8` ~ `+8` |
+| `0x13` | R | 1 | **高解析位置** int8：`-100` ~ `+100`（最適合 PID 控制） |
+| `0x14` | R | 1 | 線寬：同時偵測到線的通道數 |
+| `0x15` | R | 1 | 線群組數：`0` = 丟線、`1` = 單線、`2` 以上 = 分岔／十字路口 |
+| `0x16` | R | 2 | 二值化圖 uint16：bit i = CH i 在線上 |
+| `0x17` | R | 1 | 最後離線方向 int8（丟線時用來判斷往哪邊找） |
 
-<div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 30px;">
-<div class="reg-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-<div style="display: flex; align-items: center; gap: 10px;">
-<code style="color: #00d2ff; font-size: 1.1rem; font-weight: bold;">0x01</code>
-<span style="background: rgba(0,210,255,0.15); color: #00d2ff; padding: 3px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">核心綜合特徵包</span>
-</div>
-<span style="background: rgba(255,255,255,0.1); color: #ccc; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.75rem;">4 Bytes</span>
-</div>
-<ul style="margin: 0; padding-left: 20px; font-size: 0.85rem; color: #aaa; line-height: 1.6;">
-<li><strong>Byte 0</strong>：標準位置平移值 (<code>linePos + 8</code>)，範圍 <code>0 ~ 16</code>。 (8 為正中央)</li>
-<li><strong>Byte 1</strong>：特徵線寬 (<code>lineWidth</code>)，範圍 <code>0 ~ 8</code>。</li>
-<li><strong>Byte 2</strong>：高解析平滑位置 (<code>linePosHighResolution</code>)，範圍 <code>0 ~ 200</code> (100 為中央)。</li>
-<li><strong>Byte 3</strong>：二值化原圖狀態 (<code>binRaw</code> 完整 8 位元)。</li>
-</ul>
-</div>
-<div class="reg-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-<div style="display: flex; align-items: center; gap: 10px;">
-<code style="color: #00d2ff; font-size: 1.1rem; font-weight: bold;">0x02</code>
-<span style="background: rgba(0,210,255,0.15); color: #00d2ff; padding: 3px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">全景絕對物理光值</span>
-</div>
-<span style="background: rgba(255,255,255,0.1); color: #ccc; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.75rem;">8 Bytes</span>
-</div>
-<div style="font-size: 0.85rem; color: #aaa; line-height: 1.6;">
-一次讀回 8 組感測器精準校準後的物理光值 (<code>dataIrCalib[0~7]</code>)。<br>
-每通道範圍 <code>0 ~ 100</code>（100=純白，0=純黑）。<br>
-<span style="color: #0abab5; font-weight: bold;">極度推薦用於開發即時長條圖儀表板！</span>
-</div>
-</div>
-<div class="reg-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-<div style="display: flex; align-items: center; gap: 10px;">
-<code style="color: #00d2ff; font-size: 1.1rem; font-weight: bold;">0x40 ~ 0x47</code>
-<span style="background: rgba(0,210,255,0.15); color: #00d2ff; padding: 3px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">單通道快速讀取</span>
-</div>
-<span style="background: rgba(255,255,255,0.1); color: #ccc; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.75rem;">1 Byte</span>
-</div>
-<p style="margin: 0; font-size: 0.85rem; color: #aaa; line-height: 1.6;">讀取指定單一通道的光值 (<code>0 ~ 100</code>)。<code>0x40</code> 對應通道 0 (最右)，<code>0x47</code> 對應通道 7 (最左)。</p>
-</div>
-</div>
+## 2️⃣ 校準
 
+| 暫存器 | 方向 | 長度 | 內容 |
+| :---: | :---: | :---: | :--- |
+| `0x20` | W | 1 | `1` = 5 秒動態校準（期間左右移動車體掃過黑線）、`2` = 目前讀值記為白、`3` = 目前讀值記為黑。結果存入 EEPROM |
+| `0x21` | R | 2 | 校準合併包（= `0x22` ~ `0x23`） |
+| `0x22` | RW | 1 | 二值化閾值 `1` ~ `99`（預設 50；重開機回到預設） |
+| `0x23` | R | 1 | 校準完成次數（每完成一次 +1，用來確認校準已執行完） |
 
+## 3️⃣ 狀態旗標 `0x32`
 
+| 位元 | 內容 |
+| :---: | :--- |
+| bit0 | 就緒 |
+| bit1 | 白線模式（0 = 黑線） |
+| bit2 | 校準中（5 秒校準期間更新序號 `0x33` 會停住，屬正常） |
+| bit3 | 丟線 |
+| bit4 | 分岔（群組數 ≥ 2） |
 
+## 🔬 各通道數值
 
-<style>
-.reg-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  background: rgba(255,255,255,0.04) !important;
+| 暫存器 | 方向 | 長度 | 內容 |
+| :---: | :---: | :---: | :--- |
+| `0x40` ~ `0x47` | R | 1 | 單一通道校準後數值 `0` ~ `100`（`0x40` + 通道號） |
+| `0x50` | R | 8 | 全部通道校準後數值 `0` ~ `100` |
+| `0x51` | R | 8 | 白色參考值（EEPROM） |
+| `0x52` | R | 8 | 黑色參考值（EEPROM） |
+| `0x53` | R | 8 | 原始 ADC 值（8-bit） |
+
+---
+
+## 💻 Arduino 範例：讀取循線結果
+
+```cpp
+#include <Wire.h>
+
+const uint8_t LINE_ADDR = 0x16;
+
+bool iicRead(uint8_t addr, uint8_t reg, uint8_t *buf, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(reg);
+  if (Wire.endTransmission() != 0) return false;
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  return true;
 }
-</style>
 
-### 💻 Arduino C++ 讀取範例
+void iicWrite(uint8_t addr, uint8_t reg, uint8_t v) {
+  Wire.beginTransmission(addr);
+  Wire.write(reg);
+  Wire.write(v);
+  Wire.endTransmission();
+}
 
-> [!NOTE]
-> **⏳ 完整程式範例準備中**
-> 搭配 `ARDUINO_IIC` 專屬雙向控制暫存器系統的 Arduino C++ 讀寫範例程式與相關接線圖片，將於之後補全，敬請期待！
+void setup() {
+  Serial.begin(115200);
+  Wire.begin();
+  iicWrite(LINE_ADDR, 0x10, 0);     // 0 = 循黑線、1 = 循白線
+}
+
+void loop() {
+  uint8_t d[7];
+  if (iicRead(LINE_ADDR, 0x11, d, 7)) {
+    int8_t   pos    = (int8_t)d[0];        // -8 ~ +8
+    int8_t   posHi  = (int8_t)d[1];        // -100 ~ +100，PID 用這個
+    uint8_t  width  = d[2];                // 線寬
+    uint8_t  groups = d[3];                // 0 丟線 / 1 單線 / 2+ 分岔
+    uint16_t bin    = (d[4] << 8) | d[5];  // 每個 bit 一個通道
+
+    Serial.print("位置 ");     Serial.print(pos);
+    Serial.print("  高解析 "); Serial.print(posHi);
+    Serial.print("  線寬 ");   Serial.print(width);
+    Serial.print("  群組 ");   Serial.print(groups);
+    Serial.print("  二值 ");   Serial.println(bin, BIN);
+  }
+  delay(10);
+}
+```
+
+### PID 循線的起點
+
+```cpp
+// posHi：負 = 線在右、正 = 線在左。線在右邊時要右轉 → 左輪加速、右輪減速
+float Kp = 0.6;
+int base = 120;                        // 基本速度（依你的馬達驅動調整）
+int turn = Kp * posHi;
+int leftSpeed  = base - turn;
+int rightSpeed = base + turn;
+```
+
+### 用程式觸發校準
+
+```cpp
+uint8_t before[2], after[2];
+iicRead(LINE_ADDR, 0x21, before, 2);   // [閾值, 校準完成次數]
+iicWrite(LINE_ADDR, 0x20, 1);          // 開始 5 秒動態校準：這段時間左右移動車體掃過黑線
+do {
+  delay(200);
+  iicRead(LINE_ADDR, 0x21, after, 2);
+} while (after[1] == before[1]);       // 次數 +1 = 校準完成
+```
 
 <br>
 

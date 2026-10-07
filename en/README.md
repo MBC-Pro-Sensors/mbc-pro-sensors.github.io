@@ -76,7 +76,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
     <div class="product-card" style="background:#0a111a; border:1px solid rgba(10,186,181,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#0ABAB5; font-size:1.5rem;">📡</div>
-        <h4 style="color:#0ABAB5; margin:8px 0 8px; font-size:1.2rem;">Ranger 2-Way (TOF2) (To be updated)</h4>
+        <h4 style="color:#0ABAB5; margin:8px 0 8px; font-size:1.2rem;">Ranger 2-Way (TOF2)</h4>
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Lightweight and agile. A micro-laser that accurately captures the left and right movements of objects.</p>
       </div>
       <div style="flex:0 0 auto;">
@@ -89,7 +89,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
     <div class="product-card" style="background:#0a111a; border:1px solid rgba(10,186,181,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#0ABAB5; font-size:1.5rem;">📡</div>
-        <h4 style="color:#0ABAB5; margin:8px 0 8px; font-size:1.2rem;">Ranger 8-Way (TOF8) (To be updated)</h4>
+        <h4 style="color:#0ABAB5; margin:8px 0 8px; font-size:1.2rem;">Ranger 8-Way (TOF8)</h4>
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Say goodbye to ultrasonic ghosts: 180-degree zero blind spots. The LiDAR for sumo battles and high-speed obstacle avoidance.</p>
       </div>
       <div style="flex:0 0 auto;">
@@ -108,7 +108,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
     <div class="product-card" style="background:#0a111a; border:1px solid rgba(242,194,0,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#F2C200; font-size:1.5rem;">🎮</div>
-        <h4 style="color:#F2C200; margin:8px 0 8px; font-size:1.2rem;">Controller 2.4G (PS2) (To be updated)</h4>
+        <h4 style="color:#F2C200; margin:8px 0 8px; font-size:1.2rem;">Controller 2.4G (PS2)</h4>
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Cost-effective entry-level choice. The wireless tool to easily expand your control buttons.</p>
       </div>
       <div style="flex:0 0 auto;">
@@ -121,8 +121,8 @@ Use the sidebar navigation or click the cards below to view specific product doc
     <div class="product-card" style="background:#0a111a; border:1px solid rgba(242,194,0,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#F2C200; font-size:1.5rem;">🎮</div>
-        <h4 style="color:#F2C200; margin:8px 0 8px; font-size:1.2rem;">Controller Bluetooth Pro (PS4) (To be updated)</h4>
-        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Fear no arena interference: Top-tier remote with pairing memory and 100-meter stable connection.</p>
+        <h4 style="color:#F2C200; margin:8px 0 8px; font-size:1.2rem;">Controller PS4/PS5 Bluetooth</h4>
+        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Works with PS4 / PS5 gamepads: bonds to your gamepad only and stops on signal loss — stable even at big events.</p>
       </div>
       <div style="flex:0 0 auto;">
         <img src="/images/sensors/ps4/ps4-product.webp" alt="掌控者高階藍牙" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(242,194,0,0.6));">
@@ -140,11 +140,27 @@ Use the sidebar navigation or click the cards below to view specific product doc
     <div class="product-card" style="background:#0a111a; border:1px solid rgba(0,210,255,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#00d2ff; font-size:1.5rem;">👁️</div>
-        <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">Sharpshooter Vision (ESP32CAM) (To be updated)</h4>
-        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Grant your robot true vision: High-end camera specializing in color tracking and precise coordinate positioning.</p>
+        <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">Sharpshooter ESP32CAM Vision</h4>
+        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Live preview on its own screen: color blob tracking, point color pick and motion detection, set up on the device.</p>
       </div>
       <div style="flex:0 0 auto;">
         <img src="/images/sensors/esp32cam/esp32cam-product.webp" alt="神攝手視覺感應器" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(0,210,255,0.6));">
+      </div>
+    </div>
+  </a>
+
+</div>
+
+### 🧭 Motion Sensing
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
+
+  <a href="/en/sensors/imu/index.md" style="text-decoration:none;">
+    <div class="product-card" style="background:#0a111a; border:1px solid rgba(163,113,247,0.45); border-radius:10px; padding:20px; ">
+      <div style="flex:1; min-width:0;">
+        <div style="color:#a371f7; font-size:1.5rem;">🧭</div>
+        <h4 style="color:#a371f7; margin:8px 0 8px; font-size:1.2rem;">IMU 9-Axis Gyro (Coming Soon)</h4>
+        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Mount at any angle, compass fusion with no long-run drift, works as the official EV3 gyro.</p>
       </div>
     </div>
   </a>
@@ -159,7 +175,7 @@ Use the sidebar navigation or click the cards below to view specific product doc
     <div class="product-card" style="background:#0a111a; border:1px solid rgba(0,210,255,0.4); border-radius:10px; padding:20px; ">
       <div style="flex:1; min-width:0;">
         <div style="color:#00d2ff; font-size:1.5rem;">🔌</div>
-        <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">SPIKE 6-Way Expander (EXP6) (To be updated)</h4>
+        <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">SPIKE 6-Way Expander (EXP6)</h4>
         <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Break the limits of hub ports: The 6-way expansion artifact with built-in isolated power protection.</p>
       </div>
       <div style="flex:0 0 auto;">
@@ -170,3 +186,16 @@ Use the sidebar navigation or click the cards below to view specific product doc
 
 </div>
 
+---
+
+## 🧩 Supported Platforms
+
+| Platform | Notes |
+| :--- | :--- |
+| LEGO SPIKE Prime / Robot Inventor | Official app blocks, Pybricks |
+| LEGO MINDSTORMS EV3 | EV3 official software, EV3 Classroom, Pybricks |
+| Arduino / ESP32 / Raspberry Pi | [Universal I2C Protocol](/en/i2c-protocol.md): one register scheme for the whole family |
+| MATRIX Mini R4 | Line sensors, rangers, IMU, vision sensor |
+| MakeBlock | Line sensors, rangers, gamepad receivers |
+
+> Each platform is a different factory edition (connector and firmware differ); order the one for your controller, or [contact us](/en/contact.md).

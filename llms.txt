@@ -13,7 +13,9 @@ MBC-Pro Sensors 解決了樂高原廠感測器在機器人競賽中的痛點（�
 - [測距者 2 路 TOF2 (Dual TOF Laser Rangefinder)](https://mbc-pro-sensors.github.io/sensors/tof2/): 雙向微型飛行時間 (Time-of-Flight) 雷射測距，精準捕捉物體左右動向。
 - [測距者 8 路 TOF8 (8-Channel 180° Laser LiDAR)](https://mbc-pro-sensors.github.io/sensors/tof8/): 180 度零死角雷射雷達避障，告別超音波鬼影，專為機器人相撲與高速避障設計。
 - [掌控者 2.4G PS2 (Wireless Gamepad Receiver)](https://mbc-pro-sensors.github.io/sensors/ps2/): 高性價比 2.4G 無線手把接收器，即插即用擴充搖桿遙控。
-- [掌控者高階藍牙 PS4 (PS4 Bluetooth Receiver)](https://mbc-pro-sensors.github.io/sensors/ps4/): 具備配對記憶與 100 公尺超長抗干擾連線的競賽級手把遙控器。
+- [掌控者 PS4/PS5 藍牙接收器 (PS4/PS5 Bluetooth Receiver)](https://mbc-pro-sensors.github.io/sensors/ps4/): 支援 PS4 / PS5 手把；只綁定自己的手把、斷訊 0.3 秒自動歸零，比賽場地內穩定連線（空曠實測 100 公尺）。
+- [陀螺儀 IMU 九軸 (IMU 9-Axis Gyro, 即將推出)](https://mbc-pro-sensors.github.io/sensors/imu/): 陀螺儀＋加速度計＋磁力計，任意角度安裝、磁力計融合航向長距離不飄移，EV3 可直接當原廠陀螺儀使用。
+- [MBC 通用 I2C 協議 (Universal I2C Protocol)](https://mbc-pro-sensors.github.io/i2c-protocol.html): Arduino / ESP32 / 樹莓派 讀取全系列感應器的共用暫存器規則與範例程式。
 - [神攝手 ESP32CAM (Vision AI Camera)](https://mbc-pro-sensors.github.io/sensors/esp32cam/): 機器人視覺鏡頭，支援色塊追蹤與座標定位。
 
 ## 支援平台與軟體 (Platforms & Software)

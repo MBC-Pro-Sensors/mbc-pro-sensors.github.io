@@ -1,5 +1,5 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-# Ranger 2-Way Laser Ranging (TOF2) (To be updated)
+# Ranger 2-Way Laser Ranging (TOF2)
 
 <div style="text-align: center;">
   <span style="display:inline-block; background:#0ABAB5; color:#fff; padding:3px 12px; border-radius:20px; font-family:monospace; margin-bottom:1rem; font-size: 0.85rem;">TOF-02-LSR · ADVANCED</span>
@@ -35,6 +35,33 @@ The Ranger 2-Way utilizes **Laser Time-of-Flight (ToF) technology**, measuring d
 | :--- | :--- |
 | Simple collision avoidance, distance detection, directional judgment | ✅ **TOF2 (This model)** |
 | Sumo battles, full 180-degree obstacle avoidance | ➡️ TOF8 (8-channel full view) |
+
+## 📋 Specifications
+
+| Item | Spec |
+| :--- | :--- |
+| Sensing elements | 2 × VL53L0X laser time-of-flight (ToF) chips (one left, one right) |
+| Range | 0 ~ 1200 mm (a reading of 120 cm = no target on that side) |
+| Fault detection | Detects init failures, bus errors and timeouts per sensor |
+
+## 🧩 Supported Platforms
+
+| Platform | How |
+| :--- | :--- |
+| LEGO SPIKE Prime / Robot Inventor | Official app, Pybricks |
+| LEGO MINDSTORMS EV3 | EV3 official software, Pybricks |
+| MakeBlock | Dedicated edition |
+
+> [!IMPORTANT]
+> Each platform is a **different factory edition**; please order the one that matches your controller.
+
+## 📤 Output Data
+
+| Platform | What you read |
+| :--- | :--- |
+| SPIKE (Pybricks `PUPDevice(Port.X).read(3)`) | 1st value = left distance, 2nd value = right distance (cm, 0 ~ 120) |
+| EV3 mode 0 | Average of left and right (0 ~ 100) |
+| EV3 mode 1 | Left distance, right distance (0 ~ 100 each) |
 
 ## 🔌 Hardware Wiring
 

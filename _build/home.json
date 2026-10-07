@@ -1,8 +1,8 @@
 {
   "/": {
     "title": "MBC-Pro Sensors — 樂高機器人競賽級感應器 (SPIKE Prime / EV3 / Pybricks 循線、測距、擴充模組)",
-    "description": "MBC-Pro Sensors 為樂高機器人（LEGO SPIKE Prime, EV3, Pybricks）量身打造競賽級即插即用感應器：Line8 8路循線、Line16 16路循線、EXP6 6路擴充器、TOF8 180度雷射避障、PS4 藍牙手把控制器。完美相容官方積木與 Python，WRO / FLL 競賽首選。",
-    "keywords": "WRO循線感應器, 樂高8路循線, 樂高16路循線, LEGO SPIKE Prime 第三方感測器, SPIKE 循線, SPIKE 3 循線, SPIKE 擴充板, EXP6, LEGO EV3 循跡, Pybricks line sensor, 樂高避障感測器, TOF8 雷射測距, 樂高 PS4 手把, MBC-Pro Sensors",
+    "description": "MBC-Pro Sensors 為樂高機器人（LEGO SPIKE Prime, EV3, Pybricks）量身打造競賽級即插即用感應器：Line8 8路循線、Line16 16路循線、EXP6 6路擴充器、TOF8 180度雷射避障、PS4/PS5 藍牙手把接收器。完美相容官方積木與 Python，WRO / FLL 競賽首選。",
+    "keywords": "WRO循線感應器, 樂高8路循線, 樂高16路循線, LEGO SPIKE Prime 第三方感測器, SPIKE 循線, SPIKE 3 循線, SPIKE 擴充板, EXP6, LEGO EV3 循跡, Pybricks line sensor, 樂高避障感測器, TOF8 雷射測距, 樂高 PS4 手把, MBC-Pro Sensors, 樂高 PS5 手把, 樂高陀螺儀, Matrix Mini R4 感測器, Arduino 循線感應器 I2C",
     "jsonLd": {
       "@context": "https://schema.org",
       "@graph": [
@@ -64,8 +64,8 @@
             {
               "@type": "ListItem",
               "position": 5,
-              "name": "掌控者 PS4 高階藍牙接收器 (PS4)",
-              "description": "樂高專用無線遊戲手把接收器，配對記憶與 100 公尺長距離穩定抗干擾連線。",
+              "name": "掌控者 PS4/PS5 藍牙接收器",
+              "description": "支援 PS4 / PS5 手把的樂高專用藍牙接收器：只綁定自己的手把、斷訊自動停車，比賽場地內穩定連線。",
               "url": "https://mbc-pro-sensors.github.io/sensors/ps4/",
               "image": "https://mbc-pro-sensors.github.io/images/sensors/ps4/ps4-product.webp"
             }
@@ -105,8 +105,8 @@
   },
   "/en/": {
     "title": "MBC-Pro Sensors — Competition-grade sensors for LEGO SPIKE Prime, EV3 & Pybricks",
-    "description": "Plug-and-play, competition-grade sensors for LEGO robotics: Line8 / Line16 line followers, TOF laser ranging, EXP6 port expander and PS4 gamepad receiver. Works with official LEGO blocks and Pybricks — built for WRO and FLL.",
-    "keywords": "LEGO line follower sensor, SPIKE Prime third-party sensor, SPIKE Prime port expander, EV3 line sensor, Pybricks line sensor, WRO line following, LEGO laser distance sensor, LEGO PS4 controller",
+    "description": "Plug-and-play, competition-grade sensors for LEGO robotics: Line8 / Line16 line followers, TOF laser ranging, EXP6 port expander and PS4/PS5 gamepad receiver. Works with official LEGO blocks and Pybricks — built for WRO and FLL.",
+    "keywords": "LEGO line follower sensor, SPIKE Prime third-party sensor, SPIKE Prime port expander, EV3 line sensor, Pybricks line sensor, WRO line following, LEGO laser distance sensor, LEGO PS4 PS5 controller, LEGO gyro sensor, Matrix Mini R4 sensor, Arduino I2C line sensor",
     "jsonLd": {
       "@context": "https://schema.org",
       "@graph": [
@@ -162,8 +162,8 @@
             {
               "@type": "ListItem",
               "position": 5,
-              "name": "Controller Bluetooth Pro Receiver (PS4)",
-              "description": "Wireless gamepad receiver for LEGO robots with pairing memory and long-range, interference-resistant link.",
+              "name": "Controller PS4/PS5 Bluetooth Receiver",
+              "description": "LEGO gamepad receiver for PS4 / PS5 gamepads: bonds to your gamepad only, stops on signal loss, stable across a competition venue.",
               "url": "https://mbc-pro-sensors.github.io/en/sensors/ps4/",
               "image": "https://mbc-pro-sensors.github.io/images/sensors/ps4/ps4-product.webp"
             }

@@ -218,3 +218,6 @@ body { background: #050a10; font-family: 'Nunito', 'Segoe UI', Tahoma, sans-seri
 .markdown-section .breadcrumbs a:hover { color: var(--accent-color); }
 .markdown-section .breadcrumbs span { margin: 0 6px; }
 .markdown-section blockquote .callout-title + p { margin-top: 0.2em; }
+
+/* 表格斑馬紋：主題預設的淺色底在深色網站上看不清楚 */
+.markdown-section tr:nth-child(2n) { background-color: rgba(255,255,255,0.04); }

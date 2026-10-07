@@ -20,111 +20,134 @@ The read and write registers of this sensor are completely separated, utilizing 
 
 ---
 
-## 1. Universal MCU Platforms (Arduino / ESP32 / Raspberry Pi)
+> [!IMPORTANT]
+> **This page documents the new v1 protocol (address `0x16`).** For the read/write rules, status registers and Arduino helper functions shared by every MBC product, see the [MBC Universal I2C Protocol](/en/i2c-protocol.md) first.
 
-*   **Communication Protocol**: Standard I2C
-*   **Default Slave Address**: `0x08`
+## 📡 Basics
 
-### 📥 Write Registers (I2C Write - Control Commands)
-Write format: `[Slave Address 0x08] + [Register Address] + [Value]`
+| Item | Value |
+| :--- | :--- |
+| I2C address | `0x16` (shared by the line sensor family) |
+| Model string `0x07` | `LINE8` |
+| Variant `0x06` | `[8, PCB revision]` (byte 1 = channel count) |
+| Channel order | **CH0 = rightmost**, CH7 = leftmost |
+| Line position sign | **Negative = line on the right, positive = line on the left**, 0 = centered |
 
-<div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 30px;">
-<div class="reg-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,107,53,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-<code style="color: #ff6b35; font-size: 1.1rem; font-weight: bold;">0x10</code>
-<span style="background: rgba(255,107,53,0.15); color: #ff6b35; padding: 3px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">Toggle Target Line Mode</span>
-</div>
-<ul style="margin: 0; padding-left: 20px; font-size: 0.85rem; color: #aaa; line-height: 1.6;">
-<li>Write <strong><code>0</code></strong>: Follow Black Line mode.</li>
-<li>Write <strong><code>1</code></strong>: Follow White Line mode.</li>
-</ul>
-</div>
-<div class="reg-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,107,53,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-<code style="color: #ff6b35; font-size: 1.1rem; font-weight: bold;">0x20</code>
-<span style="background: rgba(255,107,53,0.15); color: #ff6b35; padding: 3px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">Trigger Calibration Command</span>
-</div>
-<div style="font-size: 0.85rem; color: #aaa; line-height: 1.6;">
-<div style="color: #0abab5; font-weight: bold; margin-bottom: 4px;">⚡ Instant Calibration Method (No robot movement required):</div>
-<ul style="margin: 0 0 8px 0; padding-left: 20px;">
-<li>Write <strong><code>1</code></strong>: Start 5-second dynamic calibration (requires moving the robot over the track).</li>
-<li>Write <strong><code>2</code></strong>: Trigger "Static Single-Step White Calibration" 👉 Records the current view as the white extreme value (robot must be parked on the white ground).</li>
-<li>Write <strong><code>3</code></strong>: Trigger "Static Single-Step Black Calibration" 👉 Records the current view as the black extreme value (robot must be positioned over the black line).</li>
-</ul>
-<div style="font-size: 0.75rem; color: #888;">*(Note: Writing 2 and 3 triggers underlying asynchronous EEPROM writes and gain recalculations)*</div>
-</div>
-</div>
-<div class="reg-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,107,53,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-<code style="color: #ff6b35; font-size: 1.1rem; font-weight: bold;">0x30</code>
-<span style="background: rgba(255,107,53,0.15); color: #ff6b35; padding: 3px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">Dynamic Threshold (LSA Threshold)</span>
-</div>
-<p style="margin: 0; font-size: 0.85rem; color: #aaa; line-height: 1.6;">Write <strong><code>0 ~ 100</code></strong> (Default is <code>50</code>). A higher value makes it easier to judge as a black line. This can be adjusted in real-time on the web control panel.</p>
-</div>
-</div>
+## 1️⃣ Line Result (most used)
 
-### 📤 Read Registers (I2C Read - Getting Data)
-Read format: First I2C Write to the desired `[Register Address]` (do not send Stop), then execute `I2C RequestFrom` for the corresponding byte length.
+| Register | Dir | Len | Content |
+| :---: | :---: | :---: | :--- |
+| `0x10` | W | 1 | Target: `0` = black line, `1` = white line (reverts to the button setting after reboot) |
+| `0x11` | R | 7 | **Line bundle** (= `0x12` ~ `0x17`, easiest to read in one go) |
+| `0x12` | R | 1 | Line position int8: `-8` ~ `+8` |
+| `0x13` | R | 1 | **High-resolution position** int8: `-100` ~ `+100` (best for PID) |
+| `0x14` | R | 1 | Line width: number of channels on the line |
+| `0x15` | R | 1 | Line groups: `0` = line lost, `1` = single line, `2+` = fork / intersection |
+| `0x16` | R | 2 | Binary map uint16: bit i = CH i on the line |
+| `0x17` | R | 1 | Last exit side int8 (which way to search when the line is lost) |
 
-<div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 30px;">
-<div class="reg-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-<div style="display: flex; align-items: center; gap: 10px;">
-<code style="color: #00d2ff; font-size: 1.1rem; font-weight: bold;">0x01</code>
-<span style="background: rgba(0,210,255,0.15); color: #00d2ff; padding: 3px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">Core Comprehensive Feature Pack</span>
-</div>
-<span style="background: rgba(255,255,255,0.1); color: #ccc; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.75rem;">4 Bytes</span>
-</div>
-<ul style="margin: 0; padding-left: 20px; font-size: 0.85rem; color: #aaa; line-height: 1.6;">
-<li><strong>Byte 0</strong>: Standard position shift value (<code>linePos + 8</code>), range <code>0 ~ 16</code>. (8 is dead center)</li>
-<li><strong>Byte 1</strong>: Feature line width (<code>lineWidth</code>), range <code>0 ~ 8</code>.</li>
-<li><strong>Byte 2</strong>: High-resolution smooth position (<code>linePosHighResolution</code>), range <code>0 ~ 200</code> (100 is center).</li>
-<li><strong>Byte 3</strong>: Binarized raw image status (<code>binRaw</code> full 8 bits).</li>
-</ul>
-</div>
-<div class="reg-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-<div style="display: flex; align-items: center; gap: 10px;">
-<code style="color: #00d2ff; font-size: 1.1rem; font-weight: bold;">0x02</code>
-<span style="background: rgba(0,210,255,0.15); color: #00d2ff; padding: 3px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">Panoramic Absolute Physical Light Values</span>
-</div>
-<span style="background: rgba(255,255,255,0.1); color: #ccc; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.75rem;">8 Bytes</span>
-</div>
-<div style="font-size: 0.85rem; color: #aaa; line-height: 1.6;">
-Read back the precisely calibrated physical light values of all 8 sensor channels at once (<code>dataIrCalib[0~7]</code>).<br>
-Each channel ranges from <code>0 ~ 100</code> (100=pure white, 0=pure black).<br>
-<span style="color: #0abab5; font-weight: bold;">Highly recommended for developing real-time bar chart dashboards!</span>
-</div>
-</div>
-<div class="reg-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-<div style="display: flex; align-items: center; gap: 10px;">
-<code style="color: #00d2ff; font-size: 1.1rem; font-weight: bold;">0x40 ~ 0x47</code>
-<span style="background: rgba(0,210,255,0.15); color: #00d2ff; padding: 3px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">Single Channel Quick Read</span>
-</div>
-<span style="background: rgba(255,255,255,0.1); color: #ccc; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.75rem;">1 Byte</span>
-</div>
-<p style="margin: 0; font-size: 0.85rem; color: #aaa; line-height: 1.6;">Read the light value of a specified single channel (<code>0 ~ 100</code>). <code>0x40</code> corresponds to channel 0 (far right), <code>0x47</code> corresponds to channel 7 (far left).</p>
-</div>
-</div>
+## 2️⃣ Calibration
 
+| Register | Dir | Len | Content |
+| :---: | :---: | :---: | :--- |
+| `0x20` | W | 1 | `1` = 5-second dynamic calibration (sweep the robot across the line), `2` = store current reading as white, `3` = store current reading as black. Saved to EEPROM |
+| `0x21` | R | 2 | Calibration bundle (= `0x22` ~ `0x23`) |
+| `0x22` | RW | 1 | Threshold `1` ~ `99` (default 50; resets on reboot) |
+| `0x23` | R | 1 | Calibration counter (+1 each time a calibration finishes) |
 
+## 3️⃣ Status Flags `0x32`
 
+| Bit | Meaning |
+| :---: | :--- |
+| bit0 | Ready |
+| bit1 | White-line mode (0 = black line) |
+| bit2 | Calibrating (the update counter `0x33` pauses during the 5-second calibration — normal) |
+| bit3 | Line lost |
+| bit4 | Fork (groups ≥ 2) |
 
+## 🔬 Per-Channel Values
 
-<style>
-.reg-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  background: rgba(255,255,255,0.04) !important;
+| Register | Dir | Len | Content |
+| :---: | :---: | :---: | :--- |
+| `0x40` ~ `0x47` | R | 1 | One channel, calibrated `0` ~ `100` (`0x40` + channel) |
+| `0x50` | R | 8 | All channels, calibrated `0` ~ `100` |
+| `0x51` | R | 8 | White reference (EEPROM) |
+| `0x52` | R | 8 | Black reference (EEPROM) |
+| `0x53` | R | 8 | Raw ADC (8-bit) |
+
+---
+
+## 💻 Arduino Example: Read the Line Result
+
+```cpp
+#include <Wire.h>
+
+const uint8_t LINE_ADDR = 0x16;
+
+bool iicRead(uint8_t addr, uint8_t reg, uint8_t *buf, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(reg);
+  if (Wire.endTransmission() != 0) return false;
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  return true;
 }
-</style>
 
-### 💻 Arduino C++ Code Example
+void iicWrite(uint8_t addr, uint8_t reg, uint8_t v) {
+  Wire.beginTransmission(addr);
+  Wire.write(reg);
+  Wire.write(v);
+  Wire.endTransmission();
+}
 
-> [!NOTE]
-> **⏳ Complete Code Example is in Preparation**
-> Arduino C++ read/write example programs and related wiring diagrams utilizing the `ARDUINO_IIC` exclusive bidirectional control register system will be added later. Stay tuned!
+void setup() {
+  Serial.begin(115200);
+  Wire.begin();
+  iicWrite(LINE_ADDR, 0x10, 0);     // 0 = black line, 1 = white line
+}
+
+void loop() {
+  uint8_t d[7];
+  if (iicRead(LINE_ADDR, 0x11, d, 7)) {
+    int8_t   pos    = (int8_t)d[0];        // -8 ~ +8
+    int8_t   posHi  = (int8_t)d[1];        // -100 ~ +100, use this for PID
+    uint8_t  width  = d[2];                // line width
+    uint8_t  groups = d[3];                // 0 lost / 1 single / 2+ fork
+    uint16_t bin    = (d[4] << 8) | d[5];  // one bit per channel
+
+    Serial.print("pos ");      Serial.print(pos);
+    Serial.print("  hi-res "); Serial.print(posHi);
+    Serial.print("  width ");  Serial.print(width);
+    Serial.print("  groups "); Serial.print(groups);
+    Serial.print("  bin ");    Serial.println(bin, BIN);
+  }
+  delay(10);
+}
+```
+
+### A Starting Point for PID Line Following
+
+```cpp
+// posHi: negative = line on the right, positive = on the left.
+// Line on the right -> turn right -> speed up the left wheel
+float Kp = 0.6;
+int base = 120;                        // base speed (adjust for your motor driver)
+int turn = Kp * posHi;
+int leftSpeed  = base - turn;
+int rightSpeed = base + turn;
+```
+
+### Trigger Calibration from Code
+
+```cpp
+uint8_t before[2], after[2];
+iicRead(LINE_ADDR, 0x21, before, 2);   // [threshold, calibration counter]
+iicWrite(LINE_ADDR, 0x20, 1);          // start 5-second calibration: sweep the robot across the line
+do {
+  delay(200);
+  iicRead(LINE_ADDR, 0x21, after, 2);
+} while (after[1] == before[1]);       // counter +1 = calibration finished
+```
 
 <br>
 
