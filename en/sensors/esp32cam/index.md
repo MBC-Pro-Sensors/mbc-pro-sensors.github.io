@@ -54,10 +54,6 @@ The Sharpshooter ESP32CAM gives your robot real eyes: it finds the position and 
 | Blob Y | Vertical position of the blob center |
 | Motion value | `0` ~ `100`, higher = more change in the image |
 
-### 🏆 WRO 2026 Senior Edition
-
-A dedicated WRO 2026 Senior edition can watch **12 color points** at once and returns each point's hue and saturation — ideal when a mission needs several object colors read together. [Contact us](/en/contact.md) for details.
-
 ## 🧩 Supported Platforms
 
 | Platform | How |
