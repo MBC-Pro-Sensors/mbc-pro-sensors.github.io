@@ -41,7 +41,8 @@ The Sharpshooter ESP32CAM gives your robot real eyes: it finds the position and 
 | Image resolution | 160 × 120 (X `0` ~ `159`, Y `0` ~ `119`) |
 | Screen | 1.8" 128 × 160 color TFT |
 | Buttons | Left, right, enter, side (short press: open/close menu; long press 1 s in the menu: clear that color slot) |
-| Lens options | OV2640: 24° / 40° / 50° / **65° (standard)** / 68° / 75° / 85° / 120° / 160° / 200°; OV3660: 65° / 110° / 120° / 160° |
+| Image sensor | OV3660 |
+| Lens options (field of view) | 65° / 110° / 120° / 160° |
 | Flash light | Built-in, switched in the on-device menu (setting is saved) |
 
 ## 📤 Output Data
