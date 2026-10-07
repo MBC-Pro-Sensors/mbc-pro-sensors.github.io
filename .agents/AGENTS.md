@@ -45,3 +45,7 @@ When working on this repository (`mbc-pro-sensors.github.io`), always strictly f
 - Every page gets a LINE inquiry button (bottom bar on mobile). Buying guide: `guide.md` / `en/guide.md`.
 - Never publish internal chip/part numbers (MCU, sensor IC, camera sensor) on the site.
 - Social-proof section placeholder is an HTML comment in both READMEs; add competition results / testimonials there only from real material supplied by the owner.
+
+## Articles & Analytics
+- Tutorial / SEO articles live in `articles/*.md` (index: `articles/index.md`), get `Article` JSON-LD and breadcrumbs automatically. Add new ones to `_sidebar.md` and the article index cards. Write for real search questions (parents, coaches, students); link to the relevant product page and the buying guide; no competitor-brand comparisons.
+- Google Analytics: put the GA4 measurement ID (G-...) in `_build/site-config.json`. Empty = no tracking. `site.js` sends `line_inquiry`, `email_inquiry` and `file_download` events.

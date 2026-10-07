@@ -57,5 +57,11 @@
     - [🚀 Pybricks 環境](/sensors/exp6/spike-pybricks.md)
     - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#00d2ff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px rgba(0,210,255,0.5));"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>通用 I2C 版本](/sensors/exp6/arduino-i2c.md)
 
+- **📝 教學文章**
+  - [全部文章](/articles/index.md)
+  - [循線抖動、脫線的 5 個原因](/articles/spike-line-following-wobble.md)
+  - [SPIKE 循線 PID 教學](/articles/spike-pid-line-following.md)
+  - [SPIKE 孔位不夠怎麼辦](/articles/spike-prime-more-ports.md)
+
 - **📞 聯絡我們**
   - [💬 聯絡 & 支援](/contact.md)

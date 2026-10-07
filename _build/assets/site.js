@@ -82,6 +82,18 @@
     if (clearBtn) clearBtn.addEventListener('click', function () { input.value = ''; search(); });
   }
 
+  // --- 詢價／下載點擊追蹤（有安裝 Google Analytics 時才送出）---
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a');
+    if (!a || typeof window.gtag !== 'function') return;
+    var href = a.getAttribute('href') || '';
+    var name = /line\.me/.test(href) ? 'line_inquiry'
+      : /^mailto:/.test(href) ? 'email_inquiry'
+      : /\.(zip|py|pdf|llsp3|lms|lmsp|ev3|bp)(\?|$)/i.test(href) ? 'file_download'
+      : null;
+    if (name) window.gtag('event', name, { link_url: href, page_path: location.pathname, placement: a.className || 'link' });
+  });
+
   // --- Scratch 積木圖 ---
   if (typeof renderScratchBlocks === 'function' && document.querySelector('.blocks')) renderScratchBlocks();
 })();

@@ -27,12 +27,17 @@ const ROOT = path.resolve(BUILD, '..');
 const OUT = path.join(ROOT, '_site');
 const SITE = 'https://mbc-pro-sensors.github.io';
 const DEFAULT_OG = '/images/brand/og-image.jpg';
+// Google Analytics (GA4): set gaMeasurementId in _build/site-config.json to enable
+const SITE_CONFIG = JSON.parse(fs.readFileSync(path.join(BUILD, 'site-config.json'), 'utf8'));
+const GA_ID = (SITE_CONFIG.gaMeasurementId || '').trim();
+const GA_SNIPPET = GA_ID ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${GA_ID}"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');</script>` : '';
 
 const git = (args) => execSync(`git ${args}`, { cwd: ROOT, encoding: 'utf8' });
 const tracked = git('-c core.quotepath=off ls-files --cached --others --exclude-standard').split('\n').filter(Boolean);
 
 // ---------------------------------------------------------------- URL mapping
-const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol|guide)\.md$/.test(f) || /^(en\/)?sensors\//.test(f));
+const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol|guide)\.md$/.test(f) || /^(en\/)?(sensors|articles)\//.test(f));
 const pages = tracked.filter(isPage);
 
 function urlFor(mdPath) {
@@ -147,6 +152,11 @@ function describe(html) {
   return '';
 }
 
+function firstCommit(file) {
+  try { return git(`log --diff-filter=A --format=%cs -- "${file}"`).trim().split('\n').pop() || lastmod(file); }
+  catch { return lastmod(file); }
+}
+
 function lastmod(file) {
   try { return git(`log -1 --format=%cs -- "${file}"`).trim() || new Date().toISOString().slice(0, 10); }
   catch { return new Date().toISOString().slice(0, 10); }
@@ -192,7 +202,7 @@ const HASH_REDIRECT = `(function(){function go(){var h=location.hash;if(h.indexO
 const LINE_URL = 'https://line.me/R/ti/p/@692vcvuk';
 const UI = {
   zh: { search: '🔍 搜尋文件', lang: 'EN', home: '首頁', line: 'LINE 詢價', guide: '選購指南', guideHref: '/guide.html', choose: '選擇版本：',
-    nav: [['產品', '/#products'], ['為什麼選 MBC', '/#why'], ['教學影片', '/#videos'], ['選購指南', '/guide.html'], ['聯絡我們', '/contact.html']], cta: { h: '想購買或詢價？', p: '個人購買、學校 / 社團大量採購、代理洽談都歡迎，工程師工作日 24 小時內回覆。', line: 'LINE 立即詢價', mail: 'Email 詢價', more: '更多聯絡方式', contact: '/contact.html' } },
+    nav: [['產品', '/#products'], ['為什麼選 MBC', '/#why'], ['教學文章', '/articles/'], ['選購指南', '/guide.html'], ['聯絡我們', '/contact.html']], cta: { h: '想購買或詢價？', p: '個人購買、學校 / 社團大量採購、代理洽談都歡迎，工程師工作日 24 小時內回覆。', line: 'LINE 立即詢價', mail: 'Email 詢價', more: '更多聯絡方式', contact: '/contact.html' } },
   en: { search: '🔍 Search docs', lang: '中文', home: 'Home', line: 'Ask on LINE', guide: 'Buying Guide', guideHref: '/en/guide.html', choose: 'Editions:',
     nav: [['Products', '/en/#products'], ['Why MBC', '/en/#why'], ['Videos', '/en/#videos'], ['Buying Guide', '/en/guide.html'], ['Contact', '/en/contact.html']], cta: { h: 'Interested in this sensor?', p: 'Ask us for pricing, bulk / school orders or distributor info. Our engineers reply within 24 hours on weekdays.', line: 'Chat on LINE', mail: 'Email us', more: 'All contact options', contact: '/en/contact.html' } },
 };
@@ -272,6 +282,7 @@ function page({ lang, url, title, description, ogImage, alternates, jsonLd, extr
   <meta name="twitter:description" content="${escAttr(description)}">
   <meta name="twitter:image" content="${SITE + ogImage}">
   ${extraHead}
+  ${GA_SNIPPET}
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -344,6 +355,7 @@ for (const file of pages) {
   const h1Text = stripEmoji(stripTags(h1 || '')) || 'MBC-Pro Sensors';
   const product = (file.match(/sensors\/([^/]+)\//) || [])[1];
   const isProductIndex = /sensors\/[^/]+\/index\.md$/.test(file);
+  const isArticle = /^(en\/)?articles\/(?!index\.md$)/.test(file);
   const productName = product && PRODUCTS[lang][product];
 
   // counterpart in the other language
@@ -365,6 +377,7 @@ for (const file of pages) {
 
   // breadcrumbs
   const crumbs = [{ name: UI[lang].home, url: lang === 'en' ? '/en/' : '/' }];
+  if (isArticle) crumbs.push({ name: lang === 'en' ? 'Articles' : '教學文章', url: lang === 'en' ? '/en/articles/' : '/articles/' });
   if (product && !isProductIndex && productName) crumbs.push({ name: productName, url: urlFor(`${lang === 'en' ? 'en/' : ''}sensors/${product}/index.md`) });
   if (!home) crumbs.push({ name: h1Text, url });
   if (crumbs.length > 2) {
@@ -381,7 +394,8 @@ for (const file of pages) {
     '@context': 'https://schema.org',
     '@graph': [
       {
-        '@type': product && !isProductIndex ? 'TechArticle' : 'WebPage',
+        '@type': isArticle ? 'Article' : product && !isProductIndex ? 'TechArticle' : 'WebPage',
+        ...(isArticle ? { headline: h1Text, datePublished: firstCommit(file), author: { '@id': SITE + '/#organization' } } : {}),
         '@id': SITE + url + '#webpage',
         url: SITE + url,
         name: title,
