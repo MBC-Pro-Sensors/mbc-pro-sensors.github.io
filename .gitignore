@@ -5,3 +5,10 @@ graphify-out/
 scratch/
 headers.txt
 EXP6擴充器參考資料/
+
+# Local-only files (not part of the website)
+dump.json
+chinese_results.txt
+S__*.png
+ADHD提示詞.md
+CLAUDE提示詞.md

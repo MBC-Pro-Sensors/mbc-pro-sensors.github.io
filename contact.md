@@ -256,7 +256,7 @@
     <div class="channel-info">
       <h3>技術支援信箱</h3>
       <p>適合：附上程式截圖、影片或詳細文字說明的問題回報，以及採購詢價、合作提案。我們承諾於工作日 24 小時內回覆。</p>
-      <code>mbc.robot89@gmail.com</code>
+      <a href="mailto:mbc.robot89@gmail.com" style="text-decoration:none;"><code>mbc.robot89@gmail.com</code></a>
     </div>
   </div>
   <div class="channel-card line">
@@ -264,7 +264,7 @@
     <div class="channel-info">
       <h3>官方 LINE 客服</h3>
       <p>適合：快速詢問、即時溝通、傳送短影片或截圖。直接與工程師即時對話，是最快的聯絡方式！</p>
-      <code>@692vcvuk</code>
+      <a href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener" style="text-decoration:none;"><code>@692vcvuk</code></a>
     </div>
   </div>
 </div>

@@ -257,7 +257,7 @@
     <div class="channel-info">
       <h3>Technical Support Email</h3>
       <p>Best for: Detailed problem reports with screenshots or videos attached, purchase inquiries, and partnership proposals. We promise to reply within 24 business hours.</p>
-      <code>mbc.robot89@gmail.com</code>
+      <a href="mailto:mbc.robot89@gmail.com" style="text-decoration:none;"><code>mbc.robot89@gmail.com</code></a>
     </div>
   </div>
   <div class="channel-card line">
@@ -265,7 +265,7 @@
     <div class="channel-info">
       <h3>Official LINE Support</h3>
       <p>Best for: Quick questions, real-time communication, sending short clips or screenshots. Chat directly with our engineers — the fastest way to get help!</p>
-      <code>@692vcvuk</code>
+      <a href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener" style="text-decoration:none;"><code>@692vcvuk</code></a>
     </div>
   </div>
 </div>

@@ -12,13 +12,17 @@
   <meta name="author" content="MBC-Pro Sensors">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <link rel="canonical" href="https://mbc-pro-sensors.github.io/">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="/images/brand/apple-touch-icon.png">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mbc-pro-sensors.github.io/">
   <meta property="og:title" content="MBC-Pro Sensors — 樂高機器人的競賽級即插即用感應器">
   <meta property="og:description" content="即插即用 · 官方積木直讀 · Pybricks 原生支援。專為 WRO / FLL 樂高機器人競賽打造的 8路/16路循線、雷射測距與 6路擴充模組。">
-  <meta property="og:image" content="https://mbc-pro-sensors.github.io/images/sensors/line8/line8-product-spike.webp">
+  <meta property="og:image" content="https://mbc-pro-sensors.github.io/images/brand/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta property="og:site_name" content="MBC-Pro Sensors">
   <meta property="og:locale" content="zh_TW">
 
@@ -27,7 +31,7 @@
   <meta property="twitter:url" content="https://mbc-pro-sensors.github.io/">
   <meta property="twitter:title" content="MBC-Pro Sensors — 樂高機器人競賽級感應器">
   <meta property="twitter:description" content="專為 LEGO SPIKE Prime, EV3, Pybricks 打造之 8路/16路循線、ToF雷射測距與擴充器。">
-  <meta property="twitter:image" content="https://mbc-pro-sensors.github.io/images/sensors/line8/line8-product-spike.webp">
+  <meta property="twitter:image" content="https://mbc-pro-sensors.github.io/images/brand/og-image.jpg">
 
   <!-- Schema.org JSON-LD for Search Engines & AI LLMs -->
   <script type="application/ld+json">
@@ -47,7 +51,8 @@
         "@id": "https://mbc-pro-sensors.github.io/#organization",
         "name": "MBC-Pro Sensors",
         "url": "https://mbc-pro-sensors.github.io/",
-        "logo": "https://mbc-pro-sensors.github.io/images/sensors/line8/line8-product-spike.webp"
+        "logo": "https://mbc-pro-sensors.github.io/images/brand/mbc-logo.png",
+        "email": "mbc.robot89@gmail.com"
       },
       {
         "@type": "ItemList",
@@ -128,7 +133,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify/lib/themes/dark.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4.13.1/lib/themes/dark.css">
   <style>
     /* 引入 Theme 2 的圓潤字體 Nunito，以及 Theme 1 標題愛用的 Orbitron */
     @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Orbitron:wght@500;700&display=swap');
@@ -171,12 +176,12 @@
       padding: 3px 6px;
     }
     
-&#32;&#32;&#32;&#32;.markdown-section pre { 
-&#32;&#32;&#32;&#32;&#32;&#32;border-radius: 12px; 
-&#32;&#32;&#32;&#32;&#32;&#32;box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-&#32;&#32;&#32;&#32;&#32;&#32;border: 1px solid rgba(10,186,181,0.2);
-&#32;&#32;&#32;&#32;}
-&#32;&#32;&#32;&#32;
+    .markdown-section pre { 
+      border-radius: 12px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+      border: 1px solid rgba(10,186,181,0.2);
+    }
+    
     /* 讓表格也更有科技感與圓潤度 */
     .markdown-section table th {
       background: rgba(10,186,181,0.15);
@@ -278,6 +283,30 @@
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
     }
+    /* --- 產品頁詢價 CTA --- */
+    .buy-cta {
+      margin: 40px 0 20px;
+      padding: 24px;
+      border: 1px solid rgba(242,194,0,0.4);
+      border-radius: 12px;
+      background: rgba(242,194,0,0.06);
+      text-align: center;
+    }
+    .markdown-section .buy-cta h3 { margin: 0 0 8px; color: var(--accent-color); }
+    .markdown-section .buy-cta p { margin: 0 0 16px; color: #ccc; }
+    .buy-cta-btns { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .markdown-section .buy-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 24px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+    .markdown-section .buy-btn:hover { transform: translateY(-2px); }
+    .markdown-section .buy-btn.line { background: #06C755; color: #fff; }
+    .markdown-section .buy-btn.mail { background: var(--theme-color); color: #000; }
+    .markdown-section .buy-btn.more { border: 1px solid rgba(255,255,255,0.3); color: #ddd; }
     @media (max-width: 767px) {
       .product-card {
         flex-direction: column-reverse;
@@ -334,6 +363,10 @@
       name: 'MBC-Pro-Sensors',
       repo: '',
       loadSidebar: true,
+      alias: {
+        '/en/sensors/.*/_sidebar.md': '/en/_sidebar.md',
+        '/sensors/.*/_sidebar.md': '/_sidebar.md'
+      },
       subMaxLevel: 0, /* 關閉頁面內文的標題自動生成選單，保持側邊欄乾淨 */
       auto2top: true,
       themeColor: '#0ABAB5',
@@ -394,19 +427,45 @@
           hook.doneEach(function() {
             // plugin moved to scratchblocks-init.js
           });
+        },
+        function(hook, vm) {
+          // 分頁標題改用頁面 H1，避免所有產品頁都叫「產品介紹與校準」
+          var homeTitle = document.title;
+          hook.doneEach(function() {
+            var path = vm.route.path;
+            if (path === '/' || path === '/en/') { document.title = homeTitle; return; }
+            var h1 = document.querySelector('.markdown-section h1');
+            if (h1) document.title = h1.textContent.trim() + ' | MBC-Pro Sensors';
+          });
+        },
+        function(hook, vm) {
+          // 產品頁底部加上詢價 / 購買 CTA
+          hook.afterEach(function(html) {
+            var path = vm.route.path;
+            if (!/\/sensors\/[^\/]+\/index$/.test(path)) return html;
+            var en = path.indexOf('/en/') === 0;
+            var t = en
+              ? { h: 'Interested in this sensor?', p: 'Ask us for pricing, bulk / school orders or distributor info. Our engineers reply within 24 hours on weekdays.', line: 'Chat on LINE', mail: 'Email us', more: 'All contact options', contact: '#/en/contact' }
+              : { h: '想購買或詢價？', p: '個人購買、學校 / 社團大量採購、代理洽談都歡迎，工程師工作日 24 小時內回覆。', line: 'LINE 立即詢價', mail: 'Email 詢價', more: '更多聯絡方式', contact: '#/contact' };
+            return html +
+              '<div class="buy-cta"><h3>' + t.h + '</h3><p>' + t.p + '</p><div class="buy-cta-btns">' +
+              '<a class="buy-btn line" href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">💬 ' + t.line + '</a>' +
+              '<a class="buy-btn mail" href="mailto:mbc.robot89@gmail.com">✉️ ' + t.mail + '</a>' +
+              '<a class="buy-btn more" href="' + t.contact + '">' + t.more + ' →</a></div></div>';
+          });
         }
       ]
     }
   </script>
   <!-- Docsify v4 -->
-  <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4.13.1/lib/docsify.min.js"></script>
   <!-- Search Plugin -->
-  <script src="https://cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4.13.1/lib/plugins/search.min.js"></script>
   <!-- Scratchblocks Plugin -->
   <script src="https://cdn.jsdelivr.net/npm/scratchblocks@3.6.4/build/scratchblocks.min.js"></script>
   <script src="./scratchblocks-init.js"></script>
   <!-- 語法高亮 -->
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
   <!-- Floating Language Toggle Button -->
   <div id="lang-toggle-btn" style="position: fixed; bottom: 30px; right: 30px; background: rgba(10,186,181,0.9); color: #000; padding: 10px 20px; border-radius: 30px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(10,186,181,0.5); z-index: 9999; display: flex; align-items: center; gap: 8px; transition: 0.3s; backdrop-filter: blur(5px);">
     <span style="font-size: 1.2rem;">🌐</span> <span id="lang-text">EN</span>
