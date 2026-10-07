@@ -28,8 +28,7 @@ Works with: **Arduino UNO / Nano / Mega / R4, ESP32, Raspberry Pi**, and any boa
 
 - Connect **SCL, SDA, VCC, GND** as labeled on the sensor's header.
 - **100 kHz** and **400 kHz** are supported.
-- **Line sensors, rangers, PS2, EXP6 and IMU** have 5 V-tolerant I2C pins and connect directly to 5 V boards like the Arduino UNO.
-- **The PS4/PS5 receiver's I2C pins are NOT 5 V tolerant**: on a 5 V board use a level shifter, or make sure the I2C pull-ups go to 3.3 V only.
+- **Every product** connects directly to 5 V boards like the Arduino UNO — no extra level shifter needed.
 
 ---
 
