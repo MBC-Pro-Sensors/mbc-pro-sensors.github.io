@@ -16,3 +16,4 @@ CLAUDE提示詞.md
 # Static site build output
 _site/
 _build/node_modules/
+*.md.test
