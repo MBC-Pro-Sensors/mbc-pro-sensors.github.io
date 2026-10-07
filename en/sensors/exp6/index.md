@@ -31,7 +31,7 @@ Break the limits of hub ports · Isolated power protection · Built-in PID edge 
 
 The SPIKE Prime hub only has 6 connection ports, but advanced robotics projects often require multiple sensors and motors simultaneously, making the ports insufficient.
 
-The **SPIKE 6-Way Expander (EXP6)** allows you to connect up to 6 sensors or motors using just a single port. It is not just a "splitter", but a **"smart controller"** with a built-in STM32 chip. It can independently calculate PID angle control for motors, significantly reducing the computing load on the SPIKE hub; more importantly, this product features an **independent isolated power supply system**. The large current required by the motors will not be drawn from the main hub, **completely eliminating the fatal flaw of hub crashes or burnouts caused by motor power consumption!**
+The **SPIKE 6-Way Expander (EXP6)** allows you to connect up to 6 sensors or motors using just a single port. It is not just a "splitter", but a **"smart controller"** with a built-in high-performance processor. It can independently calculate PID angle control for motors, significantly reducing the computing load on the SPIKE hub; more importantly, this product features an **independent isolated power supply system**. The large current required by the motors will not be drawn from the main hub, **completely eliminating the fatal flaw of hub crashes or burnouts caused by motor power consumption!**
 
 ## 🧠 Core Hardware Features
 
@@ -41,7 +41,7 @@ The **SPIKE 6-Way Expander (EXP6)** allows you to connect up to 6 sensors or mot
 <p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">The motor driving current is completely supplied by an independent battery box/adapter, fully physically opto-isolated from the SPIKE hub. This protects your expensive hub from abnormal large currents, ensuring crash-free competitions.</p>
 </div>
 <div style="background: rgba(0,255,100,0.05); border: 1px solid rgba(0,255,100,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
-<h4 style="color: #00ff64; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">🧠 STM32 Edge Computing</h4>
+<h4 style="color: #00ff64; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">🧠 On-board Edge Computing</h4>
 <p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">A built-in high-performance microcontroller silently runs 6-channel motor PID absolute angle calculations and motor synchronization in the background. The SPIKE hub only needs to issue a command, and the expander handles all the precise control.</p>
 </div>
 <div style="background: rgba(242,194,0,0.05); border: 1px solid rgba(242,194,0,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">

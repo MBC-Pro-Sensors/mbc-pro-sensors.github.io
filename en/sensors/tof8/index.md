@@ -49,7 +49,7 @@ The 8 laser ranging units are distributed at fixed angles, covering a complete 1
 
 | Item | Spec |
 | :--- | :--- |
-| Sensing elements | 8 × VL53L0X laser time-of-flight (ToF) chips |
+| Sensing elements | 8 laser time-of-flight (ToF) ranging units |
 | Range | 0 ~ 1200 mm (a reading of 1200 mm / 120 cm = no target in that direction) |
 | Field of view | 180° in front (90° to each side) |
 | Bearing resolution | 17 bearings (0 ~ 16, 8 = straight ahead) |

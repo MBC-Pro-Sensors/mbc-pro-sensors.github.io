@@ -35,7 +35,7 @@
 
 SPIKE Prime 主機只有 6 個連接孔，但高階的機器人專案往往同時需要多顆感應器加上多個馬達，孔位根本不夠用。
 
-**SPIKE 6 路擴充器 (EXP6)** 讓您用單一孔位同時連接高達 6 組感應器或馬達。這不僅僅是一個「分接頭」，而是一個內建 STM32 晶片的**「智慧控制器」**。它能獨立運算馬達的 PID 角度控制，大幅降低 SPIKE 主機的運算負擔；更重要的是，本產品搭載**獨立隔離供電系統**，馬達所需的大電流不會從主機抽取，**徹底解決馬達耗電導致主機當機或燒毀的致命傷！**
+**SPIKE 6 路擴充器 (EXP6)** 讓您用單一孔位同時連接高達 6 組感應器或馬達。這不僅僅是一個「分接頭」，而是一個內建高效能處理器的**「智慧控制器」**。它能獨立運算馬達的 PID 角度控制，大幅降低 SPIKE 主機的運算負擔；更重要的是，本產品搭載**獨立隔離供電系統**，馬達所需的大電流不會從主機抽取，**徹底解決馬達耗電導致主機當機或燒毀的致命傷！**
 
 ## 🧠 核心硬體特徵
 
@@ -45,7 +45,7 @@ SPIKE Prime 主機只有 6 個連接孔，但高階的機器人專案往往同�
 <p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">馬達驅動電流完全由獨立的電池盒/變壓器供應，與 SPIKE 主機進行 100% 物理光耦隔離，保護您昂貴的主機不受異常大電流損害，保證比賽不當機。</p>
 </div>
 <div style="background: rgba(0,255,100,0.05); border: 1px solid rgba(0,255,100,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
-<h4 style="color: #00ff64; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">🧠 STM32 邊緣運算</h4>
+<h4 style="color: #00ff64; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">🧠 板載邊緣運算</h4>
 <p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">內建高效能微控制器，在背景默默為您執行 6 路馬達的 PID 絕對角度運算與馬達同步。SPIKE 主機只需下一道指令，剩下的精準控制全由擴充器代勞。</p>
 </div>
 <div style="background: rgba(242,194,0,0.05); border: 1px solid rgba(242,194,0,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">

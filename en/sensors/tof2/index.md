@@ -40,7 +40,7 @@ The Ranger 2-Way utilizes **Laser Time-of-Flight (ToF) technology**, measuring d
 
 | Item | Spec |
 | :--- | :--- |
-| Sensing elements | 2 × VL53L0X laser time-of-flight (ToF) chips (one left, one right) |
+| Sensing elements | 2 laser time-of-flight (ToF) ranging units (one left, one right) |
 | Range | 0 ~ 1200 mm (a reading of 120 cm = no target on that side) |
 | Fault detection | Detects init failures, bus errors and timeouts per sensor |
 

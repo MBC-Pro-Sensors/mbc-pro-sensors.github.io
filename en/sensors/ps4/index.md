@@ -82,7 +82,7 @@ The Controller PS4/PS5 Bluetooth Receiver lets SPIKE, EV3 or Arduino read every 
 See the [MBC Universal I2C Protocol](/en/i2c-protocol.md) for shared rules and Arduino helpers.
 
 > [!WARNING]
-> The PS4/PS5 receiver uses an ESP32: **its I2C pins are not 5 V tolerant** — use a level shifter with 5 V boards like the Arduino UNO — and **wait 2 ms** after writing the register number before reading.
+> The PS4/PS5 receiver's **I2C pins are not 5 V tolerant** — use a level shifter with 5 V boards like the Arduino UNO — and **wait 2 ms** after writing the register number before reading.
 
 | Register | Dir | Len | Content |
 | :---: | :---: | :---: | :--- |

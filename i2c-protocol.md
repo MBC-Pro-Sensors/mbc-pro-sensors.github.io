@@ -28,8 +28,8 @@ MBC-Pro 全系列的「通用 I2C 版」感應器都使用同一套暫存器規�
 
 - 依感應器排針標示接 **SCL、SDA、VCC、GND**。
 - 支援 **100 kHz** 與 **400 kHz**。
-- **STM32 系列產品**（循線、測距、PS2、EXP6、IMU）的 I2C 腳位耐 5 V，可直接接 Arduino UNO 等 5 V 主機。
-- **PS4/PS5 接收器使用 ESP32，腳位不耐 5 V**：接 5 V 主機請加準位轉換，或確認 I2C 上拉電阻只接到 3.3 V。
+- **循線、測距、PS2、EXP6、IMU** 的 I2C 腳位耐 5 V，可直接接 Arduino UNO 等 5 V 主機。
+- **PS4/PS5 接收器的 I2C 腳位不耐 5 V**：接 5 V 主機請加準位轉換，或確認 I2C 上拉電阻只接到 3.3 V。
 
 ---
 
@@ -41,7 +41,7 @@ MBC-Pro 全系列的「通用 I2C 版」感應器都使用同一套暫存器規�
 
 - 多位元組數值一律 **高位元組在前（MSB-first）**；有號數為二補數。
 - 未定義的暫存器讀回全 0。
-- **PS4/PS5（ESP32）**：寫完暫存器編號後要**等至少 2 ms 再讀**。STM32 系列不需要等待。
+- **PS4/PS5 接收器**：寫完暫存器編號後要**等至少 2 ms 再讀**。其他產品不需要等待。
 
 ## 📤 寫入命令（主機 → 模組）
 
@@ -105,7 +105,7 @@ bool iicRead(uint8_t addr, uint8_t reg, uint8_t *buf, uint8_t n) {
   Wire.beginTransmission(addr);
   Wire.write(reg);
   if (Wire.endTransmission() != 0) return false;
-  delay(2);                                   // PS4/PS5 需要；STM32 系列產品可刪
+  delay(2);                                   // PS4/PS5 需要；其他產品可刪
   if (Wire.requestFrom(addr, n) != n) return false;
   for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
   return true;

@@ -28,8 +28,8 @@ Works with: **Arduino UNO / Nano / Mega / R4, ESP32, Raspberry Pi**, and any boa
 
 - Connect **SCL, SDA, VCC, GND** as labeled on the sensor's header.
 - **100 kHz** and **400 kHz** are supported.
-- **STM32-based products** (line sensors, rangers, PS2, EXP6, IMU) have 5 V-tolerant I2C pins and connect directly to 5 V boards like the Arduino UNO.
-- **The PS4/PS5 receiver uses an ESP32, which is NOT 5 V tolerant**: on a 5 V board use a level shifter, or make sure the I2C pull-ups go to 3.3 V only.
+- **Line sensors, rangers, PS2, EXP6 and IMU** have 5 V-tolerant I2C pins and connect directly to 5 V boards like the Arduino UNO.
+- **The PS4/PS5 receiver's I2C pins are NOT 5 V tolerant**: on a 5 V board use a level shifter, or make sure the I2C pull-ups go to 3.3 V only.
 
 ---
 
@@ -41,7 +41,7 @@ Works with: **Arduino UNO / Nano / Mega / R4, ESP32, Raspberry Pi**, and any boa
 
 - Multi-byte values are **big-endian (MSB first)**; signed values are two's complement.
 - Undefined registers read back as all zeros.
-- **PS4/PS5 (ESP32)**: wait **at least 2 ms** after writing the register number before reading. STM32 products need no delay.
+- **PS4/PS5 receiver**: wait **at least 2 ms** after writing the register number before reading. Other products need no delay.
 
 ## 📤 Writing Commands (host → module)
 
@@ -105,7 +105,7 @@ bool iicRead(uint8_t addr, uint8_t reg, uint8_t *buf, uint8_t n) {
   Wire.beginTransmission(addr);
   Wire.write(reg);
   if (Wire.endTransmission() != 0) return false;
-  delay(2);                                   // needed for PS4/PS5; optional for STM32 products
+  delay(2);                                   // needed for PS4/PS5; optional for other products
   if (Wire.requestFrom(addr, n) != n) return false;
   for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
   return true;
