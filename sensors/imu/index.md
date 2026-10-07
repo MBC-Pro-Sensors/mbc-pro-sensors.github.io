@@ -1,13 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # 陀螺儀 IMU 九軸感應器（即將推出）
 
-<div style="text-align: center;">
-  <span style="display:inline-block; background:#a371f7; color:#fff; padding:3px 12px; border-radius:20px; font-family:monospace; margin-bottom:1rem; font-size: 0.85rem;">IMU-9AX · COMING SOON</span>
-  <p style="font-family: monospace; color: #aaa; letter-spacing: 1px;">
-    <strong>九軸姿態感應器：陀螺儀 + 加速度計 + 磁力計</strong><br>
-    任意角度安裝 · 立體補償航向 · 磁力計融合長距離不飄移
-  </p>
-</div>
+<!-- product-hero -->
 
 ---
 

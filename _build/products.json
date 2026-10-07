@@ -1,0 +1,615 @@
+{
+  "line8": {
+    "color": "#ff4500",
+    "image": "/images/sensors/line8/line8-product-spike.webp",
+    "video": "MuG9kp2-8FY",
+    "zh": {
+      "badge": "LNS-08-PRO · 競賽級",
+      "pitch": "專為花俏的 WRO 地圖打造：8 通道一次看清線條位置，直接輸出 PID 用的高解析位置，按一下就完成校準。",
+      "stats": [
+        [
+          "8",
+          "偵測通道"
+        ],
+        [
+          "±100",
+          "高解析線位置"
+        ],
+        [
+          "5 秒",
+          "一鍵動態校準"
+        ]
+      ],
+      "editions": [
+        [
+          "SPIKE 版",
+          "/sensors/line8/spike-hub.md"
+        ],
+        [
+          "EV3 版",
+          "/sensors/line8/ev3-hub.md"
+        ],
+        [
+          "通用 I2C 版",
+          "/sensors/line8/arduino-i2c.md"
+        ]
+      ]
+    },
+    "en": {
+      "badge": "LNS-08-PRO · COMPETITION",
+      "pitch": "Built for busy WRO maps: 8 channels see exactly where the line is, output a high-resolution position ready for PID, and calibrate with one button.",
+      "stats": [
+        [
+          "8",
+          "sensing channels"
+        ],
+        [
+          "±100",
+          "high-res line position"
+        ],
+        [
+          "5 s",
+          "one-button calibration"
+        ]
+      ],
+      "editions": [
+        [
+          "SPIKE",
+          "/en/sensors/line8/spike-hub.md"
+        ],
+        [
+          "EV3",
+          "/en/sensors/line8/ev3-hub.md"
+        ],
+        [
+          "Universal I2C",
+          "/en/sensors/line8/arduino-i2c.md"
+        ]
+      ]
+    }
+  },
+  "line16": {
+    "color": "#ff6b35",
+    "image": "/images/sensors/line16/line16-product-spike.webp",
+    "video": "MuG9kp2-8FY",
+    "zh": {
+      "badge": "LNS-16-PRO · 競賽級",
+      "pitch": "16 通道超寬視野：高速急彎不脫線、十字路口自動判斷，而且只佔主機 1 個孔。",
+      "stats": [
+        [
+          "16",
+          "偵測通道"
+        ],
+        [
+          "1 孔",
+          "只佔一個主機孔位"
+        ],
+        [
+          "自動",
+          "分岔與十字路口偵測"
+        ]
+      ],
+      "editions": [
+        [
+          "SPIKE 版",
+          "/sensors/line16/spike-hub.md"
+        ],
+        [
+          "EV3 版",
+          "/sensors/line16/ev3-hub.md"
+        ],
+        [
+          "通用 I2C 版",
+          "/sensors/line16/arduino-i2c.md"
+        ]
+      ]
+    },
+    "en": {
+      "badge": "LNS-16-PRO · COMPETITION",
+      "pitch": "A 16-channel wide view: stays on the line through fast turns, detects intersections automatically, and uses just 1 hub port.",
+      "stats": [
+        [
+          "16",
+          "sensing channels"
+        ],
+        [
+          "1 port",
+          "on your hub"
+        ],
+        [
+          "Auto",
+          "fork & intersection detection"
+        ]
+      ],
+      "editions": [
+        [
+          "SPIKE",
+          "/en/sensors/line16/spike-hub.md"
+        ],
+        [
+          "EV3",
+          "/en/sensors/line16/ev3-hub.md"
+        ],
+        [
+          "Universal I2C",
+          "/en/sensors/line16/arduino-i2c.md"
+        ]
+      ]
+    }
+  },
+  "tof2": {
+    "color": "#0ABAB5",
+    "image": "/images/sensors/tof2/tof2-product.webp",
+    "zh": {
+      "badge": "TOF-02-LSR · 雷射測距",
+      "pitch": "比超音波更快、更小的雷射測距：左右兩點同時量測，知道物體從哪一邊離開。",
+      "stats": [
+        [
+          "2",
+          "雷射測距點"
+        ],
+        [
+          "120 cm",
+          "量測範圍"
+        ],
+        [
+          "左／右",
+          "判斷物體離開方向"
+        ]
+      ],
+      "editions": [
+        [
+          "SPIKE 版",
+          "#🧩-支援平台"
+        ],
+        [
+          "EV3 版",
+          "#🧩-支援平台"
+        ],
+        [
+          "MakeBlock 版",
+          "#🧩-支援平台"
+        ]
+      ]
+    },
+    "en": {
+      "badge": "TOF-02-LSR · LASER RANGING",
+      "pitch": "Faster and smaller than ultrasonic: two laser points measure left and right at once, so you know which side an object left from.",
+      "stats": [
+        [
+          "2",
+          "laser points"
+        ],
+        [
+          "120 cm",
+          "range"
+        ],
+        [
+          "L / R",
+          "exit direction"
+        ]
+      ],
+      "editions": [
+        [
+          "SPIKE",
+          "#🧩-supported-platforms"
+        ],
+        [
+          "EV3",
+          "#🧩-supported-platforms"
+        ],
+        [
+          "MakeBlock",
+          "#🧩-supported-platforms"
+        ]
+      ]
+    }
+  },
+  "tof8": {
+    "color": "#0ABAB5",
+    "image": "/images/sensors/tof8/tof8-product.webp",
+    "zh": {
+      "badge": "TOF-08-LSR · 雷射雷達",
+      "pitch": "8 點雷射涵蓋前方 180°：直接告訴你最近的目標在哪個方向、多遠，相撲與避障不再有超音波鬼影。",
+      "stats": [
+        [
+          "180°",
+          "前方視角"
+        ],
+        [
+          "8",
+          "雷射測距點"
+        ],
+        [
+          "17",
+          "方位解析"
+        ]
+      ],
+      "editions": [
+        [
+          "SPIKE 版",
+          "#🧩-支援平台"
+        ],
+        [
+          "EV3 版",
+          "#🧩-支援平台"
+        ],
+        [
+          "通用 I2C 版",
+          "#∿-通用-i2c-暫存器（位址-0x29）"
+        ]
+      ]
+    },
+    "en": {
+      "badge": "TOF-08-LSR · LASER LIDAR",
+      "pitch": "8 laser points cover 180° in front: it tells you which direction the nearest target is and how far — no more ultrasonic ghosts in sumo and obstacle avoidance.",
+      "stats": [
+        [
+          "180°",
+          "field of view"
+        ],
+        [
+          "8",
+          "laser points"
+        ],
+        [
+          "17",
+          "bearing steps"
+        ]
+      ],
+      "editions": [
+        [
+          "SPIKE",
+          "#🧩-supported-platforms"
+        ],
+        [
+          "EV3",
+          "#🧩-supported-platforms"
+        ],
+        [
+          "Universal I2C",
+          "#∿-universal-i2c-registers-address-0x29"
+        ]
+      ]
+    }
+  },
+  "ps2": {
+    "color": "#F2C200",
+    "image": "/images/sensors/ps2/ps2-product.webp",
+    "zh": {
+      "badge": "CMD-2.4G-RX · 遙控",
+      "pitch": "用 PS2 無線手把遙控樂高機器人：雙搖桿加 16 個按鍵，插上就能用，教學與專題最划算的選擇。",
+      "stats": [
+        [
+          "2.4G",
+          "無線手把"
+        ],
+        [
+          "16",
+          "按鍵全支援"
+        ],
+        [
+          "2",
+          "類比搖桿"
+        ]
+      ],
+      "editions": [
+        [
+          "SPIKE 版",
+          "#🧩-支援平台"
+        ],
+        [
+          "EV3 版",
+          "#🧩-支援平台"
+        ],
+        [
+          "通用 I2C 版",
+          "#∿-通用-i2c-暫存器（位址-0x42）"
+        ]
+      ]
+    },
+    "en": {
+      "badge": "CMD-2.4G-RX · CONTROL",
+      "pitch": "Drive LEGO robots with a PS2 wireless gamepad: twin sticks and 16 buttons, plug and play — the best-value choice for classes and projects.",
+      "stats": [
+        [
+          "2.4G",
+          "wireless gamepad"
+        ],
+        [
+          "16",
+          "buttons"
+        ],
+        [
+          "2",
+          "analog sticks"
+        ]
+      ],
+      "editions": [
+        [
+          "SPIKE",
+          "#🧩-supported-platforms"
+        ],
+        [
+          "EV3",
+          "#🧩-supported-platforms"
+        ],
+        [
+          "Universal I2C",
+          "#∿-universal-i2c-registers-address-0x42"
+        ]
+      ]
+    }
+  },
+  "ps4": {
+    "color": "#F2C200",
+    "image": "/images/sensors/ps4/ps4-product.webp",
+    "zh": {
+      "badge": "CMD-BT-PRO · PS4 / PS5",
+      "pitch": "PS4、PS5 手把都能用：只綁定你的手把、斷訊立刻停車，數十隊同場比賽也不怕干擾。",
+      "stats": [
+        [
+          "2 款",
+          "PS4、PS5 手把都支援"
+        ],
+        [
+          "0.3 秒",
+          "斷訊自動停車"
+        ],
+        [
+          "30 秒",
+          "快速配對"
+        ]
+      ],
+      "editions": [
+        [
+          "SPIKE 版",
+          "#🧩-支援平台"
+        ],
+        [
+          "EV3 版",
+          "#🧩-支援平台"
+        ],
+        [
+          "通用 I2C 版",
+          "#∿-通用-i2c-暫存器（位址-0x42）"
+        ]
+      ]
+    },
+    "en": {
+      "badge": "CMD-BT-PRO · PS4 / PS5",
+      "pitch": "Works with PS4 and PS5 gamepads: bonds to your gamepad only and stops the moment the signal drops — no interference even with dozens of teams around.",
+      "stats": [
+        [
+          "2",
+          "gamepad types: PS4 & PS5"
+        ],
+        [
+          "0.3 s",
+          "stop on signal loss"
+        ],
+        [
+          "30 s",
+          "quick pairing"
+        ]
+      ],
+      "editions": [
+        [
+          "SPIKE",
+          "#🧩-supported-platforms"
+        ],
+        [
+          "EV3",
+          "#🧩-supported-platforms"
+        ],
+        [
+          "Universal I2C",
+          "#∿-universal-i2c-registers-address-0x42"
+        ]
+      ]
+    }
+  },
+  "esp32cam": {
+    "color": "#00d2ff",
+    "image": "/images/sensors/esp32cam/esp32cam-product.webp",
+    "zh": {
+      "badge": "CAM-VIS-PRO · 視覺",
+      "pitch": "讓機器人真正看得見：在感應器自己的螢幕上設定要追的顏色，色塊位置、大小、動態一次輸出。",
+      "stats": [
+        [
+          "1.8 吋",
+          "機身彩色螢幕"
+        ],
+        [
+          "5 種",
+          "視覺資訊同時輸出"
+        ],
+        [
+          "4 種",
+          "鏡頭視角可選"
+        ]
+      ],
+      "editions": [
+        [
+          "SPIKE 版",
+          "#🧩-支援平台"
+        ],
+        [
+          "EV3 版",
+          "#🧩-支援平台"
+        ],
+        [
+          "MATRIX 版",
+          "#🧩-支援平台"
+        ]
+      ]
+    },
+    "en": {
+      "badge": "CAM-VIS-PRO · VISION",
+      "pitch": "Give your robot real vision: set the color to track on the sensor's own screen, then get blob position, size and motion all at once.",
+      "stats": [
+        [
+          "1.8\"",
+          "on-device screen"
+        ],
+        [
+          "5",
+          "outputs at once"
+        ],
+        [
+          "4",
+          "lens options"
+        ]
+      ],
+      "editions": [
+        [
+          "SPIKE",
+          "#🧩-supported-platforms"
+        ],
+        [
+          "EV3",
+          "#🧩-supported-platforms"
+        ],
+        [
+          "MATRIX",
+          "#🧩-supported-platforms"
+        ]
+      ]
+    }
+  },
+  "exp6": {
+    "color": "#00d2ff",
+    "image": "/images/sensors/exp6/exp6-product.webp",
+    "zh": {
+      "badge": "EXP-06-PRO · 智慧擴充",
+      "pitch": "SPIKE Prime 孔位不夠？一個孔接出 6 路馬達與感應器，獨立電源供電，馬達 PID 由擴充板自己運算。",
+      "stats": [
+        [
+          "1 → 6",
+          "一孔變六孔"
+        ],
+        [
+          "PID",
+          "板載馬達閉迴路控制"
+        ],
+        [
+          "獨立",
+          "隔離電源保護主機"
+        ]
+      ],
+      "editions": [
+        [
+          "官方 SPIKE App",
+          "/sensors/exp6/spike-official.md"
+        ],
+        [
+          "Pybricks",
+          "/sensors/exp6/spike-pybricks.md"
+        ],
+        [
+          "通用 I2C 版",
+          "/sensors/exp6/arduino-i2c.md"
+        ]
+      ]
+    },
+    "en": {
+      "badge": "EXP-06-PRO · SMART EXPANSION",
+      "pitch": "Out of ports on SPIKE Prime? Run 6 motors and sensors from one port, with its own isolated power and on-board motor PID.",
+      "stats": [
+        [
+          "1 → 6",
+          "ports"
+        ],
+        [
+          "PID",
+          "on-board motor control"
+        ],
+        [
+          "Isolated",
+          "power protects your hub"
+        ]
+      ],
+      "editions": [
+        [
+          "Official SPIKE App",
+          "/en/sensors/exp6/spike-official.md"
+        ],
+        [
+          "Pybricks",
+          "/en/sensors/exp6/spike-pybricks.md"
+        ],
+        [
+          "Universal I2C",
+          "/en/sensors/exp6/arduino-i2c.md"
+        ]
+      ]
+    }
+  },
+  "imu": {
+    "color": "#a371f7",
+    "zh": {
+      "badge": "IMU-9AX · 即將推出",
+      "pitch": "走直線、轉精準角度的關鍵：任意角度安裝都能算對航向，磁力計融合讓長距離也不飄移。",
+      "stats": [
+        [
+          "9 軸",
+          "陀螺儀＋加速度＋磁力"
+        ],
+        [
+          "任意角度",
+          "安裝都能用"
+        ],
+        [
+          "不飄移",
+          "磁力計融合航向"
+        ]
+      ],
+      "editions": [
+        [
+          "EV3 版",
+          "#🧩-支援平台"
+        ],
+        [
+          "SPIKE 版",
+          "#🧩-支援平台"
+        ],
+        [
+          "通用 I2C 版",
+          "#∿-通用-i2c-暫存器（位址-0x6a）"
+        ]
+      ]
+    },
+    "en": {
+      "badge": "IMU-9AX · COMING SOON",
+      "pitch": "The key to driving straight and turning precisely: correct heading at any mounting angle, and compass fusion that does not drift over long runs.",
+      "stats": [
+        [
+          "9-axis",
+          "gyro + accel + mag"
+        ],
+        [
+          "Any angle",
+          "mounting"
+        ],
+        [
+          "No drift",
+          "compass-fused heading"
+        ]
+      ],
+      "editions": [
+        [
+          "EV3",
+          "#🧩-supported-platforms"
+        ],
+        [
+          "SPIKE",
+          "#🧩-supported-platforms"
+        ],
+        [
+          "Universal I2C",
+          "#∿-universal-i2c-registers-address-0x6a"
+        ]
+      ]
+    }
+  }
+}

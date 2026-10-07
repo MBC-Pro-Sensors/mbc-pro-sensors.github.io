@@ -1,13 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # IMU 9-Axis Gyro Sensor (Coming Soon)
 
-<div style="text-align: center;">
-  <span style="display:inline-block; background:#a371f7; color:#fff; padding:3px 12px; border-radius:20px; font-family:monospace; margin-bottom:1rem; font-size: 0.85rem;">IMU-9AX · COMING SOON</span>
-  <p style="font-family: monospace; color: #aaa; letter-spacing: 1px;">
-    <strong>9-axis attitude sensor: gyroscope + accelerometer + magnetometer</strong><br>
-    Mount at any angle · 3D-compensated heading · Compass fusion with no long-run drift
-  </p>
-</div>
+<!-- product-hero -->
 
 ---
 

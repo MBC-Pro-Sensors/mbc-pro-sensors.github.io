@@ -1,15 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # 測距者 2 路雷射測距 (TOF2)
 
-<div style="text-align: center;">
-  <span style="display:inline-block; background:#0ABAB5; color:#fff; padding:3px 12px; border-radius:20px; font-family:monospace; margin-bottom:1rem; font-size: 0.85rem;">TOF-02-LSR · ADVANCED</span>
-  <br>
-  <img src="/images/sensors/tof2/tof2-product.webp" alt="測距者2路雷射測距" style="max-width: 280px; margin: 1rem auto; display: block; filter: drop-shadow(0 0 30px rgba(10,186,181,0.2));" />
-  <p style="font-family: monospace; color: #aaa; letter-spacing: 1px;">
-    <strong>雙光束雷射測距模組</strong><br>
-    輕巧且敏銳 · 精準捕捉物體左右動向 · 告別笨重超音波
-  </p>
-</div>
+<!-- product-hero -->
 
 ---
 

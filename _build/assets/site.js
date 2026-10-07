@@ -25,6 +25,16 @@
   var toggle = document.querySelector('.sidebar-toggle');
   if (toggle) toggle.addEventListener('click', function () { document.body.classList.toggle('close'); });
 
+  // --- 首頁頂部導覽（手機版漢堡選單）---
+  var topnav = document.querySelector('.topnav');
+  var burger = document.querySelector('.tn-burger');
+  if (topnav && burger) {
+    burger.addEventListener('click', function () { topnav.classList.toggle('open'); });
+    topnav.querySelectorAll('.tn-links a').forEach(function (a) {
+      a.addEventListener('click', function () { topnav.classList.remove('open'); });
+    });
+  }
+
   // --- 站內搜尋（第一次聚焦時才載入索引）---
   var input = document.querySelector('.search input');
   var panel = document.querySelector('.search .results-panel');

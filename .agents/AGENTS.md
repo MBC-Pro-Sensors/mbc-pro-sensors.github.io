@@ -38,3 +38,10 @@ When working on this repository (`mbc-pro-sensors.github.io`), always strictly f
 - Page `<title>` comes from the page's first H1; the meta description from the first paragraph after the H1. Home page metadata and JSON-LD live in `_build/home.json`. Shared CSS/JS: `_build/assets/site.css`, `_build/assets/site.js`.
 - Product share images (1200x630): `images/brand/og/<product>.jpg`, used automatically for that product's pages.
 - Local preview: `cd _build && npm ci && node build.mjs`, then `python -m http.server 8000 -d _site` and open http://localhost:8000/
+
+## Sales Layer (since 2026-10-07)
+- Home pages (`README.md`, `en/README.md`) start with `<!-- layout: landing -->`: full-width landing layout with a top nav and no sidebar. Content is raw HTML using `lp-*` classes (styles in `_build/assets/site.css`). Keep all raw HTML un-indented.
+- Product pages: the line `<!-- product-hero -->` right after the H1 is replaced at build time by the sales block (badge, photo, video, pitch, 3 key numbers, edition buttons, LINE CTA). Edit that content in `_build/products.json`, not in the Markdown. The pitch is also the page's meta description.
+- Every page gets a LINE inquiry button (bottom bar on mobile). Buying guide: `guide.md` / `en/guide.md`.
+- Never publish internal chip/part numbers (MCU, sensor IC, camera sensor) on the site.
+- Social-proof section placeholder is an HTML comment in both READMEs; add competition results / testimonials there only from real material supplied by the owner.

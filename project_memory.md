@@ -9,3 +9,4 @@
 - 2026-10-07: 網站優化第一批：鎖定 docsify 4.13.1 CDN 版本、修復 pre CSS、產品頁加入 LINE/Email 詢價 CTA、分頁標題改用 H1、新增 favicon 與 1200x630 分享圖、產品照縮至 1600px、移除 scratch 等雜檔追蹤。
 - 2026-10-07: 改為靜態網站：_build/build.mjs 將每個 .md 產生獨立 HTML 頁 (GitHub Actions 部署)，舊 #/ 網址自動轉址；修復 EXP6 Pybricks 頁缺失的馬達控制章節與 HTML 標籤不平衡。
 - 2026-10-07: 依各產品韌體原始碼更新網站：新增通用 I2C 協議頁、Line8/16 改 v1 協議(0x16)、TOF8/TOF2/PS2/ESP32CAM 補規格與輸出資料、PS4 改名 PS4/PS5、新增 EXP6 I2C 頁與 IMU 產品頁、宣傳 Matrix Mini R4/MakeBlock；修表格斑馬紋與 !!! 語法顯示。
+- 2026-10-07: 網站加上銷售層：首頁改明亮混合風 landing 版型、產品頁銷售區(_build/products.json)、選購指南、全站 LINE 詢價按鈕；不做競品比較。

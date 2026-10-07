@@ -1,201 +1,131 @@
-﻿<!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-# MBC-Pro Sensors — Competition-Grade Sensors for LEGO Robots
-
-<div style="text-align:center; margin: 1.5rem 0;">
-  <p style="font-size:1.2rem; color:#aaa; font-family:monospace; letter-spacing:1px;">Plug and Play · Native Block Support · The Only Choice from Beginners to Top Competitors</p>
+<!-- layout: landing -->
+<!-- AI 注意：首頁使用 landing 版型（無側欄）。直接插入的 HTML 請勿縮排，否則會被 Markdown 解析器誤認為程式碼區塊。 -->
+<div class="lp-hero">
+<div>
+<p class="lp-kicker">WRO · FLL · LEGO ROBOTICS COMPETITIONS</p>
+<h1>Make your LEGO robot<br><em>steadier and sharper</em></h1>
+<p class="lp-lead">MBC-Pro Sensors builds competition-grade sensors for LEGO SPIKE Prime, EV3 and Pybricks: 8/16-way line followers, laser ranging, a 6-port expander, PS4/PS5 remote control and a vision camera. Plug in and read them with the official blocks.</p>
+<div class="lp-btns">
+<a class="lp-btn line" href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">💬 Ask on LINE</a>
+<a class="lp-btn ghost" href="#products">See all products →</a>
+</div>
+</div>
+<div class="lp-hero-visual">
+<img src="/images/sensors/line16/line16-product-spike.webp" alt="Pathfinder 16-Way line sensor">
+<img src="/images/sensors/line8/line8-product-spike.webp" alt="Pathfinder 8-Way line sensor">
+</div>
 </div>
 
----
+<div class="lp-platforms"><span>LEGO SPIKE Prime</span><span>Robot Inventor</span><span>MINDSTORMS EV3</span><span>Pybricks</span><span>Arduino / ESP32</span><span>MATRIX Mini R4</span><span>MakeBlock</span></div>
 
-## 🧬 MBC-Pro DNA — Our Brand Promise
+<h2 id="why">The problems you hit at competitions — solved</h2>
+<p class="lp-sub">Every product starts from a real pain point on the competition floor.</p>
 
-Every sensor we build carries the same belief: **Let users focus their energy entirely on creativity and strategy, rather than wrestling with hardware.**
-
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 20px 0;">
-  <div style="background: rgba(10,186,181,0.05); border: 1px solid rgba(10,186,181,0.3); border-radius: 8px; padding: 15px;">
-    <h4 style="color: #0ABAB5; margin-top:0;">🔌 Ultimate Plug & Play</h4>
-    <p style="font-size:0.9em; margin-bottom:0;">No external adapter boards needed. Plug directly into SPIKE / EV3 and it works exactly like native LEGO sensors.</p>
-  </div>
-  <div style="background: rgba(10,186,181,0.05); border: 1px solid rgba(10,186,181,0.3); border-radius: 8px; padding: 15px;">
-    <h4 style="color: #0ABAB5; margin-top:0;">🧱 Native Block Support</h4>
-    <p style="font-size:0.9em; margin-bottom:0;">Fully compatible with official LEGO software blocks. Beginners can drag and drop as usual, while advanced developers can unlock more features with Python.</p>
-  </div>
-  <div style="background: rgba(10,186,181,0.05); border: 1px solid rgba(10,186,181,0.3); border-radius: 8px; padding: 15px;">
-    <h4 style="color: #0ABAB5; margin-top:0;">🧠 Built-in Smart Algorithms</h4>
-    <p style="font-size:0.9em; margin-bottom:0;">Complex signal processing is done internally within the sensor. Teachers don't need to repeat basics; students can use it instantly.</p>
-  </div>
-  <div style="background: rgba(10,186,181,0.05); border: 1px solid rgba(10,186,181,0.3); border-radius: 8px; padding: 15px;">
-    <h4 style="color: #0ABAB5; margin-top:0;">🏆 Competition-Grade Reliability</h4>
-    <p style="font-size:0.9em; margin-bottom:0;">Every product is rigorously tested in real competition environments to ensure zero errors in critical moments.</p>
-  </div>
+<div class="lp-grid">
+<div class="lp-card">
+<div class="lp-ico">🛤️</div>
+<h3>Line following wobbles at speed and gets lost on busy maps</h3>
+<p>The official color sensor sees a single spot; when the line drifts, your code has to guess.</p>
+<p class="lp-fix">→ Pathfinder 8/16-Way: sees 8/16 points at once and tells you exactly where the line is</p>
+</div>
+<div class="lp-card">
+<div class="lp-ico">🔌</div>
+<h3>SPIKE has only 6 ports — not enough for motors and sensors</h3>
+<p>Adding one more sensor means removing another mechanism.</p>
+<p class="lp-fix">→ EXP6: one port becomes six, with its own power supply</p>
+</div>
+<div class="lp-card">
+<div class="lp-ico">📡</div>
+<h3>Ultrasonic sensors are slow and report ghost readings</h3>
+<p>Sound reflects and interferes — the worst case for sumo and obstacle avoidance.</p>
+<p class="lp-fix">→ Ranger TOF2 / TOF8: laser ranging, with TOF8 covering 180° in front</p>
+</div>
+<div class="lp-card">
+<div class="lp-ico">🎮</div>
+<h3>Remote robots run away when the signal drops</h3>
+<p>Lose the gamepad link and the robot may keep executing the last command.</p>
+<p class="lp-fix">→ Controller PS4/PS5: bonds to your gamepad only and stops within 0.3 s of signal loss</p>
+</div>
 </div>
 
----
+<h2 id="products">The Product Line</h2>
+<p class="lp-sub">Each product comes in SPIKE, EV3 and other editions. Not sure which one? See the <a href="/en/guide.md">Buying Guide</a>.</p>
 
-## 📦 Full Product Lineup
-
-Use the sidebar navigation or click the cards below to view specific product documentation:
-
-### 🛤️ Line Followers
-
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
-
-  <a href="#/en/sensors/line8/index" style="text-decoration:none;">
-    <div class="product-card" style="background:#0a111a; border:1px solid rgba(255,69,0,0.4); border-radius:10px; padding:20px; ">
-      <div style="flex:1; min-width:0;">
-        <div style="color:#ff4500; font-size:1.5rem;">🛤️</div>
-        <h4 style="color:#ff4500; margin:8px 0 8px; font-size:1.2rem;">Pathfinder 8-Way (Line8)</h4>
-        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Ignores track noise. The ultimate anti-interference line follower designed for complex maps.</p>
-      </div>
-      <div style="flex:0 0 auto;">
-        <img src="/images/sensors/line8/line8-product-spike.webp" alt="循行者 8 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(255,69,0,0.6));">
-      </div>
-    </div>
-  </a>
-
-  <a href="#/en/sensors/line16/index" style="text-decoration:none;">
-    <div class="product-card" style="background:#0a111a; border:1px solid rgba(255,107,53,0.4); border-radius:10px; padding:20px; ">
-      <div style="flex:1; min-width:0;">
-        <div style="color:#ff6b35; font-size:1.5rem;">🛤️</div>
-        <h4 style="color:#ff6b35; margin:8px 0 8px; font-size:1.2rem;">Pathfinder 16-Way (Line16)</h4>
-        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Say goodbye to patching. Unleash ports with double the field of view: the king of high-speed line following.</p>
-      </div>
-      <div style="flex:0 0 auto;">
-        <img src="/images/sensors/line16/line16-product-spike.webp" alt="循行者 16 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(255,107,53,0.6));">
-      </div>
-    </div>
-  </a>
-
+<div class="lp-grid">
+<a class="lp-prod" href="/en/sensors/line8/index.md" style="--pc:#ff4500;"><img src="/images/sensors/line8/line8-product-spike.webp" alt="Pathfinder 8-Way"><span class="lp-cat">LINE FOLLOWING</span><h3>Pathfinder 8-Way (Line8)</h3><p>8-channel anti-interference line sensor with a PID-ready high-res position and one-button calibration.</p><span class="lp-more">Learn more →</span></a>
+<a class="lp-prod" href="/en/sensors/line16/index.md" style="--pc:#ff6b35;"><img src="/images/sensors/line16/line16-product-spike.webp" alt="Pathfinder 16-Way"><span class="lp-cat">LINE FOLLOWING</span><h3>Pathfinder 16-Way (Line16)</h3><p>16-channel wide view: fast turns and intersections in one read, using just 1 port.</p><span class="lp-more">Learn more →</span></a>
+<a class="lp-prod" href="/en/sensors/tof8/index.md" style="--pc:#0ABAB5;"><img src="/images/sensors/tof8/tof8-product.webp" alt="Ranger 8-Way"><span class="lp-cat">LASER RANGING</span><h3>Ranger 8-Way (TOF8)</h3><p>8 laser points cover 180° and report the nearest target's direction and distance.</p><span class="lp-more">Learn more →</span></a>
+<a class="lp-prod" href="/en/sensors/tof2/index.md" style="--pc:#0ABAB5;"><img src="/images/sensors/tof2/tof2-product.webp" alt="Ranger 2-Way"><span class="lp-cat">LASER RANGING</span><h3>Ranger 2-Way (TOF2)</h3><p>Left and right laser ranging — faster and smaller than ultrasonic.</p><span class="lp-more">Learn more →</span></a>
+<a class="lp-prod" href="/en/sensors/exp6/index.md" style="--pc:#00d2ff;"><img src="/images/sensors/exp6/exp6-product.webp" alt="SPIKE 6-Way Expander"><span class="lp-cat">EXPANSION</span><h3>SPIKE 6-Way Expander (EXP6)</h3><p>Six motors and sensors from one port, with its own power and on-board motor PID.</p><span class="lp-more">Learn more →</span></a>
+<a class="lp-prod" href="/en/sensors/ps4/index.md" style="--pc:#F2C200;"><img src="/images/sensors/ps4/ps4-product.webp" alt="Controller PS4/PS5"><span class="lp-cat">REMOTE CONTROL</span><h3>Controller PS4/PS5</h3><p>Works with PS4 and PS5 gamepads, bonds to yours only, stops on signal loss.</p><span class="lp-more">Learn more →</span></a>
+<a class="lp-prod" href="/en/sensors/ps2/index.md" style="--pc:#F2C200;"><img src="/images/sensors/ps2/ps2-product.webp" alt="Controller PS2"><span class="lp-cat">REMOTE CONTROL</span><h3>Controller 2.4G (PS2)</h3><p>PS2 wireless gamepad with twin sticks and 16 buttons — best value for classes.</p><span class="lp-more">Learn more →</span></a>
+<a class="lp-prod" href="/en/sensors/esp32cam/index.md" style="--pc:#00d2ff;"><img src="/images/sensors/esp32cam/esp32cam-product.webp" alt="Sharpshooter ESP32CAM"><span class="lp-cat">ROBOT VISION</span><h3>Sharpshooter ESP32CAM</h3><p>Set colors on its own screen; get blob position, size and motion at once.</p><span class="lp-more">Learn more →</span></a>
+<a class="lp-prod" href="/en/sensors/imu/index.md" style="--pc:#a371f7;"><div class="lp-noimg">🧭</div><span class="lp-cat">MOTION SENSING</span><h3>IMU 9-Axis Gyro <span class="lp-soon">Coming soon</span></h3><p>Correct heading at any mounting angle; compass fusion with no long-run drift.</p><span class="lp-more">Learn more →</span></a>
 </div>
 
-### 📡 Laser Ranging (ToF)
+<h2>Why not follow lines with the official color sensor?</h2>
+<p class="lp-sub">Same single port — a completely different field of view.</p>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
+<table class="lp-compare">
+<thead><tr><th></th><th>Official color sensor</th><th>Pathfinder 8-Way</th><th>Pathfinder 16-Way</th></tr></thead>
+<tbody>
+<tr><td>Sensing points</td><td class="no">1</td><td class="yes">8</td><td class="yes">16</td></tr>
+<tr><td>Line position</td><td class="no">Your code must estimate it</td><td class="yes">Output directly, −100 ~ +100</td><td class="yes">Output directly, −100 ~ +100</td></tr>
+<tr><td>Intersections / forks</td><td class="no">Hard to detect</td><td class="yes">Reported automatically</td><td class="yes">Reported automatically</td></tr>
+<tr><td>Calibration</td><td class="no">Handled in your program</td><td class="yes">One button, 5 s</td><td class="yes">One button, 5 s</td></tr>
+<tr><td>Hub ports used</td><td>1</td><td class="yes">1</td><td class="yes">1</td></tr>
+</tbody>
+</table>
 
-  <a href="#/en/sensors/tof2/index" style="text-decoration:none;">
-    <div class="product-card" style="background:#0a111a; border:1px solid rgba(10,186,181,0.4); border-radius:10px; padding:20px; ">
-      <div style="flex:1; min-width:0;">
-        <div style="color:#0ABAB5; font-size:1.5rem;">📡</div>
-        <h4 style="color:#0ABAB5; margin:8px 0 8px; font-size:1.2rem;">Ranger 2-Way (TOF2)</h4>
-        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Lightweight and agile. A micro-laser that accurately captures the left and right movements of objects.</p>
-      </div>
-      <div style="flex:0 0 auto;">
-        <img src="/images/sensors/tof2/tof2-product.webp" alt="測距者 2 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(10,186,181,0.6));">
-      </div>
-    </div>
-  </a>
+<h2>Our Four Commitments</h2>
 
-  <a href="#/en/sensors/tof8/index" style="text-decoration:none;">
-    <div class="product-card" style="background:#0a111a; border:1px solid rgba(10,186,181,0.4); border-radius:10px; padding:20px; ">
-      <div style="flex:1; min-width:0;">
-        <div style="color:#0ABAB5; font-size:1.5rem;">📡</div>
-        <h4 style="color:#0ABAB5; margin:8px 0 8px; font-size:1.2rem;">Ranger 8-Way (TOF8)</h4>
-        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Say goodbye to ultrasonic ghosts: 180-degree zero blind spots. The LiDAR for sumo battles and high-speed obstacle avoidance.</p>
-      </div>
-      <div style="flex:0 0 auto;">
-        <img src="/images/sensors/tof8/tof8-product.webp" alt="測距者 8 路" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(10,186,181,0.6));">
-      </div>
-    </div>
-  </a>
-
+<div class="lp-grid">
+<div class="lp-card"><div class="lp-ico">🔌</div><h3>Plug and play</h3><p>No adapter boards — plug into SPIKE / EV3 just like an official sensor.</p></div>
+<div class="lp-card"><div class="lp-ico">🧱</div><h3>Official blocks</h3><p>Beginners keep using blocks; advanced teams unlock everything with Pybricks Python.</p></div>
+<div class="lp-card"><div class="lp-ico">🧠</div><h3>Smart inside</h3><p>Filtering, calibration and position math run inside the sensor, so students can focus on strategy.</p></div>
+<div class="lp-card"><div class="lp-ico">🏆</div><h3>Proven at competitions</h3><p>Every product is tested repeatedly in real competition environments.</p></div>
 </div>
 
-### 🎮 Remote Control Receivers
+<h2 id="videos">See It in Action</h2>
+<p class="lp-sub">Pathfinder on a competition map, plus hands-on lessons from partner coaches.</p>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
-
-  <a href="#/en/sensors/ps2/index" style="text-decoration:none;">
-    <div class="product-card" style="background:#0a111a; border:1px solid rgba(242,194,0,0.4); border-radius:10px; padding:20px; ">
-      <div style="flex:1; min-width:0;">
-        <div style="color:#F2C200; font-size:1.5rem;">🎮</div>
-        <h4 style="color:#F2C200; margin:8px 0 8px; font-size:1.2rem;">Controller 2.4G (PS2)</h4>
-        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Cost-effective entry-level choice. The wireless tool to easily expand your control buttons.</p>
-      </div>
-      <div style="flex:0 0 auto;">
-        <img src="/images/sensors/ps2/ps2-product.webp" alt="掌控者 2.4G" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(242,194,0,0.6));">
-      </div>
-    </div>
-  </a>
-
-  <a href="#/en/sensors/ps4/index" style="text-decoration:none;">
-    <div class="product-card" style="background:#0a111a; border:1px solid rgba(242,194,0,0.4); border-radius:10px; padding:20px; ">
-      <div style="flex:1; min-width:0;">
-        <div style="color:#F2C200; font-size:1.5rem;">🎮</div>
-        <h4 style="color:#F2C200; margin:8px 0 8px; font-size:1.2rem;">Controller PS4/PS5 Bluetooth</h4>
-        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Works with PS4 / PS5 gamepads: bonds to your gamepad only and stops on signal loss — stable even at big events.</p>
-      </div>
-      <div style="flex:0 0 auto;">
-        <img src="/images/sensors/ps4/ps4-product.webp" alt="掌控者高階藍牙" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(242,194,0,0.6));">
-      </div>
-    </div>
-  </a>
-
+<div class="lp-grid">
+<div><div class="lp-video"><iframe src="https://www.youtube.com/embed/MuG9kp2-8FY" title="Pathfinder line following demo" allowfullscreen></iframe></div><p class="lp-vcap">🛤️ Pathfinder SPIKE line-following demo</p></div>
+<div><div class="lp-video"><iframe src="https://www.youtube.com/embed/WgacdWLatbk" title="Coach LegoLauXiao lesson" allowfullscreen></iframe></div><p class="lp-vcap">🏆 <a href="https://www.youtube.com/@LegoLauXiao" target="_blank" rel="noopener">Coach LegoLauXiao</a> lesson</p></div>
+<div><div class="lp-video"><iframe src="https://www.youtube.com/embed/T9bcndBNQvQ" title="Coach legolaumo lesson" allowfullscreen></iframe></div><p class="lp-vcap">🏆 <a href="https://www.youtube.com/@legolaumo" target="_blank" rel="noopener">Coach legolaumo</a> lesson</p></div>
 </div>
 
-### 👁️ Robot Vision
+<!-- Social proof (competition results, schools / teams, testimonials): add here once materials are provided -->
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
+<h2>Order in 3 Steps</h2>
 
-  <a href="#/en/sensors/esp32cam/index" style="text-decoration:none;">
-    <div class="product-card" style="background:#0a111a; border:1px solid rgba(0,210,255,0.4); border-radius:10px; padding:20px; ">
-      <div style="flex:1; min-width:0;">
-        <div style="color:#00d2ff; font-size:1.5rem;">👁️</div>
-        <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">Sharpshooter ESP32CAM Vision</h4>
-        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Live preview on its own screen: color blob tracking, point color pick and motion detection, set up on the device.</p>
-      </div>
-      <div style="flex:0 0 auto;">
-        <img src="/images/sensors/esp32cam/esp32cam-product.webp" alt="神攝手視覺感應器" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(0,210,255,0.6));">
-      </div>
-    </div>
-  </a>
-
+<div class="lp-grid lp-steps">
+<div class="lp-card"><h3>Pick your controller</h3><p>SPIKE, EV3, Arduino or MATRIX? Each has its own edition — the <a href="/en/guide.md">Buying Guide</a> tells you in a minute.</p></div>
+<div class="lp-card"><h3>Choose your products</h3><p>Line following, ranging, expansion, remote control, vision — pick by challenge and budget, or just ask us.</p></div>
+<div class="lp-card"><h3>Order on LINE</h3><p>Individuals, school / club bulk orders and distributors are all welcome. Our engineers reply within 24 hours on weekdays.</p></div>
 </div>
 
-### 🧭 Motion Sensing
+<h2>FAQ</h2>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
-
-  <a href="/en/sensors/imu/index.md" style="text-decoration:none;">
-    <div class="product-card" style="background:#0a111a; border:1px solid rgba(163,113,247,0.45); border-radius:10px; padding:20px; ">
-      <div style="flex:1; min-width:0;">
-        <div style="color:#a371f7; font-size:1.5rem;">🧭</div>
-        <h4 style="color:#a371f7; margin:8px 0 8px; font-size:1.2rem;">IMU 9-Axis Gyro (Coming Soon)</h4>
-        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Mount at any angle, compass fusion with no long-run drift, works as the official EV3 gyro.</p>
-      </div>
-    </div>
-  </a>
-
+<div class="lp-faq">
+<details><summary>Why do WRO teams choose Line8 or Line16 over the official color sensor?</summary><p>The official color sensor samples a single point with a narrow view and is easily thrown off by reflections and shadows, so robots wobble or leave the line in fast turns. The Pathfinder series uses 8 or 16-channel arrays with built-in filtering and calibration, outputs the line position directly, and needs only 1 hub port.</p></details>
+<details><summary>Do they work with the official SPIKE Prime blocks?</summary><p>Yes. Beginners can read values with the official blocks; advanced users can read the full data at high speed with Pybricks (MicroPython).</p></details>
+<details><summary>SPIKE Prime is out of ports — what can I do?</summary><p>Use the SPIKE 6-Way Expander (EXP6). It has its own isolated power and connects 6 motors or sensors through a single port.</p></details>
+<details><summary>Should I buy the SPIKE or the EV3 edition?</summary><p>Choose by your controller. Editions have different connectors and protocols and are not interchangeable. See the <a href="/en/guide.md">Buying Guide</a>, or tell us your controller on LINE and we will confirm.</p></details>
+<details><summary>How do I order? Are there school discounts?</summary><p>Ask for a quote on LINE (@692vcvuk) or by email (mbc.robot89@gmail.com). School, club bulk orders and education programs are welcome.</p></details>
 </div>
 
-### 🔌 Expansion Modules
-
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0;">
-
-  <a href="#/en/sensors/exp6/index" style="text-decoration:none;">
-    <div class="product-card" style="background:#0a111a; border:1px solid rgba(0,210,255,0.4); border-radius:10px; padding:20px; ">
-      <div style="flex:1; min-width:0;">
-        <div style="color:#00d2ff; font-size:1.5rem;">🔌</div>
-        <h4 style="color:#00d2ff; margin:8px 0 8px; font-size:1.2rem;">SPIKE 6-Way Expander (EXP6)</h4>
-        <p style="color:#888; font-size:0.9em; margin:0; line-height:1.5;">Break the limits of hub ports: The 6-way expansion artifact with built-in isolated power protection.</p>
-      </div>
-      <div style="flex:0 0 auto;">
-        <img src="/images/sensors/exp6/exp6-product.webp" alt="SPIKE 6 路擴充器" style="max-height: 180px; width: auto; display: block; filter: drop-shadow(0 0 30px rgba(0,210,255,0.6));">
-      </div>
-    </div>
-  </a>
-
+<div class="lp-final">
+<h2>Ready to level up your robot?</h2>
+<p>Tell us your controller and competition, and our engineers will suggest the best combination.</p>
+<div class="lp-btns">
+<a class="lp-btn line" href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">💬 Ask on LINE</a>
+<a class="lp-btn ghost" href="/en/guide.md">🧭 Buying Guide</a>
+</div>
 </div>
 
----
-
-## 🧩 Supported Platforms
-
-| Platform | Notes |
-| :--- | :--- |
-| LEGO SPIKE Prime / Robot Inventor | Official app blocks, Pybricks |
-| LEGO MINDSTORMS EV3 | EV3 official software, EV3 Classroom, Pybricks |
-| Arduino / ESP32 / Raspberry Pi | [Universal I2C Protocol](/en/i2c-protocol.md): one register scheme for the whole family |
-| MATRIX Mini R4 | Line sensors, rangers, IMU, vision sensor |
-| MakeBlock | Line sensors, rangers, gamepad receivers |
-
-> Each platform is a different factory edition (connector and firmware differ); order the one for your controller, or [contact us](/en/contact.md).
+<div class="lp-footer">
+<div><h4>Products</h4><a href="/en/sensors/line8/index.md">Pathfinder 8-Way</a><a href="/en/sensors/line16/index.md">Pathfinder 16-Way</a><a href="/en/sensors/tof8/index.md">Ranger 8-Way</a><a href="/en/sensors/exp6/index.md">SPIKE 6-Way Expander</a><a href="/en/sensors/ps4/index.md">Controller PS4/PS5</a></div>
+<div><h4>Developer Docs</h4><a href="/en/sensors/line8/spike-pybricks.md">Line8 Pybricks guide</a><a href="/en/sensors/line16/spike-pybricks.md">Line16 Pybricks guide</a><a href="/en/sensors/exp6/spike-pybricks.md">EXP6 Pybricks guide</a><a href="/en/i2c-protocol.md">Universal I2C protocol</a></div>
+<div><h4>Buy</h4><a href="/en/guide.md">Buying Guide</a><a href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">LINE: @692vcvuk</a><a href="mailto:mbc.robot89@gmail.com">mbc.robot89@gmail.com</a><a href="/en/contact.md">Contact</a></div>
+</div>

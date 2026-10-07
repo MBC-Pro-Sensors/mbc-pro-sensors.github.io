@@ -32,7 +32,7 @@ const git = (args) => execSync(`git ${args}`, { cwd: ROOT, encoding: 'utf8' });
 const tracked = git('-c core.quotepath=off ls-files --cached --others --exclude-standard').split('\n').filter(Boolean);
 
 // ---------------------------------------------------------------- URL mapping
-const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol)\.md$/.test(f) || /^(en\/)?sensors\//.test(f));
+const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol|guide)\.md$/.test(f) || /^(en\/)?sensors\//.test(f));
 const pages = tracked.filter(isPage);
 
 function urlFor(mdPath) {
@@ -189,9 +189,12 @@ function renderSidebar(lang, currentUrl) {
 // ----------------------------------------------------------------- template
 const HASH_REDIRECT = `(function(){function go(){var h=location.hash;if(h.indexOf('#/')!==0)return;var p=h.slice(2),f='',q=p.search(/[?#]/);if(q>-1){var m=p.slice(q).match(/id=([^&]+)/);f=m?'#'+m[1]:'';p=p.slice(0,q);}p=p.replace(/\\.md$/,'');var u;if(p===''||p==='README')u='/';else if(p==='en'||p==='en/'||p==='en/README')u='/en/';else if(p.slice(-1)==='/')u='/'+p;else if(p==='index'||/\\/index$/.test(p))u='/'+p.slice(0,-5);else u='/'+p+'.html';location.replace(u+f);}go();addEventListener('hashchange',go);})();`;
 
+const LINE_URL = 'https://line.me/R/ti/p/@692vcvuk';
 const UI = {
-  zh: { search: '🔍 搜尋文件', lang: 'EN', home: '首頁', cta: { h: '想購買或詢價？', p: '個人購買、學校 / 社團大量採購、代理洽談都歡迎，工程師工作日 24 小時內回覆。', line: 'LINE 立即詢價', mail: 'Email 詢價', more: '更多聯絡方式', contact: '/contact.html' } },
-  en: { search: '🔍 Search docs', lang: '中文', home: 'Home', cta: { h: 'Interested in this sensor?', p: 'Ask us for pricing, bulk / school orders or distributor info. Our engineers reply within 24 hours on weekdays.', line: 'Chat on LINE', mail: 'Email us', more: 'All contact options', contact: '/en/contact.html' } },
+  zh: { search: '🔍 搜尋文件', lang: 'EN', home: '首頁', line: 'LINE 詢價', guide: '選購指南', guideHref: '/guide.html', choose: '選擇版本：',
+    nav: [['產品', '/#products'], ['為什麼選 MBC', '/#why'], ['教學影片', '/#videos'], ['選購指南', '/guide.html'], ['聯絡我們', '/contact.html']], cta: { h: '想購買或詢價？', p: '個人購買、學校 / 社團大量採購、代理洽談都歡迎，工程師工作日 24 小時內回覆。', line: 'LINE 立即詢價', mail: 'Email 詢價', more: '更多聯絡方式', contact: '/contact.html' } },
+  en: { search: '🔍 Search docs', lang: '中文', home: 'Home', line: 'Ask on LINE', guide: 'Buying Guide', guideHref: '/en/guide.html', choose: 'Editions:',
+    nav: [['Products', '/en/#products'], ['Why MBC', '/en/#why'], ['Videos', '/en/#videos'], ['Buying Guide', '/en/guide.html'], ['Contact', '/en/contact.html']], cta: { h: 'Interested in this sensor?', p: 'Ask us for pricing, bulk / school orders or distributor info. Our engineers reply within 24 hours on weekdays.', line: 'Chat on LINE', mail: 'Email us', more: 'All contact options', contact: '/en/contact.html' } },
 };
 
 function ctaHtml(lang) {
@@ -202,7 +205,43 @@ function ctaHtml(lang) {
     `<a class="buy-btn more" href="${t.contact}">${t.more} →</a></div></div>`;
 }
 
-function page({ lang, url, title, description, ogImage, alternates, jsonLd, extraHead = '', sidebar, body, langHref }) {
+// Sales block at the top of each product page, generated from _build/products.json
+const PRODUCT_DATA = JSON.parse(fs.readFileSync(path.join(BUILD, 'products.json'), 'utf8'));
+function productHero(key, lang, file, name) {
+  const p = PRODUCT_DATA[key];
+  if (!p) return '';
+  const t = p[lang];
+  const u = UI[lang];
+  const media = [];
+  if (p.image) media.push(`<div class="ph-img"><img src="${p.image}" alt="${escAttr(name)}" style="filter: drop-shadow(0 0 28px ${p.color}aa);"></div>`);
+  if (p.video) media.push(`<div class="ph-video"><iframe src="https://www.youtube-nocookie.com/embed/${p.video}" title="${escAttr(name)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`);
+  const editions = t.editions.map(([label, href]) => `<a href="${mapHref(href, file) || href}">${label}</a>`).join('');
+  return `<div class="product-hero" style="--pc: ${p.color};">` +
+    `<span class="ph-badge">${t.badge}</span>` +
+    (media.length ? `<div class="ph-media${media.length === 1 ? ' single' : ''}">${media.join('')}</div>` : '') +
+    `<p class="ph-pitch">${t.pitch}</p>` +
+    `<div class="ph-stats">${t.stats.map(([v, l]) => `<div class="ph-stat"><b>${v}</b><span>${l}</span></div>`).join('')}</div>` +
+    `<div class="ph-editions"><span>${u.choose}</span>${editions}</div>` +
+    `<div class="ph-cta"><a class="buy-btn line" href="${LINE_URL}" target="_blank" rel="noopener">💬 ${u.line}</a><a class="buy-btn more" href="${u.guideHref}">🧭 ${u.guide}</a></div>` +
+    `</div>`;
+}
+
+function ctaDock(lang) {
+  const u = UI[lang];
+  return `<div class="cta-dock"><a class="dock-line" href="${LINE_URL}" target="_blank" rel="noopener">💬 ${u.line}</a><a class="dock-guide" href="${u.guideHref}">🧭 ${u.guide}</a></div>`;
+}
+
+function topNav(lang, langHref) {
+  const u = UI[lang];
+  const home = lang === 'en' ? '/en/' : '/';
+  return `<header class="topnav"><a class="tn-logo" href="${home}"><img src="/images/brand/mbc-logo.png" alt="MBC Robot" width="56" height="39"><span>MBC-Pro Sensors</span></a>` +
+    `<button class="tn-burger" aria-label="Menu">☰</button>` +
+    `<nav class="tn-links">${u.nav.map(([l, h]) => `<a href="${h}">${l}</a>`).join('')}` +
+    `<a class="tn-lang" href="${langHref}" hreflang="${lang === 'en' ? 'zh-TW' : 'en'}">🌐 ${u.lang}</a>` +
+    `<a class="tn-line" href="${LINE_URL}" target="_blank" rel="noopener">💬 ${u.line}</a></nav></header>`;
+}
+
+function page({ lang, url, title, description, ogImage, alternates, jsonLd, extraHead = '', sidebar, body, langHref, layout = 'docs' }) {
   const htmlLang = lang === 'en' ? 'en' : 'zh-TW';
   const abs = SITE + url;
   const alt = alternates.map((a) => `<link rel="alternate" hreflang="${a.hreflang}" href="${SITE + a.url}">`).join('\n  ');
@@ -240,7 +279,11 @@ function page({ lang, url, title, description, ogImage, alternates, jsonLd, extr
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4.13.1/lib/themes/dark.css">
   <link rel="stylesheet" href="/assets/site.css?v=${BUILD_ID}">
 </head>
-<body class="ready sticky">
+${layout === 'landing' ? `<body class="ready landing theme-light">
+${topNav(lang, langHref)}
+<main class="landing-main"><article class="markdown-section" id="main">
+${body}
+</article></main>` : `<body class="ready sticky">
 <main>
 <button class="sidebar-toggle" aria-label="Menu"><div class="sidebar-toggle-button"><span></span><span></span><span></span></div></button>
 <aside class="sidebar">
@@ -252,7 +295,8 @@ function page({ lang, url, title, description, ogImage, alternates, jsonLd, extr
 ${body}
 </article></section>
 </main>
-<a id="lang-toggle-btn" href="${langHref}" hreflang="${lang === 'en' ? 'zh-TW' : 'en'}"><span>🌐</span> <span>${UI[lang].lang}</span></a>
+<a id="lang-toggle-btn" href="${langHref}" hreflang="${lang === 'en' ? 'zh-TW' : 'en'}"><span>🌐</span> <span>${UI[lang].lang}</span></a>`}
+${ctaDock(lang)}
 <script src="https://cdn.jsdelivr.net/npm/scratchblocks@3.6.4/build/scratchblocks.min.js" defer></script>
 <script src="/scratchblocks-init.js" defer></script>
 <script src="/assets/site.js?v=${BUILD_ID}" defer></script>
@@ -316,7 +360,8 @@ for (const file of pages) {
   // title / description
   const home = homeHead[url];
   let title = home ? home.title : `${h1Text}${productName && !isProductIndex ? ' – ' + productName : ''} | MBC-Pro Sensors`;
-  let description = home ? home.description : describe(html) || homeHead[lang === 'en' ? '/en/' : '/'].description;
+  const pitch = isProductIndex && PRODUCT_DATA[product] && PRODUCT_DATA[product][lang].pitch;
+  let description = home ? home.description : pitch || describe(html) || homeHead[lang === 'en' ? '/en/' : '/'].description;
 
   // breadcrumbs
   const crumbs = [{ name: UI[lang].home, url: lang === 'en' ? '/en/' : '/' }];
@@ -326,7 +371,11 @@ for (const file of pages) {
     const trail = crumbs.slice(0, -1).map((c) => `<a href="${c.url}">${escAttr(c.name)}</a>`).join('<span>›</span>');
     html = html.replace(/<\/h1>/, `</h1><nav class="breadcrumbs" aria-label="breadcrumb">${trail}</nav>`);
   }
-  if (isProductIndex) html += ctaHtml(lang);
+  if (isProductIndex) {
+    html = html.replace('<!-- product-hero -->', productHero(product, lang, file, h1Text));
+    html += ctaHtml(lang);
+  }
+  const layout = src.includes('<!-- layout: landing -->') ? 'landing' : 'docs';
 
   const jsonLd = home ? home.jsonLd : {
     '@context': 'https://schema.org',
@@ -353,7 +402,7 @@ for (const file of pages) {
   const out = page({
     lang, url, title, description, ogImage: ogImageFor(product), alternates, jsonLd,
     extraHead: home && home.keywords ? `<meta name="keywords" content="${escAttr(home.keywords)}">` : '',
-    sidebar: renderSidebar(lang, url), body: html, langHref,
+    sidebar: renderSidebar(lang, url), body: html, langHref, layout,
   });
   const outFile = path.join(OUT, url.endsWith('/') ? url + 'index.html' : url);
   fs.mkdirSync(path.dirname(outFile), { recursive: true });

@@ -1,27 +1,11 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # 循行者 8 路感應器 (LineSensor8)
 
-<div style="text-align: center; margin-bottom: 2rem;">
-  <span style="display:inline-block; background:#ff4500; color:#fff; padding:3px 12px; border-radius:20px; font-family:monospace; margin-bottom:1rem; font-size: 0.85rem;">LNS-08-PRO · 競賽級</span>
-  
-  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 30px; margin: 20px 0;">
-    <div style="flex: 1; min-width: 250px; text-align: center;">
-      <img src="/images/sensors/line8/line8-product-spike.webp" alt="循行者8路感應器" style="max-width: 280px; width: 100%; display: block; margin: 0 auto; filter: drop-shadow(0 0 20px rgba(255,69,0,0.65)) drop-shadow(0 0 40px rgba(255,69,0,0.35));" />
-    </div>
-    <div style="flex: 1; min-width: 300px; max-width: 480px; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,69,0,0.2); box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
-      <iframe src="https://www.youtube.com/embed/MuG9kp2-8FY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="width: 100%; height: 100%; border: none;"></iframe>
-    </div>
-  </div>
+<!-- product-hero -->
 
-  <p style="font-family: monospace; color: #aaa; letter-spacing: 1px;">
-    <strong>8 通道抗干擾光反射陣列</strong><br>
-    一鍵校準 · 無視賽道雜訊 · WRO 花俏地圖專用神機
-  </p>
-</div>
-
-> [!IMPORTANT]
-> **⚠️ 購買與相容性重要聲明 (本感應器非跨系統通用！)**
-> 本感應器為**「專款專用」**硬體設計，出廠時已針對特定系統進行物理插座與電氣協議的封裝，**不同主機版本之間並不互通**：
+> [!NOTE]
+> **📦 版本說明：請選擇與你的主機相符的版本**
+> 每個版本的接頭與通訊方式都針對該主機最佳化，**不同版本之間不能互換**：
 > 1. **🧱 SPIKE 專屬版**：採用 LPF2 (Lego 6-pin) 扁平插座，僅相容於 SPIKE Prime, SPIKE Essential 與 Robot Inventor 主機。
 > 2. **🧱 EV3 專屬版**：採用 RJ12 (樂高專用 6-pin 水晶頭) 插座，僅相容於 EV3 主機。
 > 3. **∿ 通用 I2C 開發版**：採用標準排針/XH2.54 通訊埠，僅適用於 Arduino、ESP32、樹莓派等自行開發系統。

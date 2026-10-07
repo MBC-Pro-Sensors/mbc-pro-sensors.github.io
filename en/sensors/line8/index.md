@@ -1,27 +1,11 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # Pathfinder 8-Way Sensor (LineSensor8)
 
-<div style="text-align: center; margin-bottom: 2rem;">
-  <span style="display:inline-block; background:#ff4500; color:#fff; padding:3px 12px; border-radius:20px; font-family:monospace; margin-bottom:1rem; font-size: 0.85rem;">LNS-08-PRO · COMPETITION GRADE</span>
-  
-  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 30px; margin: 20px 0;">
-    <div style="flex: 1; min-width: 250px; text-align: center;">
-      <img src="/images/sensors/line8/line8-product-spike.webp" alt="Pathfinder 8-Way Sensor" style="max-width: 280px; width: 100%; display: block; margin: 0 auto; filter: drop-shadow(0 0 20px rgba(255,69,0,0.65)) drop-shadow(0 0 40px rgba(255,69,0,0.35));" />
-    </div>
-    <div style="flex: 1; min-width: 300px; max-width: 480px; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,69,0,0.2); box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
-      <iframe src="https://www.youtube.com/embed/MuG9kp2-8FY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="width: 100%; height: 100%; border: none;"></iframe>
-    </div>
-  </div>
+<!-- product-hero -->
 
-  <p style="font-family: monospace; color: #aaa; letter-spacing: 1px;">
-    <strong>8-Channel Anti-Interference Light Reflection Array</strong><br>
-    One-Click Calibration · Ignore Track Noise · Designed for Complex WRO Maps
-  </p>
-</div>
-
-> [!IMPORTANT]
-> **⚠️ Purchasing and Compatibility Notice (Not universally compatible across systems!)**
-> This sensor uses a **"dedicated model"** hardware design. It is manufactured with specific physical sockets and electrical protocols:
+> [!NOTE]
+> **📦 Editions: choose the one that matches your controller**
+> Each edition's connector and protocol are optimized for its controller, so **editions are not interchangeable**:
 > 1. **🧱 SPIKE Edition**: Uses LPF2 (Lego 6-pin) flat socket. Compatible ONLY with SPIKE Prime, SPIKE Essential, and Robot Inventor hubs.
 > 2. **🧱 EV3 Edition**: Uses RJ12 (Lego specific 6-pin) socket. Compatible ONLY with EV3 hubs.
 > 3. **∿ Universal I2C Edition**: Uses standard pin headers/XH2.54 ports. Designed for Arduino, ESP32, Raspberry Pi, etc.

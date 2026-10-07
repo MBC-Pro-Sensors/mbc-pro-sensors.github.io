@@ -1,24 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # SPIKE 專用 6 路擴充器 (EXP6)
 
-<div style="text-align: center; margin-bottom: 2rem;">
-<span style="display:inline-block; background:#00d2ff; color:#0a0a0a; padding:3px 12px; border-radius:20px; font-family:monospace; margin-bottom:1rem; font-size: 0.85rem;">EXP-06-PRO · 智慧運算中樞</span>
-
-<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 30px; margin: 20px 0;">
-<div style="flex: 1; min-width: 250px; text-align: center;">
-<img src="/images/sensors/exp6/exp6-product.webp" alt="SPIKE 6路擴充器" style="max-width: 280px; width: 100%; display: block; margin: 0 auto; filter: drop-shadow(0 0 20px rgba(0,210,255,0.65)) drop-shadow(0 0 40px rgba(0,210,255,0.35));" />
-</div>
-<div style="flex: 1; min-width: 300px; max-width: 480px; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,210,255,0.2); box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
-<!-- 待放入展示影片 -->
-<div style="display: flex; justify-content: center; align-items: center; height: 100%; color: #555; font-family: monospace;">[展示影片預留位置]</div>
-</div>
-</div>
-
-<p style="font-family: monospace; color: #aaa; letter-spacing: 1px;">
-<strong>SPIKE Prime 專屬的強大擴充火力</strong><br>
-一孔化身六路 · 獨立隔離電源不當機 · 內建 PID 邊緣運算
-</p>
-</div>
+<!-- product-hero -->
 
 > [!WARNING]
 > **⚠️ 重要限制說明**

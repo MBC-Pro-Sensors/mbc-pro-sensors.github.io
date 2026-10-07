@@ -1,15 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # Controller PS4/PS5 Bluetooth Receiver
 
-<div style="text-align: center;">
-  <span style="display:inline-block; background:#F2C200; color:#0a0a0a; padding:3px 12px; border-radius:20px; font-family:monospace; margin-bottom:1rem; font-size: 0.85rem;">CMD-BT-PRO · PS4 / PS5</span>
-  <br>
-  <img src="/images/sensors/ps4/ps4-product.webp" alt="Controller PS4/PS5 Bluetooth Receiver" style="max-width: 280px; margin: 1rem auto; display: block; filter: drop-shadow(0 0 30px rgba(242,194,0,0.2));" />
-  <p style="font-family: monospace; color: #aaa; letter-spacing: 1px;">
-    <strong>Bluetooth receiver for PS4 / PS5 gamepads</strong><br>
-    Bonds to your gamepad only · Auto-reconnect · Stops on signal loss
-  </p>
-</div>
+<!-- product-hero -->
 
 ---
 

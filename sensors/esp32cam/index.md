@@ -1,15 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # 神攝手 ESP32CAM 視覺感應器
 
-<div style="text-align: center;">
-  <span style="display:inline-block; background:#00d2ff; color:#0a0a0a; padding:3px 12px; border-radius:20px; font-family:monospace; margin-bottom:1rem; font-size: 0.85rem;">CAM-VIS-PRO · VISION</span>
-  <br>
-  <img src="/images/sensors/esp32cam/esp32cam-product.webp" alt="神攝手 ESP32CAM 視覺感應器" style="max-width: 280px; margin: 1rem auto; display: block; filter: drop-shadow(0 0 30px rgba(0,210,255,0.2));" />
-  <p style="font-family: monospace; color: #aaa; letter-spacing: 1px;">
-    <strong>內建螢幕的樂高機器人視覺鏡頭</strong><br>
-    色塊追蹤 · 座標點取色 · 動態偵測 · 機身直接設定
-  </p>
-</div>
+<!-- product-hero -->
 
 ---
 
