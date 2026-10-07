@@ -127,5 +127,5 @@
 <div class="lp-footer">
 <div><h4>Products</h4><a href="/en/sensors/line8/index.md">Pathfinder 8-Way</a><a href="/en/sensors/line16/index.md">Pathfinder 16-Way</a><a href="/en/sensors/tof8/index.md">Ranger 8-Way</a><a href="/en/sensors/exp6/index.md">SPIKE 6-Way Expander</a><a href="/en/sensors/ps4/index.md">Controller PS4/PS5</a></div>
 <div><h4>Developer Docs</h4><a href="/en/sensors/line8/spike-pybricks.md">Line8 Pybricks guide</a><a href="/en/sensors/line16/spike-pybricks.md">Line16 Pybricks guide</a><a href="/en/sensors/exp6/spike-pybricks.md">EXP6 Pybricks guide</a><a href="/en/i2c-protocol.md">Universal I2C protocol</a></div>
-<div><h4>Buy</h4><a href="/en/guide.md">Buying Guide</a><a href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">LINE: @692vcvuk</a><a href="mailto:mbc.robot89@gmail.com">mbc.robot89@gmail.com</a><a href="/en/contact.md">Contact</a></div>
+<div><h4>Buy</h4><a href="/en/guide.md">Buying Guide</a><a href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">LINE: @692vcvuk</a><a href="mailto:mbc.robot89@gmail.com">mbc.robot89@gmail.com</a><a href="/en/contact.md">Contact</a><a href="/en/privacy.md">Privacy Policy</a></div>
 </div>

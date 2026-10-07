@@ -127,5 +127,5 @@
 <div class="lp-footer">
 <div><h4>產品</h4><a href="/sensors/line8/index.md">循行者 8 路</a><a href="/sensors/line16/index.md">循行者 16 路</a><a href="/sensors/tof8/index.md">測距者 8 路</a><a href="/sensors/exp6/index.md">SPIKE 6 路擴充器</a><a href="/sensors/ps4/index.md">掌控者 PS4/PS5</a></div>
 <div><h4>技術文件</h4><a href="/sensors/line8/spike-pybricks.md">Line8 Pybricks 教學</a><a href="/sensors/line16/spike-pybricks.md">Line16 Pybricks 教學</a><a href="/sensors/exp6/spike-pybricks.md">EXP6 Pybricks 教學</a><a href="/i2c-protocol.md">通用 I2C 協議</a><a href="/articles/index.md">教學文章</a></div>
-<div><h4>購買</h4><a href="/guide.md">選購指南</a><a href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">LINE：@692vcvuk</a><a href="mailto:mbc.robot89@gmail.com">mbc.robot89@gmail.com</a><a href="/contact.md">聯絡我們</a></div>
+<div><h4>購買</h4><a href="/guide.md">選購指南</a><a href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">LINE：@692vcvuk</a><a href="mailto:mbc.robot89@gmail.com">mbc.robot89@gmail.com</a><a href="/contact.md">聯絡我們</a><a href="/privacy.md">隱私權政策</a></div>
 </div>

@@ -59,4 +59,5 @@
 
 - **📞 Contact Us**
   - [💬 Contact & Support](/en/contact.md)
+  - [🔒 Privacy Policy](/en/privacy.md)
 
