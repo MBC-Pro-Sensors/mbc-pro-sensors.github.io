@@ -446,3 +446,6 @@ body.landing.theme-light .site-footer { border-top-color: #e3e8ee; color: #5b6b7
 /* 產品頁：WRO 適用組別＋規則對照／購買管道連結 */
 .markdown-section .product-hero .ph-wro { margin: 0 0 18px; font-size: 0.95rem; line-height: 1.7; color: #ccc; }
 .markdown-section .product-hero .ph-wro a { color: var(--pc); }
+.site-footer .sf-social { font-size: 0.85rem; margin-bottom: 10px; }
+.site-footer .sf-social a { color: var(--theme-color); text-decoration: none; font-weight: 700; }
+body.landing.theme-light .site-footer .sf-social a { color: #0a8f8a; }

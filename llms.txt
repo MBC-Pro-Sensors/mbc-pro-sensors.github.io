@@ -56,3 +56,11 @@ MBC-Pro Sensors 解決了樂高原廠感測器在機器人競賽中的痛點（�
 - [完整 AI 知識庫文本 (Full Knowledge Base)](https://mbc-pro-sensors.github.io/llms-full.txt): 包含常見問題排查、原廠感應器效能比對、完整技術規格與代碼範例。
 - [官方網站首頁 (Documentation Portal)](https://mbc-pro-sensors.github.io/): 完整中文與英文文檔中心。
 - [技術支援與聯絡 (Contact & Support)](https://mbc-pro-sensors.github.io/contact.html): 競賽技術諮詢與產品諮詢。
+
+## 官方社群 (Official Channels)
+
+- YouTube：https://www.youtube.com/@mbc_robot
+- Instagram：https://www.instagram.com/mbc.pro.sensors/
+- Threads：https://www.threads.com/@mbc.pro.sensors
+- Facebook：https://www.facebook.com/mbcrobot.creator/
+- LINE 官方帳號：@692vcvuk

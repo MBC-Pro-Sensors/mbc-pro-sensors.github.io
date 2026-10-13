@@ -215,7 +215,15 @@ const FOOTER = {
   zh: `LEGO®、SPIKE™ 與 MINDSTORMS® 是 LEGO Group 的商標，LEGO Group 並未贊助、授權或認可本網站及本公司產品。MBC-Pro Sensors 為少伯創意機器人有限公司（MBC Robot）之獨立產品，其他商標為各自所有人所有。`,
   en: `LEGO®, SPIKE™ and MINDSTORMS® are trademarks of the LEGO Group, which does not sponsor, authorize or endorse this site or our products. MBC-Pro Sensors is an independent product line of Shaobo Creative Robotics Company Limited (MBC Robot). Other trademarks belong to their respective owners.`,
 };
-const footerHtml = (lang) => `<footer class="site-footer"><p>${FOOTER[lang]}</p><p>© ${new Date().getFullYear()} ${lang === 'en' ? 'Shaobo Creative Robotics Company Limited (MBC Robot)' : '少伯創意機器人有限公司（MBC Robot）'}</p></footer>`;
+const SOCIAL = [
+  ['YouTube', 'https://www.youtube.com/@mbc_robot'],
+  ['Instagram', 'https://www.instagram.com/mbc.pro.sensors/'],
+  ['Threads', 'https://www.threads.com/@mbc.pro.sensors'],
+  ['Facebook', 'https://www.facebook.com/mbcrobot.creator/'],
+  ['LINE', LINE_URL],
+];
+const socialHtml = `<p class="sf-social">${SOCIAL.map(([n, u]) => `<a href="${u}" target="_blank" rel="noopener me">${n}</a>`).join(' · ')}</p>`;
+const footerHtml = (lang) => `<footer class="site-footer">${socialHtml}<p>${FOOTER[lang]}</p><p>© ${new Date().getFullYear()} ${lang === 'en' ? 'Shaobo Creative Robotics Company Limited (MBC Robot)' : '少伯創意機器人有限公司（MBC Robot）'}</p></footer>`;
 
 function ctaHtml(lang) {
   const t = UI[lang].cta;
