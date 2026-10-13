@@ -243,6 +243,9 @@ body { background: #050a10; font-family: 'Nunito', 'Segoe UI', Tahoma, sans-seri
 .product-hero .ph-editions span { color: #999; font-size: 0.9rem; }
 .markdown-section .product-hero .ph-editions a { padding: 5px 14px; border-radius: 16px; border: 1px solid color-mix(in srgb, var(--pc) 55%, transparent); color: #eee; text-decoration: none; font-size: 0.9rem; }
 .markdown-section .product-hero .ph-editions a:hover { background: color-mix(in srgb, var(--pc) 20%, transparent); }
+.markdown-section .product-hero .ph-price { margin: 0 0 16px; color: #ccc; font-size: 1rem; }
+.markdown-section .product-hero .ph-price b { color: var(--pc); font-size: 1.5rem; margin-left: 4px; }
+.markdown-section .product-hero .ph-price small { color: #999; }
 .product-hero .ph-cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
 @media (max-width: 767px) {
   .product-hero { padding: 18px 12px; }
@@ -433,3 +436,9 @@ body.landing.theme-light .markdown-section .lp-footer h4 { color: #10212b; }
 body.landing.theme-light .markdown-section .lp-footer a { color: #5b6b78; }
 @media (max-width: 767px) { body.landing.theme-light .cta-dock { background: #fff; border-top-color: #e3e8ee; } body.landing.theme-light .cta-dock .dock-guide { background: #fff; color: #0a8f8a; } }
 body.landing.theme-light .markdown-section .lp-btn.line { color: #fff; }
+
+/* 全站頁尾：公司名稱＋商標聲明 */
+.site-footer { max-width: 800px; margin: 0 auto; padding: 24px 15px 40px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.78rem; line-height: 1.6; color: #8a97a3; }
+.site-footer p { margin: 0 0 6px; }
+body.landing .site-footer { max-width: 1180px; padding: 24px 24px 90px; }
+body.landing.theme-light .site-footer { border-top-color: #e3e8ee; color: #5b6b78; }

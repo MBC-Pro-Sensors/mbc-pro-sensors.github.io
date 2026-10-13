@@ -2,8 +2,8 @@
 <!-- AI 注意：首頁使用 landing 版型（無側欄）。直接插入的 HTML 請勿縮排，否則會被 Markdown 解析器誤認為程式碼區塊。 -->
 <div class="lp-hero">
 <div>
-<p class="lp-kicker">WRO · FLL · LEGO ROBOTICS COMPETITIONS</p>
-<h1>Make your LEGO robot<br><em>steadier and sharper</em></h1>
+<p class="lp-kicker">WRO · ROBOTICS COMPETITIONS · SPIKE™ PRIME / EV3</p>
+<h1>Make your robot<br><em>steadier and sharper</em></h1>
 <p class="lp-lead">MBC-Pro Sensors builds competition-grade sensors for LEGO SPIKE Prime, EV3 and Pybricks: 8/16-way line followers, laser ranging, a 6-port expander, PS4/PS5 remote control and a vision camera. Plug in and read them with the official blocks.</p>
 <div class="lp-btns">
 <a class="lp-btn line" href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">💬 Ask on LINE</a>

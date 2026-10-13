@@ -2,8 +2,8 @@
 <!-- AI 注意：首頁使用 landing 版型（無側欄）。直接插入的 HTML 請勿縮排，否則會被 Markdown 解析器誤認為程式碼區塊。 -->
 <div class="lp-hero">
 <div>
-<p class="lp-kicker">WRO · FLL · 樂高機器人競賽</p>
-<h1>讓樂高機器人<br><em>跑得更穩、看得更準</em></h1>
+<p class="lp-kicker">WRO · 機器人競賽 · SPIKE™ Prime／EV3</p>
+<h1>讓機器人<br><em>跑得更穩、看得更準</em></h1>
 <p class="lp-lead">MBC-Pro Sensors 為 LEGO SPIKE Prime、EV3 與 Pybricks 打造競賽級感應器：8／16 路循線、雷射測距、6 路擴充、PS4/PS5 遙控與視覺鏡頭。插上就能用，官方積木直接讀取。</p>
 <div class="lp-btns">
 <a class="lp-btn line" href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">💬 LINE 立即詢價</a>

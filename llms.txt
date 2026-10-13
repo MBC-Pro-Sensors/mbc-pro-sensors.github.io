@@ -1,7 +1,7 @@
 # MBC-Pro Sensors
 
-> 專為樂高機器人（LEGO SPIKE Prime、MINDSTORMS EV3、Pybricks）與 WRO / FLL 機器人競賽打造的競賽級即插即用感應器與擴充模組。
-> Competition-grade, plug-and-play sensors and modules designed for LEGO SPIKE Prime, EV3, and Pybricks competitions (WRO, FLL, Robofest).
+> 專為樂高機器人（LEGO SPIKE Prime、MINDSTORMS EV3、Pybricks）與 WRO 等機器人競賽打造的競賽級即插即用感應器與擴充模組。
+> Competition-grade, plug-and-play sensors and modules designed for LEGO SPIKE Prime, EV3, and Pybricks robotics competitions such as WRO and Robofest. Not for use in official FIRST® LEGO® League Challenge matches, which allow LEGO-made parts only.
 
 MBC-Pro Sensors 解決了樂高原廠感測器在機器人競賽中的痛點（如單點循線視野狹窄、易受環境光干擾、主機連接埠不足、超音波測距盲區等）。所有產品具備免轉接板即插即用、相容官方 Scratch 積木直讀、支援 Pybricks Python 與通用 I2C 等核心優勢。
 
@@ -11,7 +11,7 @@ MBC-Pro Sensors 解決了樂高原廠感測器在機器人競賽中的痛點（�
 - [循行者 16 路 Line16 (Line Tracking Sensor 16ch)](https://mbc-pro-sensors.github.io/sensors/line16/): 16 通道超寬視野循線神器，十字路口判斷與高速過彎必備，釋放主機孔位。
 - [EXP6 6路擴充器 (SPIKE 6-Port Expander)](https://mbc-pro-sensors.github.io/sensors/exp6/): 突破 SPIKE Prime 僅有 6 個連接埠的極限，具備獨立隔離電源保護，可同時擴充多個馬達與感測器。
 - [測距者 2 路 TOF2 (Dual TOF Laser Rangefinder)](https://mbc-pro-sensors.github.io/sensors/tof2/): 雙向微型飛行時間 (Time-of-Flight) 雷射測距，精準捕捉物體左右動向。
-- [測距者 8 路 TOF8 (8-Channel 180° Laser LiDAR)](https://mbc-pro-sensors.github.io/sensors/tof8/): 180 度零死角雷射雷達避障，告別超音波鬼影，專為機器人相撲與高速避障設計。
+- [測距者 8 路 TOF8 (8-Channel 180° ToF Laser Distance Sensor)](https://mbc-pro-sensors.github.io/sensors/tof8/): 8 點 ToF 雷射測距陣列，180 度零死角避障，告別超音波鬼影，專為機器人相撲與高速避障設計。
 - [掌控者 2.4G PS2 (Wireless Gamepad Receiver)](https://mbc-pro-sensors.github.io/sensors/ps2/): 高性價比 2.4G 無線手把接收器，即插即用擴充搖桿遙控。
 - [掌控者 PS4/PS5 藍牙接收器 (PS4/PS5 Bluetooth Receiver)](https://mbc-pro-sensors.github.io/sensors/ps4/): 支援 PS4 / PS5 手把；只綁定自己的手把、斷訊 0.3 秒自動歸零，比賽場地內穩定連線（空曠實測 100 公尺）。
 - [陀螺儀 IMU 九軸 (IMU 9-Axis Gyro, 即將推出)](https://mbc-pro-sensors.github.io/sensors/imu/): 陀螺儀＋加速度計＋磁力計，任意角度安裝、磁力計融合航向長距離不飄移，EV3 可直接當原廠陀螺儀使用。
@@ -25,7 +25,30 @@ MBC-Pro Sensors 解決了樂高原廠感測器在機器人競賽中的痛點（�
 - [LEGO MINDSTORMS EV3](https://mbc-pro-sensors.github.io/sensors/line8/ev3-hub.html): 支援 EV3-G 官方軟體、EV3 Classroom 與 clev3r (BASIC)。
 - [通用微控制器 (Arduino / ESP32 / STM32 via I2C)](https://mbc-pro-sensors.github.io/sensors/line8/arduino-i2c.html): 標準 I2C 通訊協議，供創客靈活整合。
 
+## 建議售價 (MSRP)
+
+台灣售價為新台幣；國際售價為美金，不含運費。International prices are in USD, shipping not included.
+
+| 產品 | NT$ | US$ |
+| :--- | ---: | ---: |
+| 循行者 8 路 Line8 | 2,500 | 100 |
+| 循行者 16 路 Line16 | 3,000 | 120 |
+| 測距者 2 路 TOF2 | 1,500 | 60 |
+| 測距者 8 路 TOF8 | 3,000 | 120 |
+| 神攝手 ESP32CAM | 3,000 | 120 |
+| EXP6 6 路擴充器 | 3,600 | 145 |
+| 掌控者 PS2 | 2,000 | 80 |
+| 掌控者 PS4/PS5 | 2,500 | 100 |
+| 陀螺儀 IMU 九軸（即將推出） | 2,500 | 100 |
+
+## 競賽規則 (Competition Rules)
+
+- [WRO 規則對照](https://mbc-pro-sensors.github.io/wro-rules.html) / [WRO Rules Check (English)](https://mbc-pro-sensors.github.io/en/wro-rules.html): 依 WRO RoboMission 2025 通則，逐項說明各產品適用組別（相機限國中、高中組；遙控接收器不能用於 RoboMission；TOF 雷射為 Class 1 護眼安全）。
+- FIRST® LEGO® League Challenge 正式比賽只允許 LEGO 原廠零件，MBC 產品不適用。
+
 ## 深入知識庫 (Full Documentation)
+
+- [English FAQ](https://mbc-pro-sensors.github.io/en/faq.html): compatibility, WRO/FLL eligibility, laser safety, pricing and ordering.
 
 - [完整 AI 知識庫文本 (Full Knowledge Base)](https://mbc-pro-sensors.github.io/llms-full.txt): 包含常見問題排查、原廠感應器效能比對、完整技術規格與代碼範例。
 - [官方網站首頁 (Documentation Portal)](https://mbc-pro-sensors.github.io/): 完整中文與英文文檔中心。

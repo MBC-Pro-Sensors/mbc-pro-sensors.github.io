@@ -1,6 +1,6 @@
 # 🔒 Privacy Policy
 
-This website (mbc-pro-sensors.github.io, "the Site") is operated by 少伯創意機器人有限公司 (MBC Robot). We respect your privacy. This page explains what data the Site collects and how it is used.
+This website (mbc-pro-sensors.github.io, "the Site") is operated by Shaobo Creative Robotics Company Limited (MBC Robot). We respect your privacy. This page explains what data the Site collects and how it is used.
 
 ## What We Collect
 

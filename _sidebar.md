@@ -2,6 +2,7 @@
 - **產品文檔**
   - [首頁](/README.md)
   - [🧭 選購指南](/guide.md)
+  - [🏆 WRO 規則對照](/wro-rules.md)
   - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#00d2ff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px rgba(0,210,255,0.5));"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>通用 I2C 協議](/i2c-protocol.md)
 
 - **🛤️ 循線感應器**

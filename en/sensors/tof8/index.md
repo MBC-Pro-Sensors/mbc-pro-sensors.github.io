@@ -5,7 +5,7 @@
 
 ---
 
-> **Say goodbye to ultrasonic ghosts: 180-degree zero blind spots. The LiDAR for sumo battles and high-speed obstacle avoidance.**
+> **Say goodbye to ultrasonic ghosts: 180-degree zero blind spots. An 8-point laser ranging array for sumo battles and high-speed obstacle avoidance.**
 
 ## 🚀 Product Overview
 

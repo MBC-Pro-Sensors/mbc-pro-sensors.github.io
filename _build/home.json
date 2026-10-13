@@ -1,7 +1,7 @@
 {
   "/": {
     "title": "MBC-Pro Sensors — 樂高機器人競賽級感應器 (SPIKE Prime / EV3 / Pybricks 循線、測距、擴充模組)",
-    "description": "MBC-Pro Sensors 為樂高機器人（LEGO SPIKE Prime, EV3, Pybricks）量身打造競賽級即插即用感應器：Line8 8路循線、Line16 16路循線、EXP6 6路擴充器、TOF8 180度雷射避障、PS4/PS5 藍牙手把接收器。完美相容官方積木與 Python，WRO / FLL 競賽首選。",
+    "description": "MBC-Pro Sensors 為樂高機器人（LEGO SPIKE Prime, EV3, Pybricks）量身打造競賽級即插即用感應器：Line8 8路循線、Line16 16路循線、EXP6 6路擴充器、TOF8 180度雷射避障、PS4/PS5 藍牙手把接收器。完美相容官方積木與 Python，WRO 競賽首選。",
     "keywords": "WRO循線感應器, 樂高8路循線, 樂高16路循線, LEGO SPIKE Prime 第三方感測器, SPIKE 循線, SPIKE 3 循線, SPIKE 擴充板, EXP6, LEGO EV3 循跡, Pybricks line sensor, 樂高避障感測器, TOF8 雷射測距, 樂高 PS4 手把, MBC-Pro Sensors, 樂高 PS5 手把, 樂高陀螺儀, Matrix Mini R4 感測器, Arduino 循線感應器 I2C",
     "jsonLd": {
       "@context": "https://schema.org",
@@ -21,6 +21,8 @@
           "@type": "Organization",
           "@id": "https://mbc-pro-sensors.github.io/#organization",
           "name": "MBC-Pro Sensors",
+          "legalName": "Shaobo Creative Robotics Company Limited",
+          "alternateName": ["MBC Robot", "少伯創意機器人有限公司"],
           "url": "https://mbc-pro-sensors.github.io/",
           "logo": "https://mbc-pro-sensors.github.io/images/brand/mbc-logo.png",
           "email": "mbc.robot89@gmail.com"
@@ -57,7 +59,7 @@
               "@type": "ListItem",
               "position": 4,
               "name": "測距者 8 路 (TOF8)",
-              "description": "180度扇形無死角雷射雷達 (LiDAR)，專為樂高相撲機器人與極速避障打造，告別超音波鬼影。",
+              "description": "8 點 ToF 雷射測距陣列，前方 180 度無死角，專為相撲機器人與極速避障打造，告別超音波鬼影。",
               "url": "https://mbc-pro-sensors.github.io/sensors/tof8/",
               "image": "https://mbc-pro-sensors.github.io/images/sensors/tof8/tof8-product.webp"
             },
@@ -105,7 +107,7 @@
   },
   "/en/": {
     "title": "MBC-Pro Sensors — Competition-grade sensors for LEGO SPIKE Prime, EV3 & Pybricks",
-    "description": "Plug-and-play, competition-grade sensors for LEGO robotics: Line8 / Line16 line followers, TOF laser ranging, EXP6 port expander and PS4/PS5 gamepad receiver. Works with official LEGO blocks and Pybricks — built for WRO and FLL.",
+    "description": "Plug-and-play, competition-grade sensors for LEGO robotics: Line8 / Line16 line followers, TOF laser ranging, EXP6 port expander and PS4/PS5 gamepad receiver. Works with official LEGO blocks and Pybricks — built for WRO.",
     "keywords": "LEGO line follower sensor, SPIKE Prime third-party sensor, SPIKE Prime port expander, EV3 line sensor, Pybricks line sensor, WRO line following, LEGO laser distance sensor, LEGO PS4 PS5 controller, LEGO gyro sensor, Matrix Mini R4 sensor, Arduino I2C line sensor",
     "jsonLd": {
       "@context": "https://schema.org",
@@ -154,7 +156,7 @@
             {
               "@type": "ListItem",
               "position": 4,
-              "name": "Ranger 8-Way Laser LiDAR (TOF8)",
+              "name": "Ranger 8-Way ToF Laser Distance Sensor (TOF8)",
               "description": "180° laser ranging array for LEGO sumo and fast obstacle avoidance — no more ultrasonic ghost readings.",
               "url": "https://mbc-pro-sensors.github.io/en/sensors/tof8/",
               "image": "https://mbc-pro-sensors.github.io/images/sensors/tof8/tof8-product.webp"

@@ -2,9 +2,11 @@
 
 ## 1. 品牌概述與核心承諾 (Overview)
 - **品牌名稱**：MBC-Pro Sensors
+- **經營公司**：少伯創意機器人有限公司（Shaobo Creative Robotics Company Limited，對外暱稱 MBC Robot），台灣台中
 - **官方文檔**：https://mbc-pro-sensors.github.io/
 - **適用主機**：LEGO® Education SPIKE™ Prime (SPIKE 3 & Robot Inventor), LEGO® MINDSTORMS® EV3, Pybricks, 及通用 Arduino/MCU (I2C)。
-- **適用領域**：WRO (世界奧林匹亞機器人大賽)、FLL (FIRST LEGO League)、Robofest、Maker 創客競賽、STEM 機器人教育。
+- **適用領域**：WRO (世界奧林匹亞機器人大賽)、Robofest、Maker 創客競賽、STEM 機器人教育。
+- **不適用**：FIRST® LEGO® League Challenge 正式比賽（規則要求機器人只能使用 LEGO 原廠零件）。
 - **四大核心優勢**：
   1. **即插即用**：無需額外轉接板或外掛模組，直接插上 SPIKE 或 EV3 連接埠即可工作。
   2. **官方積木直讀**：完全相容樂高官方 Scratch 拖曳積木，初學學童接上即用；進階競賽選手可直接使用 Python / Pybricks 調用。
@@ -38,7 +40,7 @@
 - **特點**：使用毫米級光速雷射反射計算距離，精度遠高於傳統超音波，不受環境噪音干擾。
 
 ### 2.5 測距者 8 路 (TOF8)
-- **類型**：8 通道 180 度超寬角扇形雷射雷達 (LiDAR)
+- **類型**：8 通道 180 度 ToF 雷射測距陣列（8 顆固定方向的單點 ToF 測距器，不是旋轉掃描式光達）
 - **主要用途**：機器人相撲比賽 (Sumo Robot)、極速避障、全向障礙物追蹤。
 - **痛點解決**：傳統超音波有「超音波鬼影」與角度死角，TOF8 以 180 度無死角陣列掃描，可瞬間判定對手方位的角度與精確距離。
 
@@ -86,9 +88,20 @@
 ### Q4: 如何進行黑白線校準？
 **A**: 感應器上有專用校準按鍵。長按按鈕進入校準模式，將感應器在賽道的白色區域與黑色線條上方來回滑動，再按一下按鍵即完成儲存，關機後校準數據永久保存在感應器內部 EEPROM 中。
 
+### Q5: MBC 產品可以用在 WRO 嗎？
+**A**: 可以。WRO 從 2025 年起開放 RoboMission 使用任何品牌的器材，但有組別限制：相機（神攝手 ESP32CAM）只限國中組與高中組；比賽中禁止遙控，所以掌控者 PS2／PS4 不能用於 RoboMission；雷射需護眼安全證明，測距者使用 Class 1 雷射（IEC 60825-1:2014），證明文件可向我們索取。測距者 8 路是 8 顆固定方向的單點 ToF 測距器，不是旋轉掃描式光達，建議國小、國中組賽前向主辦單位確認歸類。完整對照：https://mbc-pro-sensors.github.io/wro-rules.html
+
+### Q6: 可以用在 FLL 嗎？
+**A**: FIRST® LEGO® League Challenge 正式比賽只允許 LEGO 原廠零件，MBC 產品不適用；平時教學、練習與其他開放規則的賽事可以使用。
+
+### Q7: 售價多少？
+**A**: 建議售價：循行者 8 路 NT$2,500／US$100、循行者 16 路 NT$3,000／US$120、測距者 2 路 NT$1,500／US$60、測距者 8 路 NT$3,000／US$120、神攝手 ESP32CAM NT$3,000／US$120、EXP6 NT$3,600／US$145、掌控者 PS2 NT$2,000／US$80、掌控者 PS4/PS5 NT$2,500／US$100、陀螺儀 IMU（即將推出）NT$2,500／US$100。美金價格不含運費。購買或經銷洽詢：mbc.robot89@gmail.com、LINE @692vcvuk。
+
 ---
 
 ## 5. 官方資源與程式庫連結
+- WRO 規則對照：https://mbc-pro-sensors.github.io/wro-rules.html（English: https://mbc-pro-sensors.github.io/en/wro-rules.html）
+- English FAQ：https://mbc-pro-sensors.github.io/en/faq.html
 - 官方文檔入口：https://mbc-pro-sensors.github.io/
 - Line8 產品與校準說明：https://mbc-pro-sensors.github.io/sensors/line8/
 - Line8 Pybricks 使用指南：https://mbc-pro-sensors.github.io/sensors/line8/spike-pybricks.html

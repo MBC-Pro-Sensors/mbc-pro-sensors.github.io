@@ -1,6 +1,7 @@
 {
   "line8": {
     "color": "#ff4500",
+    "msrp": { "twd": 2500, "usd": 100 },
     "image": "/images/sensors/line8/line8-product-spike.webp",
     "video": "MuG9kp2-8FY",
     "zh": {
@@ -70,6 +71,7 @@
   },
   "line16": {
     "color": "#ff6b35",
+    "msrp": { "twd": 3000, "usd": 120 },
     "image": "/images/sensors/line16/line16-product-spike.webp",
     "video": "MuG9kp2-8FY",
     "zh": {
@@ -139,6 +141,7 @@
   },
   "tof2": {
     "color": "#0ABAB5",
+    "msrp": { "twd": 1500, "usd": 60 },
     "image": "/images/sensors/tof2/tof2-product.webp",
     "zh": {
       "badge": "TOF-02-LSR · 雷射測距",
@@ -207,9 +210,10 @@
   },
   "tof8": {
     "color": "#0ABAB5",
+    "msrp": { "twd": 3000, "usd": 120 },
     "image": "/images/sensors/tof8/tof8-product.webp",
     "zh": {
-      "badge": "TOF-08-LSR · 雷射雷達",
+      "badge": "TOF-08-LSR · ToF 雷射測距陣列",
       "pitch": "8 點雷射涵蓋前方 180°：直接告訴你最近的目標在哪個方向、多遠，相撲與避障不再有超音波鬼影。",
       "stats": [
         [
@@ -241,7 +245,7 @@
       ]
     },
     "en": {
-      "badge": "TOF-08-LSR · LASER LIDAR",
+      "badge": "TOF-08-LSR · ToF LASER RANGING ARRAY",
       "pitch": "8 laser points cover 180° in front: it tells you which direction the nearest target is and how far — no more ultrasonic ghosts in sumo and obstacle avoidance.",
       "stats": [
         [
@@ -275,6 +279,7 @@
   },
   "ps2": {
     "color": "#F2C200",
+    "msrp": { "twd": 2000, "usd": 80 },
     "image": "/images/sensors/ps2/ps2-product.webp",
     "zh": {
       "badge": "CMD-2.4G-RX · 遙控",
@@ -343,6 +348,7 @@
   },
   "ps4": {
     "color": "#F2C200",
+    "msrp": { "twd": 2500, "usd": 100 },
     "image": "/images/sensors/ps4/ps4-product.webp",
     "zh": {
       "badge": "CMD-BT-PRO · PS4 / PS5",
@@ -411,6 +417,7 @@
   },
   "esp32cam": {
     "color": "#00d2ff",
+    "msrp": { "twd": 3000, "usd": 120 },
     "image": "/images/sensors/esp32cam/esp32cam-product.webp",
     "zh": {
       "badge": "CAM-VIS-PRO · 視覺",
@@ -479,6 +486,7 @@
   },
   "exp6": {
     "color": "#00d2ff",
+    "msrp": { "twd": 3600, "usd": 145 },
     "image": "/images/sensors/exp6/exp6-product.webp",
     "zh": {
       "badge": "EXP-06-PRO · 智慧擴充",
@@ -547,6 +555,7 @@
   },
   "imu": {
     "color": "#a371f7",
+    "msrp": { "twd": 2500, "usd": 100 },
     "zh": {
       "badge": "IMU-9AX · 即將推出",
       "pitch": "走直線、轉精準角度的關鍵：任意角度安裝都能算對航向，磁力計融合讓長距離也不飄移。",

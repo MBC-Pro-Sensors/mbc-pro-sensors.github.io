@@ -37,7 +37,7 @@ const git = (args) => execSync(`git ${args}`, { cwd: ROOT, encoding: 'utf8' });
 const tracked = git('-c core.quotepath=off ls-files --cached --others --exclude-standard').split('\n').filter(Boolean);
 
 // ---------------------------------------------------------------- URL mapping
-const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol|guide|privacy)\.md$/.test(f) || /^(en\/)?(sensors|articles)\//.test(f));
+const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol|guide|privacy|wro-rules|faq)\.md$/.test(f) || /^(en\/)?(sensors|articles)\//.test(f));
 const pages = tracked.filter(isPage);
 
 function urlFor(mdPath) {
@@ -207,6 +207,13 @@ const UI = {
     nav: [['Products', '/en/#products'], ['Why MBC', '/en/#why'], ['Videos', '/en/#videos'], ['Buying Guide', '/en/guide.html'], ['Contact', '/en/contact.html']], cta: { h: 'Interested in this sensor?', p: 'Ask us for pricing, bulk / school orders or distributor info. Our engineers reply within 24 hours on weekdays.', line: 'Chat on LINE', mail: 'Email us', more: 'All contact options', contact: '/en/contact.html' } },
 };
 
+// Site-wide footer: company name + trademark disclaimer (LEGO Fair Play guidelines)
+const FOOTER = {
+  zh: `LEGO®、SPIKE™ 與 MINDSTORMS® 是 LEGO Group 的商標，LEGO Group 並未贊助、授權或認可本網站及本公司產品。MBC-Pro Sensors 為少伯創意機器人有限公司（MBC Robot）之獨立產品，其他商標為各自所有人所有。`,
+  en: `LEGO®, SPIKE™ and MINDSTORMS® are trademarks of the LEGO Group, which does not sponsor, authorize or endorse this site or our products. MBC-Pro Sensors is an independent product line of Shaobo Creative Robotics Company Limited (MBC Robot). Other trademarks belong to their respective owners.`,
+};
+const footerHtml = (lang) => `<footer class="site-footer"><p>${FOOTER[lang]}</p><p>© ${new Date().getFullYear()} ${lang === 'en' ? 'Shaobo Creative Robotics Company Limited (MBC Robot)' : '少伯創意機器人有限公司（MBC Robot）'}</p></footer>`;
+
 function ctaHtml(lang) {
   const t = UI[lang].cta;
   return `<div class="buy-cta"><h3>${t.h}</h3><p>${t.p}</p><div class="buy-cta-btns">` +
@@ -232,8 +239,45 @@ function productHero(key, lang, file, name) {
     `<p class="ph-pitch">${t.pitch}</p>` +
     `<div class="ph-stats">${t.stats.map(([v, l]) => `<div class="ph-stat"><b>${v}</b><span>${l}</span></div>`).join('')}</div>` +
     `<div class="ph-editions"><span>${u.choose}</span>${editions}</div>` +
+    (p.msrp ? `<p class="ph-price">${lang === 'en' ? `MSRP <b>US$${p.msrp.usd}</b> <small>(shipping not included)</small>` : `建議售價 <b>NT$${p.msrp.twd.toLocaleString('en-US')}</b>`}</p>` : '') +
     `<div class="ph-cta"><a class="buy-btn line" href="${LINE_URL}" target="_blank" rel="noopener">💬 ${u.line}</a><a class="buy-btn more" href="${u.guideHref}">🧭 ${u.guide}</a></div>` +
     `</div>`;
+}
+
+// schema.org Product + Offer for product index pages (TWD on zh pages, USD on en pages)
+function productLd(key, lang, url, name, description) {
+  const p = PRODUCT_DATA[key];
+  if (!p || !p.msrp) return null;
+  const en = lang === 'en';
+  return {
+    '@type': 'Product',
+    '@id': SITE + url + '#product',
+    name,
+    description,
+    sku: p[lang].badge.split(' · ')[0],
+    image: SITE + (p.image || DEFAULT_OG),
+    brand: { '@type': 'Brand', name: 'MBC-Pro Sensors' },
+    manufacturer: { '@id': SITE + '/#organization' },
+    offers: {
+      '@type': 'Offer',
+      url: SITE + url,
+      price: String(en ? p.msrp.usd : p.msrp.twd),
+      priceCurrency: en ? 'USD' : 'TWD',
+      availability: 'https://schema.org/' + (p.zh.badge.includes('即將推出') ? 'PreOrder' : 'InStock'),
+      seller: { '@id': SITE + '/#organization' },
+    },
+  };
+}
+
+// schema.org FAQPage from a faq.md page: each <h3> is a question, the text up to the next heading is its answer
+function faqLd(html) {
+  return {
+    '@type': 'FAQPage',
+    mainEntity: html.split(/<h3[^>]*>/).slice(1).map((part) => {
+      const [q, rest] = part.split('</h3>');
+      return { '@type': 'Question', name: stripTags(q), acceptedAnswer: { '@type': 'Answer', text: stripTags(rest.split(/<h[23][^>]*>/)[0]) } };
+    }),
+  };
 }
 
 function ctaDock(lang) {
@@ -294,7 +338,7 @@ ${layout === 'landing' ? `<body class="ready landing theme-light">
 ${topNav(lang, langHref)}
 <main class="landing-main"><article class="markdown-section" id="main">
 ${body}
-</article></main>` : `<body class="ready sticky">
+</article>${footerHtml(lang)}</main>` : `<body class="ready sticky">
 <main>
 <button class="sidebar-toggle" aria-label="Menu"><div class="sidebar-toggle-button"><span></span><span></span><span></span></div></button>
 <aside class="sidebar">
@@ -304,7 +348,7 @@ ${body}
 </aside>
 <section class="content"><article class="markdown-section" id="main">
 ${body}
-</article></section>
+</article>${footerHtml(lang)}</section>
 </main>
 <a id="lang-toggle-btn" href="${langHref}" hreflang="${lang === 'en' ? 'zh-TW' : 'en'}"><span>🌐</span> <span>${UI[lang].lang}</span></a>`}
 ${ctaDock(lang)}
@@ -410,6 +454,8 @@ for (const file of pages) {
         '@type': 'BreadcrumbList',
         itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.name, item: SITE + c.url })),
       },
+      ...(isProductIndex ? [productLd(product, lang, url, h1Text, description)].filter(Boolean) : []),
+      ...(/(^|\/)faq\.md$/.test(file) ? [faqLd(html)] : []),
     ],
   };
 
