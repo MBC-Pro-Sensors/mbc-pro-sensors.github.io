@@ -37,7 +37,7 @@ const git = (args) => execSync(`git ${args}`, { cwd: ROOT, encoding: 'utf8' });
 const tracked = git('-c core.quotepath=off ls-files --cached --others --exclude-standard').split('\n').filter(Boolean);
 
 // ---------------------------------------------------------------- URL mapping
-const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol|guide|privacy|wro-rules|faq)\.md$/.test(f) || /^(en\/)?(sensors|articles)\//.test(f));
+const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol|guide|privacy|wro-rules|faq|where-to-buy|distributors)\.md$/.test(f) || /^(en\/)?(sensors|articles)\//.test(f));
 const pages = tracked.filter(isPage);
 
 function urlFor(mdPath) {
@@ -202,9 +202,9 @@ const HASH_REDIRECT = `(function(){function go(){var h=location.hash;if(h.indexO
 const LINE_URL = 'https://line.me/R/ti/p/@692vcvuk';
 const UI = {
   zh: { search: '🔍 搜尋文件', lang: 'EN', home: '首頁', line: 'LINE 詢價', guide: '選購指南', guideHref: '/guide.html', choose: '選擇版本：',
-    nav: [['產品', '/#products'], ['為什麼選 MBC', '/#why'], ['教學文章', '/articles/'], ['選購指南', '/guide.html'], ['聯絡我們', '/contact.html']], cta: { h: '想購買或詢價？', p: '個人購買、學校 / 社團大量採購、代理洽談都歡迎，工程師工作日 24 小時內回覆。', line: 'LINE 立即詢價', mail: 'Email 詢價', more: '更多聯絡方式', contact: '/contact.html' } },
+    nav: [['產品', '/#products'], ['為什麼選 MBC', '/#why'], ['教學文章', '/articles/'], ['選購指南', '/guide.html'], ['購買管道', '/where-to-buy.html'], ['聯絡我們', '/contact.html']], cta: { h: '想購買或詢價？', p: '個人購買、學校 / 社團大量採購、代理洽談都歡迎，工程師工作日 24 小時內回覆。', line: 'LINE 立即詢價', mail: 'Email 詢價', more: '更多聯絡方式', contact: '/contact.html' } },
   en: { search: '🔍 Search docs', lang: '中文', home: 'Home', line: 'Ask on LINE', guide: 'Buying Guide', guideHref: '/en/guide.html', choose: 'Editions:',
-    nav: [['Products', '/en/#products'], ['Why MBC', '/en/#why'], ['Videos', '/en/#videos'], ['Buying Guide', '/en/guide.html'], ['Contact', '/en/contact.html']], cta: { h: 'Interested in this sensor?', p: 'Ask us for pricing, bulk / school orders or distributor info. Our engineers reply within 24 hours on weekdays.', line: 'Chat on LINE', mail: 'Email us', more: 'All contact options', contact: '/en/contact.html' } },
+    nav: [['Products', '/en/#products'], ['Why MBC', '/en/#why'], ['Videos', '/en/#videos'], ['Buying Guide', '/en/guide.html'], ['Where to Buy', '/en/where-to-buy.html'], ['Contact', '/en/contact.html']], cta: { h: 'Interested in this sensor?', p: 'Ask us for pricing, bulk / school orders or distributor info. Our engineers reply within 24 hours on weekdays.', line: 'Chat on LINE', mail: 'Email us', more: 'All contact options', contact: '/en/contact.html' } },
 };
 
 // Site-wide footer: company name + trademark disclaimer (LEGO Fair Play guidelines)

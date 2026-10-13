@@ -65,5 +65,7 @@
   - [SPIKE 孔位不夠怎麼辦](/articles/spike-prime-more-ports.md)
 
 - **📞 聯絡我們**
+  - [🛒 購買管道](/where-to-buy.md)
+  - [🤝 經銷合作](/distributors.md)
   - [💬 聯絡 & 支援](/contact.md)
   - [🔒 隱私權政策](/privacy.md)
