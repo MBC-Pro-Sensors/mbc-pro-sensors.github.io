@@ -2,6 +2,7 @@
   "line8": {
     "color": "#ff4500",
     "msrp": { "twd": 2500, "usd": 100 },
+    "wro": {"zh":"WRO RoboMission：國小、國中、高中組皆可使用","en":"WRO RoboMission: allowed in all age groups"},
     "image": "/images/sensors/line8/line8-product-spike.webp",
     "video": "MuG9kp2-8FY",
     "zh": {
@@ -72,6 +73,7 @@
   "line16": {
     "color": "#ff6b35",
     "msrp": { "twd": 3000, "usd": 120 },
+    "wro": {"zh":"WRO RoboMission：國小、國中、高中組皆可使用","en":"WRO RoboMission: allowed in all age groups"},
     "image": "/images/sensors/line16/line16-product-spike.webp",
     "video": "MuG9kp2-8FY",
     "zh": {
@@ -142,6 +144,7 @@
   "tof2": {
     "color": "#0ABAB5",
     "msrp": { "twd": 1500, "usd": 60 },
+    "wro": {"zh":"WRO RoboMission：國小、國中、高中組皆可使用（Class 1 護眼雷射）","en":"WRO RoboMission: allowed in all age groups (Class 1 eye-safe laser)"},
     "image": "/images/sensors/tof2/tof2-product.webp",
     "zh": {
       "badge": "TOF-02-LSR · 雷射測距",
@@ -211,6 +214,7 @@
   "tof8": {
     "color": "#0ABAB5",
     "msrp": { "twd": 3000, "usd": 120 },
+    "wro": {"zh":"WRO RoboMission：高中組可用；國小、國中組請先向主辦單位確認（Class 1 護眼雷射）","en":"WRO RoboMission: allowed for Senior; Elementary and Junior teams should confirm with their organizer (Class 1 eye-safe laser)"},
     "image": "/images/sensors/tof8/tof8-product.webp",
     "zh": {
       "badge": "TOF-08-LSR · ToF 雷射測距陣列",
@@ -280,6 +284,7 @@
   "ps2": {
     "color": "#F2C200",
     "msrp": { "twd": 2000, "usd": 80 },
+    "wro": {"zh":"WRO RoboMission 比賽中禁止遙控，不能使用；適合允許遙控的賽事、教學與展示","en":"Not for WRO RoboMission runs (no remote control); for remote-control events, classes and demos"},
     "image": "/images/sensors/ps2/ps2-product.webp",
     "zh": {
       "badge": "CMD-2.4G-RX · 遙控",
@@ -349,6 +354,7 @@
   "ps4": {
     "color": "#F2C200",
     "msrp": { "twd": 2500, "usd": 100 },
+    "wro": {"zh":"WRO RoboMission 比賽中禁止遙控，不能使用；適合允許遙控的賽事、教學與展示","en":"Not for WRO RoboMission runs (no remote control); for remote-control events, classes and demos"},
     "image": "/images/sensors/ps4/ps4-product.webp",
     "zh": {
       "badge": "CMD-BT-PRO · PS4 / PS5",
@@ -418,6 +424,7 @@
   "esp32cam": {
     "color": "#00d2ff",
     "msrp": { "twd": 3000, "usd": 120 },
+    "wro": {"zh":"WRO RoboMission：國中、高中組可用（相機不開放國小組）","en":"WRO RoboMission: allowed for Junior and Senior (cameras are not allowed in Elementary)"},
     "image": "/images/sensors/esp32cam/esp32cam-product.webp",
     "zh": {
       "badge": "CAM-VIS-PRO · 視覺",
@@ -487,6 +494,7 @@
   "exp6": {
     "color": "#00d2ff",
     "msrp": { "twd": 3600, "usd": 145 },
+    "wro": {"zh":"WRO RoboMission：各組皆可使用，擴充的馬達計入各組馬達數量上限","en":"WRO RoboMission: allowed in all age groups; motors on the expander count toward the motor limit"},
     "image": "/images/sensors/exp6/exp6-product.webp",
     "zh": {
       "badge": "EXP-06-PRO · 智慧擴充",
@@ -556,6 +564,7 @@
   "imu": {
     "color": "#a371f7",
     "msrp": { "twd": 2500, "usd": 100 },
+    "wro": {"zh":"WRO RoboMission：國小、國中、高中組皆可使用","en":"WRO RoboMission: allowed in all age groups"},
     "zh": {
       "badge": "IMU-9AX · 即將推出",
       "pitch": "走直線、轉精準角度的關鍵：任意角度安裝都能算對航向，磁力計融合讓長距離也不飄移。",

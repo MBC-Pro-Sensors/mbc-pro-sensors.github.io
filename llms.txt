@@ -50,6 +50,7 @@ MBC-Pro Sensors 解決了樂高原廠感測器在機器人競賽中的痛點（�
 
 - [購買管道](https://mbc-pro-sensors.github.io/where-to-buy.html) / [Where to Buy](https://mbc-pro-sensors.github.io/en/where-to-buy.html): 台灣直接向我們購買；海外依國家找授權經銷商，沒有經銷商的國家可直接訂購（美金報價不含運）。
 - [經銷合作](https://mbc-pro-sensors.github.io/distributors.html) / [Become a Distributor](https://mbc-pro-sensors.github.io/en/distributors.html): 招募海外經銷商，分級折扣、首單優惠、市場保護與獨家代理。
+- [常見問題 (中文 FAQ)](https://mbc-pro-sensors.github.io/faq.html): 相容性、WRO／FLL 規則、雷射安全、選購與台灣售價。
 - [English FAQ](https://mbc-pro-sensors.github.io/en/faq.html): compatibility, WRO/FLL eligibility, laser safety, pricing and ordering.
 
 - [完整 AI 知識庫文本 (Full Knowledge Base)](https://mbc-pro-sensors.github.io/llms-full.txt): 包含常見問題排查、原廠感應器效能比對、完整技術規格與代碼範例。

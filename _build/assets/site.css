@@ -166,7 +166,7 @@ body { background: #050a10; font-family: 'Nunito', 'Segoe UI', Tahoma, sans-seri
   transition: transform 0.2s;
 }
 .markdown-section .buy-btn:hover { transform: translateY(-2px); }
-.markdown-section .buy-btn.line { background: #04943f; color: #fff; }
+.markdown-section .buy-btn.line { background: #037a34; color: #fff; }
 .markdown-section .buy-btn.mail { background: var(--theme-color); color: #000; }
 .markdown-section .buy-btn.more { border: 1px solid rgba(255,255,255,0.3); color: #ddd; }
 @media (max-width: 767px) {
@@ -259,7 +259,7 @@ body { background: #050a10; font-family: 'Nunito', 'Segoe UI', Tahoma, sans-seri
 .cta-dock { position: fixed; right: 30px; bottom: 92px; z-index: 9998; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
 .cta-dock a { text-decoration: none; font-weight: bold; border-radius: 30px; padding: 10px 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); transition: transform 0.2s; }
 .cta-dock a:hover { transform: scale(1.05); }
-.cta-dock .dock-line { background: #04943f; color: #fff; }
+.cta-dock .dock-line { background: #037a34; color: #fff; }
 .cta-dock .dock-guide { display: none; }
 body.landing .cta-dock { bottom: 30px; }
 @media (max-width: 767px) {
@@ -283,7 +283,7 @@ body.landing { overflow-x: hidden; }
 .topnav .tn-links { display: flex; align-items: center; gap: 22px; }
 .topnav .tn-links a { color: #ccc; text-decoration: none; font-weight: 700; font-size: 0.95rem; }
 .topnav .tn-links a:hover { color: var(--accent-color); }
-.topnav .tn-line { background: #04943f; color: #fff !important; padding: 8px 16px; border-radius: 20px; }
+.topnav .tn-line { background: #037a34; color: #fff !important; padding: 8px 16px; border-radius: 20px; }
 .topnav .tn-burger { display: none; background: none; border: 0; color: #ddd; font-size: 1.6rem; cursor: pointer; }
 @media (max-width: 900px) {
   .topnav { padding: 10px 16px; }
@@ -308,7 +308,7 @@ body.landing { overflow-x: hidden; }
 .lp-btns { display: flex; flex-wrap: wrap; gap: 12px; }
 .markdown-section .lp-btn { display: inline-block; padding: 13px 24px; border-radius: 30px; font-weight: 700; text-decoration: none; font-size: 1.05rem; transition: transform 0.2s; }
 .markdown-section .lp-btn:hover { transform: translateY(-2px); }
-.markdown-section .lp-btn.line { background: #04943f; color: #fff; }
+.markdown-section .lp-btn.line { background: #037a34; color: #fff; }
 .markdown-section .lp-btn.ghost { border: 1px solid rgba(255,255,255,0.35); color: #eee; }
 .lp-hero-visual { position: relative; min-height: 320px; }
 .lp-hero-visual::before { content: ""; position: absolute; inset: 10% 5%; background: radial-gradient(circle, rgba(10,186,181,0.35), transparent 65%); filter: blur(30px); }
@@ -442,3 +442,7 @@ body.landing.theme-light .markdown-section .lp-btn.line { color: #fff; }
 .site-footer p { margin: 0 0 6px; }
 body.landing .site-footer { max-width: 1180px; padding: 24px 24px 90px; }
 body.landing.theme-light .site-footer { border-top-color: #e3e8ee; color: #5b6b78; }
+
+/* 產品頁：WRO 適用組別＋規則對照／購買管道連結 */
+.markdown-section .product-hero .ph-wro { margin: 0 0 18px; font-size: 0.95rem; line-height: 1.7; color: #ccc; }
+.markdown-section .product-hero .ph-wro a { color: var(--pc); }

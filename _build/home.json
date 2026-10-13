@@ -106,8 +106,8 @@
     }
   },
   "/en/": {
-    "title": "MBC-Pro Sensors — Competition-grade sensors for LEGO SPIKE Prime, EV3 & Pybricks",
-    "description": "Plug-and-play, competition-grade sensors for LEGO robotics: Line8 / Line16 line followers, TOF laser ranging, EXP6 port expander and PS4/PS5 gamepad receiver. Works with official LEGO blocks and Pybricks — built for WRO.",
+    "title": "MBC-Pro Sensors | Competition Sensors for SPIKE Prime & EV3",
+    "description": "Plug-and-play competition sensors for SPIKE Prime, EV3 and Pybricks: 8/16-channel line followers, laser ranging, a 6-port expander and PS4/PS5 receivers.",
     "keywords": "LEGO line follower sensor, SPIKE Prime third-party sensor, SPIKE Prime port expander, EV3 line sensor, Pybricks line sensor, WRO line following, LEGO laser distance sensor, LEGO PS4 PS5 controller, LEGO gyro sensor, Matrix Mini R4 sensor, Arduino I2C line sensor",
     "jsonLd": {
       "@context": "https://schema.org",

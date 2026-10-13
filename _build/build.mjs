@@ -146,7 +146,10 @@ function describe(html) {
   const withoutCallouts = body.replace(/<blockquote class="callout[\s\S]*?<\/blockquote>/g, '');
   const chunks = withoutCallouts.match(/<(p|blockquote)[^>]*>[\s\S]*?<\/\1>/g) || [];
   for (const c of chunks) {
+    // skip navigation-only paragraphs such as "← Back to 8-Way Line Follower Home"
+    if (/^<p[^>]*>\s*<a [^>]*>[\s\S]*?<\/a>\s*<\/p>$/.test(c)) continue;
     const t = stripEmoji(stripTags(c));
+    if (/^(←|Back to|返回)/.test(t)) continue;
     if (t.length >= 20) return t.length > 155 ? t.slice(0, 152) + '…' : t;
   }
   return '';
@@ -240,6 +243,7 @@ function productHero(key, lang, file, name) {
     `<div class="ph-stats">${t.stats.map(([v, l]) => `<div class="ph-stat"><b>${v}</b><span>${l}</span></div>`).join('')}</div>` +
     `<div class="ph-editions"><span>${u.choose}</span>${editions}</div>` +
     (p.msrp ? `<p class="ph-price">${lang === 'en' ? `MSRP <b>US$${p.msrp.usd}</b> <small>(shipping not included)</small>` : `建議售價 <b>NT$${p.msrp.twd.toLocaleString('en-US')}</b>`}</p>` : '') +
+    (p.wro ? `<p class="ph-wro">🏆 ${p.wro[lang]}<br><a href="${lang === 'en' ? '/en/wro-rules.html' : '/wro-rules.html'}">${lang === 'en' ? 'WRO rules check' : 'WRO 規則對照'}</a> · <a href="${lang === 'en' ? '/en/where-to-buy.html' : '/where-to-buy.html'}">${lang === 'en' ? 'Where to buy' : '購買管道'}</a></p>` : '') +
     `<div class="ph-cta"><a class="buy-btn line" href="${LINE_URL}" target="_blank" rel="noopener">💬 ${u.line}</a><a class="buy-btn more" href="${u.guideHref}">🧭 ${u.guide}</a></div>` +
     `</div>`;
 }
@@ -295,7 +299,7 @@ function topNav(lang, langHref) {
     `<a class="tn-line" href="${LINE_URL}" target="_blank" rel="noopener">💬 ${u.line}</a></nav></header>`;
 }
 
-function page({ lang, url, title, description, ogImage, alternates, jsonLd, extraHead = '', sidebar, body, langHref, layout = 'docs' }) {
+function page({ lang, url, title, description, ogImage, alternates, jsonLd, extraHead = '', sidebar, body, langHref, layout = 'docs', noindex = false }) {
   const htmlLang = lang === 'en' ? 'en' : 'zh-TW';
   const abs = SITE + url;
   const alt = alternates.map((a) => `<link rel="alternate" hreflang="${a.hreflang}" href="${SITE + a.url}">`).join('\n  ');
@@ -307,7 +311,7 @@ function page({ lang, url, title, description, ogImage, alternates, jsonLd, extr
   <title>${escAttr(title)}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <meta name="description" content="${escAttr(description)}">
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="robots" content="${noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}">
   <link rel="canonical" href="${abs}">
   ${alt}
   <link rel="icon" href="/favicon.ico" sizes="48x48">
@@ -418,6 +422,11 @@ for (const file of pages) {
   let title = home ? home.title : `${h1Text}${productName && !isProductIndex ? ' – ' + productName : ''} | MBC-Pro Sensors`;
   const pitch = isProductIndex && PRODUCT_DATA[product] && PRODUCT_DATA[product][lang].pitch;
   let description = home ? home.description : pitch || describe(html) || homeHead[lang === 'en' ? '/en/' : '/'].description;
+  // product sub-pages (setup guides) share opening text across products: lead with the product name so each is unique
+  if (product && !isProductIndex && productName && !description.includes(productName)) {
+    description = `${productName}${lang === 'en' ? ': ' : '：'}${description}`;
+    if (description.length > 155) description = description.slice(0, 152) + '…';
+  }
 
   // breadcrumbs
   const crumbs = [{ name: UI[lang].home, url: lang === 'en' ? '/en/' : '/' }];
@@ -433,6 +442,8 @@ for (const file of pages) {
     html += ctaHtml(lang);
   }
   const layout = src.includes('<!-- layout: landing -->') ? 'landing' : 'docs';
+  // edition chooser pages (SPIKE / EV3 hub) are navigation only: keep them out of the index and the sitemap
+  const noindex = /(spike|ev3)-hub\.md$/.test(file);
 
   const jsonLd = home ? home.jsonLd : {
     '@context': 'https://schema.org',
@@ -462,14 +473,14 @@ for (const file of pages) {
   const out = page({
     lang, url, title, description, ogImage: ogImageFor(product), alternates, jsonLd,
     extraHead: home && home.keywords ? `<meta name="keywords" content="${escAttr(home.keywords)}">` : '',
-    sidebar: renderSidebar(lang, url), body: html, langHref, layout,
+    sidebar: renderSidebar(lang, url), body: html, langHref, layout, noindex,
   });
   const outFile = path.join(OUT, url.endsWith('/') ? url + 'index.html' : url);
   fs.mkdirSync(path.dirname(outFile), { recursive: true });
   fs.writeFileSync(outFile, out);
 
   searchIndex[lang].push({ t: h1Text + (productName && !isProductIndex ? ` – ${productName}` : ''), u: url, x: stripEmoji(stripTags(html.replace(/<h1[\s\S]*?<\/h1>/, ''))).slice(0, 4000) });
-  sitemap.push({ url, lastmod: lastmod(file), alternates, priority: home ? '1.0' : isProductIndex ? '0.9' : '0.7' });
+  if (!noindex) sitemap.push({ url, lastmod: lastmod(file), alternates, priority: home ? '1.0' : isProductIndex ? '0.9' : '0.7' });
 }
 
 fs.writeFileSync(path.join(OUT, 'search-index-zh.json'), JSON.stringify(searchIndex.zh));
