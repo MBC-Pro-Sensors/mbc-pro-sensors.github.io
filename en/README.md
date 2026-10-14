@@ -101,7 +101,7 @@
 <p class="lp-sub">Serving robotics teams and schools across Taiwan since 2020. Each result below has a public video from the coach showing MBC products on the robot.</p>
 
 <div class="lp-grid">
-<div class="lp-card"><div class="lp-ico">🥈</div><h3>WRO 2026 Taiwan Northern Regional<br>Senior, 2nd place</h3><p>Coach LauXiao's team, with an MBC line sensor on the robot.</p><p><a href="https://www.youtube.com/watch?v=9btTbyE_giI" target="_blank" rel="noopener">Watch the run →</a></p></div>
+<div class="lp-card"><div class="lp-ico">🥈</div><h3>WRO 2026 Taiwan Northern Regional<br>Senior, 2nd place</h3><p>Coach LauXiao's team, with the MBC Pathfinder 8-Way on the robot.</p><p><a href="https://www.youtube.com/watch?v=9btTbyE_giI" target="_blank" rel="noopener">Watch the run →</a></p></div>
 <div class="lp-card"><div class="lp-ico">🏆</div><h3>WRO 2025 Taiwan Online Competition<br>Elementary, 1st place</h3><p>Coach Laumo's team, using the MBC Pathfinder 8-Way (MATRIX R4 edition).</p><p><a href="https://www.youtube.com/watch?v=Qv9WA4wzMXc" target="_blank" rel="noopener">Watch the run →</a></p></div>
 <div class="lp-card"><div class="lp-ico">🌏</div><h3>WRO 2025 International Final, Singapore<br>Elementary</h3><p>Coach Laumo's team at the world final, using the MBC Pathfinder.</p><p><a href="https://www.youtube.com/watch?v=ofr9Lymlc8I" target="_blank" rel="noopener">Watch the run →</a></p></div>
 </div>
