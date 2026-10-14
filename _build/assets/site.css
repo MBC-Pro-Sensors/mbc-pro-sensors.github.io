@@ -337,7 +337,7 @@ body.landing { overflow-x: hidden; }
 .markdown-section .lp-prod h3 { margin: 4px 0 6px; color: #fff; font-size: 1.15rem; }
 .markdown-section .lp-prod p { margin: 0 0 12px; color: #9aa; font-size: 0.9rem; line-height: 1.6; flex: 1; }
 .lp-prod .lp-more { color: var(--pc, #0ABAB5); font-weight: 700; font-size: 0.9rem; }
-.lp-soon { display: inline-block; font-size: 0.75rem; background: #a371f7; color: #fff; padding: 1px 8px; border-radius: 10px; margin-left: 6px; vertical-align: middle; }
+.lp-soon { display: inline-block; font-size: 0.75rem; background: #7c4dcc; color: #fff; padding: 1px 8px; border-radius: 10px; margin-left: 6px; vertical-align: middle; }
 
 /* Comparison */
 .landing-main .lp-compare { max-width: 860px; margin: 0 auto; display: table; width: 100%; }
@@ -367,7 +367,7 @@ body.landing { overflow-x: hidden; }
 .markdown-section .lp-final p { color: #ccc; margin: 0 0 22px; }
 .lp-final .lp-btns { justify-content: center; }
 .lp-footer { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; padding: 30px 0 10px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.9rem; }
-.markdown-section .lp-footer h4 { color: #ddd; margin: 0 0 8px; font-size: 0.95rem; }
+.markdown-section .lp-footer h3, .markdown-section .lp-footer h4 { color: #ddd; margin: 0 0 8px; font-size: 0.95rem; }
 .markdown-section .lp-footer a { display: block; color: #8a9aa6; text-decoration: none; line-height: 1.9; }
 .markdown-section .lp-footer a:hover { color: var(--accent-color); }
 
@@ -388,7 +388,7 @@ body.landing.theme-light { background: #f6f8fa; color: #1f2933; }
 body.landing.theme-light .topnav { background: rgba(255,255,255,0.95); border-bottom: 1px solid #e3e8ee; }
 body.landing.theme-light .topnav .tn-links a { color: #33414e; }
 body.landing.theme-light .topnav .tn-links a:hover { color: #0a8f8a; }
-body.landing.theme-light .topnav .tn-logo { color: #0a8f8a; }
+body.landing.theme-light .topnav .tn-logo { color: #0a7c78; }
 body.landing.theme-light .topnav .tn-burger { color: #33414e; }
 @media (max-width: 900px) { body.landing.theme-light .topnav .tn-links { background: #fff; border-bottom: 1px solid #e3e8ee; } }
 body.landing.theme-light .markdown-section { color: #33414e; }
@@ -408,7 +408,7 @@ body.landing.theme-light .lp-platforms { background: #fff; color: #5b6b78; borde
 body.landing.theme-light .lp-card { background: #fff; border-color: #e3e8ee; box-shadow: 0 4px 14px rgba(16,33,43,0.06); }
 body.landing.theme-light .markdown-section .lp-card h3 { color: #10212b; }
 body.landing.theme-light .markdown-section .lp-card p { color: #5b6b78; }
-body.landing.theme-light .markdown-section .lp-card .lp-fix { color: #0a8f8a; }
+body.landing.theme-light .markdown-section .lp-card .lp-fix { color: #0a7c78; }
 /* 產品卡維持深色，讓黑色電路板發光 */
 body.landing.theme-light .markdown-section a.lp-prod { background: #0a111a; border-color: transparent; box-shadow: 0 6px 18px rgba(16,33,43,0.18); }
 body.landing.theme-light .markdown-section .lp-prod h3 { color: #fff; }
@@ -419,8 +419,8 @@ body.landing.theme-light .markdown-section table th { background: #e6f6f5; color
 body.landing.theme-light .markdown-section td { color: #33414e; border-color: #e3e8ee; }
 body.landing.theme-light .markdown-section tr:nth-child(2n) { background-color: #f6f8fa; }
 body.landing.theme-light .landing-main .lp-compare td:first-child { color: #10212b; }
-body.landing.theme-light .landing-main .lp-compare .yes { color: #0a8f8a; }
-body.landing.theme-light .landing-main .lp-compare .no { color: #8a97a3; }
+body.landing.theme-light .landing-main .lp-compare .yes { color: #0a7c78; }
+body.landing.theme-light .landing-main .lp-compare .no { color: #5f6b76; }
 
 /* FAQ / 影片 / 結尾 */
 body.landing.theme-light .lp-faq details { background: #fff; border-color: #e3e8ee; }
@@ -432,9 +432,9 @@ body.landing.theme-light .markdown-section .lp-final h2 { color: #fff; }
 body.landing.theme-light .markdown-section .lp-final p { color: #cfd8de; }
 body.landing.theme-light .lp-final .lp-btn.ghost { color: #fff; }
 body.landing.theme-light .lp-footer { border-color: #e3e8ee; }
-body.landing.theme-light .markdown-section .lp-footer h4 { color: #10212b; }
+body.landing.theme-light .markdown-section .lp-footer h3, body.landing.theme-light .markdown-section .lp-footer h4 { color: #10212b; }
 body.landing.theme-light .markdown-section .lp-footer a { color: #5b6b78; }
-@media (max-width: 767px) { body.landing.theme-light .cta-dock { background: #fff; border-top-color: #e3e8ee; } body.landing.theme-light .cta-dock .dock-guide { background: #fff; color: #0a8f8a; } }
+@media (max-width: 767px) { body.landing.theme-light .cta-dock { background: #fff; border-top-color: #e3e8ee; } body.landing.theme-light .cta-dock .dock-guide { background: #fff; color: #0a7c78; } }
 body.landing.theme-light .markdown-section .lp-btn.line { color: #fff; }
 
 /* 全站頁尾：公司名稱＋商標聲明 */
@@ -449,3 +449,9 @@ body.landing.theme-light .site-footer { border-top-color: #e3e8ee; color: #5b6b7
 .site-footer .sf-social { font-size: 0.85rem; margin-bottom: 10px; }
 .site-footer .sf-social a { color: var(--theme-color); text-decoration: none; font-weight: 700; }
 body.landing.theme-light .site-footer .sf-social a { color: #0a8f8a; }
+
+/* 首頁信任提示列與產品卡建議售價 */
+.lp-proof { text-align: center; margin: 18px auto 0; padding: 12px 16px; border-radius: 12px; background: rgba(10,186,181,0.08); font-size: 0.98rem; line-height: 1.6; }
+body.landing.theme-light .lp-proof { background: #e6f6f5; color: #10212b; }
+.lp-prod .lp-price { font-weight: 700; font-size: 0.95rem; margin: 2px 0 6px; color: #fff; }
+body.landing.theme-light .markdown-section .lp-proof a { color: #08635f; }

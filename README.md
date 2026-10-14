@@ -18,6 +18,8 @@
 
 <div class="lp-platforms"><span>LEGO SPIKE Prime</span><span>Robot Inventor</span><span>MINDSTORMS EV3</span><span>Pybricks</span><span>Arduino / ESP32</span><span>MATRIX Mini R4</span><span>MakeBlock</span></div>
 
+<p class="lp-proof">🏆 <b>AERC 亞洲智慧型機器人大賽</b>官方競賽辦法點名可使用 MBC 循行者-LEGO 版；WRO、GRG、MRC、JBC、Robofest 也都能用。<a href="/competitions.md">看比賽對照 →</a></p>
+
 <h2 id="why">比賽中最常遇到的問題，我們都解決了</h2>
 <p class="lp-sub">每一款產品，都是從真實比賽現場的痛點開始設計。</p>
 
@@ -52,22 +54,22 @@
 <p class="lp-sub">每款產品都有 SPIKE、EV3 等不同版本，不確定選哪個？看 <a href="/guide.md">選購指南</a>。</p>
 
 <div class="lp-grid">
-<a class="lp-prod" href="/sensors/line8/index.md" style="--pc:#ff4500;"><img src="/images/sensors/line8/line8-product-spike.webp" alt="循行者 8 路"><span class="lp-cat">循線</span><h3>循行者 8 路 (Line8)</h3><p>8 通道抗干擾循線，直接輸出 PID 用的高解析位置，一鍵 5 秒校準。</p><span class="lp-more">了解更多 →</span></a>
-<a class="lp-prod" href="/sensors/line16/index.md" style="--pc:#ff6b35;"><img src="/images/sensors/line16/line16-product-spike.webp" alt="循行者 16 路"><span class="lp-cat">循線</span><h3>循行者 16 路 (Line16)</h3><p>16 通道超寬視野，高速急彎與十字路口一次判斷，只佔 1 個孔。</p><span class="lp-more">了解更多 →</span></a>
-<a class="lp-prod" href="/sensors/tof8/index.md" style="--pc:#0ABAB5;"><img src="/images/sensors/tof8/tof8-product.webp" alt="測距者 8 路"><span class="lp-cat">雷射測距</span><h3>測距者 8 路 (TOF8)</h3><p>8 點雷射涵蓋前方 180°，直接回報最近目標的方向與距離。</p><span class="lp-more">了解更多 →</span></a>
-<a class="lp-prod" href="/sensors/tof2/index.md" style="--pc:#0ABAB5;"><img src="/images/sensors/tof2/tof2-product.webp" alt="測距者 2 路"><span class="lp-cat">雷射測距</span><h3>測距者 2 路 (TOF2)</h3><p>左右雙點雷射測距，比超音波更快、更小，判斷物體離開方向。</p><span class="lp-more">了解更多 →</span></a>
-<a class="lp-prod" href="/sensors/exp6/index.md" style="--pc:#00d2ff;"><img src="/images/sensors/exp6/exp6-product.webp" alt="SPIKE 6 路擴充器"><span class="lp-cat">擴充模組</span><h3>SPIKE 6 路擴充器 (EXP6)</h3><p>一個孔接出 6 路馬達與感應器，獨立供電，板載馬達 PID。</p><span class="lp-more">了解更多 →</span></a>
-<a class="lp-prod" href="/sensors/ps4/index.md" style="--pc:#F2C200;"><img src="/images/sensors/ps4/ps4-product.webp" alt="掌控者 PS4/PS5"><span class="lp-cat">遙控</span><h3>掌控者 PS4/PS5</h3><p>PS4、PS5 手把都能用，只綁定你的手把，斷訊自動停車。</p><span class="lp-more">了解更多 →</span></a>
-<a class="lp-prod" href="/sensors/ps2/index.md" style="--pc:#F2C200;"><img src="/images/sensors/ps2/ps2-product.webp" alt="掌控者 PS2"><span class="lp-cat">遙控</span><h3>掌控者 2.4G (PS2)</h3><p>PS2 無線手把，雙搖桿加 16 鍵，教學與專題最划算的選擇。</p><span class="lp-more">了解更多 →</span></a>
-<a class="lp-prod" href="/sensors/esp32cam/index.md" style="--pc:#00d2ff;"><img src="/images/sensors/esp32cam/esp32cam-product.webp" alt="神攝手 ESP32CAM"><span class="lp-cat">機器人視覺</span><h3>神攝手 ESP32CAM</h3><p>機身螢幕直接設定顏色，色塊位置、大小、動態一次輸出。</p><span class="lp-more">了解更多 →</span></a>
-<a class="lp-prod" href="/sensors/imu/index.md" style="--pc:#a371f7;"><div class="lp-noimg">🧭</div><span class="lp-cat">姿態感測</span><h3>陀螺儀 IMU 九軸 <span class="lp-soon">即將推出</span></h3><p>任意角度安裝都能算對航向，磁力計融合長距離不飄移。</p><span class="lp-more">了解更多 →</span></a>
+<a class="lp-prod" href="/sensors/line8/index.md" style="--pc:#ff4500;"><img src="/images/sensors/line8/line8-product-spike.webp" alt="循行者 8 路"><span class="lp-cat">循線</span><h3>循行者 8 路 (Line8)</h3><p>8 通道抗干擾循線，直接輸出 PID 用的高解析位置，一鍵 5 秒校準。</p><p class="lp-price">建議售價 NT$2,500</p><span class="lp-more">了解更多 →</span></a>
+<a class="lp-prod" href="/sensors/line16/index.md" style="--pc:#ff6b35;"><img src="/images/sensors/line16/line16-product-spike.webp" alt="循行者 16 路"><span class="lp-cat">循線</span><h3>循行者 16 路 (Line16)</h3><p>16 通道超寬視野，高速急彎與十字路口一次判斷，只佔 1 個孔。</p><p class="lp-price">建議售價 NT$3,000</p><span class="lp-more">了解更多 →</span></a>
+<a class="lp-prod" href="/sensors/tof8/index.md" style="--pc:#0ABAB5;"><img src="/images/sensors/tof8/tof8-product.webp" alt="測距者 8 路"><span class="lp-cat">雷射測距</span><h3>測距者 8 路 (TOF8)</h3><p>8 點雷射涵蓋前方 180°，直接回報最近目標的方向與距離。</p><p class="lp-price">建議售價 NT$3,000</p><span class="lp-more">了解更多 →</span></a>
+<a class="lp-prod" href="/sensors/tof2/index.md" style="--pc:#0ABAB5;"><img src="/images/sensors/tof2/tof2-product.webp" alt="測距者 2 路"><span class="lp-cat">雷射測距</span><h3>測距者 2 路 (TOF2)</h3><p>左右雙點雷射測距，比超音波更快、更小，判斷物體離開方向。</p><p class="lp-price">建議售價 NT$1,500</p><span class="lp-more">了解更多 →</span></a>
+<a class="lp-prod" href="/sensors/exp6/index.md" style="--pc:#00d2ff;"><img src="/images/sensors/exp6/exp6-product.webp" alt="SPIKE 6 路擴充器"><span class="lp-cat">擴充模組</span><h3>SPIKE 6 路擴充器 (EXP6)</h3><p>一個孔接出 6 路馬達與感應器，獨立供電，板載馬達 PID。</p><p class="lp-price">建議售價 NT$3,600</p><span class="lp-more">了解更多 →</span></a>
+<a class="lp-prod" href="/sensors/ps4/index.md" style="--pc:#F2C200;"><img src="/images/sensors/ps4/ps4-product.webp" alt="掌控者 PS4/PS5"><span class="lp-cat">遙控</span><h3>掌控者 PS4/PS5</h3><p>PS4、PS5 手把都能用，只綁定你的手把，斷訊自動停車。</p><p class="lp-price">建議售價 NT$2,500</p><span class="lp-more">了解更多 →</span></a>
+<a class="lp-prod" href="/sensors/ps2/index.md" style="--pc:#F2C200;"><img src="/images/sensors/ps2/ps2-product.webp" alt="掌控者 PS2"><span class="lp-cat">遙控</span><h3>掌控者 2.4G (PS2)</h3><p>PS2 無線手把，雙搖桿加 16 鍵，教學與專題最划算的選擇。</p><p class="lp-price">建議售價 NT$2,000</p><span class="lp-more">了解更多 →</span></a>
+<a class="lp-prod" href="/sensors/esp32cam/index.md" style="--pc:#00d2ff;"><img src="/images/sensors/esp32cam/esp32cam-product.webp" alt="神攝手 ESP32CAM"><span class="lp-cat">機器人視覺</span><h3>神攝手 ESP32CAM</h3><p>機身螢幕直接設定顏色，色塊位置、大小、動態一次輸出。</p><p class="lp-price">建議售價 NT$3,000</p><span class="lp-more">了解更多 →</span></a>
+<a class="lp-prod" href="/sensors/imu/index.md" style="--pc:#a371f7;"><div class="lp-noimg">🧭</div><span class="lp-cat">姿態感測</span><h3>陀螺儀 IMU 九軸 <span class="lp-soon">即將推出</span></h3><p>任意角度安裝都能算對航向，磁力計融合長距離不飄移。</p><p class="lp-price">預計售價 NT$2,500</p><span class="lp-more">了解更多 →</span></a>
 </div>
 
 <h2>為什麼不用原廠顏色感應器循線？</h2>
 <p class="lp-sub">同樣佔用 1 個孔，看到的範圍完全不同。</p>
 
 <table class="lp-compare">
-<thead><tr><th></th><th>原廠顏色感應器</th><th>循行者 8 路</th><th>循行者 16 路</th></tr></thead>
+<thead><tr><th>比較項目</th><th>原廠顏色感應器</th><th>循行者 8 路</th><th>循行者 16 路</th></tr></thead>
 <tbody>
 <tr><td>偵測點數</td><td class="no">1</td><td class="yes">8</td><td class="yes">16</td></tr>
 <tr><td>線的位置</td><td class="no">要自己寫程式推算</td><td class="yes">直接輸出 −100 ~ +100</td><td class="yes">直接輸出 −100 ~ +100</td></tr>
@@ -83,7 +85,7 @@
 <div class="lp-card"><div class="lp-ico">🔌</div><h3>插上就能用</h3><p>不需要轉接板，像接原廠感應器一樣直接插上 SPIKE／EV3。</p></div>
 <div class="lp-card"><div class="lp-ico">🧱</div><h3>官方積木直接讀</h3><p>初學者照常拖積木；進階選手用 Pybricks Python 解鎖完整功能。</p></div>
 <div class="lp-card"><div class="lp-ico">🧠</div><h3>運算都在感應器裡</h3><p>濾波、校準、位置計算都在感應器內完成，學生接上就能專心練策略。</p></div>
-<div class="lp-card"><div class="lp-ico">🏆</div><h3>比賽現場驗證</h3><p>每一款產品都在真實比賽環境中反覆測試，關鍵時刻穩定不出錯。</p></div>
+<div class="lp-card"><div class="lp-ico">🏆</div><h3>比賽規則點名</h3><p>AERC 亞洲智慧型機器人大賽的官方辦法直接點名可用循行者，WRO 等開放規則的比賽也都能上場。</p></div>
 </div>
 
 <h2 id="videos">實戰影片</h2>
@@ -125,7 +127,7 @@
 </div>
 
 <div class="lp-footer">
-<div><h4>產品</h4><a href="/sensors/line8/index.md">循行者 8 路</a><a href="/sensors/line16/index.md">循行者 16 路</a><a href="/sensors/tof8/index.md">測距者 8 路</a><a href="/sensors/exp6/index.md">SPIKE 6 路擴充器</a><a href="/sensors/ps4/index.md">掌控者 PS4/PS5</a></div>
-<div><h4>技術文件</h4><a href="/sensors/line8/spike-pybricks.md">Line8 Pybricks 教學</a><a href="/sensors/line16/spike-pybricks.md">Line16 Pybricks 教學</a><a href="/sensors/exp6/spike-pybricks.md">EXP6 Pybricks 教學</a><a href="/i2c-protocol.md">通用 I2C 協議</a><a href="/articles/index.md">教學文章</a></div>
-<div><h4>購買</h4><a href="/guide.md">選購指南</a><a href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">LINE：@692vcvuk</a><a href="mailto:contactmbcrobot@gmail.com">contactmbcrobot@gmail.com</a><a href="/contact.md">聯絡我們</a><a href="/privacy.md">隱私權政策</a></div>
+<div><h3>產品</h3><a href="/sensors/line8/index.md">循行者 8 路</a><a href="/sensors/line16/index.md">循行者 16 路</a><a href="/sensors/tof8/index.md">測距者 8 路</a><a href="/sensors/exp6/index.md">SPIKE 6 路擴充器</a><a href="/sensors/ps4/index.md">掌控者 PS4/PS5</a></div>
+<div><h3>技術文件</h3><a href="/sensors/line8/spike-pybricks.md">Line8 Pybricks 教學</a><a href="/sensors/line16/spike-pybricks.md">Line16 Pybricks 教學</a><a href="/sensors/exp6/spike-pybricks.md">EXP6 Pybricks 教學</a><a href="/i2c-protocol.md">通用 I2C 協議</a><a href="/articles/index.md">教學文章</a></div>
+<div><h3>購買</h3><a href="/guide.md">選購指南</a><a href="/competitions.md">比賽對照</a><a href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">LINE：@692vcvuk</a><a href="mailto:contactmbcrobot@gmail.com">contactmbcrobot@gmail.com</a><a href="/contact.md">聯絡我們</a><a href="/privacy.md">隱私權政策</a></div>
 </div>

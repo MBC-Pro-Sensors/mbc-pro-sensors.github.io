@@ -203,11 +203,16 @@ function renderSidebar(lang, currentUrl) {
 const HASH_REDIRECT = `(function(){function go(){var h=location.hash;if(h.indexOf('#/')!==0)return;var p=h.slice(2),f='',q=p.search(/[?#]/);if(q>-1){var m=p.slice(q).match(/id=([^&]+)/);f=m?'#'+m[1]:'';p=p.slice(0,q);}p=p.replace(/\\.md$/,'');var u;if(p===''||p==='README')u='/';else if(p==='en'||p==='en/'||p==='en/README')u='/en/';else if(p.slice(-1)==='/')u='/'+p;else if(p==='index'||/\\/index$/.test(p))u='/'+p.slice(0,-5);else u='/'+p+'.html';location.replace(u+f);}go();addEventListener('hashchange',go);})();`;
 
 const LINE_URL = 'https://line.me/R/ti/p/@692vcvuk';
+// Overseas buyers rarely use LINE: English pages ask for a quote by email instead
+const QUOTE_MAIL = 'mailto:contactmbcrobot@gmail.com?subject=MBC-Pro%20Sensors%20quote%20request';
+const quoteLink = (lang, cls, label) => lang === 'en'
+  ? `<a class="${cls}" href="${QUOTE_MAIL}">✉️ ${label}</a>`
+  : `<a class="${cls}" href="${LINE_URL}" target="_blank" rel="noopener">💬 ${label}</a>`;
 const UI = {
   zh: { search: '🔍 搜尋文件', lang: 'EN', home: '首頁', line: 'LINE 詢價', guide: '選購指南', guideHref: '/guide.html', choose: '選擇版本：',
-    nav: [['產品', '/#products'], ['為什麼選 MBC', '/#why'], ['教學文章', '/articles/'], ['選購指南', '/guide.html'], ['購買管道', '/where-to-buy.html'], ['聯絡我們', '/contact.html']], cta: { h: '想購買或詢價？', p: '個人購買、學校 / 社團大量採購、代理洽談都歡迎，工程師工作日 24 小時內回覆。', line: 'LINE 立即詢價', mail: 'Email 詢價', more: '更多聯絡方式', contact: '/contact.html' } },
-  en: { search: '🔍 Search docs', lang: '中文', home: 'Home', line: 'Ask on LINE', guide: 'Buying Guide', guideHref: '/en/guide.html', choose: 'Editions:',
-    nav: [['Products', '/en/#products'], ['Why MBC', '/en/#why'], ['Videos', '/en/#videos'], ['Buying Guide', '/en/guide.html'], ['Where to Buy', '/en/where-to-buy.html'], ['Contact', '/en/contact.html']], cta: { h: 'Interested in this sensor?', p: 'Ask us for pricing, bulk / school orders or distributor info. Our engineers reply within 24 hours on weekdays.', line: 'Chat on LINE', mail: 'Email us', more: 'All contact options', contact: '/en/contact.html' } },
+    nav: [['產品', '/#products'], ['比賽對照', '/competitions.html'], ['教學文章', '/articles/'], ['選購指南', '/guide.html'], ['購買管道', '/where-to-buy.html'], ['聯絡我們', '/contact.html']], cta: { h: '想購買或詢價？', p: '個人購買、學校 / 社團大量採購、代理洽談都歡迎，工程師工作日 24 小時內回覆。', line: 'LINE 立即詢價', mail: 'Email 詢價', more: '更多聯絡方式', contact: '/contact.html' } },
+  en: { search: '🔍 Search docs', lang: '中文', home: 'Home', line: 'Email for a quote', guide: 'Buying Guide', guideHref: '/en/guide.html', choose: 'Editions:',
+    nav: [['Products', '/en/#products'], ['Competitions', '/en/competitions.html'], ['Videos', '/en/#videos'], ['Buying Guide', '/en/guide.html'], ['Where to Buy', '/en/where-to-buy.html'], ['Contact', '/en/contact.html']], cta: { h: 'Interested in this sensor?', p: 'Ask us for pricing, bulk / school orders or distributor info. Our engineers reply within 24 hours on weekdays.', line: 'Chat on LINE', mail: 'Email us', more: 'All contact options', contact: '/en/contact.html' } },
 };
 
 // Site-wide footer: company name + trademark disclaimer (LEGO Fair Play guidelines)
@@ -252,7 +257,7 @@ function productHero(key, lang, file, name) {
     `<div class="ph-editions"><span>${u.choose}</span>${editions}</div>` +
     (p.msrp ? `<p class="ph-price">${lang === 'en' ? (p.msrp.usd ? `MSRP <b>US$${p.msrp.usd}</b> <small>(shipping not included)</small>` : `<b>Available in Taiwan only</b> <small>(not sold outside Taiwan)</small>`) : `建議售價 <b>NT$${p.msrp.twd.toLocaleString('en-US')}</b>`}</p>` : '') +
     (p.wro ? `<p class="ph-wro">🏆 ${p.wro[lang]}<br><a href="${lang === 'en' ? '/en/wro-rules.html' : '/wro-rules.html'}">${lang === 'en' ? 'WRO rules check' : 'WRO 規則對照'}</a> · <a href="${lang === 'en' ? '/en/competitions.html' : '/competitions.html'}">${lang === 'en' ? 'Other competitions' : '其他比賽'}</a> ·<a href="${lang === 'en' ? '/en/where-to-buy.html' : '/where-to-buy.html'}">${lang === 'en' ? 'Where to buy' : '購買管道'}</a></p>` : '') +
-    `<div class="ph-cta"><a class="buy-btn line" href="${LINE_URL}" target="_blank" rel="noopener">💬 ${u.line}</a><a class="buy-btn more" href="${u.guideHref}">🧭 ${u.guide}</a></div>` +
+    `<div class="ph-cta">${quoteLink(lang, 'buy-btn line', u.line)}<a class="buy-btn more" href="${u.guideHref}">🧭 ${u.guide}</a></div>` +
     `</div>`;
 }
 
@@ -295,7 +300,7 @@ function faqLd(html) {
 
 function ctaDock(lang) {
   const u = UI[lang];
-  return `<div class="cta-dock"><a class="dock-line" href="${LINE_URL}" target="_blank" rel="noopener">💬 ${u.line}</a><a class="dock-guide" href="${u.guideHref}">🧭 ${u.guide}</a></div>`;
+  return `<div class="cta-dock">${quoteLink(lang, 'dock-line', u.line)}<a class="dock-guide" href="${u.guideHref}">🧭 ${u.guide}</a></div>`;
 }
 
 function topNav(lang, langHref) {
@@ -305,7 +310,7 @@ function topNav(lang, langHref) {
     `<button class="tn-burger" aria-label="Menu">☰</button>` +
     `<nav class="tn-links">${u.nav.map(([l, h]) => `<a href="${h}">${l}</a>`).join('')}` +
     `<a class="tn-lang" href="${langHref}" hreflang="${lang === 'en' ? 'zh-TW' : 'en'}">🌐 ${u.lang}</a>` +
-    `<a class="tn-line" href="${LINE_URL}" target="_blank" rel="noopener">💬 ${u.line}</a></nav></header>`;
+    `${quoteLink(lang, 'tn-line', u.line)}</nav></header>`;
 }
 
 function page({ lang, url, title, description, ogImage, alternates, jsonLd, extraHead = '', sidebar, body, langHref, layout = 'docs', noindex = false }) {

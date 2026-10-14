@@ -1,6 +1,6 @@
 {
   "/": {
-    "title": "MBC-Pro Sensors — 樂高機器人競賽級感應器 (SPIKE Prime / EV3 / Pybricks 循線、測距、擴充模組)",
+    "title": "MBC-Pro Sensors — 機器人競賽級感應器 (SPIKE Prime / EV3 / Pybricks 循線、測距、擴充模組)",
     "description": "MBC-Pro Sensors 為樂高機器人（LEGO SPIKE Prime, EV3, Pybricks）量身打造競賽級即插即用感應器：Line8 8路循線、Line16 16路循線、EXP6 6路擴充器、TOF8 180度雷射避障、PS4/PS5 藍牙手把接收器。完美相容官方積木與 Python，WRO 競賽首選。",
     "keywords": "WRO循線感應器, 樂高8路循線, 樂高16路循線, LEGO SPIKE Prime 第三方感測器, SPIKE 循線, SPIKE 3 循線, SPIKE 擴充板, EXP6, LEGO EV3 循跡, Pybricks line sensor, 樂高避障感測器, TOF8 雷射測距, 樂高 PS4 手把, MBC-Pro Sensors, 樂高 PS5 手把, 樂高陀螺儀, Matrix Mini R4 感測器, Arduino 循線感應器 I2C",
     "jsonLd": {
