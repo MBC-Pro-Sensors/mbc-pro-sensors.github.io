@@ -97,7 +97,16 @@
 <div><div class="lp-video"><iframe src="https://www.youtube.com/embed/T9bcndBNQvQ" title="legolaumo 教練實戰教學" allowfullscreen></iframe></div><p class="lp-vcap">🏆 <a href="https://www.youtube.com/@legolaumo" target="_blank" rel="noopener">legolaumo 教練</a> 實戰教學</p></div>
 </div>
 
-<!-- 社會證明（比賽成績、使用學校／隊伍、推薦語）：素材提供後在這裡加入 -->
+<h2 id="results">選手實戰成績</h2>
+<p class="lp-sub">2020 年起，服務台灣各地的機器人隊伍與學校。以下成績都有教練公開影片，標明機器人使用 MBC 產品。</p>
+
+<div class="lp-grid">
+<div class="lp-card"><div class="lp-ico">🥈</div><h3>WRO 2026 台灣北區賽<br>高中組 第二名</h3><p>LauXiao 教練隊伍，機器人搭載 MBC 循線感應器。</p><p><a href="https://www.youtube.com/watch?v=9btTbyE_giI" target="_blank" rel="noopener">看比賽影片 →</a></p></div>
+<div class="lp-card"><div class="lp-ico">🏆</div><h3>WRO 2025 線上賽<br>國小組 冠軍</h3><p>Laumo 教練隊伍，使用 MBC 循行者第二代八路（MATRIX R4 版）。</p><p><a href="https://www.youtube.com/watch?v=Qv9WA4wzMXc" target="_blank" rel="noopener">看比賽影片 →</a></p></div>
+<div class="lp-card"><div class="lp-ico">🌏</div><h3>WRO 2025 新加坡世界賽<br>國小組</h3><p>Laumo 教練隊伍前進世界賽，使用 MBC 循行者。</p><p><a href="https://www.youtube.com/watch?v=ofr9Lymlc8I" target="_blank" rel="noopener">看比賽影片 →</a></p></div>
+</div>
+
+<p class="lp-sub" style="margin-top:20px">選手也曾在 AERC 亞洲智慧型機器人大賽、JBC、RoboRAVE 等比賽獲獎。</p>
 
 <h2>3 步驟輕鬆購買</h2>
 
