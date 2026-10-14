@@ -86,4 +86,4 @@ FIRST® LEGO® League Challenge 正式比賽只允許 LEGO 原廠零件，所以
 
 ### 怎麼購買？有經銷合作嗎？
 
-加 [LINE @692vcvuk](https://line.me/R/ti/p/@692vcvuk) 或寄信到 [mbc.robot89@gmail.com](mailto:mbc.robot89@gmail.com)，告訴我們主機型號、產品與數量，工程師工作日 24 小時內回覆。學校、社團大量採購與海外經銷合作都歡迎，請看[購買管道](/where-to-buy.md)與[經銷合作](/distributors.md)。
+加 [LINE @692vcvuk](https://line.me/R/ti/p/@692vcvuk) 或寄信到 [contactmbcrobot@gmail.com](mailto:contactmbcrobot@gmail.com)，告訴我們主機型號、產品與數量，工程師工作日 24 小時內回覆。學校、社團大量採購與海外經銷合作都歡迎，請看[購買管道](/where-to-buy.md)與[經銷合作](/distributors.md)。

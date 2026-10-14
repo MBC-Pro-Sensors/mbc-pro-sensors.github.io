@@ -33,6 +33,6 @@ Google 如何使用這些資料，請參考 [Google 如何運用來自採用 Goo
 對本政策有任何疑問，請聯絡：
 
 - LINE：[@692vcvuk](https://line.me/R/ti/p/@692vcvuk)
-- Email：[mbc.robot89@gmail.com](mailto:mbc.robot89@gmail.com)
+- Email：[contactmbcrobot@gmail.com](mailto:contactmbcrobot@gmail.com)
 
 最後更新：2026 年 10 月 7 日

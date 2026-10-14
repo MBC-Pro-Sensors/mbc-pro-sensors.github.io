@@ -95,7 +95,7 @@
 **A**: FIRST® LEGO® League Challenge 正式比賽只允許 LEGO 原廠零件，MBC 產品不適用；平時教學、練習與其他開放規則的賽事可以使用。
 
 ### Q7: 售價多少？
-**A**: 建議售價：循行者 8 路 NT$2,500／US$100、循行者 16 路 NT$3,000／US$120、測距者 2 路 NT$1,500／US$60、測距者 8 路 NT$3,000／US$120、神攝手 ESP32CAM NT$3,000／US$120、EXP6 NT$3,600／US$145、掌控者 PS2 NT$2,000／US$80、掌控者 PS4/PS5 NT$2,500／US$100、陀螺儀 IMU（即將推出）NT$2,500／US$100。美金價格不含運費。購買或經銷洽詢：mbc.robot89@gmail.com、LINE @692vcvuk。
+**A**: 建議售價：循行者 8 路 NT$2,500／US$100、循行者 16 路 NT$3,000／US$120、測距者 2 路 NT$1,500／US$60、測距者 8 路 NT$3,000／US$120、神攝手 ESP32CAM NT$3,000／US$120、EXP6 NT$3,600／US$145、掌控者 PS2 NT$2,000／US$80、掌控者 PS4/PS5 NT$2,500／US$100、陀螺儀 IMU（即將推出）NT$2,500／US$100。美金價格不含運費。購買或經銷洽詢：contactmbcrobot@gmail.com、LINE @692vcvuk。
 
 ---
 

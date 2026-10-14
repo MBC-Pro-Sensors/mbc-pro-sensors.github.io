@@ -39,7 +39,7 @@ We are looking for distributors who serve robotics teams, schools and training c
 
 ## How to Apply
 
-Email [mbc.robot89@gmail.com](mailto:mbc.robot89@gmail.com) with:
+Email [contactmbcrobot@gmail.com](mailto:contactmbcrobot@gmail.com) with:
 
 1. Company name, country and website
 2. The product lines you currently carry

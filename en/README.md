@@ -112,7 +112,7 @@
 <details><summary>Do they work with the official SPIKE Prime blocks?</summary><p>Yes. Beginners can read values with the official blocks; advanced users can read the full data at high speed with Pybricks (MicroPython).</p></details>
 <details><summary>SPIKE Prime is out of ports — what can I do?</summary><p>Use the SPIKE 6-Way Expander (EXP6). It has its own isolated power and connects 6 motors or sensors through a single port.</p></details>
 <details><summary>Should I buy the SPIKE or the EV3 edition?</summary><p>Choose by your controller. Editions have different connectors and protocols and are not interchangeable. See the <a href="/en/guide.md">Buying Guide</a>, or tell us your controller on LINE and we will confirm.</p></details>
-<details><summary>How do I order? Are there school discounts?</summary><p>Ask for a quote on LINE (@692vcvuk) or by email (mbc.robot89@gmail.com). School, club bulk orders and education programs are welcome.</p></details>
+<details><summary>How do I order? Are there school discounts?</summary><p>Ask for a quote on LINE (@692vcvuk) or by email (contactmbcrobot@gmail.com). School, club bulk orders and education programs are welcome.</p></details>
 </div>
 
 <div class="lp-final">
@@ -127,5 +127,5 @@
 <div class="lp-footer">
 <div><h4>Products</h4><a href="/en/sensors/line8/index.md">Pathfinder 8-Way</a><a href="/en/sensors/line16/index.md">Pathfinder 16-Way</a><a href="/en/sensors/tof8/index.md">Ranger 8-Way</a><a href="/en/sensors/exp6/index.md">SPIKE 6-Way Expander</a><a href="/en/sensors/ps4/index.md">Controller PS4/PS5</a></div>
 <div><h4>Developer Docs</h4><a href="/en/sensors/line8/spike-pybricks.md">Line8 Pybricks guide</a><a href="/en/sensors/line16/spike-pybricks.md">Line16 Pybricks guide</a><a href="/en/sensors/exp6/spike-pybricks.md">EXP6 Pybricks guide</a><a href="/en/i2c-protocol.md">Universal I2C protocol</a></div>
-<div><h4>Buy</h4><a href="/en/guide.md">Buying Guide</a><a href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">LINE: @692vcvuk</a><a href="mailto:mbc.robot89@gmail.com">mbc.robot89@gmail.com</a><a href="/en/contact.md">Contact</a><a href="/en/privacy.md">Privacy Policy</a></div>
+<div><h4>Buy</h4><a href="/en/guide.md">Buying Guide</a><a href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">LINE: @692vcvuk</a><a href="mailto:contactmbcrobot@gmail.com">contactmbcrobot@gmail.com</a><a href="/en/contact.md">Contact</a><a href="/en/privacy.md">Privacy Policy</a></div>
 </div>

@@ -39,7 +39,7 @@
 
 ## 如何申請
 
-寄信到 [mbc.robot89@gmail.com](mailto:mbc.robot89@gmail.com)，附上：
+寄信到 [contactmbcrobot@gmail.com](mailto:contactmbcrobot@gmail.com)，附上：
 
 1. 公司名稱、國家、網站
 2. 目前代理的產品線

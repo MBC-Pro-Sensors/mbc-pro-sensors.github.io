@@ -257,7 +257,7 @@
     <div class="channel-info">
       <h3>Technical Support Email</h3>
       <p>Best for: Detailed problem reports with screenshots or videos attached, purchase inquiries, and partnership proposals. We promise to reply within 24 business hours.</p>
-      <a href="mailto:mbc.robot89@gmail.com" style="text-decoration:none;"><code>mbc.robot89@gmail.com</code></a>
+      <a href="mailto:contactmbcrobot@gmail.com" style="text-decoration:none;"><code>contactmbcrobot@gmail.com</code></a>
     </div>
   </div>
   <div class="channel-card line">

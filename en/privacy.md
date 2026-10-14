@@ -33,6 +33,6 @@ When you contact us via our LINE official account or email, we use what you prov
 Questions about this policy:
 
 - LINE: [@692vcvuk](https://line.me/R/ti/p/@692vcvuk)
-- Email: [mbc.robot89@gmail.com](mailto:mbc.robot89@gmail.com)
+- Email: [contactmbcrobot@gmail.com](mailto:contactmbcrobot@gmail.com)
 
 Last updated: October 7, 2026

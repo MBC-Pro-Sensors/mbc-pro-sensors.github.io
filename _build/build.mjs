@@ -229,7 +229,7 @@ function ctaHtml(lang) {
   const t = UI[lang].cta;
   return `<div class="buy-cta"><h3>${t.h}</h3><p>${t.p}</p><div class="buy-cta-btns">` +
     `<a class="buy-btn line" href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">💬 ${t.line}</a>` +
-    `<a class="buy-btn mail" href="mailto:mbc.robot89@gmail.com">✉️ ${t.mail}</a>` +
+    `<a class="buy-btn mail" href="mailto:contactmbcrobot@gmail.com">✉️ ${t.mail}</a>` +
     `<a class="buy-btn more" href="${t.contact}">${t.more} →</a></div></div>`;
 }
 

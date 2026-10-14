@@ -112,7 +112,7 @@
 <details><summary>支援 SPIKE Prime 官方積木嗎？</summary><p>支援。初學者可以直接用官方積木讀取數值；進階使用者可以用 Pybricks（MicroPython）高速讀取完整資料。</p></details>
 <details><summary>SPIKE Prime 孔位不夠接多個馬達和感應器怎麼辦？</summary><p>可以使用 SPIKE 6 路擴充器（EXP6）。EXP6 有獨立隔離電源，一個孔就能外接 6 個馬達或感應器。</p></details>
 <details><summary>我該買 SPIKE 版還是 EV3 版？</summary><p>依你的主機選擇。各版本接頭與通訊方式不同、不能互換。請看 <a href="/guide.md">選購指南</a>，或 LINE 告訴我們你的主機型號，我們幫你確認。</p></details>
-<details><summary>怎麼購買？學校採購有優惠嗎？</summary><p>請透過 LINE（@692vcvuk）或 Email（mbc.robot89@gmail.com）詢價。學校、社團大量採購與教育機構方案歡迎直接洽詢。</p></details>
+<details><summary>怎麼購買？學校採購有優惠嗎？</summary><p>請透過 LINE（@692vcvuk）或 Email（contactmbcrobot@gmail.com）詢價。學校、社團大量採購與教育機構方案歡迎直接洽詢。</p></details>
 </div>
 
 <div class="lp-final">
@@ -127,5 +127,5 @@
 <div class="lp-footer">
 <div><h4>產品</h4><a href="/sensors/line8/index.md">循行者 8 路</a><a href="/sensors/line16/index.md">循行者 16 路</a><a href="/sensors/tof8/index.md">測距者 8 路</a><a href="/sensors/exp6/index.md">SPIKE 6 路擴充器</a><a href="/sensors/ps4/index.md">掌控者 PS4/PS5</a></div>
 <div><h4>技術文件</h4><a href="/sensors/line8/spike-pybricks.md">Line8 Pybricks 教學</a><a href="/sensors/line16/spike-pybricks.md">Line16 Pybricks 教學</a><a href="/sensors/exp6/spike-pybricks.md">EXP6 Pybricks 教學</a><a href="/i2c-protocol.md">通用 I2C 協議</a><a href="/articles/index.md">教學文章</a></div>
-<div><h4>購買</h4><a href="/guide.md">選購指南</a><a href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">LINE：@692vcvuk</a><a href="mailto:mbc.robot89@gmail.com">mbc.robot89@gmail.com</a><a href="/contact.md">聯絡我們</a><a href="/privacy.md">隱私權政策</a></div>
+<div><h4>購買</h4><a href="/guide.md">選購指南</a><a href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">LINE：@692vcvuk</a><a href="mailto:contactmbcrobot@gmail.com">contactmbcrobot@gmail.com</a><a href="/contact.md">聯絡我們</a><a href="/privacy.md">隱私權政策</a></div>
 </div>

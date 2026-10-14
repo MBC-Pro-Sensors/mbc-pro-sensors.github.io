@@ -75,4 +75,4 @@ FIRST® LEGO® League Challenge rules require robots to be built only from LEGO-
 - [WRO: Rules Q&A](https://wro-association.org/competition/questions-answers/)
 - [WRO RoboMission General Rules (Singapore national version, January 2025)](https://spacefaculty.asia/wp-content/uploads/2026/07/WRO-Singapore-RoboMission-General-Rules-1.0.pdf)
 
-Still not sure about your age group? Email us at [mbc.robot89@gmail.com](mailto:mbc.robot89@gmail.com) with your competition and age group, and an engineer will check for you.
+Still not sure about your age group? Email us at [contactmbcrobot@gmail.com](mailto:contactmbcrobot@gmail.com) with your competition and age group, and an engineer will check for you.
