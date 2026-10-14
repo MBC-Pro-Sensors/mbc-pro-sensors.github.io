@@ -6,6 +6,8 @@ Since the 2025 season, WRO RoboMission allows controllers, motors and sensors fr
 > [!IMPORTANT]
 > Rules can change every season, and national versions may differ. **Always check the latest rules published by WRO and your National Organizer before you register.** If in doubt, ask your National Organizer.
 
+For other competitions (Robofest, RoboCupJunior, AERC, GRG and more), see the [Competition Guide](/en/competitions.md).
+
 ## At a Glance: Which Age Groups Can Use Each Product (RoboMission)
 
 | Product | Elementary | Junior | Senior | Notes |

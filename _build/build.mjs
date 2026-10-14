@@ -37,7 +37,7 @@ const git = (args) => execSync(`git ${args}`, { cwd: ROOT, encoding: 'utf8' });
 const tracked = git('-c core.quotepath=off ls-files --cached --others --exclude-standard').split('\n').filter(Boolean);
 
 // ---------------------------------------------------------------- URL mapping
-const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol|guide|privacy|wro-rules|faq|where-to-buy|distributors)\.md$/.test(f) || /^(en\/)?(sensors|articles)\//.test(f));
+const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol|guide|privacy|wro-rules|competitions|faq|where-to-buy|distributors)\.md$/.test(f) || /^(en\/)?(sensors|articles)\//.test(f));
 const pages = tracked.filter(isPage);
 
 function urlFor(mdPath) {
@@ -251,7 +251,7 @@ function productHero(key, lang, file, name) {
     `<div class="ph-stats">${t.stats.map(([v, l]) => `<div class="ph-stat"><b>${v}</b><span>${l}</span></div>`).join('')}</div>` +
     `<div class="ph-editions"><span>${u.choose}</span>${editions}</div>` +
     (p.msrp ? `<p class="ph-price">${lang === 'en' ? (p.msrp.usd ? `MSRP <b>US$${p.msrp.usd}</b> <small>(shipping not included)</small>` : `<b>Available in Taiwan only</b> <small>(not sold outside Taiwan)</small>`) : `建議售價 <b>NT$${p.msrp.twd.toLocaleString('en-US')}</b>`}</p>` : '') +
-    (p.wro ? `<p class="ph-wro">🏆 ${p.wro[lang]}<br><a href="${lang === 'en' ? '/en/wro-rules.html' : '/wro-rules.html'}">${lang === 'en' ? 'WRO rules check' : 'WRO 規則對照'}</a> · <a href="${lang === 'en' ? '/en/where-to-buy.html' : '/where-to-buy.html'}">${lang === 'en' ? 'Where to buy' : '購買管道'}</a></p>` : '') +
+    (p.wro ? `<p class="ph-wro">🏆 ${p.wro[lang]}<br><a href="${lang === 'en' ? '/en/wro-rules.html' : '/wro-rules.html'}">${lang === 'en' ? 'WRO rules check' : 'WRO 規則對照'}</a> · <a href="${lang === 'en' ? '/en/competitions.html' : '/competitions.html'}">${lang === 'en' ? 'Other competitions' : '其他比賽'}</a> ·<a href="${lang === 'en' ? '/en/where-to-buy.html' : '/where-to-buy.html'}">${lang === 'en' ? 'Where to buy' : '購買管道'}</a></p>` : '') +
     `<div class="ph-cta"><a class="buy-btn line" href="${LINE_URL}" target="_blank" rel="noopener">💬 ${u.line}</a><a class="buy-btn more" href="${u.guideHref}">🧭 ${u.guide}</a></div>` +
     `</div>`;
 }

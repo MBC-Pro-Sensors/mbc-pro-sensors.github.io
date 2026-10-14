@@ -38,6 +38,10 @@ Yes. Since the 2025 season, WRO RoboMission allows hardware from any brand. Some
 
 Not in official FIRST® LEGO® League Challenge matches, which allow LEGO-made parts only. You can use them for classes, practice and competitions with open hardware rules.
 
+### Which other competitions allow MBC sensors?
+
+WRO Future Engineers and Robofest allow any platform, and in Taiwan so do AERC (whose Group A rules name the MBC Pathfinder), GRG (AI Maker Series and Open), MRC and JBC. RoboCupJunior Rescue bans ready-made line-following modules. See the [Competition Guide](/en/competitions.md) for a product-by-product check.
+
 ### Is the laser in the Ranger sensors eye-safe?
 
 Yes. The laser ranging components in both Ranger sensors (TOF2 and TOF8) are Class 1 laser devices compliant with IEC 60825-1:2014. WRO asks for proof of eye safety at inspection; see the [WRO Rules Check](/en/wro-rules.md#_3-laser-safety-proof-of-eye-safety-is-required-5218) for what to show.

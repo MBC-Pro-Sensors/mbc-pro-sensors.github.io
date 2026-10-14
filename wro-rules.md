@@ -6,6 +6,8 @@ WRO 從 2025 年起開放 RoboMission 使用**任何品牌**的控制器、馬�
 > [!IMPORTANT]
 > 每年規則與各國國內賽版本可能不同。**報名前請以 WRO 官方及各國主辦單位公告的最新規則為準**；有疑問時，請向國內主辦單位確認。
 
+其他比賽（AERC、GRG、MRC、JBC、Robofest、RoboCupJunior 等）能不能用 MBC 產品，請看[比賽對照](/competitions.md)。
+
 ## 一眼看懂：各產品適用組別（RoboMission）
 
 | 產品 | 國小組<br>Elementary | 國中組<br>Junior | 高中組<br>Senior | 注意事項 |

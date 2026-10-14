@@ -44,6 +44,7 @@ MBC-Pro Sensors 解決了樂高原廠感測器在機器人競賽中的痛點（�
 ## 競賽規則 (Competition Rules)
 
 - [WRO 規則對照](https://mbc-pro-sensors.github.io/wro-rules.html) / [WRO Rules Check (English)](https://mbc-pro-sensors.github.io/en/wro-rules.html): 依 WRO RoboMission 2025 通則，逐項說明各產品適用組別（相機限國中、高中組；遙控接收器不能用於 RoboMission；TOF 雷射為 Class 1 護眼安全）。
+- [比賽對照](https://mbc-pro-sensors.github.io/competitions.html) / [Competition Guide (English)](https://mbc-pro-sensors.github.io/en/competitions.html): 台灣、亞洲、全球開放第三方器材的機器人比賽，逐場對照 MBC 各產品能不能用。AERC 亞洲智慧型機器人大賽 A 組辦法點名可用 MBC 循行者-LEGO 版、D 組不限廠牌；GRG（AI Maker 系列、Open 組）、MRC、JBC、WRO 未來工程師組、Robofest 可用；RoboCupJunior 救援賽禁止現成循線模組。
 - FIRST® LEGO® League Challenge 正式比賽只允許 LEGO 原廠零件，MBC 產品不適用。
 
 ## 深入知識庫 (Full Documentation)
