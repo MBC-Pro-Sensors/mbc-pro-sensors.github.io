@@ -283,7 +283,7 @@
   },
   "ps2": {
     "color": "#F2C200",
-    "msrp": { "twd": 2000, "usd": 80 },
+    "msrp": { "twd": 2000 },
     "wro": {"zh":"WRO RoboMission 比賽中禁止遙控，不能使用；適合允許遙控的賽事、教學與展示","en":"Not for WRO RoboMission runs (no remote control); for remote-control events, classes and demos"},
     "image": "/images/sensors/ps2/ps2-product.webp",
     "zh": {

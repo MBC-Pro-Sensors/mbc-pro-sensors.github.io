@@ -250,7 +250,7 @@ function productHero(key, lang, file, name) {
     `<p class="ph-pitch">${t.pitch}</p>` +
     `<div class="ph-stats">${t.stats.map(([v, l]) => `<div class="ph-stat"><b>${v}</b><span>${l}</span></div>`).join('')}</div>` +
     `<div class="ph-editions"><span>${u.choose}</span>${editions}</div>` +
-    (p.msrp ? `<p class="ph-price">${lang === 'en' ? `MSRP <b>US$${p.msrp.usd}</b> <small>(shipping not included)</small>` : `建議售價 <b>NT$${p.msrp.twd.toLocaleString('en-US')}</b>`}</p>` : '') +
+    (p.msrp ? `<p class="ph-price">${lang === 'en' ? (p.msrp.usd ? `MSRP <b>US$${p.msrp.usd}</b> <small>(shipping not included)</small>` : `<b>Available in Taiwan only</b> <small>(not sold outside Taiwan)</small>`) : `建議售價 <b>NT$${p.msrp.twd.toLocaleString('en-US')}</b>`}</p>` : '') +
     (p.wro ? `<p class="ph-wro">🏆 ${p.wro[lang]}<br><a href="${lang === 'en' ? '/en/wro-rules.html' : '/wro-rules.html'}">${lang === 'en' ? 'WRO rules check' : 'WRO 規則對照'}</a> · <a href="${lang === 'en' ? '/en/where-to-buy.html' : '/where-to-buy.html'}">${lang === 'en' ? 'Where to buy' : '購買管道'}</a></p>` : '') +
     `<div class="ph-cta"><a class="buy-btn line" href="${LINE_URL}" target="_blank" rel="noopener">💬 ${u.line}</a><a class="buy-btn more" href="${u.guideHref}">🧭 ${u.guide}</a></div>` +
     `</div>`;
@@ -261,6 +261,7 @@ function productLd(key, lang, url, name, description) {
   const p = PRODUCT_DATA[key];
   if (!p || !p.msrp) return null;
   const en = lang === 'en';
+  if (en && !p.msrp.usd) return null; // Taiwan-only product: no USD offer
   return {
     '@type': 'Product',
     '@id': SITE + url + '#product',

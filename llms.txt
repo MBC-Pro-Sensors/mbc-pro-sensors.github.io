@@ -12,7 +12,7 @@ MBC-Pro Sensors 解決了樂高原廠感測器在機器人競賽中的痛點（�
 - [EXP6 6路擴充器 (SPIKE 6-Port Expander)](https://mbc-pro-sensors.github.io/sensors/exp6/): 突破 SPIKE Prime 僅有 6 個連接埠的極限，具備獨立隔離電源保護，可同時擴充多個馬達與感測器。
 - [測距者 2 路 TOF2 (Dual TOF Laser Rangefinder)](https://mbc-pro-sensors.github.io/sensors/tof2/): 雙向微型飛行時間 (Time-of-Flight) 雷射測距，精準捕捉物體左右動向。
 - [測距者 8 路 TOF8 (8-Channel 180° ToF Laser Distance Sensor)](https://mbc-pro-sensors.github.io/sensors/tof8/): 8 點 ToF 雷射測距陣列，180 度零死角避障，告別超音波鬼影，專為機器人相撲與高速避障設計。
-- [掌控者 2.4G PS2 (Wireless Gamepad Receiver)](https://mbc-pro-sensors.github.io/sensors/ps2/): 高性價比 2.4G 無線手把接收器，即插即用擴充搖桿遙控。
+- [掌控者 2.4G PS2 (Wireless Gamepad Receiver)](https://mbc-pro-sensors.github.io/sensors/ps2/): 高性價比 2.4G 無線手把接收器，即插即用擴充搖桿遙控。僅限台灣販售（Taiwan only）。
 - [掌控者 PS4/PS5 藍牙接收器 (PS4/PS5 Bluetooth Receiver)](https://mbc-pro-sensors.github.io/sensors/ps4/): 支援 PS4 / PS5 手把；只綁定自己的手把、斷訊 0.3 秒自動歸零，比賽場地內穩定連線（空曠實測 100 公尺）。
 - [陀螺儀 IMU 九軸 (IMU 9-Axis Gyro, 即將推出)](https://mbc-pro-sensors.github.io/sensors/imu/): 陀螺儀＋加速度計＋磁力計，任意角度安裝、磁力計融合航向長距離不飄移，EV3 可直接當原廠陀螺儀使用。
 - [MBC 通用 I2C 協議 (Universal I2C Protocol)](https://mbc-pro-sensors.github.io/i2c-protocol.html): Arduino / ESP32 / 樹莓派 讀取全系列感應器的共用暫存器規則與範例程式。
@@ -37,7 +37,7 @@ MBC-Pro Sensors 解決了樂高原廠感測器在機器人競賽中的痛點（�
 | 測距者 8 路 TOF8 | 3,000 | 120 |
 | 神攝手 ESP32CAM | 3,000 | 120 |
 | EXP6 6 路擴充器 | 3,600 | 145 |
-| 掌控者 PS2 | 2,000 | 80 |
+| 掌控者 PS2 | 2,000 | 僅限台灣販售（Taiwan only） |
 | 掌控者 PS4/PS5 | 2,500 | 100 |
 | 陀螺儀 IMU 九軸（即將推出） | 2,500 | 100 |
 

@@ -26,7 +26,7 @@ Not sure which product or edition you need? Two steps: **pick your controller, t
 | [Ranger 8-Way](/en/sensors/tof8/index.md) | 180° avoidance, sumo | |
 | [SPIKE 6-Way Expander](/en/sensors/exp6/index.md) | More ports | **SPIKE Prime only**; official app requires Python text mode |
 | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bluetooth gamepad control | Best for big events |
-| [Controller PS2](/en/sensors/ps2/index.md) | 2.4G gamepad control | Classes, projects |
+| [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad control | Classes, projects |
 | [Sharpshooter ESP32CAM](/en/sensors/esp32cam/index.md) | Color tracking, vision | |
 | [IMU Gyro](/en/sensors/imu/index.md) | Heading, turning | Coming soon |
 
@@ -39,7 +39,7 @@ Not sure which product or edition you need? Two steps: **pick your controller, t
 | [Ranger 2-Way](/en/sensors/tof2/index.md) | Left/right ranging | |
 | [Ranger 8-Way](/en/sensors/tof8/index.md) | 180° avoidance, sumo | |
 | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bluetooth gamepad control | |
-| [Controller PS2](/en/sensors/ps2/index.md) | 2.4G gamepad control | |
+| [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad control | |
 | [Sharpshooter ESP32CAM](/en/sensors/esp32cam/index.md) | Color tracking, vision | |
 | [IMU Gyro](/en/sensors/imu/index.md) | Heading, turning | Works with the standard gyro blocks; coming soon |
 
@@ -54,7 +54,7 @@ The whole family shares one [Universal I2C Protocol](/en/i2c-protocol.md) — le
 | [Ranger 8-Way](/en/sensors/tof8/index.md) | 180° avoidance | `0x29` |
 | [SPIKE 6-Way Expander](/en/sensors/exp6/arduino-i2c.md) | Drive LEGO motors & sensors from Arduino | `0x6E` |
 | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bluetooth gamepad control | `0x42` |
-| [Controller PS2](/en/sensors/ps2/index.md) | 2.4G gamepad control | `0x42` |
+| [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad control | `0x42` |
 | [IMU Gyro](/en/sensors/imu/index.md) | Heading, 9-axis data | `0x6A` |
 
 <h3 id="matrix">🤖 MATRIX Mini R4</h3>
@@ -76,7 +76,7 @@ The whole family shares one [Universal I2C Protocol](/en/i2c-protocol.md) — le
 | [Ranger 2-Way](/en/sensors/tof2/index.md) | Left/right ranging |
 | [Ranger 8-Way](/en/sensors/tof8/index.md) | 180° avoidance |
 | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bluetooth gamepad control |
-| [Controller PS2](/en/sensors/ps2/index.md) | 2.4G gamepad control |
+| [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad control |
 
 ## 2️⃣ Choose by Need
 
@@ -88,7 +88,7 @@ The whole family shares one [Universal I2C Protocol](/en/i2c-protocol.md) — le
 | Sumo, all-round avoidance | [Ranger 8-Way](/en/sensors/tof8/index.md) | 180° in one read, reports the nearest target's direction |
 | Get more ports on SPIKE | [SPIKE 6-Way Expander](/en/sensors/exp6/index.md) | Six channels from one port, own power |
 | Remote control at crowded events | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bonds to your gamepad only, stops on signal loss |
-| Remote control for classes on a budget | [Controller PS2](/en/sensors/ps2/index.md) | 2.4G gamepad, best value |
+| Remote control for classes on a budget | [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad, best value |
 | Track colors and find objects | [Sharpshooter ESP32CAM](/en/sensors/esp32cam/index.md) | Set up on its own screen, blob position out of the box |
 | Drive straight, turn precisely | [IMU Gyro](/en/sensors/imu/index.md) | Any mounting angle, compass fusion without drift (coming soon) |
 

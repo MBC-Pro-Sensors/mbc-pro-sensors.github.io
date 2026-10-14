@@ -78,9 +78,10 @@ Manufacturer's suggested retail prices (MSRP) in US dollars, shipping not includ
 | Ranger 8-Way (TOF8) | 120 |
 | Sharpshooter Vision (ESP32CAM) | 120 |
 | SPIKE 6-Way Expander (EXP6) | 145 |
-| Controller 2.4G (PS2) | 80 |
 | Controller PS4/PS5 | 100 |
 | IMU 9-Axis Gyro (coming soon) | 100 |
+
+Controller 2.4G (PS2) is sold in Taiwan only.
 
 ### How do I order, and do you work with distributors?
 
