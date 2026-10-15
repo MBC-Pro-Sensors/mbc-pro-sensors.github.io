@@ -4,7 +4,7 @@
 <div>
 <p class="lp-kicker">WRO · ROBOTICS COMPETITIONS · SPIKE™ PRIME / EV3</p>
 <h1>Make your robot<br><em>steadier and sharper</em></h1>
-<p class="lp-lead">MBC-Pro Sensors builds competition-grade sensors for LEGO SPIKE Prime, EV3 and Pybricks: 8/16-way line followers, laser ranging, a 6-port expander, PS4/PS5 remote control and a vision camera. Plug in and read them with the official blocks.</p>
+<p class="lp-lead">Competition-grade sensors for SPIKE Prime, EV3 and Pybricks: line following, laser ranging, port expansion, remote control and vision. Plug in and read them with the official blocks.</p>
 <div class="lp-btns">
 <a class="lp-btn line" href="mailto:contactmbcrobot@gmail.com?subject=MBC-Pro%20Sensors%20quote%20request">✉️ Email us for a quote</a>
 <a class="lp-btn ghost" href="/en/distributors.md">Become a distributor →</a>
@@ -17,6 +17,8 @@
 </div>
 
 <div class="lp-platforms"><span>LEGO SPIKE Prime</span><span>Robot Inventor</span><span>MINDSTORMS EV3</span><span>Pybricks</span><span>Arduino / ESP32</span><span>MATRIX Mini R4</span><span>MakeBlock</span></div>
+
+<div class="lp-promo"><p><b>Getting ready for next season?</b> Schools, clubs and teams: ask for a bulk quote. We reply within 24 hours on weekdays.</p><a class="lp-btn line" href="mailto:contactmbcrobot@gmail.com?subject=Bulk%20quote%20request&body=Hello%2C%0A%0AWe%20would%20like%20a%20bulk%20quote.%0ASchool%20%2F%20club%3A%0AProducts%20and%20quantities%3A%0ACountry%3A%0A">✉️ Get a bulk quote</a></div>
 
 <p class="lp-proof">🏆 Named in the official rules of <b>AERC</b> (Taiwan) as an allowed sensor, and usable in WRO, Robofest and more. <a href="/en/competitions.md">See the Competition Guide →</a></p>
 
@@ -114,6 +116,16 @@
 <div class="lp-card"><h3>Pick your controller</h3><p>SPIKE, EV3, Arduino or MATRIX? Each has its own edition — the <a href="/en/guide.md">Buying Guide</a> tells you in a minute.</p></div>
 <div class="lp-card"><h3>Choose your products</h3><p>Line following, ranging, expansion, remote control, vision — pick by challenge and budget, or just ask us.</p></div>
 <div class="lp-card"><h3>Email us for a quote</h3><p>Send your controller, products, quantities and country to <a href="mailto:contactmbcrobot@gmail.com">contactmbcrobot@gmail.com</a>. Schools, clubs and distributors are welcome. We reply within 24 hours on weekdays.</p></div>
+</div>
+
+<h2 id="downloads">Free Downloads</h2>
+<p class="lp-sub">Example programs, libraries and the product catalog are free to download, so you can see the code before you buy.</p>
+
+<div class="lp-grid lp-dl">
+<div class="lp-card"><div class="lp-ico">🧩</div><h3>Pathfinder 8-Way</h3><p><a href="/examples/line8/spike/line8-demo.llsp3" download>📥 SPIKE App example (.llsp3)</a><a href="/examples/line8/line8_pybricks_ev3.zip" download>📥 EV3 Pybricks library (.zip)</a><a href="/en/sensors/line8/spike-pybricks.md">📖 SPIKE Pybricks library and guide</a></p></div>
+<div class="lp-card"><div class="lp-ico">🧩</div><h3>Pathfinder 16-Way</h3><p><a href="/examples/line16/spike/line16-demo.llsp3" download>📥 SPIKE App example (.llsp3)</a><a href="/examples/line16/line16_pybricks_ev3.zip" download>📥 EV3 Pybricks library (.zip)</a><a href="/en/sensors/line16/spike-pybricks.md">📖 SPIKE Pybricks library and guide</a></p></div>
+<div class="lp-card"><div class="lp-ico">🔌</div><h3>SPIKE 6-Port Expander</h3><p><a href="/downloads/MBC_EXP6_Official_App_Lib.zip" download>📥 Official SPIKE App library (.zip)</a><a href="/downloads/MBC_EXP6_Pybricks_Lib.zip" download>📥 Pybricks library (.zip)</a><a href="/en/sensors/exp6/index.md">📖 Product overview and wiring</a></p></div>
+<div class="lp-card"><div class="lp-ico">📄</div><h3>Product Catalog</h3><p><a href="/downloads/MBC-Pro-Sensors-Catalog-2026-EN.pdf" download>📥 2026 product catalog (PDF, 2 MB)</a><a href="/en/guide.md">🧭 Buying Guide</a></p></div>
 </div>
 
 <h2>FAQ</h2>

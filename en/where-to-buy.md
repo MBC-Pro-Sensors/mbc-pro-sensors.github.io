@@ -12,6 +12,14 @@ MBC-Pro Sensors are sold through authorized distributors and directly by us. Fin
 > [!NOTE]
 > In countries with an authorized distributor, all orders and enquiries are handled by the local distributor. Buying locally gets you local stock, local currency, local invoices and faster delivery.
 
+## Authorized Online Store (Ships Worldwide)
+
+| Store | MBC products | Website |
+| :--- | :--- | :--- |
+| **AXIONE** (Taiwan) | Pathfinder 8-Way, Pathfinder 16-Way, Sharpshooter ESP32CAM (sold by AXIONE as "HUE12 Sensor") | [axione.shop](https://www.axione.shop/) |
+
+AXIONE is an authorized distributor with an English online store, checkout and worldwide shipping, a convenient option for individual buyers outside Taiwan. Prices and shipping are set by AXIONE.
+
 ## No Distributor in Your Country Yet? Order Direct
 
 1. **Check which edition you need.** Every product comes in controller-specific editions (SPIKE™ Prime, EV3, Universal I2C) that are not interchangeable. The [Buying Guide](/en/guide.md) helps you choose.

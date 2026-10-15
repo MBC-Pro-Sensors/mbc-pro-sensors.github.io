@@ -90,6 +90,28 @@
     if (clearBtn) clearBtn.addEventListener('click', function () { input.value = ''; search(); });
   }
 
+  // --- 產品頁：選版本 → 詢價連結自動帶入「產品＋版本」；底部詢價列也跟著產品頁的連結 ---
+  var heroQuote = document.querySelector('.ph-cta .buy-btn.line');
+  var dockQuote = document.querySelector('.cta-dock .dock-line');
+  if (heroQuote && dockQuote) dockQuote.href = heroQuote.href;
+  document.querySelectorAll('.ph-pick button').forEach(function (btn, i, all) {
+    btn.addEventListener('click', function () {
+      all.forEach(function (b) { b.setAttribute('aria-checked', b === btn ? 'true' : 'false'); });
+      if (heroQuote) heroQuote.href = btn.dataset.href;
+      if (dockQuote) dockQuote.href = btn.dataset.href;
+    });
+  });
+
+  // --- 產品頁可展開區塊：網址帶 #錨點 時自動展開該區塊 ---
+  function openTarget() {
+    var id = decodeURIComponent(location.hash.slice(1));
+    var el = id && document.getElementById(id);
+    var box = el && el.closest('details');
+    if (box && !box.open) { box.open = true; el.scrollIntoView(); }
+  }
+  openTarget();
+  window.addEventListener('hashchange', openTarget);
+
   // --- 詢價／下載點擊追蹤（有安裝 Google Analytics 時才送出）---
   document.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('a');

@@ -4,7 +4,7 @@
 <div>
 <p class="lp-kicker">WRO · 機器人競賽 · SPIKE™ Prime／EV3</p>
 <h1>讓機器人<br><em>跑得更穩、看得更準</em></h1>
-<p class="lp-lead">MBC-Pro Sensors 為 LEGO SPIKE Prime、EV3 與 Pybricks 打造競賽級感應器：8／16 路循線、雷射測距、6 路擴充、PS4/PS5 遙控與視覺鏡頭。插上就能用，官方積木直接讀取。</p>
+<p class="lp-lead">SPIKE Prime、EV3、Pybricks 專用競賽級感應器：循線、雷射測距、擴充、遙控與視覺，插上就能用，官方積木直接讀取。</p>
 <div class="lp-btns">
 <a class="lp-btn line" href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">💬 LINE 立即詢價</a>
 <a class="lp-btn ghost" href="#products">看全部產品 →</a>
@@ -17,6 +17,8 @@
 </div>
 
 <div class="lp-platforms"><span>LEGO SPIKE Prime</span><span>Robot Inventor</span><span>MINDSTORMS EV3</span><span>Pybricks</span><span>Arduino / ESP32</span><span>MATRIX Mini R4</span><span>MakeBlock</span></div>
+
+<div class="lp-promo"><p><b>準備下一個賽季？</b>學校、社團整班採購可提供報價單與採購資料，工作日 24 小時內回覆。</p><a class="lp-btn line" href="https://line.me/R/oaMessage/%40692vcvuk/?%E6%82%A8%E5%A5%BD%EF%BC%8C%E6%88%91%E6%83%B3%E7%B4%A2%E5%8F%96%E5%AD%B8%E6%A0%A1%EF%BC%8F%E7%A4%BE%E5%9C%98%E6%8E%A1%E8%B3%BC%E5%A0%B1%E5%83%B9%EF%BC%9A" target="_blank" rel="noopener">💬 索取採購報價</a></div>
 
 <p class="lp-proof">🏆 <b>AERC 亞洲智慧型機器人大賽</b>官方競賽辦法點名可使用 MBC 循行者-LEGO 版；WRO、GRG、MRC、JBC、Robofest 也都能用。<a href="/competitions.md">看比賽對照 →</a></p>
 
@@ -114,6 +116,16 @@
 <div class="lp-card"><h3>選擇你的主機</h3><p>SPIKE、EV3、Arduino 還是 MATRIX？每個主機有對應版本，看 <a href="/guide.md">選購指南</a> 一分鐘就知道。</p></div>
 <div class="lp-card"><h3>挑選需要的產品</h3><p>循線、測距、擴充、遙控、視覺，依比賽項目與預算挑選。不確定也可以直接問我們。</p></div>
 <div class="lp-card"><h3>LINE 詢價下單</h3><p>個人購買、學校／社團大量採購、代理洽談都歡迎，工程師工作日 24 小時內回覆。</p></div>
+</div>
+
+<h2 id="downloads">免費下載</h2>
+<p class="lp-sub">範例程式、程式庫與產品型錄都可以免費下載，買之前就能先看程式怎麼寫。</p>
+
+<div class="lp-grid lp-dl">
+<div class="lp-card"><div class="lp-ico">🧩</div><h3>循行者 8 路</h3><p><a href="/examples/line8/spike/line8-demo.llsp3" download>📥 SPIKE App 範例（.llsp3）</a><a href="/examples/line8/line8_pybricks_ev3.zip" download>📥 EV3 Pybricks 程式庫（.zip）</a><a href="/sensors/line8/spike-pybricks.md">📖 SPIKE Pybricks 程式庫與教學</a></p></div>
+<div class="lp-card"><div class="lp-ico">🧩</div><h3>循行者 16 路</h3><p><a href="/examples/line16/spike/line16-demo.llsp3" download>📥 SPIKE App 範例（.llsp3）</a><a href="/examples/line16/line16_pybricks_ev3.zip" download>📥 EV3 Pybricks 程式庫（.zip）</a><a href="/sensors/line16/spike-pybricks.md">📖 SPIKE Pybricks 程式庫與教學</a></p></div>
+<div class="lp-card"><div class="lp-ico">🔌</div><h3>SPIKE 6 路擴充器</h3><p><a href="/downloads/MBC_EXP6_Official_App_Lib.zip" download>📥 官方 SPIKE App 程式庫（.zip）</a><a href="/downloads/MBC_EXP6_Pybricks_Lib.zip" download>📥 Pybricks 程式庫（.zip）</a><a href="/sensors/exp6/index.md">📖 產品介紹與接線</a></p></div>
+<div class="lp-card"><div class="lp-ico">📄</div><h3>產品型錄</h3><p><a href="/downloads/MBC-Pro-Sensors-Catalog-2026-EN.pdf" download>📥 2026 英文產品型錄（PDF，2 MB）</a><a href="/guide.md">🧭 選購指南</a></p></div>
 </div>
 
 <h2>常見問題</h2>

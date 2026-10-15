@@ -271,9 +271,9 @@ const quoteLink = (lang, cls, label) => lang === 'en'
   ? `<a class="${cls}" href="${QUOTE_MAIL}">✉️ ${label}</a>`
   : `<a class="${cls}" href="${LINE_URL}" target="_blank" rel="noopener">💬 ${label}</a>`;
 const UI = {
-  zh: { search: '搜尋文件', toc: '目錄', lang: 'EN', home: '首頁', line: 'LINE 詢價', guide: '選購指南', guideHref: '/guide.html', choose: '選擇版本：',
+  zh: { search: '搜尋文件', toc: '目錄', lang: 'EN', home: '首頁', line: 'LINE 詢價', guide: '選購指南', guideHref: '/guide.html', choose: '選擇版本：', guides: '各版本教學：',
     nav: [['產品', '/#products'], ['比賽對照', '/competitions.html'], ['教學文章', '/articles/'], ['選購指南', '/guide.html'], ['購買管道', '/where-to-buy.html'], ['聯絡我們', '/contact.html']], cta: { h: '想購買或詢價？', p: '個人購買、學校 / 社團大量採購、代理洽談都歡迎，工程師工作日 24 小時內回覆。', line: 'LINE 立即詢價', mail: 'Email 詢價', more: '更多聯絡方式', contact: '/contact.html' } },
-  en: { search: 'Search docs', toc: 'Contents', lang: '中文', home: 'Home', line: 'Email for a quote', guide: 'Buying Guide', guideHref: '/en/guide.html', choose: 'Editions:',
+  en: { search: 'Search docs', toc: 'Contents', lang: '中文', home: 'Home', line: 'Email for a quote', guide: 'Buying Guide', guideHref: '/en/guide.html', choose: 'Choose edition:', guides: 'Setup guides:',
     nav: [['Products', '/en/#products'], ['Competitions', '/en/competitions.html'], ['Videos', '/en/#videos'], ['Buying Guide', '/en/guide.html'], ['Where to Buy', '/en/where-to-buy.html'], ['Contact', '/en/contact.html']], cta: { h: 'Interested in this sensor?', p: 'Ask us for pricing, bulk / school orders or distributor info. Our engineers reply within 24 hours on weekdays.', line: 'Chat on LINE', mail: 'Email us', more: 'All contact options', contact: '/en/contact.html' } },
 };
 
@@ -316,6 +316,18 @@ function productSpecs(p, lang) {
   return `<table class="ph-specs"><tbody>${rows.map(([k, v]) => `<tr><th>${k}</th><td>${v}</td></tr>`).join('')}</tbody></table>`;
 }
 
+// Quote link with the product (and edition) already filled in: LINE opens a chat with the message typed, email gets subject + body
+const LINE_ID = '%40692vcvuk';
+function prefilledQuote(lang, name, edition) {
+  if (lang === 'en') {
+    const what = edition ? `${name} (${edition} edition)` : name;
+    return `mailto:contactmbcrobot@gmail.com?subject=${encodeURIComponent('Quote request: ' + what)}&body=${encodeURIComponent(`Hello,\n\nI'd like a quote for ${what}.\nQuantity:\nCountry:\n`)}`;
+  }
+  return `https://line.me/R/oaMessage/${LINE_ID}/?${encodeURIComponent(`您好，我想詢價：${name}${edition ? `（${edition}）` : ''}，數量：`)}`;
+}
+// EXP6 "editions" are software environments, not hardware versions: no edition picker
+const NO_EDITION_PICK = new Set(['exp6']);
+
 // Sales block at the top of each product page, generated from _build/products.json
 const PRODUCT_DATA = JSON.parse(fs.readFileSync(path.join(BUILD, 'products.json'), 'utf8'));
 function productHero(key, lang, file, name) {
@@ -333,12 +345,33 @@ function productHero(key, lang, file, name) {
     `<p class="ph-pitch">${t.pitch}</p>` +
     // price + quote button right under the pitch (on phones CSS also moves the video below them)
     (p.msrp ? `<p class="ph-price">${lang === 'en' ? (p.msrp.usd ? `MSRP <b>US$${p.msrp.usd}</b> <small>(shipping not included)</small>` : `<b>Available in Taiwan only</b> <small>(not sold outside Taiwan)</small>`) : `建議售價 <b>NT$${p.msrp.twd.toLocaleString('en-US')}</b>`}</p>` : '') +
-    `<div class="ph-cta">${quoteLink(lang, 'buy-btn line', u.line)}<a class="buy-btn more" href="${u.guideHref}">🧭 ${u.guide}</a></div>` +
+    // edition picker: choosing one rewrites the quote link (site.js) so the message names the edition
+    (NO_EDITION_PICK.has(key) ? '' : `<div class="ph-pick" role="radiogroup" aria-label="${u.choose}"><span>${u.choose}</span>${t.editions.map(([label]) =>
+      `<button type="button" role="radio" aria-checked="false" data-href="${escAttr(prefilledQuote(lang, name, label))}">${label}</button>`).join('')}</div>`) +
+    `<div class="ph-cta"><a class="buy-btn line" href="${escAttr(prefilledQuote(lang, name))}"${lang === 'en' ? '' : ' target="_blank" rel="noopener"'}>${lang === 'en' ? '✉️' : '💬'} ${u.line}</a><a class="buy-btn more" href="${u.guideHref}">🧭 ${u.guide}</a></div>` +
     `<div class="ph-stats">${t.stats.map(([v, l]) => `<div class="ph-stat"><b>${v}</b><span>${l}</span></div>`).join('')}</div>` +
-    `<div class="ph-editions"><span>${u.choose}</span>${editions}</div>` +
+    `<div class="ph-editions"><span>${u.guides}</span>${editions}</div>` +
     productSpecs(p, lang) +
     (p.wro ? `<p class="ph-wro">🏆 ${p.wro[lang]}<br><a href="${lang === 'en' ? '/en/wro-rules.html' : '/wro-rules.html'}">${lang === 'en' ? 'WRO rules check' : 'WRO 規則對照'}</a> · <a href="${lang === 'en' ? '/en/competitions.html' : '/competitions.html'}">${lang === 'en' ? 'Other competitions' : '其他比賽'}</a> · <a href="${lang === 'en' ? '/en/where-to-buy.html' : '/where-to-buy.html'}">${lang === 'en' ? 'Where to buy' : '購買管道'}</a></p>` : '') +
     `</div>`;
+}
+
+// Product pages: every <h2> section below the sales block becomes a collapsible <details> (first one open),
+// so the page stays short; the text is still in the HTML for search engines and find-in-page.
+function collapseSections(html, file) {
+  const start = html.search(/<h2[\s>]/);
+  if (start < 0) return html;
+  const sections = html.slice(start).split(/(?=<h2[\s>])/);
+  const count = (s, re) => (s.match(re) || []).length;
+  const unbalanced = sections.find((s) => ['div', 'section', 'details', 'table'].some((t) =>
+    count(s, new RegExp(`<${t}[\\s>]`, 'g')) !== count(s, new RegExp(`</${t}>`, 'g'))));
+  if (unbalanced) { console.warn(`WARN ${file}: section HTML not balanced, sections left open`); return html; }
+  return html.slice(0, start) + sections.map((s, i) => {
+    const [, h2, rest] = s.match(/^(<h2[^>]*>[\s\S]*?<\/h2>)([\s\S]*)$/);
+    // a link inside <summary> would swallow the click: drop the heading's anchor link
+    const head = h2.replace(/<a href="#[^"]*" data-id="[^"]*" class="anchor"><span>([\s\S]*?)<\/span><\/a>/, '<span>$1</span>');
+    return `<details class="acc"${i === 0 ? ' open' : ''}><summary>${head}</summary><div class="acc-body">${rest}</div></details>`;
+  }).join('');
 }
 
 // schema.org Product + Offer for product index pages (TWD on zh pages, USD on en pages)
@@ -534,6 +567,7 @@ for (const file of pages) {
   }
   if (isProductIndex) {
     html = html.replace('<!-- product-hero -->', productHero(product, lang, file, h1Text));
+    html = collapseSections(html, file);
     html += ctaHtml(lang);
   }
   const layout = src.includes('<!-- layout: landing -->') ? 'landing' : 'docs';

@@ -662,3 +662,53 @@ body.docs .channel-card.email .channel-icon-wrap svg.i { color: #0077a8; }
 .sidebar-nav li .menu-toggle > p { margin: 0; }
 .sidebar-nav li .menu-toggle { padding: 8px 0; }
 @media (max-width: 767px) { .sidebar-nav li .menu-toggle { padding: 0; min-height: 44px; display: flex; align-items: center; } .sidebar-nav li .menu-toggle > p { flex: 1; } }
+
+/* =========================================================
+   2026-10-15 參考 AXIONE 的轉換做法（分析：產品推廣網站資料\參考網站\AXIONE_風格分析.md）
+   ========================================================= */
+
+/* 首頁主視覺：比賽場地實景（自家影片截圖）當背景，左側加深讓文字好讀 */
+body.landing.theme-light .lp-hero::before {
+  background: linear-gradient(90deg, rgba(5,10,16,0.96) 0%, rgba(5,10,16,0.86) 45%, rgba(5,10,16,0.55) 100%),
+    url("/images/brand/hero-field.webp") center / cover no-repeat, #050a10;
+}
+@media (max-width: 900px) {
+  body.landing.theme-light .lp-hero::before { background: linear-gradient(180deg, rgba(5,10,16,0.9) 0%, rgba(5,10,16,0.84) 55%, rgba(5,10,16,0.8) 100%), url("/images/brand/hero-field.webp") 30% 60% / cover no-repeat, #050a10; }
+}
+
+/* 採購橫幅（主視覺下方） */
+.lp-promo { display: flex; align-items: center; justify-content: center; gap: 12px 20px; flex-wrap: wrap; margin: 18px auto 0; padding: 14px 18px; border-radius: 12px; background: #fff6d6; border: 1px solid #f2d36b; text-align: center; }
+.markdown-section .lp-promo p { margin: 0; color: #3d3200; font-size: 1rem; line-height: 1.6; }
+.markdown-section .lp-promo b { color: #10212b; }
+.markdown-section .lp-promo .lp-btn { padding: 10px 20px; font-size: 0.98rem; min-height: 44px; display: inline-flex; align-items: center; box-sizing: border-box; }
+
+/* 免費下載 */
+.markdown-section .lp-dl .lp-card p a { display: flex; align-items: center; min-height: 44px; font-weight: 700; text-decoration: none; border-bottom: 1px solid #eef1f4; }
+.markdown-section .lp-dl .lp-card p a:last-child { border-bottom: 0; }
+.markdown-section .lp-dl .lp-card p a:hover { text-decoration: underline; }
+
+/* 產品頁可展開區塊 */
+.markdown-section details.acc { border-bottom: 1px solid #e3e8ee; }
+.markdown-section details.acc > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; min-height: 56px; }
+.markdown-section details.acc > summary::-webkit-details-marker { display: none; }
+.markdown-section details.acc > summary h2 { flex: 1; margin: 14px 0; padding: 0; border: 0; font-size: 1.45rem; }
+.markdown-section details.acc > summary::after { content: ""; flex: none; width: 12px; height: 12px; margin-right: 6px; border-right: 2.5px solid #0a7c78; border-bottom: 2.5px solid #0a7c78; transform: rotate(45deg) translate(-3px, -3px); transition: transform 0.2s; }
+.markdown-section details.acc[open] > summary::after { transform: rotate(-135deg) translate(-3px, -3px); }
+.markdown-section details.acc > summary:hover h2 { color: #0a7c78; }
+.markdown-section details.acc > summary:focus-visible { outline: 3px solid rgba(10,143,138,0.35); outline-offset: 2px; border-radius: 6px; }
+.markdown-section details.acc .acc-body { padding-bottom: 18px; }
+.markdown-section details.acc .acc-body > hr:last-child { display: none; }
+@media (max-width: 767px) { .markdown-section details.acc > summary h2 { font-size: 1.2rem; } }
+
+/* 產品頁選版本 */
+.product-hero .ph-pick { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; margin: 0 0 14px; }
+.product-hero .ph-pick span { color: #cfd8de; font-size: 0.92rem; }
+.product-hero .ph-pick button { min-height: 44px; padding: 0 16px; border-radius: 22px; border: 1px solid color-mix(in srgb, var(--pc) 55%, transparent); background: transparent; color: #eee; font: inherit; font-weight: 700; font-size: 0.92rem; cursor: pointer; }
+.product-hero .ph-pick button:hover { background: color-mix(in srgb, var(--pc) 18%, transparent); }
+.product-hero .ph-pick button[aria-checked="true"] { background: var(--pc); border-color: var(--pc); color: #0a0a0a; }
+.product-hero .ph-pick button:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+@media (max-width: 767px) { .product-hero .ph-pick { order: 3; } .markdown-section .product-hero .ph-price { order: 3; } .product-hero .ph-pick > span { width: 100%; } }
+/* 「各版本教學」是文件連結，做成文字連結，和上方選版本按鈕區分 */
+.markdown-section .product-hero .ph-editions a { border: 0; border-radius: 0; padding: 0 10px; color: #cfd8de; text-decoration: underline; text-underline-offset: 3px; }
+.markdown-section .product-hero .ph-editions a:hover { background: transparent; color: #fff; }
+body.landing.theme-light .markdown-section .lp-vcap a { color: #0a7c78; }
