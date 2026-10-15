@@ -89,6 +89,7 @@ The Taiwan qualifier, organized by SPARK, has more than 20 robot sports such as 
 
 - The original controller of an educational kit (LEGO, mBot, Maqueen and others) must be used.
 - **Third-party sensors are allowed** if they are electrically compatible with the controller and unmodified. Pathfinder, Ranger and Sharpshooter Vision can all be used.
+- **Why Sharpshooter Vision and the Controller are allowed**: the ban on added microcontrollers such as Arduino or ESP32 stops teams from controlling the robot with a second control board. Sharpshooter Vision and the Controller are a sensor and a remote receiver, and the robot is still controlled by the educational kit's hub, so they can be used (as explained by the Taiwan organizer).
 - **Remote-control events**: The Controller can be used.
 - **Not allowed**: programmable expansion units and independent power sources, so **EXP6 cannot be used**.
 
