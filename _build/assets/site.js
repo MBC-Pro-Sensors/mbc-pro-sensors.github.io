@@ -24,12 +24,20 @@
   // --- 手機版選單按鈕 ---
   var toggle = document.querySelector('.sidebar-toggle');
   if (toggle) toggle.addEventListener('click', function () { document.body.classList.toggle('close'); });
+  // 文件頁頂部「目錄」按鈕：手機版開關側欄（body.close = 側欄展開，沿用 docsify 的寫法）
+  var toc = document.querySelector('.tn-toc');
+  if (toc) toc.addEventListener('click', function () { document.body.classList.toggle('close'); });
+  document.querySelectorAll('.sidebar-nav a').forEach(function (a) {
+    a.addEventListener('click', function () { document.body.classList.remove('close'); });
+  });
 
-  // --- 首頁頂部導覽（手機版漢堡選單）---
+  // --- 頂部導覽（手機版漢堡選單）---
   var topnav = document.querySelector('.topnav');
   var burger = document.querySelector('.tn-burger');
   if (topnav && burger) {
-    burger.addEventListener('click', function () { topnav.classList.toggle('open'); });
+    burger.addEventListener('click', function () {
+      burger.setAttribute('aria-expanded', topnav.classList.toggle('open') ? 'true' : 'false');
+    });
     topnav.querySelectorAll('.tn-links a').forEach(function (a) {
       a.addEventListener('click', function () { topnav.classList.remove('open'); });
     });

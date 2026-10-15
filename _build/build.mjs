@@ -131,6 +131,68 @@ function renderMarkdown(src, file, lang) {
   return html;
 }
 
+// ------------------------------------------------------------------- icons
+// Emoji used as icons (headings, buttons, card icons) -> inline Lucide SVG line icons (_build/icons.json, ISC).
+// Status marks (✅ ❌ 🟢 🟡) stay as emoji: their color is the meaning.
+const ICONS = JSON.parse(fs.readFileSync(path.join(BUILD, 'icons.json'), 'utf8'));
+const icon = (name, cls = 'i') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${ICONS[name]}</svg>`;
+const EMOJI_ICON = Object.fromEntries(Object.entries({
+  '🏆': 'trophy', '🥈': 'medal', '🧩': 'puzzle', '🚀': 'rocket', '🎯': 'target', '🧱': 'blocks', '📋': 'clipboard-list',
+  '🔌': 'plug', '📊': 'chart-column', '📤': 'upload', '🐍': 'code', '📥': 'download', '📡': 'radar', '🧠': 'brain',
+  '📐': 'ruler', '📏': 'ruler', '⚠️': 'triangle-alert', '🔄': 'refresh-cw', '⚙️': 'settings', '⚡': 'zap', '❓': 'circle-help',
+  '💻': 'laptop', '🎨': 'palette', '📦': 'package', '💓': 'activity', '🤖': 'bot', '🛡️': 'shield', '🎮': 'gamepad-2',
+  '🛠️': 'wrench', '🛑': 'octagon-x', '🚗': 'car', '🔬': 'microscope', '📺': 'monitor', '🚦': 'traffic-cone', '🌐': 'languages',
+  '🌏': 'earth', '📚': 'book-open', '🔋': 'battery', '🏁': 'flag', '🤝': 'handshake', '🧭': 'compass', '🗂️': 'folder',
+  '🧾': 'receipt', '🔒': 'lock', '🎛️': 'sliders-horizontal', '🌈': 'rainbow', '⏳': 'hourglass', '🔗': 'link',
+  '💡': 'lightbulb', '🛒': 'shopping-cart', '🎉': 'party-popper', '📝': 'notebook-pen', '🗑️': 'trash-2', '🛤️': 'route',
+  '💬': 'message-circle', '✉️': 'mail', '🔍': 'search', '📄': 'file-text', '📖': 'book-open', '🔙': 'arrow-left', '📬': 'inbox',
+  '🆘': 'life-buoy', '📈': 'trending-up', '👉': 'arrow-right', '📍': 'map-pin', '🔦': 'flashlight', '🔀': 'shuffle', '👁️': 'eye', '🏫': 'school', '💼': 'briefcase', '📣': 'megaphone', '📸': 'camera', '📞': 'phone', '📌': 'pin', '🧪': 'flask-conical',
+}).map(([e, n]) => [e.replace(/️/g, ''), n]));
+function iconize(html) {
+  const swap = (all, pre, e) => (EMOJI_ICON[e] ? pre + icon(EMOJI_ICON[e]) : all);
+  return html
+    .replace(/(<(?:div|span) class="(?:lp-ico|lp-noimg|section-title|reason-icon|step-icon|channel-icon-wrap)">)(\p{Extended_Pictographic})️?/gu, swap)
+    .replace(/(<h[1-4][^>]*>(?:<a [^>]*>)?(?:<span>)?|<a\b[^>]*>|<(?:p|li)\b[^>]*>(?:<strong>)?|<summary>)(\p{Extended_Pictographic})️?[  ]*/gu, swap);
+}
+
+// Intrinsic image size (PNG / JPEG / GIF / WebP) so every <img> reserves its space (no layout shift)
+const sizeCache = new Map();
+function imageSize(src) {
+  if (sizeCache.has(src)) return sizeCache.get(src);
+  let size = null;
+  try {
+    const b = fs.readFileSync(path.join(ROOT, decodeURI(src)));
+    if (b.toString('ascii', 1, 4) === 'PNG') size = [b.readUInt32BE(16), b.readUInt32BE(20)];
+    else if (b.toString('ascii', 0, 3) === 'GIF') size = [b.readUInt16LE(6), b.readUInt16LE(8)];
+    else if (b.toString('ascii', 0, 4) === 'RIFF' && b.toString('ascii', 8, 12) === 'WEBP') {
+      const kind = b.toString('ascii', 12, 16);
+      if (kind === 'VP8 ') size = [b.readUInt16LE(26) & 0x3fff, b.readUInt16LE(28) & 0x3fff];
+      else if (kind === 'VP8L') { const n = b.readUInt32LE(21); size = [(n & 0x3fff) + 1, ((n >> 14) & 0x3fff) + 1]; }
+      else if (kind === 'VP8X') size = [b.readUIntLE(24, 3) + 1, b.readUIntLE(27, 3) + 1];
+    } else if (b[0] === 0xff && b[1] === 0xd8) {
+      for (let i = 2; i < b.length - 9;) {
+        const m = b[i + 1];
+        if (m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc) { size = [b.readUInt16BE(i + 7), b.readUInt16BE(i + 5)]; break; }
+        i += 2 + b.readUInt16BE(i + 2);
+      }
+    }
+  } catch { /* missing or remote image: leave as is */ }
+  sizeCache.set(src, size);
+  return size;
+}
+const sizeImages = (html) => html.replace(/<img\b[^>]*>/g, (tag) => {
+  if (!/\balt=/.test(tag)) tag = tag.replace('<img', '<img alt=""');
+  if (/\bwidth=/.test(tag) || /style="(?:[^"]*[;\s])?(?:width|height)\s*:/.test(tag)) return tag; // inline size wins: adding width/height would distort it
+  const src = (tag.match(/\bsrc="(\/[^"?#]+)"/) || [])[1];
+  const s = src && imageSize(src);
+  return s ? tag.replace('<img', `<img width="${s[0]}" height="${s[1]}"`) : tag;
+});
+// Page-level post-processing of everything inside <body>
+const finishPage = (doc) => {
+  const i = doc.indexOf('<body');
+  return doc.slice(0, i) + sizeImages(iconize(doc.slice(i)));
+};
+
 // ------------------------------------------------------------------- helpers
 const stripTags = (html) => html
   .replace(/<(style|script)[\s\S]*?<\/\1>/g, ' ')
@@ -209,9 +271,9 @@ const quoteLink = (lang, cls, label) => lang === 'en'
   ? `<a class="${cls}" href="${QUOTE_MAIL}">✉️ ${label}</a>`
   : `<a class="${cls}" href="${LINE_URL}" target="_blank" rel="noopener">💬 ${label}</a>`;
 const UI = {
-  zh: { search: '🔍 搜尋文件', lang: 'EN', home: '首頁', line: 'LINE 詢價', guide: '選購指南', guideHref: '/guide.html', choose: '選擇版本：',
+  zh: { search: '搜尋文件', toc: '目錄', lang: 'EN', home: '首頁', line: 'LINE 詢價', guide: '選購指南', guideHref: '/guide.html', choose: '選擇版本：',
     nav: [['產品', '/#products'], ['比賽對照', '/competitions.html'], ['教學文章', '/articles/'], ['選購指南', '/guide.html'], ['購買管道', '/where-to-buy.html'], ['聯絡我們', '/contact.html']], cta: { h: '想購買或詢價？', p: '個人購買、學校 / 社團大量採購、代理洽談都歡迎，工程師工作日 24 小時內回覆。', line: 'LINE 立即詢價', mail: 'Email 詢價', more: '更多聯絡方式', contact: '/contact.html' } },
-  en: { search: '🔍 Search docs', lang: '中文', home: 'Home', line: 'Email for a quote', guide: 'Buying Guide', guideHref: '/en/guide.html', choose: 'Editions:',
+  en: { search: 'Search docs', toc: 'Contents', lang: '中文', home: 'Home', line: 'Email for a quote', guide: 'Buying Guide', guideHref: '/en/guide.html', choose: 'Editions:',
     nav: [['Products', '/en/#products'], ['Competitions', '/en/competitions.html'], ['Videos', '/en/#videos'], ['Buying Guide', '/en/guide.html'], ['Where to Buy', '/en/where-to-buy.html'], ['Contact', '/en/contact.html']], cta: { h: 'Interested in this sensor?', p: 'Ask us for pricing, bulk / school orders or distributor info. Our engineers reply within 24 hours on weekdays.', line: 'Chat on LINE', mail: 'Email us', more: 'All contact options', contact: '/en/contact.html' } },
 };
 
@@ -269,12 +331,13 @@ function productHero(key, lang, file, name) {
     `<span class="ph-badge">${t.badge}</span>` +
     (media.length ? `<div class="ph-media${media.length === 1 ? ' single' : ''}">${media.join('')}</div>` : '') +
     `<p class="ph-pitch">${t.pitch}</p>` +
+    // price + quote button right under the pitch (on phones CSS also moves the video below them)
+    (p.msrp ? `<p class="ph-price">${lang === 'en' ? (p.msrp.usd ? `MSRP <b>US$${p.msrp.usd}</b> <small>(shipping not included)</small>` : `<b>Available in Taiwan only</b> <small>(not sold outside Taiwan)</small>`) : `建議售價 <b>NT$${p.msrp.twd.toLocaleString('en-US')}</b>`}</p>` : '') +
+    `<div class="ph-cta">${quoteLink(lang, 'buy-btn line', u.line)}<a class="buy-btn more" href="${u.guideHref}">🧭 ${u.guide}</a></div>` +
     `<div class="ph-stats">${t.stats.map(([v, l]) => `<div class="ph-stat"><b>${v}</b><span>${l}</span></div>`).join('')}</div>` +
     `<div class="ph-editions"><span>${u.choose}</span>${editions}</div>` +
-    (p.msrp ? `<p class="ph-price">${lang === 'en' ? (p.msrp.usd ? `MSRP <b>US$${p.msrp.usd}</b> <small>(shipping not included)</small>` : `<b>Available in Taiwan only</b> <small>(not sold outside Taiwan)</small>`) : `建議售價 <b>NT$${p.msrp.twd.toLocaleString('en-US')}</b>`}</p>` : '') +
     productSpecs(p, lang) +
-    (p.wro ? `<p class="ph-wro">🏆 ${p.wro[lang]}<br><a href="${lang === 'en' ? '/en/wro-rules.html' : '/wro-rules.html'}">${lang === 'en' ? 'WRO rules check' : 'WRO 規則對照'}</a> · <a href="${lang === 'en' ? '/en/competitions.html' : '/competitions.html'}">${lang === 'en' ? 'Other competitions' : '其他比賽'}</a> ·<a href="${lang === 'en' ? '/en/where-to-buy.html' : '/where-to-buy.html'}">${lang === 'en' ? 'Where to buy' : '購買管道'}</a></p>` : '') +
-    `<div class="ph-cta">${quoteLink(lang, 'buy-btn line', u.line)}<a class="buy-btn more" href="${u.guideHref}">🧭 ${u.guide}</a></div>` +
+    (p.wro ? `<p class="ph-wro">🏆 ${p.wro[lang]}<br><a href="${lang === 'en' ? '/en/wro-rules.html' : '/wro-rules.html'}">${lang === 'en' ? 'WRO rules check' : 'WRO 規則對照'}</a> · <a href="${lang === 'en' ? '/en/competitions.html' : '/competitions.html'}">${lang === 'en' ? 'Other competitions' : '其他比賽'}</a> · <a href="${lang === 'en' ? '/en/where-to-buy.html' : '/where-to-buy.html'}">${lang === 'en' ? 'Where to buy' : '購買管道'}</a></p>` : '') +
     `</div>`;
 }
 
@@ -320,11 +383,13 @@ function ctaDock(lang) {
   return `<div class="cta-dock">${quoteLink(lang, 'dock-line', u.line)}<a class="dock-guide" href="${u.guideHref}">🧭 ${u.guide}</a></div>`;
 }
 
-function topNav(lang, langHref) {
+// docs pages add a "contents" button that opens the sidebar on phones (replaces docsify's floating toggle)
+function topNav(lang, langHref, docs = false) {
   const u = UI[lang];
   const home = lang === 'en' ? '/en/' : '/';
   return `<header class="topnav"><a class="tn-logo" href="${home}"><img src="/images/brand/mbc-logo.png" alt="MBC Robot" width="56" height="39"><span>MBC-Pro Sensors</span></a>` +
-    `<button class="tn-burger" aria-label="Menu">☰</button>` +
+    (docs ? `<button class="tn-toc" aria-label="${u.toc}">${icon('list-tree')}<span>${u.toc}</span></button>` : '') +
+    `<button class="tn-burger" aria-label="Menu" aria-expanded="false">${icon('menu')}</button>` +
     `<nav class="tn-links">${u.nav.map(([l, h]) => `<a href="${h}">${l}</a>`).join('')}` +
     `<a class="tn-lang" href="${langHref}" hreflang="${lang === 'en' ? 'zh-TW' : 'en'}">🌐 ${u.lang}</a>` +
     `${quoteLink(lang, 'tn-line', u.line)}</nav></header>`;
@@ -366,16 +431,16 @@ function page({ lang, url, title, description, ogImage, alternates, jsonLd, extr
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Orbitron:wght@500;700&display=swap">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4.13.1/lib/themes/dark.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4.13.1/lib/themes/${layout === 'landing' ? 'dark' : 'vue'}.css">
   <link rel="stylesheet" href="/assets/site.css?v=${BUILD_ID}">
 </head>
 ${layout === 'landing' ? `<body class="ready landing theme-light">
 ${topNav(lang, langHref)}
 <main class="landing-main"><article class="markdown-section" id="main">
 ${body}
-</article>${footerHtml(lang)}</main>` : `<body class="ready sticky">
+</article>${footerHtml(lang)}</main>` : `<body class="ready sticky docs theme-light">
+${topNav(lang, langHref, true)}
 <main>
-<button class="sidebar-toggle" aria-label="Menu"><div class="sidebar-toggle-button"><span></span><span></span><span></span></div></button>
 <aside class="sidebar">
 <div class="search"><div class="input-wrap"><input type="search" value="" aria-label="Search text" placeholder="${UI[lang].search}"></div><div class="results-panel"></div></div>
 <h1 class="app-name"><a class="app-name-link" href="${lang === 'en' ? '/en/' : '/'}">MBC-Pro-Sensors</a></h1>
@@ -384,8 +449,7 @@ ${body}
 <section class="content"><article class="markdown-section" id="main">
 ${body}
 </article>${footerHtml(lang)}</section>
-</main>
-<a id="lang-toggle-btn" href="${langHref}" hreflang="${lang === 'en' ? 'zh-TW' : 'en'}"><span>🌐</span> <span>${UI[lang].lang}</span></a>`}
+</main>`}
 ${ctaDock(lang)}
 <script src="https://cdn.jsdelivr.net/npm/scratchblocks@3.6.4/build/scratchblocks.min.js" defer></script>
 <script src="/scratchblocks-init.js" defer></script>
@@ -508,7 +572,7 @@ for (const file of pages) {
   });
   const outFile = path.join(OUT, url.endsWith('/') ? url + 'index.html' : url);
   fs.mkdirSync(path.dirname(outFile), { recursive: true });
-  fs.writeFileSync(outFile, out);
+  fs.writeFileSync(outFile, finishPage(out));
 
   searchIndex[lang].push({ t: h1Text + (productName && !isProductIndex ? ` – ${productName}` : ''), u: url, x: stripEmoji(stripTags(html.replace(/<h1[\s\S]*?<\/h1>/, ''))).slice(0, 4000) });
   if (!noindex) sitemap.push({ url, lastmod: lastmod(file), alternates, priority: home ? '1.0' : isProductIndex ? '0.9' : '0.7' });
@@ -537,6 +601,6 @@ const notFound = page({
   body: '<h1>404 — 找不到頁面 / Page not found</h1><p>這個網址可能已經更新。請使用左側選單，或 <a href="/">回到首頁</a> / <a href="/en/">English home</a>。</p>',
   langHref: '/en/',
 });
-fs.writeFileSync(path.join(OUT, '404.html'), notFound);
+fs.writeFileSync(path.join(OUT, '404.html'), finishPage(notFound));
 
 console.log(`Built ${pages.length} pages -> ${path.relative(ROOT, OUT)}/`);

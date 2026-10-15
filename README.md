@@ -50,10 +50,21 @@
 </div>
 </div>
 
+<h2 id="results">選手實戰成績</h2>
+<p class="lp-sub">2020 年起，服務台灣各地的機器人隊伍與學校。以下成績都有教練公開影片，標明機器人使用 MBC 產品。</p>
+
+<div class="lp-grid">
+<div class="lp-card"><div class="lp-ico">🥈</div><h3>WRO 2026 台灣北區賽<br>高中組 第二名</h3><p>LauXiao 教練隊伍，機器人搭載 MBC 循行者 8 路。</p><p><a href="https://www.youtube.com/watch?v=9btTbyE_giI" target="_blank" rel="noopener">看比賽影片 →</a></p></div>
+<div class="lp-card"><div class="lp-ico">🏆</div><h3>WRO 2025 線上賽<br>國小組 冠軍</h3><p>Laumo 教練隊伍，使用 MBC 循行者第二代八路（MATRIX R4 版）。</p><p><a href="https://www.youtube.com/watch?v=Qv9WA4wzMXc" target="_blank" rel="noopener">看比賽影片 →</a></p></div>
+<div class="lp-card"><div class="lp-ico">🌏</div><h3>WRO 2025 新加坡世界賽<br>國小組</h3><p>Laumo 教練隊伍前進世界賽，使用 MBC 循行者。</p><p><a href="https://www.youtube.com/watch?v=ofr9Lymlc8I" target="_blank" rel="noopener">看比賽影片 →</a></p></div>
+</div>
+
+<p class="lp-sub" style="margin-top:20px">選手也曾在 AERC 亞洲智慧型機器人大賽、JBC、RoboRAVE 等比賽獲獎。</p>
+
 <h2 id="products">全系列產品</h2>
 <p class="lp-sub">每款產品都有 SPIKE、EV3 等不同版本，不確定選哪個？看 <a href="/guide.md">選購指南</a>。</p>
 
-<div class="lp-grid">
+<div class="lp-grid lp-prods">
 <a class="lp-prod" href="/sensors/line8/index.md" style="--pc:#ff4500;"><img src="/images/sensors/line8/line8-product-spike.webp" alt="循行者 8 路"><span class="lp-cat">循線</span><h3>循行者 8 路 (Line8)</h3><p>8 通道抗干擾循線，直接輸出 PID 用的高解析位置，一鍵 5 秒校準。</p><p class="lp-price">建議售價 NT$2,500</p><span class="lp-more">了解更多 →</span></a>
 <a class="lp-prod" href="/sensors/line16/index.md" style="--pc:#ff6b35;"><img src="/images/sensors/line16/line16-product-spike.webp" alt="循行者 16 路"><span class="lp-cat">循線</span><h3>循行者 16 路 (Line16)</h3><p>16 通道超寬視野，高速急彎與十字路口一次判斷，只佔 1 個孔。</p><p class="lp-price">建議售價 NT$3,000</p><span class="lp-more">了解更多 →</span></a>
 <a class="lp-prod" href="/sensors/tof8/index.md" style="--pc:#0ABAB5;"><img src="/images/sensors/tof8/tof8-product.webp" alt="測距者 8 路"><span class="lp-cat">雷射測距</span><h3>測距者 8 路 (TOF8)</h3><p>8 點雷射涵蓋前方 180°，直接回報最近目標的方向與距離。</p><p class="lp-price">建議售價 NT$3,000</p><span class="lp-more">了解更多 →</span></a>
@@ -96,17 +107,6 @@
 <div><div class="lp-video"><iframe src="https://www.youtube.com/embed/WgacdWLatbk" title="LegoLauXiao 教練實戰教學" allowfullscreen></iframe></div><p class="lp-vcap">🏆 <a href="https://www.youtube.com/@LegoLauXiao" target="_blank" rel="noopener">LegoLauXiao 教練</a> 實戰教學</p></div>
 <div><div class="lp-video"><iframe src="https://www.youtube.com/embed/T9bcndBNQvQ" title="legolaumo 教練實戰教學" allowfullscreen></iframe></div><p class="lp-vcap">🏆 <a href="https://www.youtube.com/@legolaumo" target="_blank" rel="noopener">legolaumo 教練</a> 實戰教學</p></div>
 </div>
-
-<h2 id="results">選手實戰成績</h2>
-<p class="lp-sub">2020 年起，服務台灣各地的機器人隊伍與學校。以下成績都有教練公開影片，標明機器人使用 MBC 產品。</p>
-
-<div class="lp-grid">
-<div class="lp-card"><div class="lp-ico">🥈</div><h3>WRO 2026 台灣北區賽<br>高中組 第二名</h3><p>LauXiao 教練隊伍，機器人搭載 MBC 循行者 8 路。</p><p><a href="https://www.youtube.com/watch?v=9btTbyE_giI" target="_blank" rel="noopener">看比賽影片 →</a></p></div>
-<div class="lp-card"><div class="lp-ico">🏆</div><h3>WRO 2025 線上賽<br>國小組 冠軍</h3><p>Laumo 教練隊伍，使用 MBC 循行者第二代八路（MATRIX R4 版）。</p><p><a href="https://www.youtube.com/watch?v=Qv9WA4wzMXc" target="_blank" rel="noopener">看比賽影片 →</a></p></div>
-<div class="lp-card"><div class="lp-ico">🌏</div><h3>WRO 2025 新加坡世界賽<br>國小組</h3><p>Laumo 教練隊伍前進世界賽，使用 MBC 循行者。</p><p><a href="https://www.youtube.com/watch?v=ofr9Lymlc8I" target="_blank" rel="noopener">看比賽影片 →</a></p></div>
-</div>
-
-<p class="lp-sub" style="margin-top:20px">選手也曾在 AERC 亞洲智慧型機器人大賽、JBC、RoboRAVE 等比賽獲獎。</p>
 
 <h2>3 步驟輕鬆購買</h2>
 

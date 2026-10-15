@@ -385,12 +385,12 @@ body.landing { overflow-x: hidden; }
    白底內容區＋深色產品主視覺，參考 Makeblock / DFRobot / LEGO Education
    ========================================================= */
 body.landing.theme-light { background: #f6f8fa; color: #1f2933; }
-body.landing.theme-light .topnav { background: rgba(255,255,255,0.95); border-bottom: 1px solid #e3e8ee; }
-body.landing.theme-light .topnav .tn-links a { color: #33414e; }
-body.landing.theme-light .topnav .tn-links a:hover { color: #0a8f8a; }
-body.landing.theme-light .topnav .tn-logo { color: #0a7c78; }
-body.landing.theme-light .topnav .tn-burger { color: #33414e; }
-@media (max-width: 900px) { body.landing.theme-light .topnav .tn-links { background: #fff; border-bottom: 1px solid #e3e8ee; } }
+body.theme-light .topnav { background: rgba(255,255,255,0.95); border-bottom: 1px solid #e3e8ee; }
+body.theme-light .topnav .tn-links a { color: #33414e; }
+body.theme-light .topnav .tn-links a:hover { color: #0a8f8a; }
+body.theme-light .topnav .tn-logo { color: #0a7c78; }
+body.theme-light .topnav .tn-burger { color: #33414e; }
+@media (max-width: 900px) { body.theme-light .topnav .tn-links { background: #fff; border-bottom: 1px solid #e3e8ee; } }
 body.landing.theme-light .markdown-section { color: #33414e; }
 body.landing.theme-light .markdown-section h2 { color: #10212b; text-shadow: none; }
 body.landing.theme-light .markdown-section a { color: #0a8f8a; }
@@ -434,21 +434,21 @@ body.landing.theme-light .lp-final .lp-btn.ghost { color: #fff; }
 body.landing.theme-light .lp-footer { border-color: #e3e8ee; }
 body.landing.theme-light .markdown-section .lp-footer h3, body.landing.theme-light .markdown-section .lp-footer h4 { color: #10212b; }
 body.landing.theme-light .markdown-section .lp-footer a { color: #5b6b78; }
-@media (max-width: 767px) { body.landing.theme-light .cta-dock { background: #fff; border-top-color: #e3e8ee; } body.landing.theme-light .cta-dock .dock-guide { background: #fff; color: #0a7c78; } }
+@media (max-width: 767px) { body.theme-light .cta-dock { background: #fff; border-top-color: #e3e8ee; } body.theme-light .cta-dock .dock-guide { background: #fff; color: #0a7c78; } }
 body.landing.theme-light .markdown-section .lp-btn.line { color: #fff; }
 
 /* 全站頁尾：公司名稱＋商標聲明 */
 .site-footer { max-width: 800px; margin: 0 auto; padding: 24px 15px 40px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.78rem; line-height: 1.6; color: #8a97a3; }
 .site-footer p { margin: 0 0 6px; }
 body.landing .site-footer { max-width: 1180px; padding: 24px 24px 90px; }
-body.landing.theme-light .site-footer { border-top-color: #e3e8ee; color: #5b6b78; }
+body.theme-light .site-footer { border-top-color: #e3e8ee; color: #5b6b78; }
 
 /* 產品頁：WRO 適用組別＋規則對照／購買管道連結 */
 .markdown-section .product-hero .ph-wro { margin: 0 0 18px; font-size: 0.95rem; line-height: 1.7; color: #ccc; }
 .markdown-section .product-hero .ph-wro a { color: var(--pc); }
 .site-footer .sf-social { font-size: 0.85rem; margin-bottom: 10px; }
 .site-footer .sf-social a { color: var(--theme-color); text-decoration: none; font-weight: 700; }
-body.landing.theme-light .site-footer .sf-social a { color: #0a8f8a; }
+body.theme-light .site-footer .sf-social a { color: #0a8f8a; }
 
 /* 首頁信任提示列與產品卡建議售價 */
 .lp-proof { text-align: center; margin: 18px auto 0; padding: 12px 16px; border-radius: 12px; background: rgba(10,186,181,0.08); font-size: 0.98rem; line-height: 1.6; }
@@ -462,3 +462,199 @@ body.landing.theme-light .markdown-section .lp-card a { color: #0a7c78; }
 .markdown-section .product-hero table.ph-specs th, .markdown-section .product-hero table.ph-specs td { border: 0; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 7px 10px; background: transparent; vertical-align: top; }
 .markdown-section .product-hero table.ph-specs th { width: 28%; color: #9aa7b0; font-weight: 600; white-space: nowrap; }
 .markdown-section .product-hero table.ph-specs td { color: #dde4e8; }
+
+/* =========================================================
+   2026-10-15 UI/UX 優化（ui-ux-pro-max 檢查結果）
+   ========================================================= */
+
+/* --- 圖片：建置時已補 width/height，這裡讓圖片依比例縮放（:where 不增加權重，不蓋掉各區塊的高度設定）--- */
+:where(img[width][height]) { height: auto; }
+
+/* --- SVG 線條圖示（取代 emoji）--- */
+svg.i { width: 1.15em; height: 1.15em; vertical-align: -0.2em; margin-right: 0.35em; flex: none; }
+.markdown-section h1 svg.i, .markdown-section h2 svg.i, .markdown-section h3 svg.i, .markdown-section h4 svg.i { color: var(--theme-color); }
+.lp-card .lp-ico { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 12px; font-size: 0; background: rgba(10,186,181,0.12); color: var(--theme-color); }
+.lp-card .lp-ico svg.i { width: 26px; height: 26px; margin: 0; }
+body.theme-light .lp-card .lp-ico { background: #e6f6f5; color: #0a7c78; }
+.lp-prod .lp-noimg { color: #a371f7; }
+.lp-prod .lp-noimg svg.i { width: 96px; height: 96px; margin: 0; }
+.topnav .tn-burger svg.i { width: 26px; height: 26px; margin: 0; }
+
+/* --- 觸控目標至少 44px --- */
+.topnav .tn-burger, .topnav .tn-toc { min-width: 44px; min-height: 44px; align-items: center; justify-content: center; }
+@media (max-width: 900px) { .topnav .tn-burger { display: inline-flex; } }
+.markdown-section .lp-footer a { display: flex; align-items: center; min-height: 44px; line-height: 1.3; }
+.site-footer .sf-social a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; }
+.markdown-section .lp-card p > a:only-child, .markdown-section .lp-vcap a, .markdown-section .lp-proof a,
+.markdown-section .product-hero .ph-wro a { display: inline-flex; align-items: center; min-height: 44px; }
+.markdown-section .product-hero .ph-editions a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 22px; }
+.markdown-section .buy-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; box-sizing: border-box; }
+.lp-faq summary { padding: 10px 0; margin: -10px 0; }
+.search input { min-height: 44px; box-sizing: border-box; }
+@media (max-width: 767px) {
+  .sidebar ul li a { display: block; padding: 11px 0; }
+  .markdown-section .breadcrumbs a { display: inline-flex; align-items: center; min-height: 44px; }
+}
+
+/* --- 固定元素：桌機上方選單已有詢價按鈕，不再顯示右下浮鈕；手機只留底部詢價列 --- */
+@media (min-width: 768px) { .cta-dock { display: none; } }
+.cta-dock a { display: inline-flex; align-items: center; justify-content: center; }
+
+/* --- 手機版產品頁：照片 → 介紹 → 價格與詢價 → 影片 → 規格 --- */
+@media (max-width: 767px) {
+  .product-hero { display: flex; flex-direction: column; align-items: center; }
+  .product-hero > * { width: 100%; box-sizing: border-box; }
+  .product-hero > .ph-badge { width: auto; order: 0; }
+  .product-hero .ph-media { display: contents; }
+  .product-hero .ph-img { order: 1; margin-top: 14px; }
+  .product-hero .ph-img img { max-width: 220px; }
+  .markdown-section .product-hero .ph-pitch { order: 2; font-size: 1.05rem; margin: 12px 0 14px; }
+  .markdown-section .product-hero .ph-price { order: 3; }
+  .product-hero .ph-cta { order: 4; }
+  .product-hero .ph-cta .buy-btn { flex: 1 1 40%; }
+  .product-hero .ph-video { order: 5; margin-top: 20px; }
+  .product-hero .ph-stats { order: 6; margin: 20px 0; }
+  .product-hero .ph-editions { order: 7; }
+  .markdown-section .product-hero table.ph-specs { order: 8; }
+  .markdown-section .product-hero .ph-wro { order: 9; }
+}
+
+/* --- 首頁：手機版產品卡兩欄 --- */
+@media (max-width: 767px) {
+  .lp-grid.lp-prods { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .markdown-section .lp-prods a.lp-prod { padding: 12px 10px; }
+  .lp-prods .lp-prod img, .lp-prods .lp-prod .lp-noimg { height: 96px; margin-bottom: 6px; }
+  .lp-prods .lp-prod .lp-noimg svg.i { width: 64px; height: 64px; }
+  .markdown-section .lp-prods .lp-prod h3 { font-size: 0.98rem; line-height: 1.35; }
+  .markdown-section .lp-prods .lp-prod p { font-size: 0.82rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 6px; }
+  .markdown-section .lp-prods .lp-prod p.lp-price { display: block; font-size: 0.88rem; flex: none; }
+  .lp-prods .lp-prod .lp-cat, .lp-prods .lp-prod .lp-more { font-size: 0.78rem; }
+}
+
+/* --- 減少動態：使用者系統設定「減少動態效果」時關閉位移與轉場 --- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  .markdown-section a.lp-prod:hover, .markdown-section .lp-btn:hover, .markdown-section .buy-btn:hover, .cta-dock a:hover, .env-card:hover,
+  .func-card:hover, .download-card:hover, .reason-card:hover, .channel-card:hover, .btn-download:hover, .btn-download-lib:hover { transform: none !important; }
+}
+
+/* =========================================================
+   文件頁（產品說明、教學、比賽對照…）：上方選單＋淺色主題，與首頁一致
+   產品銷售區 product-hero 保持深色舞台，讓黑色電路板發光（同首頁產品卡）
+   ========================================================= */
+body.docs.theme-light { background: #fff; color: #33414e; }
+body.docs .topnav { position: fixed; top: 0; left: 0; right: 0; height: 60px; box-sizing: border-box; }
+body.docs .sidebar { top: 60px; padding-top: 16px; background: #f6f8fa; border-right: 1px solid #e3e8ee; }
+body.docs .sidebar > h1.app-name { display: none; }
+body.docs .topnav .tn-toc { display: none; gap: 6px; padding: 0 12px; border: 1px solid #cfd8de; border-radius: 22px; background: #fff; color: #33414e; font: inherit; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
+body.docs .topnav .tn-toc svg.i { margin: 0; }
+@media (max-width: 767px) {
+  body.docs .topnav { gap: 8px; }
+  body.docs .topnav .tn-toc { display: inline-flex; }
+  body.docs .topnav .tn-logo span { font-size: 0.85rem; }
+  body.docs .content { padding-top: 76px; }
+}
+
+/* 側欄 */
+body.docs .sidebar ul li a { color: #33414e; }
+body.docs .sidebar ul li a:hover, body.docs .sidebar-nav li .menu-toggle:hover { color: #0a7c78; text-shadow: none; }
+body.docs .sidebar ul li.active > a { color: #0a7c78; border-right-color: #0a8f8a; }
+body.docs .search input { background-color: #fff !important; border-color: #cfd8de !important; color: #10212b !important; }
+body.docs .search input:focus { box-shadow: 0 0 0 3px rgba(10,143,138,0.2) !important; }
+body.docs .search .matching-post { border-bottom-color: #e3e8ee !important; }
+body.docs .search .matching-post h2 { color: #0a7c78; }
+body.docs .search .matching-post p { color: #5b6b78; }
+body.docs .search .matching-post em { color: #0a6f6b; }
+body.docs .search .empty { color: #5b6b78; }
+
+/* 內文 */
+body.docs .markdown-section { color: #33414e; }
+body.docs .markdown-section h1, body.docs .markdown-section h2, body.docs .markdown-section h3, body.docs .markdown-section h4 { color: #10212b; text-shadow: none; }
+body.docs .markdown-section h1 a, body.docs .markdown-section h2 a, body.docs .markdown-section h3 a, body.docs .markdown-section h4 a { color: inherit; }
+body.docs .markdown-section h1 svg.i, body.docs .markdown-section h2 svg.i, body.docs .markdown-section h3 svg.i, body.docs .markdown-section h4 svg.i { color: #0a8f8a; }
+body.docs .markdown-section a { color: #0a7c78; }
+body.docs .markdown-section strong { color: #10212b; }
+body.docs .markdown-section blockquote { background: #fff8db; color: #33414e; }
+body.docs .markdown-section blockquote.callout { background: color-mix(in srgb, var(--c) 10%, #fff); }
+body.docs .markdown-section blockquote .callout-title { color: color-mix(in srgb, var(--c) 70%, #000); }
+body.docs .markdown-section code { background: #eef7f6; color: #0a6f6b; }
+body.docs .markdown-section pre { box-shadow: none; border: 1px solid #e3e8ee; }
+body.docs .markdown-section pre code { background: transparent; color: #33414e; }
+body.docs .markdown-section table th { background: #e6f6f5; color: #0a6f6b; }
+body.docs .markdown-section td { border-color: #e3e8ee; }
+body.docs .markdown-section tr:nth-child(2n) { background-color: #f6f8fa; }
+body.docs .markdown-section .breadcrumbs { color: #5b6b78; }
+body.docs .markdown-section .breadcrumbs a { color: #0a7c78; }
+
+/* 產品銷售區：深色舞台 */
+body.docs .product-hero { background: radial-gradient(ellipse at top, color-mix(in srgb, var(--pc) 22%, transparent), transparent 70%), #0a111a; border-color: transparent; box-shadow: 0 8px 24px rgba(16,33,43,0.18); }
+body.docs .markdown-section .product-hero strong { color: inherit; }
+body.docs .markdown-section .product-hero table.ph-specs tr:nth-child(n) { background: transparent; }
+body.docs .markdown-section .product-hero table.ph-specs th { background: transparent; color: #9aa7b0; }
+
+/* 詢價區、環境導覽卡 */
+body.docs .buy-cta { background: #fffbea; border-color: #f2d36b; }
+body.docs .markdown-section .buy-cta h3 { color: #10212b; }
+body.docs .markdown-section .buy-cta p { color: #33414e; }
+body.docs .markdown-section .buy-btn.mail { background: #0a7c78; color: #fff; }
+body.docs .markdown-section .buy-btn.more { border-color: #cfd8de; color: #33414e; }
+body.docs .env-card { background: #fff; border-color: #e3e8ee; box-shadow: 0 4px 14px rgba(16,33,43,0.06); }
+body.docs .env-card h3 { color: #10212b; }
+body.docs .env-card.spike h3 { color: #8a6d00; }
+body.docs .env-card.ev3 h3 { color: #0a7c78; }
+body.docs .env-card.mcu h3 { color: #0077a8; }
+body.docs .env-card p { color: #5b6b78; }
+body.docs .markdown-section a.guide-host { background: #fff; border-color: #cfd8de; color: #10212b; }
+body.docs .guide-host small { color: #5b6b78; }
+
+/* 舊頁面內嵌的深色主題文字顏色 → 淺底可讀的顏色（程式碼區塊內不動） */
+body.docs .markdown-section :is([style*="color: #aaa"], [style*="color: #888"], [style*="color: #999"], [style*="color: #bbb"], [style*="color: #777"]):not(pre *, .code-block-wrapper *, [style*="background: #1e1e1e"] *) { color: #5b6b78 !important; }
+body.docs .markdown-section :is([style*="color: #ccc"], [style*="color: #ddd"], [style*="color: #e0e0e0"]):not(pre *, .code-block-wrapper *, [style*="background: #1e1e1e"] *) { color: #33414e !important; }
+body.docs .markdown-section :is([style*="color: #0abab5"], [style*="color:#0abab5"]):not(pre *, .code-block-wrapper *, [style*="background: #1e1e1e"] *) { color: #0a7c78 !important; }
+body.docs .markdown-section :is([style*="color: #00d2ff"], [style*="color:#00d2ff"]):not(pre *, .code-block-wrapper *, [style*="background: #1e1e1e"] *) { color: #0077a8 !important; }
+body.docs .markdown-section [style*="color: #ff6b35"]:not(pre *, .code-block-wrapper *, [style*="background: #1e1e1e"] *) { color: #c2410c !important; }
+body.docs .markdown-section :is([style*="color: #d9a300"], [style*="color: #f2c200"]):not(pre *, .code-block-wrapper *, [style*="background: #1e1e1e"] *) { color: #8a6d00 !important; }
+body.docs .markdown-section [style*="color: #ce93d8"] { color: #8e24aa !important; }
+body.docs .markdown-section [style*="background: rgba(255,255,255,0.15); color: #fff"] { background: rgba(16,33,43,0.08) !important; color: #33414e !important; }
+body.docs .markdown-section [style*="background: rgba(255,255,255,0.02)"] { background: #fff !important; box-shadow: 0 4px 14px rgba(16,33,43,0.06) !important; }
+body.docs .markdown-section :is(.code-example, .reason-card, .support-info-box) { background: #fff; }
+body.docs .markdown-section .block-label { color: #5b6b78; }
+body.docs .markdown-section .code-header { color: #9fe7ff; }
+body.docs .markdown-section .blocks { background: #f6f8fa; border-color: #cfd8de; }
+body.docs .markdown-section .code-example h4 { color: #0077a8; }
+/* 聯絡頁 */
+body.docs .contact-hero h1 { background: none; -webkit-text-fill-color: #10212b; color: #10212b; }
+body.docs .contact-hero p, body.docs .channel-info p, body.docs .reason-card p { color: #5b6b78; }
+body.docs .reason-card h3, body.docs .markdown-section .section-title { color: #10212b; }
+body.docs .support-list li { color: #33414e; }
+body.docs .channel-card.email .channel-info h3, body.docs .channel-card.email .channel-info code { color: #0077a8; }
+body.docs .channel-card.line .channel-info h3, body.docs .channel-card.line .channel-info code { color: #0a7c78; }
+body.docs .markdown-section .product-hero .buy-btn.more { color: #eee; border-color: rgba(255,255,255,0.35); }
+.markdown-section .buy-btn { white-space: nowrap; }
+@media (max-width: 767px) {
+  body.docs .markdown-section { max-width: 100%; padding: 20px 16px 40px; box-sizing: border-box; }
+  .product-hero .ph-cta .buy-btn { padding: 10px 12px; }
+}
+body.docs .markdown-section em { color: #4b5b68; }
+/* 對比修正（2026-10-15 掃描結果） */
+body.theme-light .site-footer .sf-social a, body.landing.theme-light .markdown-section .lp-sub a { color: #0a7c78; }
+body.docs .markdown-section .lp-prod h3 { color: #fff; }
+body.docs .contact-badge { color: #0077a8; }
+body.docs .lp-final { background: linear-gradient(135deg, #0a111a, #0f2a2c); border: 0; }
+body.docs .markdown-section .lp-final h2 { color: #fff; }
+body.docs .markdown-section .lp-final p { color: #cfd8de; }
+body.docs .markdown-section .lp-final .lp-btn.ghost { color: #fff; border-color: rgba(255,255,255,0.5); }
+body.docs .markdown-section .lp-final .lp-btn.line { color: #fff; }
+body.docs .markdown-section [style*="color: var(--theme-color)"]:not(pre *, [style*="background: #1e1e1e"] *) { color: #0a7c78 !important; }
+body.docs .markdown-section [style*="color: var(--accent-color)"]:not(pre *, [style*="background: #1e1e1e"] *) { color: #8a6d00 !important; }
+body.docs .markdown-section [style*="color: #00ff64"]:not(pre *, [style*="background: #1e1e1e"] *) { color: #13803d !important; }
+body.docs .markdown-section [style*="color: #ff4500"]:not(pre *, [style*="background: #1e1e1e"] *) { color: #c2410c !important; }
+body.docs .markdown-section :is([style*="color: #4caf50" i], [style*="color: #ec5959" i], [style*="color: #ff4a4a"]):not(pre *, [style*="background: #1e1e1e"] *) { filter: brightness(0.72); }
+body.docs .markdown-section [style*="background: #1e1e1e"] [style*="color: #f2c200"] { color: #f2c200 !important; }
+body.docs .sidebar .search { padding: 0 14px; border-bottom: 0; }
+.product-hero .ph-cta { margin-bottom: 22px; }
+.topnav .tn-logo { min-height: 44px; }
+.lp-faq summary { padding: 11px 0; margin: -11px 0; }
+@media (max-width: 767px) { .sidebar ul li a { padding: 12px 0; } }
+body.docs :is(.reason-icon, .step-icon, .channel-icon-wrap) svg.i { margin: 0; color: #0a7c78; }
+body.docs .channel-card.email .channel-icon-wrap svg.i { color: #0077a8; }

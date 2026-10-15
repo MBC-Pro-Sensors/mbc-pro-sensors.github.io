@@ -50,10 +50,21 @@
 </div>
 </div>
 
+<h2 id="results">Competition Results</h2>
+<p class="lp-sub">Serving robotics teams and schools across Taiwan since 2020. Each result below has a public video from the coach showing MBC products on the robot.</p>
+
+<div class="lp-grid">
+<div class="lp-card"><div class="lp-ico">🥈</div><h3>WRO 2026 Taiwan Northern Regional<br>Senior, 2nd place</h3><p>Coach LauXiao's team, with the MBC Pathfinder 8-Way on the robot.</p><p><a href="https://www.youtube.com/watch?v=9btTbyE_giI" target="_blank" rel="noopener">Watch the run →</a></p></div>
+<div class="lp-card"><div class="lp-ico">🏆</div><h3>WRO 2025 Taiwan Online Competition<br>Elementary, 1st place</h3><p>Coach Laumo's team, using the MBC Pathfinder 8-Way (MATRIX R4 edition).</p><p><a href="https://www.youtube.com/watch?v=Qv9WA4wzMXc" target="_blank" rel="noopener">Watch the run →</a></p></div>
+<div class="lp-card"><div class="lp-ico">🌏</div><h3>WRO 2025 International Final, Singapore<br>Elementary</h3><p>Coach Laumo's team at the world final, using the MBC Pathfinder.</p><p><a href="https://www.youtube.com/watch?v=ofr9Lymlc8I" target="_blank" rel="noopener">Watch the run →</a></p></div>
+</div>
+
+<p class="lp-sub" style="margin-top:20px">Teams using MBC sensors have also won awards at AERC, JBC and RoboRAVE.</p>
+
 <h2 id="products">The Product Line</h2>
 <p class="lp-sub">Each product comes in SPIKE, EV3 and other editions. Not sure which one? See the <a href="/en/guide.md">Buying Guide</a>.</p>
 
-<div class="lp-grid">
+<div class="lp-grid lp-prods">
 <a class="lp-prod" href="/en/sensors/line8/index.md" style="--pc:#ff4500;"><img src="/images/sensors/line8/line8-product-spike.webp" alt="Pathfinder 8-Way"><span class="lp-cat">LINE FOLLOWING</span><h3>Pathfinder 8-Way (Line8)</h3><p>8-channel anti-interference line sensor with a PID-ready high-res position and one-button calibration.</p><p class="lp-price">MSRP US$100</p><span class="lp-more">Learn more →</span></a>
 <a class="lp-prod" href="/en/sensors/line16/index.md" style="--pc:#ff6b35;"><img src="/images/sensors/line16/line16-product-spike.webp" alt="Pathfinder 16-Way"><span class="lp-cat">LINE FOLLOWING</span><h3>Pathfinder 16-Way (Line16)</h3><p>16-channel wide view: fast turns and intersections in one read, using just 1 port.</p><p class="lp-price">MSRP US$120</p><span class="lp-more">Learn more →</span></a>
 <a class="lp-prod" href="/en/sensors/tof8/index.md" style="--pc:#0ABAB5;"><img src="/images/sensors/tof8/tof8-product.webp" alt="Ranger 8-Way"><span class="lp-cat">LASER RANGING</span><h3>Ranger 8-Way (TOF8)</h3><p>8 laser points cover 180° and report the nearest target's direction and distance.</p><p class="lp-price">MSRP US$120</p><span class="lp-more">Learn more →</span></a>
@@ -96,17 +107,6 @@
 <div><div class="lp-video"><iframe src="https://www.youtube.com/embed/WgacdWLatbk" title="Coach LegoLauXiao lesson" allowfullscreen></iframe></div><p class="lp-vcap">🏆 <a href="https://www.youtube.com/@LegoLauXiao" target="_blank" rel="noopener">Coach LegoLauXiao</a> lesson</p></div>
 <div><div class="lp-video"><iframe src="https://www.youtube.com/embed/T9bcndBNQvQ" title="Coach legolaumo lesson" allowfullscreen></iframe></div><p class="lp-vcap">🏆 <a href="https://www.youtube.com/@legolaumo" target="_blank" rel="noopener">Coach legolaumo</a> lesson</p></div>
 </div>
-
-<h2 id="results">Competition Results</h2>
-<p class="lp-sub">Serving robotics teams and schools across Taiwan since 2020. Each result below has a public video from the coach showing MBC products on the robot.</p>
-
-<div class="lp-grid">
-<div class="lp-card"><div class="lp-ico">🥈</div><h3>WRO 2026 Taiwan Northern Regional<br>Senior, 2nd place</h3><p>Coach LauXiao's team, with the MBC Pathfinder 8-Way on the robot.</p><p><a href="https://www.youtube.com/watch?v=9btTbyE_giI" target="_blank" rel="noopener">Watch the run →</a></p></div>
-<div class="lp-card"><div class="lp-ico">🏆</div><h3>WRO 2025 Taiwan Online Competition<br>Elementary, 1st place</h3><p>Coach Laumo's team, using the MBC Pathfinder 8-Way (MATRIX R4 edition).</p><p><a href="https://www.youtube.com/watch?v=Qv9WA4wzMXc" target="_blank" rel="noopener">Watch the run →</a></p></div>
-<div class="lp-card"><div class="lp-ico">🌏</div><h3>WRO 2025 International Final, Singapore<br>Elementary</h3><p>Coach Laumo's team at the world final, using the MBC Pathfinder.</p><p><a href="https://www.youtube.com/watch?v=ofr9Lymlc8I" target="_blank" rel="noopener">Watch the run →</a></p></div>
-</div>
-
-<p class="lp-sub" style="margin-top:20px">Teams using MBC sensors have also won awards at AERC, JBC and RoboRAVE.</p>
 
 <h2>Order in 3 Steps</h2>
 
