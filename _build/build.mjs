@@ -238,6 +238,22 @@ function ctaHtml(lang) {
     `<a class="buy-btn more" href="${t.contact}">${t.more} →</a></div></div>`;
 }
 
+// Spec summary under the price: editions, power, optional size/weight/box (shown only when filled in products.json), warranty
+const SPEC_LABEL = {
+  zh: { editions: '支援版本', power: '供電', size: '尺寸', weight: '重量', box: '包裝內容', warranty: '保固', warrantyValue: '6 個月' },
+  en: { editions: 'Editions', power: 'Power', size: 'Size', weight: 'Weight', box: 'In the box', warranty: 'Warranty', warrantyValue: '6 months' },
+};
+function productSpecs(p, lang) {
+  const L = SPEC_LABEL[lang];
+  const s = (p.specs || {})[lang] || {};
+  const rows = [[L.editions, p[lang].editions.map(([label]) => label).join(lang === 'en' ? ', ' : '、')]];
+  if (s.power) rows.push([L.power, s.power]);
+  for (const r of s.extra || []) rows.push(r);
+  for (const k of ['size', 'weight', 'box']) if (s[k]) rows.push([L[k], s[k]]);
+  rows.push([L.warranty, L.warrantyValue]);
+  return `<table class="ph-specs"><tbody>${rows.map(([k, v]) => `<tr><th>${k}</th><td>${v}</td></tr>`).join('')}</tbody></table>`;
+}
+
 // Sales block at the top of each product page, generated from _build/products.json
 const PRODUCT_DATA = JSON.parse(fs.readFileSync(path.join(BUILD, 'products.json'), 'utf8'));
 function productHero(key, lang, file, name) {
@@ -256,6 +272,7 @@ function productHero(key, lang, file, name) {
     `<div class="ph-stats">${t.stats.map(([v, l]) => `<div class="ph-stat"><b>${v}</b><span>${l}</span></div>`).join('')}</div>` +
     `<div class="ph-editions"><span>${u.choose}</span>${editions}</div>` +
     (p.msrp ? `<p class="ph-price">${lang === 'en' ? (p.msrp.usd ? `MSRP <b>US$${p.msrp.usd}</b> <small>(shipping not included)</small>` : `<b>Available in Taiwan only</b> <small>(not sold outside Taiwan)</small>`) : `建議售價 <b>NT$${p.msrp.twd.toLocaleString('en-US')}</b>`}</p>` : '') +
+    productSpecs(p, lang) +
     (p.wro ? `<p class="ph-wro">🏆 ${p.wro[lang]}<br><a href="${lang === 'en' ? '/en/wro-rules.html' : '/wro-rules.html'}">${lang === 'en' ? 'WRO rules check' : 'WRO 規則對照'}</a> · <a href="${lang === 'en' ? '/en/competitions.html' : '/competitions.html'}">${lang === 'en' ? 'Other competitions' : '其他比賽'}</a> ·<a href="${lang === 'en' ? '/en/where-to-buy.html' : '/where-to-buy.html'}">${lang === 'en' ? 'Where to buy' : '購買管道'}</a></p>` : '') +
     `<div class="ph-cta">${quoteLink(lang, 'buy-btn line', u.line)}<a class="buy-btn more" href="${u.guideHref}">🧭 ${u.guide}</a></div>` +
     `</div>`;

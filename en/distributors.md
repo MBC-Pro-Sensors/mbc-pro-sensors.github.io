@@ -28,7 +28,7 @@ We are looking for distributors who serve robotics teams, schools and training c
 | **Exclusivity** | Regional or national exclusivity is available in exchange for an annual volume commitment |
 | **Marketing support** | Listing on our [Where to Buy](/en/where-to-buy.md) page, product photos, demo videos and English technical documentation |
 | **Training** | Two online product training sessions per year |
-| **Warranty** | 1-year warranty; units dead on arrival are replaced free in your next order |
+| **Warranty** | 1-year warranty for distributors; units dead on arrival are replaced free in your next order. End customers get a 6-month warranty |
 
 ## Key Terms
 
@@ -36,6 +36,10 @@ We are looking for distributors who serve robotics teams, schools and training c
 - **Delivery:** EXW Taichung, Taiwan. Freight, insurance, duties and taxes are paid by the distributor
 - **Payment:** first year 100% bank transfer (T/T) before shipment
 - **Core products to list:** Line8, Line16, EXP6 and TOF8; other products can be special-ordered
+
+## Product Catalog
+
+📄 [Download the 2026 product catalog (PDF, 2 MB)](/downloads/MBC-Pro-Sensors-Catalog-2026-EN.pdf): every product with its editions and MSRP.
 
 ## How to Apply
 
