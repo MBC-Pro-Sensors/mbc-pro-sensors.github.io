@@ -286,7 +286,7 @@ const SOCIAL = [
   ['YouTube', 'https://www.youtube.com/@mbc_robot'],
   ['Instagram', 'https://www.instagram.com/mbc.pro.sensors/'],
   ['Threads', 'https://www.threads.com/@mbc.pro.sensors'],
-  ['Facebook', 'https://www.facebook.com/mbcrobot.creator/'],
+  ['Facebook', 'https://www.facebook.com/mbcprosensors/'],
   ['LINE', LINE_URL],
 ];
 const socialHtml = `<p class="sf-social">${SOCIAL.map(([n, u]) => `<a href="${u}" target="_blank" rel="noopener me">${n}</a>`).join(' · ')}</p>`;
