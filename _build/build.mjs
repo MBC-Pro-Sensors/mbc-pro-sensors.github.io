@@ -253,7 +253,8 @@ function renderSidebar(lang, currentUrl) {
   renderer.link = (href, title, text) => {
     const mapped = mapHref(href, file) || href;
     const active = mapped === currentUrl ? ' class="active"' : '';
-    return `<a href="${mapped}"${active} title="${escAttr(stripTags(text))}">${text}</a>`;
+    const external = /^https?:/.test(mapped) ? ' target="_blank" rel="noopener"' : '';
+    return `<a href="${mapped}"${active}${external} title="${escAttr(stripTags(text))}">${text}</a>`;
   };
   let html = marked(fs.readFileSync(path.join(ROOT, file), 'utf8'), { renderer, gfm: true });
   html = html.replace(/<li>((?:(?!<li>)[\s\S])*?class="active")/, '<li class="active">$1');

@@ -66,6 +66,9 @@
   - [SPIKE 循線 PID 教學](/articles/spike-pid-line-following.md)
   - [SPIKE 孔位不夠怎麼辦](/articles/spike-prime-more-ports.md)
 
+- **🧩 線上工具**
+  - [jBot 積木編程（網頁版）](https://jbot-block-ide.mbcrobot.workers.dev)
+
 - **📞 聯絡我們**
   - [🛒 購買管道](/where-to-buy.md)
   - [🤝 經銷合作](/distributors.md)
