@@ -40,7 +40,7 @@
 
 | 平台 | 支援方式 |
 | :--- | :--- |
-| LEGO SPIKE Prime / Robot Inventor | 官方 App、Pybricks |
+| LEGO SPIKE Prime / Robot Inventor | 官方 App、Pybricks（👉 [SPIKE 新手範例：官方 App／MBC 積木網站／Pybricks 各 5 個](/sensors/tof2/spike-examples.md)） |
 | LEGO MINDSTORMS EV3 | EV3 官方軟體、Pybricks |
 | MakeBlock | 專屬版本 |
 

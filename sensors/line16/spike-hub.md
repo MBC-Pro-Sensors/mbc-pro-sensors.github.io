@@ -70,3 +70,7 @@
     <h3 style="margin: 0 !important; font-size: 1.3rem;">pyBricks</h3>
   </a>
 </div>
+
+## 🧱 第一次用？從新手範例開始
+
+完全沒寫過程式也沒關係：[SPIKE 新手範例：循行者 16 路](/sensors/line16/spike-examples.md) 有 5 個由淺到深的範例，每個都有樂高官方 App、MBC 積木網站、Pybricks 三種寫法，附積木圖與一步一步的說明。
