@@ -52,8 +52,8 @@ The Ranger 2-Way utilizes **Laser Time-of-Flight (ToF) technology**, measuring d
 | Platform | What you read |
 | :--- | :--- |
 | SPIKE (Pybricks `PUPDevice(Port.X).read(3)`) | 1st value = left distance, 2nd value = right distance (cm, 0 ~ 120) |
-| EV3 mode 0 | Average of left and right (0 ~ 100) |
-| EV3 mode 1 | Left distance, right distance (0 ~ 100 each) |
+| EV3 mode 0 | Average of left and right (0 ~ 100: 1 unit = 1.2 cm, 100 = no target) |
+| EV3 mode 1 | Left distance, right distance (0 ~ 100 each, same scale; EV3 blocks: Beacon channel 1 Heading = left, Proximity = right) |
 
 ## 🔌 Hardware Wiring
 

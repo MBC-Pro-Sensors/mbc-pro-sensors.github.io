@@ -58,49 +58,70 @@ Use BASIC commands to read Proximity mode values.
 
 ## Read 8-Channel Photoelectric Reflection Values — Beacon Mode
 
-Use BASIC commands to read the Beacon mode value list (4 bytes).
+Use BASIC commands to read the Beacon mode value list (8 bytes).
 
-<div class="custom-table-wrapper" style="overflow-x: auto; margin: 25px 0; border: 1px solid rgba(10,186,181,0.25); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); background: #f8f9fa;">
-  <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
-    <thead>
-      <tr style="background: rgba(10,186,181,0.12); border-bottom: 2px solid rgba(10,186,181,0.25);">
-        <th style="padding: 15px 20px; color: #007a75; font-weight: bold; width: 15%;">Byte</th>
-        <th style="padding: 15px 20px; color: #007a75; font-weight: bold; width: 25%;">Content</th>
-        <th style="padding: 15px 20px; color: #007a75; font-weight: bold; width: 20%;">Range</th>
-        <th style="padding: 15px 20px; color: #007a75; font-weight: bold; width: 40%;">Decoding Method</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
-        <td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">0</td>
-        <td style="padding: 18px 20px; font-weight: bold; color: #333; vertical-align: middle;">Reflectance Ch0 + 1</td>
-        <td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">11 ~ 99</span></td>
-        <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">Tens digit = Ch0, Units digit = Ch1</td>
-      </tr>
-      <tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
-        <td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">1</td>
-        <td style="padding: 18px 20px; font-weight: bold; color: #333; vertical-align: middle;">Reflectance Ch2 + 3</td>
-        <td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">11 ~ 99</span></td>
-        <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">Tens digit = Ch2, Units digit = Ch3</td>
-      </tr>
-      <tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
-        <td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">2</td>
-        <td style="padding: 18px 20px; font-weight: bold; color: #333; vertical-align: middle;">Reflectance Ch4 + 5</td>
-        <td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">11 ~ 99</span></td>
-        <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">Tens digit = Ch4, Units digit = Ch5</td>
-      </tr>
-      <tr class="table-hover-row" style="border: none; background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
-        <td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">3</td>
-        <td style="padding: 18px 20px; font-weight: bold; color: #333; vertical-align: middle;">Reflectance Ch6 + 7</td>
-        <td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">11 ~ 99</span></td>
-        <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">Tens digit = Ch6, Units digit = Ch7</td>
-      </tr>
-    </tbody>
-  </table>
+<div class="custom-table-wrapper" style="overflow-x: auto; margin: 25px 0; border: 1px solid rgba(10,186,181,0.25); border-radius: 12px; background: #f8f9fa;">
+<table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+<thead>
+<tr style="background: rgba(10,186,181,0.12); border-bottom: 2px solid rgba(10,186,181,0.25);">
+<th style="padding: 15px 20px; color: #007a75; font-weight: bold;">Byte</th><th style="padding: 15px 20px; color: #007a75; font-weight: bold;">Content</th><th style="padding: 15px 20px; color: #007a75; font-weight: bold;">Range</th><th style="padding: 15px 20px; color: #007a75; font-weight: bold;">How to read</th>
+</tr>
+</thead>
+<tbody>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">0</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Channel 1 reflectance</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><code>raw[0]</code></td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">1</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Channel 2 reflectance</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><code>raw[1]</code></td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">2</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Channel 3 reflectance</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><code>raw[2]</code></td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">3</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Channel 4 reflectance</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><code>raw[3]</code></td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">4</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Channel 5 reflectance</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><code>raw[4]</code></td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">5</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Channel 6 reflectance</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><code>raw[5]</code></td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">6</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Channel 7 reflectance</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><code>raw[6]</code></td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">7</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Channel 8 reflectance</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><code>raw[7]</code></td>
+</tr>
+</tbody>
+</table>
 </div>
 
-> Each channel's photoelectric reflectance value has been quantized to 1 to 9 (1=darkest, 9=brightest), and two channels are combined into a two-digit number (11 to 99).
-> 👉 **Decoding Example**: If you read a Byte value of **`83`**, its **tens digit (8)** represents the quantized light value of the even channel (e.g., Channel 0), and the **units digit (3)** represents the quantized light value of the odd channel (e.g., Channel 1). This perfectly circumvents the LEGO EV3's 100 limit!
+> Each value is a calibrated reflectance: <code>0</code> = darkest (black line), <code>100</code> = brightest (white). Channel 1 is the leftmost sensor (viewed from behind the robot).
+
 
 ---
 
@@ -146,7 +167,7 @@ Use BASIC commands to read the Remote mode value list (4 bytes).
           <span style="display: inline-block; background: rgba(217,163,0,0.15); color: #b88600; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(217,163,0,0.2);">0 ~ 100</span>
         </td>
         <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">
-          👉 <code>dataIrCalib[7]</code> The reflected light of the leftmost sensor. <code>0</code>=pure black, <code>100</code>=pure white. Can be used to detect track boundaries or forks.
+          👉 <code>dataIrCalib[0]</code> (channel 1) The reflected light of the leftmost sensor. <code>0</code>=pure black, <code>100</code>=pure white. Can be used to detect track boundaries or forks.
         </td>
       </tr>
       <tr class="table-hover-row" style="border: none; background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
@@ -156,7 +177,7 @@ Use BASIC commands to read the Remote mode value list (4 bytes).
           <span style="display: inline-block; background: rgba(217,163,0,0.15); color: #b88600; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(217,163,0,0.2);">0 ~ 100</span>
         </td>
         <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">
-          👉 <code>dataIrCalib[0]</code> The reflected light of the rightmost sensor. <code>0</code>=pure black, <code>100</code>=pure white. Can be used to detect track boundaries or forks.
+          👉 <code>dataIrCalib[7]</code> (channel 8) The reflected light of the rightmost sensor. <code>0</code>=pure black, <code>100</code>=pure white. Can be used to detect track boundaries or forks.
         </td>
       </tr>
     </tbody>
@@ -205,7 +226,7 @@ Here is an introduction to the functions and usage timings of the three core sub
 * **Parameters and Returns**: Input sensor port (`port`), synchronously returns several key variables:
   * `pos100`: High-precision position, range `-100` to `+100` (also maintains the standard of left negative, right positive).
   * `width`: Real-time line width detection, the value represents the number of currently triggered sensors (range `0` to `8`). Can be used to accurately judge intersections, T-junctions, or the finish stop line.
-  * `ch1` / `ch8`: Synchronously read the physical light values of the rightmost (`ch1`) and leftmost (`ch8`) sensors (range `0` to `100`), making it convenient for users to adjust advanced strategies such as anti-derailment or intersections.
+  * `ch1` / `ch8`: Synchronously read the physical light values of the leftmost (`ch1`) and rightmost (`ch8`) sensors (range `0` to `100`), making it convenient for users to adjust advanced strategies such as anti-derailment or intersections.
 
 ### 3. Full Array Decoding Subroutine: `LineCh8_dataUpdate`
 * **Purpose**: Thoroughly decode the 8 sensors into independent states. Applicable for writing custom special intersection judgment algorithms, triggering monitoring of sensors at specific positions, or drawing the sensor status directly on the screen of the EV3 hub.

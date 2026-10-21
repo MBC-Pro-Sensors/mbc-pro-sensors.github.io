@@ -41,7 +41,7 @@
 | 平台 | 支援方式 |
 | :--- | :--- |
 | LEGO SPIKE Prime / Robot Inventor | 官方 App、Pybricks（👉 [SPIKE 新手範例：官方 App／MBC 積木網站／Pybricks 各 5 個](/sensors/tof2/spike-examples.md)） |
-| LEGO MINDSTORMS EV3 | EV3 官方軟體、Pybricks |
+| LEGO MINDSTORMS EV3 | EV3 官方軟體、Pybricks（[EV3 新手範例](/sensors/tof2/ev3-examples.md)） |
 | MakeBlock | 專屬版本 |
 
 > [!IMPORTANT]
@@ -52,8 +52,8 @@
 | 平台 | 讀到的內容 |
 | :--- | :--- |
 | SPIKE（Pybricks `PUPDevice(Port.X).read(3)`） | 第 1 個值 = 左距離、第 2 個值 = 右距離（cm，0 ~ 120） |
-| EV3 模式 0 | 左右平均距離（0 ~ 100） |
-| EV3 模式 1 | 左距離、右距離（各 0 ~ 100） |
+| EV3 模式 0 | 左右平均距離（0 ~ 100：1 格＝1.2 cm，100＝沒有目標） |
+| EV3 模式 1 | 左距離、右距離（各 0 ~ 100，同上換算；EV3 積木＝信標頻道 1 的「方向」＝左、「近接」＝右） |
 
 ## 🔌 硬體接線
 

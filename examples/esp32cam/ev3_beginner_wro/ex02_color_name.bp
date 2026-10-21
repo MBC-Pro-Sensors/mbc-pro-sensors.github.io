@@ -1,0 +1,46 @@
+' ============================================================
+' 神攝手 ESP32CAM 視覺感應器（WRO 2026 版 HUE12） EV3 新手範例 02：顏色播報：螢幕顯示顏色名稱
+' 軟體：clev3r
+' 接法：神攝手（WRO 版）插 1 號孔；左輪馬達接 B、右輪馬達接 C
+' 這個範例會做什麼：把顏色碼分成幾段，判斷是紅、綠、藍、白、黑，在螢幕上顯示英文名稱並嗶一聲。
+' 讀值：hue1＝色點 S1 的顏色碼（0 ~ 239 彩色（紅 0/239、黃 40、綠 80、青 120、藍 160、紫 200）；240~245 白；246~250 黑；255＝色點沒開）
+' ============================================================
+folder "prjs" "MBC_esp32cam_wro_ex02"
+
+' 神攝手（WRO 版）插 1 號孔，使用模式 0
+Sensor.SetMode(1, 0)
+LCD.Clear()
+
+' 一直重複
+While "True"
+  ' 把 S1 的顏色碼存進 hue
+  hue = Math.Remainder(Sensor.ReadRawValue(1, 0), 256)
+  ' 清除螢幕
+  LCD.Clear()
+  ' 如果是紅色
+  If (hue < 15) Or ((hue > 225) And (hue < 240)) Then
+    ' 0~14 或 226~239：紅色
+    LCD.Text(1, 0, 0, 1, "RED      ")
+  ' 否則，如果是綠色
+  ElseIf (hue >= 60) And (hue <= 100) Then
+    ' 60~100：綠色
+    LCD.Text(1, 0, 0, 1, "GREEN      ")
+  ' 否則，如果是藍色
+  ElseIf (hue >= 140) And (hue <= 180) Then
+    ' 140~180：藍色
+    LCD.Text(1, 0, 0, 1, "BLUE      ")
+  ' 否則，如果是白色
+  ElseIf (hue >= 240) And (hue <= 245) Then
+    ' 240~245：白色
+    LCD.Text(1, 0, 0, 1, "WHITE      ")
+  ' 否則，如果是黑色
+  ElseIf (hue >= 246) And (hue <= 250) Then
+    ' 246~250：黑色
+    LCD.Text(1, 0, 0, 1, "BLACK      ")
+  Else
+    ' 其他顏色
+    LCD.Text(1, 0, 0, 1, "OTHER      ")
+  EndIf
+  ' 等 0.3 秒
+  Program.Delay(300)
+EndWhile

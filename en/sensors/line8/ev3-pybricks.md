@@ -62,9 +62,9 @@ We have provided core example programs and exclusive library functions. Please c
       <div class="func-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
           <code style="color: #00d2ff; font-size: 0.95rem; font-weight: bold;">device.mode(1)</code>
-          <span style="background: rgba(217,163,0,0.15); color: #d9a300; padding: 3px 10px; border-radius: 20px; font-family: monospace; font-size: 0.75rem; white-space: nowrap;">Tuple (4 Bytes)</span>
+          <span style="background: rgba(217,163,0,0.15); color: #d9a300; padding: 3px 10px; border-radius: 20px; font-family: monospace; font-size: 0.75rem; white-space: nowrap;">Tuple (8 Bytes)</span>
         </div>
-        <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;"><strong>Full View Debug Mode</strong>: Returns 8-channel compressed light values. Two adjacent channels are compressed into a two-digit number (<code>11~99</code>).</p>
+        <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;"><strong>Full View Debug Mode</strong>: Returns the 8 calibrated reflectance values, <code>0~100</code> each (0 = darkest, 100 = brightest); channel 1 is the leftmost.</p>
       </div>
       <div class="func-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">

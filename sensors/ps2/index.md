@@ -36,7 +36,7 @@ LEGO 原廠提供的紅外線遙控器按鈕少得可憐，而使用兩台 EV3 �
 | 平台 | 支援方式 |
 | :--- | :--- |
 | LEGO SPIKE Prime / Robot Inventor | 官方 App、Pybricks（👉 [SPIKE 新手範例：官方 App／MBC 積木網站／Pybricks 各 5 個](/sensors/ps2/spike-examples.md)） |
-| LEGO MINDSTORMS EV3 | EV3 官方軟體、Pybricks |
+| LEGO MINDSTORMS EV3 | EV3 官方軟體、Pybricks（[EV3 新手範例](/sensors/ps2/ev3-examples.md)） |
 | Arduino / ESP32 / 樹莓派 | 通用 I2C（位址 `0x42`） |
 | MakeBlock | 專屬版本 |
 

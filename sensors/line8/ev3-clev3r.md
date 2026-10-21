@@ -60,49 +60,70 @@
 
 ## 讀取 8 路光電反射值 — Beacon 模式
 
-使用 BASIC 指令讀取 Beacon 模式數值列表（4 bytes）。
+使用 BASIC 指令讀取 Beacon 模式數值列表（8 bytes）。
 
-<div class="custom-table-wrapper" style="overflow-x: auto; margin: 25px 0; border: 1px solid rgba(10,186,181,0.25); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); background: #f8f9fa;">
-  <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
-    <thead>
-      <tr style="background: rgba(10,186,181,0.12); border-bottom: 2px solid rgba(10,186,181,0.25);">
-        <th style="padding: 15px 20px; color: #007a75; font-weight: bold; width: 15%;">Byte</th>
-        <th style="padding: 15px 20px; color: #007a75; font-weight: bold; width: 25%;">內容</th>
-        <th style="padding: 15px 20px; color: #007a75; font-weight: bold; width: 20%;">範圍</th>
-        <th style="padding: 15px 20px; color: #007a75; font-weight: bold; width: 40%;">解碼方式</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
-        <td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">0</td>
-        <td style="padding: 18px 20px; font-weight: bold; color: #333; vertical-align: middle;">光電反射值0 + 1</td>
-        <td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">11 ~ 99</span></td>
-        <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">十位數=通道0，個位數=通道1</td>
-      </tr>
-      <tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
-        <td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">1</td>
-        <td style="padding: 18px 20px; font-weight: bold; color: #333; vertical-align: middle;">光電反射值2 + 3</td>
-        <td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">11 ~ 99</span></td>
-        <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">十位數=通道2，個位數=通道3</td>
-      </tr>
-      <tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
-        <td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">2</td>
-        <td style="padding: 18px 20px; font-weight: bold; color: #333; vertical-align: middle;">光電反射值4 + 5</td>
-        <td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">11 ~ 99</span></td>
-        <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">十位數=通道4，個位數=通道5</td>
-      </tr>
-      <tr class="table-hover-row" style="border: none; background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
-        <td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">3</td>
-        <td style="padding: 18px 20px; font-weight: bold; color: #333; vertical-align: middle;">光電反射值6 + 7</td>
-        <td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">11 ~ 99</span></td>
-        <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">十位數=通道6，個位數=通道7</td>
-      </tr>
-    </tbody>
-  </table>
+<div class="custom-table-wrapper" style="overflow-x: auto; margin: 25px 0; border: 1px solid rgba(10,186,181,0.25); border-radius: 12px; background: #f8f9fa;">
+<table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+<thead>
+<tr style="background: rgba(10,186,181,0.12); border-bottom: 2px solid rgba(10,186,181,0.25);">
+<th style="padding: 15px 20px; color: #007a75; font-weight: bold;">Byte</th><th style="padding: 15px 20px; color: #007a75; font-weight: bold;">內容</th><th style="padding: 15px 20px; color: #007a75; font-weight: bold;">範圍</th><th style="padding: 15px 20px; color: #007a75; font-weight: bold;">怎麼讀</th>
+</tr>
+</thead>
+<tbody>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">0</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">第 1 路反射值</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><code>raw[0]</code></td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">1</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">第 2 路反射值</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><code>raw[1]</code></td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">2</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">第 3 路反射值</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><code>raw[2]</code></td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">3</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">第 4 路反射值</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><code>raw[3]</code></td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">4</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">第 5 路反射值</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><code>raw[4]</code></td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">5</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">第 6 路反射值</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><code>raw[5]</code></td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">6</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">第 7 路反射值</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><code>raw[6]</code></td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">7</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">第 8 路反射值</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><code>raw[7]</code></td>
+</tr>
+</tbody>
+</table>
 </div>
 
-> 每路光電反射值已被量化為 1 至 9（1=最暗，9=最亮），兩路合併為一個兩位數（11 至 99）。
-> 👉 **解碼範例**：若讀取到某個 Byte 數值為 **`83`**，其**十位數 (8)** 代表偶數通道（如通道 0）的量化光值，**個位數 (3)** 代表奇數通道（如通道 1）的量化光值。這能完美避開樂高 EV3 的 100 數值限制！
+> 每一路都是校準後的反射值：<code>0</code>＝最暗（黑線）、<code>100</code>＝最亮（白底）。第 1 路在最左邊（站在車子後面、面向車頭看）。
+
 
 ---
 
@@ -148,7 +169,7 @@
           <span style="display: inline-block; background: rgba(217,163,0,0.15); color: #b88600; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(217,163,0,0.2);">0 ~ 100</span>
         </td>
         <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">
-          👉 <code>dataIrCalib[7]</code> 最左邊感測器的反射光。<code>0</code>=純黑，<code>100</code>=純白。可用於偵測賽道邊界或分岔。
+          👉 <code>dataIrCalib[0]</code>（第 1 路）最左邊感測器的反射光。<code>0</code>=純黑，<code>100</code>=純白。可用於偵測賽道邊界或分岔。
         </td>
       </tr>
       <tr class="table-hover-row" style="border: none; background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
@@ -158,7 +179,7 @@
           <span style="display: inline-block; background: rgba(217,163,0,0.15); color: #b88600; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(217,163,0,0.2);">0 ~ 100</span>
         </td>
         <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">
-          👉 <code>dataIrCalib[0]</code> 最右邊感測器的反射光。<code>0</code>=純黑，<code>100</code>=純白。可用於偵測賽道邊界或分岔。
+          👉 <code>dataIrCalib[7]</code>（第 8 路）最右邊感測器的反射光。<code>0</code>=純黑，<code>100</code>=純白。可用於偵測賽道邊界或分岔。
         </td>
       </tr>
     </tbody>
@@ -207,7 +228,7 @@
 * **參數與回傳值**：輸入感應器連接埠（`port`），會同步回傳多個關鍵變數：
   * `pos100`：高精度位置，範圍 `-100` 到 `+100`（同樣維持左負右正的標準）。
   * `width`：即時線寬偵測，數值代表目前觸發的感應器數量（範圍 `0` 到 `8`）。可用於精準判斷十字路口、T 型路口或終點停止線。
-  * `ch1` / `ch8`：同步讀取最右邊 (`ch1`) 與最左邊 (`ch8`) 感應器的實體光值（範圍 `0` 到 `100`），方便使用者作防掉線或交叉路口等進階策略調整。
+  * `ch1` / `ch8`：同步讀取最左邊 (`ch1`) 與最右邊 (`ch8`) 感應器的實體光值（範圍 `0` 到 `100`），方便使用者作防掉線或交叉路口等進階策略調整。
 
 ### 3. 全陣列解碼函數：`LineCh8_dataUpdate`
 * **功能目的**：將 8 顆感應器徹底解碼為獨立狀態，適用於撰寫自訂的特殊路口判斷演算法、特定位置的感應器觸發監控，或是將感應器狀態直接繪製於 EV3 主機的螢幕畫面上。

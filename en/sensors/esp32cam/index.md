@@ -46,6 +46,15 @@ The Sharpshooter ESP32CAM gives your robot real eyes: it finds the position and 
 | Blob Y | Vertical position of the blob center |
 | Motion value | `0` ~ `100`, higher = more change in the image |
 
+### Values read on EV3
+
+The EV3 edition ships with one of two firmwares:
+
+| Firmware | Shows on EV3 as | Values |
+| :--- | :--- | :--- |
+| School / creative edition (color pick + blob tracking + motion) | Infrared Sensor | Mode 0: Hue (`0` ~ `100`; red 0/100, yellow ≈17, green ≈33, blue ≈67; `-1` = black/white/gray). Mode 1 (8 values): Hue, saturation, brightness, motion, blob X (`0` ~ `100`, left→right), Y (`0` ~ `75`, bottom→top), width, height; X/Y/width/height are all `0` when nothing is found, so test "width = 0" |
+| WRO 2026 edition (HUE12, 12 color points) | Third-party sensor (type 95) | Hue code of each of the 12 points (`0` ~ `239` color, `240` ~ `245` white, `246` ~ `250` black, `255` = point not enabled) plus saturation. Works with EV3-G (MBC custom block), clev3r and Pybricks; **EV3 Classroom cannot read it** |
+
 ## 🧩 Supported Platforms
 
 | Platform | How |
@@ -60,5 +69,5 @@ The Sharpshooter ESP32CAM gives your robot real eyes: it finds the position and 
 ## 🔌 Hardware Wiring
 
 1. Plug the sensor into SPIKE (Port A~F) or EV3 (Port 1~4)
-2. Once the screen shows the camera image, it is ready
+2. The sensor starts only after it is connected to a controller that is **already powered on** (the screen shows "LEGO Sync..." first); once the camera image appears it is ready
 3. Short-press the side button to open the setup menu; use left / right to choose and enter to confirm. Color setups and camera settings are saved automatically

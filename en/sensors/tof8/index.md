@@ -63,7 +63,7 @@ The 8 laser ranging units are distributed at fixed angles, covering a complete 1
 
 ## 📤 Output Data
 
-**Bearing:** `0` ~ `16`, `8` = straight ahead; smaller = further left, larger = further right. The EV3 and I2C editions report it as `-8` (far left) ~ `+8` (far right), `0` = straight ahead.
+**Bearing:** `0` ~ `16`, `8` = straight ahead; smaller = further left, larger = further right. The I2C edition reports it as `-8` (far left) ~ `+8` (far right), `0` = straight ahead. EV3 edition: a single sensor bearing is `-7` ~ `+7` (negative = left, positive = right); `±8` means no target within 120 cm (not far left / far right).
 
 ### SPIKE Modes (Pybricks: `PUPDevice(Port.X).read(mode)`)
 
@@ -78,9 +78,9 @@ The 8 laser ranging units are distributed at fixed angles, covering a complete 1
 
 | Mode | Content |
 | :---: | :--- |
-| 0 | Distance straight ahead (average of the two 0° sensors, 0 ~ 100) |
+| 0 | Distance straight ahead (average of the two 0° sensors, 0 ~ 100: 1 unit = 1.2 cm, 100 = no target) |
 | 1 | All 8 distances (0 ~ 100 each) |
-| 2 | Nearest bearing (-8 ~ +8), nearest distance, farthest bearing, farthest distance |
+| 2 | Nearest bearing (-7 ~ +7, ±8 = no target), nearest distance, farthest bearing, farthest distance |
 
 ## ∿ Universal I2C Registers (address `0x29`)
 
@@ -116,6 +116,6 @@ if (iicRead(0x29, 0x11, d, 6)) {
 
 ## ❓ FAQ
 
-- **❓ Reading 120 cm (1200 mm)?** → Nothing is within range in that direction — this is normal.
+- **❓ Reading 120 cm (1200 mm)?** → Nothing is within range in that direction — this is normal (EV3 reads 100).
 - **❓ The two 0° sensors read differently?** → Tiny angle differences between them cause small deviations; average them (EV3 mode 0 already does).
 - **❓ One sensor never reports?** → Check the fault bitmaps (SPIKE mode 9 or I2C `0x34`~`0x36`) to see which one, then [contact us](/en/contact.md) for service.

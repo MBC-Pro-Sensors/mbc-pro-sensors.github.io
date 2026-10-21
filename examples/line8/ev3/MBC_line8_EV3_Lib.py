@@ -27,7 +27,7 @@ _PORT_LETTER = {1: 'S1', 2: 'S2', 3: 'S3', 4: 'S4'}
 # ════════════════════════════════════════════════════════════════
 #  Mode layout
 #
-#  mode 0: data[0] = pos8,    range -8~+8  (negative=right, positive=left)
+#  mode 0: data[0] = pos8,    range -8~+8  (negative=left, positive=right)
 #  mode 1: data[0~7] = 8 raw IR calibration values, one per channel
 #          data[0]=ch1 (rightmost), data[7]=ch8 (leftmost), range 0~100 each
 #  mode 2: data[0] = pos100,  range -100~+100

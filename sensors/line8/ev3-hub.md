@@ -43,3 +43,6 @@
     <h3 style="margin: 0 !important; font-size: 1.3rem; text-align: center;">pyBricks</h3>
   </a>
 </div>
+
+> [!TIP]
+> **第一次寫程式？** 先看 [EV3 新手範例 5 個](/sensors/line8/ev3-examples.md)：顯示線位置、三段式循線、比例循線、路口停車、數路口，每個都有 EV3-G、EV3 Classroom、Pybricks、clev3r 現成程式檔和一步一步的說明。

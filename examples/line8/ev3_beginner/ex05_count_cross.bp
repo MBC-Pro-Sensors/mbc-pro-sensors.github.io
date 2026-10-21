@@ -1,0 +1,45 @@
+' ============================================================
+' 循行者 8 路循線感應器 EV3 新手範例 05：數路口：第 3 個路口停車
+' 軟體：clev3r
+' 接法：循行者 8 路插 1 號孔；左輪馬達接 B、右輪馬達接 C
+' 這個範例會做什麼：比賽常常要「走到第幾個路口」。這個範例用一個變數 count 數路口，用另一個變數 onCross 記住「現在是不是正壓在路口上」，避免同一個路口被數很多次。
+' 讀值：pos100＝線的位置（細）（-100 ~ +100，0＝線在正中間）；width＝線的寬度（壓到黑線的格數）（0 ~ 8，0＝看不到線）
+' ============================================================
+folder "prjs" "MBC_line8_ex05"
+
+' 循行者 8 路插 1 號孔，使用模式 2
+Sensor.SetMode(1, 2)
+LCD.Clear()
+
+' 路口數 count 從 0 開始
+count = 0
+' onCross＝0 代表「現在不在路口上」
+onCross = 0
+' 一直循線，直到數滿 3 個路口
+While count < 3
+  ' 比例循線：turn ＝ 線的位置 × 0.3
+  turn = Sensor.ReadRawValue(1, 0) * 0.3
+  ' 左輪＝25＋turn、右輪＝25－turn
+  Motor.StartPower("B", 25 + turn)
+  Motor.StartPower("C", 25 - turn)
+  ' 如果線寬大於等於 6（壓在路口上）
+  If Sensor.ReadRawValue(1, 1) >= 6 Then
+    ' 而且剛剛還不在路口上
+    If onCross = 0 Then
+      ' 剛壓到新路口：count 加 1
+      count = count + 1
+      ' 記住「正在路口上」，同一個路口不要再數
+      onCross = 1
+      ' 嗶一聲
+      Speaker.Tone(50, 1000, 100)
+      Speaker.Wait()
+    EndIf
+  Else
+    ' 離開路口了：onCross 改回 0，準備數下一個
+    onCross = 0
+  EndIf
+  ' 螢幕顯示已經數到第幾個路口
+  LCD.Text(1, 0, 0, 1, "COUNT " + count + "      ")
+EndWhile
+' 停車
+Motor.Stop("BC", "True")

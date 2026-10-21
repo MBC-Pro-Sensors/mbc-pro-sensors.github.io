@@ -14,7 +14,7 @@ PosLast = 0
 
 Function LinePos8_dataUpdate(in number port, out number pos8)
   Sensor.SetMode(port, 0)
-  pos16 = Sensor.ReadRawValue(port, 0)
+  pos8 = Sensor.ReadRawValue(port, 0)
 EndFunction
 
 Function LineCh8_dataUpdate(in number port, out number[] light8)
@@ -57,7 +57,7 @@ While "True"
   LCD.Text(1, 0, 60, 2, "Width: " + width + "   ")
   LCD.Text(1, 0, 80, 2, "CH1 :" + ch1 + "  ")
   LCD.Text(1, 0, 100, 2, "CH8:" + ch8 + "  ")
-  IF width > 10 Then
+  IF width > 5 Then
     MotorB.StartPower(0)
     MotorC.StartPower(0)
   Else

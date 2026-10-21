@@ -42,6 +42,9 @@ In the official EV3 software, use the standard gyro block; each mode maps to:
 > [!WARNING]
 > The magnetometer is affected by motors, steel tables, speakers and other magnetic sources. In magnetically noisy places, use **Gyro3D**.
 
+> [!NOTE]
+> In **EV3 Classroom** the Angle and Rate blocks behave as in the table above ("Rate" returns the fused heading, not degrees per second). In **Pybricks (EV3)**, `GyroSensor.angle()` returns the single-axis gyro heading and `speed()` returns the magnetometer heading (relative, not north); `reset_angle(0)` works normally.
+
 ## 🧩 Supported Platforms
 
 | Platform | How |

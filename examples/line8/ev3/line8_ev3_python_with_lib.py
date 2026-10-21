@@ -25,7 +25,7 @@ posLast = 0
 line_init_port_multitask(4, False)
 while True:
     print(line_pos100(), line_width(), line_edge_l(), line_edge_r())
-    if line_width() > 10:
+    if line_width() > 5:
         motorL.dc(0)
         motorR.dc(0)
     else:

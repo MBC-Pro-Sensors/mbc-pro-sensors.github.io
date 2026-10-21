@@ -62,9 +62,9 @@
       <div class="func-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
           <code style="color: #00d2ff; font-size: 0.95rem; font-weight: bold;">device.mode(1)</code>
-          <span style="background: rgba(217,163,0,0.15); color: #d9a300; padding: 3px 10px; border-radius: 20px; font-family: monospace; font-size: 0.75rem; white-space: nowrap;">Tuple (4 Bytes)</span>
+          <span style="background: rgba(217,163,0,0.15); color: #d9a300; padding: 3px 10px; border-radius: 20px; font-family: monospace; font-size: 0.75rem; white-space: nowrap;">Tuple (8 Bytes)</span>
         </div>
-        <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;"><strong>全覽除錯模式</strong>：回傳 8 路壓縮光值。相鄰兩路壓縮為一個兩位數（<code>11~99</code>）。</p>
+        <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;"><strong>全覽除錯模式</strong>：回傳 8 路校準後的反射值，每路 <code>0~100</code>（0＝最暗、100＝最亮），第 1 路在最左邊。</p>
       </div>
       <div class="func-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">

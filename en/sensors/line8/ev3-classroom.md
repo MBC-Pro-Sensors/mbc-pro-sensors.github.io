@@ -66,49 +66,70 @@ Use the sensor block, select **Proximity mode**, and read the `value` to get the
   <img src="/images/sensors/ev3-blocks/classroom/mode-beacon.webp" alt="EV3 Classroom Beacon Mode Block" style="max-height: 80px; border-radius: 8px; filter: drop-shadow(0 5px 15px rgba(10,186,181,0.2));" />
 </div>
 
-Use the sensor block, select **Beacon mode**, and read the `value list` (4 bytes).
+Use the sensor block, select **Beacon mode**, and read the `value list` (8 bytes).
 
-<div class="custom-table-wrapper" style="overflow-x: auto; margin: 25px 0; border: 1px solid rgba(10,186,181,0.25); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); background: #f8f9fa;">
-  <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
-    <thead>
-      <tr style="background: rgba(10,186,181,0.12); border-bottom: 2px solid rgba(10,186,181,0.25);">
-        <th style="padding: 15px 20px; color: #007a75; font-weight: bold; width: 15%;">Byte</th>
-        <th style="padding: 15px 20px; color: #007a75; font-weight: bold; width: 25%;">Content</th>
-        <th style="padding: 15px 20px; color: #007a75; font-weight: bold; width: 20%;">Range</th>
-        <th style="padding: 15px 20px; color: #007a75; font-weight: bold; width: 40%;">Decoding Method</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
-        <td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">0</td>
-        <td style="padding: 18px 20px; font-weight: bold; color: #333; vertical-align: middle;">Reflectance Ch0 + 1</td>
-        <td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">11 ~ 99</span></td>
-        <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">Tens digit = Ch0, Units digit = Ch1</td>
-      </tr>
-      <tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
-        <td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">1</td>
-        <td style="padding: 18px 20px; font-weight: bold; color: #333; vertical-align: middle;">Reflectance Ch2 + 3</td>
-        <td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">11 ~ 99</span></td>
-        <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">Tens digit = Ch2, Units digit = Ch3</td>
-      </tr>
-      <tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
-        <td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">2</td>
-        <td style="padding: 18px 20px; font-weight: bold; color: #333; vertical-align: middle;">Reflectance Ch4 + 5</td>
-        <td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">11 ~ 99</span></td>
-        <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">Tens digit = Ch4, Units digit = Ch5</td>
-      </tr>
-      <tr class="table-hover-row" style="border: none; background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
-        <td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">3</td>
-        <td style="padding: 18px 20px; font-weight: bold; color: #333; vertical-align: middle;">Reflectance Ch6 + 7</td>
-        <td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">11 ~ 99</span></td>
-        <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">Tens digit = Ch6, Units digit = Ch7</td>
-      </tr>
-    </tbody>
-  </table>
+<div class="custom-table-wrapper" style="overflow-x: auto; margin: 25px 0; border: 1px solid rgba(10,186,181,0.25); border-radius: 12px; background: #f8f9fa;">
+<table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+<thead>
+<tr style="background: rgba(10,186,181,0.12); border-bottom: 2px solid rgba(10,186,181,0.25);">
+<th style="padding: 15px 20px; color: #007a75; font-weight: bold;">Byte</th><th style="padding: 15px 20px; color: #007a75; font-weight: bold;">Content</th><th style="padding: 15px 20px; color: #007a75; font-weight: bold;">Range</th><th style="padding: 15px 20px; color: #007a75; font-weight: bold;">How to read</th>
+</tr>
+</thead>
+<tbody>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">0</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Channel 1 reflectance</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Beacon channel 1 — Heading</td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">1</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Channel 2 reflectance</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Beacon channel 1 — Proximity</td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">2</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Channel 3 reflectance</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Beacon channel 2 — Heading</td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">3</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Channel 4 reflectance</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Beacon channel 2 — Proximity</td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">4</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Channel 5 reflectance</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Beacon channel 3 — Heading</td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">5</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Channel 6 reflectance</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Beacon channel 3 — Proximity</td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">6</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Channel 7 reflectance</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Beacon channel 4 — Heading</td>
+</tr>
+<tr class="table-hover-row" style="border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.01);">
+<td style="padding: 18px 20px; font-weight: bold; color: #111; vertical-align: middle;">7</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Channel 8 reflectance</td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;"><span style="display: inline-block; background: rgba(10,186,181,0.15); color: #007a75; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(10,186,181,0.2);">0 ~ 100</span></td>
+<td style="padding: 18px 20px; color: #444; vertical-align: middle;">Beacon channel 4 — Proximity</td>
+</tr>
+</tbody>
+</table>
 </div>
 
-> Each channel's photoelectric reflectance value has been quantized to 1 to 9 (1=darkest, 9=brightest), and two channels are combined into a two-digit number (11 to 99).
-> 👉 **Decoding Example**: If you read a Byte value of **`83`**, its **tens digit (8)** represents the quantized light value of the even channel (e.g., Channel 0), and the **units digit (3)** represents the quantized light value of the odd channel (e.g., Channel 1). This perfectly circumvents the LEGO EV3's 100 limit!
+> Each value is a calibrated reflectance: <code>0</code> = darkest (black line), <code>100</code> = brightest (white). Channel 1 is the leftmost sensor (viewed from behind the robot).
+
 
 ---
 
@@ -158,7 +179,7 @@ Use the sensor block, select **Remote mode**, and read the `value list` (4 bytes
           <span style="display: inline-block; background: rgba(217,163,0,0.15); color: #b88600; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(217,163,0,0.2);">0 ~ 100</span>
         </td>
         <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">
-          👉 <code>dataIrCalib[7]</code> The reflected light of the leftmost sensor. <code>0</code>=pure black, <code>100</code>=pure white. Can be used to detect track boundaries or forks.
+          👉 <code>dataIrCalib[0]</code> (channel 1) The reflected light of the leftmost sensor. <code>0</code>=pure black, <code>100</code>=pure white. Can be used to detect track boundaries or forks.
         </td>
       </tr>
       <tr class="table-hover-row" style="border: none; background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
@@ -168,7 +189,7 @@ Use the sensor block, select **Remote mode**, and read the `value list` (4 bytes
           <span style="display: inline-block; background: rgba(217,163,0,0.15); color: #b88600; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(217,163,0,0.2);">0 ~ 100</span>
         </td>
         <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">
-          👉 <code>dataIrCalib[0]</code> The reflected light of the rightmost sensor. <code>0</code>=pure black, <code>100</code>=pure white. Can be used to detect track boundaries or forks.
+          👉 <code>dataIrCalib[7]</code> (channel 8) The reflected light of the rightmost sensor. <code>0</code>=pure black, <code>100</code>=pure white. Can be used to detect track boundaries or forks.
         </td>
       </tr>
     </tbody>
