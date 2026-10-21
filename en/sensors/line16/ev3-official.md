@@ -182,7 +182,7 @@ Use the sensor block, select **Remote mode**, and read the `value list` (4 bytes
           <span style="display: inline-block; background: rgba(217,163,0,0.15); color: #b88600; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(217,163,0,0.2);">0 ~ 100</span>
         </td>
         <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">
-          👉 <code>dataIrCalib[15]</code> The reflected light of the leftmost sensor. <code>0</code>=pure black, <code>100</code>=pure white. Can be used to detect track boundaries or forks.
+          👉 <code>dataIrCalib[0]</code> (channel 1) The reflected light of the leftmost sensor. <code>0</code>=pure black, <code>100</code>=pure white. Can be used to detect track boundaries or forks.
         </td>
       </tr>
       <tr class="table-hover-row" style="border: none; background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
@@ -192,7 +192,7 @@ Use the sensor block, select **Remote mode**, and read the `value list` (4 bytes
           <span style="display: inline-block; background: rgba(217,163,0,0.15); color: #b88600; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(217,163,0,0.2);">0 ~ 100</span>
         </td>
         <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">
-          👉 <code>dataIrCalib[0]</code> The reflected light of the rightmost sensor. <code>0</code>=pure black, <code>100</code>=pure white. Can be used to detect track boundaries or forks.
+          👉 <code>dataIrCalib[15]</code> (channel 16) The reflected light of the rightmost sensor. <code>0</code>=pure black, <code>100</code>=pure white. Can be used to detect track boundaries or forks.
         </td>
       </tr>
     </tbody>

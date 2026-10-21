@@ -182,7 +182,7 @@
           <span style="display: inline-block; background: rgba(217,163,0,0.15); color: #b88600; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(217,163,0,0.2);">0 ~ 100</span>
         </td>
         <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">
-          👉 <code>dataIrCalib[15]</code> 最左邊感測器的反射光。<code>0</code>=純黑，<code>100</code>=純白。可用於偵測賽道邊界或分岔。
+          👉 <code>dataIrCalib[0]</code>（第 1 路）最左邊感測器的反射光。<code>0</code>=純黑，<code>100</code>=純白。可用於偵測賽道邊界或分岔。
         </td>
       </tr>
       <tr class="table-hover-row" style="border: none; background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
@@ -192,7 +192,7 @@
           <span style="display: inline-block; background: rgba(217,163,0,0.15); color: #b88600; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(217,163,0,0.2);">0 ~ 100</span>
         </td>
         <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">
-          👉 <code>dataIrCalib[0]</code> 最右邊感測器的反射光。<code>0</code>=純黑，<code>100</code>=純白。可用於偵測賽道邊界或分岔。
+          👉 <code>dataIrCalib[15]</code>（第 16 路）最右邊感測器的反射光。<code>0</code>=純黑，<code>100</code>=純白。可用於偵測賽道邊界或分岔。
         </td>
       </tr>
     </tbody>

@@ -170,7 +170,7 @@ Use BASIC commands to read the Remote mode value list (4 bytes).
           <span style="display: inline-block; background: rgba(217,163,0,0.15); color: #b88600; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(217,163,0,0.2);">0 ~ 100</span>
         </td>
         <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">
-          👉 <code>dataIrCalib[15]</code> The reflected light of the leftmost sensor. <code>0</code>=pure black, <code>100</code>=pure white. Can be used to detect track boundaries or forks.
+          👉 <code>dataIrCalib[0]</code> (channel 1) The reflected light of the leftmost sensor. <code>0</code>=pure black, <code>100</code>=pure white. Can be used to detect track boundaries or forks.
         </td>
       </tr>
       <tr class="table-hover-row" style="border: none; background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
@@ -180,7 +180,7 @@ Use BASIC commands to read the Remote mode value list (4 bytes).
           <span style="display: inline-block; background: rgba(217,163,0,0.15); color: #b88600; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(217,163,0,0.2);">0 ~ 100</span>
         </td>
         <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">
-          👉 <code>dataIrCalib[0]</code> The reflected light of the rightmost sensor. <code>0</code>=pure black, <code>100</code>=pure white. Can be used to detect track boundaries or forks.
+          👉 <code>dataIrCalib[15]</code> (channel 16) The reflected light of the rightmost sensor. <code>0</code>=pure black, <code>100</code>=pure white. Can be used to detect track boundaries or forks.
         </td>
       </tr>
     </tbody>
@@ -229,7 +229,7 @@ Here is an introduction to the functions and usage timings of the three core sub
 * **Parameters and Returns**: Input sensor port (`port`), synchronously returns several key variables:
   * `pos100`: High-precision position, range `-100` to `+100` (also maintains the standard of left negative, right positive).
   * `width`: Real-time line width detection, the value represents the number of currently triggered sensors (range `0` to `16`). Can be used to accurately judge intersections, T-junctions, or the finish stop line.
-  * `ch1` / `ch16`: Synchronously read the physical light values of the rightmost (`ch1`) and leftmost (`ch16`) sensors (range `0` to `100`), making it convenient for users to adjust advanced strategies such as anti-derailment or intersections.
+  * `ch1` / `ch16`: Synchronously read the physical light values of the leftmost (`ch1`) and rightmost (`ch16`) sensors (range `0` to `100`), making it convenient for users to adjust advanced strategies such as anti-derailment or intersections.
 
 ### 3. Full Array Decoding Subroutine: `LineCh16_dataUpdate`
 * **Purpose**: Thoroughly decode the 16 sensors into independent states. Applicable for writing custom special intersection judgment algorithms, triggering monitoring of sensors at specific positions, or drawing the sensor status directly on the screen of the EV3 hub.
