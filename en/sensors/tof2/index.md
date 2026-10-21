@@ -42,10 +42,22 @@ The Ranger 2-Way utilizes **Laser Time-of-Flight (ToF) technology**, measuring d
 | :--- | :--- |
 | LEGO SPIKE Prime / Robot Inventor | Official app, Pybricks |
 | LEGO MINDSTORMS EV3 | EV3 official software, Pybricks |
-| MakeBlock | Dedicated edition |
+| MakeBlock (mBot etc.) | Dedicated edition, [blocks & wiring](/en/makeblock.md) |
+| Arduino / ESP32 (Universal I2C edition, coming soon) | Address `0x29`, [Arduino Examples](/en/sensors/tof2/arduino-examples.md) |
 
 > [!IMPORTANT]
 > Each platform is a **different factory edition**; please order the one that matches your controller.
+
+## 📥 Example Downloads
+
+| Hub | Files |
+| :--- | :--- |
+| SPIKE (Pybricks 4.0.0) | [Download all (.zip)](/examples/tof2/tof2_pybricks_spike_v4.0.0.zip) · [No library (blocks)](/examples/tof2/pybricks/For%20firmware%204.0.0/tof2_block_native_v400.py) · [Library example (blocks)](/examples/tof2/pybricks/For%20firmware%204.0.0/tof2_block_with_lib_v400.py) · [Library MBC_laser2_obj_Lib.py](/examples/tof2/pybricks/For%20firmware%204.0.0/MBC_laser2_obj_Lib.py) |
+| SPIKE (Pybricks 3.6.1) | [No library (Python)](/examples/tof2/pybricks/For%20firmware%203.6.1/tof2_python_native_v361.py) |
+| EV3 | [EV3 beginner examples (in Chinese)](/sensors/tof2/ev3-examples.md) |
+| mBot etc. (MakeBlock) | [Block extension and examples](/en/makeblock.md) |
+
+> Import the library file into the same Pybricks project without renaming it.
 
 ## 📤 Output Data
 

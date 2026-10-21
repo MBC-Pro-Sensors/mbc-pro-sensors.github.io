@@ -6,6 +6,24 @@ Not sure which product or edition you need? Two steps: **pick your controller, t
 > [!IMPORTANT]
 > Every MBC product comes in controller-specific editions (different connectors and protocols), and **editions are not interchangeable**. Please confirm your controller model before ordering.
 
+<h2 id="start" style="scroll-margin-top: 96px;">🚀 Already have a sensor? Find your program</h2>
+
+Pick your product and controller to go straight to setup steps, blocks and example downloads (SPIKE includes Robot Inventor; Arduino includes ESP32 and other I2C controllers; mBot includes Ranger and other Makeblock boards):
+
+| Product | SPIKE | EV3 | Arduino | mBot |
+| :--- | :---: | :---: | :---: | :---: |
+| Pathfinder 8-Way | [App · Pybricks](/en/sensors/line8/spike-hub.md) | [EV3 · Pybricks](/en/sensors/line8/ev3-hub.md) | [Examples](/en/sensors/line8/arduino-examples.md) | [Blocks](/en/makeblock.md) |
+| Pathfinder 16-Way | [App · Pybricks](/en/sensors/line16/spike-hub.md) | [EV3 · Pybricks](/en/sensors/line16/ev3-hub.md) | [Examples](/en/sensors/line16/arduino-examples.md) | [Blocks](/en/makeblock.md) |
+| Ranger 2-Way | [Page](/en/sensors/tof2/index.md) | [Page](/en/sensors/tof2/index.md) | — | [Blocks](/en/makeblock.md) |
+| Ranger 8-Way | [Page](/en/sensors/tof8/index.md) | [Page](/en/sensors/tof8/index.md) | [Examples](/en/sensors/tof8/arduino-examples.md) | [Blocks](/en/makeblock.md) |
+| Controller PS4/PS5 | [Page](/en/sensors/ps4/index.md) | [Page](/en/sensors/ps4/index.md) | [Examples](/en/sensors/ps4/arduino-examples.md) | [Blocks](/en/makeblock.md) |
+| Controller 2.4G (PS2, Taiwan only) | [Page](/en/sensors/ps2/index.md) | [Page](/en/sensors/ps2/index.md) | [Examples](/en/sensors/ps2/arduino-examples.md) | [Blocks](/en/makeblock.md) |
+| Sharpshooter Vision (ESP32CAM) | [Page](/en/sensors/esp32cam/index.md) | [Page](/en/sensors/esp32cam/index.md) | — | — |
+| SPIKE 6-Port Expander | [Official app](/en/sensors/exp6/spike-official.md) · [Pybricks](/en/sensors/exp6/spike-pybricks.md) | — | [Examples](/en/sensors/exp6/arduino-examples.md) | — |
+
+> [!TIP]
+> **Not sure which software?** SPIKE hub: the official app's blocks are the easiest for class; for competitions, Pybricks is faster and more consistent. EV3 hub: the EV3 software or EV3 Classroom both work; use Pybricks for Python.
+
 ## 1️⃣ Which controller do you use?
 
 <div class="guide-hosts">
@@ -13,7 +31,7 @@ Not sure which product or edition you need? Two steps: **pick your controller, t
 <a class="guide-host" href="#ev3">🧱 EV3<small>MINDSTORMS EV3</small></a>
 <a class="guide-host" href="#arduino">∿ Arduino<small>ESP32 / Raspberry Pi</small></a>
 <a class="guide-host" href="#matrix">🤖 MATRIX<small>Mini R4</small></a>
-<a class="guide-host" href="#makeblock">🤖 MakeBlock</a>
+<a class="guide-host" href="#makeblock">🤖 MakeBlock<small>mBot / Ranger</small></a>
 </div>
 
 <h3 id="spike">🧱 LEGO SPIKE Prime / Robot Inventor</h3>
@@ -45,14 +63,14 @@ Not sure which product or edition you need? Two steps: **pick your controller, t
 
 <h3 id="arduino">∿ Arduino / ESP32 / Raspberry Pi (Universal I2C)</h3>
 
-The whole family shares one [Universal I2C Protocol](/en/i2c-protocol.md) — learn one, use them all.
+The whole family shares one [Universal I2C Protocol](/en/i2c-protocol.md) — learn one, use them all. Every product has beginner examples you can copy and upload right away. Never written code before? Start with [🔰 First time with Arduino](/en/sensors/arduino-start.md).
 
 | Product | Use | I2C address |
 | :--- | :--- | :---: |
 | [Pathfinder 8-Way](/en/sensors/line8/arduino-i2c.md) | Line following | `0x16` |
 | [Pathfinder 16-Way](/en/sensors/line16/arduino-i2c.md) | Fast lines, intersections | `0x16` |
 | [Ranger 8-Way](/en/sensors/tof8/index.md) | 180° avoidance | `0x29` |
-| [SPIKE 6-Way Expander](/en/sensors/exp6/arduino-i2c.md) | Drive LEGO motors & sensors from Arduino | `0x6E` |
+| [SPIKE 6-Way Expander](/en/sensors/exp6/arduino-examples.md) | Drive LEGO motors & sensors from Arduino | Serial (UART) |
 | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bluetooth gamepad control | `0x42` |
 | [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad control | `0x42` |
 | [IMU Gyro](/en/sensors/imu/index.md) | Heading, 9-axis data | `0x6A` |
@@ -68,6 +86,8 @@ The whole family shares one [Universal I2C Protocol](/en/i2c-protocol.md) — le
 | [IMU Gyro](/en/sensors/imu/index.md) | Heading, turning (coming soon) |
 
 <h3 id="makeblock">🤖 MakeBlock</h3>
+
+Works with mBot, mBot Ranger, Orion and Ultimate 2.0 (MegaPi). Choose the MakeBlock edition with the mBot socket board; block download and usable ports per board are on the [MakeBlock block extension](/en/makeblock.md) page.
 
 | Product | Use |
 | :--- | :--- |

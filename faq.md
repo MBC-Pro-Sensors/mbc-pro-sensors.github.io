@@ -18,7 +18,7 @@
 - **LEGO® SPIKE™ Prime／Robot Inventor**：官方 SPIKE App、Pybricks
 - **LEGO® MINDSTORMS® EV3**：EV3 官方軟體、EV3 Classroom、clev3r、Pybricks
 - **Arduino、ESP32、樹莓派**：共用的[通用 I2C 協議](/i2c-protocol.md)
-- **MATRIX Mini R4、MakeBlock**：部分產品支援，請看[選購指南](/guide.md)
+- **MATRIX Mini R4、MakeBlock（mBot 等）**：部分產品支援，請看[選購指南](/guide.md)
 
 ### SPIKE 版和 EV3 版可以互換嗎？
 
@@ -58,7 +58,7 @@ FIRST® LEGO® League Challenge 正式比賽只允許 LEGO 原廠零件，所以
 
 ### 循線感應器怎麼校準？
 
-按下校準鍵，把感應器在場地的白色區域與黑線上方來回掃過，再按一次即完成儲存。校準數據保存在感應器裡，關機也不會消失。詳見[循行者 8 路產品頁](/sensors/line8/index.md)。
+按住校準鍵 0.5 秒，綠燈亮起後在 5 秒內把感應器在場地的白色區域與黑線上方來回掃過，綠燈熄滅即自動儲存，不用再按。校準數據保存在感應器裡，關機也不會消失。詳見[循行者 8 路產品頁](/sensors/line8/index.md)。
 
 ### 測距者 8 路（TOF8）可以測多遠？
 

@@ -113,7 +113,7 @@
 <h2>3 步驟輕鬆購買</h2>
 
 <div class="lp-grid lp-steps">
-<div class="lp-card"><h3>選擇你的主機</h3><p>SPIKE、EV3、Arduino 還是 MATRIX？每個主機有對應版本，看 <a href="/guide.md">選購指南</a> 一分鐘就知道。</p></div>
+<div class="lp-card"><h3>選擇你的主機</h3><p>SPIKE、EV3、Arduino、MATRIX 還是 mBot？每個主機有對應版本，看 <a href="/guide.md">選購指南</a> 一分鐘就知道。</p></div>
 <div class="lp-card"><h3>挑選需要的產品</h3><p>循線、測距、擴充、遙控、視覺，依比賽項目與預算挑選。不確定也可以直接問我們。</p></div>
 <div class="lp-card"><h3>LINE 詢價下單</h3><p>個人購買、學校／社團大量採購、代理洽談都歡迎，工程師工作日 24 小時內回覆。</p></div>
 </div>
@@ -125,7 +125,8 @@
 <div class="lp-card"><div class="lp-ico">🧩</div><h3>循行者 8 路</h3><p><a href="/examples/line8/spike/line8-demo.llsp3" download>📥 SPIKE App 範例（.llsp3）</a><a href="/examples/line8/line8_pybricks_ev3.zip" download>📥 EV3 Pybricks 程式庫（.zip）</a><a href="/sensors/line8/spike-pybricks.md">📖 SPIKE Pybricks 程式庫與教學</a></p></div>
 <div class="lp-card"><div class="lp-ico">🧩</div><h3>循行者 16 路</h3><p><a href="/examples/line16/spike/line16-demo.llsp3" download>📥 SPIKE App 範例（.llsp3）</a><a href="/examples/line16/line16_pybricks_ev3.zip" download>📥 EV3 Pybricks 程式庫（.zip）</a><a href="/sensors/line16/spike-pybricks.md">📖 SPIKE Pybricks 程式庫與教學</a></p></div>
 <div class="lp-card"><div class="lp-ico">🔌</div><h3>SPIKE 6 路擴充器</h3><p><a href="/downloads/MBC_EXP6_Official_App_Lib.zip" download>📥 官方 SPIKE App 程式庫（.zip）</a><a href="/downloads/MBC_EXP6_Pybricks_Lib.zip" download>📥 Pybricks 程式庫（.zip）</a><a href="/sensors/exp6/index.md">📖 產品介紹與接線</a></p></div>
-<div class="lp-card"><div class="lp-ico">📄</div><h3>產品型錄</h3><p><a href="/downloads/MBC-Pro-Sensors-Catalog-2026-EN.pdf" download>📥 2026 英文產品型錄（PDF，2 MB）</a><a href="/guide.md">🧭 選購指南</a></p></div>
+<div class="lp-card"><div class="lp-ico">📄</div><h3>產品型錄</h3><p><a href="/downloads/MBC-Pro-Sensors-Catalog-2026-EN.pdf" download>📥 2026 英文產品型錄（PDF，2 MB）</a><a href="/guide.md">🧭 選購指南</a><a href="/guide.md#start">🚀 已經買好？找程式對照表</a></p></div>
+<div class="lp-card"><div class="lp-ico">🤖</div><h3>MakeBlock（mBot）</h3><p><a href="/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext" download>📥 mBlock 5 積木擴展（.mext）</a><a href="/makeblock.md">📖 安裝步驟與可用連接埠</a></p></div>
 </div>
 
 <h2>常見問題</h2>

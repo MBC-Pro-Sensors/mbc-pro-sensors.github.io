@@ -21,7 +21,7 @@ The **SPIKE 6-Way Expander (EXP6)** allows you to connect up to 6 sensors or mot
 <div class="responsive-grid-2" style="gap: 20px; margin: 25px 0;">
 <div style="background: rgba(255,69,0,0.05); border: 1px solid rgba(255,69,0,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
 <h4 style="color: #ff4500; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">⚡ Independent Isolated Power</h4>
-<p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">The motor driving current is completely supplied by an independent battery box/adapter, fully physically opto-isolated from the SPIKE hub. This protects your expensive hub from abnormal large currents, ensuring crash-free competitions.</p>
+<p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">The motor driving current is completely supplied by an independent battery box/adapter, and the signal lines to the SPIKE hub are fully electrically isolated by an isolation chip. This protects your expensive hub from abnormal large currents, ensuring crash-free competitions.</p>
 </div>
 <div style="background: rgba(0,255,100,0.05); border: 1px solid rgba(0,255,100,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
 <h4 style="color: #00ff64; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">🧠 On-board Edge Computing</h4>
@@ -62,7 +62,7 @@ grid-template-columns: 1fr !important;
 The greatest feature of the EXP6 expander is its **"Perfect Dual Ecosystem Support"**. Please select the software platform you are currently using to view the dedicated connection guide and API documentation:
 
 <div class="env-hub-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
-<a href="#/en/sensors/exp6/spike-official" class="env-card spike" style="padding: 40px 20px;">
+<a href="/en/sensors/exp6/spike-official.md" class="env-card spike" style="padding: 40px 20px;">
 <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
 <img src="/images/hubs/spike-education-app.webp" alt="SPIKE App" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(242,194,0,0.3));" />
 </div>
@@ -70,11 +70,19 @@ The greatest feature of the EXP6 expander is its **"Perfect Dual Ecosystem Suppo
 <p style="font-size: 1.1rem;">Supports the official Python environment.<br>Features synchronous (Sync) execution and a simple, intuitive object-oriented design, perfect for beginners and education!</p>
 </a>
 
-<a href="#/en/sensors/exp6/spike-pybricks" class="env-card pybricks" style="padding: 40px 20px; border-color: rgba(0,210,255,0.4);">
+<a href="/en/sensors/exp6/spike-pybricks.md" class="env-card pybricks" style="padding: 40px 20px; border-color: rgba(0,210,255,0.4);">
 <div style="display: flex; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
 <img src="/images/hubs/spike-pybricks-logo.webp" alt="Pybricks" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(0,210,255,0.3));" />
 </div>
 <h3 style="font-size: 1.8rem; margin-bottom: 15px !important;">Pybricks Pro Environment</h3>
 <p style="font-size: 1.1rem;">Built for competitions and extreme performance.<br>Natively supports asynchronous multitasking (Async/await) and blazing-fast RAW communication!</p>
+</a>
+
+<a href="/en/sensors/exp6/arduino-examples.md" class="env-card mcu" style="padding: 40px 20px;">
+<div style="display: flex; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
+<svg viewBox="0 0 100 40" style="width: 120px; height: 50px; fill: none; stroke: #00d2ff; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.6));"><path d="M 5,25 H 25 V 5 H 45 V 35 H 65 V 5 H 85 V 35 H 95" /></svg>
+</div>
+<h3 style="font-size: 1.8rem; margin-bottom: 15px !important;">Arduino (UART)</h3>
+<p style="font-size: 1.1rem;">Control LEGO motors and sensors with Arduino UNO R4, Mega or ESP32.<br>6 beginner examples: just copy and upload!</p>
 </a>
 </div>

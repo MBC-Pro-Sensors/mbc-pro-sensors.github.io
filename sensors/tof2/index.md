@@ -42,10 +42,21 @@
 | :--- | :--- |
 | LEGO SPIKE Prime / Robot Inventor | 官方 App、Pybricks（👉 [SPIKE 新手範例：官方 App／MBC 積木網站／Pybricks 各 5 個](/sensors/tof2/spike-examples.md)） |
 | LEGO MINDSTORMS EV3 | EV3 官方軟體、Pybricks（[EV3 新手範例](/sensors/tof2/ev3-examples.md)） |
-| MakeBlock | 專屬版本 |
+| MakeBlock（mBot 等） | 專屬版本，[積木與接法](/makeblock.md) |
+| Arduino / ESP32（通用 I2C 版，即將推出） | 位址 `0x29`，[Arduino 範例](/sensors/tof2/arduino-examples.md) |
 
 > [!IMPORTANT]
 > 每個平台是**不同的出廠版本**，請依你的主機選購對應版本。
+
+## 📥 範例下載
+
+| 主機 | 檔案 |
+| :--- | :--- |
+| SPIKE（Pybricks 4.0.0） | [全部下載（.zip）](/examples/tof2/tof2_pybricks_spike_v4.0.0.zip)・[不用函式庫（積木）](/examples/tof2/pybricks/For%20firmware%204.0.0/tof2_block_native_v400.py)・[函式庫範例（積木）](/examples/tof2/pybricks/For%20firmware%204.0.0/tof2_block_with_lib_v400.py)・[函式庫 MBC_laser2_obj_Lib.py](/examples/tof2/pybricks/For%20firmware%204.0.0/MBC_laser2_obj_Lib.py) |
+| SPIKE（Pybricks 3.6.1） | [不用函式庫（Python）](/examples/tof2/pybricks/For%20firmware%203.6.1/tof2_python_native_v361.py) |
+| mBot 等（MakeBlock） | [積木擴展與範例](/makeblock.md) |
+
+> 用函式庫時，把函式庫檔匯入同一個 Pybricks 專案，檔名不要改。
 
 ## 📤 輸出資料
 

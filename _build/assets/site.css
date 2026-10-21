@@ -712,3 +712,9 @@ body.landing.theme-light .lp-hero::before {
 .markdown-section .product-hero .ph-editions a { border: 0; border-radius: 0; padding: 0 10px; color: #cfd8de; text-decoration: underline; text-underline-offset: 3px; }
 .markdown-section .product-hero .ph-editions a:hover { background: transparent; color: #fff; }
 body.landing.theme-light .markdown-section .lp-vcap a { color: #0a7c78; }
+
+/* 選購指南「已經有感應器了？直接找程式」對照表：手機上 5 欄塞進螢幕寬度（2026-10-20） */
+@media (max-width: 600px) {
+  .markdown-section #start + p + table { font-size: 0.8rem; }
+  .markdown-section #start + p + table th, .markdown-section #start + p + table td { padding: 6px 3px; }
+}

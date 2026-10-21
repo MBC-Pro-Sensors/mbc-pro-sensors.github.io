@@ -14,7 +14,7 @@ Not every robotics competition allows third-party sensors. This page lists compe
 
 | Competition | Pathfinder | Ranger | Vision | EXP6 | Controller |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| [WRO RoboMission](/en/wro-rules.md) | ✅ | ✅ | ✅² | ✅ | ❌ |
+| [WRO RoboMission](/en/wro-rules.md) | ✅ | ✅⁴ | ✅² | ✅ | ❌ |
 | [WRO Future Engineers](#wro-future-engineers) | ✅ | ✅ | ✅ | ✅ | ❌ |
 | [Robofest](#robofest) | ✅ | ✅ | ✅ | ✅ | ❌ |
 | [RoboCupJunior](#robocupjunior) Rescue | ❌ | ⚠️ | ⚠️ | ⚠️ | ❌ |
@@ -26,7 +26,7 @@ Not every robotics competition allows third-party sensors. This page lists compe
 | [JBC](#jbc-junior-botball-challenge-taiwan) | ✅ | ✅ | ✅ | ✅ | ❌ |
 | [FLL Challenge](#competitions-where-mbc-sensors-cannot-be-used) | ❌ | ❌ | ❌ | ❌ | ❌ |
 
-¹ One camera per robot　² Cameras in Junior and Senior only　³ For remote-control events
+¹ One camera per robot　² Cameras in Junior and Senior only　³ For remote-control events　⁴ Ranger 8-Way: Elementary and Junior teams should check with the organizer first
 
 Pathfinder = 8 / 16-way line sensor, Ranger = 2 / 8-way laser ranging, Vision = Sharpshooter Vision (ESP32CAM), EXP6 = SPIKE 6-Way Expander (SPIKE™ Prime only), Controller = PS4/PS5 receiver.
 
@@ -74,7 +74,7 @@ Official information: [AERC website](http://www.aerc1988.com.tw)｜[2026 rules (
 
 ### GRG (Global Robotics Games) Taiwan
 
-Organized in Taiwan by the Taiwan Intelligent Programming Technology Education Promotion Association (SPARK). Hardware rules differ by category:
+Organized in Taiwan by the Taiwan Smart Programming AI Robotics & Knowledge Association (SPARK). Hardware rules differ by category:
 
 - **AI Maker Series**: Any building materials and any controller (Arduino, Raspberry Pi, SPIKE™ Prime and more), and more than one controller is allowed. **One camera maximum**; primary-school teams must use block-based coding. Cars pre-programmed by the manufacturer to follow a line or route are not allowed.
 - **Open Category**: Project-based, no hardware restriction (24 V maximum).

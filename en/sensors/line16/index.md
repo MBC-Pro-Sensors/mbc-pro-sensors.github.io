@@ -9,6 +9,7 @@
 > 1. **🧱 SPIKE Edition**: Uses LPF2 (Lego 6-pin) flat socket. Compatible ONLY with SPIKE Prime, SPIKE Essential, and Robot Inventor hubs.
 > 2. **🧱 EV3 Edition**: Uses RJ12 (Lego specific 6-pin) socket. Compatible ONLY with EV3 hubs.
 > 3. **∿ Universal I2C Edition**: Uses standard pin headers/XH2.54 ports. Designed for Arduino, ESP32, Raspberry Pi, etc.
+> 4. **🤖 MakeBlock Edition**: Connects to an RJ25 port through the mBot socket board. For mBot, mBot Ranger and other Makeblock boards (mBlock 5 blocks).
 > *Please select the hardware version corresponding to your hub system. The physical connectors differ completely.*
 
 ---
@@ -58,7 +59,7 @@ Watch the demonstration video below for the most intuitive guide:
 Please select your controller system first, then select your software environment:
 
 <div class="env-hub-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
-  <a href="#/en/sensors/line16/spike-hub" class="env-card spike" style="padding: 40px 20px;">
+  <a href="/en/sensors/line16/spike-hub.md" class="env-card spike" style="padding: 40px 20px;">
     <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
       <img src="/images/hubs/spike-hub.webp" alt="SPIKE Prime Hub" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(242,194,0,0.3));" />
       <img src="/images/hubs/inventor-hub.webp" alt="Robot Inventor Hub" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.3));" />
@@ -67,7 +68,7 @@ Please select your controller system first, then select your software environmen
     <p style="font-size: 1.1rem;">Education (SPIKE 3) / Home (Robot Inventor) / pyBricks</p>
   </a>
   
-  <a href="#/en/sensors/line16/ev3-hub" class="env-card ev3" style="padding: 40px 20px;">
+  <a href="/en/sensors/line16/ev3-hub.md" class="env-card ev3" style="padding: 40px 20px;">
     <div style="display: flex; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
       <img src="/images/hubs/ev3-hub.webp" alt="EV3 Hub" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.3));" />
     </div>
@@ -75,7 +76,7 @@ Please select your controller system first, then select your software environmen
     <p style="font-size: 1.1rem;">Official Software / Classroom / clev3r / pyBricks</p>
   </a>
 
-  <a href="#/en/sensors/line16/arduino-i2c" class="env-card mcu" style="padding: 40px 20px;">
+  <a href="/en/sensors/line16/arduino-i2c.md" class="env-card mcu" style="padding: 40px 20px;">
     <div style="display: flex; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
       <svg viewBox="0 0 100 40" style="width: 120px; height: 50px; fill: none; stroke: #00d2ff; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.6));">
         <path d="M 5,25 H 25 V 5 H 45 V 35 H 65 V 5 H 85 V 35 H 95" />
@@ -83,6 +84,12 @@ Please select your controller system first, then select your software environmen
     </div>
     <h3 style="font-size: 1.8rem; margin-bottom: 15px !important;">∿ Universal I2C</h3>
     <p style="font-size: 1.1rem;">Arduino / ESP32 / Raspberry Pi / Custom Boards</p>
+  </a>
+
+  <a href="/en/makeblock.md" class="env-card mcu" style="padding: 40px 20px;">
+    <div style="display: flex; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end; font-size: 72px; line-height: 1;">🤖</div>
+    <h3 style="font-size: 1.8rem; margin-bottom: 15px !important;">MakeBlock</h3>
+    <p style="font-size: 1.1rem;">mBot / mBot Ranger / Orion / MegaPi (mBlock 5 blocks)</p>
   </a>
 </div>
 

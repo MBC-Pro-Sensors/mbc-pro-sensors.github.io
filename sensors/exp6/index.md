@@ -25,7 +25,7 @@ SPIKE Prime 主機只有 6 個連接孔，但高階的機器人專案往往同�
 <div class="responsive-grid-2" style="gap: 20px; margin: 25px 0;">
 <div style="background: rgba(255,69,0,0.05); border: 1px solid rgba(255,69,0,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
 <h4 style="color: #ff4500; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">⚡ 獨立隔離供電</h4>
-<p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">馬達驅動電流完全由獨立的電池盒/變壓器供應，與 SPIKE 主機進行 100% 物理光耦隔離，保護您昂貴的主機不受異常大電流損害，保證比賽不當機。</p>
+<p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">馬達驅動電流完全由獨立的電池盒/變壓器供應，與 SPIKE 主機的訊號線經過隔離晶片完全電氣隔離，保護您昂貴的主機不受異常大電流損害，保證比賽不當機。</p>
 </div>
 <div style="background: rgba(0,255,100,0.05); border: 1px solid rgba(0,255,100,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
 <h4 style="color: #00ff64; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">🧠 板載邊緣運算</h4>
@@ -66,7 +66,7 @@ grid-template-columns: 1fr !important;
 EXP6 擴充器最大的特色在於**「雙生態系完美支援」**。請選擇您目前使用的軟體平台，查看專屬的連線指南與 API 文件：
 
 <div class="env-hub-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
-<a href="#/sensors/exp6/spike-official" class="env-card spike" style="padding: 40px 20px;">
+<a href="/sensors/exp6/spike-official.md" class="env-card spike" style="padding: 40px 20px;">
 <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
 <img src="/images/hubs/spike-education-app.webp" alt="SPIKE App" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(242,194,0,0.3));" />
 </div>
@@ -74,11 +74,19 @@ EXP6 擴充器最大的特色在於**「雙生態系完美支援」**。請選�
 <p style="font-size: 1.1rem;">支援官方 Python 環境。<br>標榜同步 (Sync) 執行，簡單直覺的物件導向設計，適合入門與教學！</p>
 </a>
 
-<a href="#/sensors/exp6/spike-pybricks" class="env-card pybricks" style="padding: 40px 20px; border-color: rgba(0,210,255,0.4);">
+<a href="/sensors/exp6/spike-pybricks.md" class="env-card pybricks" style="padding: 40px 20px; border-color: rgba(0,210,255,0.4);">
 <div style="display: flex; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
 <img src="/images/hubs/spike-pybricks-logo.webp" alt="Pybricks" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(0,210,255,0.3));" />
 </div>
 <h3 style="font-size: 1.8rem; margin-bottom: 15px !important;">Pybricks 專業環境</h3>
 <p style="font-size: 1.1rem;">為競賽與極限效能打造。<br>原生支援非同步多工併行 (Async/await) 與極速 RAW 通訊！</p>
+</a>
+
+<a href="/sensors/exp6/arduino-examples.md" class="env-card mcu" style="padding: 40px 20px;">
+<div style="display: flex; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
+<svg viewBox="0 0 100 40" style="width: 120px; height: 50px; fill: none; stroke: #00d2ff; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.6));"><path d="M 5,25 H 25 V 5 H 45 V 35 H 65 V 5 H 85 V 35 H 95" /></svg>
+</div>
+<h3 style="font-size: 1.8rem; margin-bottom: 15px !important;">Arduino（序列埠）</h3>
+<p style="font-size: 1.1rem;">用 Arduino UNO R4、Mega、ESP32 控制樂高馬達與感應器。<br>6 個新手範例，直接複製上傳！</p>
 </a>
 </div>

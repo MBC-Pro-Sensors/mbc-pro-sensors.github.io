@@ -1,0 +1,23 @@
+# pybricks blocks file:{"blocks":{"languageVersion":0,"blocks":[{"type":"blockGlobalSetup","id":"bjK,wS1MYO7aiYkFSwd{","x":150,"y":100,"deletable":false,"next":{"block":{"type":"variables_set_prime_hub","id":"`m8lg[1$*;m51Yr]y+v8","extraState":{"optionLevel":0},"fields":{"VAR":{"id":"=C)5?WK,2_m:]FiF28.3"}},"next":{"block":{"type":"variables_set_color_sensor","id":"N`@Eu}L)?k|gU4NYdE#?","extraState":{"optionLevel":0},"fields":{"VAR":{"id":"]L#9COg~K8jGhwQ=oh-j"}},"inputs":{"PORT":{"shadow":{"type":"blockParametersPort","id":"J+E,gbi8NW;:U+hi*3Su","fields":{"NAME":"C"}}}}}}}}},{"type":"blockGlobalStart","id":"3tJe|AWl0baN(wH9a$@.","x":150,"y":300,"deletable":false,"next":{"block":{"type":"blockFlowWhile","id":"[Rf:XdC`,)+0MR$YgPDC","fields":{"MODE":"WHILE"},"inputs":{"BOOL":{"shadow":{"type":"blockLogicTrue","id":"0vXrkqkud)q~u_=7Kjoo"}},"DO":{"block":{"type":"blockPrint","id":"j,,T}?rBkaW$1v?olp4p","extraState":{"optionLevel":1},"fields":{"SEP":"SEP_SPACE"},"inputs":{"TEXT0":{"shadow":{"type":"text","id":"!x5.0YiWya^`(y)yO5B8","fields":{"TEXT":"Hello, Pybricks!"}},"block":{"type":"blockFunctionCallerValue","id":"NB-$X@JZ$OS5GeVG+%]o","extraState":{"optionLevel":0},"fields":{"ICON":"TASK","VAR":{"id":"b%pB!E[_P?Hk,/:hTTA("}}}},"TEXT1":{"shadow":{"type":"text","id":"Kx-b1#9Hoz#T;5v+h@FL","fields":{"TEXT":"abc"}},"block":{"type":"blockFunctionCallerValue","id":"8G$b1#ODE^u3dcjrmp`P","extraState":{"optionLevel":0},"fields":{"ICON":"TASK","VAR":{"id":"d$.DBO/]D05s#_w`Q*.6"}}}}},"next":{"block":{"type":"blockWaitTime","id":"}Sz=w;4@%.;jQpQ83fwJ","inputs":{"VALUE0":{"shadow":{"type":"unit_time","id":"]4FTpqVzkiBA?]deUw|%","fields":{"VALUE0":10}}}}}}}}}}}},{"type":"variables_setup_function","id":"?y5KDxIO8v?tOL*UCb-|","x":-383,"y":68,"extraState":{"optionLevel":0},"fields":{"ICON":"TASK","VAR":{"id":"b%pB!E[_P?Hk,/:hTTA("}},"inputs":{"STACK":{"block":{"type":"blockComment","id":"h18mk*:,w]o_KNG;{0u{","fields":{"FIELDNAME":"最小距離的方位-8~+8"},"next":{"block":{"type":"blockTaskReturn","id":"=v6=n$6b{k.8+i-C`mQ.","inputs":{"VALUE0":{"shadow":{"type":"blockMathNumber","id":"#1(4;Aj[wh.8k!$S8|,w","fields":{"NUM":0}},"block":{"type":"blockLightReflection","id":"*rC~-d/bByw{Az-g{F?W","inputs":{"VAR":{"shadow":{"type":"variables_get_light_intensity_device","id":"Kv`oxVz#M+6JSrQYUJ!P","fields":{"VAR":{"id":"]L#9COg~K8jGhwQ=oh-j","name":"Laser8","type":"ColorSensor"}}}}}}}}}}}}}},{"type":"variables_setup_function","id":"bgh@R_;SfKkJ0X-F0W.n","x":-371,"y":277,"extraState":{"optionLevel":0},"fields":{"ICON":"TASK","VAR":{"id":"d$.DBO/]D05s#_w`Q*.6"}},"inputs":{"STACK":{"block":{"type":"blockComment","id":"zHrO1H9P?go!_RCkRy7N","fields":{"FIELDNAME":"最小距離"},"next":{"block":{"type":"blockTaskReturn","id":"@O5*O3%ct;o;;EZG4TR{","inputs":{"VALUE0":{"shadow":{"type":"blockMathNumber","id":"#1(4;Aj[wh.8k!$S8|,w","fields":{"NUM":0}},"block":{"type":"blockLightAmbient","id":":I.AAr.n~eb_@!Sdj,~P","inputs":{"VAR":{"shadow":{"type":"variables_get_light_ambient_intensity_device","id":"V3U3rRHv)G/@2)=W$F(n","fields":{"VAR":{"id":"]L#9COg~K8jGhwQ=oh-j","name":"Laser8","type":"ColorSensor"}}}}}}}}}}}}}}]},"variables":[{"name":"red","id":"X7sa^gNf`LOt/?3e0S$m","type":"ColorDef"},{"name":"orange","id":"j26LW3#;w9;o%]GaL.Aj","type":"ColorDef"},{"name":"yellow","id":"0:`hUqP5afUBR`-rK}}x","type":"ColorDef"},{"name":"green","id":"5q-la$i)vXXKda4|?*W:","type":"ColorDef"},{"name":"cyan","id":",YV;Qjrw_)ykiO`t`d4/","type":"ColorDef"},{"name":"blue","id":"7ylos%}m.=l93[a7Jg?Y","type":"ColorDef"},{"name":"violet","id":"qsDaJ0XpQ._u!HI/):ej","type":"ColorDef"},{"name":"magenta","id":"fFByXpa?@p/.[xR+*fr+","type":"ColorDef"},{"name":"white","id":"tq#Qh3=O!A?BtIe-ETqR","type":"ColorDef"},{"name":"none","id":"C%kCsWH8YAF|ctFqyqDb","type":"ColorDef"},{"name":"prime hub","id":"=C)5?WK,2_m:]FiF28.3","type":"PrimeHub"},{"name":"getDirection","id":"b%pB!E[_P?Hk,/:hTTA(","type":"Function"},{"name":"getDistance","id":"d$.DBO/]D05s#_w`Q*.6","type":"Function"},{"name":"Laser8","id":"]L#9COg~K8jGhwQ=oh-j","type":"ColorSensor"}],"info":{"type":"pybricks","version":"1.3.2"}}
+from pybricks.hubs import PrimeHub
+from pybricks.parameters import Port
+from pybricks.pupdevices import ColorSensor
+from pybricks.tools import wait
+
+# Set up all devices.
+prime_hub = PrimeHub()
+Laser8 = ColorSensor(Port.C)
+
+def getDirection():
+    # 最小距離的方位-8~+8
+    return Laser8.reflection()
+
+def getDistance():
+    # 最小距離
+    return Laser8.ambient()
+
+
+# The main program starts here.
+while True:
+    print(getDirection(), getDistance())
+    wait(10)

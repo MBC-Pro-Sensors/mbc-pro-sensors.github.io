@@ -11,7 +11,7 @@
 
 Ultrasonic sensors have two fatal flaws in robotics competitions: **slow reaction speed** (limited by the speed of sound) and **susceptibility to echo ghosts** (interfering data). In sumo battles or high-speed obstacle avoidance, these flaws can directly lead to a match loss.
 
-The Ranger 8-Way is equipped with 8 laser ranging units, covering a **complete 90 degrees left and right, totaling a 180-degree full field of view**. This gives the robot near-omniscient spatial awareness of its surroundings, making it the most comprehensive LEGO-compatible laser ranging solution on the market.
+The Ranger 8-Way is equipped with 8 laser ranging units, covering a **complete 90 degrees left and right, totaling a 180-degree full field of view**. Your robot sees obstacles and targets across the whole front at once.
 
 ## 🎯 Core Advantages
 
@@ -56,10 +56,22 @@ The 8 laser ranging units are distributed at fixed angles, covering a complete 1
 | LEGO MINDSTORMS EV3 | EV3 official software, Pybricks |
 | Arduino / ESP32 / Raspberry Pi | Universal I2C (address `0x29`) |
 | MATRIX Mini R4 | I2C |
-| MakeBlock | Dedicated edition |
+| MakeBlock (mBot etc.) | Dedicated edition, [blocks & wiring](/en/makeblock.md) |
 
 > [!IMPORTANT]
 > Each platform is a **different factory edition** (different connector and firmware). Please order the edition that matches your controller, or [contact us](/en/contact.md) if unsure.
+
+## 📥 Example Downloads
+
+| Hub | Files |
+| :--- | :--- |
+| SPIKE (Pybricks 4.0.0) | [Download all (.zip)](/examples/tof8/tof8_pybricks_spike_v4.0.0.zip) · [No library (blocks)](/examples/tof8/pybricks/For%20firmware%204.0.0/tof8_block_native_v400.py) · [Library example (blocks)](/examples/tof8/pybricks/For%20firmware%204.0.0/tof8_block_with_lib_v400.py) · [Library MBC_laser8_obj_Lib.py](/examples/tof8/pybricks/For%20firmware%204.0.0/MBC_laser8_obj_Lib.py) |
+| SPIKE (Pybricks 3.6.1) | [Download all (.zip)](/examples/tof8/tof8_pybricks_spike_v3.6.1.zip) · [No library (blocks)](/examples/tof8/pybricks/For%20firmware%203.6.1/tof8_block_native_v361.py) · [Library example (blocks)](/examples/tof8/pybricks/For%20firmware%203.6.1/tof8_block_with_lib_v361.py) · [Library MBC_laser8_Lib.py](/examples/tof8/pybricks/For%20firmware%203.6.1/MBC_laser8_Lib.py) |
+| EV3 | [EV3 beginner examples (in Chinese)](/sensors/tof8/ev3-examples.md) |
+| Arduino (Universal I2C edition) | [6 beginner examples (step by step)](/en/sensors/tof8/arduino-examples.md) · [Library and Wire examples (.zip)](/examples/tof8/tof8_arduino_examples.zip) |
+| mBot etc. (MakeBlock) | [Block extension and avoidance example](/en/makeblock.md) |
+
+> Import the library file into the same Pybricks project without renaming it.
 
 ## 📤 Output Data
 
@@ -86,32 +98,45 @@ The 8 laser ranging units are distributed at fixed angles, covering a complete 1
 
 See the [MBC Universal I2C Protocol](/en/i2c-protocol.md) for shared rules and Arduino helpers. Distances are uint16 in mm: **`1200` = no target in range, `0xFFFF` = sensor fault**.
 
+> [!TIP]
+> **No coding experience? No problem:** see the [🧪 Arduino Examples](/en/sensors/tof8/arduino-examples.md). Every example can be copied and uploaded right away, with an English note on every line.
+
 | Register | Dir | Len | Content |
 | :---: | :---: | :---: | :--- |
+| `0x01` | R | 17 | Version bundle (model, firmware version, etc.; see the shared protocol) |
 | `0x11` | R | 6 | Bearing bundle (= `0x12` ~ `0x15`) |
-| `0x12` | R | 1 | Nearest target bearing int8 (-8 left ~ +8 right, 0 = ahead) |
+| `0x12` | R | 1 | Nearest target bearing int8: with a target, `-7` (left) ~ `+7` (right), `0` = ahead; `±8` = none of the 8 sensors sees a target. **Check `0x13` < 1200 first, then use the bearing** |
 | `0x13` | R | 2 | Nearest distance mm |
-| `0x14` | R | 1 | Farthest target bearing int8 |
+| `0x14` | R | 1 | Farthest target bearing int8 (`0` when none of the 8 sensors sees a target) |
 | `0x15` | R | 2 | Farthest distance mm |
 | `0x21` | R | 16 | All 8 distances (= `0x22` ~ `0x29`) |
 | `0x22` ~ `0x29` | R | 2 | Sensor 0 ~ 7 distance mm (sensor 0 = leftmost, 7 = rightmost) |
-| `0x32` | R | 1 | bit0 = ready (all 8 initialized), bit1 = any sensor faulty |
+| `0x30` | W | 1 | `0x01` = reboot |
+| `0x31` | R | 9 | Status bundle (= `0x32` ~ `0x37`) |
+| `0x32` | R | 1 | bit0 = ready (all 8 initialized, about 2 ~ 4 s after power-on), bit1 = any sensor faulty. **Before it is ready, every distance reads 0**, so wait for bit0 = 1 first |
 | `0x34` / `0x35` / `0x36` | R | 1 | Init-OK / bus-error / timeout bitmaps (bit i = sensor i) |
 
 Variant `0x06` = `[8, 120]` (sensor count, max range ×10 mm); model `0x07` = `LASER8`.
 
 ```cpp
+// Wait until ready first (about 2 ~ 4 s after power-on; distances are 0 before that)
+uint8_t flags = 0;
+while (!(iicRead(0x29, 0x32, &flags, 1) && (flags & 0x01))) delay(100);
+
 // Read the nearest target's bearing and distance
 uint8_t d[6];
 if (iicRead(0x29, 0x11, d, 6)) {
-  int8_t   dir  = (int8_t)d[0];            // -8 left ~ +8 right
-  uint16_t dist = (d[1] << 8) | d[2];      // mm, 1200 = no target
+  uint16_t dist = ((uint16_t)d[1] << 8) | d[2];   // mm, 1200 = no target
+  if (dist < 1200) {
+    int8_t dir = (int8_t)d[0];                     // -7 left ~ +7 right, 0 = ahead
+  }
 }
 ```
 
 ## 🔌 Hardware Wiring
 
-1. Plug into SPIKE (Port A~F) or EV3 (Port 1~4) with a standard cable
+1. SPIKE / EV3 edition: plug into SPIKE (Port A~F) or EV3 (Port 1~4) with a standard cable
+   Universal I2C edition: VCC → 5V, GND → GND, SDA → A4, SCL → A5 (Arduino UNO / Nano). See the [Arduino Examples](/en/sensors/tof8/arduino-examples.md) for details
 2. Initialization takes about 2 ~ 4 s after power-on; once the indicator LED is on, it is ready
 
 ## ❓ FAQ

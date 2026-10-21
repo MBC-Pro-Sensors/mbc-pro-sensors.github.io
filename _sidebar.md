@@ -2,10 +2,13 @@
 - **產品文檔**
   - [首頁](/README.md)
   - [🧭 選購指南](/guide.md)
+  - [🚀 已經買好？找程式](/guide.md#start)
   - [🏆 WRO 規則對照](/wro-rules.md)
   - [🏁 比賽對照](/competitions.md)
   - [❓ 常見問題](/faq.md)
   - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#00d2ff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px rgba(0,210,255,0.5));"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>通用 I2C 協議](/i2c-protocol.md)
+  - [🔰 第一次用 Arduino](/sensors/arduino-start.md)
+  - [🤖 MakeBlock（mBot）積木](/makeblock.md)
 
 - **🛤️ 循線感應器**
   - **循行者 8 路 (Line8)**
@@ -20,6 +23,7 @@
       - [clev3r (BASIC)](/sensors/line8/ev3-clev3r.md)
       - [pyBricks](/sensors/line8/ev3-pybricks.md)
     - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#00d2ff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px rgba(0,210,255,0.5));"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>通用 I2C 版本](/sensors/line8/arduino-i2c.md)
+      - [🧪 Arduino 範例](/sensors/line8/arduino-examples.md)
   - **循行者 16 路 (Line16)**
     - [📖 產品介紹與校準](/sensors/line16/index.md)
     - [<img src="/images/hubs/spike-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(242,194,0,0.5));"> SPIKE 主機](/sensors/line16/spike-hub.md)
@@ -32,18 +36,23 @@
       - [clev3r (BASIC)](/sensors/line16/ev3-clev3r.md)
       - [pyBricks](/sensors/line16/ev3-pybricks.md)
     - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#00d2ff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px rgba(0,210,255,0.5));"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>通用 I2C 版本](/sensors/line16/arduino-i2c.md)
+      - [🧪 Arduino 範例](/sensors/line16/arduino-examples.md)
 
 - **📡 雷射測距**
   - **測距者 2 路 (TOF2)**
     - [📖 產品介紹](/sensors/tof2/index.md)
+    - [🧪 Arduino 範例](/sensors/tof2/arduino-examples.md)
   - **測距者 8 路 (TOF8)**
     - [📖 產品介紹](/sensors/tof8/index.md)
+    - [🧪 Arduino 範例](/sensors/tof8/arduino-examples.md)
 
 - **🎮 遙控接收器**
   - **掌控者 PS2 (PS2)**
     - [📖 產品介紹](/sensors/ps2/index.md)
+    - [🧪 Arduino 範例](/sensors/ps2/arduino-examples.md)
   - **掌控者 PS4/PS5**
     - [📖 產品介紹](/sensors/ps4/index.md)
+    - [🧪 Arduino 範例](/sensors/ps4/arduino-examples.md)
 
 - **👁️ 機器人視覺**
   - **神攝手 ESP32CAM (ESP32CAM)**
@@ -52,13 +61,14 @@
 - **🧭 姿態感測**
   - **陀螺儀 IMU（即將推出）**
     - [📖 產品介紹](/sensors/imu/index.md)
+    - [🧪 Arduino 範例](/sensors/imu/arduino-examples.md)
 
 - **🔌 擴充模組**
   - **SPIKE 6 路擴充器 (EXP6)**
     - [📖 產品介紹](/sensors/exp6/index.md)
     - [🐍 官方 SPIKE App](/sensors/exp6/spike-official.md)
     - [🚀 Pybricks 環境](/sensors/exp6/spike-pybricks.md)
-    - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#00d2ff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px rgba(0,210,255,0.5));"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>通用 I2C 版本](/sensors/exp6/arduino-i2c.md)
+    - [🧪 Arduino 範例（序列埠）](/sensors/exp6/arduino-examples.md)
 
 - **📝 教學文章**
   - [全部文章](/articles/index.md)

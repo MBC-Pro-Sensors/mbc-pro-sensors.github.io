@@ -12,3 +12,4 @@
 - 2026-10-07: 網站加上銷售層：首頁改明亮混合風 landing 版型、產品頁銷售區(_build/products.json)、選購指南、全站 LINE 詢價按鈕；不做競品比較。
 - 2026-10-07: 新增教學文章區（循線抖動、PID 教學、孔位不夠 3 篇）；網站加入 Google Analytics 設定位置與詢價點擊事件（待填 ID）。
 - 2026-10-07: 啟用 Google Analytics（G-JV1SSBTVDF，帳號 contactmbcrobot@gmail.com），新增隱私權政策頁。
+- 2026-10-20: 拿掉 MATRIX（侵權疑慮）；修稽核錯誤（EXP6 範例參數、RGB 範圍、循線校準、TOF8 用詞、WRO 註腳、PS2/PS4 SPIKE 搖桿 1~9）；新增 makeblock.md（mBlock 5 擴展 .mext＋3 個 .mblock 範例）；選購指南加「已經買好？找程式」對照表；44 個舊 #/ 連結改正式網址；TOF2/TOF8/PS2/PS4 產品頁加範例下載（examples/）。

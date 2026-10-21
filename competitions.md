@@ -19,7 +19,7 @@
 | [GRG](#grg-全球機器人運動會) AI Maker、Open | ✅ | ✅ | ✅¹ | ✅ | ❌ |
 | [MRC](#mrc-米諾安機器人運動競賽) | ✅ | ✅ | ✅ | ❌ | ✅³ |
 | [JBC](#jbc-臺灣區機器人挑戰賽) | ✅ | ✅ | ✅ | ✅ | ❌ |
-| [WRO RoboMission](/wro-rules.md) | ✅ | ✅ | ✅² | ✅ | ❌ |
+| [WRO RoboMission](/wro-rules.md) | ✅ | ✅⁴ | ✅² | ✅ | ❌ |
 | [WRO 未來工程師組](#wro-未來工程師組（future-engineers）) | ✅ | ✅ | ✅ | ✅ | ❌ |
 | [Robofest](#robofest) | ✅ | ✅ | ✅ | ✅ | ❌ |
 | [RoboCupJunior](#robocupjunior) 救援賽 | ❌ | ⚠️ | ⚠️ | ⚠️ | ❌ |
@@ -27,7 +27,7 @@
 | [MIT STEAM 大賽](#不適用的比賽) | ❌ | ❌ | ❌ | ❌ | ❌ |
 | [FLL Challenge](#不適用的比賽) | ❌ | ❌ | ❌ | ❌ | ❌ |
 
-¹ 一台機器人限裝 1 顆相機　² 相機只限國中、高中組　³ 用於遙控類項目
+¹ 一台機器人限裝 1 顆相機　² 相機只限國中、高中組　³ 用於遙控類項目　⁴ 測距者 8 路：國小、國中組請先向主辦單位確認
 
 循行者＝8／16 路循線，測距者＝2／8 路雷射測距，神攝手＝ESP32CAM 視覺，EXP6＝SPIKE 6 路擴充器（只支援 SPIKE™ Prime），掌控者＝PS2／PS4/PS5 遙控接收器（PS2 只在台灣販售）。
 

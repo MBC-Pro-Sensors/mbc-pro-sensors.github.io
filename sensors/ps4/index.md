@@ -39,15 +39,15 @@
 | :--- | :--- |
 | LEGO SPIKE Prime / Robot Inventor | 官方 App、Pybricks（👉 [SPIKE 新手範例：官方 App／MBC 積木網站／Pybricks 各 5 個](/sensors/ps4/spike-examples.md)） |
 | LEGO MINDSTORMS EV3 | EV3 官方軟體、Pybricks（[EV3 新手範例](/sensors/ps4/ev3-examples.md)） |
-| Arduino / ESP32 / 樹莓派 | 通用 I2C（位址 `0x42`） |
-| MakeBlock | 專屬版本 |
+| Arduino / ESP32 / 樹莓派 | 通用 I2C（位址 `0x42`），[Arduino 範例](/sensors/ps4/arduino-examples.md) |
+| MakeBlock（mBot 等） | 專屬版本，[積木與接法](/makeblock.md) |
 
 > [!IMPORTANT]
 > 每個平台是**不同的出廠版本**，請依你的主機選購對應版本。
 
 ## 🔗 配對方式
 
-1. 將接收器插入 SPIKE（Port A~F）或 EV3（Port 1~4）並開機。
+1. 將接收器插入 SPIKE（Port A~F）或 EV3（Port 1~4）並開機。通用 I2C 版：接收器 TX → SCL（UNO 的 A5）、RX → SDA（UNO 的 A4）、VCC → 5V、GND → GND，詳見 [Arduino 範例](/sensors/ps4/arduino-examples.md)。
 2. **首次使用或要換手把**：按接收器上的 **Reset** 鍵，接收器會開放 **30 秒**配對時間。
 3. 在這 30 秒內讓手把進入配對模式：
    - **PS4 手把**：同時長按 **SHARE + PS** 鍵，直到燈條快速閃爍
@@ -57,9 +57,18 @@
 > [!TIP]
 > 比賽現場請在自己的位置完成配對，避免 30 秒內有別隊手把也在配對模式。綁錯手把就再按一次 Reset 重新配對。
 
+## 📥 範例下載
+
+| 主機 | 檔案 |
+| :--- | :--- |
+| SPIKE App（教育版） | [ps4_demo_spike_prime_v3.4.3.llsp3](/examples/ps4/spike/ps4_demo_spike_prime_v3.4.3.llsp3) |
+| Robot Inventor | [ps4_demo_robot_inventor_v10.5.0.lms](/examples/ps4/spike/ps4_demo_robot_inventor_v10.5.0.lms) |
+| SPIKE（Pybricks 3.6.1） | [全部下載（.zip）](/examples/ps4/ps4_pybricks_spike_v3.6.1.zip)・[完整按鍵版（mode 9）](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_python_mode9_v361.py)・[積木版](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_block_native_v361.py)・[Python 版](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_python_native_v361.py) |
+| mBot 等（MakeBlock） | [積木擴展與手把遙控範例](/makeblock.md) |
+
 ## 📤 輸出資料
 
-**搖桿數值（SPIKE / EV3）：** `0` ~ `99`，`50` = 中心，**往上推、往右推數值變大**。
+**搖桿數值：** EV3 為 `0` ~ `99`（`50` = 中心）；SPIKE（官方 App、Pybricks）為 `1` ~ `9`（`5` = 中心）。**往上推、往右推數值變大**。
 
 ### EV3 模式
 
@@ -73,6 +82,9 @@
 
 共通規則與 Arduino 函式請看 [MBC 通用 I2C 協議](/i2c-protocol.md)。
 
+> [!TIP]
+> **不會寫程式也能用：** 看 [🧪 Arduino 範例](/sensors/ps4/arduino-examples.md)，每個範例都能直接複製上傳，每一行都有中文說明。
+
 > [!NOTE]
 > 接收器已內建電位轉換，可直接接 Arduino UNO 等 5 V 主機。寫完暫存器編號後要**等 2 ms 再讀**。
 
@@ -83,12 +95,12 @@
 | `0x12` | R | 2 | 按鈕 uint16（b15 ■、b14 ✕、b13 ●、b12 ▲、b11 R1、b10 L1、b9 R2、b8 L2、b7 左、b6 下、b5 右、b4 上、b3 START、b2 R3、b1 L3、b0 SELECT） |
 | `0x13` | R | 4 | 搖桿 LX, LY, RX, RY：int8 `-127` ~ `+127`，0 = 中心，**右／上為正**，已套用死區 |
 | `0x14` | R | 2 | 類比扳機 L2, R2：`0` ~ `255` |
-| `0x15` | R | 1 | 系統鍵（PS 鍵等） |
+| `0x15` | R | 1 | 系統鍵：bit0 = PS 鍵、bit3 = 擷取鍵 |
 | `0x22` | R | 4 | 簡易搖桿 LX, LY, RX, RY：`0` ~ `99`，50 = 中心（與 SPIKE / EV3 版相同） |
 | `0x23` | RW | 3 | 燈條顏色 R, G, B（一次寫 3 bytes；未連線時先記住，連上後套用） |
 | `0x32` | R | 1 | bit0 = 就緒、bit1 = 手把已連線 |
 | `0x34` | R | 1 | 手把類型：0 = 未連線、3 = PS4 手把、4 = PS5 或其他藍牙手把 |
-| `0x35` | R | 1 | 手把電量 `0` ~ `255` |
+| `0x35` | R | 1 | 手把電量 `1` ~ `255`（`0` = 不知道） |
 
 `0x06` 款式第 1 byte = `2`（PS2 接收器為 `1`）。未連線時按鈕、搖桿、扳機都讀回 0。
 

@@ -39,15 +39,15 @@ The Controller PS4/PS5 Bluetooth Receiver lets SPIKE, EV3 or Arduino read every 
 | :--- | :--- |
 | LEGO SPIKE Prime / Robot Inventor | Official app, Pybricks |
 | LEGO MINDSTORMS EV3 | EV3 official software, Pybricks |
-| Arduino / ESP32 / Raspberry Pi | Universal I2C (address `0x42`) |
-| MakeBlock | Dedicated edition |
+| Arduino / ESP32 / Raspberry Pi | Universal I2C (address `0x42`), [Arduino Examples](/en/sensors/ps4/arduino-examples.md) |
+| MakeBlock (mBot etc.) | Dedicated edition, [blocks & wiring](/en/makeblock.md) |
 
 > [!IMPORTANT]
 > Each platform is a **different factory edition**; please order the one that matches your controller.
 
 ## 🔗 Pairing
 
-1. Plug the receiver into SPIKE (Port A~F) or EV3 (Port 1~4) and power on.
+1. Plug the receiver into SPIKE (Port A~F) or EV3 (Port 1~4) and power on. Universal I2C edition: receiver TX → SCL (A5 on the UNO), RX → SDA (A4 on the UNO), VCC → 5V, GND → GND. See the [Arduino Examples](/en/sensors/ps4/arduino-examples.md) for details.
 2. **First use or switching gamepads**: press the **Reset** button on the receiver. It opens a **30-second** pairing window.
 3. Within those 30 seconds put the gamepad into pairing mode:
    - **PS4 gamepad**: hold **SHARE + PS** until the light bar flashes rapidly
@@ -57,9 +57,18 @@ The Controller PS4/PS5 Bluetooth Receiver lets SPIKE, EV3 or Arduino read every 
 > [!TIP]
 > At a competition, pair at your own table so no other team's gamepad is in pairing mode during those 30 seconds. Bonded the wrong one? Press Reset and pair again.
 
+## 📥 Example Downloads
+
+| Hub | Files |
+| :--- | :--- |
+| SPIKE App | [ps4_demo_spike_prime_v3.4.3.llsp3](/examples/ps4/spike/ps4_demo_spike_prime_v3.4.3.llsp3) |
+| Robot Inventor | [ps4_demo_robot_inventor_v10.5.0.lms](/examples/ps4/spike/ps4_demo_robot_inventor_v10.5.0.lms) |
+| SPIKE (Pybricks 3.6.1) | [Download all (.zip)](/examples/ps4/ps4_pybricks_spike_v3.6.1.zip) · [All buttons (mode 9)](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_python_mode9_v361.py) · [Blocks](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_block_native_v361.py) · [Python](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_python_native_v361.py) |
+| mBot etc. (MakeBlock) | [Block extension and controller example](/en/makeblock.md) |
+
 ## 📤 Output Data
 
-**Stick values (SPIKE / EV3):** `0` ~ `99`, `50` = center, **pushing up or right increases the value**.
+**Stick values:** EV3 `0` ~ `99` (`50` = center); SPIKE (official app, Pybricks) `1` ~ `9` (`5` = center). **Pushing up or right increases the value**.
 
 ### EV3 Modes
 
@@ -73,6 +82,9 @@ The Controller PS4/PS5 Bluetooth Receiver lets SPIKE, EV3 or Arduino read every 
 
 See the [MBC Universal I2C Protocol](/en/i2c-protocol.md) for shared rules and Arduino helpers.
 
+> [!TIP]
+> **No coding experience? No problem:** see the [🧪 Arduino Examples](/en/sensors/ps4/arduino-examples.md). Every example can be copied and uploaded right away, with an English note on every line.
+
 > [!NOTE]
 > The receiver has built-in level shifting and connects directly to 5 V boards like the Arduino UNO. **Wait 2 ms** after writing the register number before reading.
 
@@ -83,12 +95,12 @@ See the [MBC Universal I2C Protocol](/en/i2c-protocol.md) for shared rules and A
 | `0x12` | R | 2 | Buttons uint16 (b15 ■, b14 ✕, b13 ●, b12 ▲, b11 R1, b10 L1, b9 R2, b8 L2, b7 left, b6 down, b5 right, b4 up, b3 START, b2 R3, b1 L3, b0 SELECT) |
 | `0x13` | R | 4 | Sticks LX, LY, RX, RY: int8 `-127` ~ `+127`, 0 = center, **right / up positive**, dead zone applied |
 | `0x14` | R | 2 | Analog triggers L2, R2: `0` ~ `255` |
-| `0x15` | R | 1 | System buttons (PS button, etc.) |
+| `0x15` | R | 1 | System buttons: bit0 = PS button, bit3 = Capture button |
 | `0x22` | R | 4 | Simple sticks LX, LY, RX, RY: `0` ~ `99`, 50 = center (same as the SPIKE / EV3 editions) |
 | `0x23` | RW | 3 | Light bar color R, G, B (write all 3 bytes; remembered while disconnected, applied on connect) |
 | `0x32` | R | 1 | bit0 = ready, bit1 = gamepad connected |
 | `0x34` | R | 1 | Gamepad type: 0 = none, 3 = PS4 gamepad, 4 = PS5 or other Bluetooth gamepad |
-| `0x35` | R | 1 | Gamepad battery `0` ~ `255` |
+| `0x35` | R | 1 | Gamepad battery `1` ~ `255` (`0` = unknown) |
 
 Variant `0x06` byte 1 = `2` (the PS2 receiver reports `1`). While disconnected, buttons, sticks and triggers read 0.
 

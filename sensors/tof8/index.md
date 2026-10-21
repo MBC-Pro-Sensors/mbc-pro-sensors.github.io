@@ -11,7 +11,7 @@
 
 超音波感應器在機器人競賽中有兩個致命缺點：**反應慢**（音速限制）與**容易產生回波鬼影**（干擾數據）。在相撲對戰或高速避障的場景中，這兩個缺點可能直接導致比賽失敗。
 
-測距者 8 路搭載 8 顆雷射測距單元，涵蓋**完整的左右各 90 度，共 180 度的全視角**，讓機器人對環境擁有接近全知的空間感知能力，是目前市場上最完整的樂高相容雷射測距解決方案。
+測距者 8 路搭載 8 顆雷射測距單元，涵蓋**完整的左右各 90 度，共 180 度的全視角**，讓機器人一次掌握前方左右的障礙物與目標方位。
 
 ## 🎯 核心優勢
 
@@ -56,10 +56,21 @@
 | LEGO MINDSTORMS EV3 | EV3 官方軟體、Pybricks（[EV3 新手範例](/sensors/tof8/ev3-examples.md)） |
 | Arduino / ESP32 / 樹莓派 | 通用 I2C（位址 `0x29`） |
 | MATRIX Mini R4 | I2C |
-| MakeBlock | 專屬版本 |
+| MakeBlock（mBot 等） | 專屬版本，[積木與接法](/makeblock.md) |
 
 > [!IMPORTANT]
 > 每個平台是**不同的出廠版本**（接頭與韌體不同），請依你的主機選購對應版本。不確定請 [聯絡我們](/contact.md)。
+
+## 📥 範例下載
+
+| 主機 | 檔案 |
+| :--- | :--- |
+| SPIKE（Pybricks 4.0.0） | [全部下載（.zip）](/examples/tof8/tof8_pybricks_spike_v4.0.0.zip)・[不用函式庫（積木）](/examples/tof8/pybricks/For%20firmware%204.0.0/tof8_block_native_v400.py)・[函式庫範例（積木）](/examples/tof8/pybricks/For%20firmware%204.0.0/tof8_block_with_lib_v400.py)・[函式庫 MBC_laser8_obj_Lib.py](/examples/tof8/pybricks/For%20firmware%204.0.0/MBC_laser8_obj_Lib.py) |
+| SPIKE（Pybricks 3.6.1） | [全部下載（.zip）](/examples/tof8/tof8_pybricks_spike_v3.6.1.zip)・[不用函式庫（積木）](/examples/tof8/pybricks/For%20firmware%203.6.1/tof8_block_native_v361.py)・[函式庫範例（積木）](/examples/tof8/pybricks/For%20firmware%203.6.1/tof8_block_with_lib_v361.py)・[函式庫 MBC_laser8_Lib.py](/examples/tof8/pybricks/For%20firmware%203.6.1/MBC_laser8_Lib.py) |
+| Arduino（通用 I2C 版） | [新手範例 6 個（含逐步說明）](/sensors/tof8/arduino-examples.md)・[函式庫範例＋Wire 範例（.zip）](/examples/tof8/tof8_arduino_examples.zip) |
+| mBot 等（MakeBlock） | [積木擴展與避障範例](/makeblock.md) |
+
+> 用函式庫時，把函式庫檔匯入同一個 Pybricks 專案，檔名不要改。
 
 ## 📤 輸出資料
 
@@ -86,32 +97,45 @@
 
 共通規則與 Arduino 函式請看 [MBC 通用 I2C 協議](/i2c-protocol.md)。距離一律為 uint16、單位 mm：**`1200` = 範圍內沒有目標、`0xFFFF` = 該顆故障**。
 
+> [!TIP]
+> **不會寫程式也能用：** 看 [🧪 Arduino 範例](/sensors/tof8/arduino-examples.md)，每個範例都能直接複製上傳，每一行都有中文說明。
+
 | 暫存器 | 方向 | 長度 | 內容 |
 | :---: | :---: | :---: | :--- |
+| `0x01` | R | 17 | 版本合併包（型號、韌體版本等，見通用協議） |
 | `0x11` | R | 6 | 方位合併包（= `0x12` ~ `0x15`） |
-| `0x12` | R | 1 | 最近目標方位 int8（-8 左 ~ +8 右，0 = 正前方） |
+| `0x12` | R | 1 | 最近目標方位 int8：有目標時 `-7`（左）~ `+7`（右），`0` = 正前方；`±8` = 8 顆都沒有目標。**先看 `0x13` < 1200 再用方位** |
 | `0x13` | R | 2 | 最近距離 mm |
-| `0x14` | R | 1 | 最遠目標方位 int8 |
+| `0x14` | R | 1 | 最遠目標方位 int8（8 顆都沒有目標時 = `0`） |
 | `0x15` | R | 2 | 最遠距離 mm |
 | `0x21` | R | 16 | 8 顆距離合併包（= `0x22` ~ `0x29`） |
 | `0x22` ~ `0x29` | R | 2 | 第 0 ~ 7 顆距離 mm（第 0 顆 = 最左、第 7 顆 = 最右） |
-| `0x32` | R | 1 | bit0 = 就緒（8 顆初始化完成）、bit1 = 有任一顆故障 |
+| `0x30` | W | 1 | `0x01` = 重新開機 |
+| `0x31` | R | 9 | 狀態合併包（= `0x32` ~ `0x37`） |
+| `0x32` | R | 1 | bit0 = 就緒（8 顆初始化完成，開機約 2 ~ 4 秒）、bit1 = 有任一顆故障。**就緒前所有距離都讀到 0**，請先等 bit0 = 1 |
 | `0x34` / `0x35` / `0x36` | R | 1 | 初始化成功／通訊錯誤／逾時 位元圖（bit i = 第 i 顆） |
 
 `0x06` 款式 = `[8, 120]`（顆數、距離上限 ×10 mm），`0x07` 型號 = `LASER8`。
 
 ```cpp
+// 先等就緒（開機約 2 ~ 4 秒；就緒前距離都是 0）
+uint8_t flags = 0;
+while (!(iicRead(0x29, 0x32, &flags, 1) && (flags & 0x01))) delay(100);
+
 // 讀最近目標的方位與距離
 uint8_t d[6];
 if (iicRead(0x29, 0x11, d, 6)) {
-  int8_t   dir  = (int8_t)d[0];            // -8 左 ~ +8 右
-  uint16_t dist = (d[1] << 8) | d[2];      // mm，1200 = 沒有目標
+  uint16_t dist = ((uint16_t)d[1] << 8) | d[2];   // mm，1200 = 沒有目標
+  if (dist < 1200) {
+    int8_t dir = (int8_t)d[0];                     // -7 左 ~ +7 右，0 = 正前方
+  }
 }
 ```
 
 ## 🔌 硬體接線
 
-1. 使用標準連接線插上 SPIKE（Port A~F）或 EV3（Port 1~4）
+1. SPIKE／EV3 版：使用標準連接線插上 SPIKE（Port A~F）或 EV3（Port 1~4）
+   通用 I2C 版：VCC → 5V、GND → GND、SDA → A4、SCL → A5（Arduino UNO／Nano），詳見 [Arduino 範例](/sensors/tof8/arduino-examples.md)
 2. 開機後約 2 ~ 4 秒完成初始化，確認感應器指示燈正常亮起即可使用
 
 ## ❓ 常見問題 FAQ

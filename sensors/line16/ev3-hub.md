@@ -20,25 +20,25 @@
 
 <div class="env-hub-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
   <!-- 卡片 1 -->
-  <a href="#/sensors/line16/ev3-classroom" class="env-card ev3" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; padding: 30px 20px;">
+  <a href="/sensors/line16/ev3-classroom.md" class="env-card ev3" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; padding: 30px 20px;">
     <img src="/images/hubs/ev3-classroom-app.webp" alt="EV3 Classroom App" style="max-height: 80px; object-fit: contain; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(10,186,181,0.15));" />
     <h3 style="margin: 0 !important; font-size: 1.3rem; text-align: center;">EV3 Classroom App</h3>
   </a>
 
   <!-- 卡片 2 -->
-  <a href="#/sensors/line16/ev3-official" class="env-card ev3" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; padding: 30px 20px;">
+  <a href="/sensors/line16/ev3-official.md" class="env-card ev3" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; padding: 30px 20px;">
     <img src="/images/hubs/ev3-official-app.webp" alt="EV3-G LabVIEW App" style="max-height: 80px; object-fit: contain; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(10,186,181,0.15));" />
     <h3 style="margin: 0 !important; font-size: 1.3rem; text-align: center;">EV3 LabVIEW App (EV3-G)</h3>
   </a>
 
   <!-- 卡片 3 -->
-  <a href="#/sensors/line16/ev3-clev3r" class="env-card ev3" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; padding: 30px 20px;">
+  <a href="/sensors/line16/ev3-clev3r.md" class="env-card ev3" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; padding: 30px 20px;">
     <img src="/images/hubs/ev3-clev3r-app.webp" alt="clev3r App" style="max-height: 80px; object-fit: contain; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(10,186,181,0.15));" />
     <h3 style="margin: 0 !important; font-size: 1.3rem; text-align: center;">clev3r App</h3>
   </a>
 
   <!-- 卡片 4 -->
-  <a href="#/sensors/line16/ev3-pybricks" class="env-card ev3" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; padding: 30px 20px;">
+  <a href="/sensors/line16/ev3-pybricks.md" class="env-card ev3" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; padding: 30px 20px;">
     <img src="/images/hubs/ev3-pybricks-logo.webp" alt="pyBricks Logo" style="max-height: 80px; object-fit: contain; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(0,210,255,0.15));" />
     <h3 style="margin: 0 !important; font-size: 1.3rem; text-align: center;">pyBricks</h3>
   </a>

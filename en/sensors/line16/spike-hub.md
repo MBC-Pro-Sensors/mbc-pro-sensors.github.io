@@ -51,19 +51,19 @@ Please select the environment that matches your setup below to view the correspo
 
 <div class="env-hub-grid">
   <!-- Card 1 -->
-  <a href="#/en/sensors/line16/spike-education" class="env-card spike" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; padding: 30px 20px;">
+  <a href="/en/sensors/line16/spike-education.md" class="env-card spike" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; padding: 30px 20px;">
     <img src="/images/hubs/spike-education-app.webp" alt="LEGO Education SPIKE App" style="max-height: 80px; object-fit: contain; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(242,194,0,0.15));" />
     <h3 style="margin: 0 !important; font-size: 1.3rem;">LEGO Education SPIKE App</h3>
   </a>
 
   <!-- Card 2 -->
-  <a href="#/en/sensors/line16/spike-ri" class="env-card spike" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; padding: 30px 20px;">
+  <a href="/en/sensors/line16/spike-ri.md" class="env-card spike" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; padding: 30px 20px;">
     <img src="/images/hubs/spike-mindstorms-app.webp" alt="LEGO MINDSTORMS Inventor App" style="max-height: 80px; object-fit: contain; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(10,186,181,0.15));" />
     <h3 style="margin: 0 !important; font-size: 1.3rem;">LEGO MINDSTORMS Inventor</h3>
   </a>
 
   <!-- Card 3 -->
-  <a href="#/en/sensors/line16/spike-pybricks" class="env-card spike" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; padding: 30px 20px;">
+  <a href="/en/sensors/line16/spike-pybricks.md" class="env-card spike" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; padding: 30px 20px;">
     <img src="/images/hubs/spike-pybricks-logo.webp" alt="pyBricks Logo" style="max-height: 80px; object-fit: contain; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(0,210,255,0.15));" />
     <h3 style="margin: 0 !important; font-size: 1.3rem;">pyBricks</h3>
   </a>

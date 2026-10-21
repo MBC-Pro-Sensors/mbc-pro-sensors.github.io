@@ -2,10 +2,13 @@
 - **Product Documentation**
   - [Home](/en/README.md)
   - [🧭 Buying Guide](/en/guide.md)
+  - [🚀 Already bought? Find your program](/en/guide.md#start)
   - [🏆 WRO Rules Check](/en/wro-rules.md)
   - [🏁 Competition Guide](/en/competitions.md)
   - [❓ FAQ](/en/faq.md)
   - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#00d2ff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px rgba(0,210,255,0.5));"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>Universal I2C Protocol](/en/i2c-protocol.md)
+  - [🔰 First time with Arduino](/en/sensors/arduino-start.md)
+  - [🤖 MakeBlock (mBot) Blocks](/en/makeblock.md)
 
 - **🛤️ Line Followers**
   - **Pathfinder 8-Way (Line8)**
@@ -20,6 +23,7 @@
       - [clev3r (BASIC)](/en/sensors/line8/ev3-clev3r.md)
       - [pyBricks](/en/sensors/line8/ev3-pybricks.md)
     - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#00d2ff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px rgba(0,210,255,0.5));"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>Universal I2C Version](/en/sensors/line8/arduino-i2c.md)
+      - [🧪 Arduino Examples](/en/sensors/line8/arduino-examples.md)
   - **Pathfinder 16-Way (Line16)**
     - [📖 Introduction & Calibration](/en/sensors/line16/index.md)
     - [<img src="/images/hubs/spike-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(242,194,0,0.5));"> SPIKE Hub](/en/sensors/line16/spike-hub.md)
@@ -32,18 +36,23 @@
       - [clev3r (BASIC)](/en/sensors/line16/ev3-clev3r.md)
       - [pyBricks](/en/sensors/line16/ev3-pybricks.md)
     - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#00d2ff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px rgba(0,210,255,0.5));"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>Universal I2C Version](/en/sensors/line16/arduino-i2c.md)
+      - [🧪 Arduino Examples](/en/sensors/line16/arduino-examples.md)
 
 - **📡 Laser Ranging (ToF)**
   - **Ranger 2-Way (TOF2)**
     - [📖 Product Overview](/en/sensors/tof2/index.md)
+    - [🧪 Arduino Examples](/en/sensors/tof2/arduino-examples.md)
   - **Ranger 8-Way (TOF8)**
     - [📖 Product Overview](/en/sensors/tof8/index.md)
+    - [🧪 Arduino Examples](/en/sensors/tof8/arduino-examples.md)
 
 - **🎮 Remote Control Receiver**
   - **Controller 2.4G (PS2)**
     - [📖 Product Overview](/en/sensors/ps2/index.md)
+    - [🧪 Arduino Examples](/en/sensors/ps2/arduino-examples.md)
   - **Controller PS4/PS5**
     - [📖 Product Overview](/en/sensors/ps4/index.md)
+    - [🧪 Arduino Examples](/en/sensors/ps4/arduino-examples.md)
 
 - **👁️ Robot Vision**
   - **Sharpshooter Vision (ESP32CAM)**
@@ -52,13 +61,14 @@
 - **🧭 Motion Sensing**
   - **IMU 9-Axis Gyro (Coming Soon)**
     - [📖 Product Overview](/en/sensors/imu/index.md)
+    - [🧪 Arduino Examples](/en/sensors/imu/arduino-examples.md)
 
 - **🔌 Expansion Modules**
   - **SPIKE 6-Way Expander (EXP6)**
     - [📖 Product Overview](/en/sensors/exp6/index.md)
     - [🎮 Official App](/en/sensors/exp6/spike-official.md)
     - [🚀 Pybricks Environment](/en/sensors/exp6/spike-pybricks.md)
-    - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#00d2ff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px rgba(0,210,255,0.5));"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>Universal I2C Edition](/en/sensors/exp6/arduino-i2c.md)
+    - [🧪 Arduino Examples (UART)](/en/sensors/exp6/arduino-examples.md)
 
 - **📞 Contact Us**
   - [🛒 Where to Buy](/en/where-to-buy.md)

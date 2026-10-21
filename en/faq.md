@@ -18,7 +18,7 @@ No. MBC sensors use the same connectors and communication protocols as the LEGO�
 - **LEGO® SPIKE™ Prime / Robot Inventor:** official SPIKE app and Pybricks
 - **LEGO® MINDSTORMS® EV3:** EV3 software, EV3 Classroom, clev3r and Pybricks
 - **Arduino, ESP32, Raspberry Pi:** the shared [Universal I2C Protocol](/en/i2c-protocol.md)
-- **MATRIX Mini R4 and MakeBlock:** selected products, see the [Buying Guide](/en/guide.md)
+- **MATRIX Mini R4 and MakeBlock (mBot and others):** selected products, see the [Buying Guide](/en/guide.md)
 
 ### Are the SPIKE and EV3 editions interchangeable?
 
@@ -58,7 +58,7 @@ Choose the **8-Way** for reliable line following on typical maps; it is compact 
 
 ### How do I calibrate the line sensors?
 
-Press the calibration button, sweep the sensor over the white surface and the black line on your field, then press the button again to save. The calibration is stored in the sensor and kept after power-off. Details are on the [Pathfinder 8-Way page](/en/sensors/line8/index.md).
+Hold the calibration button for 0.5 s; when the green LED lights up, sweep the sensor over the white surface and the black line within 5 seconds. The LED turns off and the calibration is saved automatically, no second press needed. The calibration is stored in the sensor and kept after power-off. Details are on the [Pathfinder 8-Way page](/en/sensors/line8/index.md).
 
 ### How far can the Ranger 8-Way (TOF8) see?
 

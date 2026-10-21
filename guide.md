@@ -6,6 +6,24 @@
 > [!IMPORTANT]
 > MBC 每款產品都依主機分成不同版本（接頭與通訊方式不同），**不同版本不能互換**。下單前請確認你的主機型號。
 
+<h2 id="start" style="scroll-margin-top: 96px;">🚀 已經有感應器了？直接找程式</h2>
+
+點你的產品和主機，直接到安裝步驟、程式積木和範例下載（SPIKE 含 Robot Inventor；Arduino 含 ESP32 等 I2C 主機；mBot 含 Ranger 等 MakeBlock 主板）：
+
+| 產品 | SPIKE | EV3 | Arduino | mBot |
+| :--- | :---: | :---: | :---: | :---: |
+| 循行者 8 路 | [App・Pybricks](/sensors/line8/spike-hub.md) | [EV3・Pybricks](/sensors/line8/ev3-hub.md) | [範例](/sensors/line8/arduino-examples.md) | [積木](/makeblock.md) |
+| 循行者 16 路 | [App・Pybricks](/sensors/line16/spike-hub.md) | [EV3・Pybricks](/sensors/line16/ev3-hub.md) | [範例](/sensors/line16/arduino-examples.md) | [積木](/makeblock.md) |
+| 測距者 2 路 | [產品頁](/sensors/tof2/index.md) | [產品頁](/sensors/tof2/index.md) | — | [積木](/makeblock.md) |
+| 測距者 8 路 | [產品頁](/sensors/tof8/index.md) | [產品頁](/sensors/tof8/index.md) | [範例](/sensors/tof8/arduino-examples.md) | [積木](/makeblock.md) |
+| 掌控者 PS4/PS5 | [產品頁](/sensors/ps4/index.md) | [產品頁](/sensors/ps4/index.md) | [範例](/sensors/ps4/arduino-examples.md) | [積木](/makeblock.md) |
+| 掌控者 PS2 | [產品頁](/sensors/ps2/index.md) | [產品頁](/sensors/ps2/index.md) | [範例](/sensors/ps2/arduino-examples.md) | [積木](/makeblock.md) |
+| 神攝手 ESP32CAM | [產品頁](/sensors/esp32cam/index.md) | [產品頁](/sensors/esp32cam/index.md) | — | — |
+| SPIKE 6 路擴充器 | [官方 App](/sensors/exp6/spike-official.md)・[Pybricks](/sensors/exp6/spike-pybricks.md) | — | [範例](/sensors/exp6/arduino-examples.md) | — |
+
+> [!TIP]
+> **不知道用哪個軟體？** SPIKE 主機：上課用官方 App 積木最簡單；比賽要穩定、快速，建議用 Pybricks。EV3 主機：EV3 官方軟體或 EV3 Classroom 都可以，想寫 Python 用 Pybricks。
+
 ## 1️⃣ 你用的是哪一種主機？
 
 <div class="guide-hosts">
@@ -13,7 +31,7 @@
 <a class="guide-host" href="#ev3">🧱 EV3<small>MINDSTORMS EV3</small></a>
 <a class="guide-host" href="#arduino">∿ Arduino<small>ESP32 / 樹莓派</small></a>
 <a class="guide-host" href="#matrix">🤖 MATRIX<small>Mini R4</small></a>
-<a class="guide-host" href="#makeblock">🤖 MakeBlock</a>
+<a class="guide-host" href="#makeblock">🤖 MakeBlock<small>mBot / Ranger</small></a>
 </div>
 
 <h3 id="spike">🧱 LEGO SPIKE Prime / Robot Inventor</h3>
@@ -45,14 +63,14 @@
 
 <h3 id="arduino">∿ Arduino / ESP32 / 樹莓派（通用 I2C 版）</h3>
 
-全系列使用同一套 [通用 I2C 協議](/i2c-protocol.md)，學會一款就會全部。
+全系列使用同一套 [通用 I2C 協議](/i2c-protocol.md)，學會一款就會全部。每款都有可直接複製上傳的新手範例，沒寫過程式請從 [🔰 第一次用 Arduino](/sensors/arduino-start.md) 開始。
 
 | 產品 | 用途 | I2C 位址 |
 | :--- | :--- | :---: |
 | [循行者 8 路](/sensors/line8/arduino-i2c.md) | 循線 | `0x16` |
 | [循行者 16 路](/sensors/line16/arduino-i2c.md) | 高速循線、十字路口 | `0x16` |
 | [測距者 8 路](/sensors/tof8/index.md) | 180° 避障 | `0x29` |
-| [SPIKE 6 路擴充器](/sensors/exp6/arduino-i2c.md) | 用 Arduino 驅動 LEGO 馬達與感應器 | `0x6E` |
+| [SPIKE 6 路擴充器](/sensors/exp6/arduino-examples.md) | 用 Arduino 驅動 LEGO 馬達與感應器 | 序列埠（UART） |
 | [掌控者 PS4/PS5](/sensors/ps4/index.md) | 藍牙手把遙控 | `0x42` |
 | [掌控者 PS2](/sensors/ps2/index.md) | 2.4G 手把遙控 | `0x42` |
 | [陀螺儀 IMU](/sensors/imu/index.md) | 航向、九軸資料 | `0x6A` |
@@ -68,6 +86,8 @@
 | [陀螺儀 IMU](/sensors/imu/index.md) | 航向、轉角度（即將推出） |
 
 <h3 id="makeblock">🤖 MakeBlock</h3>
+
+mBot、mBot Ranger、Orion、Ultimate 2.0（MegaPi）都能用。感應器選 MakeBlock 版、搭配 mBot 插座片；積木下載與各主板可用的連接埠請看 [MakeBlock 積木擴展](/makeblock.md)。
 
 | 產品 | 用途 |
 | :--- | :--- |

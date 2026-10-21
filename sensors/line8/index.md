@@ -9,6 +9,7 @@
 > 1. **🧱 SPIKE 專屬版**：採用 LPF2 (Lego 6-pin) 扁平插座，僅相容於 SPIKE Prime, SPIKE Essential 與 Robot Inventor 主機。
 > 2. **🧱 EV3 專屬版**：採用 RJ12 (樂高專用 6-pin 水晶頭) 插座，僅相容於 EV3 主機。
 > 3. **∿ 通用 I2C 開發版**：採用標準排針/XH2.54 通訊埠，僅適用於 Arduino、ESP32、樹莓派等自行開發系統。
+> 4. **🤖 MakeBlock 版**：搭配 mBot 插座片接 RJ25 連接埠，適用於 mBot、mBot Ranger 等 Makeblock 主板（mBlock 5 積木）。
 > *請務必依據您的主機系統選購對應的硬體版本。各版本物理接頭完全不同，請勿強行連接以免造成硬體損壞！*
 
 ---
@@ -156,7 +157,7 @@ MBC 8 路循線感應器針對此痛點進行了專項優化，搭載高度抗�
 請先選擇您使用的控制器系統，進入後再選擇您的軟體環境：
 
 <div class="env-hub-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
-  <a href="#/sensors/line8/spike-hub" class="env-card spike" style="padding: 40px 20px;">
+  <a href="/sensors/line8/spike-hub.md" class="env-card spike" style="padding: 40px 20px;">
     <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
       <img src="/images/hubs/spike-hub.webp" alt="SPIKE Prime Hub" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(242,194,0,0.3));" />
       <img src="/images/hubs/inventor-hub.webp" alt="Robot Inventor Hub" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.3));" />
@@ -165,7 +166,7 @@ MBC 8 路循線感應器針對此痛點進行了專項優化，搭載高度抗�
     <p style="font-size: 1.1rem;">教育版 (SPIKE 3) / 家用版 (Robot Inventor) / pyBricks</p>
   </a>
   
-  <a href="#/sensors/line8/ev3-hub" class="env-card ev3" style="padding: 40px 20px;">
+  <a href="/sensors/line8/ev3-hub.md" class="env-card ev3" style="padding: 40px 20px;">
     <div style="display: flex; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
       <img src="/images/hubs/ev3-hub.webp" alt="EV3 Hub" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.3));" />
     </div>
@@ -173,7 +174,7 @@ MBC 8 路循線感應器針對此痛點進行了專項優化，搭載高度抗�
     <p style="font-size: 1.1rem;">官方軟體 / Classroom / clev3r / pyBricks</p>
   </a>
 
-  <a href="#/sensors/line8/arduino-i2c" class="env-card mcu" style="padding: 40px 20px;">
+  <a href="/sensors/line8/arduino-i2c.md" class="env-card mcu" style="padding: 40px 20px;">
     <div style="display: flex; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
       <svg viewBox="0 0 100 40" style="width: 120px; height: 50px; fill: none; stroke: #00d2ff; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.6));">
         <path d="M 5,25 H 25 V 5 H 45 V 35 H 65 V 5 H 85 V 35 H 95" />
@@ -181,6 +182,12 @@ MBC 8 路循線感應器針對此痛點進行了專項優化，搭載高度抗�
     </div>
     <h3 style="font-size: 1.8rem; margin-bottom: 15px !important;">∿ 通用 I2C 版本</h3>
     <p style="font-size: 1.1rem;">Arduino / ESP32 / 樹莓派 / 各式自主開發主控板</p>
+  </a>
+
+  <a href="/makeblock.md" class="env-card mcu" style="padding: 40px 20px;">
+    <div style="display: flex; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end; font-size: 72px; line-height: 1;">🤖</div>
+    <h3 style="font-size: 1.8rem; margin-bottom: 15px !important;">MakeBlock 版本</h3>
+    <p style="font-size: 1.1rem;">mBot / mBot Ranger / Orion / MegaPi（mBlock 5 積木）</p>
   </a>
 </div>
 

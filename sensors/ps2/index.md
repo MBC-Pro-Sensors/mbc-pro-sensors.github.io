@@ -37,15 +37,23 @@ LEGO 原廠提供的紅外線遙控器按鈕少得可憐，而使用兩台 EV3 �
 | :--- | :--- |
 | LEGO SPIKE Prime / Robot Inventor | 官方 App、Pybricks（👉 [SPIKE 新手範例：官方 App／MBC 積木網站／Pybricks 各 5 個](/sensors/ps2/spike-examples.md)） |
 | LEGO MINDSTORMS EV3 | EV3 官方軟體、Pybricks（[EV3 新手範例](/sensors/ps2/ev3-examples.md)） |
-| Arduino / ESP32 / 樹莓派 | 通用 I2C（位址 `0x42`） |
-| MakeBlock | 專屬版本 |
+| Arduino / ESP32 / 樹莓派 | 通用 I2C（位址 `0x42`），[Arduino 範例](/sensors/ps2/arduino-examples.md) |
+| MakeBlock（mBot 等） | 專屬版本，[積木與接法](/makeblock.md) |
 
 > [!IMPORTANT]
 > 每個平台是**不同的出廠版本**，請依你的主機選購對應版本。
 
+## 📥 範例下載
+
+| 主機 | 檔案 |
+| :--- | :--- |
+| SPIKE（Pybricks 3.6.1） | [全部下載（.zip）](/examples/ps2/ps2_pybricks_spike_v3.6.1.zip)・[完整按鍵版（mode 9）](/examples/ps2/pybricks/For%20firmware%203.6.1/ps2_python_mode9_v361.py)・[積木版](/examples/ps2/pybricks/For%20firmware%203.6.1/ps2_block_native_v361.py)・[Python 版](/examples/ps2/pybricks/For%20firmware%203.6.1/ps2_python_native_v361.py) |
+| EV3／SPIKE App／Pybricks 積木用法 | [指令說明（PDF）](/examples/ps2/PS2_Controller_Command_Guide_ZH.pdf) |
+| mBot 等（MakeBlock） | [積木擴展與手把遙控範例](/makeblock.md) |
+
 ## 📤 輸出資料
 
-**搖桿數值（SPIKE / EV3）：** `0` ~ `99`，`50` = 中心，**往上推、往右推數值變大**。
+**搖桿數值：** EV3 為 `0` ~ `99`（`50` = 中心）；SPIKE（官方 App、Pybricks）為 `1` ~ `9`（`5` = 中心）。**往上推、往右推數值變大**。
 
 | EV3 模式 | 內容 |
 | :---: | :--- |
@@ -57,11 +65,14 @@ LEGO 原廠提供的紅外線遙控器按鈕少得可憐，而使用兩台 EV3 �
 
 與 [PS4/PS5 接收器](/sensors/ps4/index.md) 使用同一張暫存器表，主機程式可以共用。共通規則請看 [MBC 通用 I2C 協議](/i2c-protocol.md)。
 
+> [!TIP]
+> **不會寫程式也能用：** 看 [🧪 Arduino 範例](/sensors/ps2/arduino-examples.md)，每個範例都能直接複製上傳，每一行都有中文說明。
+
 | 暫存器 | 方向 | 長度 | 內容 |
 | :---: | :---: | :---: | :--- |
 | `0x11` | R | 9 | 手把合併包（= `0x12` ~ `0x15`） |
 | `0x12` | R | 2 | 按鈕 uint16（b15 ■、b14 ✕、b13 ●、b12 ▲、b11 R1、b10 L1、b9 R2、b8 L2、b7 左、b6 下、b5 右、b4 上、b3 START、b2 R3、b1 L3、b0 SELECT） |
-| `0x13` | R | 4 | 搖桿 LX, LY, RX, RY：int8 `-127` ~ `+127`，0 = 中心，右／上為正 |
+| `0x13` | R | 4 | 搖桿 LX, LY, RX, RY：int8 `-127` ~ `+127`，0 = 中心，右／上為正；中心 ±8 以內當作 0（死區）。手把在數位模式（ANALOG 燈沒亮）時搖桿都是 0 |
 | `0x14` | R | 2 | 扳機 L2, R2：`0` ~ `255`（手把不支援壓力值時只有 0 / 255） |
 | `0x22` | R | 4 | 簡易搖桿 LX, LY, RX, RY：`0` ~ `99`，50 = 中心 |
 | `0x32` | R | 1 | bit0 = 就緒、bit1 = 手把已連線 |
@@ -71,6 +82,7 @@ LEGO 原廠提供的紅外線遙控器按鈕少得可憐，而使用兩台 EV3 �
 
 ## 🔌 硬體接線
 
-1. 將接收器插入 SPIKE（Port A~F）或 EV3（Port 1~4）
+1. SPIKE／EV3 版：將接收器插入 SPIKE（Port A~F）或 EV3（Port 1~4）
+   通用 I2C 版：接收器 TX → SCL（UNO 的 A5）、RX → SDA（UNO 的 A4）、VCC → 5V、GND → GND，詳見 [Arduino 範例](/sensors/ps2/arduino-examples.md)
 2. 開啟控制器電源，等待配對完成（指示燈穩定亮起）
 3. 在官方積木環境中，讀取感應器數值即可取得按鍵狀態

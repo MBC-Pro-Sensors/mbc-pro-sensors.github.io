@@ -37,15 +37,23 @@ The Controller 2.4G Receiver provides a **high cost-performance solution**: It a
 | :--- | :--- |
 | LEGO SPIKE Prime / Robot Inventor | Official app, Pybricks |
 | LEGO MINDSTORMS EV3 | EV3 official software, Pybricks |
-| Arduino / ESP32 / Raspberry Pi | Universal I2C (address `0x42`) |
-| MakeBlock | Dedicated edition |
+| Arduino / ESP32 / Raspberry Pi | Universal I2C (address `0x42`), [Arduino Examples](/en/sensors/ps2/arduino-examples.md) |
+| MakeBlock (mBot etc.) | Dedicated edition, [blocks & wiring](/en/makeblock.md) |
 
 > [!IMPORTANT]
 > Each platform is a **different factory edition**; please order the one that matches your controller.
 
+## 📥 Example Downloads (Taiwan only)
+
+| Hub | Files |
+| :--- | :--- |
+| SPIKE (Pybricks 3.6.1) | [Download all (.zip)](/examples/ps2/ps2_pybricks_spike_v3.6.1.zip) · [All buttons (mode 9)](/examples/ps2/pybricks/For%20firmware%203.6.1/ps2_python_mode9_v361.py) · [Blocks](/examples/ps2/pybricks/For%20firmware%203.6.1/ps2_block_native_v361.py) · [Python](/examples/ps2/pybricks/For%20firmware%203.6.1/ps2_python_native_v361.py) |
+| EV3 / SPIKE App / Pybricks blocks | [Command guide (PDF)](/examples/ps2/PS2_Controller_Command_Guide_EN_Taiwan_only.pdf) |
+| mBot etc. (MakeBlock) | [Block extension and controller example](/en/makeblock.md) |
+
 ## 📤 Output Data
 
-**Stick values (SPIKE / EV3):** `0` ~ `99`, `50` = center, **pushing up or right increases the value**.
+**Stick values:** EV3 `0` ~ `99` (`50` = center); SPIKE (official app, Pybricks) `1` ~ `9` (`5` = center). **Pushing up or right increases the value**.
 
 | EV3 mode | Content |
 | :---: | :--- |
@@ -57,11 +65,14 @@ The Controller 2.4G Receiver provides a **high cost-performance solution**: It a
 
 Same register table as the [PS4/PS5 receiver](/en/sensors/ps4/index.md), so host code can be shared. Shared rules: [MBC Universal I2C Protocol](/en/i2c-protocol.md).
 
+> [!TIP]
+> **No coding experience? No problem:** see the [🧪 Arduino Examples](/en/sensors/ps2/arduino-examples.md). Every example can be copied and uploaded right away, with an English note on every line.
+
 | Register | Dir | Len | Content |
 | :---: | :---: | :---: | :--- |
 | `0x11` | R | 9 | Gamepad bundle (= `0x12` ~ `0x15`) |
 | `0x12` | R | 2 | Buttons uint16 (b15 ■, b14 ✕, b13 ●, b12 ▲, b11 R1, b10 L1, b9 R2, b8 L2, b7 left, b6 down, b5 right, b4 up, b3 START, b2 R3, b1 L3, b0 SELECT) |
-| `0x13` | R | 4 | Sticks LX, LY, RX, RY: int8 `-127` ~ `+127`, 0 = center, right / up positive |
+| `0x13` | R | 4 | Sticks LX, LY, RX, RY: int8 `-127` ~ `+127`, 0 = center, right / up positive; values within ±8 of center read as 0 (dead zone). In digital mode (ANALOG light off), the sticks always read 0 |
 | `0x14` | R | 2 | Triggers L2, R2: `0` ~ `255` (only 0 / 255 if the gamepad has no pressure sensing) |
 | `0x22` | R | 4 | Simple sticks LX, LY, RX, RY: `0` ~ `99`, 50 = center |
 | `0x32` | R | 1 | bit0 = ready, bit1 = gamepad connected |
@@ -71,6 +82,7 @@ Variant `0x06` byte 1 = `1`. The PS2 edition has no rumble or light bar (writes 
 
 ## 🔌 Hardware Wiring
 
-1. Plug the receiver into SPIKE (Ports A~F) or EV3 (Ports 1~4).
+1. SPIKE / EV3 edition: plug the receiver into SPIKE (Ports A~F) or EV3 (Ports 1~4).
+   Universal I2C edition: receiver TX → SCL (A5 on the UNO), RX → SDA (A4 on the UNO), VCC → 5V, GND → GND. See the [Arduino Examples](/en/sensors/ps2/arduino-examples.md) for details
 2. Power on the controller and wait for pairing to complete (indicator light remains steady).
 3. Read sensor values in the official block environment to retrieve button states.
