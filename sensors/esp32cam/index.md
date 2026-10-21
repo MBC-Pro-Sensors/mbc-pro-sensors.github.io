@@ -65,7 +65,7 @@ EV3 新手範例：[學校老師創意賽版](/sensors/esp32cam/ev3-examples.md)
 
 | 平台 | 支援方式 |
 | :--- | :--- |
-| LEGO SPIKE Prime / Robot Inventor | 官方 App、Pybricks |
+| LEGO SPIKE Prime / Robot Inventor | 官方 App、Pybricks（👉 [SPIKE 新手範例：官方 App／MBC 積木網站／Pybricks 各 5 個](/sensors/esp32cam/spike-examples.md)・[WRO 版 HUE12](/sensors/esp32cam/spike-examples-wro.md)） |
 | LEGO MINDSTORMS EV3 | EV3 官方軟體、Pybricks |
 | MATRIX Mini R4 | UART |
 
