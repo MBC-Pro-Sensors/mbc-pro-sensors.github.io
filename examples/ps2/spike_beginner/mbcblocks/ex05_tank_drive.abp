@@ -1,0 +1,430 @@
+{
+ "format": "mbc-project",
+ "target": "spike:pybricks",
+ "specVersion": 2,
+ "meta": {
+  "name": "掌控者PS2 範例5 雙搖桿坦克開車",
+  "author": "MBC Robot",
+  "createdAt": "2026-10-20T00:00:00.000Z",
+  "modifiedAt": "2026-10-20T00:00:00.000Z"
+ },
+ "board": {
+  "fqbn": null,
+  "displayName": "LEGO SPIKE Prime"
+ },
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "arduino_setup",
+     "next": {
+      "block": {
+       "type": "dev_mbc_gamepad__config",
+       "fields": {
+        "PORT": "C"
+       },
+       "next": {
+        "block": {
+         "type": "spike_port_config",
+         "fields": {
+          "PORT": "E",
+          "DEVICE": "lego:motor",
+          "DIR": "ccw"
+         },
+         "next": {
+          "block": {
+           "type": "spike_port_config",
+           "fields": {
+            "PORT": "F",
+            "DEVICE": "lego:motor",
+            "DIR": "cw"
+           },
+           "next": {
+            "block": {
+             "type": "ctrl_wait_until",
+             "inputs": {
+              "COND": {
+               "block": {
+                "type": "logic_op",
+                "fields": {
+                 "OP": "AND"
+                },
+                "inputs": {
+                 "A": {
+                  "block": {
+                   "type": "logic_in_range",
+                   "fields": {
+                    "MODE": "IN"
+                   },
+                   "inputs": {
+                    "VALUE": {
+                     "block": {
+                      "type": "dev_mbc_gamepad_stick",
+                      "fields": {
+                       "PORT": "C",
+                       "ARG_axis": "3"
+                      }
+                     }
+                    },
+                    "MIN": {
+                     "shadow": {
+                      "type": "math_number",
+                      "fields": {
+                       "NUM": 4
+                      }
+                     }
+                    },
+                    "MAX": {
+                     "shadow": {
+                      "type": "math_number",
+                      "fields": {
+                       "NUM": 6
+                      }
+                     }
+                    }
+                   }
+                  }
+                 },
+                 "B": {
+                  "block": {
+                   "type": "logic_in_range",
+                   "fields": {
+                    "MODE": "IN"
+                   },
+                   "inputs": {
+                    "VALUE": {
+                     "block": {
+                      "type": "dev_mbc_gamepad_stick",
+                      "fields": {
+                       "PORT": "C",
+                       "ARG_axis": "5"
+                      }
+                     }
+                    },
+                    "MIN": {
+                     "shadow": {
+                      "type": "math_number",
+                      "fields": {
+                       "NUM": 4
+                      }
+                     }
+                    },
+                    "MAX": {
+                     "shadow": {
+                      "type": "math_number",
+                      "fields": {
+                       "NUM": 6
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "hub_light_on",
+               "fields": {
+                "COLOR": "GREEN"
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     },
+     "x": 40,
+     "y": 90
+    },
+    {
+     "type": "arduino_loop",
+     "next": {
+      "block": {
+       "type": "controls_if",
+       "extraState": {
+        "hasElse": true
+       },
+       "inputs": {
+        "IF0": {
+         "block": {
+          "type": "logic_in_range",
+          "fields": {
+           "MODE": "IN"
+          },
+          "inputs": {
+           "VALUE": {
+            "block": {
+             "type": "dev_mbc_gamepad_stick",
+             "fields": {
+              "PORT": "C",
+              "ARG_axis": "3"
+             }
+            }
+           },
+           "MIN": {
+            "shadow": {
+             "type": "math_number",
+             "fields": {
+              "NUM": 4
+             }
+            }
+           },
+           "MAX": {
+            "shadow": {
+             "type": "math_number",
+             "fields": {
+              "NUM": 6
+             }
+            }
+           }
+          }
+         }
+        },
+        "DO0": {
+         "block": {
+          "type": "variables_set",
+          "fields": {
+           "VAR": {
+            "id": "v_Fn2SLdNGsL"
+           }
+          },
+          "inputs": {
+           "VALUE": {
+            "shadow": {
+             "type": "math_number",
+             "fields": {
+              "NUM": 0
+             }
+            }
+           }
+          }
+         }
+        },
+        "ELSE": {
+         "block": {
+          "type": "variables_set",
+          "fields": {
+           "VAR": {
+            "id": "v_Fn2SLdNGsL"
+           }
+          },
+          "inputs": {
+           "VALUE": {
+            "block": {
+             "type": "math_op",
+             "fields": {
+              "OP": "MUL"
+             },
+             "inputs": {
+              "A": {
+               "block": {
+                "type": "dev_mbc_gamepad_stick_centered",
+                "fields": {
+                 "PORT": "C",
+                 "ARG_axis": "3"
+                }
+               }
+              },
+              "B": {
+               "shadow": {
+                "type": "math_number",
+                "fields": {
+                 "NUM": 25
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       },
+       "next": {
+        "block": {
+         "type": "controls_if",
+         "extraState": {
+          "hasElse": true
+         },
+         "inputs": {
+          "IF0": {
+           "block": {
+            "type": "logic_in_range",
+            "fields": {
+             "MODE": "IN"
+            },
+            "inputs": {
+             "VALUE": {
+              "block": {
+               "type": "dev_mbc_gamepad_stick",
+               "fields": {
+                "PORT": "C",
+                "ARG_axis": "5"
+               }
+              }
+             },
+             "MIN": {
+              "shadow": {
+               "type": "math_number",
+               "fields": {
+                "NUM": 4
+               }
+              }
+             },
+             "MAX": {
+              "shadow": {
+               "type": "math_number",
+               "fields": {
+                "NUM": 6
+               }
+              }
+             }
+            }
+           }
+          },
+          "DO0": {
+           "block": {
+            "type": "variables_set",
+            "fields": {
+             "VAR": {
+              "id": "v_1y2Fnj6Gc9"
+             }
+            },
+            "inputs": {
+             "VALUE": {
+              "shadow": {
+               "type": "math_number",
+               "fields": {
+                "NUM": 0
+               }
+              }
+             }
+            }
+           }
+          },
+          "ELSE": {
+           "block": {
+            "type": "variables_set",
+            "fields": {
+             "VAR": {
+              "id": "v_1y2Fnj6Gc9"
+             }
+            },
+            "inputs": {
+             "VALUE": {
+              "block": {
+               "type": "math_op",
+               "fields": {
+                "OP": "MUL"
+               },
+               "inputs": {
+                "A": {
+                 "block": {
+                  "type": "dev_mbc_gamepad_stick_centered",
+                  "fields": {
+                   "PORT": "C",
+                   "ARG_axis": "5"
+                  }
+                 }
+                },
+                "B": {
+                 "shadow": {
+                  "type": "math_number",
+                  "fields": {
+                   "NUM": 25
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         },
+         "next": {
+          "block": {
+           "type": "motor_dc",
+           "fields": {
+            "PORT": "E"
+           },
+           "inputs": {
+            "POWER": {
+             "block": {
+              "type": "variables_get",
+              "fields": {
+               "VAR": {
+                "id": "v_Fn2SLdNGsL"
+               }
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "motor_dc",
+             "fields": {
+              "PORT": "F"
+             },
+             "inputs": {
+              "POWER": {
+               "block": {
+                "type": "variables_get",
+                "fields": {
+                 "VAR": {
+                  "id": "v_1y2Fnj6Gc9"
+                 }
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "spike_wait_ms",
+               "inputs": {
+                "MS": {
+                 "shadow": {
+                  "type": "math_number",
+                  "fields": {
+                   "NUM": 20
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     },
+     "x": 40,
+     "y": 438
+    }
+   ]
+  },
+  "variables": [
+   {
+    "name": "左功率",
+    "id": "v_Fn2SLdNGsL"
+   },
+   {
+    "name": "右功率",
+    "id": "v_1y2Fnj6Gc9"
+   }
+  ]
+ },
+ "variables": [],
+ "lastFlashedHash": null
+}

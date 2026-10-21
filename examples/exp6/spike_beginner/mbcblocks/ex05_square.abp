@@ -1,0 +1,436 @@
+{
+ "format": "mbc-project",
+ "target": "spike:pybricks",
+ "specVersion": 2,
+ "meta": {
+  "name": "EXP6 範例5 小車走正方形",
+  "author": "MBC Robot",
+  "createdAt": "2026-10-20T00:00:00.000Z",
+  "modifiedAt": "2026-10-20T00:00:00.000Z"
+ },
+ "board": {
+  "fqbn": null,
+  "displayName": "LEGO SPIKE Prime"
+ },
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "arduino_setup",
+     "next": {
+      "block": {
+       "type": "dev_mbc_exp6__config",
+       "fields": {
+        "PORT": "C"
+       },
+       "next": {
+        "block": {
+         "type": "dev_mbc_exp6_inverted",
+         "fields": {
+          "PORT": "C",
+          "ARG_inv": "1"
+         },
+         "inputs": {
+          "ARG_m": {
+           "shadow": {
+            "type": "math_number",
+            "fields": {
+             "NUM": 1
+            }
+           }
+          }
+         },
+         "next": {
+          "block": {
+           "type": "ctrl_wait_until",
+           "inputs": {
+            "COND": {
+             "block": {
+              "type": "compare_op",
+              "fields": {
+               "OP": "EQ"
+              },
+              "inputs": {
+               "A": {
+                "block": {
+                 "type": "dev_mbc_exp6_device_id",
+                 "fields": {
+                  "PORT": "C"
+                 },
+                 "inputs": {
+                  "ARG_m": {
+                   "shadow": {
+                    "type": "math_number",
+                    "fields": {
+                     "NUM": 1
+                    }
+                   }
+                  }
+                 }
+                }
+               },
+               "B": {
+                "shadow": {
+                 "type": "math_number",
+                 "fields": {
+                  "NUM": 5
+                 }
+                }
+               }
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "ctrl_wait_until",
+             "inputs": {
+              "COND": {
+               "block": {
+                "type": "compare_op",
+                "fields": {
+                 "OP": "EQ"
+                },
+                "inputs": {
+                 "A": {
+                  "block": {
+                   "type": "dev_mbc_exp6_device_id",
+                   "fields": {
+                    "PORT": "C"
+                   },
+                   "inputs": {
+                    "ARG_m": {
+                     "shadow": {
+                      "type": "math_number",
+                      "fields": {
+                       "NUM": 2
+                      }
+                     }
+                    }
+                   }
+                  }
+                 },
+                 "B": {
+                  "shadow": {
+                   "type": "math_number",
+                   "fields": {
+                    "NUM": 5
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "spike_wait_ms",
+               "inputs": {
+                "MS": {
+                 "shadow": {
+                  "type": "math_number",
+                  "fields": {
+                   "NUM": 300
+                  }
+                 }
+                }
+               },
+               "next": {
+                "block": {
+                 "type": "ctrl_repeat",
+                 "inputs": {
+                  "TIMES": {
+                   "shadow": {
+                    "type": "math_number",
+                    "fields": {
+                     "NUM": 4
+                    }
+                   }
+                  },
+                  "DO": {
+                   "block": {
+                    "type": "dev_mbc_exp6_reset_angle",
+                    "fields": {
+                     "PORT": "C"
+                    },
+                    "inputs": {
+                     "ARG_m": {
+                      "shadow": {
+                       "type": "math_number",
+                       "fields": {
+                        "NUM": 2
+                       }
+                      }
+                     }
+                    },
+                    "next": {
+                     "block": {
+                      "type": "dev_mbc_exp6_drive",
+                      "fields": {
+                       "PORT": "C"
+                      },
+                      "inputs": {
+                       "ARG_l": {
+                        "shadow": {
+                         "type": "math_number",
+                         "fields": {
+                          "NUM": 1
+                         }
+                        }
+                       },
+                       "ARG_r": {
+                        "shadow": {
+                         "type": "math_number",
+                         "fields": {
+                          "NUM": 2
+                         }
+                        }
+                       },
+                       "ARG_ls": {
+                        "shadow": {
+                         "type": "math_number",
+                         "fields": {
+                          "NUM": 40
+                         }
+                        }
+                       },
+                       "ARG_rs": {
+                        "shadow": {
+                         "type": "math_number",
+                         "fields": {
+                          "NUM": 40
+                         }
+                        }
+                       }
+                      },
+                      "next": {
+                       "block": {
+                        "type": "ctrl_wait_until",
+                        "inputs": {
+                         "COND": {
+                          "block": {
+                           "type": "compare_op",
+                           "fields": {
+                            "OP": "GTE"
+                           },
+                           "inputs": {
+                            "A": {
+                             "block": {
+                              "type": "dev_mbc_exp6_angle",
+                              "fields": {
+                               "PORT": "C"
+                              },
+                              "inputs": {
+                               "ARG_m": {
+                                "shadow": {
+                                 "type": "math_number",
+                                 "fields": {
+                                  "NUM": 2
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            },
+                            "B": {
+                             "shadow": {
+                              "type": "math_number",
+                              "fields": {
+                               "NUM": 720
+                              }
+                             }
+                            }
+                           }
+                          }
+                         }
+                        },
+                        "next": {
+                         "block": {
+                          "type": "dev_mbc_exp6_stop_all",
+                          "fields": {
+                           "PORT": "C",
+                           "ARG_stop": "2"
+                          },
+                          "next": {
+                           "block": {
+                            "type": "spike_wait_ms",
+                            "inputs": {
+                             "MS": {
+                              "shadow": {
+                               "type": "math_number",
+                               "fields": {
+                                "NUM": 300
+                               }
+                              }
+                             }
+                            },
+                            "next": {
+                             "block": {
+                              "type": "dev_mbc_exp6_reset_angle",
+                              "fields": {
+                               "PORT": "C"
+                              },
+                              "inputs": {
+                               "ARG_m": {
+                                "shadow": {
+                                 "type": "math_number",
+                                 "fields": {
+                                  "NUM": 2
+                                 }
+                                }
+                               }
+                              },
+                              "next": {
+                               "block": {
+                                "type": "dev_mbc_exp6_drive",
+                                "fields": {
+                                 "PORT": "C"
+                                },
+                                "inputs": {
+                                 "ARG_l": {
+                                  "shadow": {
+                                   "type": "math_number",
+                                   "fields": {
+                                    "NUM": 1
+                                   }
+                                  }
+                                 },
+                                 "ARG_r": {
+                                  "shadow": {
+                                   "type": "math_number",
+                                   "fields": {
+                                    "NUM": 2
+                                   }
+                                  }
+                                 },
+                                 "ARG_ls": {
+                                  "shadow": {
+                                   "type": "math_number",
+                                   "fields": {
+                                    "NUM": 30
+                                   }
+                                  }
+                                 },
+                                 "ARG_rs": {
+                                  "shadow": {
+                                   "type": "math_number",
+                                   "fields": {
+                                    "NUM": -30
+                                   }
+                                  }
+                                 }
+                                },
+                                "next": {
+                                 "block": {
+                                  "type": "ctrl_wait_until",
+                                  "inputs": {
+                                   "COND": {
+                                    "block": {
+                                     "type": "compare_op",
+                                     "fields": {
+                                      "OP": "LTE"
+                                     },
+                                     "inputs": {
+                                      "A": {
+                                       "block": {
+                                        "type": "dev_mbc_exp6_angle",
+                                        "fields": {
+                                         "PORT": "C"
+                                        },
+                                        "inputs": {
+                                         "ARG_m": {
+                                          "shadow": {
+                                           "type": "math_number",
+                                           "fields": {
+                                            "NUM": 2
+                                           }
+                                          }
+                                         }
+                                        }
+                                       }
+                                      },
+                                      "B": {
+                                       "shadow": {
+                                        "type": "math_number",
+                                        "fields": {
+                                         "NUM": -180
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   }
+                                  },
+                                  "next": {
+                                   "block": {
+                                    "type": "dev_mbc_exp6_stop_all",
+                                    "fields": {
+                                     "PORT": "C",
+                                     "ARG_stop": "2"
+                                    },
+                                    "next": {
+                                     "block": {
+                                      "type": "spike_wait_ms",
+                                      "inputs": {
+                                       "MS": {
+                                        "shadow": {
+                                         "type": "math_number",
+                                         "fields": {
+                                          "NUM": 300
+                                         }
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   }
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 },
+                 "next": {
+                  "block": {
+                   "type": "dev_mbc_exp6_stop_all",
+                   "fields": {
+                    "PORT": "C",
+                    "ARG_stop": "1"
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     },
+     "x": 40,
+     "y": 90
+    }
+   ]
+  },
+  "variables": []
+ },
+ "variables": [],
+ "lastFlashedHash": null
+}

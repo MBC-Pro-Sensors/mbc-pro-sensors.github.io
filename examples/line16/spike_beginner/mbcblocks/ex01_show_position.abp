@@ -1,0 +1,88 @@
+{
+ "format": "mbc-project",
+ "target": "spike:pybricks",
+ "specVersion": 2,
+ "meta": {
+  "name": "循行者16路 範例1 看見黑線",
+  "author": "MBC Robot",
+  "createdAt": "2026-10-20T00:00:00.000Z",
+  "modifiedAt": "2026-10-20T00:00:00.000Z"
+ },
+ "board": {
+  "fqbn": null,
+  "displayName": "LEGO SPIKE Prime"
+ },
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "arduino_setup",
+     "next": {
+      "block": {
+       "type": "dev_mbc_line16__config",
+       "fields": {
+        "PORT": "C"
+       }
+      }
+     },
+     "x": 40,
+     "y": 90
+    },
+    {
+     "type": "arduino_loop",
+     "next": {
+      "block": {
+       "type": "hub_display_number",
+       "inputs": {
+        "N": {
+         "block": {
+          "type": "dev_mbc_line16_pos16",
+          "fields": {
+           "PORT": "C"
+          }
+         }
+        }
+       },
+       "next": {
+        "block": {
+         "type": "term_println",
+         "inputs": {
+          "VAL": {
+           "block": {
+            "type": "dev_mbc_line16_pos16",
+            "fields": {
+             "PORT": "C"
+            }
+           }
+          }
+         },
+         "next": {
+          "block": {
+           "type": "spike_wait_ms",
+           "inputs": {
+            "MS": {
+             "shadow": {
+              "type": "math_number",
+              "fields": {
+               "NUM": 200
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     },
+     "x": 40,
+     "y": 246
+    }
+   ]
+  },
+  "variables": []
+ },
+ "variables": [],
+ "lastFlashedHash": null
+}

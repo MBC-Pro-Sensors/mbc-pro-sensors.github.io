@@ -1,0 +1,192 @@
+{
+ "format": "mbc-project",
+ "target": "spike:pybricks",
+ "specVersion": 2,
+ "meta": {
+  "name": "測距者2路 範例4 前面有東西就後退",
+  "author": "MBC Robot",
+  "createdAt": "2026-10-20T00:00:00.000Z",
+  "modifiedAt": "2026-10-20T00:00:00.000Z"
+ },
+ "board": {
+  "fqbn": null,
+  "displayName": "LEGO SPIKE Prime"
+ },
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "arduino_setup",
+     "next": {
+      "block": {
+       "type": "dev_mbc_laser2__config",
+       "fields": {
+        "PORT": "C"
+       },
+       "next": {
+        "block": {
+         "type": "spike_drivebase_config",
+         "fields": {
+          "LEFT": "E",
+          "LDIR": "ccw",
+          "RIGHT": "F",
+          "RDIR": "cw",
+          "WHEEL": 56,
+          "AXLE": 112,
+          "GYRO": "N"
+         }
+        }
+       }
+      }
+     },
+     "x": 40,
+     "y": 90
+    },
+    {
+     "type": "arduino_loop",
+     "next": {
+      "block": {
+       "type": "controls_if",
+       "extraState": {
+        "hasElse": true
+       },
+       "inputs": {
+        "IF0": {
+         "block": {
+          "type": "compare_op",
+          "fields": {
+           "OP": "LT"
+          },
+          "inputs": {
+           "A": {
+            "block": {
+             "type": "dev_mbc_laser2_min_distance",
+             "fields": {
+              "PORT": "C"
+             }
+            }
+           },
+           "B": {
+            "shadow": {
+             "type": "math_number",
+             "fields": {
+              "NUM": 20
+             }
+            }
+           }
+          }
+         }
+        },
+        "DO0": {
+         "block": {
+          "type": "drive_stop",
+          "fields": {
+           "HOW": "brake"
+          },
+          "next": {
+           "block": {
+            "type": "hub_beep",
+            "inputs": {
+             "F": {
+              "shadow": {
+               "type": "math_number",
+               "fields": {
+                "NUM": 880
+               }
+              }
+             },
+             "MS": {
+              "shadow": {
+               "type": "math_number",
+               "fields": {
+                "NUM": 200
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "drive_straight",
+              "inputs": {
+               "D": {
+                "shadow": {
+                 "type": "math_number",
+                 "fields": {
+                  "NUM": -100
+                 }
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "drive_turn",
+                "inputs": {
+                 "A": {
+                  "shadow": {
+                   "type": "math_number",
+                   "fields": {
+                    "NUM": 90
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        },
+        "ELSE": {
+         "block": {
+          "type": "drive_drive",
+          "inputs": {
+           "S": {
+            "shadow": {
+             "type": "math_number",
+             "fields": {
+              "NUM": 150
+             }
+            }
+           },
+           "T": {
+            "shadow": {
+             "type": "math_number",
+             "fields": {
+              "NUM": 0
+             }
+            }
+           }
+          }
+         }
+        }
+       },
+       "next": {
+        "block": {
+         "type": "spike_wait_ms",
+         "inputs": {
+          "MS": {
+           "shadow": {
+            "type": "math_number",
+            "fields": {
+             "NUM": 50
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     },
+     "x": 40,
+     "y": 294
+    }
+   ]
+  },
+  "variables": []
+ },
+ "variables": [],
+ "lastFlashedHash": null
+}

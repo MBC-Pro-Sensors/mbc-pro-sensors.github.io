@@ -1,0 +1,289 @@
+{
+ "format": "mbc-project",
+ "target": "spike:pybricks",
+ "specVersion": 2,
+ "meta": {
+  "name": "EXP6 範例3 光控開關",
+  "author": "MBC Robot",
+  "createdAt": "2026-10-20T00:00:00.000Z",
+  "modifiedAt": "2026-10-20T00:00:00.000Z"
+ },
+ "board": {
+  "fqbn": null,
+  "displayName": "LEGO SPIKE Prime"
+ },
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "arduino_setup",
+     "next": {
+      "block": {
+       "type": "dev_mbc_exp6__config",
+       "fields": {
+        "PORT": "C"
+       },
+       "next": {
+        "block": {
+         "type": "ctrl_wait_until",
+         "inputs": {
+          "COND": {
+           "block": {
+            "type": "compare_op",
+            "fields": {
+             "OP": "EQ"
+            },
+            "inputs": {
+             "A": {
+              "block": {
+               "type": "dev_mbc_exp6_device_id",
+               "fields": {
+                "PORT": "C"
+               },
+               "inputs": {
+                "ARG_m": {
+                 "shadow": {
+                  "type": "math_number",
+                  "fields": {
+                   "NUM": 1
+                  }
+                 }
+                }
+               }
+              }
+             },
+             "B": {
+              "shadow": {
+               "type": "math_number",
+               "fields": {
+                "NUM": 5
+               }
+              }
+             }
+            }
+           }
+          }
+         },
+         "next": {
+          "block": {
+           "type": "ctrl_repeat_until",
+           "inputs": {
+            "COND": {
+             "block": {
+              "type": "logic_op",
+              "fields": {
+               "OP": "AND"
+              },
+              "inputs": {
+               "A": {
+                "block": {
+                 "type": "hub_button_pressed",
+                 "fields": {
+                  "BTN": "LEFT"
+                 }
+                }
+               },
+               "B": {
+                "block": {
+                 "type": "hub_button_pressed",
+                 "fields": {
+                  "BTN": "RIGHT"
+                 }
+                }
+               }
+              }
+             }
+            },
+            "DO": {
+             "block": {
+              "type": "variables_set",
+              "fields": {
+               "VAR": {
+                "id": "v_DVa5IwZmkY"
+               }
+              },
+              "inputs": {
+               "VALUE": {
+                "block": {
+                 "type": "dev_mbc_exp6_reflection",
+                 "fields": {
+                  "PORT": "C"
+                 },
+                 "inputs": {
+                  "ARG_m": {
+                   "shadow": {
+                    "type": "math_number",
+                    "fields": {
+                     "NUM": 4
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "term_println",
+                "inputs": {
+                 "VAL": {
+                  "block": {
+                   "type": "variables_get",
+                   "fields": {
+                    "VAR": {
+                     "id": "v_DVa5IwZmkY"
+                    }
+                   }
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "controls_if",
+                  "extraState": {
+                   "hasElse": true
+                  },
+                  "inputs": {
+                   "IF0": {
+                    "block": {
+                     "type": "compare_op",
+                     "fields": {
+                      "OP": "GT"
+                     },
+                     "inputs": {
+                      "A": {
+                       "block": {
+                        "type": "variables_get",
+                        "fields": {
+                         "VAR": {
+                          "id": "v_DVa5IwZmkY"
+                         }
+                        }
+                       }
+                      },
+                      "B": {
+                       "shadow": {
+                        "type": "math_number",
+                        "fields": {
+                         "NUM": 50
+                        }
+                       }
+                      }
+                     }
+                    }
+                   },
+                   "DO0": {
+                    "block": {
+                     "type": "dev_mbc_exp6_run",
+                     "fields": {
+                      "PORT": "C"
+                     },
+                     "inputs": {
+                      "ARG_m": {
+                       "shadow": {
+                        "type": "math_number",
+                        "fields": {
+                         "NUM": 1
+                        }
+                       }
+                      },
+                      "ARG_s": {
+                       "shadow": {
+                        "type": "math_number",
+                        "fields": {
+                         "NUM": 50
+                        }
+                       }
+                      }
+                     },
+                     "next": {
+                      "block": {
+                       "type": "hub_light_on",
+                       "fields": {
+                        "COLOR": "GREEN"
+                       }
+                      }
+                     }
+                    }
+                   },
+                   "ELSE": {
+                    "block": {
+                     "type": "dev_mbc_exp6_stop_motor",
+                     "fields": {
+                      "PORT": "C",
+                      "ARG_stop": "2"
+                     },
+                     "inputs": {
+                      "ARG_m": {
+                       "shadow": {
+                        "type": "math_number",
+                        "fields": {
+                         "NUM": 1
+                        }
+                       }
+                      }
+                     },
+                     "next": {
+                      "block": {
+                       "type": "hub_light_on",
+                       "fields": {
+                        "COLOR": "RED"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  },
+                  "next": {
+                   "block": {
+                    "type": "spike_wait_ms",
+                    "inputs": {
+                     "MS": {
+                      "shadow": {
+                       "type": "math_number",
+                       "fields": {
+                        "NUM": 100
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "dev_mbc_exp6_stop_all",
+             "fields": {
+              "PORT": "C",
+              "ARG_stop": "1"
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     },
+     "x": 40,
+     "y": 90
+    }
+   ]
+  },
+  "variables": [
+   {
+    "name": "亮度",
+    "id": "v_DVa5IwZmkY"
+   }
+  ]
+ },
+ "variables": [],
+ "lastFlashedHash": null
+}

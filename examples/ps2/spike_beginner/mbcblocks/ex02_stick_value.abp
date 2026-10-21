@@ -1,0 +1,90 @@
+{
+ "format": "mbc-project",
+ "target": "spike:pybricks",
+ "specVersion": 2,
+ "meta": {
+  "name": "掌控者PS2 範例2 搖桿數值",
+  "author": "MBC Robot",
+  "createdAt": "2026-10-20T00:00:00.000Z",
+  "modifiedAt": "2026-10-20T00:00:00.000Z"
+ },
+ "board": {
+  "fqbn": null,
+  "displayName": "LEGO SPIKE Prime"
+ },
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "arduino_setup",
+     "next": {
+      "block": {
+       "type": "dev_mbc_gamepad__config",
+       "fields": {
+        "PORT": "C"
+       }
+      }
+     },
+     "x": 40,
+     "y": 90
+    },
+    {
+     "type": "arduino_loop",
+     "next": {
+      "block": {
+       "type": "hub_display_number",
+       "inputs": {
+        "N": {
+         "block": {
+          "type": "dev_mbc_gamepad_stick",
+          "fields": {
+           "PORT": "C",
+           "ARG_axis": "3"
+          }
+         }
+        }
+       },
+       "next": {
+        "block": {
+         "type": "term_println",
+         "inputs": {
+          "VAL": {
+           "block": {
+            "type": "dev_mbc_gamepad_stick",
+            "fields": {
+             "PORT": "C",
+             "ARG_axis": "3"
+            }
+           }
+          }
+         },
+         "next": {
+          "block": {
+           "type": "spike_wait_ms",
+           "inputs": {
+            "MS": {
+             "shadow": {
+              "type": "math_number",
+              "fields": {
+               "NUM": 100
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     },
+     "x": 40,
+     "y": 246
+    }
+   ]
+  },
+  "variables": []
+ },
+ "variables": [],
+ "lastFlashedHash": null
+}

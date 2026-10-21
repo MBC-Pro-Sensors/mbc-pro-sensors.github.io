@@ -1,0 +1,220 @@
+{
+ "format": "mbc-project",
+ "target": "spike:pybricks",
+ "specVersion": 2,
+ "meta": {
+  "name": "掌控者PS4 範例3 按鍵控制燈和聲音",
+  "author": "MBC Robot",
+  "createdAt": "2026-10-20T00:00:00.000Z",
+  "modifiedAt": "2026-10-20T00:00:00.000Z"
+ },
+ "board": {
+  "fqbn": null,
+  "displayName": "LEGO SPIKE Prime"
+ },
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "arduino_setup",
+     "next": {
+      "block": {
+       "type": "dev_mbc_gamepad__config",
+       "fields": {
+        "PORT": "C"
+       }
+      }
+     },
+     "x": 40,
+     "y": 90
+    },
+    {
+     "type": "arduino_loop",
+     "next": {
+      "block": {
+       "type": "controls_if",
+       "extraState": {
+        "elseIfCount": 3,
+        "hasElse": true
+       },
+       "inputs": {
+        "IF0": {
+         "block": {
+          "type": "dev_mbc_gamepad_pressed",
+          "fields": {
+           "PORT": "C",
+           "ARG_btn": "4"
+          }
+         }
+        },
+        "DO0": {
+         "block": {
+          "type": "hub_light_on",
+          "fields": {
+           "COLOR": "GREEN"
+          }
+         }
+        },
+        "IF1": {
+         "block": {
+          "type": "dev_mbc_gamepad_pressed",
+          "fields": {
+           "PORT": "C",
+           "ARG_btn": "5"
+          }
+         }
+        },
+        "DO1": {
+         "block": {
+          "type": "hub_light_on",
+          "fields": {
+           "COLOR": "RED"
+          }
+         }
+        },
+        "IF2": {
+         "block": {
+          "type": "dev_mbc_gamepad_pressed",
+          "fields": {
+           "PORT": "C",
+           "ARG_btn": "6"
+          }
+         }
+        },
+        "DO2": {
+         "block": {
+          "type": "hub_light_on",
+          "fields": {
+           "COLOR": "BLUE"
+          }
+         }
+        },
+        "IF3": {
+         "block": {
+          "type": "dev_mbc_gamepad_pressed",
+          "fields": {
+           "PORT": "C",
+           "ARG_btn": "7"
+          }
+         }
+        },
+        "DO3": {
+         "block": {
+          "type": "hub_light_on",
+          "fields": {
+           "COLOR": "MAGENTA"
+          }
+         }
+        },
+        "ELSE": {
+         "block": {
+          "type": "hub_light_off"
+         }
+        }
+       },
+       "next": {
+        "block": {
+         "type": "controls_if",
+         "inputs": {
+          "IF0": {
+           "block": {
+            "type": "dev_mbc_gamepad_pressed",
+            "fields": {
+             "PORT": "C",
+             "ARG_btn": "10"
+            }
+           }
+          },
+          "DO0": {
+           "block": {
+            "type": "hub_beep",
+            "inputs": {
+             "F": {
+              "shadow": {
+               "type": "math_number",
+               "fields": {
+                "NUM": 262
+               }
+              }
+             },
+             "MS": {
+              "shadow": {
+               "type": "math_number",
+               "fields": {
+                "NUM": 100
+               }
+              }
+             }
+            }
+           }
+          }
+         },
+         "next": {
+          "block": {
+           "type": "controls_if",
+           "inputs": {
+            "IF0": {
+             "block": {
+              "type": "dev_mbc_gamepad_pressed",
+              "fields": {
+               "PORT": "C",
+               "ARG_btn": "11"
+              }
+             }
+            },
+            "DO0": {
+             "block": {
+              "type": "hub_beep",
+              "inputs": {
+               "F": {
+                "shadow": {
+                 "type": "math_number",
+                 "fields": {
+                  "NUM": 523
+                 }
+                }
+               },
+               "MS": {
+                "shadow": {
+                 "type": "math_number",
+                 "fields": {
+                  "NUM": 100
+                 }
+                }
+               }
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "spike_wait_ms",
+             "inputs": {
+              "MS": {
+               "shadow": {
+                "type": "math_number",
+                "fields": {
+                 "NUM": 50
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     },
+     "x": 40,
+     "y": 246
+    }
+   ]
+  },
+  "variables": []
+ },
+ "variables": [],
+ "lastFlashedHash": null
+}

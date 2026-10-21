@@ -1,0 +1,167 @@
+{
+ "format": "mbc-project",
+ "target": "spike:pybricks",
+ "specVersion": 2,
+ "meta": {
+  "name": "測距者2路 範例1 看見距離",
+  "author": "MBC Robot",
+  "createdAt": "2026-10-20T00:00:00.000Z",
+  "modifiedAt": "2026-10-20T00:00:00.000Z"
+ },
+ "board": {
+  "fqbn": null,
+  "displayName": "LEGO SPIKE Prime"
+ },
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "arduino_setup",
+     "next": {
+      "block": {
+       "type": "dev_mbc_laser2__config",
+       "fields": {
+        "PORT": "C"
+       }
+      }
+     },
+     "x": 40,
+     "y": 90
+    },
+    {
+     "type": "arduino_loop",
+     "next": {
+      "block": {
+       "type": "hub_display_text",
+       "inputs": {
+        "TEXT": {
+         "block": {
+          "type": "string_concat",
+          "inputs": {
+           "A": {
+            "block": {
+             "type": "dev_mbc_laser2_dist",
+             "fields": {
+              "PORT": "C",
+              "ARG_ch": "1"
+             }
+            }
+           },
+           "B": {
+            "block": {
+             "type": "string_concat",
+             "inputs": {
+              "A": {
+               "shadow": {
+                "type": "text",
+                "fields": {
+                 "TEXT": " "
+                }
+               }
+              },
+              "B": {
+               "block": {
+                "type": "dev_mbc_laser2_dist",
+                "fields": {
+                 "PORT": "C",
+                 "ARG_ch": "2"
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       },
+       "next": {
+        "block": {
+         "type": "term_println",
+         "inputs": {
+          "VAL": {
+           "block": {
+            "type": "string_concat",
+            "inputs": {
+             "A": {
+              "shadow": {
+               "type": "text",
+               "fields": {
+                "TEXT": "左 "
+               }
+              }
+             },
+             "B": {
+              "block": {
+               "type": "string_concat",
+               "inputs": {
+                "A": {
+                 "block": {
+                  "type": "dev_mbc_laser2_dist",
+                  "fields": {
+                   "PORT": "C",
+                   "ARG_ch": "1"
+                  }
+                 }
+                },
+                "B": {
+                 "block": {
+                  "type": "string_concat",
+                  "inputs": {
+                   "A": {
+                    "shadow": {
+                     "type": "text",
+                     "fields": {
+                      "TEXT": "  右 "
+                     }
+                    }
+                   },
+                   "B": {
+                    "block": {
+                     "type": "dev_mbc_laser2_dist",
+                     "fields": {
+                      "PORT": "C",
+                      "ARG_ch": "2"
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         },
+         "next": {
+          "block": {
+           "type": "spike_wait_ms",
+           "inputs": {
+            "MS": {
+             "shadow": {
+              "type": "math_number",
+              "fields": {
+               "NUM": 200
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     },
+     "x": 40,
+     "y": 246
+    }
+   ]
+  },
+  "variables": []
+ },
+ "variables": [],
+ "lastFlashedHash": null
+}
