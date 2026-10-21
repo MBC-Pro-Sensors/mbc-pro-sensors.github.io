@@ -5,19 +5,27 @@ MBC-Pro 全系列的「通用 I2C 版」感應器都使用同一套暫存器規�
 
 適用主機：**Arduino UNO / Nano / Mega / R4、ESP32、Raspberry Pi**，以及任何能當 I2C 主機的控制板。
 
+> [!TIP]
+> **不會寫程式也能用：** 每款產品都有可以直接複製上傳的 Arduino 範例，請從 [🔰 第一次用 Arduino](/sensors/arduino-start.md) 開始。
+
 ---
 
 ## 📋 產品位址總覽
 
-| 產品 | I2C 位址 | 型號字串 (`0x07`) | 暫存器說明 |
-| :--- | :---: | :---: | :--- |
-| 循行者 8 路 (Line8) | `0x16` | `LINE8` | [Line8 I2C 說明](/sensors/line8/arduino-i2c.md) |
-| 循行者 16 路 (Line16) | `0x16` | `LINE16` | [Line16 I2C 說明](/sensors/line16/arduino-i2c.md) |
-| 測距者 8 路 (TOF8) | `0x29` | `LASER8` | [TOF8 產品頁](/sensors/tof8/index.md) |
-| 掌控者 PS2 | `0x42` | `PS2` | [PS2 產品頁](/sensors/ps2/index.md) |
-| 掌控者 PS4/PS5 | `0x42` | `PS4` | [PS4/PS5 產品頁](/sensors/ps4/index.md) |
-| SPIKE 6 路擴充器 (EXP6) | `0x6E` | `EXP6` | [EXP6 I2C 說明](/sensors/exp6/arduino-i2c.md) |
-| 陀螺儀 IMU | `0x6A` | `IMU` | [IMU 產品頁](/sensors/imu/index.md) |
+| 產品 | I2C 位址 | 型號字串 (`0x07`) | 暫存器說明 | 新手範例 |
+| :--- | :---: | :---: | :--- | :--- |
+| 循行者 8 路 (Line8) | `0x16` | `LINE8` | [Line8 I2C 說明](/sensors/line8/arduino-i2c.md) | [Arduino 範例](/sensors/line8/arduino-examples.md) |
+| 循行者 16 路 (Line16) | `0x16` | `LINE16` | [Line16 I2C 說明](/sensors/line16/arduino-i2c.md) | [Arduino 範例](/sensors/line16/arduino-examples.md) |
+| 測距者 8 路 (TOF8) | `0x29` | `LASER8` | [TOF8 產品頁](/sensors/tof8/index.md) | [Arduino 範例](/sensors/tof8/arduino-examples.md) |
+| 測距者 2 路 (TOF2，新版即將推出) | `0x29` | `LASER2` | [TOF2 產品頁](/sensors/tof2/index.md) | [Arduino 範例](/sensors/tof2/arduino-examples.md) |
+| 掌控者 PS2 | `0x42` | `PS2` | [PS2 產品頁](/sensors/ps2/index.md) | [Arduino 範例](/sensors/ps2/arduino-examples.md) |
+| 掌控者 PS4/PS5 | `0x42` | `PS4` | [PS4/PS5 產品頁](/sensors/ps4/index.md) | [Arduino 範例](/sensors/ps4/arduino-examples.md) |
+| 陀螺儀 IMU | `0x6A` | `IMU` | [IMU 產品頁](/sensors/imu/index.md) | [Arduino 範例](/sensors/imu/arduino-examples.md) |
+
+> [!NOTE]
+> **SPIKE 6 路擴充器（EXP6）不走 I2C**：它的主機接頭有隔離保護，Arduino 要用序列埠（UART）控制，請看 [EXP6 Arduino 範例](/sensors/exp6/arduino-examples.md)。
+>
+> 同一組 SDA／SCL 上，**位址相同的產品不能同時接**（例如循行者 8 路和 16 路、測距者 8 路和 2 路）。位址 `0x29` 也是市售 VL53L0X 雷射模組的預設位址，不能和測距者接在同一組線上。
 
 > [!TIP]
 > 同一類產品共用一個位址（例如循線系列都是 `0x16`），用 `0x06` 暫存器分辨款式。主機開機時讀一次 `0x01`，就能知道接上的是哪一款。
@@ -28,7 +36,8 @@ MBC-Pro 全系列的「通用 I2C 版」感應器都使用同一套暫存器規�
 
 - 依感應器排針標示接 **SCL、SDA、VCC、GND**。
 - 支援 **100 kHz** 與 **400 kHz**。
-- **全系列產品**的 I2C 都可直接接 Arduino UNO 等 5 V 主機，不需要另外加準位轉換。
+- 本頁列出的產品，I2C 都可直接接 Arduino UNO 等 5 V 主機，不需要另外加準位轉換。
+- 建議用 **100 kHz**（Arduino 預設值）。STM32 系列產品（循行者、測距者、PS2、陀螺儀）會用「時脈延展」（clock stretching）爭取準備資料的時間，Arduino、ESP32 都支援；PS4/PS5 接收器（ESP32）不會延展，所以寫完暫存器編號要等 2 ms 再讀。**Raspberry Pi 的硬體 I2C 處理時脈延展有已知問題**，讀值不穩時請把 I2C 速度降到 10~50 kHz，或改用軟體 I2C（`i2c-gpio`）。
 
 ---
 
@@ -84,7 +93,7 @@ MBC-Pro 全系列的「通用 I2C 版」感應器都使用同一套暫存器規�
 | `0x30` | W | 1 | 系統命令：`0x01` = 重新開機 |
 | `0x31` | R | 9 | 狀態合併包（= `0x32` ~ `0x37`） |
 | `0x32` | R | 1 | 狀態旗標：**bit0 = 就緒**；bit1~7 各產品定義 |
-| `0x33` | R | 1 | 更新序號：每次資料更新 +1；數字不動代表模組忙碌中 |
+| `0x33` | R | 1 | 更新序號：每 10 ms 快照更新時 +1（不代表感測值一定有變）；數字不動代表模組忙碌中 |
 | `0x34` ~ `0x36` | R | 1 | 各產品定義 |
 | `0x37` | R | 4 | 開機經過時間（ms）；數字變小代表模組重開機過 |
 

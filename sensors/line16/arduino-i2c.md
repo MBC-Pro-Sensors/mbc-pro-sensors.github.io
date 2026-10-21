@@ -24,6 +24,9 @@
 > [!IMPORTANT]
 > **本頁為新版 v1 協議（位址 `0x16`）。** 所有 MBC 產品共用的讀寫規則、狀態暫存器與 Arduino 共用函式，請先看 [MBC 通用 I2C 協議](/i2c-protocol.md)。
 
+> [!TIP]
+> **第一次用、不太會寫程式？** 直接看 [🧪 循行者 16 路 × Arduino 範例](/sensors/line16/arduino-examples.md)：6 個可以直接複製上傳的範例，每一行都有中文說明。
+
 ## 📡 基本資訊
 
 | 項目 | 內容 |
@@ -31,8 +34,8 @@
 | I2C 位址 | `0x16`（循線系列共用） |
 | 型號字串 `0x07` | `LINE16` |
 | 款式 `0x06` | `[16, PCB 版次]`（第 1 byte = 通道數） |
-| 通道順序 | **CH0 = 最右邊**，CH15 = 最左邊 |
-| 線位置方向 | **負數 = 線在右邊、正數 = 線在左邊**，0 = 正中央 |
+| 通道順序 | **CH0 = 最左邊**，CH15 = 最右邊（感應器裝在車上、站在車子後面往前看） |
+| 線位置方向 | **負數 = 線在左邊、正數 = 線在右邊**，0 = 正中央 |
 
 ## 1️⃣ 循線結果（最常用）
 
@@ -40,18 +43,18 @@
 | :---: | :---: | :---: | :--- |
 | `0x10` | W | 1 | 循線目標：`0` = 黑線、`1` = 白線（重開機後回到按鈕設定） |
 | `0x11` | R | 7 | **循線合併包**（= `0x12` ~ `0x17`，一次讀完最方便） |
-| `0x12` | R | 1 | 線位置 int8：`-16` ~ `+16` |
-| `0x13` | R | 1 | **高解析位置** int8：`-100` ~ `+100`（最適合 PID 控制） |
+| `0x12` | R | 1 | 線位置 int8：看得到線時 `-15` ~ `+15`。丟線時保持最後的值；若丟線前 200 ms 內線碰過最邊緣，會變成 `±16`（線往那一邊跑掉）。判斷丟線請用 `0x15` = 0 |
+| `0x13` | R | 1 | **高解析位置** int8：`-100` ~ `+100`（最適合 PID 控制）。丟線時保持最後的值 |
 | `0x14` | R | 1 | 線寬：同時偵測到線的通道數 |
 | `0x15` | R | 1 | 線群組數：`0` = 丟線、`1` = 單線、`2` 以上 = 分岔／十字路口 |
-| `0x16` | R | 2 | 二值化圖 uint16：bit i = CH i 在線上 |
-| `0x17` | R | 1 | 最後離線方向 int8（丟線時用來判斷往哪邊找） |
+| `0x16` | R | 2 | 二值化圖 uint16：bit i = CH i 在線上（白線模式時 bit = 1 代表看到白） |
+| `0x17` | R | 1 | 最後碰到的邊緣 int8：`-16` = 左邊緣、`+16` = 右邊緣（看得到線時也會更新；丟線時用來判斷往哪邊找）；開機後還沒碰過邊緣時 = 0 |
 
 ## 2️⃣ 校準
 
 | 暫存器 | 方向 | 長度 | 內容 |
 | :---: | :---: | :---: | :--- |
-| `0x20` | W | 1 | `1` = 5 秒動態校準（期間左右移動車體掃過黑線）、`2` = 目前讀值記為白、`3` = 目前讀值記為黑。結果存入 EEPROM |
+| `0x20` | W | 1 | `1` = 5 秒動態校準（期間左右移動車體掃過黑線）、`2` = 目前讀值記為白、`3` = 目前讀值記為黑（`2`、`3` 只取樣約 50 ms、只更新白或黑其中一邊；建議用 `1`）。結果存入 EEPROM。校準中（`0x32` bit2 = 1）送出的新校準命令會被忽略 |
 | `0x21` | R | 2 | 校準合併包（= `0x22` ~ `0x23`） |
 | `0x22` | RW | 1 | 二值化閾值 `1` ~ `99`（預設 50；重開機回到預設） |
 | `0x23` | R | 1 | 校準完成次數（每完成一次 +1，用來確認校準已執行完） |
@@ -104,17 +107,25 @@ void iicWrite(uint8_t addr, uint8_t reg, uint8_t v) {
 void setup() {
   Serial.begin(115200);
   Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);  // AVR：感應器沒回應時不會卡死
+#endif
+
+  // 等感應器就緒（0x32 bit0 = 1），最多 1 秒
+  uint8_t flags = 0;
+  for (uint8_t t = 0; t < 20 && !(iicRead(LINE_ADDR, 0x32, &flags, 1) && (flags & 0x01)); t++) delay(50);
+
   iicWrite(LINE_ADDR, 0x10, 0);     // 0 = 循黑線、1 = 循白線
 }
 
 void loop() {
   uint8_t d[7];
   if (iicRead(LINE_ADDR, 0x11, d, 7)) {
-    int8_t   pos    = (int8_t)d[0];        // -16 ~ +16
+    int8_t   pos    = (int8_t)d[0];        // -15 ~ +15（丟線時可能是 ±16）
     int8_t   posHi  = (int8_t)d[1];        // -100 ~ +100，PID 用這個
     uint8_t  width  = d[2];                // 線寬
     uint8_t  groups = d[3];                // 0 丟線 / 1 單線 / 2+ 分岔
-    uint16_t bin    = (d[4] << 8) | d[5];  // 每個 bit 一個通道
+    uint16_t bin    = ((uint16_t)d[4] << 8) | d[5];  // 每個 bit 一個通道
 
     Serial.print("位置 ");     Serial.print(pos);
     Serial.print("  高解析 "); Serial.print(posHi);
@@ -129,24 +140,25 @@ void loop() {
 ### PID 循線的起點
 
 ```cpp
-// posHi：負 = 線在右、正 = 線在左。線在右邊時要右轉 → 左輪加速、右輪減速
+// posHi：負 = 線在左、正 = 線在右。線在右邊時要右轉 → 左輪加速、右輪減速
 float Kp = 0.6;
 int base = 120;                        // 基本速度（依你的馬達驅動調整）
 int turn = Kp * posHi;
-int leftSpeed  = base - turn;
-int rightSpeed = base + turn;
+int leftSpeed  = base + turn;
+int rightSpeed = base - turn;
 ```
 
 ### 用程式觸發校準
 
 ```cpp
-uint8_t before[2], after[2];
+uint8_t before[2] = {0}, after[2] = {0};
 iicRead(LINE_ADDR, 0x21, before, 2);   // [閾值, 校準完成次數]
 iicWrite(LINE_ADDR, 0x20, 1);          // 開始 5 秒動態校準：這段時間左右移動車體掃過黑線
+unsigned long t0 = millis();
 do {
   delay(200);
   iicRead(LINE_ADDR, 0x21, after, 2);
-} while (after[1] == before[1]);       // 次數 +1 = 校準完成
+} while (after[1] == before[1] && millis() - t0 < 7000);   // 次數 +1 = 校準完成；最多等 7 秒
 ```
 
 <br>

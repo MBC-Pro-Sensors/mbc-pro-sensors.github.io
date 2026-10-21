@@ -119,10 +119,29 @@
     var href = a.getAttribute('href') || '';
     var name = /line\.me/.test(href) ? 'line_inquiry'
       : /^mailto:/.test(href) ? 'email_inquiry'
-      : /\.(zip|py|pdf|llsp3|lms|lmsp|ev3|bp)(\?|$)/i.test(href) ? 'file_download'
+      : /\.(zip|py|pdf|llsp3|lms|lmsp|ev3|bp|ino)(\?|$)/i.test(href) ? 'file_download'
       : null;
     if (name) window.gtag('event', name, { link_url: href, page_path: location.pathname, placement: a.className || 'link' });
   });
+
+  // --- 程式碼區塊右上角「複製」按鈕（新手照抄範例用）---
+  if (navigator.clipboard) {
+    document.querySelectorAll('.markdown-section pre[data-lang="cpp"], .markdown-section pre[data-lang="python"]').forEach(function (pre) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'code-copy';
+      btn.textContent = lang === 'en' ? 'Copy' : '複製';
+      btn.style.cssText = 'position:absolute;top:8px;right:8px;min-height:36px;padding:6px 14px;border:1px solid rgba(10,186,181,.6);border-radius:6px;background:#0abab5;color:#fff;font-size:.85rem;font-weight:700;cursor:pointer;z-index:1';
+      pre.style.position = 'relative';
+      btn.addEventListener('click', function () {
+        navigator.clipboard.writeText(pre.querySelector('code').innerText).then(function () {
+          btn.textContent = lang === 'en' ? 'Copied ✓' : '已複製 ✓';
+          setTimeout(function () { btn.textContent = lang === 'en' ? 'Copy' : '複製'; }, 2000);
+        });
+      });
+      pre.appendChild(btn);
+    });
+  }
 
   // --- Scratch 積木圖 ---
   if (typeof renderScratchBlocks === 'function' && document.querySelector('.blocks')) renderScratchBlocks();

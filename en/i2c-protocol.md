@@ -5,19 +5,27 @@ Every "Universal I2C Edition" sensor in the MBC-Pro family uses the same registe
 
 Works with: **Arduino UNO / Nano / Mega / R4, ESP32, Raspberry Pi**, and any board that can act as an I2C master.
 
+> [!TIP]
+> **No coding experience? No problem:** every product has Arduino examples you can copy and upload right away. Start with [🔰 First time with Arduino](/en/sensors/arduino-start.md).
+
 ---
 
 ## 📋 Address Overview
 
-| Product | I2C address | Model string (`0x07`) | Registers |
-| :--- | :---: | :---: | :--- |
-| Pathfinder 8-Way (Line8) | `0x16` | `LINE8` | [Line8 I2C guide](/en/sensors/line8/arduino-i2c.md) |
-| Pathfinder 16-Way (Line16) | `0x16` | `LINE16` | [Line16 I2C guide](/en/sensors/line16/arduino-i2c.md) |
-| Ranger 8-Way (TOF8) | `0x29` | `LASER8` | [TOF8 page](/en/sensors/tof8/index.md) |
-| Controller PS2 | `0x42` | `PS2` | [PS2 page](/en/sensors/ps2/index.md) |
-| Controller PS4/PS5 | `0x42` | `PS4` | [PS4/PS5 page](/en/sensors/ps4/index.md) |
-| SPIKE 6-Way Expander (EXP6) | `0x6E` | `EXP6` | [EXP6 I2C guide](/en/sensors/exp6/arduino-i2c.md) |
-| IMU Gyro Sensor | `0x6A` | `IMU` | [IMU page](/en/sensors/imu/index.md) |
+| Product | I2C address | Model string (`0x07`) | Registers | Beginner examples |
+| :--- | :---: | :---: | :--- | :--- |
+| Pathfinder 8-Way (Line8) | `0x16` | `LINE8` | [Line8 I2C guide](/en/sensors/line8/arduino-i2c.md) | [Arduino Examples](/en/sensors/line8/arduino-examples.md) |
+| Pathfinder 16-Way (Line16) | `0x16` | `LINE16` | [Line16 I2C guide](/en/sensors/line16/arduino-i2c.md) | [Arduino Examples](/en/sensors/line16/arduino-examples.md) |
+| Ranger 8-Way (TOF8) | `0x29` | `LASER8` | [TOF8 page](/en/sensors/tof8/index.md) | [Arduino Examples](/en/sensors/tof8/arduino-examples.md) |
+| Ranger 2-Way (TOF2, new version coming soon) | `0x29` | `LASER2` | [TOF2 page](/en/sensors/tof2/index.md) | [Arduino Examples](/en/sensors/tof2/arduino-examples.md) |
+| Controller PS2 | `0x42` | `PS2` | [PS2 page](/en/sensors/ps2/index.md) | [Arduino Examples](/en/sensors/ps2/arduino-examples.md) |
+| Controller PS4/PS5 | `0x42` | `PS4` | [PS4/PS5 page](/en/sensors/ps4/index.md) | [Arduino Examples](/en/sensors/ps4/arduino-examples.md) |
+| IMU Gyro Sensor | `0x6A` | `IMU` | [IMU page](/en/sensors/imu/index.md) | [Arduino Examples](/en/sensors/imu/arduino-examples.md) |
+
+> [!NOTE]
+> **The SPIKE 6-Way Expander (EXP6) does not use I2C:** its host port has isolation protection, so Arduino controls it over serial (UART). See the [EXP6 Arduino Examples](/en/sensors/exp6/arduino-examples.md).
+>
+> On one SDA/SCL pair, **products with the same address cannot be connected at the same time** (for example Pathfinder 8-Way and 16-Way, or Ranger 8-Way and 2-Way). Address `0x29` is also the default address of common VL53L0X laser modules, so they cannot share the same wires with a Ranger.
 
 > [!TIP]
 > Products of the same family share one address (all line sensors use `0x16`); register `0x06` tells the variants apart. Read `0x01` once at startup to know exactly which product is connected.
@@ -28,7 +36,8 @@ Works with: **Arduino UNO / Nano / Mega / R4, ESP32, Raspberry Pi**, and any boa
 
 - Connect **SCL, SDA, VCC, GND** as labeled on the sensor's header.
 - **100 kHz** and **400 kHz** are supported.
-- **Every product** connects directly to 5 V boards like the Arduino UNO — no extra level shifter needed.
+- Every product on this page connects its I2C directly to 5 V boards like the Arduino UNO — no extra level shifter needed.
+- We recommend **100 kHz** (the Arduino default). The STM32-based products (Pathfinder, Ranger, PS2, IMU) use **clock stretching** to get time to prepare data; Arduino and ESP32 both support it. The PS4/PS5 receiver (ESP32) does not stretch the clock, so wait 2 ms after writing the register number before reading. **The Raspberry Pi hardware I2C has a known problem with clock stretching**: if readings are unstable, lower the I2C speed to 10~50 kHz, or use software I2C (`i2c-gpio`).
 
 ---
 
@@ -84,7 +93,7 @@ Every group follows the same pattern:
 | `0x30` | W | 1 | System command: `0x01` = reboot |
 | `0x31` | R | 9 | Status bundle (= `0x32` ~ `0x37`) |
 | `0x32` | R | 1 | Status flags: **bit0 = ready**; bits 1~7 product-defined |
-| `0x33` | R | 1 | Update counter: +1 per snapshot; not changing = module busy |
+| `0x33` | R | 1 | Update counter: +1 every 10 ms snapshot (the sensor values may not have changed); not changing = module busy |
 | `0x34` ~ `0x36` | R | 1 | Product-defined |
 | `0x37` | R | 4 | Uptime (ms); a smaller value means the module rebooted |
 

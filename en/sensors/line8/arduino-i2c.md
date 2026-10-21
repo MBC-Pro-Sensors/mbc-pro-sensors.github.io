@@ -23,6 +23,9 @@ The read and write registers of this sensor are completely separated, utilizing 
 > [!IMPORTANT]
 > **This page documents the new v1 protocol (address `0x16`).** For the read/write rules, status registers and Arduino helper functions shared by every MBC product, see the [MBC Universal I2C Protocol](/en/i2c-protocol.md) first.
 
+> [!TIP]
+> **First time, or new to coding?** Go straight to [🧪 Pathfinder 8-Way × Arduino Examples](/en/sensors/line8/arduino-examples.md): 6 examples you can copy and upload right away, with an English note on every line.
+
 ## 📡 Basics
 
 | Item | Value |
@@ -30,8 +33,8 @@ The read and write registers of this sensor are completely separated, utilizing 
 | I2C address | `0x16` (shared by the line sensor family) |
 | Model string `0x07` | `LINE8` |
 | Variant `0x06` | `[8, PCB revision]` (byte 1 = channel count) |
-| Channel order | **CH0 = rightmost**, CH7 = leftmost |
-| Line position sign | **Negative = line on the right, positive = line on the left**, 0 = centered |
+| Channel order | **CH0 = leftmost**, CH7 = rightmost (sensor mounted on the robot, viewed from behind the robot looking forward) |
+| Line position sign | **Negative = line on the left, positive = line on the right**, 0 = centered |
 
 ## 1️⃣ Line Result (most used)
 
@@ -39,18 +42,18 @@ The read and write registers of this sensor are completely separated, utilizing 
 | :---: | :---: | :---: | :--- |
 | `0x10` | W | 1 | Target: `0` = black line, `1` = white line (reverts to the button setting after reboot) |
 | `0x11` | R | 7 | **Line bundle** (= `0x12` ~ `0x17`, easiest to read in one go) |
-| `0x12` | R | 1 | Line position int8: `-8` ~ `+8` |
-| `0x13` | R | 1 | **High-resolution position** int8: `-100` ~ `+100` (best for PID) |
+| `0x12` | R | 1 | Line position int8: `-7` ~ `+7` while the line is seen. When the line is lost it keeps the last value; if the line touched the outermost edge within 200 ms before it was lost, it becomes `±8` (the side the line ran off). To check for a lost line, use `0x15` = 0 |
+| `0x13` | R | 1 | **High-resolution position** int8: `-100` ~ `+100` (best for PID). Keeps the last value when the line is lost |
 | `0x14` | R | 1 | Line width: number of channels on the line |
 | `0x15` | R | 1 | Line groups: `0` = line lost, `1` = single line, `2+` = fork / intersection |
-| `0x16` | R | 2 | Binary map uint16: bit i = CH i on the line |
-| `0x17` | R | 1 | Last exit side int8 (which way to search when the line is lost) |
+| `0x16` | R | 2 | Binary map uint16: bit i = CH i on the line (in white-line mode, bit = 1 means it sees white) |
+| `0x17` | R | 1 | Last exit side int8: `-8` = left edge, `+8` = right edge (the edge the line touched last) (also updates while the line is seen; use it to know which way to search when the line is lost). `0` after power-on until the line touches an edge |
 
 ## 2️⃣ Calibration
 
 | Register | Dir | Len | Content |
 | :---: | :---: | :---: | :--- |
-| `0x20` | W | 1 | `1` = 5-second dynamic calibration (sweep the robot across the line), `2` = store current reading as white, `3` = store current reading as black. Saved to EEPROM |
+| `0x20` | W | 1 | `1` = 5-second dynamic calibration (sweep the robot across the line), `2` = store current reading as white, `3` = store current reading as black (`2` and `3` only sample for about 50 ms and update only the white or the black side; we recommend `1`). Saved to EEPROM. A new calibration command sent during calibration (`0x32` bit2 = 1) is ignored |
 | `0x21` | R | 2 | Calibration bundle (= `0x22` ~ `0x23`) |
 | `0x22` | RW | 1 | Threshold `1` ~ `99` (default 50; resets on reboot) |
 | `0x23` | R | 1 | Calibration counter (+1 each time a calibration finishes) |
@@ -103,17 +106,25 @@ void iicWrite(uint8_t addr, uint8_t reg, uint8_t v) {
 void setup() {
   Serial.begin(115200);
   Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);  // AVR: does not freeze if the sensor does not answer
+#endif
+
+  // Wait until the sensor is ready (0x32 bit0 = 1), up to 1 second; for about the first 50 ms after power-on, I2C is not ready yet
+  uint8_t flags = 0;
+  for (uint8_t t = 0; t < 20 && !(iicRead(LINE_ADDR, 0x32, &flags, 1) && (flags & 0x01)); t++) delay(50);
+
   iicWrite(LINE_ADDR, 0x10, 0);     // 0 = black line, 1 = white line
 }
 
 void loop() {
   uint8_t d[7];
   if (iicRead(LINE_ADDR, 0x11, d, 7)) {
-    int8_t   pos    = (int8_t)d[0];        // -8 ~ +8
+    int8_t   pos    = (int8_t)d[0];        // -7 ~ +7 (can be ±8 when the line is lost)
     int8_t   posHi  = (int8_t)d[1];        // -100 ~ +100, use this for PID
     uint8_t  width  = d[2];                // line width
     uint8_t  groups = d[3];                // 0 lost / 1 single / 2+ fork
-    uint16_t bin    = (d[4] << 8) | d[5];  // one bit per channel
+    uint16_t bin    = ((uint16_t)d[4] << 8) | d[5];  // one bit per channel
 
     Serial.print("pos ");      Serial.print(pos);
     Serial.print("  hi-res "); Serial.print(posHi);
@@ -128,25 +139,26 @@ void loop() {
 ### A Starting Point for PID Line Following
 
 ```cpp
-// posHi: negative = line on the right, positive = on the left.
+// posHi: negative = line on the left, positive = on the right.
 // Line on the right -> turn right -> speed up the left wheel
 float Kp = 0.6;
 int base = 120;                        // base speed (adjust for your motor driver)
 int turn = Kp * posHi;
-int leftSpeed  = base - turn;
-int rightSpeed = base + turn;
+int leftSpeed  = base + turn;
+int rightSpeed = base - turn;
 ```
 
 ### Trigger Calibration from Code
 
 ```cpp
-uint8_t before[2], after[2];
+uint8_t before[2] = {0}, after[2] = {0};
 iicRead(LINE_ADDR, 0x21, before, 2);   // [threshold, calibration counter]
 iicWrite(LINE_ADDR, 0x20, 1);          // start 5-second calibration: sweep the robot across the line
+unsigned long t0 = millis();
 do {
   delay(200);
   iicRead(LINE_ADDR, 0x21, after, 2);
-} while (after[1] == before[1]);       // counter +1 = calibration finished
+} while (after[1] == before[1] && millis() - t0 < 7000);   // counter +1 = calibration finished; wait 7 seconds at most
 ```
 
 <br>
