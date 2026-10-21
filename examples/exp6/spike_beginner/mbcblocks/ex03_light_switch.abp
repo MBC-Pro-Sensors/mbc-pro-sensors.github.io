@@ -100,7 +100,7 @@
               "type": "variables_set",
               "fields": {
                "VAR": {
-                "id": "v_DVa5IwZmkY"
+                "id": "v_6Cms5CVaZw"
                }
               },
               "inputs": {
@@ -132,7 +132,7 @@
                    "type": "variables_get",
                    "fields": {
                     "VAR": {
-                     "id": "v_DVa5IwZmkY"
+                     "id": "v_6Cms5CVaZw"
                     }
                    }
                   }
@@ -157,7 +157,7 @@
                         "type": "variables_get",
                         "fields": {
                          "VAR": {
-                          "id": "v_DVa5IwZmkY"
+                          "id": "v_6Cms5CVaZw"
                          }
                         }
                        }
@@ -280,7 +280,7 @@
   "variables": [
    {
     "name": "亮度",
-    "id": "v_DVa5IwZmkY"
+    "id": "v_6Cms5CVaZw"
    }
   ]
  },
