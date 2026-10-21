@@ -12,21 +12,21 @@ Not every robotics competition allows third-party sensors. This page lists compe
 
 ✅ Allowed　⚠️ Ask the organizer　❌ Not allowed
 
-| Competition | Pathfinder | Ranger | Vision | EXP6 | Controller |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| [WRO RoboMission](/en/wro-rules.md) | ✅ | ✅⁴ | ✅² | ✅ | ❌ |
-| [WRO Future Engineers](#wro-future-engineers) | ✅ | ✅ | ✅ | ✅ | ❌ |
-| [Robofest](#robofest) | ✅ | ✅ | ✅ | ✅ | ❌ |
-| [RoboCupJunior](#robocupjunior) Rescue | ❌ | ⚠️ | ⚠️ | ⚠️ | ❌ |
-| [Robotex](#robotex-international) | ⚠️ | ⚠️ | ⚠️ | ⚠️ | ⚠️ |
-| [AERC](#aerc-taiwan) Group A (LEGO) | ✅ | ❌ | ❌ | ❌ | ❌ |
-| [AERC](#aerc-taiwan) Group D (any brand) | ✅ | ✅ | ✅ | ✅ | ✅³ |
-| [GRG](#grg-global-robotics-games-taiwan) AI Maker, Open | ✅ | ✅ | ✅¹ | ✅ | ❌ |
-| [MRC](#mrc-minoan-robotsports-competition-taiwan) | ✅ | ✅ | ✅ | ❌ | ✅³ |
-| [JBC](#jbc-junior-botball-challenge-taiwan) | ✅ | ✅ | ✅ | ✅ | ❌ |
-| [FLL Challenge](#competitions-where-mbc-sensors-cannot-be-used) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Competition | Pathfinder | Ranger | Vision | EXP6 | Controller | Servo6 |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| [WRO RoboMission](/en/wro-rules.md) | ✅ | ✅⁴ | ✅² | ✅ | ❌ | ✅ |
+| [WRO Future Engineers](#wro-future-engineers) | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| [Robofest](#robofest) | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| [RoboCupJunior](#robocupjunior) Rescue | ❌ | ⚠️ | ⚠️ | ⚠️ | ❌ | ⚠️ |
+| [Robotex](#robotex-international) | ⚠️ | ⚠️ | ⚠️ | ⚠️ | ⚠️ | ⚠️ |
+| [AERC](#aerc-taiwan) Group A (LEGO) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [AERC](#aerc-taiwan) Group D (any brand) | ✅ | ✅ | ✅ | ✅ | ✅³ | ✅ |
+| [GRG](#grg-global-robotics-games-taiwan) AI Maker, Open | ✅ | ✅ | ✅¹ | ✅ | ❌ | ✅ |
+| [MRC](#mrc-minoan-robotsports-competition-taiwan) | ✅ | ✅ | ✅ | ❌ | ✅³ | ❌ |
+| [JBC](#jbc-junior-botball-challenge-taiwan) | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| [FLL Challenge](#competitions-where-mbc-sensors-cannot-be-used) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
-¹ One camera per robot　² Cameras in Junior and Senior only　³ For remote-control events　⁴ Ranger 8-Way: Elementary and Junior teams should check with the organizer first
+¹ One camera per robot　² Cameras in Junior and Senior only　³ For remote-control events　Servo6 = SPIKE 6-Port Servo Expander (coming soon; treated like EXP6: a programmable expansion device, servos count as motors)　⁴ Ranger 8-Way: Elementary and Junior teams should check with the organizer first
 
 Pathfinder = 8 / 16-way line sensor, Ranger = 2 / 8-way laser ranging, Vision = Sharpshooter Vision (ESP32CAM), EXP6 = SPIKE 6-Way Expander (SPIKE™ Prime only), Controller = PS4/PS5 receiver.
 

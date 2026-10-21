@@ -45,6 +45,13 @@ In the official EV3 software, use the standard gyro block; each mode maps to:
 > [!NOTE]
 > In **EV3 Classroom** the Angle and Rate blocks behave as in the table above ("Rate" returns the fused heading, not degrees per second). In **Pybricks (EV3)**, `GyroSensor.angle()` returns the single-axis gyro heading and `speed()` returns the magnetometer heading (relative, not north-referenced); `reset_angle(0)` works normally.
 
+## 🧭 Compass Mode (alternative firmware on the same board)
+
+The same IMU board can also be shipped with a **magnetometer-only "compass" firmware**: the EV3 gyro block's "angle" then returns the **magnetic bearing 0-359** (absolute, north-referenced, not relative to power-on), and "rate" is always 0. Use it when you only need "which way am I facing" (maze backtracking, field orientation) and do not want to reset.
+
+- EV3 mode only for now; choose "IMU heading" or "compass" firmware when ordering, or send the unit back to be re-flashed.
+- The magnetometer is still affected by motors and steel field parts; run the magnetometer calibration (button, stored on the device) before use.
+
 ## 🧩 Supported Platforms
 
 | Platform | How |

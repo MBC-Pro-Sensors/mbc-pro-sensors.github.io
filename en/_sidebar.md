@@ -57,6 +57,8 @@
 - **👁️ Robot Vision**
   - **Sharpshooter Vision (ESP32CAM)**
     - [📖 Product Overview](/en/sensors/esp32cam/index.md)
+  - **Long-Range Colour Sensor OV3660 (In Development)**
+    - [📖 Preview](/en/sensors/ov3660/index.md)
 
 - **🧭 Motion Sensing**
   - **IMU 9-Axis Gyro (Coming Soon)**
@@ -69,6 +71,10 @@
     - [🎮 Official App](/en/sensors/exp6/spike-official.md)
     - [🚀 Pybricks Environment](/en/sensors/exp6/spike-pybricks.md)
     - [🧪 Arduino Examples (UART)](/en/sensors/exp6/arduino-examples.md)
+  - **SPIKE 6-Port Servo Expander (Coming Soon)**
+    - [📖 Product Overview](/en/sensors/servo6/index.md)
+    - [🎮 Official App](/en/sensors/servo6/spike-official.md)
+    - [🚀 Pybricks Environment](/en/sensors/servo6/spike-pybricks.md)
 
 - **📞 Contact Us**
   - [🛒 Where to Buy](/en/where-to-buy.md)

@@ -76,6 +76,8 @@
 <a class="lp-prod" href="/sensors/ps2/index.md" style="--pc:#F2C200;"><img src="/images/sensors/ps2/ps2-product.webp" alt="掌控者 PS2"><span class="lp-cat">遙控</span><h3>掌控者 2.4G (PS2)</h3><p>PS2 無線手把，雙搖桿加 16 鍵，教學與專題最划算的選擇。</p><p class="lp-price">建議售價 NT$2,000</p><span class="lp-more">了解更多 →</span></a>
 <a class="lp-prod" href="/sensors/esp32cam/index.md" style="--pc:#00d2ff;"><img src="/images/sensors/esp32cam/esp32cam-product.webp" alt="神攝手 ESP32CAM"><span class="lp-cat">機器人視覺</span><h3>神攝手 ESP32CAM</h3><p>機身螢幕直接設定顏色，色塊位置、大小、動態一次輸出。</p><p class="lp-price">建議售價 NT$3,000</p><span class="lp-more">了解更多 →</span></a>
 <a class="lp-prod" href="/sensors/imu/index.md" style="--pc:#a371f7;"><div class="lp-noimg">🧭</div><span class="lp-cat">姿態感測</span><h3>陀螺儀 IMU 九軸 <span class="lp-soon">即將推出</span></h3><p>任意角度安裝都能算對航向，磁力計融合長距離不飄移。</p><p class="lp-price">預計售價 NT$2,500</p><span class="lp-more">了解更多 →</span></a>
+<a class="lp-prod" href="/sensors/servo6/index.md" style="--pc:#ff9f43;"><div class="lp-noimg">🎛️</div><span class="lp-cat">擴充模組</span><h3>SPIKE 6 路舵機擴充器 <span class="lp-soon">即將推出</span></h3><p>一個孔接 6 顆舵機，角度、速度、電流與堵轉保護都在板上，主機直接供電。</p><p class="lp-price">價格洽詢</p><span class="lp-more">了解更多 →</span></a>
+<a class="lp-prod" href="/sensors/ov3660/index.md" style="--pc:#e84393;"><div class="lp-noimg">🎨</div><span class="lp-cat">機器人視覺</span><h3>遠距離顏色感應器 OV3660 <span class="lp-soon">開發中</span></h3><p>300 萬畫素影像感測器只看畫面中央，遠距離也能穩定判色。</p><p class="lp-price">開發中</p><span class="lp-more">產品預告 →</span></a>
 </div>
 
 <h2>為什麼不用原廠顏色感應器循線？</h2>

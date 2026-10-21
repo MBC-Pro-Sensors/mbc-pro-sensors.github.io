@@ -57,6 +57,8 @@
 - **👁️ 機器人視覺**
   - **神攝手 ESP32CAM (ESP32CAM)**
     - [📖 產品介紹](/sensors/esp32cam/index.md)
+  - **遠距離顏色感應器 OV3660（開發中）**
+    - [📖 產品預告](/sensors/ov3660/index.md)
 
 - **🧭 姿態感測**
   - **陀螺儀 IMU（即將推出）**
@@ -69,6 +71,10 @@
     - [🐍 官方 SPIKE App](/sensors/exp6/spike-official.md)
     - [🚀 Pybricks 環境](/sensors/exp6/spike-pybricks.md)
     - [🧪 Arduino 範例（序列埠）](/sensors/exp6/arduino-examples.md)
+  - **SPIKE 6 路舵機擴充器（即將推出）**
+    - [📖 產品介紹](/sensors/servo6/index.md)
+    - [🐍 官方 SPIKE App](/sensors/servo6/spike-official.md)
+    - [🚀 Pybricks 環境](/sensors/servo6/spike-pybricks.md)
 
 - **📝 教學文章**
   - [全部文章](/articles/index.md)

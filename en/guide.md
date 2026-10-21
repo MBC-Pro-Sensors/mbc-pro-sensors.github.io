@@ -20,6 +20,7 @@ Pick your product and controller to go straight to setup steps, blocks and examp
 | Controller 2.4G (PS2, Taiwan only) | [Page](/en/sensors/ps2/index.md) | [Page](/en/sensors/ps2/index.md) | [Examples](/en/sensors/ps2/arduino-examples.md) | [Blocks](/en/makeblock.md) |
 | Sharpshooter Vision (ESP32CAM) | [Page](/en/sensors/esp32cam/index.md) | [Page](/en/sensors/esp32cam/index.md) | — | — |
 | SPIKE 6-Port Expander | [Official app](/en/sensors/exp6/spike-official.md) · [Pybricks](/en/sensors/exp6/spike-pybricks.md) | — | [Examples](/en/sensors/exp6/arduino-examples.md) | — |
+| SPIKE 6-Port Servo Expander (coming soon) | [Official app](/en/sensors/servo6/spike-official.md) · [Pybricks](/en/sensors/servo6/spike-pybricks.md) | — | — | — |
 
 > [!TIP]
 > **Not sure which software?** SPIKE hub: the official app's blocks are the easiest for class; for competitions, Pybricks is faster and more consistent. EV3 hub: the EV3 software or EV3 Classroom both work; use Pybricks for Python.
@@ -43,6 +44,7 @@ Pick your product and controller to go straight to setup steps, blocks and examp
 | [Ranger 2-Way](/en/sensors/tof2/index.md) | Left/right ranging | |
 | [Ranger 8-Way](/en/sensors/tof8/index.md) | 180° avoidance, sumo | |
 | [SPIKE 6-Way Expander](/en/sensors/exp6/index.md) | More ports | **SPIKE Prime only**; official app requires Python text mode |
+| [SPIKE 6-Port Servo Expander](/en/sensors/servo6/index.md) (coming soon) | Servos on your robot (gripper, turntable, arm) | **SPIKE Prime only**; servos powered by the hub, no battery |
 | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bluetooth gamepad control | Best for big events |
 | [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad control | Classes, projects |
 | [Sharpshooter ESP32CAM](/en/sensors/esp32cam/index.md) | Color tracking, vision | |
@@ -107,6 +109,7 @@ Works with mBot, mBot Ranger, Orion and Ultimate 2.0 (MegaPi). Choose the MakeBl
 | Detect obstacles left and right | [Ranger 2-Way](/en/sensors/tof2/index.md) | Two laser points, small and fast |
 | Sumo, all-round avoidance | [Ranger 8-Way](/en/sensors/tof8/index.md) | 180° in one read, reports the nearest target's direction |
 | Get more ports on SPIKE | [SPIKE 6-Way Expander](/en/sensors/exp6/index.md) | Six channels from one port, own power |
+| Use servos with SPIKE | [SPIKE 6-Port Servo Expander](/en/sensors/servo6/index.md) | Six servos from one port, hub-powered (coming soon) |
 | Remote control at crowded events | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bonds to your gamepad only, stops on signal loss |
 | Remote control for classes on a budget | [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad, best value |
 | Track colors and find objects | [Sharpshooter ESP32CAM](/en/sensors/esp32cam/index.md) | Set up on its own screen, blob position out of the box |

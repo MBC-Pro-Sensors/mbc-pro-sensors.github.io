@@ -1,9 +1,22 @@
 {
   "line8": {
-    "specs": {"zh": {"power": "由主機供電，不需電池"}, "en": {"power": "Powered by the controller, no battery needed"}},
+    "specs": {
+      "zh": {
+        "power": "由主機供電，不需電池"
+      },
+      "en": {
+        "power": "Powered by the controller, no battery needed"
+      }
+    },
     "color": "#ff4500",
-    "msrp": { "twd": 2500, "usd": 100 },
-    "wro": {"zh":"WRO RoboMission：國小、國中、高中組皆可使用","en":"WRO RoboMission: allowed in all age groups"},
+    "msrp": {
+      "twd": 2500,
+      "usd": 100
+    },
+    "wro": {
+      "zh": "WRO RoboMission：國小、國中、高中組皆可使用",
+      "en": "WRO RoboMission: allowed in all age groups"
+    },
     "image": "/images/sensors/line8/line8-product-spike.webp",
     "video": "MuG9kp2-8FY",
     "zh": {
@@ -72,10 +85,23 @@
     }
   },
   "line16": {
-    "specs": {"zh": {"power": "由主機供電，不需電池"}, "en": {"power": "Powered by the controller, no battery needed"}},
+    "specs": {
+      "zh": {
+        "power": "由主機供電，不需電池"
+      },
+      "en": {
+        "power": "Powered by the controller, no battery needed"
+      }
+    },
     "color": "#ff6b35",
-    "msrp": { "twd": 3000, "usd": 120 },
-    "wro": {"zh":"WRO RoboMission：國小、國中、高中組皆可使用","en":"WRO RoboMission: allowed in all age groups"},
+    "msrp": {
+      "twd": 3000,
+      "usd": 120
+    },
+    "wro": {
+      "zh": "WRO RoboMission：國小、國中、高中組皆可使用",
+      "en": "WRO RoboMission: allowed in all age groups"
+    },
     "image": "/images/sensors/line16/line16-product-spike.webp",
     "video": "MuG9kp2-8FY",
     "zh": {
@@ -144,10 +170,35 @@
     }
   },
   "tof2": {
-    "specs": {"zh": {"power": "由主機供電，不需電池", "extra": [["雷射等級", "Class 1（IEC 60825-1:2014），可索取護眼安全聲明"]]}, "en": {"power": "Powered by the controller, no battery needed", "extra": [["Laser class", "Class 1 (IEC 60825-1:2014), eye-safety statement available on request"]]}},
+    "specs": {
+      "zh": {
+        "power": "由主機供電，不需電池",
+        "extra": [
+          [
+            "雷射等級",
+            "Class 1（IEC 60825-1:2014），可索取護眼安全聲明"
+          ]
+        ]
+      },
+      "en": {
+        "power": "Powered by the controller, no battery needed",
+        "extra": [
+          [
+            "Laser class",
+            "Class 1 (IEC 60825-1:2014), eye-safety statement available on request"
+          ]
+        ]
+      }
+    },
     "color": "#0ABAB5",
-    "msrp": { "twd": 1500, "usd": 60 },
-    "wro": {"zh":"WRO RoboMission：國小、國中、高中組皆可使用（Class 1 護眼雷射）","en":"WRO RoboMission: allowed in all age groups (Class 1 eye-safe laser)"},
+    "msrp": {
+      "twd": 1500,
+      "usd": 60
+    },
+    "wro": {
+      "zh": "WRO RoboMission：國小、國中、高中組皆可使用（Class 1 護眼雷射）",
+      "en": "WRO RoboMission: allowed in all age groups (Class 1 eye-safe laser)"
+    },
     "image": "/images/sensors/tof2/tof2-product.webp",
     "zh": {
       "badge": "TOF-02-LSR · 雷射測距",
@@ -215,10 +266,35 @@
     }
   },
   "tof8": {
-    "specs": {"zh": {"power": "由主機供電，不需電池", "extra": [["雷射等級", "Class 1（IEC 60825-1:2014），可索取護眼安全聲明"]]}, "en": {"power": "Powered by the controller, no battery needed", "extra": [["Laser class", "Class 1 (IEC 60825-1:2014), eye-safety statement available on request"]]}},
+    "specs": {
+      "zh": {
+        "power": "由主機供電，不需電池",
+        "extra": [
+          [
+            "雷射等級",
+            "Class 1（IEC 60825-1:2014），可索取護眼安全聲明"
+          ]
+        ]
+      },
+      "en": {
+        "power": "Powered by the controller, no battery needed",
+        "extra": [
+          [
+            "Laser class",
+            "Class 1 (IEC 60825-1:2014), eye-safety statement available on request"
+          ]
+        ]
+      }
+    },
     "color": "#0ABAB5",
-    "msrp": { "twd": 3000, "usd": 120 },
-    "wro": {"zh":"WRO RoboMission：高中組可用；國小、國中組請先向主辦單位確認（Class 1 護眼雷射）","en":"WRO RoboMission: allowed for Senior; Elementary and Junior teams should confirm with their organizer (Class 1 eye-safe laser)"},
+    "msrp": {
+      "twd": 3000,
+      "usd": 120
+    },
+    "wro": {
+      "zh": "WRO RoboMission：高中組可用；國小、國中組請先向主辦單位確認（Class 1 護眼雷射）",
+      "en": "WRO RoboMission: allowed for Senior; Elementary and Junior teams should confirm with their organizer (Class 1 eye-safe laser)"
+    },
     "image": "/images/sensors/tof8/tof8-product.webp",
     "zh": {
       "badge": "TOF-08-LSR · ToF 雷射測距陣列",
@@ -286,10 +362,42 @@
     }
   },
   "ps2": {
-    "specs": {"zh": {"power": "由主機供電，不需電池", "extra": [["無線", "2.4 GHz"], ["販售地區", "僅限台灣"]]}, "en": {"power": "Powered by the controller, no battery needed", "extra": [["Wireless", "2.4 GHz"], ["Availability", "Taiwan only"]]}},
+    "specs": {
+      "zh": {
+        "power": "由主機供電，不需電池",
+        "extra": [
+          [
+            "無線",
+            "2.4 GHz"
+          ],
+          [
+            "販售地區",
+            "僅限台灣"
+          ]
+        ]
+      },
+      "en": {
+        "power": "Powered by the controller, no battery needed",
+        "extra": [
+          [
+            "Wireless",
+            "2.4 GHz"
+          ],
+          [
+            "Availability",
+            "Taiwan only"
+          ]
+        ]
+      }
+    },
     "color": "#F2C200",
-    "msrp": { "twd": 2000 },
-    "wro": {"zh":"WRO RoboMission 比賽中禁止遙控，不能使用；適合允許遙控的賽事、教學與展示","en":"Not for WRO RoboMission runs (no remote control); for remote-control events, classes and demos"},
+    "msrp": {
+      "twd": 2000
+    },
+    "wro": {
+      "zh": "WRO RoboMission 比賽中禁止遙控，不能使用；適合允許遙控的賽事、教學與展示",
+      "en": "Not for WRO RoboMission runs (no remote control); for remote-control events, classes and demos"
+    },
     "image": "/images/sensors/ps2/ps2-product.webp",
     "zh": {
       "badge": "CMD-2.4G-RX · 遙控",
@@ -357,10 +465,35 @@
     }
   },
   "ps4": {
-    "specs": {"zh": {"power": "由主機供電，不需電池", "extra": [["無線", "藍牙，配對 PS4／PS5 手把"]]}, "en": {"power": "Powered by the controller, no battery needed", "extra": [["Wireless", "Bluetooth, pairs with a PS4/PS5 controller"]]}},
+    "specs": {
+      "zh": {
+        "power": "由主機供電，不需電池",
+        "extra": [
+          [
+            "無線",
+            "藍牙，配對 PS4／PS5 手把"
+          ]
+        ]
+      },
+      "en": {
+        "power": "Powered by the controller, no battery needed",
+        "extra": [
+          [
+            "Wireless",
+            "Bluetooth, pairs with a PS4/PS5 controller"
+          ]
+        ]
+      }
+    },
     "color": "#F2C200",
-    "msrp": { "twd": 2500, "usd": 100 },
-    "wro": {"zh":"WRO RoboMission 比賽中禁止遙控，不能使用；適合允許遙控的賽事、教學與展示","en":"Not for WRO RoboMission runs (no remote control); for remote-control events, classes and demos"},
+    "msrp": {
+      "twd": 2500,
+      "usd": 100
+    },
+    "wro": {
+      "zh": "WRO RoboMission 比賽中禁止遙控，不能使用；適合允許遙控的賽事、教學與展示",
+      "en": "Not for WRO RoboMission runs (no remote control); for remote-control events, classes and demos"
+    },
     "image": "/images/sensors/ps4/ps4-product.webp",
     "zh": {
       "badge": "CMD-BT-PRO · PS4 / PS5",
@@ -428,11 +561,36 @@
     }
   },
   "esp32cam": {
-    "specs": {"zh": {"power": "由主機供電，不需電池", "extra": [["無線", "出廠韌體不啟用 Wi-Fi／藍牙"]]}, "en": {"power": "Powered by the controller, no battery needed", "extra": [["Wireless", "Wi-Fi and Bluetooth are off in the factory firmware"]]}},
+    "specs": {
+      "zh": {
+        "power": "由主機供電，不需電池",
+        "extra": [
+          [
+            "無線",
+            "出廠韌體不啟用 Wi-Fi／藍牙"
+          ]
+        ]
+      },
+      "en": {
+        "power": "Powered by the controller, no battery needed",
+        "extra": [
+          [
+            "Wireless",
+            "Wi-Fi and Bluetooth are off in the factory firmware"
+          ]
+        ]
+      }
+    },
     "color": "#00d2ff",
     "video": "jx3BcbeGfZ4",
-    "msrp": { "twd": 3000, "usd": 120 },
-    "wro": {"zh":"WRO RoboMission：國中、高中組可用（相機不開放國小組）","en":"WRO RoboMission: allowed for Junior and Senior (cameras are not allowed in Elementary)"},
+    "msrp": {
+      "twd": 3000,
+      "usd": 120
+    },
+    "wro": {
+      "zh": "WRO RoboMission：國中、高中組可用（相機不開放國小組）",
+      "en": "WRO RoboMission: allowed for Junior and Senior (cameras are not allowed in Elementary)"
+    },
     "image": "/images/sensors/esp32cam/esp32cam-product.webp",
     "zh": {
       "badge": "CAM-VIS-PRO · 視覺",
@@ -500,10 +658,35 @@
     }
   },
   "exp6": {
-    "specs": {"zh": {"power": "馬達由外接 2～3S 鋰電池供電（電池需自備）", "extra": [["適用主機", "只支援 SPIKE™ Prime（不支援 Robot Inventor、EV3）"]]}, "en": {"power": "Motors powered by an external 2–3S LiPo battery (not included)", "extra": [["Controller", "SPIKE™ Prime only (not Robot Inventor or EV3)"]]}},
+    "specs": {
+      "zh": {
+        "power": "馬達由外接 2～3S 鋰電池供電（電池需自備）",
+        "extra": [
+          [
+            "適用主機",
+            "只支援 SPIKE™ Prime（不支援 Robot Inventor、EV3）"
+          ]
+        ]
+      },
+      "en": {
+        "power": "Motors powered by an external 2–3S LiPo battery (not included)",
+        "extra": [
+          [
+            "Controller",
+            "SPIKE™ Prime only (not Robot Inventor or EV3)"
+          ]
+        ]
+      }
+    },
     "color": "#00d2ff",
-    "msrp": { "twd": 3600, "usd": 145 },
-    "wro": {"zh":"WRO RoboMission：各組皆可使用，擴充的馬達計入各組馬達數量上限","en":"WRO RoboMission: allowed in all age groups; motors on the expander count toward the motor limit"},
+    "msrp": {
+      "twd": 3600,
+      "usd": 145
+    },
+    "wro": {
+      "zh": "WRO RoboMission：各組皆可使用，擴充的馬達計入各組馬達數量上限",
+      "en": "WRO RoboMission: allowed in all age groups; motors on the expander count toward the motor limit"
+    },
     "image": "/images/sensors/exp6/exp6-product.webp",
     "zh": {
       "badge": "EXP-06-PRO · 智慧擴充",
@@ -571,10 +754,23 @@
     }
   },
   "imu": {
-    "specs": {"zh": {"power": "由主機供電，不需電池"}, "en": {"power": "Powered by the controller, no battery needed"}},
+    "specs": {
+      "zh": {
+        "power": "由主機供電，不需電池"
+      },
+      "en": {
+        "power": "Powered by the controller, no battery needed"
+      }
+    },
     "color": "#a371f7",
-    "msrp": { "twd": 2500, "usd": 100 },
-    "wro": {"zh":"WRO RoboMission：國小、國中、高中組皆可使用","en":"WRO RoboMission: allowed in all age groups"},
+    "msrp": {
+      "twd": 2500,
+      "usd": 100
+    },
+    "wro": {
+      "zh": "WRO RoboMission：國小、國中、高中組皆可使用",
+      "en": "WRO RoboMission: allowed in all age groups"
+    },
     "zh": {
       "badge": "IMU-9AX · 即將推出",
       "pitch": "走直線、轉精準角度的關鍵：任意角度安裝都能算對航向，磁力計融合讓長距離也不飄移。",
@@ -636,6 +832,164 @@
         [
           "Universal I2C",
           "#∿-universal-i2c-registers-address-0x6a"
+        ]
+      ]
+    }
+  },
+  "servo6": {
+    "specs": {
+      "zh": {
+        "power": "舵機電源由 SPIKE 主機經擴充器供電（總電流上限約 0.75 A），不需外接電池",
+        "extra": [
+          [
+            "適用主機",
+            "只支援 SPIKE™ Prime（官方 App 需 Python 文字模式；Pybricks 需 v4.0 以上）"
+          ]
+        ]
+      },
+      "en": {
+        "power": "Servos are powered by the SPIKE hub through the expander (about 0.75 A total), no external battery",
+        "extra": [
+          [
+            "Controller",
+            "SPIKE™ Prime only (official app in Python text mode; Pybricks v4.0 or later)"
+          ]
+        ]
+      }
+    },
+    "color": "#ff9f43",
+    "wro": {
+      "zh": "WRO RoboMission：各組皆可使用，舵機計入各組馬達數量上限",
+      "en": "WRO RoboMission: allowed in all age groups; servos count toward the motor limit"
+    },
+    "zh": {
+      "badge": "SRV-06 · 即將推出",
+      "pitch": "一個 SPIKE 孔接 6 顆舵機：角度、速度、電流回報與堵轉保護都由擴充器處理，舵機電源直接取自主機，不用外接電池。",
+      "stats": [
+        [
+          "1 → 6",
+          "一孔接六顆舵機"
+        ],
+        [
+          "堵轉保護",
+          "每孔獨立量電流"
+        ],
+        [
+          "免電池",
+          "主機直接供電"
+        ]
+      ],
+      "editions": [
+        [
+          "官方 SPIKE App",
+          "/sensors/servo6/spike-official.md"
+        ],
+        [
+          "Pybricks",
+          "/sensors/servo6/spike-pybricks.md"
+        ]
+      ]
+    },
+    "en": {
+      "badge": "SRV-06 · COMING SOON",
+      "pitch": "Six servos on one SPIKE port: angle, speed, current readback and stall protection are handled on the board, and the servos draw power from the hub, no battery needed.",
+      "stats": [
+        [
+          "1 → 6",
+          "servos on one port"
+        ],
+        [
+          "Stall guard",
+          "per-channel current"
+        ],
+        [
+          "No battery",
+          "hub-powered"
+        ]
+      ],
+      "editions": [
+        [
+          "Official SPIKE App",
+          "/en/sensors/servo6/spike-official.md"
+        ],
+        [
+          "Pybricks",
+          "/en/sensors/servo6/spike-pybricks.md"
+        ]
+      ]
+    }
+  },
+  "ov3660": {
+    "specs": {
+      "zh": {
+        "power": "由主機供電，不需電池"
+      },
+      "en": {
+        "power": "Powered by the controller, no battery needed"
+      }
+    },
+    "color": "#e84393",
+    "zh": {
+      "badge": "CLR-3660 · 開發中",
+      "pitch": "用 300 萬畫素影像感測器只看畫面中央一小塊，遠距離也能穩定判色，顏色、亮度均勻度一次輸出。",
+      "stats": [
+        [
+          "3 MP",
+          "OV3660 影像感測器"
+        ],
+        [
+          "遠距離",
+          "中央區塊判色"
+        ],
+        [
+          "120 fps",
+          "硬體裁切縮放"
+        ]
+      ],
+      "editions": [
+        [
+          "EV3 版",
+          "#🧩-預計支援平台"
+        ],
+        [
+          "SPIKE 版",
+          "#🧩-預計支援平台"
+        ],
+        [
+          "通用 I2C 版",
+          "#🧩-預計支援平台"
+        ]
+      ]
+    },
+    "en": {
+      "badge": "CLR-3660 · IN DEVELOPMENT",
+      "pitch": "A 3-megapixel image sensor that looks only at a small window in the middle of the frame, so colours stay reliable at a distance; colour and brightness uniformity in one reading.",
+      "stats": [
+        [
+          "3 MP",
+          "OV3660 image sensor"
+        ],
+        [
+          "Long range",
+          "centre-window colour"
+        ],
+        [
+          "120 fps",
+          "hardware crop & scale"
+        ]
+      ],
+      "editions": [
+        [
+          "EV3",
+          "#🧩-planned-platforms"
+        ],
+        [
+          "SPIKE",
+          "#🧩-planned-platforms"
+        ],
+        [
+          "Universal I2C",
+          "#🧩-planned-platforms"
         ]
       ]
     }

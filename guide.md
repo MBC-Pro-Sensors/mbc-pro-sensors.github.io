@@ -20,6 +20,7 @@
 | 掌控者 PS2 | [產品頁](/sensors/ps2/index.md) | [產品頁](/sensors/ps2/index.md) | [範例](/sensors/ps2/arduino-examples.md) | [積木](/makeblock.md) |
 | 神攝手 ESP32CAM | [產品頁](/sensors/esp32cam/index.md) | [產品頁](/sensors/esp32cam/index.md) | — | — |
 | SPIKE 6 路擴充器 | [官方 App](/sensors/exp6/spike-official.md)・[Pybricks](/sensors/exp6/spike-pybricks.md) | — | [範例](/sensors/exp6/arduino-examples.md) | — |
+| SPIKE 6 路舵機擴充器（即將推出） | [官方 App](/sensors/servo6/spike-official.md)・[Pybricks](/sensors/servo6/spike-pybricks.md) | — | — | — |
 
 > [!TIP]
 > **不知道用哪個軟體？** SPIKE 主機：上課用官方 App 積木最簡單；比賽要穩定、快速，建議用 Pybricks。EV3 主機：EV3 官方軟體或 EV3 Classroom 都可以，想寫 Python 用 Pybricks。
@@ -43,6 +44,7 @@
 | [測距者 2 路](/sensors/tof2/index.md) | 左右測距、物體方向 | |
 | [測距者 8 路](/sensors/tof8/index.md) | 180° 避障、相撲 | |
 | [SPIKE 6 路擴充器](/sensors/exp6/index.md) | 孔位不夠時擴充 | **僅限 SPIKE Prime**；官方 App 需用 Python 文字模式 |
+| [SPIKE 6 路舵機擴充器](/sensors/servo6/index.md)（即將推出） | 機器人要用舵機（夾爪、轉盤、擺臂） | **僅限 SPIKE Prime**；舵機電源由主機供給，不用電池 |
 | [掌控者 PS4/PS5](/sensors/ps4/index.md) | 藍牙手把遙控 | 大型比賽場地推薦 |
 | [掌控者 PS2](/sensors/ps2/index.md) | 2.4G 手把遙控 | 教學、專題 |
 | [神攝手 ESP32CAM](/sensors/esp32cam/index.md) | 顏色追蹤、視覺 | |
@@ -107,6 +109,7 @@ mBot、mBot Ranger、Orion、Ultimate 2.0（MegaPi）都能用。感應器選 Ma
 | 判斷左右有沒有障礙物 | [測距者 2 路](/sensors/tof2/index.md) | 雙點雷射，輕巧、反應快 |
 | 相撲、全方位避障 | [測距者 8 路](/sensors/tof8/index.md) | 前方 180° 一次看完，直接回報最近目標方向 |
 | SPIKE 孔位不夠用 | [SPIKE 6 路擴充器](/sensors/exp6/index.md) | 一個孔接出 6 路，獨立供電 |
+| 想在 SPIKE 上用舵機 | [SPIKE 6 路舵機擴充器](/sensors/servo6/index.md) | 一個孔接 6 顆舵機，主機供電（即將推出） |
 | 比賽用遙控，現場隊伍多 | [掌控者 PS4/PS5](/sensors/ps4/index.md) | 只綁定自己的手把，斷訊自動停車 |
 | 教學或專題用遙控，預算有限 | [掌控者 PS2](/sensors/ps2/index.md) | 2.4G 手把，最划算 |
 | 追顏色、找物體位置 | [神攝手 ESP32CAM](/sensors/esp32cam/index.md) | 機身螢幕直接設定，色塊位置一次輸出 |

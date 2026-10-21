@@ -15,6 +15,8 @@ MBC-Pro Sensors 解決了樂高原廠感測器在機器人競賽中的痛點（�
 - [掌控者 2.4G PS2 (Wireless Gamepad Receiver)](https://mbc-pro-sensors.github.io/sensors/ps2/): 高性價比 2.4G 無線手把接收器，即插即用擴充搖桿遙控。僅限台灣販售（Taiwan only）。
 - [掌控者 PS4/PS5 藍牙接收器 (PS4/PS5 Bluetooth Receiver)](https://mbc-pro-sensors.github.io/sensors/ps4/): 支援 PS4 / PS5 手把；只綁定自己的手把、斷訊 0.3 秒自動歸零，比賽場地內穩定連線（空曠實測 100 公尺）。
 - [陀螺儀 IMU 九軸 (IMU 9-Axis Gyro, 即將推出)](https://mbc-pro-sensors.github.io/sensors/imu/): 陀螺儀＋加速度計＋磁力計，任意角度安裝、磁力計融合航向長距離不飄移，EV3 可直接當原廠陀螺儀使用。
+- [SPIKE 6 路舵機擴充器 Servo6 (SPIKE 6-Port Servo Expander, 即將推出)](https://mbc-pro-sensors.github.io/sensors/servo6/): 一個 SPIKE Prime 孔接 6 顆舵機，角度／速度控制、每孔電流回報與堵轉保護，舵機電源由主機供給；官方 SPIKE App 與 Pybricks 函式庫。
+- [遠距離顏色感應器 OV3660 (Long-Range Colour Sensor, 開發中)](https://mbc-pro-sensors.github.io/sensors/ov3660/): 300 萬畫素影像感測器只取畫面中央區塊判色，遠距離穩定；開發中。
 - [MBC 通用 I2C 協議 (Universal I2C Protocol)](https://mbc-pro-sensors.github.io/i2c-protocol.html): Arduino / ESP32 / 樹莓派 讀取全系列感應器的共用暫存器規則與範例程式。
 - [MakeBlock（mBot）積木擴展 (mBlock 5 extension)](https://mbc-pro-sensors.github.io/makeblock.html): mBot、mBot Ranger、Orion、Ultimate 2.0（MegaPi）、MegaPi Pro 用 mBlock 5 積木讀取循行者、測距者、掌控者（MakeBlock 版＋mBot 插座片），含 .mext 下載、各主板可用連接埠與範例專案。
 - [選購指南・已經買好？找程式 (Find your program)](https://mbc-pro-sensors.github.io/guide.html#start): 產品 × 主機（SPIKE、EV3、Arduino、mBot）對照表，直接連到該主機的安裝步驟與範例下載。
@@ -42,6 +44,7 @@ MBC-Pro Sensors 解決了樂高原廠感測器在機器人競賽中的痛點（�
 | 掌控者 PS2 | 2,000 | 僅限台灣販售（Taiwan only） |
 | 掌控者 PS4/PS5 | 2,500 | 100 |
 | 陀螺儀 IMU 九軸（即將推出） | 2,500 | 100 |
+| SPIKE 6 路舵機擴充器 Servo6（即將推出） | 洽詢 | 洽詢 |
 
 ## 競賽規則 (Competition Rules)
 
