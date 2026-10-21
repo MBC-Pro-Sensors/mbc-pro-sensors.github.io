@@ -63,15 +63,15 @@ The 8 laser ranging units are distributed at fixed angles, covering a complete 1
 
 ## 📤 Output Data
 
-**Bearing:** `0` ~ `16`, `8` = straight ahead; smaller = further left, larger = further right. The I2C edition reports it as `-8` (far left) ~ `+8` (far right), `0` = straight ahead. EV3 edition: a single sensor bearing is `-7` ~ `+7` (negative = left, positive = right); `±8` means no target within 120 cm (not far left / far right).
+**Bearing:** `0` ~ `16`, `8` = straight ahead; smaller = further left, larger = further right; with a target it is only `1` ~ `15`, and `0` or `16` means no target within 120 cm (keeps the side where the target was last seen, not far left / far right). The I2C edition reports it as `-7` (far left) ~ `+7` (far right), `0` = straight ahead; `±8` means no target within 120 cm (not far left / far right). EV3 edition: a single sensor bearing is `-7` ~ `+7` (negative = left, positive = right); `±8` means no target within 120 cm (not far left / far right).
 
 ### SPIKE Modes (Pybricks: `PUPDevice(Port.X).read(mode)`)
 
 | Mode | Content |
 | :---: | :--- |
-| 1 | Bearing of the nearest target (0 ~ 16) |
+| 1 | Bearing of the nearest target (1 ~ 15 with a target; 0 or 16 = no target) |
 | 2 | Distance to the nearest target (cm, 0 ~ 120) |
-| 3 | Bearing, nearest distance, leftmost distance, rightmost distance (4 values — the usual competition choice) |
+| 3 | Bearing, nearest distance, leftmost sensor distance (3 values; the rightmost distance is not available here — use mode 9) |
 | 9 | Everything: 8 distances (cm), nearest bearing & distance, farthest bearing & distance, init-OK bitmap, fault bitmap |
 
 ### EV3 Modes

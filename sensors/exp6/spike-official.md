@@ -74,7 +74,7 @@ time.sleep(<span style="color: #b5cea8;">1</span>) <span style="color: #6a9955;"
 
 <span style="color: #6a9955;"># 開始下達馬達與感測器指令...</span>
 exp6.motor_power(<span style="color: #b5cea8;">1</span>, <span style="color: #b5cea8;">50</span>)
-exp6.stop_all()
+exp6.stop_all(<span style="color: #b5cea8;">1</span>)
 </code></pre>
 </div>
 </div>
@@ -112,6 +112,9 @@ exp6.motor_run(<span style="color: #b5cea8;">2</span>, <span style="color: #b5ce
 <pre style="margin: 0; background: #1a1a1a; padding: 10px; border-radius: 6px; font-size: 0.85rem; overflow-x: auto;"><code style="color: #ccc;"><span style="color: #6a9955;"># 相對角度：讓孔 1 馬達以速度 30 轉動 360 度，到達後鎖死 (3)</span>
 exp6.motor_run_degrees(<span style="color: #b5cea8;">1</span>, <span style="color: #b5cea8;">30</span>, <span style="color: #b5cea8;">360</span>, <span style="color: #b5cea8;">3</span>)
 
+<span style="color: #6a9955;"># 角度指令送出就往下執行、不會等轉完；還在轉時送下一個角度指令會被丟掉，所以先等它轉完</span>
+time.sleep(<span style="color: #b5cea8;">1.5</span>)
+
 <span style="color: #6a9955;"># 絕對角度：讓孔 1 馬達以速度 30 轉動到 90 度的位置，到達後鎖死</span>
 exp6.motor_track_target(<span style="color: #b5cea8;">1</span>, <span style="color: #b5cea8;">30</span>, <span style="color: #b5cea8;">90</span>, <span style="color: #b5cea8;">3</span>)</code></pre>
 </div>
@@ -140,7 +143,8 @@ exp6.drive_stop(<span style="color: #b5cea8;">1</span>, <span style="color: #b5c
 exp6.get_motor_abs_angle(<span style="color: #b5cea8;">1</span>) <span style="color: #6a9955;"># 絕對角度 0~359</span>
 exp6.get_motor_speed(<span style="color: #b5cea8;">1</span>)     <span style="color: #6a9955;"># 目前轉速 deg/s</span>
 exp6.reset_angle(<span style="color: #b5cea8;">1</span>)         <span style="color: #6a9955;"># 累積角度歸零</span>
-exp6.set_motor_inverted(<span style="color: #b5cea8;">1</span>, <span style="color: #569cd6;">True</span>) <span style="color: #6a9955;"># 將馬達方向反轉</span></code></pre>
+exp6.set_motor_inverted(<span style="color: #b5cea8;">1</span>, <span style="color: #569cd6;">True</span>) <span style="color: #6a9955;"># 將馬達方向反轉</span>
+exp6.get_port_raw(<span style="color: #b5cea8;">1</span>)       <span style="color: #6a9955;"># 該孔未解析的原始資料（uint16）</span></code></pre>
 </div>
 
 </div>
@@ -166,7 +170,7 @@ force = exp6.get_touch_force(<span style="color: #b5cea8;">4</span>)</code></pre
 color_id = exp6.get_color_color(<span style="color: #b5cea8;">5</span>)
 reflection = exp6.get_color_reflection(<span style="color: #b5cea8;">5</span>)
 
-<span style="color: #6a9955;"># RGB 三原色讀取 (0~1023)</span>
+<span style="color: #6a9955;"># RGB 三原色讀取 (0~100)</span>
 r, g, b = exp6.get_color_rgb(<span style="color: #b5cea8;">5</span>)
 
 <span style="color: #6a9955;"># HSV 色彩空間 (色相, 飽和度, 明度)</span>
@@ -175,18 +179,18 @@ h, s, v = exp6.get_color_hsv(<span style="color: #b5cea8;">5</span>)</code></pre
 
 </div>
 
-### 💓 系統心跳維持與其他功能
+### 🛑 停止保護與其他功能
 
 <div class="responsive-grid-2" style="gap: 20px;">
 
 <div class="func-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(242,194,0,0.2); border-radius: 10px; padding: 16px;">
-<h4 style="color: #f2c200; margin-top: 0; margin-bottom: 10px; font-size: 1.05rem;">💓 心跳訊號 (Heartbeat)</h4>
-<p style="font-size: 0.9em; color: #ccc;">EXP6 擴充板需要與主控端維持「心跳訊號」。如果在 0.5 秒內沒有收到心跳訊號，擴充板會自動關閉馬達電力輸出以保證安全。</p>
-<pre style="margin: 0; background: #1a1a1a; padding: 10px; border-radius: 6px; font-size: 0.85rem; overflow-x: auto;"><code style="color: #ccc;"><span style="color: #6a9955;"># 取代 time.sleep，等待期間自動發送心跳</span>
-exp6.keep_alive_wait(<span style="color: #b5cea8;">3000</span>) <span style="color: #6a9955;"># 毫秒</span>
+<h4 style="color: #f2c200; margin-top: 0; margin-bottom: 10px; font-size: 1.05rem;">⚠️ 停止馬達（官方 App 沒有看門狗）</h4>
+<p style="font-size: 0.9em; color: #ccc;">在<b>官方 SPIKE App</b> 使用時，擴充板<b>沒有</b>斷線自動停止（看門狗）的功能：程式當掉或主機斷線時，馬達會一直維持最後一道指令。所以<b>程式最後一定要寫 <code>exp6.stop_all(1)</code></b>。等待直接用 <code>time.sleep()</code> 即可，不需要心跳指令。（只有 Pybricks 環境有看門狗：約 0.5 秒沒收到訊號，馬達會滑行停止。）</p>
+<pre style="margin: 0; background: #1a1a1a; padding: 10px; border-radius: 6px; font-size: 0.85rem; overflow-x: auto;"><code style="color: #ccc;"><span style="color: #6a9955;"># 官方 App：等待直接用 time.sleep</span>
+time.sleep(<span style="color: #b5cea8;">3</span>) <span style="color: #6a9955;"># 秒</span>
 
-<span style="color: #6a9955;"># 在自行撰寫的 while 迴圈內主動維持心跳</span>
-exp6.keep_alive()</code></pre>
+<span style="color: #6a9955;"># 程式結束前一定要讓所有馬達停止（1 = 滑行）</span>
+exp6.stop_all(<span style="color: #b5cea8;">1</span>)</code></pre>
 </div>
 
 <div class="func-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(242,194,0,0.2); border-radius: 10px; padding: 16px;">

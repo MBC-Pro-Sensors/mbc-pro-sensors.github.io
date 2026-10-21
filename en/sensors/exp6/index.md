@@ -32,8 +32,8 @@ The **SPIKE 6-Way Expander (EXP6)** allows you to connect up to 6 sensors or mot
 <p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">Utilizing a custom high-speed data flow protocol, the hub can receive 32-bit data packets from all 6 sensors in a single cycle, achieving near-zero latency multi-sensor sampling.</p>
 </div>
 <div style="background: rgba(0,210,255,0.05); border: 1px solid rgba(0,210,255,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
-<h4 style="color: #00d2ff; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">🛡️ Smart Watchdog Protection</h4>
-<p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">Hardware-level Watchdog protection mechanism. Upon disconnection from the hub or program crash, the expander will automatically brake and lock the motors to prevent runaway incidents, providing the most solid safety backing for high-end mecha competitions.</p>
+<h4 style="color: #00d2ff; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">🛡️ Watchdog Protection (Pybricks)</h4>
+<p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">In the Pybricks environment, if the expander receives no signal from the hub for about 0.5 seconds (disconnection or program crash), it lets the motors <b>coast to a stop</b> to prevent runaways. <b>The official SPIKE App has no watchdog</b> — always end your program with <code>stop_all(1)</code>.</p>
 </div>
 </div>
 

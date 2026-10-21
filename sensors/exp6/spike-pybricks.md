@@ -225,8 +225,10 @@ await exp6.motor_run(1, 30)
 </li>
 </ul>
 <p><i>備註：舊版 <code>motor_run_target</code> 已更名為 <code>motor_track_target</code>，但舊名仍可相容使用。</i></p>
+<p><b>⚠️ 角度指令送出就會往下執行，不會等馬達轉完。</b>同一顆馬達還在轉的時候再送下一個角度指令，下一個指令會被擴充板丟掉。所以兩個角度指令中間要先等它轉完（例如用 <code>keep_alive_wait</code> 等一段時間；速度 30 轉 360 度大約要 1.2 秒）。</p>
 <div class="block-label">一般積木</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [call v] [motor_run_degrees] (1) (30) (360) (3) ‹ › :: #FF6680
+@greenFlag [exp6 v] [call v] [keep_alive_wait] (1500) ‹ › :: #FF6680
 @greenFlag [exp6 v] [call v] [motor_track_target] (1) (30) (90) (3) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
 <div class="code-header"><span>一般模式</span><span class="code-badge sync">一般</span></div>
@@ -236,6 +238,9 @@ await exp6.motor_run(1, 30)
 # 讓孔 1 馬達以速度 30 轉動 360 度 (相對角度)，到達後鎖死 (HOLD)
 exp6.motor_run_degrees(1, 30, 360, 3)
 
+# 等它轉完再送下一個角度指令（不等的話，下一個指令會被丟掉）
+exp6.keep_alive_wait(1500)
+
 # 讓孔 1 馬達以速度 30 轉動到 90 度的位置 (絕對角度)，到達後鎖死
 exp6.motor_track_target(1, 30, 90, 3)
 ```
@@ -244,6 +249,7 @@ exp6.motor_track_target(1, 30, 90, 3)
 </div>
 <div class="block-label" style="margin-top: 1rem;">多工積木</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [await v] [motor_run_degrees] (1) (30) (360) (3) ‹ › :: #FF6680
+@greenFlag [exp6 v] [await v] [keep_alive_wait] (1500) ‹ › :: #FF6680
 @greenFlag [exp6 v] [await v] [motor_track_target] (1) (30) (90) (3) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
 <div class="code-header"><span>多工模式</span><span class="code-badge async">多工</span></div>
@@ -251,6 +257,7 @@ exp6.motor_track_target(1, 30, 90, 3)
 
 ```python
 await exp6.motor_run_degrees(1, 30, 360, 3)
+await exp6.keep_alive_wait(1500)   # 等轉完再送下一個角度指令
 await exp6.motor_track_target(1, 30, 90, 3)
 ```
 
@@ -378,7 +385,7 @@ await exp6.set_motor_inverted(1, True)
 <h4><code>exp6.drive(left_port, right_port, left_speed, right_speed)</code></h4>
 <div class="block-label">一般積木</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [call v] [drive] (1) (2) (50) (40) ‹ › :: #FF6680
-@greenFlag [exp6 v] [call v] [drive_stop] (1) (2) ‹ › :: #FF6680</pre>
+@greenFlag [exp6 v] [call v] [drive_stop] (1) (2) (1) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
 <div class="code-header"><span>一般模式</span><span class="code-badge sync">一般</span></div>
 
@@ -387,22 +394,22 @@ await exp6.set_motor_inverted(1, True)
 # 讓孔 1 與孔 2 的馬達同時以 50 與 40 的速度前進
 exp6.drive(1, 2, 50, 40)
 
-# 停止雙馬達 (滑行停止)
-exp6.drive_stop(1, 2)
+# 停止雙馬達（第 3 個參數 stop 必填：1 滑行、2 煞車、3 鎖死）
+exp6.drive_stop(1, 2, 1)
 ```
 
 
 </div>
 <div class="block-label" style="margin-top: 1rem;">多工積木</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [await v] [drive] (1) (2) (50) (40) ‹ › :: #FF6680
-@greenFlag [exp6 v] [await v] [drive_stop] (1) (2) ‹ › :: #FF6680</pre>
+@greenFlag [exp6 v] [await v] [drive_stop] (1) (2) (1) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
 <div class="code-header"><span>多工模式</span><span class="code-badge async">多工</span></div>
 
 
 ```python
 await exp6.drive(1, 2, 50, 40)
-await exp6.drive_stop(1, 2)
+await exp6.drive_stop(1, 2, 1)
 ```
 
 
@@ -736,7 +743,7 @@ while True:
 <h1>🧠 5. 進階探索 (Advanced)</h1>
 <p>這部分是留給想要深入了解程式庫底層運作原理的進階開發者。</p>
 <h3>函數式寫法 (Functional API)</h3>
-<p>其實，<code>MBC_EXP6</code> 物件底層呼叫的是一系列全域的函數。如果你不喜歡建立物件，你可以直接引入這些函數。函數的名稱通常就是物件方法加上 <code>exp_</code> 前綴：</p>
+<p>函式庫另外提供一組全域函數，名稱就是物件方法加上 <code>exp_</code> 前綴（例如 <code>exp_motor_power</code>）。這些函數會操作「最後建立的那個 <code>MBC_EXP6</code> 物件」，所以<b>還是要先建立一次 <code>MBC_EXP6(...)</code> 物件</b>，之後就可以不用寫 <code>exp6.</code>：</p>
 <div class="code-example">
 <h4>引入與使用函數式 API</h4>
 <div class="code-block-wrapper">
@@ -744,10 +751,10 @@ while True:
 
 
 ```python
-from MBC_uart_Lib import exp_init, exp_motor_power, exp_get_motor_angle
+from MBC_exp6_obj_Lib import MBC_EXP6, exp_motor_power, exp_get_motor_angle
 
-# 直接初始化 (port=3, multitask=False)
-exp_init(3, False)
+# 先建立一次物件 (主機埠 3 = C, multitask=False)
+MBC_EXP6(3, False)
 
 # 啟動孔位 5 的馬達
 exp_motor_power(5, 50)

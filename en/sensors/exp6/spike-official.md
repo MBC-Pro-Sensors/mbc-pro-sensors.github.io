@@ -31,7 +31,7 @@ Download Official App Library
 <a href="/downloads/MBC_EXP6_Official_App_Lib.zip" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #00d2ff 0%, #0077ff 100%); color: white; text-decoration: none; padding: 12px 25px; border-radius: 30px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,210,255,0.4); transition: transform 0.2s, box-shadow 0.2s;">
 Download .zip Package
 </a>
-<p style="font-size: 0.85em; color: #888; margin-top: 15px;">Includes: <code>Install_MBC_exp6_Lib.py</code>, <code>Uninstall_MBC_exp6_Lib.py</code>, <code>example.py</code></p>
+<p style="font-size: 0.85em; color: #888; margin-top: 15px;">Includes: <code>Install_MBC_exp6_Lib.py</code>, <code>Uninstall_MBC_exp6_Lib.py</code>, 8 example programs (<code>01</code>–<code>08</code>) and the PDF manual</p>
 </div>
 
 <div style="flex: 1; min-width: 300px; background: rgba(255,69,0,0.05); border: 1px solid rgba(255,69,0,0.3); border-radius: 12px; padding: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">
@@ -97,8 +97,14 @@ Set the motor to rotate a specific relative angle, or move to a specific absolut
 * `stop`: Number indicating the behavior after reaching the target: `1` Coast, `2` Brake, `3` Hold, `4` Continue.
 
 ```python
+import time
+
 # Make motor on port 1 rotate 360 degrees (relative angle) at speed 30, then Hold (3)
 exp6.motor_run_degrees(1, 30, 360, 3)
+
+# Angle commands return immediately and do not wait for the move to finish.
+# A new angle command sent while the motor is still turning is dropped, so wait first.
+time.sleep(1.5)
 
 # Make motor on port 1 rotate to 90 degrees (absolute angle) at speed 30, then Hold (3)
 exp6.motor_track_target(1, 30, 90, 3)
@@ -118,7 +124,7 @@ Simultaneously and precisely controls two motors, perfect for building wheeled c
 exp6.drive(1, 2, 50, 40)
 
 # Stop dual motors (coast to a stop)
-exp6.drive_stop(1, 2)
+exp6.drive_stop(1, 2, 1)
 ```
 
 ---
@@ -136,11 +142,14 @@ exp6.reset_angle(1)
 angle = exp6.get_motor_angle(1)
 abs_angle = exp6.get_motor_abs_angle(1)
 speed = exp6.get_motor_speed(1)
+
+# Reverse the direction of the motor on port 1 (for mirrored mounting)
+exp6.set_motor_inverted(1, True)
 ```
 
 ### 🎨 Color Sensor
 ```python
-# Read color code (-1 is no color, others correspond to standard LEGO colors)
+# Read color code (0~10, standard LEGO colors: 0 black, 10 white)
 color_code = exp6.get_color_color(3)
 
 # Read light reflection value (0~100, suitable for line following)
@@ -148,6 +157,9 @@ reflection = exp6.get_color_reflection(3)
 
 # Read RGB, returns (R, G, B), range 0~100
 rgb = exp6.get_color_rgb(3)
+
+# Read HSV (hue 0~360, saturation, value)
+h, s, v = exp6.get_color_hsv(3)
 ```
 
 ### 📏 Ultrasonic and Force Sensors
@@ -173,19 +185,16 @@ raw_data = exp6.get_port_raw(1)
 
 ---
 
-## 💓 4. System Heartbeat (Keep Alive)
+## 🛑 4. Stopping Safely (No Watchdog in the Official App)
 
-The EXP6 expander requires a "heartbeat signal" to maintain communication with the main hub. If you set `multitask=True` during initialization, the system will automatically send heartbeats in the background. However, if you use normal mode (`multitask=False`), you must use the following commands to maintain communication.
+When used with the **official SPIKE App**, the expander has **no** watchdog: if the program crashes or the hub disconnects, the motors keep running the last command. So **always end your program with `exp6.stop_all(1)`**. Just use `time.sleep()` to wait — no heartbeat commands are needed. (Only the Pybricks environment has a watchdog: after about 0.5 s without a signal, the motors coast to a stop.)
 
 ```python
-# In normal mode, use this command to replace the system's wait or sleep
-# It will automatically maintain communication with the expander during the wait time
-exp6.keep_alive_wait(1000)
+import time
 
-# If you have a time-consuming while or for loop, call this inside the loop
-while True:
-    # Perform heavy calculations or sensing tasks...
-    
-    # Ensure communication is not interrupted
-    exp6.keep_alive()
+# Official App: just use time.sleep to wait
+time.sleep(3)  # seconds
+
+# Always stop all motors before the program ends (1 = coast)
+exp6.stop_all(1)
 ```

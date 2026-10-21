@@ -59,7 +59,7 @@
     <div style="margin-bottom: 16px;">
       <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; padding-left: 2px;">
         <span style="font-size: 0.85rem; color: #00d2ff; font-weight: bold;">🎯 基礎組合</span>
-        <span style="font-size: 0.72rem; color: #777; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 8px;">開箱即用，不需校準，適合快速開發與初學者</span>
+        <span style="font-size: 0.72rem; color: #777; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 8px;">比較不挑校準品質，適合快速開發與初學者（但還是要先校準一次）</span>
       </div>
       <div class="responsive-grid-2">
         <div class="func-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
@@ -171,11 +171,11 @@
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
             <div>
               <code style="color: #0abab5; font-size: 0.95rem; font-weight: bold;">line_pos8()</code>
-              <span style="font-size: 0.7rem; color: #888; margin-left: 6px;">🎯 基礎免校準</span>
+              <span style="font-size: 0.7rem; color: #888; margin-left: 6px;">🎯 不挑校準品質</span>
             </div>
             <span style="background: rgba(255,107,53,0.15); color: #ff6b35; padding: 3px 10px; border-radius: 20px; font-family: monospace; font-size: 0.75rem; white-space: nowrap;">-8 ~ +8</span>
           </div>
-          <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;">取得整數解析度的循線位置。<code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">0</code> 為正中央，負數偏左，正數偏右。<strong style="color: #bbb;">開箱即用不需校準，適合快速開發與初學者。</strong></p>
+          <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;">取得整數解析度的循線位置。<code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">0</code> 為正中央，負數偏左，正數偏右。<strong style="color: #bbb;">比較不挑校準品質，適合快速開發與初學者；但還是要先校準一次（沒校準時每一路都會被當成黑色）。</strong></p>
         </div>
         <div class="func-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(10,186,181,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
@@ -205,7 +205,7 @@
             <code style="color: #0abab5; font-size: 0.95rem; font-weight: bold;">line_ir_calibration()</code>
             <span style="background: rgba(217,163,0,0.15); color: #d9a300; padding: 3px 10px; border-radius: 20px; font-family: monospace; font-size: 0.75rem; white-space: nowrap;">list[8]</span>
           </div>
-          <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;">回傳 8 路校正後紅外線反射光值陣列（每值 0~100）。index 0 = 最右側 (ch1)，index 7 = 最左側 (ch8)。</p>
+          <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;">回傳 8 路校正後紅外線反射光值陣列（每值 0~100）。從車子後面往前看：index 0 = 最左側 (ch1)，index 7 = 最右側 (ch8)。</p>
         </div>
         <div class="func-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(10,186,181,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
@@ -310,8 +310,8 @@
           </p>
         </div>
         <div class="download-btn-group">
-          <a href="/examples/line8/pybricks/For%20firmware%203.6.1/MBC_line8_Lib_v361.py" target="_blank" download="MBC_line8_Lib_v361.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 3.6.1 版庫函數</a>
-          <a href="/examples/line8/pybricks/For%20firmware%204.0.0/MBC_line8_obj_Lib_v400.py" target="_blank" download="MBC_line8_obj_Lib_v400.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 4.0.0 版庫函數</a>
+          <a href="/examples/line8/pybricks/For%20firmware%203.6.1/MBC_line8_Lib_v361.py" target="_blank" download="MBC_line8_Lib.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 3.6.1 版庫函數</a>
+          <a href="/examples/line8/pybricks/For%20firmware%204.0.0/MBC_line8_obj_Lib_v400.py" target="_blank" download="MBC_line8_obj_Lib.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 4.0.0 版庫函數</a>
         </div>
       </div>
       <!-- 右側：重要提示與截圖 -->
@@ -320,6 +320,9 @@
           <h4 style="margin: 0 0 8px 0; color: #ff6b35; font-size: 1.05rem; display: flex; align-items: center; gap: 6px;">⚠️ 重要提示：檔案放置位置</h4>
           <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #ddd; line-height: 1.6;">
             您<strong>必須將下載的庫檔案（依韌體版本而定，例如 <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line8_Lib_v361.py</code> 或 <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line8_obj_Lib_v400.py</code>）與您的主程式放在同一個專案列表下</strong>。否則程式執行時將會報錯找不到庫檔案！
+          </p>
+          <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #ddd; line-height: 1.6;">
+            <strong>⚠️ 檔名一定要改：</strong>範例程式寫的是 <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">import MBC_line8_obj_Lib</code>（3.6.1 版是 <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line8_Lib</code>），所以下載後請把檔名改成 <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line8_obj_Lib.py</code>（去掉 <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">_v400</code>）或 <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line8_Lib.py</code>（去掉 <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">_v361</code>），否則會出現 ImportError。最省事的做法是直接用上方的「打包下載」zip，裡面的檔名已經是對的。
           </p>
           <div style="border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,107,53,0.3); background: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 50%; margin: 0 auto;">
             <img src="/images/sensors/line8/pybricks-upload-lib.webp" alt="檔案放置位置" style="width: 100%; display: block; opacity: 0.9;" />

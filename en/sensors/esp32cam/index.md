@@ -30,7 +30,7 @@ The Sharpshooter ESP32CAM gives your robot real eyes: it finds the position and 
 
 | Item | Spec |
 | :--- | :--- |
-| Image resolution | 160 × 120 (X `0` ~ `159`, Y `0` ~ `119`) |
+| Image resolution | 160 × 120 (output coordinates are scaled down: SPIKE edition X `0` ~ `98`, Y `1` ~ `75`; see "Output Data" below) |
 | Screen | 1.8" 128 × 160 color TFT |
 | Buttons | Left, right, enter, side (short press: open/close menu; long press 1 s in the menu: clear that color slot) |
 | Lens options (field of view) | 65° / 110° / 120° / 160° |
@@ -38,13 +38,17 @@ The Sharpshooter ESP32CAM gives your robot real eyes: it finds the position and 
 
 ## 📤 Output Data
 
-| Output | Content |
+Values below are for the **SPIKE edition** with the current firmware (EV3 edition: see the next section).
+
+| Output | Content (SPIKE edition) |
 | :--- | :--- |
-| Point color | Color at the chosen point (hue code: `0` ~ `239` = hue, `240` ~ `245` = white, `246` ~ `250` = black) |
-| Blob area | `0` ~ `100` (`0` = not found; X / Y are then invalid) |
-| Blob X | Horizontal position of the blob center |
-| Blob Y | Vertical position of the blob center |
+| Point color | Hue at the chosen point: `0` ~ `100` (red 0/100, yellow ≈17, green ≈33, blue ≈67), `-1` = black/white/gray; `0` ~ `10` in the Robot Inventor official app. Reads `0` (same as red) if the color point has not been set |
+| Blob area | `0` ~ `100` (`0` = not found; X / Y are then invalid); only readable in the official app — Pybricks mode 9 has no area |
+| Blob X | `0` ~ `98`, left → right, center ≈ `50`; `0` when not found |
+| Blob Y | `1` ~ `75`, **bottom → top** (small at the bottom, large at the top), center ≈ `37`; `0` when not found |
 | Motion value | `0` ~ `100`, higher = more change in the image |
+
+Official SPIKE App (Education) blocks: "color" = hue, "reflected light" = motion value, "raw red / green / blue" = blob X / Y / area.
 
 ### Values read on EV3
 

@@ -59,7 +59,7 @@ We have provided four core example programs and exclusive library functions. Ple
     <div style="margin-bottom: 16px;">
       <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; padding-left: 2px;">
         <span style="font-size: 0.85rem; color: #00d2ff; font-weight: bold;">🎯 Basic Combination</span>
-        <span style="font-size: 0.72rem; color: #777; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 8px;">Out of the box, no calibration needed, suitable for quick development and beginners</span>
+        <span style="font-size: 0.72rem; color: #777; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 8px;">Less sensitive to calibration quality, suitable for quick development and beginners (calibrate once first)</span>
       </div>
       <div class="responsive-grid-2">
         <div class="func-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(0,210,255,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
@@ -171,11 +171,11 @@ We have provided four core example programs and exclusive library functions. Ple
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
             <div>
               <code style="color: #0abab5; font-size: 0.95rem; font-weight: bold;">line_pos16()</code>
-              <span style="font-size: 0.7rem; color: #888; margin-left: 6px;">🎯 Basic No Calib</span>
+              <span style="font-size: 0.7rem; color: #888; margin-left: 6px;">🎯 Calibration-Tolerant</span>
             </div>
             <span style="background: rgba(255,107,53,0.15); color: #ff6b35; padding: 3px 10px; border-radius: 20px; font-family: monospace; font-size: 0.75rem; white-space: nowrap;">-16 ~ +16</span>
           </div>
-          <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;">Get integer-resolution line position. <code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">0</code> is dead center, negative is left, positive is right. <strong style="color: #bbb;">Out of the box, no calibration needed, suitable for quick development and beginners.</strong></p>
+          <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;">Get integer-resolution line position. <code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">0</code> is dead center, negative is left, positive is right. <strong style="color: #bbb;">Less sensitive to calibration quality and suitable for quick development and beginners, but you still need to calibrate once first (without calibration every channel reads as black).</strong></p>
         </div>
         <div class="func-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(10,186,181,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
@@ -205,7 +205,7 @@ We have provided four core example programs and exclusive library functions. Ple
             <code style="color: #0abab5; font-size: 0.95rem; font-weight: bold;">line_ir_calibration()</code>
             <span style="background: rgba(217,163,0,0.15); color: #d9a300; padding: 3px 10px; border-radius: 20px; font-family: monospace; font-size: 0.75rem; white-space: nowrap;">list[16]</span>
           </div>
-          <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;">Return the array of 16 calibrated infrared reflected light values (each value 0~15). index 0 = rightmost (ch1), index 15 = leftmost (ch16).</p>
+          <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;">Return the array of 16 calibrated infrared reflected light values (each value 0~15). Viewed from behind the robot: index 0 = leftmost (ch1), index 15 = rightmost (ch16).</p>
         </div>
         <div class="func-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(10,186,181,0.15); border-radius: 10px; padding: 16px; transition: all 0.3s ease;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
@@ -310,8 +310,8 @@ We have provided four core example programs and exclusive library functions. Ple
           </p>
         </div>
         <div class="download-btn-group">
-          <a href="/examples/line16/pybricks/For%20firmware%203.6.1/MBC_line16_Lib_v361.py" target="_blank" download="MBC_line16_Lib_v361.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 v3.6.1 Library</a>
-          <a href="/examples/line16/pybricks/For%20firmware%204.0.0/MBC_line16_obj_Lib_v400.py" target="_blank" download="MBC_line16_obj_Lib_v400.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 v4.0.0 Library</a>
+          <a href="/examples/line16/pybricks/For%20firmware%203.6.1/MBC_line16_Lib_v361.py" target="_blank" download="MBC_line16_Lib.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 v3.6.1 Library</a>
+          <a href="/examples/line16/pybricks/For%20firmware%204.0.0/MBC_line16_obj_Lib_v400.py" target="_blank" download="MBC_line16_obj_Lib.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 v4.0.0 Library</a>
         </div>
       </div>
       <!-- Right: Important tips and screenshots -->
@@ -320,6 +320,9 @@ We have provided four core example programs and exclusive library functions. Ple
           <h4 style="margin: 0 0 8px 0; color: #ff6b35; font-size: 1.05rem; display: flex; align-items: center; gap: 6px;">⚠️ Important Tip: File Placement</h4>
           <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #ddd; line-height: 1.6;">
             You <strong>must place this library file (<code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line16_Lib.py</code>) in the same project directory as your main program</strong>. Otherwise, the program will report a file not found error when executing!
+          </p>
+          <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #ddd; line-height: 1.6;">
+            <strong>⚠️ Rename the file:</strong> the examples use <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">import MBC_line16_obj_Lib</code> (v3.6.1: <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line16_Lib</code>). After downloading, rename the file to <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line16_obj_Lib.py</code> (remove <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">_v400</code>) or <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line16_Lib.py</code> (remove <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">_v361</code>), otherwise you will get an ImportError. The easiest way is to use the "Packaged Download" zip above — the file names inside are already correct.
           </p>
           <div style="border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,107,53,0.3); background: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 50%; margin: 0 auto;">
             <img src="/images/sensors/line16/pybricks-upload-lib.webp" alt="File Placement" style="width: 100%; display: block; opacity: 0.9;" />

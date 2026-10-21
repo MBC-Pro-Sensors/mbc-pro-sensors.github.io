@@ -225,8 +225,10 @@ await exp6.motor_run(1, 30)
 </li>
 </ul>
 <p><i>Note: <code>motor_run_target</code> is renamed to <code>motor_track_target</code>, but the old name is still supported.</i></p>
+<p><b>⚠️ Angle commands return immediately — they do not wait for the motor to finish.</b> If you send another angle command to the same motor while it is still turning, the expander drops the new command. Wait for the first move to finish before sending the next one (e.g. with <code>keep_alive_wait</code>; 360° at speed 30 takes about 1.2 s).</p>
 <div class="block-label">Normal Block</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [call v] [motor_run_degrees] (1) (30) (360) (3) ‹ › :: #FF6680
+@greenFlag [exp6 v] [call v] [keep_alive_wait] (1500) ‹ › :: #FF6680
 @greenFlag [exp6 v] [call v] [motor_track_target] (1) (30) (90) (3) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
 <div class="code-header"><span>Normal Mode</span><span class="code-badge sync">Normal</span></div>
@@ -236,7 +238,10 @@ await exp6.motor_run(1, 30)
 # 讓孔 1 馬達以速度 30 轉動 360 度 (相對角度)，到達後Hold (HOLD)
 exp6.motor_run_degrees(1, 30, 360, 3)
 
-# 讓孔 1 馬達以速度 30 轉動到 90 度的位置 (絕對角度)，到達後Hold
+# Wait until it finishes before the next angle command (otherwise the next one is dropped)
+exp6.keep_alive_wait(1500)
+
+# Turn the port 1 motor at speed 30 to the 90° position (absolute angle), then hold
 exp6.motor_track_target(1, 30, 90, 3)
 ```
 
@@ -244,6 +249,7 @@ exp6.motor_track_target(1, 30, 90, 3)
 </div>
 <div class="block-label" style="margin-top: 1rem;">Async Block</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [await v] [motor_run_degrees] (1) (30) (360) (3) ‹ › :: #FF6680
+@greenFlag [exp6 v] [await v] [keep_alive_wait] (1500) ‹ › :: #FF6680
 @greenFlag [exp6 v] [await v] [motor_track_target] (1) (30) (90) (3) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
 <div class="code-header"><span>Async Mode</span><span class="code-badge async">Async</span></div>
@@ -251,6 +257,7 @@ exp6.motor_track_target(1, 30, 90, 3)
 
 ```python
 await exp6.motor_run_degrees(1, 30, 360, 3)
+await exp6.keep_alive_wait(1500)   # wait until it finishes before the next angle command
 await exp6.motor_track_target(1, 30, 90, 3)
 ```
 
@@ -378,7 +385,7 @@ await exp6.set_motor_inverted(1, True)
 <h4><code>exp6.drive(left_port, right_port, left_speed, right_speed)</code></h4>
 <div class="block-label">Normal Block</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [call v] [drive] (1) (2) (50) (40) ‹ › :: #FF6680
-@greenFlag [exp6 v] [call v] [drive_stop] (1) (2) ‹ › :: #FF6680</pre>
+@greenFlag [exp6 v] [call v] [drive_stop] (1) (2) (1) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
 <div class="code-header"><span>Normal Mode</span><span class="code-badge sync">Normal</span></div>
 
@@ -387,22 +394,22 @@ await exp6.set_motor_inverted(1, True)
 # Make port 1 and 2 motors move forward at speed 50 and 40 simultaneously
 exp6.drive(1, 2, 50, 40)
 
-# 停止雙馬達 (Coast停止)
-exp6.drive_stop(1, 2)
+# Stop both motors (the 3rd argument stop is required: 1 coast, 2 brake, 3 hold)
+exp6.drive_stop(1, 2, 1)
 ```
 
 
 </div>
 <div class="block-label" style="margin-top: 1rem;">Async Block</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [await v] [drive] (1) (2) (50) (40) ‹ › :: #FF6680
-@greenFlag [exp6 v] [await v] [drive_stop] (1) (2) ‹ › :: #FF6680</pre>
+@greenFlag [exp6 v] [await v] [drive_stop] (1) (2) (1) ‹ › :: #FF6680</pre>
 <div class="code-block-wrapper">
 <div class="code-header"><span>Async Mode</span><span class="code-badge async">Async</span></div>
 
 
 ```python
 await exp6.drive(1, 2, 50, 40)
-await exp6.drive_stop(1, 2)
+await exp6.drive_stop(1, 2, 1)
 ```
 
 
@@ -736,7 +743,7 @@ while True:
 <h1>🧠 5. Advanced Exploration (Advanced)</h1>
 <p>This section is for advanced developers wanting to understand the library's underlying principles.</p>
 <h3>Functional API (Functional API)</h3>
-<p>In fact, the <code>MBC_EXP6</code> object calls a series of global functions underneath. If you prefer not to instantiate an object, you can import these functions directly. They are typically named with an <code>exp_</code> prefix:</p>
+<p>The library also provides global functions named after the object methods with an <code>exp_</code> prefix (e.g. <code>exp_motor_power</code>). They act on the most recently created <code>MBC_EXP6</code> object, so <b>you still need to create an <code>MBC_EXP6(...)</code> object once</b>; after that you can call them without <code>exp6.</code>:</p>
 <div class="code-example">
 <h4>Importing and Using the Functional API</h4>
 <div class="code-block-wrapper">
@@ -744,10 +751,10 @@ while True:
 
 
 ```python
-from MBC_uart_Lib import exp_init, exp_motor_power, exp_get_motor_angle
+from MBC_exp6_obj_Lib import MBC_EXP6, exp_motor_power, exp_get_motor_angle
 
-# Direct initialization (port=3, multitask=False)
-exp_init(3, False)
+# Create the object once (hub port 3 = C, multitask=False)
+MBC_EXP6(3, False)
 
 # Power the motor on port 5
 exp_motor_power(5, 50)

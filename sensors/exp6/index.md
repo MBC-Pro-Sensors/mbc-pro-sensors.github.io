@@ -36,8 +36,8 @@ SPIKE Prime 主機只有 6 個連接孔，但高階的機器人專案往往同�
 <p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">採用特製的高速資料流協議，主機能在單一週期內接收所有 6 顆感應器的 32-bit 資料封包，實現近乎零延遲的多感測器採樣。</p>
 </div>
 <div style="background: rgba(0,210,255,0.05); border: 1px solid rgba(0,210,255,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
-<h4 style="color: #00d2ff; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">🛡️ 智慧看門狗保護</h4>
-<p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">硬體級 Watchdog 保護機制，一旦與主機斷線或程式崩潰，擴充器會自動煞車鎖死馬達防暴衝，給高階機甲競賽最穩固的安全後盾。</p>
+<h4 style="color: #00d2ff; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">🛡️ 看門狗保護（Pybricks）</h4>
+<p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">在 Pybricks 環境使用時，擴充器約 0.5 秒沒收到主機訊號（斷線或程式當掉），就會讓馬達<b>滑行停止</b>，避免暴衝。<b>官方 SPIKE App 沒有這個功能</b>，程式最後一定要寫 <code>stop_all(1)</code> 讓馬達停止。</p>
 </div>
 </div>
 

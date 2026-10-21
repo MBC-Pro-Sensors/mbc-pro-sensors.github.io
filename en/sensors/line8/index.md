@@ -20,7 +20,7 @@ The MBC 8-Way Line Sensor is specifically optimized for this pain point. Equippe
 
 * **🚀 Competition-Grade Core**: Onboard smart processing chip designed for high-frequency control, completing 8-channel noise filtering and position solving in milliseconds.
 * **⚡ Zero-Latency Sampling**: Hardware-level parallel data channels. Signals from 8 paths are sampled independently and at high speed in the background without occupying hub bandwidth.
-* **🛡️ WRO First Choice Layout**: Precisely arranged 8 sets of anti-interference infrared arrays (Channels 0 to 7 from right to left), ignoring flashy patterns beside the track.
+* **🛡️ WRO First Choice Layout**: Precisely arranged 8 sets of anti-interference infrared arrays (viewed from behind the robot: channels 1 to 8 from left to right), ignoring flashy patterns beside the track.
 
 ## 🔌 Hardware Wiring
 
@@ -193,7 +193,7 @@ To get the best comparison gain from all 8 photoelectric sensors, this product p
 While the sensor is powered on, **hold the calibration button and then release** to toggle the tracking mode:
 Default is **Black Line Mode** (tracking dark lines). After switching, it becomes **White Line Mode** (tracking light lines).
 
-> **💡 Data Polarity Auto-Sync**: After switching tracking mode, the sensor's output reflection intensity and high-precision continuous position data **also automatically flip in polarity**. This means your program logic (e.g., PID line-following algorithm) requires absolutely zero modifications — it just works!
+> **💡 Position and Width Follow the White Line Automatically**: In white-line mode, the line position (including the high-precision position) and line width **automatically track the white line**, so your program logic (e.g., a PID line-following algorithm) works without changes. **Individual channel light values are NOT inverted** (white is still 100, black is still 0) — if your program checks single-channel values directly, flip the threshold yourself.
 > This setting persists until the next power cycle. After a power cycle, the sensor resets to the default black-line tracking mode.
 
 ---

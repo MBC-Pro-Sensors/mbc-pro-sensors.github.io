@@ -193,7 +193,7 @@ To get the best comparison gain from all 16 photoelectric sensors, this product 
 While the sensor is powered on, **hold the calibration button and then release** to toggle the tracking mode:
 Default is **Black Line Mode** (tracking dark lines). After switching, it becomes **White Line Mode** (tracking light lines).
 
-> **💡 Data Polarity Auto-Sync**: After switching tracking mode, the sensor's output reflection intensity and high-precision continuous position data **also automatically flip in polarity**. This means your program logic (e.g., PID line-following algorithm) requires absolutely zero modifications — it just works!
+> **💡 Position and Width Follow the White Line Automatically**: In white-line mode, the line position (including the high-precision position) and line width **automatically track the white line**, so your program logic (e.g., a PID line-following algorithm) works without changes. **Individual channel light values are NOT inverted** (white is still 100, black is still 0) — if your program checks single-channel values directly, flip the threshold yourself.
 > This setting persists until the next power cycle. After a power cycle, the sensor resets to the default black-line tracking mode.
 
 ---
