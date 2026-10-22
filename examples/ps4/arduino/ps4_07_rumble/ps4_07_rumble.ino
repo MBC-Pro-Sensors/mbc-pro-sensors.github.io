@@ -2,116 +2,81 @@
  * 掌控者 PS4/PS5 × Arduino　範例 7：讓手把震動
  * ------------------------------------------------------------
  * 這個範例會做什麼？
- *   用 Arduino 叫手把震動：
- *     慢慢壓 R2 扳機  → 手把跟著震，壓越深震越大力
- *     按住 ✕ 鍵      → 用最大力氣震
- *     放開           → 馬上停
- *   以後可以拿來做「撞到牆就震一下」「時間到了震動提醒」。
+ *   按住 ✕ 鍵，手把就震動（力道 200）；放開就停。
+ *   壓 R2 扳機，壓多深震多大（R2 的 0~255 直接當震動強度）。
+ *   用的是命令 E5：寫 [0xE5][強度 0~255]，0 = 停；每送一次震 200 ms，
+ *   所以按住時程式每 150 ms 再送一次，震動才會連續。
  *
- * 你需要：
- *   掌控者 PS4/PS5 接收器（通用 I2C 版）＋ PS4 或 PS5 手把（已配對好）。
+ * 你需要：掌控者 PS4/PS5 接收器（通用 I2C 版）＋ PS4 或 PS5 手把（已配對好）、Arduino UNO／Nano／UNO R4 或 ESP32。
  *
- * 接線（Arduino UNO / Nano）：
- *   接收器 VCC → 5V              接收器 GND → GND
- *   接收器 RX（= SDA）→ A4       接收器 TX（= SCL）→ A5
+ * 接線：
+ *   接收器 VCC → 5V      接收器 GND → GND
+ *   接收器 RX（= SDA） → A4      接收器 TX（= SCL） → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
+ *   （I2C 版接收器上印的 TX 就是 SCL、RX 就是 SDA）
  *
  * 怎麼看結果：
- *   壓 R2、按 ✕，感覺手把在震。序列埠監控窗（115200）會印出震動力氣。
+ *   上傳後按 ✕ 或壓 R2，手把會震。序列埠監控窗（115200）會印出送出的強度。
  *
  * 小提醒：
- *   把力氣（0 ~ 255）寫進接收器的第 0x10 號格子，手把就會震 0.2 秒；寫 0 = 停。
- *   想一直震，就要每 0.1 秒再寫一次，像一直按門鈴一樣。
+ *   PS2 接收器收到 E5 會回 ACK 但忽略（PS2 手把震動已關閉），這個範例只對 PS4/PS5 有作用。
  */
 
 #include <Wire.h>
 
-const uint8_t SENSOR_ADDR = 0x42;        // 掌控者接收器的門牌號碼
+const uint8_t ADDR = 0x42;               // 掌控者接收器的「門牌號碼」（I2C 位址），PS2 與 PS4 都是 0x42
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
 
-const uint8_t BTN_CROSS = 14;            // ✕ 叉叉在 16 位按鍵數字裡的位置
+// 小幫手的宣告（實作在檔案最下面）；mbcWrite 的參數可以省略
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
 
-uint8_t lastPower = 0;                   // 上一次的震動力氣
-unsigned long lastSend  = 0;             // 上一次送出震動命令的時間
-unsigned long lastPrint = 0;             // 上一次印出力氣的時間
+const uint8_t BTN_CROSS = 14;            // ✕ 在十六鍵的第 14 位
+const uint8_t RUMBLE_BY_CROSS = 200;     // 👉 可以改：按 ✕ 時的震動強度 0~255
+
+uint8_t lastSent = 0;                    // 上一次送出的強度
+unsigned long lastSend = 0;              // 上一次送的時間
 
 void setup() {
   Serial.begin(115200);
   mbcBegin();
   delay(500);
-
-  if (!mbcWaitReady(5000)) {
+  if (!mbcWaitReady(ADDR, 5000)) {
     Serial.println(F("找不到接收器，請先跑範例 1 檢查接線。"));
     while (true) {}
   }
-  Serial.println(F("準備好了！慢慢壓 R2 扳機，或按住 ✕ 鍵。"));
+  Serial.println(F("準備好了！按 ✕ 或壓 R2，手把會震動。"));
 }
 
 void loop() {
-  // 讀手把資料（第 0x11 號格子，9 個數字）。readPad 在檔案下面，會順便檢查有沒有讀錯
-  uint8_t d[9];
-  if (!readPad(d)) {
-    delay(100);
-    return;
-  }
+  // 一次讀編號 01 ~ 09 共 9 個值：v[0] = 01 十六鍵、v[8] = 09 R2 類比
+  int16_t v[9];
+  if (!mbcReadMany(ADDR, 0x01, 9, v)) { delay(100); return; }
 
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];   // 16 位的按鍵狀態
-  uint8_t  r2      = d[7];               // R2 扳機：0（沒按）~ 255（壓到底）
+  uint8_t strength = 0;                                  // 這一圈要送的強度
+  if ((uint16_t)v[0] & (1u << BTN_CROSS)) strength = RUMBLE_BY_CROSS;   // 按住 ✕
+  if (v[8] > strength) strength = (uint8_t)v[8];         // R2 壓更深就用 R2 的值
 
-  uint8_t power = r2;                    // 壓多深，就震多大力
-  if (buttons & (1u << BTN_CROSS)) power = 255;      // 按住 ✕ → 最大力氣
-
-  if (power > 0) {
-    // 要震：每 0.1 秒寫一次（每寫一次會震 0.2 秒，這樣才會接起來不中斷）
-    if (millis() - lastSend >= 100) {
-      lastSend = millis();
-      mbcWrite(0x10, power);             // 第 0x10 號格子 = 震動力氣
+  // 強度有變、或按住超過 150 ms，就送一次 E5（每次只震 200 ms，要一直補送）
+  if (strength != lastSent || (strength > 0 && millis() - lastSend >= 150)) {
+    mbcWrite(ADDR, 0xE5, &strength, 1);  // 命令 E5：[強度]
+    lastSend = millis();
+    if (strength != lastSent) {
+      Serial.print(F("震動強度 → ")); Serial.println(strength);
     }
-  } else if (lastPower > 0) {
-    mbcWrite(0x10, 0);                   // 剛放開 → 寫 0，馬上停
-    Serial.println(F("停止震動"));
+    lastSent = strength;
   }
-
-  if (power > 0 && power != lastPower && millis() - lastPrint >= 300) {
-    lastPrint = millis();
-    Serial.print(F("震動力氣："));
-    Serial.println(power);
-  }
-
-  lastPower = power;
-  delay(20);
+  delay(50);
 }
 
 // ============================================================
-// 讀手把資料，順便「防呆」（每個範例都一樣，不用改）
-// ============================================================
-// 為什麼要防呆？
-//   接收器很忙的時候（例如正在跟手把無線通訊），偶爾會來不及換資料，
-//   把「上一次讀的別的格子」（例如第 0x31 號狀態資料）交給 Arduino。
-//   這一筆的按鍵、搖桿數字就會是亂的，遙控車可能會自己動起來。
-// 怎麼看出來？
-//   手把的十字方向鍵，不可能同時按「上」和「下」，也不可能同時按「左」和「右」。
-//   讀到這種組合，就知道這一筆讀錯了：把它丟掉，沿用上一筆正確的資料。
-
-uint8_t lastGood[9] = {0};               // 上一筆正確的手把資料（一開始全部是 0 = 什麼都沒按）
-
-// 讀第 0x11 號格子（手把資料，9 個數字）放進 d。讀不到接收器回傳 false
-bool readPad(uint8_t *d) {
-  if (!mbcRead(0x11, d, 9)) return false;
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];                     // 16 位的按鍵狀態
-  bool upDown    = (buttons & (1u << 4)) && (buttons & (1u << 6));   // 上（第 4 位）和下（第 6 位）一起按？
-  bool leftRight = (buttons & (1u << 7)) && (buttons & (1u << 5));   // 左（第 7 位）和右（第 5 位）一起按？
-  if (upDown || leftRight) {
-    memcpy(d, lastGood, 9);              // 讀錯了 → 這一筆不要，改用上一筆
-  } else {
-    memcpy(lastGood, d, 9);              // 讀對了 → 記起來，下次讀錯時拿來用
-  }
-  return true;
-}
-
-// ============================================================
-// 以下是「通訊小幫手」：負責跟接收器講話。
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
 // 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
 // ============================================================
 
+// 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -119,35 +84,44 @@ void mbcBegin() {
 #endif
 }
 
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
   if (Wire.endTransmission() != 0) return false;
-  delay(2);                              // 等接收器準備資料 2 毫秒（PS4 接收器一定要，不能刪）
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-bool mbcWriteBytes(uint8_t reg, const uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(buf, n);
-  return Wire.endTransmission() == 0;
-}
-
-bool mbcWaitReady(uint16_t timeoutMs) {
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;

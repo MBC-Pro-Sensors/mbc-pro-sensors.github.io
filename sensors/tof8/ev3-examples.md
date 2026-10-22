@@ -3,7 +3,7 @@
 
 [🔙 回到 TOF8 八方位雷射產品頁](/sensors/tof8/index.md)
 
-這一頁有 5 個範例，給**完全沒寫過程式**的人：每個範例都有現成的程式檔可以下載，打開就能用，下面也有一步一步的白話說明。建議從範例 1 開始照順序做。
+這一頁有 6 個範例，給**完全沒寫過程式**的人：每個範例都有現成的程式檔可以下載，打開就能用，下面也有一步一步的白話說明。建議從範例 1 開始照順序做。
 
 ## 開始之前
 
@@ -12,7 +12,7 @@
 3. 會動的範例用樂高教育版基本車：**左輪馬達接 B、右輪馬達接 C**。
 4. 感應器在 EV3 上會顯示成「紅外線感應器」，這是正常的，讀數字就是用紅外線感應器的積木。
 
-**每個範例都有 5 種軟體的程式檔，選你用的那一種就好：**
+**每個範例都有 5 種軟體的程式檔，選你用的那一種就好：**（標「僅 Pybricks／EV3 MicroPython／clev3r」的範例只有這 3 種，因為 EV3-G、Classroom 的積木讀不到那個模式）
 
 | 軟體 | 適合誰 | 怎麼打開範例檔 |
 |---|---|---|
@@ -22,7 +22,7 @@
 | **EV3 MicroPython v2.0** | 已經在用樂高官方 EV3 MicroPython 的人 | 用樂高官方「EV3 MicroPython」microSD 開機卡＋VS Code 擴充套件，把程式內容貼到 `main.py`，按 F5 下載執行。 |
 | **clev3r** | 已經在用 clev3r（EV3 Basic）的人 | 在 clev3r 開啟 `.bp` 檔，按「編譯並下載」，在 EV3 的檔案選單找到 `MBC_` 開頭的資料夾執行。 |
 
-## 這頁會用到的 12 個數值
+## 這頁會用到的 13 個數值
 
 | 名稱 | 範圍 | 從哪裡讀 |
 |---|---|---|
@@ -38,6 +38,7 @@
 | **最近的東西有多遠** | 0 ~ 100 | 模式 2 第 2 個值 |
 | **最近的東西在哪個方向** | -7 ~ +7（負＝左、正＝右、0 附近＝正前方；±8＝沒有東西） | 模式 2 第 1 個值 |
 | **最空曠的方向** | -7 ~ +7（負＝左、正＝右） | 模式 2 第 3 個值 |
+| **最近的東西有多遠（公釐）** | 0 ~ 1200 mm | 模式 5 第 1 個值（只有 Pybricks／EV3 MicroPython／clev3r 讀得到） |
 
 **範例列表：**
 
@@ -46,6 +47,7 @@
 3. [一次看 8 個方向的距離](#%E7%AF%84%E4%BE%8B-3%EF%BC%9A%E4%B8%80%E6%AC%A1%E7%9C%8B-8-%E5%80%8B%E6%96%B9%E5%90%91%E7%9A%84%E8%B7%9D%E9%9B%A2)
 4. [相撲追擊：轉向最近的東西衝過去](#%E7%AF%84%E4%BE%8B-4%EF%BC%9A%E7%9B%B8%E6%92%B2%E8%BF%BD%E6%93%8A%EF%BC%9A%E8%BD%89%E5%90%91%E6%9C%80%E8%BF%91%E7%9A%84%E6%9D%B1%E8%A5%BF%E8%A1%9D%E9%81%8E%E5%8E%BB)
 5. [往最空曠的方向走](#%E7%AF%84%E4%BE%8B-5%EF%BC%9A%E5%BE%80%E6%9C%80%E7%A9%BA%E6%9B%A0%E7%9A%84%E6%96%B9%E5%90%91%E8%B5%B0)
+6. [最近的東西在哪、幾公釐](#%E7%AF%84%E4%BE%8B-6%EF%BC%9A%E6%9C%80%E8%BF%91%E7%9A%84%E6%9D%B1%E8%A5%BF%E5%9C%A8%E5%93%AA%E3%80%81%E5%B9%BE%E5%85%AC%E9%87%90)（僅 Pybricks／EV3 MicroPython／clev3r）
 
 ---
 
@@ -1013,6 +1015,179 @@ EndWhile
 
 - **方向數字是 8 或 -8？** ±8 代表那個方向 120 公分內沒有東西，不是「最左」「最右」。
 - **一直往牆壁開？** 方向的正負可能跟車子相反，把程式裡的「＋turn」和「－turn」對調。
+
+---
+
+## 範例 6：最近的東西在哪、幾公釐
+
+> **僅 Pybricks v4／EV3 MicroPython v2.0／clev3r**（EV3-G、Classroom 的積木讀不到這個模式）
+
+**這個範例會做什麼：** 模式 5 一次給兩個數字：最近的東西有幾公釐、在哪個方向（-7~+7）。比模式 2 的 1.2 公分一格準 12 倍。這個範例把兩個數字顯示在螢幕上，東西靠到 15 公分內就嗶一聲。
+
+**要準備什麼：**
+
+- TOF8 八方位雷射（EV3 版，韌體 v4.0 以上）
+- EV3 主機
+
+**怎麼接：** TOF8 八方位雷射插 1 號孔。
+
+**下載程式（選你用的軟體）：**
+
+[⬇ Pybricks v4](/examples/tof8/ev3_beginner/ex06_nearest_mm_pybricks_v4.py) ｜ [⬇ EV3 MicroPython v2.0](/examples/tof8/ev3_beginner/ex06_nearest_mm_ev3micropython_v2.py) ｜ [⬇ clev3r](/examples/tof8/ev3_beginner/ex06_nearest_mm.bp)
+
+（程式碼即範例，不需截圖。）
+
+<details><summary>Pybricks v4 程式碼</summary>
+
+```python
+# ============================================================
+# TOF8 八方位雷射測距感應器 EV3 新手範例 06：最近的東西在哪、幾公釐
+# 軟體：Pybricks v4（用 Chrome 打開 https://code.pybricks.com ，EV3 版目前是 Beta）
+# 接法：TOF8 八方位雷射插 1 號孔
+# 這個範例會做什麼：模式 5 一次給兩個數字：最近的東西有幾公釐、在哪個方向（-7~+7）。比模式 2 的 1.2 公分一格準 12 倍。這個範例把兩個數字顯示在螢幕上，東西靠到 15 公分內就嗶一聲。
+# ============================================================
+
+from pybricks.hubs import EV3Brick
+from pybricks.iodevices import LUMPDevice
+from pybricks.parameters import Port, Color
+from pybricks.tools import wait
+
+ev3 = EV3Brick()
+sensor = LUMPDevice(Port.S1)       # TOF8 八方位雷射插 1 號孔
+
+
+def read_nearMm():
+    # 最近的東西有多遠（公釐）：0 ~ 1200 mm
+    return sensor.read(5)[0]
+
+
+def read_nearDir5():
+    # 最近的東西在哪個方向：-7 ~ +7（負＝左、正＝右、0 附近＝正前方；±8＝沒有東西）
+    return sensor.read(5)[1]
+
+
+# ---------- 程式從這裡開始 ----------
+# 清除螢幕
+ev3.screen.clear()
+# 一直重複
+while True:
+    # 第 1 行顯示最近的東西有幾公釐
+    ev3.screen.draw_text(0, 0, "NEARMM " + str(read_nearMm()) + "      ", Color.BLACK, Color.WHITE)
+    # 第 2 行顯示它在哪個方向（負＝左、正＝右、0＝正前方）
+    ev3.screen.draw_text(0, 16, "DIR " + str(read_nearDir5()) + "      ", Color.BLACK, Color.WHITE)
+    # 如果最近的東西不到 150 公釐（15 公分）
+    if read_nearMm() < 150:
+        # 不到 15 公分：嗶一聲
+        ev3.speaker.beep()
+    # 等 0.1 秒
+    wait(100)
+```
+
+</details>
+
+<details><summary>EV3 MicroPython v2.0 程式碼</summary>
+
+```python
+#!/usr/bin/env pybricks-micropython
+# ============================================================
+# TOF8 八方位雷射測距感應器 EV3 新手範例 06：最近的東西在哪、幾公釐
+# 軟體：樂高官方 EV3 MicroPython v2.0（microSD 開機卡＋VS Code「LEGO MINDSTORMS EV3 MicroPython」擴充套件）
+# 接法：TOF8 八方位雷射插 1 號孔
+# 這個範例會做什麼：模式 5 一次給兩個數字：最近的東西有幾公釐、在哪個方向（-7~+7）。比模式 2 的 1.2 公分一格準 12 倍。這個範例把兩個數字顯示在螢幕上，東西靠到 15 公分內就嗶一聲。
+# ============================================================
+
+from pybricks.hubs import EV3Brick
+from pybricks.iodevices import Ev3devSensor
+from pybricks.parameters import Port, Color
+from pybricks.tools import wait
+
+ev3 = EV3Brick()
+sensor = Ev3devSensor(Port.S1)     # TOF8 八方位雷射插 1 號孔
+
+
+def read_nearMm():
+    # 最近的東西有多遠（公釐）：0 ~ 1200 mm
+    return sensor.read('IR-CAL')[0]
+
+
+def read_nearDir5():
+    # 最近的東西在哪個方向：-7 ~ +7（負＝左、正＝右、0 附近＝正前方；±8＝沒有東西）
+    return sensor.read('IR-CAL')[1]
+
+
+# ---------- 程式從這裡開始 ----------
+# 清除螢幕
+ev3.screen.clear()
+# 一直重複
+while True:
+    # 第 1 行顯示最近的東西有幾公釐
+    ev3.screen.draw_text(0, 0, "NEARMM " + str(read_nearMm()) + "      ", Color.BLACK, Color.WHITE)
+    # 第 2 行顯示它在哪個方向（負＝左、正＝右、0＝正前方）
+    ev3.screen.draw_text(0, 16, "DIR " + str(read_nearDir5()) + "      ", Color.BLACK, Color.WHITE)
+    # 如果最近的東西不到 150 公釐（15 公分）
+    if read_nearMm() < 150:
+        # 不到 15 公分：嗶一聲
+        ev3.speaker.beep()
+    # 等 0.1 秒
+    wait(100)
+```
+
+</details>
+
+<details><summary>clev3r 程式碼</summary>
+
+```vb
+' ============================================================
+' TOF8 八方位雷射測距感應器 EV3 新手範例 06：最近的東西在哪、幾公釐
+' 軟體：clev3r
+' 接法：TOF8 八方位雷射插 1 號孔；左輪馬達接 B、右輪馬達接 C
+' 這個範例會做什麼：模式 5 一次給兩個數字：最近的東西有幾公釐、在哪個方向（-7~+7）。比模式 2 的 1.2 公分一格準 12 倍。這個範例把兩個數字顯示在螢幕上，東西靠到 15 公分內就嗶一聲。
+' 讀值：nearMm＝最近的東西有多遠（公釐）（0 ~ 1200 mm）；nearDir5＝最近的東西在哪個方向（-7 ~ +7（負＝左、正＝右、0 附近＝正前方；±8＝沒有東西））
+' ============================================================
+folder "prjs" "MBC_tof8_ex06"
+
+' TOF8 八方位雷射插 1 號孔，使用模式 5
+Sensor.SetMode(1, 5)
+LCD.Clear()
+
+' 清除螢幕
+LCD.Clear()
+' 一直重複
+While "True"
+  ' 第 1 行顯示最近的東西有幾公釐
+  LCD.Text(1, 0, 0, 1, "NEARMM " + Sensor.ReadRawValue(1, 0) + "      ")
+  ' 第 2 行顯示它在哪個方向（負＝左、正＝右、0＝正前方）
+  LCD.Text(1, 0, 16, 1, "DIR " + Sensor.ReadRawValue(1, 1) + "      ")
+  ' 如果最近的東西不到 150 公釐（15 公分）
+  If Sensor.ReadRawValue(1, 0) < 150 Then
+    ' 不到 15 公分：嗶一聲
+    Speaker.Tone(50, 1000, 100)
+    Speaker.Wait()
+  EndIf
+  ' 等 0.1 秒
+  Program.Delay(100)
+EndWhile
+```
+
+</details>
+
+**一步一步看懂程式：**
+
+1. 清除螢幕
+1. 一直重複
+   - 第 1 行顯示最近的東西有幾公釐
+   - 第 2 行顯示它在哪個方向（負＝左、正＝右、0＝正前方）
+   - 如果最近的東西不到 150 公釐（15 公分）
+      - 不到 15 公分：嗶一聲
+   - 等 0.1 秒
+
+**跑起來應該看到：** 手在感應器周圍移動，第 1 行的公釐數跟著變，第 2 行告訴你手在左邊（負）還是右邊（正）；手靠到 15 公分內 EV3 就一直嗶。
+
+**常見問題：**
+
+- **方向數字是 8 或 -8？** ±8 代表那個方向 120 公分內沒有東西，不是「最左」「最右」。
+- **數字一直是 0 或不會動？** 感應器韌體要 v4.0（2026-10）以上才有這個模式，舊韌體請先更新。
+- **EV3-G／Classroom 怎麼沒有這個範例？** 這個範例用的是新模式（2026-10 韌體 v4 起），EV3-G 和 Classroom 的紅外線積木讀不到，只有 Pybricks、EV3 MicroPython、clev3r 能用。
 
 ---
 

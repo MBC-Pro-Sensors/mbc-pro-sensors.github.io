@@ -1,0 +1,182 @@
+{
+  "_說明": "下載區打包清單（node _build/pack-downloads.mjs）。out = 網站內輸出路徑；src = 正本資料夾（絕對路徑可用 ${MBC} = 02_MBC產品開發）；include = 要包的檔案／資料夾（相對 src，省略 = 全部，*.bak*、__pycache__ 一律排除）；legacy = 既有舊檔（不重打包，只列在下載頁）；label = 下載頁顯示文字。 rename = zip 內改名對照（中文資料夾／檔名 → ASCII，避免跨平台解壓亂碼）。",
+  "items": [
+    {
+      "out": "downloads/MBC_EXP6_Pybricks_Lib_v2.zip",
+      "src": "${MBC}/05_馬達舵機擴充/01_SPIKE六路馬達擴充器/02_上位機函式庫與範例/pyBricks",
+      "include": [
+        "MBC_exp6_obj_Lib_v2.py",
+        "Exp6_objMode_Demo.py",
+        "EXP6 擴充板 _ pyBricks指令說明書.pdf",
+        "通用範例"
+      ],
+      "version": "2.0",
+      "firmware": "EXP6 v2",
+      "legacy": false,
+      "label": {
+        "zh": "SPIKE 6 路擴充器 EXP6：Pybricks 函式庫 v2＋範例",
+        "en": "EXP6 expander: Pybricks library v2 + examples"
+      },
+      "rename": {
+        "教育版": "SPIKE_Education",
+        "玩具版": "Robot_Inventor",
+        "通用範例": "examples",
+        "EXP6 擴充板 _ pyBricks指令說明書.pdf": "EXP6_Pybricks_Manual.pdf",
+        "EXP6 擴充板 _ 官方 SPIKE App 指令說明書.pdf": "EXP6_SPIKE_App_Manual.pdf",
+        "工程日誌_MINDSTORMS_ImportError_分析.md": "ENGINEERING_NOTE_MINDSTORMS_ImportError.md"
+      }
+    },
+    {
+      "out": "downloads/MBC_EXP6_Official_App_Lib_v2.zip",
+      "src": "${MBC}/05_馬達舵機擴充/01_SPIKE六路馬達擴充器/02_上位機函式庫與範例/官方APP",
+      "include": [
+        "MBC_exp6_SPIKE_App_Lib.py",
+        "教育版",
+        "玩具版",
+        "通用範例"
+      ],
+      "version": "2.0",
+      "firmware": "EXP6 v2",
+      "legacy": false,
+      "label": {
+        "zh": "SPIKE 6 路擴充器 EXP6：官方 SPIKE App 函式庫 v2＋範例",
+        "en": "EXP6 expander: official SPIKE App library v2 + examples"
+      },
+      "rename": {
+        "教育版": "SPIKE_Education",
+        "玩具版": "Robot_Inventor",
+        "通用範例": "examples",
+        "EXP6 擴充板 _ pyBricks指令說明書.pdf": "EXP6_Pybricks_Manual.pdf",
+        "EXP6 擴充板 _ 官方 SPIKE App 指令說明書.pdf": "EXP6_SPIKE_App_Manual.pdf",
+        "工程日誌_MINDSTORMS_ImportError_分析.md": "ENGINEERING_NOTE_MINDSTORMS_ImportError.md"
+      }
+    },
+    {
+      "out": "downloads/MBC_EXP6_Pybricks_Lib.zip",
+      "src": null,
+      "legacy": true,
+      "version": "1.x",
+      "firmware": "EXP6 v1",
+      "label": {
+        "zh": "EXP6 Pybricks 函式庫（舊版，v1 韌體）",
+        "en": "EXP6 Pybricks library (legacy, v1 firmware)"
+      }
+    },
+    {
+      "out": "downloads/MBC_EXP6_Official_App_Lib.zip",
+      "src": null,
+      "legacy": true,
+      "version": "1.x",
+      "firmware": "EXP6 v1",
+      "label": {
+        "zh": "EXP6 官方 SPIKE App 函式庫（舊版，v1 韌體）",
+        "en": "EXP6 official SPIKE App library (legacy, v1 firmware)"
+      }
+    },
+    {
+      "out": "downloads/MBC_Servo6_Pybricks_Lib.zip",
+      "src": null,
+      "legacy": true,
+      "version": "1.0",
+      "firmware": "Servo6",
+      "label": {
+        "zh": "SPIKE 6 路舵機擴充器 Servo6：Pybricks 函式庫",
+        "en": "Servo6 expander: Pybricks library"
+      }
+    },
+    {
+      "out": "downloads/MBC_Servo6_Official_App_Lib.zip",
+      "src": null,
+      "legacy": true,
+      "version": "1.0",
+      "firmware": "Servo6",
+      "label": {
+        "zh": "SPIKE 6 路舵機擴充器 Servo6：官方 SPIKE App 函式庫",
+        "en": "Servo6 expander: official SPIKE App library"
+      }
+    },
+    {
+      "out": "examples/line8/line8_pybricks_spike_v4.0.0.zip",
+      "src": "${MBC}/01_循線感應器/循行者8路/02_上位機函式庫與範例/pyBricks函式庫/For firmware 4.0.0",
+      "include": [
+        "MBC_line8_obj_Lib_v400.py",
+        "line8_block_native_v400.py",
+        "line8_block_with_lib_v400.py",
+        "line8_python_native_v400.py",
+        "line8_python_with_lib_v400.py"
+      ],
+      "version": "4.0.0",
+      "firmware": "Pybricks 4.0.0",
+      "legacy": false,
+      "label": {
+        "zh": "循行者 8 路：SPIKE Pybricks 函式庫與範例（韌體 4.0.0）",
+        "en": "Line Follower 8-ch: SPIKE Pybricks library + examples (firmware 4.0.0)"
+      },
+      "rename": {
+        "教育版": "SPIKE_Education",
+        "玩具版": "Robot_Inventor",
+        "通用範例": "examples",
+        "EXP6 擴充板 _ pyBricks指令說明書.pdf": "EXP6_Pybricks_Manual.pdf",
+        "EXP6 擴充板 _ 官方 SPIKE App 指令說明書.pdf": "EXP6_SPIKE_App_Manual.pdf",
+        "工程日誌_MINDSTORMS_ImportError_分析.md": "ENGINEERING_NOTE_MINDSTORMS_ImportError.md"
+      }
+    },
+    {
+      "out": "downloads/MBC_TOF8_Pybricks_Lib.zip",
+      "src": "${MBC}/04_雷射測距/02_八方位雷射/02_上位機函式庫與範例/pyBricks函式庫",
+      "include": [
+        "MBC_laser8_Lib.py",
+        "MBC_laser8_obj_Lib.py"
+      ],
+      "version": "1.0",
+      "firmware": "Pybricks",
+      "legacy": false,
+      "label": {
+        "zh": "測距者 8 路 TOF8：SPIKE Pybricks 函式庫",
+        "en": "Ranger 8-ch TOF8: SPIKE Pybricks library"
+      },
+      "rename": {
+        "教育版": "SPIKE_Education",
+        "玩具版": "Robot_Inventor",
+        "通用範例": "examples",
+        "EXP6 擴充板 _ pyBricks指令說明書.pdf": "EXP6_Pybricks_Manual.pdf",
+        "EXP6 擴充板 _ 官方 SPIKE App 指令說明書.pdf": "EXP6_SPIKE_App_Manual.pdf",
+        "工程日誌_MINDSTORMS_ImportError_分析.md": "ENGINEERING_NOTE_MINDSTORMS_ImportError.md"
+      }
+    },
+    {
+      "out": "downloads/MiniR4ColorSensorExt_LauMo_v2.zip",
+      "src": "${MBC}/80_上位機研究/MatrixMiniR4/MiniR4ColorSensorExt大通道版",
+      "include": [
+        "MiniR4ColorSensorExt.cpp",
+        "MiniR4ColorSensorExt.h"
+      ],
+      "version": "2.0",
+      "firmware": "MATRIX 大通道",
+      "legacy": false,
+      "label": {
+        "zh": "MATRIX Mini R4：LauMo 大通道函式庫（取代原廠 MiniR4ColorSensorExt 兩個檔）",
+        "en": "MATRIX Mini R4: LauMo big-channel library (replaces the stock MiniR4ColorSensorExt files)"
+      },
+      "rename": {
+        "教育版": "SPIKE_Education",
+        "玩具版": "Robot_Inventor",
+        "通用範例": "examples",
+        "EXP6 擴充板 _ pyBricks指令說明書.pdf": "EXP6_Pybricks_Manual.pdf",
+        "EXP6 擴充板 _ 官方 SPIKE App 指令說明書.pdf": "EXP6_SPIKE_App_Manual.pdf",
+        "工程日誌_MINDSTORMS_ImportError_分析.md": "ENGINEERING_NOTE_MINDSTORMS_ImportError.md"
+      }
+    },
+    {
+      "out": "downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext",
+      "src": null,
+      "legacy": true,
+      "version": "1.0.0",
+      "firmware": "mBlock v1（2026-10 前）",
+      "label": {
+        "zh": "mBlock 5 擴展 v1.0.0（舊版，搭配 2026-10 以前的韌體）",
+        "en": "mBlock 5 extension v1.0.0 (legacy, firmware before 2026-10)"
+      }
+    }
+  ]
+}

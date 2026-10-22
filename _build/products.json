@@ -82,6 +82,42 @@
           "/en/sensors/line8/arduino-i2c.md"
         ]
       ]
+    },
+    "name": {
+      "zh": "循行者 8 路 (Line8)",
+      "en": "Pathfinder 8-Way (Line8)"
+    },
+    "routes": {
+      "spike": {
+        "start": "/sensors/line8/spike-hub.md",
+        "ref": "/sensors/line8/reference.md",
+        "lib": "/sensors/line8/spike-pybricks.md"
+      },
+      "ev3": {
+        "start": "/sensors/line8/ev3-hub.md",
+        "ref": "/sensors/line8/reference.md",
+        "lib": "/sensors/line8/ev3-pybricks.md"
+      },
+      "arduino": {
+        "start": "/sensors/line8/arduino-examples.md",
+        "ref": "/sensors/line8/arduino-i2c.md",
+        "lib": "/sensors/line8/arduino-i2c.md"
+      },
+      "mblock": {
+        "start": "/sensors/line8/mblock-examples.md",
+        "ref": "/sensors/line8/mblock.md",
+        "lib": "/makeblock.md"
+      },
+      "matrix": {
+        "start": "/sensors/line8/matrix.md",
+        "ref": "/sensors/line8/matrix.md",
+        "lib": "/downloads.md"
+      },
+      "microbit": {
+        "start": "/sensors/line8/microbit-examples.md",
+        "ref": "/sensors/line8/microbit.md",
+        "lib": "https://github.com/contactmbcrobot/pxt-mbc-sensors"
+      }
     }
   },
   "line16": {
@@ -167,6 +203,42 @@
           "/en/sensors/line16/arduino-i2c.md"
         ]
       ]
+    },
+    "name": {
+      "zh": "循行者 16 路 (Line16)",
+      "en": "Pathfinder 16-Way (Line16)"
+    },
+    "routes": {
+      "spike": {
+        "start": "/sensors/line16/spike-hub.md",
+        "ref": "/sensors/line16/reference.md",
+        "lib": "/sensors/line16/spike-pybricks.md"
+      },
+      "ev3": {
+        "start": "/sensors/line16/ev3-hub.md",
+        "ref": "/sensors/line16/reference.md",
+        "lib": "/sensors/line16/ev3-pybricks.md"
+      },
+      "arduino": {
+        "start": "/sensors/line16/arduino-examples.md",
+        "ref": "/sensors/line16/arduino-i2c.md",
+        "lib": "/sensors/line16/arduino-i2c.md"
+      },
+      "mblock": {
+        "start": "/sensors/line16/mblock-examples.md",
+        "ref": "/sensors/line16/mblock.md",
+        "lib": "/makeblock.md"
+      },
+      "matrix": {
+        "start": "/sensors/line16/matrix.md",
+        "ref": "/sensors/line16/matrix.md",
+        "lib": "/downloads.md"
+      },
+      "microbit": {
+        "start": "/sensors/line16/microbit-examples.md",
+        "ref": "/sensors/line16/microbit.md",
+        "lib": "https://github.com/contactmbcrobot/pxt-mbc-sensors"
+      }
     }
   },
   "tof2": {
@@ -263,6 +335,42 @@
           "#🧩-supported-platforms"
         ]
       ]
+    },
+    "name": {
+      "zh": "測距者 2 路 (TOF2)",
+      "en": "Ranger 2-Way (TOF2)"
+    },
+    "routes": {
+      "spike": {
+        "start": "/sensors/tof2/index.md",
+        "ref": "/sensors/tof2/reference.md",
+        "lib": "/sensors/tof2/spike-examples.md"
+      },
+      "ev3": {
+        "start": "/sensors/tof2/index.md",
+        "ref": "/sensors/tof2/reference.md",
+        "lib": "/sensors/tof2/ev3-examples.md"
+      },
+      "arduino": {
+        "start": "/sensors/tof2/arduino-examples.md",
+        "ref": "/sensors/tof2/arduino-i2c.md",
+        "lib": "/sensors/tof2/arduino-i2c.md"
+      },
+      "mblock": {
+        "start": "/sensors/tof2/mblock-examples.md",
+        "ref": "/sensors/tof2/mblock.md",
+        "lib": "/makeblock.md"
+      },
+      "matrix": {
+        "start": "/sensors/tof2/matrix.md",
+        "ref": "/sensors/tof2/matrix.md",
+        "lib": "/downloads.md"
+      },
+      "microbit": {
+        "start": "/sensors/tof2/microbit-examples.md",
+        "ref": "/sensors/tof2/microbit.md",
+        "lib": "https://github.com/contactmbcrobot/pxt-mbc-sensors"
+      }
     }
   },
   "tof8": {
@@ -359,6 +467,42 @@
           "#∿-universal-i2c-registers-address-0x29"
         ]
       ]
+    },
+    "name": {
+      "zh": "測距者 8 路 (TOF8)",
+      "en": "Ranger 8-Way (TOF8)"
+    },
+    "routes": {
+      "spike": {
+        "start": "/sensors/tof8/index.md",
+        "ref": "/sensors/tof8/reference.md",
+        "lib": "/sensors/tof8/spike-examples.md"
+      },
+      "ev3": {
+        "start": "/sensors/tof8/index.md",
+        "ref": "/sensors/tof8/reference.md",
+        "lib": "/sensors/tof8/ev3-examples.md"
+      },
+      "arduino": {
+        "start": "/sensors/tof8/arduino-examples.md",
+        "ref": "/sensors/tof8/arduino-i2c.md",
+        "lib": "/sensors/tof8/arduino-i2c.md"
+      },
+      "mblock": {
+        "start": "/sensors/tof8/mblock-examples.md",
+        "ref": "/sensors/tof8/mblock.md",
+        "lib": "/makeblock.md"
+      },
+      "matrix": {
+        "start": "/sensors/tof8/matrix.md",
+        "ref": "/sensors/tof8/matrix.md",
+        "lib": "/downloads.md"
+      },
+      "microbit": {
+        "start": "/sensors/tof8/microbit-examples.md",
+        "ref": "/sensors/tof8/microbit.md",
+        "lib": "https://github.com/contactmbcrobot/pxt-mbc-sensors"
+      }
     }
   },
   "ps2": {
@@ -462,6 +606,42 @@
           "#∿-universal-i2c-registers-address-0x42"
         ]
       ]
+    },
+    "name": {
+      "zh": "掌控者 PS2 (PS2)",
+      "en": "Controller 2.4G (PS2)"
+    },
+    "routes": {
+      "spike": {
+        "start": "/sensors/ps2/index.md",
+        "ref": "/sensors/ps2/reference.md",
+        "lib": "/sensors/ps2/spike-examples.md"
+      },
+      "ev3": {
+        "start": "/sensors/ps2/index.md",
+        "ref": "/sensors/ps2/reference.md",
+        "lib": "/sensors/ps2/ev3-examples.md"
+      },
+      "arduino": {
+        "start": "/sensors/ps2/arduino-examples.md",
+        "ref": "/sensors/ps2/arduino-i2c.md",
+        "lib": "/sensors/ps2/arduino-i2c.md"
+      },
+      "mblock": {
+        "start": "/sensors/ps2/mblock-examples.md",
+        "ref": "/sensors/ps2/mblock.md",
+        "lib": "/makeblock.md"
+      },
+      "matrix": {
+        "start": "/sensors/ps2/matrix.md",
+        "ref": "/sensors/ps2/matrix.md",
+        "lib": "/downloads.md"
+      },
+      "microbit": {
+        "start": "/sensors/ps2/microbit-examples.md",
+        "ref": "/sensors/ps2/microbit.md",
+        "lib": "https://github.com/contactmbcrobot/pxt-mbc-sensors"
+      }
     }
   },
   "ps4": {
@@ -558,6 +738,42 @@
           "#∿-universal-i2c-registers-address-0x42"
         ]
       ]
+    },
+    "name": {
+      "zh": "掌控者 PS4/PS5",
+      "en": "Controller PS4/PS5"
+    },
+    "routes": {
+      "spike": {
+        "start": "/sensors/ps4/index.md",
+        "ref": "/sensors/ps4/reference.md",
+        "lib": "/sensors/ps4/spike-examples.md"
+      },
+      "ev3": {
+        "start": "/sensors/ps4/index.md",
+        "ref": "/sensors/ps4/reference.md",
+        "lib": "/sensors/ps4/ev3-examples.md"
+      },
+      "arduino": {
+        "start": "/sensors/ps4/arduino-examples.md",
+        "ref": "/sensors/ps4/arduino-i2c.md",
+        "lib": "/sensors/ps4/arduino-i2c.md"
+      },
+      "mblock": {
+        "start": "/sensors/ps4/mblock-examples.md",
+        "ref": "/sensors/ps4/mblock.md",
+        "lib": "/makeblock.md"
+      },
+      "matrix": {
+        "start": "/sensors/ps4/matrix.md",
+        "ref": "/sensors/ps4/matrix.md",
+        "lib": "/downloads.md"
+      },
+      "microbit": {
+        "start": "/sensors/ps4/microbit-examples.md",
+        "ref": "/sensors/ps4/microbit.md",
+        "lib": "https://github.com/contactmbcrobot/pxt-mbc-sensors"
+      }
     }
   },
   "esp32cam": {
@@ -655,6 +871,42 @@
           "#🧩-supported-platforms"
         ]
       ]
+    },
+    "name": {
+      "zh": "神攝手 ESP32CAM",
+      "en": "Sharpshooter Vision (ESP32CAM)"
+    },
+    "routes": {
+      "spike": {
+        "start": "/sensors/esp32cam/index.md",
+        "ref": "/sensors/esp32cam/reference.md",
+        "lib": "/sensors/esp32cam/spike-examples.md"
+      },
+      "ev3": {
+        "start": "/sensors/esp32cam/index.md",
+        "ref": "/sensors/esp32cam/reference.md",
+        "lib": "/sensors/esp32cam/ev3-examples.md"
+      },
+      "arduino": {
+        "start": "/sensors/esp32cam/arduino-examples.md",
+        "ref": "/sensors/esp32cam/arduino-i2c.md",
+        "lib": "/sensors/esp32cam/arduino-i2c.md"
+      },
+      "mblock": {
+        "start": "/sensors/esp32cam/mblock-examples.md",
+        "ref": "/sensors/esp32cam/mblock.md",
+        "lib": "/makeblock.md"
+      },
+      "matrix": {
+        "start": "/sensors/esp32cam/matrix.md",
+        "ref": "/sensors/esp32cam/matrix.md",
+        "lib": "/downloads.md"
+      },
+      "microbit": {
+        "start": "/sensors/esp32cam/microbit-examples.md",
+        "ref": "/sensors/esp32cam/microbit.md",
+        "lib": "https://github.com/contactmbcrobot/pxt-mbc-sensors"
+      }
     }
   },
   "exp6": {
@@ -751,6 +1003,26 @@
           "/en/sensors/exp6/arduino-i2c.md"
         ]
       ]
+    },
+    "name": {
+      "zh": "SPIKE 6 路擴充器 (EXP6)",
+      "en": "SPIKE 6-Way Expander (EXP6)"
+    },
+    "routes": {
+      "spike": {
+        "start": "/sensors/exp6/spike-official.md",
+        "ref": "/sensors/exp6/spike-pybricks.md",
+        "lib": "/sensors/exp6/spike-pybricks.md"
+      },
+      "ev3": false,
+      "arduino": {
+        "start": "/sensors/exp6/arduino-examples.md",
+        "ref": "/sensors/exp6/arduino-examples.md",
+        "lib": "/sensors/exp6/arduino-examples.md"
+      },
+      "mblock": false,
+      "matrix": false,
+      "microbit": false
     }
   },
   "imu": {
@@ -834,6 +1106,38 @@
           "#∿-universal-i2c-registers-address-0x6a"
         ]
       ]
+    },
+    "name": {
+      "zh": "陀螺儀 IMU 九軸",
+      "en": "IMU 9-Axis Gyro"
+    },
+    "routes": {
+      "spike": false,
+      "ev3": {
+        "start": "/sensors/imu/index.md",
+        "ref": "/sensors/imu/reference.md",
+        "lib": "/sensors/imu/ev3-examples.md"
+      },
+      "arduino": {
+        "start": "/sensors/imu/arduino-examples.md",
+        "ref": "/sensors/imu/arduino-i2c.md",
+        "lib": "/sensors/imu/arduino-i2c.md"
+      },
+      "mblock": {
+        "start": "/sensors/imu/mblock-examples.md",
+        "ref": "/sensors/imu/mblock.md",
+        "lib": "/makeblock.md"
+      },
+      "matrix": {
+        "start": "/sensors/imu/matrix.md",
+        "ref": "/sensors/imu/matrix.md",
+        "lib": "/downloads.md"
+      },
+      "microbit": {
+        "start": "/sensors/imu/microbit-examples.md",
+        "ref": "/sensors/imu/microbit.md",
+        "lib": "https://github.com/contactmbcrobot/pxt-mbc-sensors"
+      }
     }
   },
   "servo6": {
@@ -917,6 +1221,22 @@
           "/en/sensors/servo6/spike-pybricks.md"
         ]
       ]
+    },
+    "name": {
+      "zh": "SPIKE 6 路舵機擴充器 (Servo6)",
+      "en": "SPIKE 6-Port Servo Expander (Servo6)"
+    },
+    "routes": {
+      "spike": {
+        "start": "/sensors/servo6/spike-official.md",
+        "ref": "/sensors/servo6/spike-pybricks.md",
+        "lib": "/sensors/servo6/spike-pybricks.md"
+      },
+      "ev3": false,
+      "arduino": false,
+      "mblock": false,
+      "matrix": false,
+      "microbit": false
     }
   },
   "ov3660": {
@@ -992,6 +1312,18 @@
           "#🧩-planned-platforms"
         ]
       ]
+    },
+    "name": {
+      "zh": "遠距離顏色感應器 OV3660",
+      "en": "Long-Range Colour Sensor OV3660"
+    },
+    "routes": {
+      "spike": false,
+      "ev3": false,
+      "arduino": false,
+      "mblock": false,
+      "matrix": false,
+      "microbit": false
     }
   }
 }

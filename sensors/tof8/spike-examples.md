@@ -17,6 +17,9 @@
 > - 樂高官方 App 這裡用的是**教育版（SPIKE 3）**。家用版（Robot Inventor）讀到的格式不一樣，這頁的官方 App 範例不適用。
 > - **MBC 積木網站和 Pybricks 寫起來比較短**：感應器自己會算好「最近的方向、距離」「最空曠的方向」。官方 App 沒有這些積木，要自己用積木一路一路比，所以官方 App 的範例會比較長。
 
+> [!NOTE]
+> 最後的**範例 6** 是進階加碼，**只有 Pybricks 版**：它用的數值放在感應器 2026-10 以後韌體的新模式裡，樂高官方 App 和 MBC 積木網站的積木讀不到。
+
 ## 開始之前：認識測距者 8 路
 
 測距者 8 路有 **8 顆雷射**，排成半圓，從車子的正左邊、正前方一直到正右邊。不用校準，插上去就能用；**開機後要等 2～4 秒**讓 8 顆雷射準備好（這段時間全部讀到 120）。
@@ -447,6 +450,75 @@ while True:
 - **轉彎太猛／太慢？** → 改「× 15」（官方 App 是「× 10」）那個數字：大一點轉得快、小一點轉得慢。
 - **跟著牆走，不跟手？** → 旁邊的東西比你的手還近。在空曠的地方玩，手要是最近的東西。
 - **官方 App 版不會後退？** → 請確認「start moving（開始移動）」積木的方向是「往後」的箭頭。
+
+---
+
+## 範例 6（進階）：最近的東西有幾毫米
+
+> [!NOTE]
+> **這個範例只有 Pybricks 版。** 它用的「毫米距離」放在感應器的模式 6，樂高官方 App 和 MBC 積木網站讀不到（它們只讀公分）。感應器韌體要是 **2026-10 以後**的版本，舊韌體讀到的會是別的數字。 程式碼就是範例，不需要截圖。
+
+**這個範例會做什麼**：主機螢幕捲動顯示**最近的東西有幾毫米**（例如 300），燈號分三段：**10 公分以內紅燈、10～30 公分黃燈、更遠綠燈**；四周沒東西顯示 ✕。電腦畫面同時印出它在哪個方向、正前方有幾毫米。
+
+**要準備什麼**：同範例 1（主機＋測距者 8 路＋一隻手或一本書）。
+
+**怎麼接**：測距者 8 路插 **C 孔**。
+
+**下載程式**
+
+| Pybricks |
+|---|
+| [ex06_nearest_mm.py](/examples/tof8/spike_beginner/pybricks/ex06_nearest_mm.py)＋[函式庫](/examples/tof8/spike_beginner/pybricks/MBC_laser8_obj_Lib.py) |
+
+<details>
+<summary>🐍 Pybricks 程式碼</summary>
+
+```python
+# 測距者 8 路 範例 6（進階）：最近的東西有幾毫米（螢幕捲動顯示毫米、燈號分三段）
+# 接線：測距者 8 路 → C 埠
+# 只有 Pybricks 版：毫米距離放在感應器的「模式 6」，官方 App 和積木網站讀不到；感應器韌體要 2026-10 以後
+from pybricks.hubs import PrimeHub
+from pybricks.parameters import Color, Icon
+from pybricks.tools import wait
+from MBC_laser8_obj_Lib import MBC_LASER8
+
+hub = PrimeHub()
+laser8 = MBC_LASER8(3)                       # 3 = C 埠
+
+while True:
+    mm = laser8.nearest_mm()                 # 最近的東西有幾毫米（0~1200；1200 = 四周沒東西）
+    direction = laser8.nearest_dir()         # 它在哪個方向：-8 ~ 8（0 = 正前方，負 = 左）
+    front = laser8.front_mm()                # 正前方（第 4、5 顆平均）有幾毫米
+    if mm >= 1200:                           # 四周沒東西
+        hub.display.icon(Icon.FALSE)
+        hub.light.on(Color.GREEN)
+    else:
+        hub.display.text(str(mm))            # 螢幕捲動顯示毫米，例如「300」
+        if mm < 100:                         # 10 公分以內：紅燈
+            hub.light.on(Color.RED)
+        elif mm < 300:                       # 10~30 公分：黃燈
+            hub.light.on(Color.YELLOW)
+        else:                                # 更遠：綠燈
+            hub.light.on(Color.GREEN)
+    print('最近', mm, 'mm  方向', direction, '  正前方', front, 'mm')
+    wait(200)
+```
+
+</details>
+
+**一步一步看懂程式**
+1. `laser8.nearest_mm()`：最近的東西有幾**毫米**（0～1200；1200＝四周沒東西），比公分細 10 倍。
+2. `laser8.nearest_dir()`：它在哪個方向（-8～8，0＝正前方，負＝左），跟範例 1 的方向一樣。
+3. `laser8.front_mm()`：正前方（第 4、5 顆平均）有幾毫米，給「只看前面」的程式用。
+4. **如果** ≥ 1200 → 顯示 ✕、綠燈；**否則**顯示毫米，再依 100、300 分成紅、黃、綠。
+5. 這三個數字一起讀只讀一次硬體；函式庫還有 `laser8.device_id()`、`laser8.firmware_version()`。
+
+**跑起來應該看到什麼**：手放在左邊 30 公分：螢幕捲「300」、綠燈，電腦印「方向 -5」；手移到正前方 25 公分：「250」、黃燈、「方向 0」；手貼近到 8 公分：「80」、紅燈。
+
+**常見問題**
+- **毫米值跳來跳去？** → 正常，雷射每次量會差 10～20 mm；要穩定就多量幾次取平均。
+- **想同時用公分和毫米？** → 可以，但不要在同一個迴圈裡混著用：每次切換模式感應器要多花幾十 ms。
+- **一直顯示 ✕？** → 四周 120 公分內沒東西；或感應器韌體太舊（2026-10 以前）沒有毫米模式，請更新韌體。
 
 ---
 

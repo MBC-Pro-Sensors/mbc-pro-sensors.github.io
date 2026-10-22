@@ -1,183 +1,187 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-# ∿ 通用 I2C 版本開發指南
+<!-- 本頁由 _build/gen-reference.mjs 從 _build/protocol/line16.json 產生（arduino-i2c），請勿手改；改內容請改 JSON 後重跑 node _build/gen-reference.mjs -->
+# 循行者 16 路 × Arduino I2C（通用 I2C 版）
 
+[🔙 回到循行者 16 路產品頁](/sensors/line16/index.md)
 
-[🔙 回到 16路循線器首頁](/sensors/line16/index.md)
+循行者 16 路通用 I2C 版用 **MBC I2C 協議 v2**：寫一個編號、讀 2 byte 就是一個值（int16 小端），連號的值可以一次讀完。本頁是這款產品的值表、命令表與接線；共用規則（F0~F5 版本與狀態、F8 換位址、EF 重開機）在 [通用 I2C 協議](/i2c-protocol.md)。
 
-<div style="display: flex; align-items: center; justify-content: center; gap: 30px; margin: 30px 0; flex-wrap: wrap;">
-  <div style="background: rgba(10,186,181,0.03); border: 1px solid rgba(10,186,181,0.25); border-radius: 12px; padding: 25px 45px; display: flex; align-items: center; gap: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-    <img src="/images/sensors/line16/line16-product-arduino.webp" alt="循行者16路感應器 (通用 I2C 版)" style="max-height: 144px; object-fit: contain; filter: drop-shadow(0 0 20px rgba(10,186,181,0.75)) drop-shadow(0 0 45px rgba(10,186,181,0.45));" />
-    <span style="font-size: 2.5rem; color: #777; font-weight: 300; line-height: 1;">+</span>
-    <div style="display: flex; gap: 15px; align-items: center;">
-      <svg viewBox="0 0 100 40" style="height: 60px; fill: none; stroke: #00d2ff; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 10px rgba(0, 210, 255, 0.4));">
-        <path d="M 5,25 H 25 V 5 H 45 V 35 H 65 V 5 H 85 V 35 H 95" />
-      </svg>
-    </div>
-  </div>
-</div>
-
-歡迎來到專業硬體開發專區！MBC 16 路循線感應器除了完美支援樂高生態系，也為 **Arduino、ESP32、樹莓派以及各式自主開發主控板** 開發者提供了開放式的標準 I2C 通訊介面。
-本感應器讀寫暫存器完全分離，採無衝突設計，非常適合用於開發高速循線機器人或上位機視覺化儀表板。
-
----
-
-> [!IMPORTANT]
-> **本頁為新版 v1 協議（位址 `0x16`）。** 所有 MBC 產品共用的讀寫規則、狀態暫存器與 Arduino 共用函式，請先看 [MBC 通用 I2C 協議](/i2c-protocol.md)。
+<p class="chips"><a class="chip chip-spike" href="/sensors/line16/spike-hub.md">SPIKE</a><a class="chip chip-ev3" href="/sensors/line16/ev3-hub.md">EV3</a><a class="chip chip-arduino current" href="/sensors/line16/arduino-i2c.md">Arduino I2C</a><a class="chip chip-mblock" href="/sensors/line16/mblock.md">mBlock</a><a class="chip chip-matrix" href="/sensors/line16/matrix.md">MATRIX</a><a class="chip chip-microbit" href="/sensors/line16/microbit.md">micro:bit</a></p>
 
 > [!TIP]
-> **第一次用、不太會寫程式？** 直接看 [🧪 循行者 16 路 × Arduino 範例](/sensors/line16/arduino-examples.md)：6 個可以直接複製上傳的範例，每一行都有中文說明。
+> **不太會寫程式？** 直接看 [Arduino 範例](/sensors/line16/arduino-examples.md)，每支都能複製上傳。每個值的六平台讀法在 [指令參考](/sensors/line16/reference.md)。
 
-## 📡 基本資訊
+## 基本資訊
 
 | 項目 | 內容 |
 | :--- | :--- |
-| I2C 位址 | `0x16`（循線系列共用） |
-| 型號字串 `0x07` | `LINE16` |
-| 款式 `0x06` | `[16, PCB 版次]`（第 1 byte = 通道數） |
-| 通道順序 | **CH0 = 最左邊**，CH15 = 最右邊（感應器裝在車上、站在車子後面往前看） |
-| 線位置方向 | **負數 = 線在左邊、正數 = 線在右邊**，0 = 正中央 |
+| I2C 位址 | `0x16`（可用 F8 換） |
+| F0 裝置 ID | 低 byte `0x16`、高 byte `16` |
+| 型號 | `LINE16` |
+| 協議版本 F1 | `2` |
+| 速度 | 100 kHz（建議）／400 kHz；寫完編號等 2 ms 再讀 |
+| 讀法 | 主機寫 [編號] → 等 2 ms → 讀 2×k byte（k≤16）= 從該編號起連續 k 個 int16 小端；空號回 -32768 |
+| 快照 | 每 10 ms 更新，一次讀多個值保證同一瞬間 |
 
-## 1️⃣ 循線結果（最常用）
+## 接線
 
-| 暫存器 | 方向 | 長度 | 內容 |
-| :---: | :---: | :---: | :--- |
-| `0x10` | W | 1 | 循線目標：`0` = 黑線、`1` = 白線（重開機後回到按鈕設定） |
-| `0x11` | R | 7 | **循線合併包**（= `0x12` ~ `0x17`，一次讀完最方便） |
-| `0x12` | R | 1 | 線位置 int8：看得到線時 `-15` ~ `+15`。丟線時保持最後的值；若丟線前 200 ms 內線碰過最邊緣，會變成 `±16`（線往那一邊跑掉）。判斷丟線請用 `0x15` = 0 |
-| `0x13` | R | 1 | **高解析位置** int8：`-100` ~ `+100`（最適合 PID 控制）。丟線時保持最後的值 |
-| `0x14` | R | 1 | 線寬：同時偵測到線的通道數 |
-| `0x15` | R | 1 | 線群組數：`0` = 丟線、`1` = 單線、`2` 以上 = 分岔／十字路口 |
-| `0x16` | R | 2 | 二值化圖 uint16：bit i = CH i 在線上（白線模式時 bit = 1 代表看到白） |
-| `0x17` | R | 1 | 最後碰到的邊緣 int8：`-16` = 左邊緣、`+16` = 右邊緣（看得到線時也會更新；丟線時用來判斷往哪邊找）；開機後還沒碰過邊緣時 = 0 |
+<figure class="ref-fig"><img src="/images/figures/line16/wiring-uno.svg" alt="循行者 16 路 × Arduino UNO" loading="lazy"></figure>
 
-## 2️⃣ 校準
+| 感應器 | Arduino UNO / Nano | Arduino R4 | ESP32 |
+| :--- | :--- | :--- | :--- |
+| SDA | A4 | SDA | GPIO 21 |
+| SCL | A5 | SCL | GPIO 22 |
+| 5V | 5V | 5V | 5V |
+| GND | GND | GND | GND |
 
-| 暫存器 | 方向 | 長度 | 內容 |
-| :---: | :---: | :---: | :--- |
-| `0x20` | W | 1 | `1` = 5 秒動態校準（期間左右移動車體掃過黑線）、`2` = 目前讀值記為白、`3` = 目前讀值記為黑（`2`、`3` 只取樣約 50 ms、只更新白或黑其中一邊；建議用 `1`）。結果存入 EEPROM。校準中（`0x32` bit2 = 1）送出的新校準命令會被忽略 |
-| `0x21` | R | 2 | 校準合併包（= `0x22` ~ `0x23`） |
-| `0x22` | RW | 1 | 二值化閾值 `1` ~ `99`（預設 50；重開機回到預設） |
-| `0x23` | R | 1 | 校準完成次數（每完成一次 +1，用來確認校準已執行完） |
+5 V 主機可直接接，不需準位轉換；同一組 SDA／SCL 上位址相同的產品不能同時接（用 F8 先換位址）。
 
-## 3️⃣ 狀態旗標 `0x32`
+## 值表
 
-| 位元 | 內容 |
-| :---: | :--- |
-| bit0 | 就緒 |
-| bit1 | 白線模式（0 = 黑線） |
-| bit2 | 校準中（5 秒校準期間更新序號 `0x33` 會停住，屬正常） |
-| bit3 | 丟線 |
-| bit4 | 分岔（群組數 ≥ 2） |
+每個編號讀回一個 int16；點編號看六平台讀法與示意圖。
 
-## 🔬 各通道數值
+| 編號 | 值 | 範圍 | 說明 |
+| :--- | :--- | :--- | :--- |
+| [`01`](/sensors/line16/reference.md#v01) | 線位置 `linePos` | -16~+16 | 線在哪一路：−16（最左）~+16（最右），0 = 正中間；站在車後往前看，負 = 線在左（平常 ±15，±16 只在最外側掉線後 200 ms 內） |
+| [`02`](/sensors/line16/reference.md#v02) | 細位置 `linePosFine` | -100~+100 | 線位置的細分：−100 ~ +100，0 = 正中間，負 = 線在左（與線位置同號） |
+| [`03`](/sensors/line16/reference.md#v03) | 線寬 `lineWidth` | 0~16 路 | 壓到線的路數 0~16，0 = 找不到線 |
+| [`04`](/sensors/line16/reference.md#v04) | 線段數 `groupCount` | 0~8 | 看到幾段線：0 丟線、1 一條線、2 以上 = 分岔／十字 |
+| [`05`](/sensors/line16/reference.md#v05) | 壓線位元圖 `bitmap` | 0~65535 bit | bit0 = 第 1 路（最左）… bit15 = 第 16 路，1 = 那一路在線上 |
+| [`06`](/sensors/line16/reference.md#v06) | 最後離線方向 `lastDir` | -16~+16 | 丟線前線最後在哪一側：−16 ~ +16（負 = 左），找回線後維持最後一次 |
+| [`07`](/sensors/line16/reference.md#v07) | 二值化門檻 `threshold` | 1~99 | 判斷「在線上」的光值門檻 1~99，預設 50；用 E4 改 |
+| [`08`](/sensors/line16/reference.md#v08) | 校準完成次數 `calibCount` | 0~255 次 | 開機後完成校準的次數（按鈕校準也算）；16 路大通道尾段鎖住為 0，不進大通道 |
+| [`10~1F`](/sensors/line16/reference.md#v10) | 第 1~16 路光值 `light` | 0~100 | 第 1~16 路校準後光值 0~100（第 1 路最左）；編號 10~1F |
 
-| 暫存器 | 方向 | 長度 | 內容 |
-| :---: | :---: | :---: | :--- |
-| `0x40` ~ `0x4F` | R | 1 | 單一通道校準後數值 `0` ~ `100`（`0x40` + 通道號） |
-| `0x50` | R | 16 | 全部通道校準後數值 `0` ~ `100` |
-| `0x51` | R | 16 | 白色參考值（EEPROM） |
-| `0x52` | R | 16 | 黑色參考值（EEPROM） |
-| `0x53` | R | 16 | 原始 ADC 值（8-bit） |
+## 寫入命令
 
----
+| 編號 | 命令 | 參數 | 說明 |
+| :--- | :--- | :--- | :--- |
+| [`E0`](/sensors/line16/reference.md#ce0) | 切黑線 `blackLine` | — | 追黑線（預設） |
+| [`E1`](/sensors/line16/reference.md#ce1) | 切白線 `whiteLine` | — | 追白線（F3 b1 = 1） |
+| [`E2`](/sensors/line16/reference.md#ce2) | 黑色校準 `calibBlack` | — | 把目前讀值記為黑（感應器壓在黑線上），約 50 ms；寫入 EEPROM（執行中 F3 bit2 = 1） |
+| [`E3`](/sensors/line16/reference.md#ce3) | 白色校準 `calibWhite` | — | 把目前讀值記為白（感應器壓在白底上），約 50 ms；寫入 EEPROM（執行中 F3 bit2 = 1） |
+| [`E4`](/sensors/line16/reference.md#ce4) | 設定門檻 `setThreshold` | 門檻 1~99 | 二值化門檻 1~99（RAM，重開機回預設 50） |
+| [`E7`](/sensors/line16/reference.md#ce7) | 5 秒動態校準 `calibAuto` | — | 5 秒內把感應器在黑線與白底上來回掃，取極值當黑白參考（共識 B-12，= v1 的 0x20=0x01）；期間 F3 b2 = 1（執行中 F3 bit2 = 1） |
 
-## 💻 Arduino 範例：讀取循線結果
+## 狀態旗標 F3
+
+| bit | 名稱 | 說明 |
+| :--- | :--- | :--- |
+| b0 | 就緒 (`ready`) | 恆 1 |
+| b1 | 白線模式 (`whiteMode`) | 1 = 正在追白線 |
+| b2 | 校準中 (`calibrating`) | E2／E3／E7 執行中；此時拒收新的校準命令 |
+| b3 | 丟線 (`lost`) | 線段數 = 0 |
+| b4 | 分岔 (`fork`) | 線段數 ≥ 2 |
+
+## 共用暫存器
+
+| 編號 | 名稱 | 說明 |
+| :--- | :--- | :--- |
+| [`F0`](/i2c-protocol.md#rf0) | 裝置 ID | 低 byte = 出廠 I2C 位址（換位址後不變），高 byte = hw[0]（通道數／顆數／類別） |
+| [`F1`](/i2c-protocol.md#rf1) | 協議版本 | 本版 = 2（SPIKE 模式 8 v[1]、EV3 ID 封包同一個數字） |
+| [`F2`](/i2c-protocol.md#rf2) | 韌體版本 | 主版×100 + 次版（例 102 = 1.2） |
+| [`F3`](/i2c-protocol.md#rf3) | 狀態旗標 | b0 就緒，其餘各產品定義（見各產品 flags）；MATRIX 大通道 byte 24 同一個 byte |
+| [`F4`](/i2c-protocol.md#rf4) | 更新序號 | 每 10 ms 快照 +1，0~255 循環（2.56 秒一圈，不能拿來偵測重開機；不動 = 模組忙） |
+| [`F5`](/i2c-protocol.md#rf5) | 開機秒數 | 開機後秒數，到 32767 停住（約 9 小時）；數字變小 = 重開機過 |
+| [`F8`](/i2c-protocol.md#rf8) | 換 I2C 位址 | [F8][新位址 0x08~0x77][新位址取反]，存 EEPROM，重開機後生效；[F8][0x00][0xFF] = 回出廠位址（共識 B-5） |
+| [`EF`](/i2c-protocol.md#ref) | 重新開機 | [EF][0xA5]；mBlock 先回 ACK 再重開 |
+
+## 單檔小幫手函式
+
+每支範例底部都貼這一段，不需要安裝函式庫：
 
 ```cpp
 #include <Wire.h>
 
-const uint8_t LINE_ADDR = 0x16;
+const int16_t MBC_NONE = -32768;   // 讀不到／空號
 
-bool iicRead(uint8_t addr, uint8_t reg, uint8_t *buf, uint8_t n) {
+// 從編號 id 起連續讀 k 個值（k ≤ 16），int16 小端
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
   Wire.beginTransmission(addr);
-  Wire.write(reg);
+  Wire.write(id);
   if (Wire.endTransmission() != 0) return false;
-  if (Wire.requestFrom(addr, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                                        // 一律等 2 ms（ESP32 產品不能時脈延展）
+  if (Wire.requestFrom(addr, (uint8_t)(k * 2)) != (uint8_t)(k * 2)) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint8_t lo = Wire.read(), hi = Wire.read();
+    out[i] = (int16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-void iicWrite(uint8_t addr, uint8_t reg, uint8_t v) {
+// 讀 1 個值；讀不到回 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 寫入命令（0~3 個參數）
+void mbcWrite(uint8_t addr, uint8_t id, const uint8_t *args, uint8_t n) {
   Wire.beginTransmission(addr);
-  Wire.write(reg);
-  Wire.write(v);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(args[i]);
   Wire.endTransmission();
 }
+void mbcWrite(uint8_t addr, uint8_t id) { mbcWrite(addr, id, nullptr, 0); }
+void mbcWrite(uint8_t addr, uint8_t id, uint8_t a) { mbcWrite(addr, id, &a, 1); }
+void mbcWrite(uint8_t addr, uint8_t id, uint8_t a, uint8_t b) { uint8_t p[2] = {a, b}; mbcWrite(addr, id, p, 2); }
+void mbcWrite(uint8_t addr, uint8_t id, uint8_t a, uint8_t b, uint8_t c) { uint8_t p[3] = {a, b, c}; mbcWrite(addr, id, p, 3); }
+
+// 等模組就緒（F3 bit0 = 1），最多 ms 毫秒
+bool mbcWaitReady(uint8_t addr, unsigned long ms) {
+  unsigned long t0 = millis();
+  while (millis() - t0 < ms) {
+    int16_t st = mbcRead(addr, 0xF3);
+    if (st != MBC_NONE && (st & 1)) return true;
+    delay(20);
+  }
+  return false;
+}
+```
+
+## 範例：整張值表逐行印
+
+```cpp
+const uint8_t ADDR = 0x16;
 
 void setup() {
   Serial.begin(115200);
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
-  Wire.setWireTimeout(25000, true);  // AVR：感應器沒回應時不會卡死
+  Wire.setWireTimeout(25000, true);   // AVR：模組沒回應時不會卡死
 #endif
-
-  // 等感應器就緒（0x32 bit0 = 1），最多 1 秒
-  uint8_t flags = 0;
-  for (uint8_t t = 0; t < 20 && !(iicRead(LINE_ADDR, 0x32, &flags, 1) && (flags & 0x01)); t++) delay(50);
-
-  iicWrite(LINE_ADDR, 0x10, 0);     // 0 = 循黑線、1 = 循白線
+  if (!mbcWaitReady(ADDR, 2000)) Serial.println("找不到模組，請檢查接線與位址");
+  Serial.print("ID 0x"); Serial.println(mbcRead(ADDR, 0xF0), HEX);   // 低 byte 位址、高 byte hw[0]
+  Serial.print("FW ");    Serial.println(mbcRead(ADDR, 0xF2));
 }
 
 void loop() {
-  uint8_t d[7];
-  if (iicRead(LINE_ADDR, 0x11, d, 7)) {
-    int8_t   pos    = (int8_t)d[0];        // -15 ~ +15（丟線時可能是 ±16）
-    int8_t   posHi  = (int8_t)d[1];        // -100 ~ +100，PID 用這個
-    uint8_t  width  = d[2];                // 線寬
-    uint8_t  groups = d[3];                // 0 丟線 / 1 單線 / 2+ 分岔
-    uint16_t bin    = ((uint16_t)d[4] << 8) | d[5];  // 每個 bit 一個通道
-
-    Serial.print("位置 ");     Serial.print(pos);
-    Serial.print("  高解析 "); Serial.print(posHi);
-    Serial.print("  線寬 ");   Serial.print(width);
-    Serial.print("  群組 ");   Serial.print(groups);
-    Serial.print("  二值 ");   Serial.println(bin, BIN);
-  }
-  delay(10);
-}
-```
-
-### PID 循線的起點
-
-```cpp
-// posHi：負 = 線在左、正 = 線在右。線在右邊時要右轉 → 左輪加速、右輪減速
-float Kp = 0.6;
-int base = 120;                        // 基本速度（依你的馬達驅動調整）
-int turn = Kp * posHi;
-int leftSpeed  = base + turn;
-int rightSpeed = base - turn;
-```
-
-### 用程式觸發校準
-
-```cpp
-uint8_t before[2] = {0}, after[2] = {0};
-iicRead(LINE_ADDR, 0x21, before, 2);   // [閾值, 校準完成次數]
-iicWrite(LINE_ADDR, 0x20, 1);          // 開始 5 秒動態校準：這段時間左右移動車體掃過黑線
-unsigned long t0 = millis();
-do {
+  Serial.print("linePos: "); Serial.println(mbcRead(ADDR, 0x01));   // 線位置
+  Serial.print("linePosFine: "); Serial.println(mbcRead(ADDR, 0x02));   // 細位置
+  Serial.print("lineWidth: "); Serial.println(mbcRead(ADDR, 0x03));   // 線寬
+  Serial.print("groupCount: "); Serial.println(mbcRead(ADDR, 0x04));   // 線段數
+  Serial.print("bitmap: "); Serial.println(mbcRead(ADDR, 0x05));   // 壓線位元圖
+  Serial.print("lastDir: "); Serial.println(mbcRead(ADDR, 0x06));   // 最後離線方向
+  Serial.print("threshold: "); Serial.println(mbcRead(ADDR, 0x07));   // 二值化門檻
+  Serial.print("calibCount: "); Serial.println(mbcRead(ADDR, 0x08));   // 校準完成次數
+  { int16_t a[16]; mbcReadMany(ADDR, 0x10, 16, a); Serial.print("light: "); for (uint8_t i = 0; i < 16; i++) { Serial.print(a[i]); Serial.print(' '); } Serial.println(); }
+  Serial.println();
   delay(200);
-  iicRead(LINE_ADDR, 0x21, after, 2);
-} while (after[1] == before[1] && millis() - t0 < 7000);   // 次數 +1 = 校準完成；最多等 7 秒
+}
+
+// 下面貼上「單檔小幫手函式」
 ```
 
-<br>
+## 本頁依據與假設
 
-!!! success "🚀 想要學更厲害的循線控制方法嗎？"
-可以找這幾位厲害的教練上課唷！他們有非常豐富的比賽與教學經驗，保證讓你收穫滿滿～ 💯
+本頁由 `_build/gen-reference.mjs` 從 `_build/protocol/line16.json`（單一真相來源，轉錄自 2026-10-21 協定定案）產生。
 
-<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 15px; margin-bottom: 30px;">
-<div style="flex: 1; min-width: 250px; max-width: 320px; display: flex; flex-direction: column; align-items: center;">
-<h4 style="margin: 0 0 10px 0; text-align: center;">🏆 <a href="https://www.youtube.com/@LegoLauXiao" target="_blank" style="color: inherit; text-decoration: none;">LegoLauXiao 教練</a></h4>
-<div style="width: 100%; aspect-ratio: 9/16; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,210,255,0.2); box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
-<iframe src="https://www.youtube.com/embed/WgacdWLatbk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="width: 100%; height: 100%; border: none;"></iframe>
-</div>
-</div>
-<div style="flex: 1; min-width: 250px; max-width: 320px; display: flex; flex-direction: column; align-items: center;">
-<h4 style="margin: 0 0 10px 0; text-align: center;">🏆 <a href="https://www.youtube.com/@legolaumo" target="_blank" style="color: inherit; text-decoration: none;">legolaumo 教練</a></h4>
-<div style="width: 100%; aspect-ratio: 9/16; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,210,255,0.2); box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
-<iframe src="https://www.youtube.com/embed/T9bcndBNQvQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="width: 100%; height: 100%; border: none;"></iframe>
-</div>
-</div>
-</div>
-
+- B-11：細位置 02 與線位置 01 同號（負 = 左）；韌體 F16:1290 註解寫反，程式碼同號（IR:11 為準）。
+- B-12：E7 五秒動態校準補回（v1 的 0x20=0x01），定案表沒列。
+- MATRIX 大通道已流出：[0..18] 與尾段 24~28 鎖住維持 0（common.json lockedTail0），所以 F3、F1/F2 次數、ID、hw[0]、08 校準次數都不進大通道；只追加 [19..20] 位元圖 u16 小端、[21] 線段數（MATRIX 定案 §4）。0x22 命令 4~12 全部不動（11 = 0、12 = ((位置+16)>>1)×10 + (線寬>>1)，schema 不收 11/12 所以沒寫進 ch22）。
+- EV3：模式 0~2 鎖住；模式 3 原本不送 → 16 bit 位元圖；模式 4 原本不送 → 同模式 2；模式 5 ID 格式 B（共用函式）。
+- SPIKE：0/5/7/9 鎖住，1~4、6 維持不動；教育版模式 0 的 16 路光值是 2-bit（玩具版 1-bit），跟 8 路的 4-bit 不同；byte 8~15 補 0（#65 已改，使用者保留）；模式 9 排法照盤點（四路 4-bit 一個 int16，v6 = 位元圖）；模式 8 v[0] 改 ID|hw[0]<<8。
+- 線段數 04 範圍：定案沒寫，16 路最多 8 段（交錯壓線），採 0~8。
+- mBlock 舊版：MBC_MBLOCK_LEGACY=1 時逐 byte 同 2026-10-21 統一後韌體（0x01 位置、0x02 線寬、n<<4|03 反向兩路壓一 byte、0x07 細位置 0~200），0x0B 回 1（B-1）。
+- Flash：C031 硬體鎖 28 KB，I2C 版餘 848 B；不夠時照 B-17 順序瘦身，JSON 不受影響。
+- 接線表的腳位以各主機板常見預設為準（ESP32 可用 `Wire.begin(sda, scl)` 改）。

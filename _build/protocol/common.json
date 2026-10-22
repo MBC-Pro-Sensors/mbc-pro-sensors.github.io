@@ -1,0 +1,38 @@
+{
+  "_說明": "所有產品共用的 I2C v2／mBlock v2 暫存器與命令（I2C欄位定案 §2、mBlock欄位定案「共用編號」、共識 #1~#7）。協議版本 2。",
+  "protoVer": 2,
+  "i2c": {
+    "read": "主機寫 [編號] → 等 2 ms → 讀 2×k byte（k≤16）= 從該編號起連續 k 個 int16 小端；空號回 -32768",
+    "snapshotMs": 10,
+    "txLen": 32
+  },
+  "mblock": {
+    "baud": 38400,
+    "read": "主機送 [編號] → 回 [值低][值高][編號^值低^值高]",
+    "ack": "寫入命令 E0~EE：收齊參數後回 [00][00][編號] 再執行；20 ms 內沒收齊就丟棄",
+    "unknown": "[00][80][編號^0x80]（= -32768）",
+    "packAll": "FD → [AA][N][N 個 int16 小端][xor]，xor = AA ^ N ^ 所有資料 byte；N = 值表已定義編號數（不含跳號、共用編號、命令）"
+  },
+  "values": [
+    {"id": "F0", "key": "deviceId", "name": {"zh": "裝置 ID", "en": "device ID"}, "desc": {"zh": "低 byte = 出廠 I2C 位址（換位址後不變），高 byte = hw[0]（通道數／顆數／類別）", "en": "low byte = factory I2C address (unchanged after re-addressing), high byte = hw[0] (channels / sensors / variant)"}, "unit": "", "range": "", "i2c": true, "mblock": true, "microbit": true},
+    {"id": "F1", "key": "protoVer", "name": {"zh": "協議版本", "en": "protocol version"}, "desc": {"zh": "本版 = 2（SPIKE 模式 8 v[1]、EV3 ID 封包同一個數字）", "en": "2 for this release (same number reported in SPIKE mode 8 v[1])"}, "unit": "", "range": "2", "i2c": true, "mblock": true, "microbit": true},
+    {"id": "F2", "key": "fwVer", "name": {"zh": "韌體版本", "en": "firmware version"}, "desc": {"zh": "主版×100 + 次版（例 102 = 1.2）", "en": "major×100 + minor (e.g. 102 = 1.2)"}, "unit": "", "range": "", "i2c": true, "mblock": true, "microbit": true},
+    {"id": "F3", "key": "status", "name": {"zh": "狀態旗標", "en": "status flags"}, "desc": {"zh": "b0 就緒，其餘各產品定義（見各產品 flags）；MATRIX 大通道 byte 24 同一個 byte", "en": "b0 = ready; other bits per product (see flags); same byte as MATRIX big-channel byte 24"}, "unit": "", "range": "bit", "i2c": true, "mblock": true, "microbit": true},
+    {"id": "F4", "key": "seq", "name": {"zh": "更新序號", "en": "update counter"}, "desc": {"zh": "每 10 ms 快照 +1，0~255 循環（2.56 秒一圈，不能拿來偵測重開機；不動 = 模組忙）", "en": "+1 every 10 ms snapshot, wraps 0~255 (2.56 s per cycle, not usable for reboot detection; frozen = module busy)"}, "unit": "", "range": "0~255", "i2c": true, "mblock": false, "microbit": true},
+    {"id": "F5", "key": "uptime", "name": {"zh": "開機秒數", "en": "uptime seconds"}, "desc": {"zh": "開機後秒數，到 32767 停住（約 9 小時）；數字變小 = 重開機過", "en": "seconds since boot, saturates at 32767 (~9 h); a drop means the module rebooted"}, "unit": "s", "range": "0~32767", "i2c": true, "mblock": false, "microbit": true}
+  ],
+  "commands": [
+    {"id": "F8", "key": "setAddress", "name": {"zh": "換 I2C 位址", "en": "change I2C address"}, "desc": {"zh": "[F8][新位址 0x08~0x77][新位址取反]，存 EEPROM，重開機後生效；[F8][0x00][0xFF] = 回出廠位址（共識 B-5）", "en": "[F8][new 0x08~0x77][~new], saved to EEPROM, takes effect after reboot; [F8][0x00][0xFF] = back to factory address"}, "params": [{"name": {"zh": "新位址", "en": "new address"}, "range": "0x08~0x77", "bytes": 1}, {"name": {"zh": "新位址取反", "en": "~new address"}, "range": "", "bytes": 1}], "i2c": true, "mblock": false, "microbit": true},
+    {"id": "EF", "key": "reboot", "name": {"zh": "重新開機", "en": "reboot"}, "desc": {"zh": "[EF][0xA5]；mBlock 先回 ACK 再重開", "en": "[EF][0xA5]; mBlock sends ACK first, then reboots"}, "params": [{"name": {"zh": "確認碼", "en": "magic"}, "range": "0xA5", "bytes": 1}], "i2c": true, "mblock": true, "microbit": true}
+  ],
+  "matrixBig": {
+    "format": "30 B：byte 0~23 產品資料（小端）、24 = F3、25~26 = F1／F2 動作完成次數、27 = 裝置 ID、28 = hw[0]、29 = CRC-8（多項式 0x07，初值 0，涵蓋 0~28）",
+    "lockedTail0": ["line16", "imu"],
+    "cmd1": "0x43",
+    "readCmd": "0x21",
+    "fCommands": {"F1": "Cyan", "F2": "Magenta", "F3": "Yellow", "F4": "Key"}
+  },
+  "mvision": {
+    "format": "[0xAA][N][N 個 uint16 小端][xor]，xor = AA ^ N ^ 所有資料 byte；N ≤ 10（MATRIXblock 只宣告 CamData[10]）；學校版每 20 ms 一包"
+  }
+}

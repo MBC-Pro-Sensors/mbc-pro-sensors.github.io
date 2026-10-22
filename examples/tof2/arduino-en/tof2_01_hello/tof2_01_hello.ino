@@ -1,133 +1,140 @@
 /*
- * Ranger 2-Way x Arduino  Example 1: Say hello to the sensor
+ * Ranger 2-Way × Arduino   Example 1: Say hello to the sensor
  * ------------------------------------------------------------
  * What does this example do?
- *   It checks that the sensor is connected. If it is, the computer shows
- *   the sensor's name and version, and checks that both lasers (left and right) work.
+ *   Checks that the sensor is connected. If it is, it prints the sensor's ID card
+ *   (device ID, protocol version, firmware version) and its current status
+ *   (are both lasers working?).
  *   Run this example first every time you connect a new sensor.
  *
- * Wiring (Arduino UNO / Nano):
- *   Sensor VCC -> 5V      Sensor GND -> GND
- *   Sensor SDA -> A4      Sensor SCL -> A5
- *   (Solder pads on the new board: 1 = SCL, 2 = SDA, 3 = VCC, 4 = GND)
+ * You need: Ranger 2-Way (universal I2C edition), Arduino UNO / Nano / UNO R4 or ESP32.
+ *
+ * Wiring:
+ *   Sensor VCC → 5V      Sensor GND → GND
+ *   Sensor SDA → A4      Sensor SCL → A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *
  * How to see the result:
  *   After uploading, open the Serial Monitor and choose 115200 baud.
- *
- * Good to know:
- *   When the sensor powers on, it first has to wake up its 2 lasers. During this time
- *   every distance reads 0, so always wait until it is "ready" first.
  */
 
 #include <Wire.h>                        // Arduino's built-in I2C tool, used to talk to the sensor
 
-const uint8_t SENSOR_ADDR = 0x29;        // The Ranger sensor's "address" (like a house number). It is always 0x29
+const uint8_t ADDR = 0x29;               // The sensor's "house number" (I2C address). Both 2-Way and 8-Way use 0x29
+const int16_t MBC_NONE = -32768;         // Code for "no such value / cannot read"
+
+// Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
 
 void setup() {
-  Serial.begin(115200);                  // Open the line to the computer, speed 115200
-  mbcBegin();                            // Get I2C ready (the helpers are at the bottom of this file)
-  delay(500);                            // Give the sensor 0.5 seconds to power on
+  Serial.begin(115200);                  // Open the channel to the computer at 115200 baud
+  mbcBegin();                            // Get I2C ready (helper at the bottom of the file)
+  delay(500);                            // Wait 0.5 s for the sensor to boot
 
   Serial.println(F("=== Ranger 2-Way: Say hello to the sensor ==="));
+  Serial.println(F("Waiting for both lasers to boot (at most 4 s)..."));
 
-  // Wait for the sensor to say "I'm ready", up to 6 seconds
-  if (!mbcWaitReady(6000)) {
+  // Wait for the sensor to say "I'm ready" (bit0 of status flags F3 = both lasers initialized), at most 4 s
+  if (!mbcWaitReady(ADDR, 4000)) {
     Serial.println(F("Sensor not found! Please check:"));
-    Serial.println(F("  1. SDA goes to A4 and SCL goes to A5. Are they swapped? (New board pads: 1 = SCL, 2 = SDA)"));
-    Serial.println(F("  2. VCC goes to 5V and GND goes to GND. Are they plugged in firmly?"));
-    Serial.println(F("  3. Is your sensor the Universal I2C edition? (The SPIKE and EV3 editions do not work with Arduino.)"));
-    Serial.println(F("  4. Is anything else with address 0x29 on the same SDA/SCL wires (for example a Ranger 8-Way, or a VL53L0X module from a shop)?"));
+    Serial.println(F("  1. SDA to A4, SCL to A5 (ESP32: 21 / 22). Are they swapped?"));
+    Serial.println(F("  2. VCC to 5V, GND to GND. Are they plugged in firmly?"));
+    Serial.println(F("  3. Is your sensor the universal I2C edition? (SPIKE and EV3 editions do not work with Arduino)"));
     while (true) {}                      // Not found: stop here
   }
 
-  // Read the "version info": box 0x01 of the sensor, 17 numbers
-  uint8_t info[17];
-  if (!mbcRead(0x01, info, 17)) {
-    Serial.println(F("Read failed. Check if a wire is loose."));
-    while (true) {}
-  }
-
-  // Numbers 9 ~ 16 are the sensor's name (letters)
-  char name[9] = {0};
-  memcpy(name, &info[9], 8);
-
-  Serial.print(F("Found it! Sensor name: "));
-  Serial.println(name);                  // Should print LASER2
-
-  Serial.print(F("Firmware version: "));
-  Serial.print(info[2]);                 // Major version
-  Serial.print('.');
-  Serial.println(info[3]);               // Minor version
-
-  Serial.print(F("This sensor has "));
-  Serial.print(info[7]);                 // Ranger 2-Way = 2
+  // ---- F0 device ID: low byte = factory address, high byte = number of lasers ----
+  int16_t id = mbcRead(ADDR, 0xF0);
+  uint8_t factoryAddr = (uint8_t)(id & 0xFF);        // Factory address (stays the same even if the address was changed)
+  uint8_t sensors     = (uint8_t)((id >> 8) & 0xFF); // hw[0] = how many lasers
+  Serial.print(F("Found it! Factory address 0x"));
+  Serial.print(factoryAddr, HEX);
+  Serial.print(F(", "));
+  Serial.print(sensors);                 // Ranger 2-Way = 2
   Serial.println(F(" lasers"));
 
-  Serial.print(F("Max range: "));
-  Serial.print(info[8] * 10);            // This box stores "how many 10 mm". Times 10 = millimeters (1200)
-  Serial.println(F(" mm (anything farther counts as 'nothing there')"));
+  // ---- F1 protocol version (this example is written for version 2) ----
+  Serial.print(F("Protocol version: "));
+  Serial.println(mbcRead(ADDR, 0xF1));
 
-  // Read the "health check": box 0x31, 9 numbers
-  //   Number 0: status (bit 1 = is any laser broken)
-  //   Number 2: bit 0 = left laser started OK, bit 1 = right laser started OK
-  uint8_t st[9];
-  if (!mbcRead(0x31, st, 9)) {
-    Serial.println(F("Read failed. Check if a wire is loose."));
-    while (true) {}
-  }
+  // ---- F2 firmware version: major×100 + minor (e.g. 102 = 1.2) ----
+  int16_t fw = mbcRead(ADDR, 0xF2);
+  Serial.print(F("Firmware version: "));
+  Serial.print(fw / 100);
+  Serial.print('.');
+  Serial.println(fw % 100);
 
-  if (st[0] & 0x02) {                    // Bit 1 is 1 -> a laser is broken
-    if (!(st[2] & (1u << 0))) Serial.println(F("Warning: the left laser did not start"));
-    if (!(st[2] & (1u << 1))) Serial.println(F("Warning: the right laser did not start"));
-    Serial.println(F("(Run example 2 to see which side keeps showing FAULT, then contact us.)"));
-  } else {
-    Serial.println(F("Both lasers (left and right) are OK!"));
-  }
+  // ---- F3 status flags: each bit means one thing ----
+  int16_t st = mbcRead(ADDR, 0xF3);
+  Serial.println(F("Current status:"));
+  Serial.print(F("  bit0 ready          ")); Serial.println((st & 0x01) ? F("yes (both lasers initialized)") : F("no"));
+  Serial.print(F("  bit1 a laser failed ")); Serial.println((st & 0x02) ? F("yes! (run Example 6 to see which one)") : F("no (both lasers OK)"));
+
+  // ---- F5 seconds since boot ----
+  Serial.print(F("Seconds since boot: "));
+  Serial.println(mbcRead(ADDR, 0xF5));
 
   Serial.println(F("Wiring is correct. You can try the other examples now!"));
 }
 
 void loop() {
-  // This example only checks once at power-on, so loop does nothing
+  // This example only checks once at startup, so loop does nothing
 }
 
 // ============================================================
-// Below are the "Communication helpers": they talk to the sensor.
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
 // They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] → wait 2 ms → read 2×k bytes = k int16 values in a row (little-endian) from that number
+//   If a number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
 // ============================================================
 
-// Start I2C communication (call once in setup)
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
-  Wire.setWireTimeout(25000, true);      // If a wire is loose, the Arduino will not freeze
+  Wire.setWireTimeout(25000, true);      // If a wire is loose, Arduino will not freeze
 #endif
 }
 
-// Read n numbers from box reg of the sensor into buf. Returns true if it worked
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// From the sensor at addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting from number id
   if (Wire.endTransmission() != 0) return false;
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // Wait 2 ms before reading (a must for ESP32-based products)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-// Write the number value into box reg of the sensor. Returns true if it worked
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave them out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-// Wait until the sensor is ready, up to timeoutMs milliseconds. Returns true when ready
-bool mbcWaitReady(uint16_t timeoutMs) {
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), at most ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;

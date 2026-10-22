@@ -1,0 +1,36 @@
+# MBC-Pro Sensors (English)
+
+> Competition-grade, plug-and-play sensors and expansion modules for LEGO SPIKE Prime, MINDSTORMS EV3, Pybricks, Arduino / ESP32 / Arduino R4, micro:bit, MATRIX Mini R4 and mBlock (mBot). Not for use in official FIRST® LEGO® League Challenge matches, which allow LEGO-made parts only.
+
+The Chinese master file is https://mbc-pro-sensors.github.io/llms.txt ; the full knowledge base is https://mbc-pro-sensors.github.io/llms-full.txt .
+
+## Products
+
+- [Line Follower 8-ch (Line8)](https://mbc-pro-sensors.github.io/en/sensors/line8/): 8-channel IR line array with noise rejection and auto-calibration.
+- [Line Follower 16-ch (Line16)](https://mbc-pro-sensors.github.io/en/sensors/line16/): 16-channel wide line array for crossings and high-speed turns.
+- [ToF Ranger 2-ch (TOF2)](https://mbc-pro-sensors.github.io/en/sensors/tof2/): dual time-of-flight laser rangefinder, cm and mm.
+- [ToF Ranger 8-ch (TOF8)](https://mbc-pro-sensors.github.io/en/sensors/tof8/): 8-point 180° laser array for obstacle avoidance.
+- [Gamepad Receiver PS2](https://mbc-pro-sensors.github.io/en/sensors/ps2/): 2.4G wireless gamepad receiver (Taiwan only).
+- [Gamepad Receiver PS4/PS5](https://mbc-pro-sensors.github.io/en/sensors/ps4/): Bluetooth PS4/PS5 controller receiver.
+- [IMU 9-Axis Gyro](https://mbc-pro-sensors.github.io/en/sensors/imu/): gyro + accelerometer + magnetometer, drift-free fused heading.
+- [Vision Camera ESP32CAM](https://mbc-pro-sensors.github.io/en/sensors/esp32cam/): colour blob tracking; school and WRO (12-spot) firmware.
+- [SPIKE 6-Port Expander (EXP6)](https://mbc-pro-sensors.github.io/en/sensors/exp6/): six extra motor/sensor ports for SPIKE Prime.
+- [SPIKE 6-Port Servo Expander (Servo6)](https://mbc-pro-sensors.github.io/en/sensors/servo6/): six servos on one SPIKE port (coming soon).
+
+## Platforms & protocols
+
+- [SPIKE / Robot Inventor / Pybricks](https://mbc-pro-sensors.github.io/en/sensors/line8/spike-hub.html): official app blocks read mode 0, Pybricks reads mode 9 via MBC libraries.
+- [MINDSTORMS EV3](https://mbc-pro-sensors.github.io/en/sensors/line8/ev3-hub.html): EV3-G, EV3 Classroom, clev3r and Pybricks.
+- [Universal I2C protocol v2](https://mbc-pro-sensors.github.io/en/i2c-protocol.html): register number = value number, int16 little-endian, burst reads; shared F0–F5, F8 re-address, EF reboot.
+<!-- gen:llms-platforms -->
+- [Product × host value reference index](https://mbc-pro-sensors.github.io/reference.html): how every value of every product is read on the six hosts (SPIKE, EV3, Arduino I2C, mBlock, MATRIX, micro:bit).
+- [MBC universal I2C protocol v2](https://mbc-pro-sensors.github.io/i2c-protocol.html): write an id, read int16 little-endian; shared F0~F5 version / status, F8 re-address, EF reboot.
+- [mBlock 5 extension v2](https://mbc-pro-sensors.github.io/makeblock.html): UART 38400, 3-byte replies with checksum, FD pack-all.
+- [MATRIX Mini R4](https://mbc-pro-sensors.github.io/matrix.html): stock 0x22 R~K mapping and the LauMo 30-byte big channel.
+- [micro:bit MakeCode](https://mbc-pro-sensors.github.io/microbit.html): pxt-mbc-sensors extension v2.
+- [Protocol plain text](https://mbc-pro-sensors.github.io/llms-protocol.txt): value tables, commands and status flags of every product.
+<!-- /gen -->
+
+## Downloads
+
+- [Download centre](https://mbc-pro-sensors.github.io/en/downloads.html): libraries, example packs, mBlock extension, MATRIX big-channel library, catalogue.

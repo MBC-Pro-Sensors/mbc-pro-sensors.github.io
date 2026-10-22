@@ -3,7 +3,7 @@
 
 [🔙 回到 TOF2 雙眼雷射產品頁](/sensors/tof2/index.md)
 
-這一頁有 5 個範例，給**完全沒寫過程式**的人：每個範例都有現成的程式檔可以下載，打開就能用，下面也有一步一步的白話說明。建議從範例 1 開始照順序做。
+這一頁有 6 個範例，給**完全沒寫過程式**的人：每個範例都有現成的程式檔可以下載，打開就能用，下面也有一步一步的白話說明。建議從範例 1 開始照順序做。
 
 ## 開始之前
 
@@ -12,7 +12,7 @@
 3. 會動的範例用樂高教育版基本車：**左輪馬達接 B、右輪馬達接 C**。
 4. 感應器在 EV3 上會顯示成「紅外線感應器」，這是正常的，讀數字就是用紅外線感應器的積木。
 
-**每個範例都有 5 種軟體的程式檔，選你用的那一種就好：**
+**每個範例都有 5 種軟體的程式檔，選你用的那一種就好：**（標「僅 Pybricks／EV3 MicroPython／clev3r」的範例只有這 3 種，因為 EV3-G、Classroom 的積木讀不到那個模式）
 
 | 軟體 | 適合誰 | 怎麼打開範例檔 |
 |---|---|---|
@@ -22,13 +22,14 @@
 | **EV3 MicroPython v2.0** | 已經在用樂高官方 EV3 MicroPython 的人 | 用樂高官方「EV3 MicroPython」microSD 開機卡＋VS Code 擴充套件，把程式內容貼到 `main.py`，按 F5 下載執行。 |
 | **clev3r** | 已經在用 clev3r（EV3 Basic）的人 | 在 clev3r 開啟 `.bp` 檔，按「編譯並下載」，在 EV3 的檔案選單找到 `MBC_` 開頭的資料夾執行。 |
 
-## 這頁會用到的 3 個數值
+## 這頁會用到的 4 個數值
 
 | 名稱 | 範圍 | 從哪裡讀 |
 |---|---|---|
 | **左右兩眼的平均距離** | 0 ~ 100（1 格＝1.2 公分，100＝前面沒東西） | 模式 0 |
 | **左眼距離** | 0 ~ 100（1 格＝1.2 公分） | 模式 1 第 1 個值 |
 | **右眼距離** | 0 ~ 100（1 格＝1.2 公分） | 模式 1 第 2 個值 |
+| **左右兩眼的平均距離（公釐）** | 0 ~ 1200 mm，1200＝前面沒東西 | 模式 3 第 1 個值（只有 Pybricks／EV3 MicroPython／clev3r 讀得到） |
 
 **範例列表：**
 
@@ -37,6 +38,7 @@
 3. [避障車：看到東西就後退轉彎](#%E7%AF%84%E4%BE%8B-3%EF%BC%9A%E9%81%BF%E9%9A%9C%E8%BB%8A%EF%BC%9A%E7%9C%8B%E5%88%B0%E6%9D%B1%E8%A5%BF%E5%B0%B1%E5%BE%8C%E9%80%80%E8%BD%89%E5%BD%8E)
 4. [跟車：保持固定距離](#%E7%AF%84%E4%BE%8B-4%EF%BC%9A%E8%B7%9F%E8%BB%8A%EF%BC%9A%E4%BF%9D%E6%8C%81%E5%9B%BA%E5%AE%9A%E8%B7%9D%E9%9B%A2)
 5. [左眼右眼：閃開兩邊的障礙物](#%E7%AF%84%E4%BE%8B-5%EF%BC%9A%E5%B7%A6%E7%9C%BC%E5%8F%B3%E7%9C%BC%EF%BC%9A%E9%96%83%E9%96%8B%E5%85%A9%E9%82%8A%E7%9A%84%E9%9A%9C%E7%A4%99%E7%89%A9)
+6. [用公釐精準停車：20 公分前停](#%E7%AF%84%E4%BE%8B-6%EF%BC%9A%E7%94%A8%E5%85%AC%E9%87%90%E7%B2%BE%E6%BA%96%E5%81%9C%E8%BB%8A%EF%BC%9A20-%E5%85%AC%E5%88%86%E5%89%8D%E5%81%9C)（僅 Pybricks／EV3 MicroPython／clev3r）
 
 ---
 
@@ -936,6 +938,180 @@ EndWhile
 
 - **左右顛倒？** 感應器可能裝反了（雷射頭朝後或上下顛倒），或把程式裡兩個 tank 的數字對調。
 - **數字跟尺量的不一樣？** EV3 上 1 格＝1.2 公分（例如讀到 25＝30 公分），100 代表前面 120 公分內沒有東西。
+
+---
+
+## 範例 6：用公釐精準停車：20 公分前停
+
+> **僅 Pybricks v4／EV3 MicroPython v2.0／clev3r**（EV3-G、Classroom 的積木讀不到這個模式）
+
+**這個範例會做什麼：** 模式 0 的距離 1 格＝1.2 公分，比賽要停在「剛好 20 公分」不夠準。模式 3 直接給公釐（1 格＝1 公釐），這個範例一邊往前開一邊顯示公釐，小於 200 公釐就停。
+
+**要準備什麼：**
+
+- EV3 主機＋教育版基本車（左輪接 B、右輪接 C）
+- TOF2 雙眼雷射（EV3 版）
+- 一個盒子或牆壁當障礙物
+
+**怎麼接：** TOF2 雙眼雷射插 1 號孔，裝在車頭、雷射朝正前方，離地約 5 公分。
+
+**下載程式（選你用的軟體）：**
+
+[⬇ Pybricks v4](/examples/tof2/ev3_beginner/ex06_stop_mm_pybricks_v4.py) ｜ [⬇ EV3 MicroPython v2.0](/examples/tof2/ev3_beginner/ex06_stop_mm_ev3micropython_v2.py) ｜ [⬇ clev3r](/examples/tof2/ev3_beginner/ex06_stop_mm.bp)
+
+（程式碼即範例，不需截圖。）
+
+<details><summary>Pybricks v4 程式碼</summary>
+
+```python
+# ============================================================
+# TOF2 雙眼雷射測距感應器 EV3 新手範例 06：用公釐精準停車：20 公分前停
+# 軟體：Pybricks v4（用 Chrome 打開 https://code.pybricks.com ，EV3 版目前是 Beta）
+# 接法：TOF2 雙眼雷射插 1 號孔；左輪馬達接 B、右輪馬達接 C
+# 這個範例會做什麼：模式 0 的距離 1 格＝1.2 公分，比賽要停在「剛好 20 公分」不夠準。模式 3 直接給公釐（1 格＝1 公釐），這個範例一邊往前開一邊顯示公釐，小於 200 公釐就停。
+# ============================================================
+
+from pybricks.hubs import EV3Brick
+from pybricks.ev3devices import Motor
+from pybricks.iodevices import LUMPDevice
+from pybricks.parameters import Port, Color
+from pybricks.tools import wait
+
+ev3 = EV3Brick()
+sensor = LUMPDevice(Port.S1)       # TOF2 雙眼雷射插 1 號孔
+left_motor = Motor(Port.B)        # 左輪
+right_motor = Motor(Port.C)       # 右輪
+
+
+def read_avgMm():
+    # 左右兩眼的平均距離（公釐）：0 ~ 1200 mm，1200＝前面沒東西
+    return sensor.read(3)[0]
+
+
+# ---------- 程式從這裡開始 ----------
+# 清除螢幕
+ev3.screen.clear()
+# 兩輪用 30 的力量往前開
+left_motor.dc(30)
+right_motor.dc(30)
+# 一直往前，直到距離小於 200 公釐（20 公分）
+while not (read_avgMm() < 200):
+    # 第 1 行顯示目前距離（公釐）
+    ev3.screen.draw_text(0, 0, "MM " + str(read_avgMm()) + "      ", Color.BLACK, Color.WHITE)
+# 停車
+left_motor.brake()
+right_motor.brake()
+# 嗶一聲
+ev3.speaker.beep()
+# 停下來後再顯示一次距離，看停得準不準
+ev3.screen.draw_text(0, 0, "MM " + str(read_avgMm()) + "      ", Color.BLACK, Color.WHITE)
+```
+
+</details>
+
+<details><summary>EV3 MicroPython v2.0 程式碼</summary>
+
+```python
+#!/usr/bin/env pybricks-micropython
+# ============================================================
+# TOF2 雙眼雷射測距感應器 EV3 新手範例 06：用公釐精準停車：20 公分前停
+# 軟體：樂高官方 EV3 MicroPython v2.0（microSD 開機卡＋VS Code「LEGO MINDSTORMS EV3 MicroPython」擴充套件）
+# 接法：TOF2 雙眼雷射插 1 號孔；左輪馬達接 B、右輪馬達接 C
+# 這個範例會做什麼：模式 0 的距離 1 格＝1.2 公分，比賽要停在「剛好 20 公分」不夠準。模式 3 直接給公釐（1 格＝1 公釐），這個範例一邊往前開一邊顯示公釐，小於 200 公釐就停。
+# ============================================================
+
+from pybricks.hubs import EV3Brick
+from pybricks.ev3devices import Motor
+from pybricks.iodevices import Ev3devSensor
+from pybricks.parameters import Port, Color
+from pybricks.tools import wait
+
+ev3 = EV3Brick()
+sensor = Ev3devSensor(Port.S1)     # TOF2 雙眼雷射插 1 號孔
+left_motor = Motor(Port.B)        # 左輪
+right_motor = Motor(Port.C)       # 右輪
+
+
+def read_avgMm():
+    # 左右兩眼的平均距離（公釐）：0 ~ 1200 mm，1200＝前面沒東西
+    return sensor.read('IR-REM-A')[0]
+
+
+# ---------- 程式從這裡開始 ----------
+# 清除螢幕
+ev3.screen.clear()
+# 兩輪用 30 的力量往前開
+left_motor.dc(30)
+right_motor.dc(30)
+# 一直往前，直到距離小於 200 公釐（20 公分）
+while not (read_avgMm() < 200):
+    # 第 1 行顯示目前距離（公釐）
+    ev3.screen.draw_text(0, 0, "MM " + str(read_avgMm()) + "      ", Color.BLACK, Color.WHITE)
+# 停車
+left_motor.brake()
+right_motor.brake()
+# 嗶一聲
+ev3.speaker.beep()
+# 停下來後再顯示一次距離，看停得準不準
+ev3.screen.draw_text(0, 0, "MM " + str(read_avgMm()) + "      ", Color.BLACK, Color.WHITE)
+```
+
+</details>
+
+<details><summary>clev3r 程式碼</summary>
+
+```vb
+' ============================================================
+' TOF2 雙眼雷射測距感應器 EV3 新手範例 06：用公釐精準停車：20 公分前停
+' 軟體：clev3r
+' 接法：TOF2 雙眼雷射插 1 號孔；左輪馬達接 B、右輪馬達接 C
+' 這個範例會做什麼：模式 0 的距離 1 格＝1.2 公分，比賽要停在「剛好 20 公分」不夠準。模式 3 直接給公釐（1 格＝1 公釐），這個範例一邊往前開一邊顯示公釐，小於 200 公釐就停。
+' 讀值：avgMm＝左右兩眼的平均距離（公釐）（0 ~ 1200 mm，1200＝前面沒東西）
+' ============================================================
+folder "prjs" "MBC_tof2_ex06"
+
+' TOF2 雙眼雷射插 1 號孔，使用模式 3
+Sensor.SetMode(1, 3)
+LCD.Clear()
+
+' 清除螢幕
+LCD.Clear()
+' 兩輪用 30 的力量往前開
+Motor.StartPower("B", 30)
+Motor.StartPower("C", 30)
+' 一直往前，直到距離小於 200 公釐（20 公分）
+While Sensor.ReadRawValue(1, 0) >= 200
+  ' 第 1 行顯示目前距離（公釐）
+  LCD.Text(1, 0, 0, 1, "MM " + Sensor.ReadRawValue(1, 0) + "      ")
+EndWhile
+' 停車
+Motor.Stop("BC", "True")
+' 嗶一聲
+Speaker.Tone(50, 1000, 100)
+Speaker.Wait()
+' 停下來後再顯示一次距離，看停得準不準
+LCD.Text(1, 0, 0, 1, "MM " + Sensor.ReadRawValue(1, 0) + "      ")
+```
+
+</details>
+
+**一步一步看懂程式：**
+
+1. 清除螢幕
+1. 兩輪用 30 的力量往前開
+1. 一直往前，直到距離小於 200 公釐（20 公分）
+   - 第 1 行顯示目前距離（公釐）
+1. 停車
+1. 嗶一聲
+1. 停下來後再顯示一次距離，看停得準不準
+
+**跑起來應該看到：** 車子往前開，螢幕的公釐數一直變小，在障礙物前約 20 公分停下來並嗶一聲；停下來後螢幕顯示的數字應該在 200 附近。
+
+**常見問題：**
+
+- **停下來的數字比 200 小很多？** 車速越快煞車距離越長，把 30 改小，或把 200 改大（例如 230）。
+- **數字一直是 0 或不會動？** 感應器韌體要 v4.0（2026-10）以上才有這個模式，舊韌體請先更新。
+- **EV3-G／Classroom 怎麼沒有這個範例？** 這個範例用的是新模式（2026-10 韌體 v4 起），EV3-G 和 Classroom 的紅外線積木讀不到，只有 Pybricks、EV3 MicroPython、clev3r 能用。
 
 ---
 

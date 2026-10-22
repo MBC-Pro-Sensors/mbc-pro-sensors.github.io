@@ -1,0 +1,867 @@
+{
+  "id": "imu",
+  "addr": "0x6A",
+  "hw0": 1,
+  "model": "IMU",
+  "name": {
+    "zh": "IMU 陀螺儀",
+    "en": "IMU Gyro Sensor"
+  },
+  "hosts": {
+    "ev3": true,
+    "spike": false,
+    "i2c": true,
+    "mblock": true,
+    "matrix": {
+      "ch22": true,
+      "big": true
+    },
+    "mvision": false,
+    "microbit": true
+  },
+  "lego": {
+    "ev3Type": 32,
+    "spikeType": null,
+    "ev3Locked": [
+      0,
+      1,
+      3
+    ],
+    "ev3IdMode": 4,
+    "spikeLocked": [],
+    "spikeIdMode": null
+  },
+  "values": [
+    {
+      "id": "01",
+      "key": "headingGyro3D",
+      "name": {
+        "zh": "陀螺 3D 航向",
+        "en": "gyro 3D heading"
+      },
+      "desc": {
+        "zh": "四元數算出的航向，度，開機／歸零 = 0，連續累積可超過 360（int16 到 ±32767 繞回，約 91 圈）",
+        "en": "heading from the 3D quaternion, degrees, 0 at boot/zero, accumulates past 360 (wraps at ±32767, ~91 turns)"
+      },
+      "unit": "°",
+      "range": "-32768~32767",
+      "figure": null,
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "陀螺 3D 航向",
+          "en": "gyro 3D heading"
+        }
+      },
+      "ev3": [
+        {
+          "mode": 0,
+          "index": 0,
+          "format": "int16",
+          "note": "GYRO-ANG 1×int16（盤點：mode0 = 陀螺 3D，INO:232-234）"
+        }
+      ],
+      "spike": [],
+      "matrix": {
+        "ch22": {
+          "cmd": 4,
+          "count": 2,
+          "offset": 32768,
+          "note": "R = (航向+32768) 低 byte、G = 高 byte（R4 大通道版：低在前）；主機 hi×256+lo−32768"
+        },
+        "big": {
+          "byte": 0,
+          "type": "i16",
+          "note": "鎖住（R4 大通道版已流出）"
+        }
+      },
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "陀螺 3D 航向",
+          "en": "gyro 3D heading"
+        }
+      },
+      "examples": [],
+      "locked": true
+    },
+    {
+      "id": "02",
+      "key": "headingFused",
+      "name": {
+        "zh": "融合航向",
+        "en": "fused heading"
+      },
+      "desc": {
+        "zh": "陀螺 3D 加磁力計慢修正的航向，度，減去相對零點；可超過 360",
+        "en": "3D gyro heading slowly corrected by the magnetometer, degrees, relative to the zero point; may exceed 360"
+      },
+      "unit": "°",
+      "range": "-32768~32767",
+      "figure": null,
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "融合航向",
+          "en": "fused heading"
+        }
+      },
+      "ev3": [
+        {
+          "mode": 1,
+          "index": 0,
+          "format": "int16",
+          "note": "GYRO-RATE 1×int16 = 融合航向（EV3 定案：不改）"
+        }
+      ],
+      "spike": [],
+      "matrix": {
+        "ch22": {
+          "cmd": 6,
+          "count": 2,
+          "offset": 32768,
+          "note": "B = 低 byte、C = 高 byte"
+        },
+        "big": {
+          "byte": 2,
+          "type": "i16",
+          "note": "鎖住"
+        }
+      },
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "融合航向",
+          "en": "fused heading"
+        }
+      },
+      "examples": [],
+      "locked": true
+    },
+    {
+      "id": "03",
+      "key": "headingGyro1D",
+      "name": {
+        "zh": "陀螺 1D 航向",
+        "en": "gyro 1D heading"
+      },
+      "desc": {
+        "zh": "只繞轉向軸積分的航向，度，開機／歸零 = 0；可超過 360",
+        "en": "heading integrated about the yaw axis only, degrees, 0 at boot/zero; may exceed 360"
+      },
+      "unit": "°",
+      "range": "-32768~32767",
+      "figure": null,
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "陀螺 1D 航向",
+          "en": "gyro 1D heading"
+        }
+      },
+      "ev3": [
+        {
+          "mode": 3,
+          "index": 0,
+          "format": "int16",
+          "note": "GYRO-G&A 2×int16 [陀螺 1D, 磁力航向]"
+        }
+      ],
+      "spike": [],
+      "matrix": {
+        "ch22": {
+          "cmd": 8,
+          "count": 2,
+          "offset": 32768,
+          "note": "M = 低 byte、Y = 高 byte；K（10）= 0"
+        },
+        "big": {
+          "byte": 4,
+          "type": "i16",
+          "note": "鎖住"
+        }
+      },
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "陀螺 1D 航向",
+          "en": "gyro 1D heading"
+        }
+      },
+      "examples": [],
+      "locked": true
+    },
+    {
+      "id": "04",
+      "key": "headingMag",
+      "name": {
+        "zh": "磁力航向",
+        "en": "magnetic heading"
+      },
+      "desc": {
+        "zh": "磁力計傾斜補償航向，度，減去相對零點",
+        "en": "tilt-compensated magnetometer heading, degrees, relative to the zero point"
+      },
+      "unit": "°",
+      "range": "-32768~32767",
+      "figure": null,
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "磁力航向",
+          "en": "magnetic heading"
+        }
+      },
+      "ev3": [
+        {
+          "mode": 3,
+          "index": 1,
+          "format": "int16"
+        }
+      ],
+      "spike": [],
+      "matrix": {
+        "ch22": null,
+        "big": {
+          "byte": 6,
+          "type": "i16",
+          "note": "鎖住"
+        }
+      },
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "磁力航向",
+          "en": "magnetic heading"
+        }
+      },
+      "examples": [],
+      "locked": true
+    },
+    {
+      "id": "05",
+      "key": "yawRate",
+      "name": {
+        "zh": "轉向軸角速度",
+        "en": "yaw rate"
+      },
+      "desc": {
+        "zh": "繞轉向軸（getYawAxis()）的角速度，0.1 度／秒，正負跟航向同向",
+        "en": "angular rate about the yaw axis (getYawAxis()), 0.1 deg/s, same sign as the heading"
+      },
+      "unit": "0.1 dps",
+      "range": "-32768~32767",
+      "figure": {
+        "tpl": "imu-axes",
+        "params": {
+          "axis": "yaw"
+        }
+      },
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "轉向角速度",
+          "en": "yaw rate"
+        }
+      },
+      "ev3": [
+        {
+          "mode": 2,
+          "index": 0,
+          "format": "int16",
+          "note": "GYRO-FAS 1×int16（#67 新增，原本 0）"
+        }
+      ],
+      "spike": [],
+      "matrix": {
+        "ch22": null,
+        "big": {
+          "byte": 8,
+          "type": "i16",
+          "note": "#67 追加（Hue 積木）"
+        }
+      },
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "轉向角速度",
+          "en": "yaw rate"
+        }
+      },
+      "examples": []
+    },
+    {
+      "id": "06",
+      "key": "pitch",
+      "name": {
+        "zh": "俯仰角",
+        "en": "pitch angle"
+      },
+      "desc": {
+        "zh": "板子絲印 X 軸相對水平面的仰角：X 軸朝上 +90、朝下 −90、水平 0（用重力向量 atan2 算）",
+        "en": "elevation of the board's printed X axis above horizontal: +90 pointing up, −90 pointing down, 0 level (from the gravity vector)"
+      },
+      "unit": "°",
+      "range": "-90~+90",
+      "figure": {
+        "tpl": "imu-axes",
+        "params": {
+          "axis": "pitch"
+        }
+      },
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "俯仰角",
+          "en": "pitch angle"
+        }
+      },
+      "ev3": [
+        {
+          "mode": 6,
+          "index": 0,
+          "format": "int16",
+          "note": "TILT-ANG 1×int16（#67 新增，原本 0）"
+        }
+      ],
+      "spike": [],
+      "matrix": {
+        "ch22": null,
+        "big": {
+          "byte": 10,
+          "type": "i16",
+          "note": "#67 追加"
+        }
+      },
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "俯仰角",
+          "en": "pitch angle"
+        }
+      },
+      "examples": [],
+      "min": -90,
+      "max": 90
+    },
+    {
+      "id": "07",
+      "key": "pitchRate",
+      "name": {
+        "zh": "俯仰角速度",
+        "en": "pitch rate"
+      },
+      "desc": {
+        "zh": "繞板子絲印 X 軸的角速度，0.1 度／秒（右手定則，從 +X 端看逆時針為正）；注意這是 gyro X，不是 06 的微分",
+        "en": "angular rate about the board's printed X axis, 0.1 °/s (right-hand rule, CCW seen from +X is positive); this is gyro X, not the derivative of 06"
+      },
+      "unit": "0.1 dps",
+      "range": "-32768~32767",
+      "figure": {
+        "tpl": "imu-axes",
+        "params": {
+          "axis": "pitch"
+        }
+      },
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "俯仰角速度",
+          "en": "pitch rate"
+        }
+      },
+      "ev3": [
+        {
+          "mode": 5,
+          "index": 0,
+          "format": "int16",
+          "note": "TILT-RATE 1×int16（#67：取代 #65 統一時放的 ID，ID 移到模式 4）"
+        }
+      ],
+      "spike": [],
+      "matrix": {
+        "ch22": null,
+        "big": {
+          "byte": 12,
+          "type": "i16",
+          "note": "#67 追加"
+        }
+      },
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "俯仰角速度",
+          "en": "pitch rate"
+        }
+      },
+      "examples": []
+    },
+    {
+      "id": "08",
+      "key": "magTrust",
+      "name": {
+        "zh": "磁力信任度",
+        "en": "magnetometer trust"
+      },
+      "desc": {
+        "zh": "融合演算法對磁力計的信任度 0~255（= 0~1 × 255）",
+        "en": "how much the fusion trusts the magnetometer, 0~255 (= 0~1 × 255)"
+      },
+      "unit": "",
+      "range": "0~255",
+      "min": 0,
+      "max": 255,
+      "figure": {
+        "tpl": "ruler",
+        "params": {
+          "min": 0,
+          "max": 255
+        }
+      },
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "磁力信任度",
+          "en": "magnetometer trust"
+        }
+      },
+      "ev3": [],
+      "spike": [],
+      "matrix": null,
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "磁力信任度",
+          "en": "magnetometer trust"
+        }
+      },
+      "examples": []
+    },
+    {
+      "id": "09",
+      "key": "magDisturb",
+      "name": {
+        "zh": "磁場干擾度",
+        "en": "magnetic disturbance"
+      },
+      "desc": {
+        "zh": "磁場干擾程度 0~255（度 × 100，上限 255）",
+        "en": "magnetic disturbance level 0~255 (degrees × 100, capped at 255)"
+      },
+      "unit": "0.01°",
+      "range": "0~255",
+      "min": 0,
+      "max": 255,
+      "figure": {
+        "tpl": "ruler",
+        "params": {
+          "min": 0,
+          "max": 255
+        }
+      },
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "磁場干擾度",
+          "en": "magnetic disturbance"
+        }
+      },
+      "ev3": [],
+      "spike": [],
+      "matrix": null,
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "磁場干擾度",
+          "en": "magnetic disturbance"
+        }
+      },
+      "examples": []
+    },
+    {
+      "id": "0A",
+      "key": "upFace",
+      "name": {
+        "zh": "朝上的面",
+        "en": "face up"
+      },
+      "desc": {
+        "zh": "哪個軸朝上：0 +X、1 +Y、2 +Z、3 −X、4 −Y、5 −Z（實體軸）",
+        "en": "which axis points up: 0 +X, 1 +Y, 2 +Z, 3 −X, 4 −Y, 5 −Z (physical axes)"
+      },
+      "unit": "",
+      "range": "0~5",
+      "min": 0,
+      "max": 5,
+      "figure": {
+        "tpl": "imu-faces",
+        "params": {}
+      },
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "朝上的面",
+          "en": "face up"
+        }
+      },
+      "ev3": [],
+      "spike": [],
+      "matrix": null,
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "朝上的面",
+          "en": "face up"
+        }
+      },
+      "examples": []
+    },
+    {
+      "id": "10",
+      "key": "gyro",
+      "count": 3,
+      "name": {
+        "zh": "角速度 N 軸",
+        "en": "gyro axis N"
+      },
+      "desc": {
+        "zh": "10 X、11 Y、12 Z 角速度，0.1 度／秒（實體軸，已套軸向號誌）",
+        "en": "10 X, 11 Y, 12 Z angular rate, 0.1 deg/s (physical axes, sign-corrected)"
+      },
+      "unit": "0.1 dps",
+      "range": "-32768~32767",
+      "figure": {
+        "tpl": "imu-axes",
+        "params": {
+          "kind": "gyro"
+        }
+      },
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "角速度 [軸]",
+          "en": "gyro [axis]"
+        }
+      },
+      "ev3": [],
+      "spike": [],
+      "matrix": null,
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "角速度 [軸]",
+          "en": "gyro [axis]"
+        }
+      },
+      "examples": []
+    },
+    {
+      "id": "13",
+      "key": "accel",
+      "count": 3,
+      "name": {
+        "zh": "加速度 N 軸",
+        "en": "accel axis N"
+      },
+      "desc": {
+        "zh": "13 X、14 Y、15 Z 加速度，mg（1000 = 1 g）",
+        "en": "13 X, 14 Y, 15 Z acceleration, mg (1000 = 1 g)"
+      },
+      "unit": "mg",
+      "range": "-32768~32767",
+      "figure": {
+        "tpl": "imu-axes",
+        "params": {
+          "kind": "accel"
+        }
+      },
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "加速度 [軸]",
+          "en": "accel [axis]"
+        }
+      },
+      "ev3": [],
+      "spike": [],
+      "matrix": null,
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "加速度 [軸]",
+          "en": "accel [axis]"
+        }
+      },
+      "examples": []
+    },
+    {
+      "id": "16",
+      "key": "mag",
+      "count": 3,
+      "name": {
+        "zh": "磁力 N 軸",
+        "en": "mag axis N"
+      },
+      "desc": {
+        "zh": "16 X、17 Y、18 Z 磁場強度，mG（毫高斯）",
+        "en": "16 X, 17 Y, 18 Z magnetic field, mG (milligauss)"
+      },
+      "unit": "mG",
+      "range": "-32768~32767",
+      "figure": {
+        "tpl": "imu-axes",
+        "params": {
+          "kind": "mag"
+        }
+      },
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "磁力 [軸]",
+          "en": "mag [axis]"
+        }
+      },
+      "ev3": [],
+      "spike": [],
+      "matrix": null,
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "磁力 [軸]",
+          "en": "mag [axis]"
+        }
+      },
+      "examples": []
+    }
+  ],
+  "commands": [
+    {
+      "id": "E0",
+      "key": "zeroHeading",
+      "name": {
+        "zh": "航向歸零",
+        "en": "zero heading"
+      },
+      "desc": {
+        "zh": "四個航向都歸零（zeroHeadings()）；EV3 另有原廠 WRITE 0x11 陀螺歸零",
+        "en": "zero all four headings (zeroHeadings()); EV3 also accepts the stock gyro-reset WRITE 0x11"
+      },
+      "params": [],
+      "i2c": true,
+      "mblock": true,
+      "matrix": {
+        "f": "F1~F4",
+        "note": "R4 大通道版：F1~F4、0x0F、0x0A、0x01 全部歸零（鎖住不動）"
+      },
+      "microbit": {
+        "block": {
+          "zh": "航向歸零",
+          "en": "zero heading"
+        }
+      },
+      "busyFlag": null
+    },
+    {
+      "id": "E1",
+      "key": "accelCalStart",
+      "name": {
+        "zh": "加速度計校準開始",
+        "en": "start accelerometer calibration"
+      },
+      "desc": {
+        "zh": "開始加速度計校準（= v1 的 0x20=0x01）；期間 F3 b4 = 1",
+        "en": "start accelerometer calibration (= v1 0x20=0x01); F3 b4 = 1 meanwhile"
+      },
+      "params": [],
+      "i2c": true,
+      "mblock": true,
+      "matrix": null,
+      "microbit": {
+        "block": {
+          "zh": "加速度計校準開始",
+          "en": "start accel calibration"
+        }
+      },
+      "busyFlag": 4
+    },
+    {
+      "id": "E2",
+      "key": "accelCalEnd",
+      "name": {
+        "zh": "加速度計校準結束",
+        "en": "end accelerometer calibration"
+      },
+      "desc": {
+        "zh": "結束加速度計校準並存 EEPROM（= v1 的 0x20=0x02）；通過後自動航向歸零一次",
+        "en": "finish accelerometer calibration and save to EEPROM (= v1 0x20=0x02); headings are zeroed once on success"
+      },
+      "params": [],
+      "i2c": true,
+      "mblock": true,
+      "matrix": null,
+      "microbit": {
+        "block": {
+          "zh": "加速度計校準結束",
+          "en": "end accel calibration"
+        }
+      },
+      "busyFlag": null
+    },
+    {
+      "id": "E3",
+      "key": "magCalStart",
+      "name": {
+        "zh": "磁力計校準開始",
+        "en": "start magnetometer calibration"
+      },
+      "desc": {
+        "zh": "開始磁力計校準（= v1 的 0x20=0x03）；期間 F3 b5 = 1",
+        "en": "start magnetometer calibration (= v1 0x20=0x03); F3 b5 = 1 meanwhile"
+      },
+      "params": [],
+      "i2c": true,
+      "mblock": true,
+      "matrix": null,
+      "microbit": {
+        "block": {
+          "zh": "磁力計校準開始",
+          "en": "start mag calibration"
+        }
+      },
+      "busyFlag": 5
+    },
+    {
+      "id": "E4",
+      "key": "magCalEnd",
+      "name": {
+        "zh": "磁力計校準結束",
+        "en": "end magnetometer calibration"
+      },
+      "desc": {
+        "zh": "結束磁力計校準並存 EEPROM（= v1 的 0x20=0x04）",
+        "en": "finish magnetometer calibration and save to EEPROM (= v1 0x20=0x04)"
+      },
+      "params": [],
+      "i2c": true,
+      "mblock": true,
+      "matrix": null,
+      "microbit": {
+        "block": {
+          "zh": "磁力計校準結束",
+          "en": "end mag calibration"
+        }
+      },
+      "busyFlag": null
+    }
+  ],
+  "flags": [
+    {
+      "bit": 0,
+      "key": "ready",
+      "name": {
+        "zh": "就緒",
+        "en": "ready"
+      },
+      "desc": {
+        "zh": "恆 1",
+        "en": "always 1"
+      }
+    },
+    {
+      "bit": 1,
+      "key": "still",
+      "name": {
+        "zh": "靜止",
+        "en": "stationary"
+      },
+      "desc": {
+        "zh": "1 = 感應器靜止中",
+        "en": "1 = sensor is stationary"
+      }
+    },
+    {
+      "bit": 2,
+      "key": "axisCaptured",
+      "name": {
+        "zh": "已擷取安裝軸",
+        "en": "mount axis captured"
+      },
+      "desc": {
+        "zh": "1 = 已判定安裝方向（首次擷取後自動歸零一次）",
+        "en": "1 = mounting orientation determined (headings zeroed once after first capture)"
+      }
+    },
+    {
+      "bit": 3,
+      "key": "mountTilted",
+      "name": {
+        "zh": "安裝過歪",
+        "en": "mount too tilted"
+      },
+      "desc": {
+        "zh": "1 = 安裝角度偏離太多",
+        "en": "1 = mounted too far from level"
+      }
+    },
+    {
+      "bit": 4,
+      "key": "accelCalibrating",
+      "name": {
+        "zh": "加速度計校準中",
+        "en": "accel calibrating"
+      },
+      "desc": {
+        "zh": "E1 之後、E2 之前 = 1",
+        "en": "1 between E1 and E2"
+      }
+    },
+    {
+      "bit": 5,
+      "key": "magCalibrating",
+      "name": {
+        "zh": "磁力計校準中",
+        "en": "mag calibrating"
+      },
+      "desc": {
+        "zh": "E3 之後、E4 之前 = 1",
+        "en": "1 between E3 and E4"
+      }
+    },
+    {
+      "bit": 6,
+      "key": "fusionInit",
+      "name": {
+        "zh": "磁力融合已初始化",
+        "en": "fusion initialised"
+      },
+      "desc": {
+        "zh": "1 = 融合航向可用",
+        "en": "1 = fused heading is valid"
+      }
+    },
+    {
+      "bit": 7,
+      "key": "magAutoCalDone",
+      "name": {
+        "zh": "磁力自動校準已收斂",
+        "en": "mag auto-cal converged"
+      },
+      "desc": {
+        "zh": "1 = 磁力計自動校準偏移已收斂",
+        "en": "1 = magnetometer auto-calibration offsets have converged"
+      }
+    }
+  ],
+  "assumptions": [
+    "hw0 = 1（共識 #6）；EV3 模式 4 = [0x6A | 1<<8, 韌體主×100+次, 0, 0]（格式 B 再補 2 個 0），模式 5 改送俯仰角速度（取代 #65 放的 ID）。",
+    "EV3 鎖住模式 0／1／3 照盤點程式碼：0 = 陀螺 3D、1 = 融合航向、3 = [陀螺 1D, 磁力航向]（INO:213 註解寫反，以程式為準）。",
+    "0x22 照 R4 大通道版（出貨版）鎖住：命令 4~9 = 三個航向 +32768 的「低 byte 在前、高 byte 在後」；盤點檔分析的是主韌體（高在前），主韌體 #67 改成跟 R4 版逐 byte 相同。命令 10~12 = 0；0x01、0x0A、0x0F、F1~F4 都觸發航向歸零（刻意，不動）。",
+    "大通道 [0..7] 四個航向 int16 鎖住；[8..9] 轉向軸角速度、[10..11] 俯仰角、[12..13] 俯仰角速度為 #67 追加；[14..23] 與尾段 24~28 維持 0（教練程式可能讀 ColorID／Cyan 回傳值，不放 F3／ID）。",
+    "SPIKE 不做（hosts.spike = false，使用者先前決定），所有值 spike = []。",
+    "B-13：E1~E4 加速度計／磁力計校準開始／結束補回（v1 的 0x20 = 01/02/03/04），I2C 定案 §3 只列 E0。busyFlag：E1 → b4、E3 → b5。",
+    "俯仰角範圍定案沒寫（韌體尚無現成值，#67 用 atan2 新算），range 先填「°」不給 min/max，韌體做好後再補。",
+    "磁力信任度 08 = round(trust×255)，磁場干擾度 09 = round(disturbance×100) 上限 255，朝上的面 0A = 軸號 + 3×負向：公式照盤點 I2C v1 0x34~0x36。",
+    "角速度 10~12 = round(dps×SIGN×10)、加速度 13~15 = mm/s²×1000/9806.65、磁力 16~18 = raw×SIGN×4/15：公式照盤點 I2C v1 0x22~0x24；mBlock 一併有（I2C 定案 §4 共用值表）。",
+    "主對話 2026-10-22：06 俯仰角範圍 −90~+90、07 = gyro X（照字面），取自 F5 韌體實作。"
+  ]
+}

@@ -1,9 +1,9 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # 🧪 Controller PS4/PS5 × Arduino Examples
 
-[🔙 Back to Controller PS4/PS5 Bluetooth Receiver Home](/en/sensors/ps4/index.md)　|　[∿ MBC Universal I2C Protocol (advanced)](/en/i2c-protocol.md)
+[🔙 Back to Controller PS4/PS5 Bluetooth Receiver Home](/en/sensors/ps4/index.md)　|　[∿ MBC Universal I2C Protocol v2 (advanced)](/en/i2c-protocol.md)
 
-This page has **8 examples**, from "is it connected?" all the way to a "tank-style remote-control car", plus **rumble** and **light bar**, which only PS4/PS5 gamepads have. You can copy and upload each example as it is, and every line of the code has an English comment. **Never written code before? No problem.** Just do them one by one, in order.
+This page has **8 examples**, from "is it connected?" all the way to a "tank-style remote-control car", plus the **rumble** and **light bar** that only PS4/PS5 gamepads have. You can copy and upload each example as it is, and every line of the code has an English comment. **Never written code before? No problem.** Just do them one by one, in order.
 
 > [!TIP]
 > First time using Arduino? Read [🔰 First Time with Arduino: Start from Zero](/en/sensors/arduino-start.md) first. In 15 minutes you learn how to install the software, upload a program and see the result.
@@ -16,34 +16,71 @@ This page has **8 examples**, from "is it connected?" all the way to a "tank-sty
 
 ## 🔌 Wiring (the same for every example)
 
-| Receiver | Arduino UNO / Nano | ESP32 |
-| :---: | :---: | :---: |
-| VCC | 5V | 5V (VIN) |
-| GND | GND | GND |
-| RX (= SDA) | A4 | GPIO 21 |
-| TX (= SCL) | A5 | GPIO 22 |
+| Receiver | Arduino UNO / Nano | Arduino UNO R4 | ESP32 |
+| :---: | :---: | :---: | :---: |
+| VCC | 5V | 5V | 5V (VIN) |
+| GND | GND | GND | GND |
+| RX (= SDA) | A4 | SDA | GPIO 21 |
+| TX (= SCL) | A5 | SCL | GPIO 22 |
+
+<div style="text-align: center;">
+<img src="/images/figures/ps4/wiring-uno.svg" alt="Wiring diagram: Controller PS4/PS5 receiver to Arduino UNO" style="max-width: 520px; width: 100%; margin: 1rem auto; display: block;" />
+</div>
 
 > [!IMPORTANT]
 > - Use the **Universal I2C edition** of the receiver. The SPIKE and EV3 editions have different firmware and cannot connect to Arduino directly.
-> - The receiver's pins are printed **TX and RX**: on the I2C edition, **TX is SCL and RX is SDA**.
-> - The receiver has a voltage converter inside, so you can connect it directly to an UNO (5 V) or an ESP32 (3.3 V).
+> - The receiver is marked **TX, RX**: on the I2C edition **TX is SCL and RX is SDA**.
+> - The receiver has a built-in level shifter, so UNO (5 V), UNO R4 and ESP32 (3.3 V) can all connect directly.
 > - Unplug the USB cable before you connect the wires.
 
 ---
 
 <h2 id="pair">🔗 First time: pair the gamepad with the receiver</h2>
 
-The gamepad must be "paired" first, so the receiver knows it. You only do this once. After that it connects by itself.
+The gamepad must be "paired" first, so the receiver knows it. You only do this once; after that it connects automatically.
 
-1. Connect the wires as above and plug the Arduino into USB (this powers on the receiver).
-2. A **new** receiver waits **30 seconds** for a gamepad when it powers on. **Already paired and want to change gamepads?** Press the **Reset** button on the receiver. It also waits 30 seconds. When the receiver's green light flashes quickly, it is waiting for a gamepad.
-3. Within those 30 seconds, put the gamepad into pairing mode:
-   - **PS4 gamepad**: hold **SHARE + PS** together until the light bar flashes quickly.
-   - **PS5 gamepad**: hold **Create + PS** together until the light bar flashes quickly.
-4. After it connects, the receiver remembers this gamepad. From then on, just press the gamepad's **PS** button and it connects by itself.
+1. Wire it up as above and plug the Arduino into USB (this powers the receiver).
+2. A **brand-new** receiver waits **30 seconds** for a gamepad after power-on. If it is **already paired and you want to change the gamepad**, press the **Reset** button on the receiver; it waits 30 seconds the same way. When the green light on the receiver blinks fast, it is waiting for a gamepad.
+3. Within these 30 seconds, put the gamepad into pairing mode:
+   - **PS4 gamepad**: hold **SHARE + PS** at the same time until the light bar blinks fast.
+   - **PS5 gamepad**: hold **Create + PS** at the same time until the light bar blinks fast.
+4. Once connected, the receiver remembers this gamepad. From now on, just press the **PS** button on the gamepad and it connects automatically.
 
 > [!TIP]
-> When many groups pair in the same classroom, let them pair **one group at a time**. Otherwise another group's gamepad may be in pairing mode during those 30 seconds and connect to the wrong receiver. Paired the wrong one? Press Reset and pair again.
+> When many groups pair at the same time in a classroom, do it **one group at a time**. Otherwise another group's gamepad may also be in pairing mode during the 30 seconds and connect to the wrong receiver. If the wrong gamepad got paired, press Reset and pair again.
+
+---
+
+<h2 id="cmds">📖 Command overview (what this receiver can give you)</h2>
+
+Think of the receiver as a row of numbered "boxes". Each box holds one number (int16). Write `[number]`, then read 2 bytes, and you get one value. Boxes next to each other can be read in one row (up to 16). In the examples, `mbcRead(ADDR, number)` and `mbcReadMany(ADDR, first number, how many, array)` do exactly this.
+
+<!-- gen:cmd-table -->
+| Number | Name | Range / unit | Meaning | Used in |
+| :---: | :--- | :--- | :--- | :--- |
+| `01` | 16 buttons | 0~65535 (bits) | All 16 buttons in one number (PSX order): bit0 SELECT(SHARE), 1 L3, 2 R3, 3 START(OPTIONS), 4 ↑, 5 →, 6 ↓, 7 ←, 8 L2, 9 R2, 10 L1, 11 R1, 12 ▲, 13 ●, 14 ✕, 15 ■; 1 = pressed | Examples 2, 3, 7 |
+| `02` | D-pad | 0~15 | ↑ 1, → 2, ↓ 4, ← 8; pressing several adds them up | Examples 2, 3 |
+| `03` | Shape buttons | 0~15 | ▲ 1, ● 2, ✕ 4, ■ 8 | Examples 2, 3 |
+| `04` | Shoulder buttons | 0~15 | L2 1, R2 2, L1 4, R1 8 | Examples 2, 3 |
+| `05` | Function buttons | 0~15 | SELECT(SHARE) 1, L3 2, R3 4, START(OPTIONS) 8 | Examples 2, 3 |
+| `06` | Connected | 0~1 | 1 = gamepad connected and data received within the last 0.3 s; when disconnected all buttons are 0 and sticks are 0 | Examples 2, 5, 6 |
+| `07` | Battery | 0~100 % | Gamepad battery level | Examples 1, 2, 5 |
+| `08` | L2 analog | 0~255 | How hard L2 is pressed | Examples 2, 5 |
+| `09` | R2 analog | 0~255 | How hard R2 is pressed | Examples 2, 5, 7 |
+| `0A` | System buttons | bits | b0 PS button, b1 capture button (PS5: mute button) | Examples 2, 5 |
+| `0B` | Gamepad type | 0~4 | 0 none, 1 PS2 digital, 2 PS2 analog, 3 PS4, 4 PS5 (or other) | Examples 2, 5 |
+| `10`~`13` | Sticks LX / LY / RX / RY | −100~+100 | 0 = middle, right / up are positive | Examples 2, 4, 6, 8 |
+| `F0` | Device ID | — | low byte = factory address 0x42, high byte = type (1 PS2, **2 PS4/PS5**) | Example 1 |
+| `F1` | Protocol version | 2 | These examples are written for version 2 | Example 1 |
+| `F2` | Firmware version | major x 100 + minor | for example 102 = 1.2 | Example 1 |
+| `F3` | Status flags | bits | b0 ready, b1 gamepad connected | Example 1, mbcWaitReady in every example |
+| `F5` | Seconds since power-on | 0~32767 | If the number gets smaller, the receiver has restarted | Example 1 |
+| `E5` (write) | Rumble | [strength 0~255] | 0 = stop; each command rumbles for 200 ms | Example 7 |
+| `E6` (write) | Light bar color | [R][G][B] | each 0~255, must be exactly 3 bytes; remembered while not connected | Example 8 |
+<!-- /gen -->
+
+> [!NOTE]
+> A box that does not exist (for example `0C`~`0F`) reads as `-32768` (called `MBC_NONE` in the examples). You also get `-32768` when the receiver cannot be read. Full specification: [MBC Universal I2C Protocol v2](/en/i2c-protocol.md).
 
 ---
 
@@ -51,150 +88,153 @@ The gamepad must be "paired" first, so the receiver knows it. You only do this o
 
 | # | Example | What you learn | You also need |
 | :---: | :--- | :--- | :--- |
-| 1 | [Say hello to the receiver](#ex1) | Check the wiring, whether the gamepad is connected, and how much battery is left | Nothing |
-| 2 | [Which button did I press?](#ex2) | Read the 16 buttons and the PS button | Nothing |
-| 3 | [How far is the stick pushed?](#ex3) | Read the numbers of the sticks and analog triggers | Nothing |
-| 4 | [Remote-control light](#ex4) | Control the light on the board with buttons and a stick | Nothing |
-| 5 | [A servo that follows the stick (advanced)](#ex5) | Control an angle with a stick | SG90 servo |
-| 6 | [Tank-style remote-control car (advanced)](#ex6) | Drive with two sticks, stop by itself when the connection is lost | Two-wheel car, L298N motor driver board |
-| 7 | [Make the gamepad rumble](#ex7) | Make the gamepad vibrate from the Arduino | Nothing |
-| 8 | [Change the light bar color](#ex8) | Change the color and brightness of the gamepad's light bar | Nothing |
+| 1 | [Say hello to the receiver](#ex1) | Check the wiring, read the ID card (F0~F3), see whether the gamepad is connected | Nothing |
+| 2 | [Print all the values at once](#ex2) | See what every box holds (01~0B, 10~13) | Nothing |
+| 3 | [Which button did you press?](#ex3) | Split the 16-button value into bits, the four button groups | Nothing |
+| 4 | [How far is the stick pushed?](#ex4) | Sticks ±100, drawn as a cross chart | Nothing |
+| 5 | [Gamepad status](#ex5) | Connection, battery, analog triggers, PS button, gamepad type | Nothing |
+| 6 | [Tank-style remote-control car (advanced)](#ex6) | Drive with two sticks, stop automatically on disconnect | Two-wheel car, L298N motor driver board |
+| 7 | [Make the gamepad rumble](#ex7) | Write command E5 | Nothing |
+| 8 | [Set the light bar color with the sticks](#ex8) | Write command E6 (3 parameters) | Nothing |
 
 > [!TIP]
-> **Suggested order: 1 → 2 → 3 → 4 → 7 → 8 → 5 → 6.** Examples 7 and 8 need no extra parts, so you can try them early. Examples 5 and 6 need extra parts.
+> **Suggested order: 1 → 2 → 3 → 4 → 5 → 7 → 8 → 6.** Only example 6 needs extra parts.
 
 ---
 
 <h2 id="ex1">1️⃣ Say hello to the receiver</h2>
 
-**What it does:** Checks that the receiver is connected, and shows whether the gamepad is connected and how much battery is left. Run this one first every time you connect a new receiver.
+**What it does:** Checks that the receiver is connected and prints its "ID card" (factory address, type, protocol version, firmware version, status flags). Then it keeps watching the gamepad and tells you when it connects or disconnects. Run this one first every time you connect a new receiver.
 
 **Steps:**
 1. Connect the 4 wires as in the table above, then plug the USB cable into the computer.
 2. Copy the code below, paste it into the Arduino IDE and click **→ Upload**.
 3. Open the Serial Monitor (the magnifying glass at the top right) and choose **115200** baud.
-4. Press the gamepad's **PS** button and see if the computer says "gamepad connected". (A gamepad that was never paired must be [paired](#pair) first.)
+4. Press the **PS** button on the gamepad and watch for "Gamepad connected!". (A gamepad that has never been paired: follow the [pairing](#pair) steps above first.)
 
 <a href="/examples/ps4/arduino-en/ps4_01_hello/ps4_01_hello.ino" download data-ignore="true">📄 Download ps4_01_hello.ino</a>
 
 <!-- ino: examples/ps4/arduino-en/ps4_01_hello/ps4_01_hello.ino -->
 ```cpp
 /*
- * Controller PS4/PS5 x Arduino  Example 1: Say hello to the receiver
+ * Controller PS4/PS5 x Arduino   Example 1: Say hello to the receiver
  * ------------------------------------------------------------
  * What does this example do?
- *   Checks that the receiver is connected. If it is, the computer shows the receiver's name and version.
- *   Then it keeps watching the gamepad: it tells you when the gamepad connects or disconnects,
- *   and how much battery is left when it connects.
+ *   Checks that the receiver is connected. If it is, it prints the receiver's
+ *   "ID card" (device ID, type, protocol version, firmware version) and its
+ *   current status. Then it keeps watching the gamepad: it tells you when the
+ *   gamepad connects and when it disconnects.
  *   Run this example first every time you connect a new receiver.
  *
- * You need:
- *   Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad.
+ * You need: Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad (already paired), Arduino UNO / Nano / UNO R4 or ESP32.
  *
- * Wiring (Arduino UNO / Nano):
- *   Receiver VCC -> 5V              Receiver GND -> GND
- *   Receiver RX (= SDA) -> A4       Receiver TX (= SCL) -> A5
- *   (On the I2C edition, the pin printed TX is SCL and the pin printed RX is SDA)
+ * Wiring:
+ *   Receiver VCC -> 5V      Receiver GND -> GND
+ *   Receiver RX (= SDA) -> A4      Receiver TX (= SCL) -> A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
+ *   (On the I2C edition, the pin marked TX is SCL and RX is SDA)
  *
  * How to see the result:
  *   After uploading, open the Serial Monitor and choose 115200 baud.
- *   Then press the PS button in the middle of the gamepad and see if the computer says "Gamepad connected".
+ *   Press the PS button on the gamepad to connect it and watch for "Gamepad connected!".
  *
- * First time? Pair the gamepad first:
- *   1. A new receiver (never paired) waits 30 seconds for a gamepad when it powers on.
- *      Already paired and want to change gamepads? Press the Reset button on the receiver. It also waits 30 seconds.
- *   2. Within those 30 seconds, hold SHARE + PS on a PS4 gamepad (Create + PS on a PS5 gamepad)
- *      until the light bar flashes quickly.
- *   3. After it connects, the receiver remembers this gamepad. Next time just press the PS button and it reconnects.
+ * Tip:
+ *   The first time, you must pair: within 30 s after the receiver powers on (or after you press Reset),
+ *   hold SHARE + PS on a PS4 gamepad, or Create + PS on a PS5 gamepad, until the light bar blinks fast.
  */
 
 #include <Wire.h>                        // Arduino's built-in I2C tool, used to talk to the receiver
 
-const uint8_t SENSOR_ADDR = 0x42;        // The Controller receiver's "address", always 0x42
+const uint8_t ADDR = 0x42;               // The receiver's "house number" (I2C address). PS2 and PS4 are both 0x42
+const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
 
-bool    wasConnected = false;            // Was the gamepad connected the last time we looked?
-uint8_t lastType     = 0;                // The gamepad type we saw last time
+// Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+
+bool wasConnected = false;               // Was the gamepad connected the last time we looked?
 
 void setup() {
-  Serial.begin(115200);                  // Open the channel to the computer, speed 115200
-  mbcBegin();                            // Get I2C ready (the helpers are at the bottom of the file)
-  delay(500);                            // Give the receiver 0.5 seconds to power on
+  Serial.begin(115200);                  // Open the channel to the computer at 115200 baud
+  mbcBegin();                            // Get I2C ready (helper at the bottom of the file)
+  delay(500);                            // Give the receiver 0.5 s to boot
 
   Serial.println(F("=== Controller PS4/PS5: Say hello to the receiver ==="));
 
-  // Wait until the receiver says "I'm ready", up to 5 seconds (the PS4 receiver needs a bit over 1 second to start)
-  if (!mbcWaitReady(5000)) {
+  // Wait until the receiver says "I am ready" (bit0 of status flags F3), up to 5 seconds
+  if (!mbcWaitReady(ADDR, 5000)) {
     Serial.println(F("Receiver not found! Please check:"));
-    Serial.println(F("  1. RX (SDA) goes to A4 and TX (SCL) goes to A5. Are they swapped?"));
-    Serial.println(F("  2. VCC goes to 5V and GND goes to GND. Are they plugged in firmly? Is the light on the receiver on?"));
-    Serial.println(F("  3. Is your receiver the Universal I2C edition? (The SPIKE and EV3 editions cannot connect to Arduino)"));
-    while (true) {}                      // Not found: stop here
+    Serial.println(F("  1. RX (SDA) -> A4, TX (SCL) -> A5 (ESP32: 21 / 22). Are they swapped?"));
+    Serial.println(F("  2. VCC -> 5V, GND -> GND. Plugged in firmly? Is the light on the receiver on?"));
+    Serial.println(F("  3. Is your receiver the Universal I2C edition? (SPIKE and EV3 editions cannot connect to Arduino)"));
+    while (true) {}                      // Stop here if not found
   }
 
-  // Read the "version data": box 0x01 of the receiver, 17 numbers
-  uint8_t info[17];
-  mbcRead(0x01, info, 17);
-
-  // Numbers 9 ~ 16 are the receiver's name (letters)
-  char name[9] = {0};
-  memcpy(name, &info[9], 8);
-
-  Serial.print(F("Found it! Receiver model: "));
-  Serial.println(name);                  // Should print PS4
-
-  Serial.print(F("Firmware version: "));
-  Serial.print(info[2]);                 // Major version
-  Serial.print('.');
-  Serial.println(info[3]);               // Minor version
-
+  // ---- F0 device ID: low byte = factory address, high byte = type (1 = PS2, 2 = PS4/PS5) ----
+  int16_t id = mbcRead(ADDR, 0xF0);
+  uint8_t factoryAddr = (uint8_t)(id & 0xFF);        // Factory address (stays the same even if you changed the address)
+  uint8_t kind        = (uint8_t)((id >> 8) & 0xFF); // hw[0]: 1 = PS2 receiver, 2 = PS4/PS5 receiver
+  Serial.print(F("Found it! Factory address 0x"));
+  Serial.println(factoryAddr, HEX);      // Should be 42
   Serial.print(F("Type: "));
-  if (info[7] == 1)      Serial.println(F("PS2 2.4G receiver"));
-  else if (info[7] == 2) Serial.println(F("PS4/PS5 Bluetooth receiver"));
-  else                   Serial.println(F("Unknown type"));
+  if (kind == 1)      Serial.println(F("PS2 2.4G receiver"));
+  else if (kind == 2) Serial.println(F("PS4/PS5 Bluetooth receiver"));
+  else                Serial.println(F("Unknown type"));
 
-  Serial.println(F("Wiring is correct! Now press the PS button on the gamepad to switch it on."));
+  // ---- F1 protocol version (these examples are written for version 2) ----
+  Serial.print(F("Protocol version: "));
+  Serial.println(mbcRead(ADDR, 0xF1));
+
+  // ---- F2 firmware version: major x 100 + minor (for example 102 = 1.2) ----
+  int16_t fw = mbcRead(ADDR, 0xF2);
+  Serial.print(F("Firmware version: "));
+  Serial.print(fw / 100);
+  Serial.print('.');
+  Serial.println(fw % 100);
+
+  // ---- F3 status flags: each bit means one thing ----
+  int16_t st = mbcRead(ADDR, 0xF3);
+  Serial.println(F("Current status:"));
+  Serial.print(F("  bit0 ready              ")); Serial.println((st & 0x01) ? F("yes") : F("no"));
+  Serial.print(F("  bit1 gamepad connected  ")); Serial.println((st & 0x02) ? F("yes") : F("no"));
+
+  // ---- F5 seconds since power-on (just to see how long it has been running) ----
+  Serial.print(F("Seconds since power-on: "));
+  Serial.println(mbcRead(ADDR, 0xF5));
+
+  Serial.println(F("Wiring is correct! Now press the PS button on the gamepad to connect it."));
 }
 
 void loop() {
-  // Read the "status data": box 0x31, 9 numbers
-  uint8_t st[9];
-  if (!mbcRead(0x31, st, 9)) {
-    Serial.println(F("Cannot read the receiver. Is a wire loose?"));
+  // Every pass, look at bit1 of F3 (is the gamepad connected?). Only print when it changes, so the screen stays clean
+  int16_t st = mbcRead(ADDR, 0xF3);
+  if (st == MBC_NONE) {                  // Could not read = a wire came loose
+    Serial.println(F("Cannot read the receiver. Did a wire come loose?"));
     delay(1000);
     return;
   }
-
-  bool    connected = st[0] & 0x02;      // Bit 1 of number 0: 1 = gamepad connected
-  uint8_t type      = st[2];             // Gamepad type: 0 = not connected, 3 = PS4 gamepad, 4 = PS5 or other Bluetooth gamepad
-  uint8_t battery   = st[3];             // Gamepad battery: 0 = unknown, 255 = full
-
-  // Only print when something changed, so the screen doesn't fill up
-  if (connected != wasConnected || type != lastType) {
-    if (!connected) {
-      Serial.println(F("Gamepad not connected (press the PS button; the first time you must pair it)"));
+  bool connected = st & 0x02;
+  if (connected != wasConnected) {
+    if (connected) {
+      Serial.print(F("Gamepad connected! Battery "));
+      Serial.print(mbcRead(ADDR, 0x07));  // 07 battery 0~100 (a PS2 gamepad has no battery level, always 0)
+      Serial.println(F("%"));
     } else {
-      if (type == 3) Serial.print(F("PS4 gamepad connected! "));
-      else           Serial.print(F("PS5 (or other Bluetooth) gamepad connected! "));
-      if (battery > 0) {
-        Serial.print(F("Battery about "));
-        Serial.print((int)battery * 100 / 255);   // Change 0~255 into 0~100%
-        Serial.print('%');
-      }
-      Serial.println();
+      Serial.println(F("Gamepad not connected"));
     }
     wasConnected = connected;
-    lastType = type;
   }
-
-  delay(200);                            // Look again every 0.2 seconds
+  delay(50);
 }
 
 // ============================================================
-// Below are the "Communication helpers": they talk to the receiver.
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
 // They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] -> wait 2 ms -> read 2 x k bytes = k int16 values (little-endian) starting at that number
+//   If the number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
 // ============================================================
 
-// Start I2C communication (call once in setup)
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -202,171 +242,355 @@ void mbcBegin() {
 #endif
 }
 
-// Read n numbers from box reg of the receiver into buf. Returns true if it worked
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// From the sensor at address addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting at number id
   if (Wire.endTransmission() != 0) return false;
-  delay(2);                              // Wait 2 ms for the receiver to get the data ready (the PS4 receiver needs this, do not delete it)
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // Wait 2 ms before reading (ESP32-based products need this)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-// Write the number value into box reg of the receiver. Returns true if it worked
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-// Write several numbers at once (for example red, green and blue for the light bar). Returns true if it worked
-bool mbcWriteBytes(uint8_t reg, const uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(buf, n);
-  return Wire.endTransmission() == 0;
-}
-
-// Wait until the receiver is ready, up to timeoutMs milliseconds. Returns true when ready
-bool mbcWaitReady(uint16_t timeoutMs) {
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), up to ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;
 }
 ```
 
-**You will see:** (the gamepad connects, then you hold the PS button for 10 seconds to switch it off)
+**You will see:** (gamepad connects, then you hold the PS button for 10 s to turn it off)
 
 ```text
 === Controller PS4/PS5: Say hello to the receiver ===
-Found it! Receiver model: PS4
-Firmware version: 1.0
+Found it! Factory address 0x42
 Type: PS4/PS5 Bluetooth receiver
-Wiring is correct! Now press the PS button on the gamepad to switch it on.
-PS4 gamepad connected! Battery about 80%
-Gamepad not connected (press the PS button; the first time you must pair it)
+Protocol version: 2
+Firmware version: 1.2
+Current status:
+  bit0 ready              yes
+  bit1 gamepad connected  no
+Seconds since power-on: 3
+Wiring is correct! Now press the PS button on the gamepad to connect it.
+Gamepad connected! Battery 80%
+Gamepad not connected
 ```
 
 > [!NOTE]
 > **What are the "Communication helpers"?** At the bottom of every example there is the same piece of code. It "talks" to the receiver. You don't need to change it or understand it. Just remember:
-> - `mbcRead(box number, where to put it, how many)`: read data from the receiver
-> - `mbcWrite(box number, number)`: write one number into the receiver (for example the rumble power)
-> - `mbcWriteBytes(box number, where it is, how many)`: write several numbers at once (for example red, green and blue for the light bar)
+> - `mbcRead(ADDR, number)`: read one value (returns `-32768` if it cannot be read)
+> - `mbcReadMany(ADDR, first number, how many, array)`: read a row of values starting at a number (up to 16, all from the same instant)
+> - `mbcWrite(ADDR, command, parameters, how many bytes)`: send a command (for example rumble, light bar)
+> - `mbcWaitReady(ADDR, milliseconds)`: wait until the receiver has booted
 >
-> Think of the receiver as a row of numbered "boxes" (programmers call them registers). Each box holds different data. For example, box `0x11` holds "the gamepad's buttons and sticks", and box `0x31` holds "is the gamepad connected?".
->
-> The helpers for the PS4/PS5 receiver have a line `delay(2)` (wait 2 milliseconds before reading). **Do not delete it**, or you will read wrong data.
->
-> From example 2 on, there is one more piece of code above the helpers: `readPad`. It reads the gamepad data (box `0x11`) and does a "sanity check": wrong readings are thrown away. It is also the same in every example, and you don't need to change it. Why do we need it? See the [FAQ](#faq-updown).
+> The helpers contain one line `delay(2)` (wait 2 ms after writing the number, before reading). **Do not remove it**: the PS4/PS5 receiver is built on an ESP32 and needs these 2 ms to prepare the data.
 
 ---
 
-<h2 id="ex2">2️⃣ Which button did I press?</h2>
+<h2 id="ex2">2️⃣ Print all the values at once</h2>
 
-**What it does:** Press any button on the gamepad and the computer tells you which one you pressed. It also tells you when you let go. You can press several at once, and the **PS button** in the middle of the gamepad works too.
+**What it does:** Every 0.5 s it prints every value in the value table: `01`~`0B` in one read of 11, `10`~`13` in one read of 4. Press buttons and push the sticks, watch which line changes, and you know what each box is.
 
-<a href="/examples/ps4/arduino-en/ps4_02_buttons/ps4_02_buttons.ino" download data-ignore="true">📄 Download ps4_02_buttons.ino</a>
+<a href="/examples/ps4/arduino-en/ps4_02_all_values/ps4_02_all_values.ino" download data-ignore="true">📄 Download ps4_02_all_values.ino</a>
 
-<!-- ino: examples/ps4/arduino-en/ps4_02_buttons/ps4_02_buttons.ino -->
+<!-- ino: examples/ps4/arduino-en/ps4_02_all_values/ps4_02_all_values.ino -->
 ```cpp
 /*
- * Controller PS4/PS5 x Arduino  Example 2: Which button did I press?
+ * Controller PS4/PS5 x Arduino   Example 2: Print all the values at once
  * ------------------------------------------------------------
  * What does this example do?
- *   Press any button on the gamepad and the computer tells you "Pressed: ✕ Cross".
- *   When you let go it says "Released: ✕ Cross". You can press several at once.
- *   The PS button in the middle of the gamepad works too.
+ *   Every 0.5 s it prints every value in the receiver's "value table", so you can
+ *   see what each number holds:
+ *     01~0B: buttons, connection, battery, triggers, system buttons, gamepad type (11 values in one read)
+ *     10~13: the four stick axes LX, LY, RX, RY (4 values in one read)
+ *   Numbers that are next to each other can be read "in one row" (mbcReadMany),
+ *   and you get the values from the same instant.
  *
- * You need:
- *   Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad (already paired).
+ * You need: Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad (already paired), Arduino UNO / Nano / UNO R4 or ESP32.
  *
- * Wiring (Arduino UNO / Nano):
- *   Receiver VCC -> 5V              Receiver GND -> GND
- *   Receiver RX (= SDA) -> A4       Receiver TX (= SCL) -> A5
+ * Wiring:
+ *   Receiver VCC -> 5V      Receiver GND -> GND
+ *   Receiver RX (= SDA) -> A4      Receiver TX (= SCL) -> A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
+ *   (On the I2C edition, the pin marked TX is SCL and RX is SDA)
  *
  * How to see the result:
- *   After uploading, open the Serial Monitor and choose 115200 baud.
- *   Press the PS button to connect the gamepad, then press some buttons.
+ *   After uploading, open the Serial Monitor and choose 115200 baud. Press buttons, push the sticks, and watch which number changes.
  *
- * Good to know:
- *   The state of the 16 buttons is kept in one 16-bit number. Each button uses one "bit":
- *   pressed = 1, not pressed = 0. Like 16 light switches in a row.
- *   Pressing "up and down together" or "left and right together" on the D-pad is not printed:
- *   a gamepad cannot really do that, so the program treats it as a wrong reading and throws it away
- *   (see readPad at the bottom of the file).
+ * Tip:
+ *   The first time, you must pair: within 30 s after the receiver powers on (or after you press Reset),
+ *   hold SHARE + PS on a PS4 gamepad, or Create + PS on a PS5 gamepad, until the light bar blinks fast.
  */
 
 #include <Wire.h>                        // Arduino's built-in I2C tool
 
-const uint8_t SENSOR_ADDR = 0x42;        // The Controller receiver's address
+const uint8_t ADDR = 0x42;               // The receiver's "house number" (I2C address). PS2 and PS4 are both 0x42
+const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
 
-uint16_t lastButtons = 0;                // The button state we saw last time
-bool     lastPs      = false;            // Was the PS button pressed last time?
+// Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+
+unsigned long lastPrint = 0;             // When we last printed
 
 void setup() {
   Serial.begin(115200);
   mbcBegin();
   delay(500);
+  if (!mbcWaitReady(ADDR, 5000)) {
+    Serial.println(F("Receiver not found. Run Example 1 first to check the wiring."));
+    while (true) {}
+  }
+  Serial.println(F("Ready! Printing all values every 0.5 s."));
+}
 
-  if (!mbcWaitReady(5000)) {
-    Serial.println(F("Receiver not found. Run example 1 first to check the wiring."));
+void loop() {
+  if (millis() - lastPrint >= 500) {     // 👉 You can change this: print every 0.5 s
+    lastPrint = millis();
+
+    // ---- Part 1: numbers 01~0B, 11 values in one read ----
+    int16_t a[11];
+    if (!mbcReadMany(ADDR, 0x01, 11, a)) { Serial.println(F("Cannot read (part 1)")); return; }
+    // ---- Part 2: numbers 10~13, 4 values in one read ----
+    int16_t s[4];
+    if (!mbcReadMany(ADDR, 0x10, 4, s)) { Serial.println(F("Cannot read (part 2)")); return; }
+
+    Serial.println(F("------------------------------"));
+    Serial.print(F("01 16 buttons (PSX order, binary): ")); printBits16((uint16_t)a[0]); Serial.println();
+    Serial.print(F("02 D-pad (up1 right2 down4 left8)     : ")); Serial.println(a[1]);
+    Serial.print(F("03 Shape buttons (▲1 ●2 ✕4 ■8)        : ")); Serial.println(a[2]);
+    Serial.print(F("04 Shoulder (L2 1 R2 2 L1 4 R1 8)      : ")); Serial.println(a[3]);
+    Serial.print(F("05 Function (SELECT1 L3 2 R3 4 START8) : ")); Serial.println(a[4]);
+    Serial.print(F("06 Connected (1 = yes)                 : ")); Serial.println(a[5]);
+    Serial.print(F("07 Battery 0~100        : ")); Serial.println(a[6]);
+    Serial.print(F("08 L2 analog 0~255                     : ")); Serial.println(a[7]);
+    Serial.print(F("09 R2 analog 0~255                     : ")); Serial.println(a[8]);
+    Serial.print(F("0A System buttons (b0 PS, b1 capture)  : ")); Serial.println(a[9]);
+    Serial.print(F("0B Gamepad type 0~4                    : ")); Serial.println(a[10]);
+    Serial.print(F("10 LX  11 LY  12 RX  13 RY (±100): "));
+    for (uint8_t i = 0; i < 4; i++) { Serial.print(s[i]); Serial.print(i < 3 ? F("  ") : F("")); }
+    Serial.println();
+  }
+  delay(50);
+}
+
+// Print a 16-bit number as 16 zeros and ones (left = bit15 ■, right = bit0 SELECT)
+void printBits16(uint16_t v) {
+  for (int8_t i = 15; i >= 0; i--) {
+    Serial.print((v >> i) & 1);
+    if (i % 4 == 0 && i > 0) Serial.print(' ');   // A space every 4 bits, easier to read
+  }
+}
+
+// ============================================================
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
+// They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] -> wait 2 ms -> read 2 x k bytes = k int16 values (little-endian) starting at that number
+//   If the number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
+// ============================================================
+
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // If a wire is loose, the Arduino will not freeze
+#endif
+}
+
+// From the sensor at address addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting at number id
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // Wait 2 ms before reading (ESP32-based products need this)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), up to ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+```
+
+**You will see:** (holding ✕ and ↑, left stick pushed all the way right)
+
+```text
+Ready! Printing all values every 0.5 s.
+------------------------------
+01 16 buttons (PSX order, binary): 0100 0000 0001 0000
+02 D-pad (up1 right2 down4 left8)     : 1
+03 Shape buttons (▲1 ●2 ✕4 ■8)        : 4
+04 Shoulder (L2 1 R2 2 L1 4 R1 8)      : 0
+05 Function (SELECT1 L3 2 R3 4 START8) : 0
+06 Connected (1 = yes)                 : 1
+07 Battery 0~100 (PS2 always 0)        : 80
+08 L2 analog 0~255                     : 0
+09 R2 analog 0~255                     : 0
+0A System buttons (b0 PS, b1 capture)  : 0
+0B Gamepad type 0~4                    : 3
+10 LX  11 LY  12 RX  13 RY (±100): 100  0  0  0
+```
+
+> [!TIP]
+> In the binary line, the left end is bit15 (■) and the right end is bit0 (SELECT). Above, ✕ is bit14 and ↑ is bit4, so you see two 1s.
+
+---
+
+<h2 id="ex3">3️⃣ Which button did you press?</h2>
+
+**What it does:** Press any button on the gamepad and the computer tells you which one; it also tells you when you release it. You can press several at the same time. When any of the four "button groups" (D-pad, shape, shoulder, function) changes, it prints one more line.
+
+<a href="/examples/ps4/arduino-en/ps4_03_buttons/ps4_03_buttons.ino" download data-ignore="true">📄 Download ps4_03_buttons.ino</a>
+
+<!-- ino: examples/ps4/arduino-en/ps4_03_buttons/ps4_03_buttons.ino -->
+```cpp
+/*
+ * Controller PS4/PS5 x Arduino   Example 3: Which button did you press?
+ * ------------------------------------------------------------
+ * What does this example do?
+ *   Press any button on the gamepad and the computer tells you which one. It also
+ *   tells you when you release it. You can press several buttons at the same time.
+ *   The state of all 16 buttons is packed into one number (number 01, "16 buttons").
+ *   Each button takes one "bit": pressed = 1, not pressed = 0, like 16 light switches in a row.
+ *   Numbers 02~05 are the same buttons in "groups": D-pad, shape buttons, shoulder
+ *   buttons, function buttons, 4 buttons each. Each group is 0~15; pressing several
+ *   adds them up (for example up + right = 1 + 2 = 3).
+ *
+ * You need: Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad (already paired), Arduino UNO / Nano / UNO R4 or ESP32.
+ *
+ * Wiring:
+ *   Receiver VCC -> 5V      Receiver GND -> GND
+ *   Receiver RX (= SDA) -> A4      Receiver TX (= SCL) -> A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
+ *   (On the I2C edition, the pin marked TX is SCL and RX is SDA)
+ *
+ * How to see the result:
+ *   After uploading, open the Serial Monitor and choose 115200 baud. Press the PS button on the gamepad to connect it, then press buttons.
+ *
+ * Tip:
+ *   The first time, you must pair: within 30 s after the receiver powers on (or after you press Reset),
+ *   hold SHARE + PS on a PS4 gamepad, or Create + PS on a PS5 gamepad, until the light bar blinks fast.
+ *   The PS button and the capture button are not in the 16 buttons; they are in number 0A system buttons (b0 PS, b1 capture).
+ */
+
+#include <Wire.h>                        // Arduino's built-in I2C tool
+
+const uint8_t ADDR = 0x42;               // The receiver's "house number" (I2C address). PS2 and PS4 are both 0x42
+const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
+
+// Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+
+uint16_t lastButtons = 0;                // The 16-button state we saw last time
+int16_t  lastGroup[4] = {0, 0, 0, 0};    // The four groups 02~05 we saw last time
+
+void setup() {
+  Serial.begin(115200);
+  mbcBegin();
+  delay(500);
+  if (!mbcWaitReady(ADDR, 5000)) {
+    Serial.println(F("Receiver not found. Run Example 1 first to check the wiring."));
     while (true) {}
   }
   Serial.println(F("Ready! Press the buttons on the gamepad."));
 }
 
 void loop() {
-  // Read the "gamepad data": box 0x11, 9 numbers (readPad is at the bottom of the file and also checks for wrong readings)
-  //   [0][1] buttons (16 bits)  [2]~[5] sticks  [6][7] L2, R2 triggers  [8] system buttons
-  uint8_t d[9];
-  if (!readPad(d)) {
-    delay(100);                          // Could not read this time, try again in a moment
+  // Read numbers 01~05 (5 values) in one go: [0] 16 buttons [1] D-pad [2] shape [3] shoulder [4] function
+  int16_t v[5];
+  if (!mbcReadMany(ADDR, 0x01, 5, v)) {
+    delay(100);                          // Could not read this time, try again shortly
     return;
   }
+  uint16_t buttons = (uint16_t)v[0];     // 16 buttons: PSX order (bit0 SELECT ... bit15 ■)
 
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];   // Join the two numbers into the 16-bit button state
-
-  // Check the buttons one by one: which were "just pressed" and which were "just released"
+  // ---- 1. Check button by button: which were "just pressed" and which were "just released" ----
   for (uint8_t i = 0; i < 16; i++) {
     uint16_t mask = 1u << i;             // The "bit" of button i
     bool now    = buttons & mask;        // Is it pressed now?
     bool before = lastButtons & mask;    // Was it pressed last time?
+    if (now && !before) { Serial.print(F("Pressed: ")); printButtonName(i); Serial.println(); }
+    if (!now && before) { Serial.print(F("Released: ")); printButtonName(i); Serial.println(); }
+  }
+  lastButtons = buttons;                 // Remember this state so we can compare next time
 
-    if (now && !before) {                // Just pressed
-      Serial.print(F("Pressed: "));
-      printButtonName(i);
-      Serial.println();
-    }
-    if (!now && before) {                // Just released
-      Serial.print(F("Released: "));
-      printButtonName(i);
-      Serial.println();
-    }
+  // ---- 2. If any of the four group values changed, print one line (D-pad / shape / shoulder / function, each 0~15) ----
+  bool changed = false;
+  for (uint8_t i = 0; i < 4; i++) if (v[i + 1] != lastGroup[i]) changed = true;
+  if (changed) {
+    Serial.print(F("    Groups -> D-pad ")); Serial.print(v[1]);
+    Serial.print(F("  Shape ")); Serial.print(v[2]);
+    Serial.print(F("  Shoulder ")); Serial.print(v[3]);
+    Serial.print(F("  Function ")); Serial.println(v[4]);
+    for (uint8_t i = 0; i < 4; i++) lastGroup[i] = v[i + 1];
   }
 
-  // The PS button is not in those 16 bits. It is bit 0 of number 8 (system buttons)
-  bool ps = d[8] & 0x01;
-  if (ps && !lastPs) Serial.println(F("Pressed: PS button"));
-  if (!ps && lastPs) Serial.println(F("Released: PS button"));
-  lastPs = ps;
-
-  lastButtons = buttons;                 // Remember this time, to compare next time
-  delay(20);                             // Look every 0.02 seconds, so even quick presses are caught
+  delay(50);                             // Check every 0.05 s, so even fast presses are caught
 }
 
-// Print the name of button i (i = which bit)
+// Print the name of bit i in the 16-button value (PSX order)
 void printButtonName(uint8_t i) {
   switch (i) {
-    case 0:  Serial.print(F("SHARE button (called Create on PS5)")); break;
+    case 0:  Serial.print(F("SELECT (PS4: SHARE / PS5: Create)")); break;
     case 1:  Serial.print(F("L3 (press the left stick down)")); break;
     case 2:  Serial.print(F("R3 (press the right stick down)")); break;
-    case 3:  Serial.print(F("OPTIONS button")); break;
+    case 3:  Serial.print(F("START (PS4/PS5: OPTIONS)")); break;
     case 4:  Serial.print(F("↑ D-pad up")); break;
     case 5:  Serial.print(F("→ D-pad right")); break;
     case 6:  Serial.print(F("↓ D-pad down")); break;
@@ -383,39 +607,14 @@ void printButtonName(uint8_t i) {
 }
 
 // ============================================================
-// Read the gamepad data and do a "sanity check" (the same in every example, no need to change it)
-// ============================================================
-// Why a sanity check?
-//   When the receiver is very busy (for example, talking wirelessly to the gamepad), once in a while
-//   it is not ready in time and gives the Arduino "the box it read last time" instead
-//   (for example the status data in box 0x31).
-//   Then the button and stick numbers are wrong, and a remote-control car could start moving by itself.
-// How can we tell?
-//   On the D-pad you cannot press "up" and "down" at the same time,
-//   and you cannot press "left" and "right" at the same time.
-//   If we read that, this reading is wrong: throw it away and keep using the last good one.
-
-uint8_t lastGood[9] = {0};               // The last good gamepad data (all 0 at the start = nothing pressed)
-
-// Read box 0x11 (gamepad data, 9 numbers) into d. Returns false if the receiver cannot be read
-bool readPad(uint8_t *d) {
-  if (!mbcRead(0x11, d, 9)) return false;
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];                     // The 16-bit button state
-  bool upDown    = (buttons & (1u << 4)) && (buttons & (1u << 6));   // Up (bit 4) and down (bit 6) pressed together?
-  bool leftRight = (buttons & (1u << 7)) && (buttons & (1u << 5));   // Left (bit 7) and right (bit 5) pressed together?
-  if (upDown || leftRight) {
-    memcpy(d, lastGood, 9);              // Wrong reading -> throw it away, use the last good one
-  } else {
-    memcpy(lastGood, d, 9);              // Good reading -> remember it, in case the next one is wrong
-  }
-  return true;
-}
-
-// ============================================================
-// Below are the "Communication helpers": they talk to the receiver.
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
 // They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] -> wait 2 ms -> read 2 x k bytes = k int16 values (little-endian) starting at that number
+//   If the number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
 // ============================================================
 
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -423,203 +622,188 @@ void mbcBegin() {
 #endif
 }
 
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// From the sensor at address addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting at number id
   if (Wire.endTransmission() != 0) return false;
-  delay(2);                              // Wait 2 ms for the receiver to get the data ready (the PS4 receiver needs this, do not delete it)
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // Wait 2 ms before reading (ESP32-based products need this)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-bool mbcWriteBytes(uint8_t reg, const uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(buf, n);
-  return Wire.endTransmission() == 0;
-}
-
-bool mbcWaitReady(uint16_t timeoutMs) {
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), up to ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;
 }
 ```
 
-**You will see:** (press ✕, then press ↑ and R1 together, and last the PS button)
+**You will see:** (press ✕, then press ↑ and R1 together)
 
 ```text
 Ready! Press the buttons on the gamepad.
 Pressed: ✕ Cross
+    Groups -> D-pad 0  Shape 4  Shoulder 0  Function 0
 Released: ✕ Cross
+    Groups -> D-pad 0  Shape 0  Shoulder 0  Function 0
 Pressed: ↑ D-pad up
 Pressed: R1
-Released: ↑ D-pad up
-Released: R1
-Pressed: PS button
-Released: PS button
+    Groups -> D-pad 1  Shape 0  Shoulder 8  Function 0
 ```
-
-(Pressing "up and down together" or "left and right together" on the D-pad is not printed, because the program treats it as a wrong reading. See the [FAQ](#faq-updown) for why.)
 
 **Which bit is each of the 16 buttons?**
 
 | Bit | Button | Bit | Button |
 | :---: | :--- | :---: | :--- |
-| 0 | SHARE (PS5: Create) | 8 | L2 |
+| 0 | SELECT (PS4: SHARE / PS5: Create) | 8 | L2 |
 | 1 | L3 (press the left stick down) | 9 | R2 |
 | 2 | R3 (press the right stick down) | 10 | L1 |
-| 3 | OPTIONS | 11 | R1 |
-| 4 | ↑ Up | 12 | ▲ Triangle |
-| 5 | → Right | 13 | ● Circle |
-| 6 | ↓ Down | 14 | ✕ Cross |
-| 7 | ← Left | 15 | ■ Square |
+| 3 | START (PS4/PS5: OPTIONS) | 11 | R1 |
+| 4 | ↑ up | 12 | ▲ Triangle |
+| 5 | → right | 13 | ● Circle |
+| 6 | ↓ down | 14 | ✕ Cross |
+| 7 | ← left | 15 | ■ Square |
 
-The PS button is not in these 16 bits. It is bit 0 of number 8 (system buttons): `d[8] & 0x01`.
+The PS button and the capture button are not in these 16 bits. They are in box `0A` system buttons (b0 PS, b1 capture), which example 5 reads.
 
 > [!TIP]
-> **Try it:** To know "is ✕ pressed?", just write `if (buttons & (1u << 14)) { ... }`. `1u << 14` means "bit 14".
+> **Try it:** To know "is ✕ pressed?", just write `if (buttons & (1u << 14)) { ... }`; or read box `03` (shape buttons) and write `if (v & 4)`.
 
 ---
 
-<h2 id="ex3">3️⃣ How far is the stick pushed?</h2>
+<h2 id="ex4">4️⃣ How far is the stick pushed?</h2>
 
-**What it does:** Turns the position of the two sticks into numbers: let go = `0`, pushing right or up gives a **positive** number, pushing left or down gives a **negative** number, and all the way is `+127` or `-127`. It also prints the L2 and R2 **analog triggers**: not pressed `0`, all the way `255`, half way about `128`.
+**What it does:** Turns the position of the two sticks into numbers (box `10` LX, `11` LY, `12` RX, `13` RY): released = `0`, pushed right or up is **positive**, pushed left or down is **negative**, all the way is `+100` or `-100`. Prints every 0.3 s and also draws two cross charts.
 
-<a href="/examples/ps4/arduino-en/ps4_03_sticks/ps4_03_sticks.ino" download data-ignore="true">📄 Download ps4_03_sticks.ino</a>
+<a href="/examples/ps4/arduino-en/ps4_04_sticks/ps4_04_sticks.ino" download data-ignore="true">📄 Download ps4_04_sticks.ino</a>
 
-<!-- ino: examples/ps4/arduino-en/ps4_03_sticks/ps4_03_sticks.ino -->
+<!-- ino: examples/ps4/arduino-en/ps4_04_sticks/ps4_04_sticks.ino -->
 ```cpp
 /*
- * Controller PS4/PS5 x Arduino  Example 3: How far is the stick pushed?
+ * Controller PS4/PS5 x Arduino   Example 4: How far is the stick pushed?
  * ------------------------------------------------------------
  * What does this example do?
- *   Turns the position of the two sticks into numbers and prints them on the computer:
- *     let go (in the middle)  = 0
- *     push right or up        = positive, all the way = +127
- *     push left or down       = negative, all the way = -127
- *   It also prints the two triggers, L2 and R2: not pressed = 0, all the way = 255, half way = about 128.
+ *   Turns the position of the two sticks into numbers (number 10 LX, 11 LY, 12 RX, 13 RY):
+ *     released (in the middle) = 0; pushed right or up = positive, all the way = +100;
+ *     pushed left or down = negative, all the way = -100.
+ *   Prints the numbers every 0.3 s and draws two "cross charts": O is where the stick is now.
  *
- * You need:
- *   Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad (already paired).
+ * You need: Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad (already paired), Arduino UNO / Nano / UNO R4 or ESP32.
  *
- * Wiring (Arduino UNO / Nano):
- *   Receiver VCC -> 5V              Receiver GND -> GND
- *   Receiver RX (= SDA) -> A4       Receiver TX (= SCL) -> A5
+ * Wiring:
+ *   Receiver VCC -> 5V      Receiver GND -> GND
+ *   Receiver RX (= SDA) -> A4      Receiver TX (= SCL) -> A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
+ *   (On the I2C edition, the pin marked TX is SCL and RX is SDA)
  *
  * How to see the result:
- *   After uploading, open the Serial Monitor and choose 115200 baud. Push the sticks slowly and watch the numbers.
+ *   After uploading, open the Serial Monitor and choose 115200 baud. Push the stick slowly and watch the O move.
  *
- * Good to know:
- *   When the stick moves a little near the middle, the number stays at 0. The receiver does this on purpose
- *   (it is called a "dead zone"), so a car does not slowly drive off by itself when you let go of the stick.
+ * Tip:
+ *   When the stick wobbles a little near the middle, the number stays at 0. The receiver does this on purpose
+ *   (it is called a "dead zone"), so a car does not creep when you let go of the stick.
+ *   The first time, you must pair: within 30 s after the receiver powers on (or after you press Reset),
+ *   hold SHARE + PS on a PS4 gamepad, or Create + PS on a PS5 gamepad, until the light bar blinks fast.
  */
 
 #include <Wire.h>                        // Arduino's built-in I2C tool
 
-const uint8_t SENSOR_ADDR = 0x42;        // The Controller receiver's address
+const uint8_t ADDR = 0x42;               // The receiver's "house number" (I2C address). PS2 and PS4 are both 0x42
+const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
 
-bool connected = false;                  // Is the gamepad connected? (updated every 0.4 seconds)
-unsigned long lastStatus = 0;            // The last time we checked "is the gamepad connected?"
+// Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+
+unsigned long lastPrint = 0;
 
 void setup() {
   Serial.begin(115200);
   mbcBegin();
   delay(500);
-
-  if (!mbcWaitReady(5000)) {
-    Serial.println(F("Receiver not found. Run example 1 first to check the wiring."));
+  if (!mbcWaitReady(ADDR, 5000)) {
+    Serial.println(F("Receiver not found. Run Example 1 first to check the wiring."));
     while (true) {}
   }
   Serial.println(F("Ready! Push the sticks."));
 }
 
 void loop() {
-  // ---- 1. Every 0.4 seconds, check if the gamepad is connected: box 0x31 (status data) ----
-  //   Don't read it every loop: switching between two boxes all the time makes it easier for the receiver to mix up the data
-  if (millis() - lastStatus >= 400) {
-    lastStatus = millis();
-    uint8_t st[9];
-    connected = mbcRead(0x31, st, 9) && (st[0] & 0x02);   // Bit 1 of number 0: 1 = gamepad connected
+  if (millis() - lastPrint >= 300) {     // 👉 You can change this: print every 0.3 s
+    lastPrint = millis();
+
+    // Read numbers 10~13 (4 values) in one go: [0] LX [1] LY [2] RX [3] RY (-100 ~ +100)
+    int16_t s[4];
+    if (!mbcReadMany(ADDR, 0x10, 4, s)) { Serial.println(F("Cannot read the receiver")); return; }
+
+    Serial.print(F("Left stick X ")); Serial.print(s[0]);
+    Serial.print(F("  Y ")); Serial.print(s[1]);
+    Serial.print(F("   |   Right stick X ")); Serial.print(s[2]);
+    Serial.print(F("  Y ")); Serial.println(s[3]);
+    drawCross(s[0], s[1], s[2], s[3]);   // Draw the two cross charts
   }
+  delay(50);
+}
 
-  if (!connected) {
-    Serial.println(F("Gamepad not connected (press the PS button on the gamepad)"));
-    delay(1000);
-    return;
+// Draw two 7x7 cross charts (left stick and right stick side by side). The center is +, the stick position is O
+//   X: -100 ~ +100 -> column 0 ~ 6 (left -> right); Y: up is positive, so +100 is the top row
+void drawCross(int lx, int ly, int rx, int ry) {
+  int lcol = map(lx, -100, 100, 0, 6), lrow = map(ly, 100, -100, 0, 6);
+  int rcol = map(rx, -100, 100, 0, 6), rrow = map(ry, 100, -100, 0, 6);
+  for (int row = 0; row < 7; row++) {
+    for (int col = 0; col < 7; col++) Serial.print(cell(row, col, lrow, lcol));
+    Serial.print(F("     "));            // 5 spaces between the two charts
+    for (int col = 0; col < 7; col++) Serial.print(cell(row, col, rrow, rcol));
+    Serial.println();
   }
+  Serial.println();
+}
 
-  // ---- 2. Read the "gamepad data": box 0x11, 9 numbers ----
-  //   readPad is at the bottom of the file and also checks for wrong readings
-  uint8_t d[9];
-  if (!readPad(d)) {
-    delay(200);
-    return;
-  }
-
-  // Stick numbers can be positive or negative, so we use int8_t (a box that holds -128 ~ 127)
-  int lx = (int8_t)d[2];                 // Left stick left/right: right = positive
-  int ly = (int8_t)d[3];                 // Left stick up/down: up = positive
-  int rx = (int8_t)d[4];                 // Right stick left/right: right = positive
-  int ry = (int8_t)d[5];                 // Right stick up/down: up = positive
-  int l2 = d[6];                         // L2 trigger: 0 (not pressed) ~ 255 (all the way)
-  int r2 = d[7];                         // R2 trigger: 0 (not pressed) ~ 255 (all the way)
-
-  // Print in neat columns. %+4d = "with a + or - sign, 4 spaces wide", %3d = "3 spaces wide"
-  char line[80];
-  snprintf(line, sizeof(line), "Left stick X%+4d Y%+4d | Right stick X%+4d Y%+4d | L2 %3d R2 %3d",
-           lx, ly, rx, ry, l2, r2);
-  Serial.println(line);
-
-  delay(200);                            // 👉 You can change this: print every 0.2 seconds, make it smaller to see faster
+// Decide which character to print in one cell: O = stick position, + = center, | and - = cross lines, . = empty
+char cell(int row, int col, int posRow, int posCol) {
+  if (row == posRow && col == posCol) return 'O';
+  if (row == 3 && col == 3) return '+';
+  if (col == 3) return '|';
+  if (row == 3) return '-';
+  return '.';
 }
 
 // ============================================================
-// Read the gamepad data and do a "sanity check" (the same in every example, no need to change it)
-// ============================================================
-// Why a sanity check?
-//   When the receiver is very busy (for example, talking wirelessly to the gamepad), once in a while
-//   it is not ready in time and gives the Arduino "the box it read last time" instead
-//   (for example the status data in box 0x31).
-//   Then the button and stick numbers are wrong, and a remote-control car could start moving by itself.
-// How can we tell?
-//   On the D-pad you cannot press "up" and "down" at the same time,
-//   and you cannot press "left" and "right" at the same time.
-//   If we read that, this reading is wrong: throw it away and keep using the last good one.
-
-uint8_t lastGood[9] = {0};               // The last good gamepad data (all 0 at the start = nothing pressed)
-
-// Read box 0x11 (gamepad data, 9 numbers) into d. Returns false if the receiver cannot be read
-bool readPad(uint8_t *d) {
-  if (!mbcRead(0x11, d, 9)) return false;
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];                     // The 16-bit button state
-  bool upDown    = (buttons & (1u << 4)) && (buttons & (1u << 6));   // Up (bit 4) and down (bit 6) pressed together?
-  bool leftRight = (buttons & (1u << 7)) && (buttons & (1u << 5));   // Left (bit 7) and right (bit 5) pressed together?
-  if (upDown || leftRight) {
-    memcpy(d, lastGood, 9);              // Wrong reading -> throw it away, use the last good one
-  } else {
-    memcpy(lastGood, d, 9);              // Good reading -> remember it, in case the next one is wrong
-  }
-  return true;
-}
-
-// ============================================================
-// Below are the "Communication helpers": they talk to the receiver.
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
 // They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] -> wait 2 ms -> read 2 x k bytes = k int16 values (little-endian) starting at that number
+//   If the number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
 // ============================================================
 
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -627,405 +811,172 @@ void mbcBegin() {
 #endif
 }
 
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// From the sensor at address addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting at number id
   if (Wire.endTransmission() != 0) return false;
-  delay(2);                              // Wait 2 ms for the receiver to get the data ready (the PS4 receiver needs this, do not delete it)
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // Wait 2 ms before reading (ESP32-based products need this)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-bool mbcWriteBytes(uint8_t reg, const uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(buf, n);
-  return Wire.endTransmission() == 0;
-}
-
-bool mbcWaitReady(uint16_t timeoutMs) {
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), up to ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;
 }
 ```
 
-**You will see:** (first let go, then push the left stick all the way up, and last push the left stick half way left, the right stick all the way right, and press L2 half way)
+**You will see:** (left stick pushed to the top right corner, right stick released)
 
 ```text
 Ready! Push the sticks.
-Left stick X  +0 Y  +0 | Right stick X  +0 Y  +0 | L2   0 R2   0
-Left stick X  +0 Y+127 | Right stick X  +0 Y  +0 | L2   0 R2   0
-Left stick X -64 Y  +0 | Right stick X+127 Y  +0 | L2 128 R2   0
+Left stick X 100  Y 100   |   Right stick X 0  Y 0
+...|..O     ...|...
+...|...     ...|...
+...|...     ...|...
+---+---     ---O---
+...|...     ...|...
+...|...     ...|...
+...|...     ...|...
+
 ```
 
 > [!NOTE]
-> When the stick moves a little near the middle, the number stays at `0`. The receiver does this on purpose (it is called a "dead zone"), so a car does not slowly drive off by itself when you let go of the stick. That is why you never see small stick numbers like `1` ~ `7`.
+> When the stick wobbles a little near the middle, the number stays at `0`. The receiver does this on purpose (it is called a "dead zone"), so a car does not creep when you let go of the stick.
 
 ---
 
-<h2 id="ex4">4️⃣ Remote-control light</h2>
+<h2 id="ex5">5️⃣ Gamepad status</h2>
 
-**What it does:** Practice remote control with the small built-in light on the Arduino board (the one marked **L**): hold **✕** and the light stays on, hold **●** and the light goes off. When you press nothing the light blinks, and **the more you push the left stick up, the faster it blinks**.
+**What it does:** Every 0.5 s it prints boxes `06`~`0B` (6 values in one read): connected, battery, how hard L2 / R2 are pressed, PS button / capture button, gamepad type. When the connection state changes, it prints an extra line.
 
-<a href="/examples/ps4/arduino-en/ps4_04_led_blink/ps4_04_led_blink.ino" download data-ignore="true">📄 Download ps4_04_led_blink.ino</a>
+<a href="/examples/ps4/arduino-en/ps4_05_status/ps4_05_status.ino" download data-ignore="true">📄 Download ps4_05_status.ino</a>
 
-<!-- ino: examples/ps4/arduino-en/ps4_04_led_blink/ps4_04_led_blink.ino -->
+<!-- ino: examples/ps4/arduino-en/ps4_05_status/ps4_05_status.ino -->
 ```cpp
 /*
- * Controller PS4/PS5 x Arduino  Example 4: Remote-control light
+ * Controller PS4/PS5 x Arduino   Example 5: Gamepad status
  * ------------------------------------------------------------
  * What does this example do?
- *   Uses the gamepad to control the small built-in light on the Arduino board (the one marked L):
- *     hold ✕            -> the light stays on
- *     hold ●            -> the light goes off
- *     press nothing     -> the light blinks; the more you push the left stick up, the faster it blinks
+ *   Every 0.5 s it prints the status values that are not buttons or sticks (numbers 06~0B, 6 values in one read):
+ *     06 connected (1 = yes), 07 battery 0~100, 08 how hard L2 is pressed 0~255,
+ *     09 how hard R2 is pressed 0~255, 0A system buttons (b0 PS button, b1 capture button), 0B gamepad type.
+ *   When the connection state changes, it prints an extra line to tell you.
  *
- * You need:
- *   Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad (already paired).
- *   No extra light needed. We use the light that is already on the board.
+ * You need: Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad (already paired), Arduino UNO / Nano / UNO R4 or ESP32.
  *
- * Wiring (Arduino UNO / Nano):
- *   Receiver VCC -> 5V              Receiver GND -> GND
- *   Receiver RX (= SDA) -> A4       Receiver TX (= SCL) -> A5
+ * Wiring:
+ *   Receiver VCC -> 5V      Receiver GND -> GND
+ *   Receiver RX (= SDA) -> A4      Receiver TX (= SCL) -> A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
+ *   (On the I2C edition, the pin marked TX is SCL and RX is SDA)
  *
  * How to see the result:
- *   Watch the L light on the Arduino board. The Serial Monitor (115200) also prints the blink speed.
+ *   After uploading, open the Serial Monitor and choose 115200 baud. Press L2 and R2 slowly and watch the numbers; turn the gamepad off and watch "Connected" become 0.
  *
- * Good to know:
- *   When the gamepad is not connected, the buttons and sticks are all 0, so the light blinks slowly.
+ * Tip:
+ *   When you press L2 / R2, 08 / 09 go slowly from 0 to 255, so you can see a light press and a hard press.
  */
 
-#include <Wire.h>
+#include <Wire.h>                        // Arduino's built-in I2C tool
 
-#ifndef LED_BUILTIN
-#define LED_BUILTIN 2                    // Some ESP32 boards don't say where the built-in light is, so use pin 2
-#endif
+const uint8_t ADDR = 0x42;               // The receiver's "house number" (I2C address). PS2 and PS4 are both 0x42
+const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
 
-const uint8_t SENSOR_ADDR = 0x42;        // The Controller receiver's address
-const uint8_t LED = LED_BUILTIN;         // The light on the board (pin 13 on the UNO)
+// Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
 
-// Where the buttons are in the 16-bit number (which bit)
-const uint8_t BTN_CROSS  = 14;           // ✕ Cross
-const uint8_t BTN_CIRCLE = 13;           // ● Circle
-
-// ---- 👉 You can change these settings ----
-const int SLOW_MS = 1000;                // Stick let go: switch every 1 second (on -> off -> on)
-const int FAST_MS = 50;                  // Stick pushed all the way: switch every 0.05 seconds
-
-bool ledOn = false;                      // Is the light on or off now?
-unsigned long lastToggle = 0;            // The last time we switched the light
-int lastShown = -1;                      // The speed we printed last time (don't print the same one again)
+unsigned long lastPrint = 0;
+int16_t lastConnected = -1;              // The connection state last time (-1 = not seen yet)
 
 void setup() {
   Serial.begin(115200);
-  pinMode(LED, OUTPUT);                  // Set the light's pin to "output" so we can turn it on and off
   mbcBegin();
   delay(500);
-
-  if (!mbcWaitReady(5000)) {
-    Serial.println(F("Receiver not found. Run example 1 first to check the wiring."));
+  if (!mbcWaitReady(ADDR, 5000)) {
+    Serial.println(F("Receiver not found. Run Example 1 first to check the wiring."));
     while (true) {}
   }
-  Serial.println(F("Ready! Press ✕ for light on, ● for light off, push the left stick to change the blink speed."));
+  Serial.println(F("Ready! Printing the gamepad status every 0.5 s."));
 }
 
 void loop() {
-  // Read the gamepad data (box 0x11, 9 numbers). readPad is at the bottom of the file and also checks for wrong readings
-  uint8_t d[9];
-  if (!readPad(d)) {                     // Cannot read -> to be safe, turn the light off
-    digitalWrite(LED, LOW);
-    delay(100);
-    return;
-  }
-
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];   // The 16-bit button state
-  int ly = (int8_t)d[3];                 // Left stick up/down: up = positive (0 ~ +127)
-
-  // When the gamepad is not connected, the buttons and sticks are all 0, so the light blinks slowly like "press nothing"
-
-  // ---- 1. Hold ✕: the light stays on ----
-  if (buttons & (1u << BTN_CROSS)) {
-    digitalWrite(LED, HIGH);
-    delay(20);
-    return;
-  }
-
-  // ---- 2. Hold ●: the light goes off ----
-  if (buttons & (1u << BTN_CIRCLE)) {
-    digitalWrite(LED, LOW);
-    delay(20);
-    return;
-  }
-
-  // ---- 3. Any other time: blink; the more you push the left stick up, the faster it blinks ----
-  if (ly < 0) ly = 0;                    // Pushing down counts as not pushing
-  int interval = map(ly, 0, 127, SLOW_MS, FAST_MS);   // Change 0~127 into 1000~50 milliseconds
-
-  if (millis() - lastToggle >= (unsigned long)interval) {   // Time is up: switch once
-    lastToggle = millis();
-    ledOn = !ledOn;                      // On becomes off, off becomes on
-    digitalWrite(LED, ledOn ? HIGH : LOW);
-  }
-
-  // Only print when the speed changed
-  if (abs(interval - lastShown) >= 50) {
-    lastShown = interval;
-    Serial.print(F("Switch every "));
-    Serial.print(interval);
-    Serial.println(F(" milliseconds"));
-  }
-
-  delay(20);
-}
-
-// ============================================================
-// Read the gamepad data and do a "sanity check" (the same in every example, no need to change it)
-// ============================================================
-// Why a sanity check?
-//   When the receiver is very busy (for example, talking wirelessly to the gamepad), once in a while
-//   it is not ready in time and gives the Arduino "the box it read last time" instead
-//   (for example the status data in box 0x31).
-//   Then the button and stick numbers are wrong, and a remote-control car could start moving by itself.
-// How can we tell?
-//   On the D-pad you cannot press "up" and "down" at the same time,
-//   and you cannot press "left" and "right" at the same time.
-//   If we read that, this reading is wrong: throw it away and keep using the last good one.
-
-uint8_t lastGood[9] = {0};               // The last good gamepad data (all 0 at the start = nothing pressed)
-
-// Read box 0x11 (gamepad data, 9 numbers) into d. Returns false if the receiver cannot be read
-bool readPad(uint8_t *d) {
-  if (!mbcRead(0x11, d, 9)) return false;
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];                     // The 16-bit button state
-  bool upDown    = (buttons & (1u << 4)) && (buttons & (1u << 6));   // Up (bit 4) and down (bit 6) pressed together?
-  bool leftRight = (buttons & (1u << 7)) && (buttons & (1u << 5));   // Left (bit 7) and right (bit 5) pressed together?
-  if (upDown || leftRight) {
-    memcpy(d, lastGood, 9);              // Wrong reading -> throw it away, use the last good one
-  } else {
-    memcpy(lastGood, d, 9);              // Good reading -> remember it, in case the next one is wrong
-  }
-  return true;
-}
-
-// ============================================================
-// Below are the "Communication helpers": they talk to the receiver.
-// They are the same in every MBC example. No need to change or understand them.
-// ============================================================
-
-void mbcBegin() {
-  Wire.begin();
-#if defined(WIRE_HAS_TIMEOUT)
-  Wire.setWireTimeout(25000, true);      // If a wire is loose, the Arduino will not freeze
-#endif
-}
-
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  if (Wire.endTransmission() != 0) return false;
-  delay(2);                              // Wait 2 ms for the receiver to get the data ready (the PS4 receiver needs this, do not delete it)
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
-  return true;
-}
-
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
-  return Wire.endTransmission() == 0;
-}
-
-bool mbcWriteBytes(uint8_t reg, const uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(buf, n);
-  return Wire.endTransmission() == 0;
-}
-
-bool mbcWaitReady(uint16_t timeoutMs) {
-  unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
-    delay(50);
-  }
-  return false;
-}
-```
-
-**You will see:** (push the left stick slowly all the way up)
-
-```text
-Ready! Press ✕ for light on, ● for light off, push the left stick to change the blink speed.
-Switch every 1000 milliseconds
-Switch every 626 milliseconds
-Switch every 50 milliseconds
-```
-
-> [!TIP]
-> **Try it:** Change `int ly = (int8_t)d[3];` to `int ly = d[7] / 2;` (the R2 trigger 0 ~ 255 divided by 2 becomes 0 ~ 127). Now it is "the deeper you press the trigger, the faster it blinks".
-
----
-
-<h2 id="ex5">5️⃣ A servo that follows the stick (advanced)</h2>
-
-**What it does:** Push the left stick left and right, and the SG90 servo turns with it: all the way left 0 degrees, let go 90 degrees, all the way right 180 degrees. You can use it for the gripper of a robot arm, or a robot that turns its head.
-
-**You also need:** 1 SG90 servo.
-
-**Servo wiring:**
-
-| SG90 wire | Arduino UNO / Nano | ESP32 |
-| :---: | :---: | :---: |
-| Brown | GND | GND |
-| Red | 5V | 5V (VIN) |
-| Orange (signal) | 9 | GPIO 13 |
-
-<a href="/examples/ps4/arduino-en/ps4_05_servo/ps4_05_servo.ino" download data-ignore="true">📄 Download ps4_05_servo.ino</a>
-
-<!-- ino: examples/ps4/arduino-en/ps4_05_servo/ps4_05_servo.ino -->
-```cpp
-/*
- * Controller PS4/PS5 x Arduino  Example 5 (advanced): A servo that follows the stick
- * ------------------------------------------------------------
- * What does this example do?
- *   Push the left stick left and right, and the SG90 servo turns with it:
- *     all the way left = 0 degrees, let go (middle) = 90 degrees, all the way right = 180 degrees.
- *   You can use it for the gripper of a robot arm, or a robot that turns its head.
- *
- * You need:
- *   Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad (already paired), 1 SG90 servo.
- *
- * Wiring (Arduino UNO / Nano):
- *   Receiver VCC -> 5V              Receiver GND -> GND
- *   Receiver RX (= SDA) -> A4       Receiver TX (= SCL) -> A5
- *   SG90 brown wire -> GND    red wire -> 5V    orange wire (signal) -> 9
- *   (On ESP32, connect the signal wire to GPIO 13)
- *
- * How to see the result:
- *   Push the left stick and watch the servo turn. The Serial Monitor (115200) prints the angle.
- *
- * Good to know:
- *   1. This example makes the servo signal by itself, without the Servo library,
- *      so it works on UNO, Nano, UNO R4 and ESP32 as it is.
- *   2. The servo keeps shaking, or the Arduino keeps restarting: USB does not give enough power.
- *      Connect the servo's red and brown wires to a battery (4~6V) instead. The battery's minus (-) must also go to Arduino GND.
- */
-
-#include <Wire.h>
-
-const uint8_t SENSOR_ADDR = 0x42;        // The Controller receiver's address
-
-#if defined(ESP32)
-const int SERVO_PIN = 13;                // ESP32: signal wire to GPIO 13
-#else
-const int SERVO_PIN = 9;                 // UNO / Nano / R4: signal wire to pin 9
-#endif
-
-// ---- 👉 You can change these settings ----
-const int MIN_ANGLE = 0;                 // The angle when the stick is all the way left
-const int MAX_ANGLE = 180;               // The angle when the stick is all the way right (a gripper only needs a little, so you can make it smaller)
-
-int angle = 90;                          // The servo's angle now; start in the middle
-unsigned long lastPulse = 0;             // The last time we sent a signal
-unsigned long lastPrint = 0;             // The last time we printed the angle
-
-void setup() {
-  Serial.begin(115200);
-  pinMode(SERVO_PIN, OUTPUT);
-  mbcBegin();
-  delay(500);
-
-  if (!mbcWaitReady(5000)) {
-    Serial.println(F("Receiver not found. Run example 1 first to check the wiring."));
-    while (true) {}
-  }
-  Serial.println(F("Ready! Push the left stick left and right, and the servo will follow."));
-}
-
-void loop() {
-  // The servo needs a signal "every 20 milliseconds" to stay at its angle
-  if (millis() - lastPulse < 20) return;
-  lastPulse = millis();
-
-  // Read the gamepad data (box 0x11, 9 numbers). readPad is at the bottom of the file and also checks for wrong readings
-  uint8_t d[9];
-  if (readPad(d)) {
-    int lx = (int8_t)d[2];               // Left stick left/right: -127 (all the way left) ~ 0 (middle) ~ +127 (all the way right)
-    angle = map(lx, -127, 127, MIN_ANGLE, MAX_ANGLE);   // Change it into an angle
-  } else {
-    angle = 90;                          // Cannot read the receiver -> go back to the middle, it is safer
-  }
-  // When the gamepad is not connected, the stick reads 0, so the servo also goes back to the middle
-
-  servoPulse(angle);                     // Send one signal to the servo
-
-  if (millis() - lastPrint >= 300) {     // Print the angle every 0.3 seconds
+  if (millis() - lastPrint >= 500) {     // 👉 You can change this: print every 0.5 s
     lastPrint = millis();
-    Serial.print(F("Angle: "));
-    Serial.print(angle);
-    Serial.println(F(" degrees"));
+
+    // Read numbers 06~0B (6 values) in one go: [0] connected [1] battery [2] L2 [3] R2 [4] system buttons [5] gamepad type
+    int16_t v[6];
+    if (!mbcReadMany(ADDR, 0x06, 6, v)) { Serial.println(F("Cannot read the receiver")); return; }
+
+    // If the connection state changed, print one line to tell you
+    if (v[0] != lastConnected) {
+      Serial.println(v[0] ? F(">>> Gamepad connected!") : F(">>> Gamepad not connected"));
+      lastConnected = v[0];
+    }
+
+    Serial.print(F("Connected ")); Serial.print(v[0]);
+    Serial.print(F(" | Battery ")); Serial.print(v[1]); Serial.print(F("%"));
+    Serial.print(F(" | L2 ")); Serial.print(v[2]);
+    Serial.print(F(" R2 ")); Serial.print(v[3]);
+    Serial.print(F(" | PS button ")); Serial.print((v[4] & 0x01) ? 1 : 0);     // System buttons bit0
+    Serial.print(F(" Capture ")); Serial.print((v[4] & 0x02) ? 1 : 0);     // System buttons bit1
+    Serial.print(F(" | Gamepad: "));
+    printPadType(v[5]);
+    Serial.println();
+  }
+  delay(50);
+}
+
+// 0B gamepad type: 0 none, 1 PS2 digital, 2 PS2 analog, 3 PS4, 4 PS5 (or other)
+void printPadType(int16_t t) {
+  switch (t) {
+    case 0: Serial.print(F("No gamepad")); break;
+    case 1: Serial.print(F("PS2 gamepad (digital mode)")); break;
+    case 2: Serial.print(F("PS2 gamepad (analog mode)")); break;
+    case 3: Serial.print(F("PS4 gamepad")); break;
+    case 4: Serial.print(F("PS5 gamepad (or other Bluetooth gamepad)")); break;
+    default: Serial.print(F("Unknown"));
   }
 }
 
-// Send one pulse to the servo: how long the pin stays HIGH tells the servo which angle to go to
-//   0 degrees ≈ 0.544 ms, 90 degrees ≈ 1.47 ms, 180 degrees ≈ 2.4 ms (the same as Arduino's Servo library)
-void servoPulse(int deg) {
-  deg = constrain(deg, 0, 180);
-  int us = map(deg, 0, 180, 544, 2400);  // Angle -> microseconds (1 millisecond = 1000 microseconds)
-  digitalWrite(SERVO_PIN, HIGH);
-  delayMicroseconds(us);
-  digitalWrite(SERVO_PIN, LOW);
-}
-
 // ============================================================
-// Read the gamepad data and do a "sanity check" (the same in every example, no need to change it)
-// ============================================================
-// Why a sanity check?
-//   When the receiver is very busy (for example, talking wirelessly to the gamepad), once in a while
-//   it is not ready in time and gives the Arduino "the box it read last time" instead
-//   (for example the status data in box 0x31).
-//   Then the button and stick numbers are wrong, and a remote-control car could start moving by itself.
-// How can we tell?
-//   On the D-pad you cannot press "up" and "down" at the same time,
-//   and you cannot press "left" and "right" at the same time.
-//   If we read that, this reading is wrong: throw it away and keep using the last good one.
-
-uint8_t lastGood[9] = {0};               // The last good gamepad data (all 0 at the start = nothing pressed)
-
-// Read box 0x11 (gamepad data, 9 numbers) into d. Returns false if the receiver cannot be read
-bool readPad(uint8_t *d) {
-  if (!mbcRead(0x11, d, 9)) return false;
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];                     // The 16-bit button state
-  bool upDown    = (buttons & (1u << 4)) && (buttons & (1u << 6));   // Up (bit 4) and down (bit 6) pressed together?
-  bool leftRight = (buttons & (1u << 7)) && (buttons & (1u << 5));   // Left (bit 7) and right (bit 5) pressed together?
-  if (upDown || leftRight) {
-    memcpy(d, lastGood, 9);              // Wrong reading -> throw it away, use the last good one
-  } else {
-    memcpy(lastGood, d, 9);              // Good reading -> remember it, in case the next one is wrong
-  }
-  return true;
-}
-
-// ============================================================
-// Below are the "Communication helpers": they talk to the receiver.
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
 // They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] -> wait 2 ms -> read 2 x k bytes = k int16 values (little-endian) starting at that number
+//   If the number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
 // ============================================================
 
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -1033,124 +984,128 @@ void mbcBegin() {
 #endif
 }
 
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// From the sensor at address addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting at number id
   if (Wire.endTransmission() != 0) return false;
-  delay(2);                              // Wait 2 ms for the receiver to get the data ready (the PS4 receiver needs this, do not delete it)
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // Wait 2 ms before reading (ESP32-based products need this)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-bool mbcWriteBytes(uint8_t reg, const uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(buf, n);
-  return Wire.endTransmission() == 0;
-}
-
-bool mbcWaitReady(uint16_t timeoutMs) {
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), up to ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;
 }
 ```
 
-**You will see:** (push the left stick from the middle all the way right, then all the way left)
+**You will see:** (gamepad connected, L2 pressed halfway, holding the PS button)
 
 ```text
-Ready! Push the left stick left and right, and the servo will follow.
-Angle: 90 degrees
-Angle: 134 degrees
-Angle: 180 degrees
-Angle: 0 degrees
+Ready! Printing the gamepad status every 0.5 s.
+>>> Gamepad connected!
+Connected 1 | Battery 80% | L2 0 R2 0 | PS button 0 Capture 0 | Gamepad: PS4 gamepad
+Connected 1 | Battery 80% | L2 128 R2 0 | PS button 1 Capture 0 | Gamepad: PS4 gamepad
 ```
-
-> [!NOTE]
-> This example **makes the servo signal by itself**, without the Servo library, so it works on UNO, Nano, UNO R4 and ESP32 as it is. If the servo keeps shaking, or the Arduino keeps restarting, USB does not give enough power: connect the servo's red and brown wires to a battery (4~6 V) instead. The battery's minus (-) must also go to the Arduino GND.
-
-> [!TIP]
-> **Try it:** A gripper only needs to turn a little. Change `MIN_ANGLE` to `60` and `MAX_ANGLE` to `120`.
 
 ---
 
 <h2 id="ex6">6️⃣ Tank-style remote-control car (advanced)</h2>
 
-**What it does:** Drive a two-wheel car with the gamepad, the same way you drive a tank: **the left stick controls the left wheel, the right stick controls the right wheel**. Push both up to go straight; push one up and one down to turn on the spot. When both sticks are let go, you can also drive with the **D-pad**. If the receiver cannot be read, or the gamepad disconnects, the car stops at once.
+**What it does:** Drives a two-wheel car with the two sticks: left stick up/down (LY) controls the left wheel, right stick up/down (RY) controls the right wheel. The stick value `-100`~`+100` is multiplied straight into the speed. If the gamepad disconnects or the receiver cannot be read, the car stops at once.
 
-**You also need:** A two-wheel car, an L298N motor driver board (or a TB6612 wired the same way), batteries.
+**You also need:** A two-wheel car, an L298N motor driver board (or a TB6612 wired the same way), and batteries.
 
 **Motor wiring:**
 
-| L298N | Arduino UNO / Nano | ESP32 | Controls |
-| :---: | :---: | :---: | :--- |
-| ENA | 5 | GPIO 25 | Left wheel speed |
-| IN1 / IN2 | 7 / 8 | GPIO 26 / 27 | Left wheel direction |
-| ENB | 6 | GPIO 14 | Right wheel speed |
-| IN3 / IN4 | 9 / 10 | GPIO 32 / 33 | Right wheel direction |
-| GND | GND | GND | **Must share GND with the Arduino** |
+| L298N | Arduino UNO / Nano / R4 | ESP32 |
+| :---: | :---: | :---: |
+| ENA, IN1, IN2 (left wheel) | 5, 7, 8 | 25, 26, 27 |
+| ENB, IN3, IN4 (right wheel) | 6, 9, 10 | 14, 32, 33 |
+| GND | GND | GND |
 
-**Before the first run:**
-1. Lift the car up (wheels off the ground) before uploading. Push both sticks up and check that both wheels turn **forward**. If a wheel turns the wrong way, change `LEFT_REVERSE` or `RIGHT_REVERSE` to `true`.
-2. **Safety test:** With the car still lifted, hold the gamepad's PS button for 10 seconds to switch it off. Check that the wheels stop. Then put the car on the floor and drive.
+> [!WARNING]
+> Before the first run, **lift the car up** (wheels in the air) and upload: push both sticks up and check that both wheels turn forward (if one turns the wrong way, change `LEFT_REVERSE` / `RIGHT_REVERSE`). Then turn the gamepad off and check that the wheels stop. Only then put the car on the floor.
 
 <a href="/examples/ps4/arduino-en/ps4_06_tank_car/ps4_06_tank_car.ino" download data-ignore="true">📄 Download ps4_06_tank_car.ino</a>
 
 <!-- ino: examples/ps4/arduino-en/ps4_06_tank_car/ps4_06_tank_car.ino -->
 ```cpp
 /*
- * Controller PS4/PS5 x Arduino  Example 6 (advanced): Tank-style remote-control car
+ * Controller PS4/PS5 x Arduino   Example 6: Tank-style remote-control car (advanced)
  * ------------------------------------------------------------
  * What does this example do?
- *   Drive a two-wheel car with the gamepad, the same way you drive a tank:
- *     left stick up/down  -> controls the left wheel (push up = forward, push down = backward)
- *     right stick up/down -> controls the right wheel
- *     push both up = go straight; one up and one down = turn on the spot.
- *   When both sticks are let go, you can also drive with the D-pad (↑ forward, ↓ backward, ← → turn on the spot).
- *   If the receiver cannot be read, or the gamepad disconnects, the car stops at once.
+ *   Drives a two-wheel car with the gamepad, the same way a tank is driven:
+ *     left stick up/down (LY) -> left wheel; right stick up/down (RY) -> right wheel
+ *     both sticks up = go straight; one up and one down = turn on the spot.
+ *   The stick value -100 ~ +100 is used directly as the motor speed (times the top speed).
+ *   If the gamepad disconnects, or the receiver cannot be read, the car stops at once.
  *
- * You need:
- *   Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad (already paired),
- *   a two-wheel car, an L298N motor driver board (or a TB6612 or similar board wired the same way), batteries.
+ * You need: Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad (already paired), Arduino UNO / Nano / UNO R4 or ESP32. Also: a two-wheel car, an L298N motor driver board (or a TB6612 wired the same way), batteries.
  *
- * Wiring (Arduino UNO / Nano):
- *   Receiver VCC -> 5V              Receiver GND -> GND
- *   Receiver RX (= SDA) -> A4       Receiver TX (= SCL) -> A5
+ * Wiring:
+ *   Receiver VCC -> 5V      Receiver GND -> GND
+ *   Receiver RX (= SDA) -> A4      Receiver TX (= SCL) -> A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
+ *   (On the I2C edition, the pin marked TX is SCL and RX is SDA)
  *   L298N ENA -> 5     IN1 -> 7     IN2 -> 8      (left wheel)
  *   L298N ENB -> 6     IN3 -> 9     IN4 -> 10     (right wheel)
  *   The L298N GND must be connected to the Arduino GND!
  *   (ESP32 uses different pins, see "Motor pins" below)
  *
- * Before the first run:
- *   1. Lift the car up (wheels off the ground) before uploading. Push both sticks up and check that both wheels turn "forward".
- *      If a wheel turns the wrong way, change LEFT_REVERSE or RIGHT_REVERSE below to true.
- *   2. ⚠️ Safety test: with the car still lifted, hold the PS button on the gamepad for 10 seconds to switch it off.
- *      Check that the wheels stop. Then put the car on the floor and drive.
- *   3. If the receiver gets no gamepad data for 0.3 seconds, it sets all buttons and sticks to zero, so the car stops.
- *   4. To avoid wrong readings, the program asks "is the gamepad still connected?" only every 0.4 seconds,
- *      and reads only the gamepad data the rest of the time.
- *      Impossible data like "up and down together" or "left and right together" is thrown away, and the last good data is used.
+ * Before you start:
+ *   1. Lift the car up (wheels in the air) and upload. Push both sticks up and check that both wheels turn "forward".
+ *      If a wheel turns the wrong way, change LEFT_REVERSE or RIGHT_REVERSE to true.
+ *   2. ⚠️ While the car is still lifted, turn the gamepad off and check that the wheels stop. Only then put it on the floor.
+ *
+ * How to see the result:
+ *   The Serial Monitor (115200) prints the left and right wheel speed every 0.3 s.
+ *
+ * Tip:
+ *   The first time, you must pair: within 30 s after the receiver powers on (or after you press Reset),
+ *   hold SHARE + PS on a PS4 gamepad, or Create + PS on a PS5 gamepad, until the light bar blinks fast.
  */
 
 #include <Wire.h>
 
-const uint8_t SENSOR_ADDR = 0x42;        // The Controller receiver's address
+const uint8_t ADDR = 0x42;               // The receiver's "house number" (I2C address). PS2 and PS4 are both 0x42
+const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
+
+// Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
 
 // ---- Motor pins ----
 #if defined(ESP32)
-// ESP32 pins 6 ~ 11 are connected to the memory chip on the board and cannot be used, so we use these pins
+// ESP32 pins 6 ~ 11 are connected to the on-board memory chip and cannot be used, so we use these instead
 const int ENA = 25, IN1 = 26, IN2 = 27;  // Left wheel
 const int ENB = 14, IN3 = 32, IN4 = 33;  // Right wheel
 #else
@@ -1158,19 +1113,13 @@ const int ENA = 5, IN1 = 7, IN2 = 8;     // Left wheel
 const int ENB = 6, IN3 = 9, IN4 = 10;    // Right wheel
 #endif
 
-// ---- 👉 You can change these settings ----
-const int  MAX_SPEED  = 200;             // Speed with the stick pushed all the way: 0 ~ 255. Beginners: start slower
-const int  DPAD_SPEED = 150;             // Speed when driving with the D-pad
-const bool LEFT_REVERSE  = false;        // Left wheel turns the wrong way? Change to true
-const bool RIGHT_REVERSE = false;        // Right wheel turns the wrong way? Change to true
+// ---- 👉 You can change these ----
+const int  MAX_SPEED     = 200;          // Speed when the stick is pushed all the way: 0 ~ 255, start slow
+const bool LEFT_REVERSE  = false;        // Change to true if the left wheel turns the wrong way
+const bool RIGHT_REVERSE = false;        // Change to true if the right wheel turns the wrong way
 
-// Where the D-pad buttons are in the 16-bit button number (which bit)
-const uint8_t BTN_UP = 4, BTN_RIGHT = 5, BTN_DOWN = 6, BTN_LEFT = 7;
-
-bool stopped = false;                    // Is the car stopped now because of a lost connection?
-bool connected = false;                  // Is the gamepad connected? (updated every 0.4 seconds)
-unsigned long lastStatus = 0;            // The last time we checked "is the gamepad connected?"
-unsigned long lastPrint = 0;             // The last time we printed the speed
+bool stopped = true;                     // Are we stopped right now? (we start out stopped)
+unsigned long lastPrint = 0;
 
 void setup() {
   Serial.begin(115200);
@@ -1180,31 +1129,21 @@ void setup() {
 
   mbcBegin();
   delay(500);
-  if (!mbcWaitReady(5000)) {
-    Serial.println(F("Receiver not found. Run example 1 first to check the wiring."));
-    while (true) {}                      // The car stays stopped
+  if (!mbcWaitReady(ADDR, 5000)) {
+    Serial.println(F("Receiver not found. Run Example 1 first to check the wiring."));
+    while (true) {}
   }
   Serial.println(F("Ready! Drive with the two sticks."));
 }
 
 void loop() {
-  // ---- 1. Every 0.4 seconds, check if the gamepad is connected (box 0x31: status data) ----
-  //   Don't read it every loop: switching between two boxes all the time makes it easier for the receiver
-  //   to mix up the data, and the car could move by itself. To drive, just keep reading box 0x11.
-  if (millis() - lastStatus >= 400) {
-    lastStatus = millis();
-    uint8_t st[9];
-    connected = mbcRead(0x31, st, 9) && (st[0] & 0x02);   // Bit 1 of number 0: 1 = gamepad connected
-  }
-  if (!connected) {
+  // Read numbers 06 ~ 13 (14 values) in one go (data from the same instant):
+  //   v[0] = 06 connected ... v[10] = 10 LX, v[11] = 11 LY, v[12] = 12 RX, v[13] = 13 RY
+  //   (0C~0F in the middle are empty slots and read as -32768; just ignore them)
+  int16_t v[14];
+  if (!mbcReadMany(ADDR, 0x06, 14, v) || v[0] == 0) {
     safeStop();                          // Cannot read the receiver, or the gamepad is not connected -> stop at once
-    return;
-  }
-
-  // ---- 2. Read the gamepad (box 0x11). readPad is at the bottom of the file and also checks for wrong readings ----
-  uint8_t d[9];
-  if (!readPad(d)) {
-    safeStop();                          // Cannot read -> stop
+    delay(50);
     return;
   }
   if (stopped) {
@@ -1212,43 +1151,29 @@ void loop() {
     Serial.println(F("Gamepad connected, you can drive!"));
   }
 
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];   // The 16-bit button state
-  int ly = (int8_t)d[3];                 // Left stick up/down: up = positive (-127 ~ +127)
-  int ry = (int8_t)d[5];                 // Right stick up/down: up = positive
+  int ly = v[11];                        // Left stick up/down: up = positive (-100 ~ +100)
+  int ry = v[13];                        // Right stick up/down: up = positive
 
-  // The more you push the stick, the faster the wheel turns: -127 ~ +127 becomes -MAX_SPEED ~ +MAX_SPEED
-  int left  = (long)ly * MAX_SPEED / 127;
-  int right = (long)ry * MAX_SPEED / 127;
-
-  // When both sticks are let go, look at the D-pad instead
-  if (ly == 0 && ry == 0) {
-    if      (buttons & (1u << BTN_UP))    { left =  DPAD_SPEED; right =  DPAD_SPEED; }  // Forward
-    else if (buttons & (1u << BTN_DOWN))  { left = -DPAD_SPEED; right = -DPAD_SPEED; }  // Backward
-    else if (buttons & (1u << BTN_LEFT))  { left = -DPAD_SPEED; right =  DPAD_SPEED; }  // Turn left on the spot
-    else if (buttons & (1u << BTN_RIGHT)) { left =  DPAD_SPEED; right = -DPAD_SPEED; }  // Turn right on the spot
-  }
-
+  // The further the stick is pushed, the faster the wheel turns: -100 ~ +100 becomes -MAX_SPEED ~ +MAX_SPEED
+  int left  = (long)ly * MAX_SPEED / 100;
+  int right = (long)ry * MAX_SPEED / 100;
   drive(left, right);
 
-  if (millis() - lastPrint >= 300) {     // Print the speed every 0.3 seconds
+  if (millis() - lastPrint >= 300) {     // Print the speeds every 0.3 s
     lastPrint = millis();
-    Serial.print(F("Left wheel "));
-    Serial.print(left);
-    Serial.print(F("  Right wheel "));
-    Serial.println(right);
+    Serial.print(F("Left ")); Serial.print(left);
+    Serial.print(F("   Right ")); Serial.println(right);
   }
-
-  delay(20);
+  delay(50);
 }
 
-// Stop the car, and say so only once, at the moment it stops
+// Stop the car, and say so only once, right when it stops
 void safeStop() {
   drive(0, 0);
   if (!stopped) {
     stopped = true;
-    Serial.println(F("Cannot read the gamepad -> STOP!"));
+    Serial.println(F("Cannot read the gamepad -> stop!"));
   }
-  delay(50);
 }
 
 // Control the two wheels: speed -255 (full speed backward) ~ 255 (full speed forward)
@@ -1260,46 +1185,21 @@ void drive(int left, int right) {
 }
 
 void setMotor(int en, int inA, int inB, int speed) {
-  speed = constrain(speed, -255, 255);   // Keep the speed inside the range
+  speed = constrain(speed, -255, 255);   // Keep the speed inside the allowed range
   digitalWrite(inA, speed >= 0 ? HIGH : LOW);
   digitalWrite(inB, speed >= 0 ? LOW : HIGH);
   analogWrite(en, abs(speed));
 }
 
 // ============================================================
-// Read the gamepad data and do a "sanity check" (the same in every example, no need to change it)
-// ============================================================
-// Why a sanity check?
-//   When the receiver is very busy (for example, talking wirelessly to the gamepad), once in a while
-//   it is not ready in time and gives the Arduino "the box it read last time" instead
-//   (for example the status data in box 0x31).
-//   Then the button and stick numbers are wrong, and a remote-control car could start moving by itself.
-// How can we tell?
-//   On the D-pad you cannot press "up" and "down" at the same time,
-//   and you cannot press "left" and "right" at the same time.
-//   If we read that, this reading is wrong: throw it away and keep using the last good one.
-
-uint8_t lastGood[9] = {0};               // The last good gamepad data (all 0 at the start = nothing pressed)
-
-// Read box 0x11 (gamepad data, 9 numbers) into d. Returns false if the receiver cannot be read
-bool readPad(uint8_t *d) {
-  if (!mbcRead(0x11, d, 9)) return false;
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];                     // The 16-bit button state
-  bool upDown    = (buttons & (1u << 4)) && (buttons & (1u << 6));   // Up (bit 4) and down (bit 6) pressed together?
-  bool leftRight = (buttons & (1u << 7)) && (buttons & (1u << 5));   // Left (bit 7) and right (bit 5) pressed together?
-  if (upDown || leftRight) {
-    memcpy(d, lastGood, 9);              // Wrong reading -> throw it away, use the last good one
-  } else {
-    memcpy(lastGood, d, 9);              // Good reading -> remember it, in case the next one is wrong
-  }
-  return true;
-}
-
-// ============================================================
-// Below are the "Communication helpers": they talk to the receiver.
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
 // They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] -> wait 2 ms -> read 2 x k bytes = k int16 values (little-endian) starting at that number
+//   If the number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
 // ============================================================
 
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -1307,194 +1207,151 @@ void mbcBegin() {
 #endif
 }
 
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// From the sensor at address addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting at number id
   if (Wire.endTransmission() != 0) return false;
-  delay(2);                              // Wait 2 ms for the receiver to get the data ready (the PS4 receiver needs this, do not delete it)
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // Wait 2 ms before reading (ESP32-based products need this)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-bool mbcWriteBytes(uint8_t reg, const uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(buf, n);
-  return Wire.endTransmission() == 0;
-}
-
-bool mbcWaitReady(uint16_t timeoutMs) {
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), up to ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;
 }
 ```
 
-**You will see:**
+**You will see:** (both sticks pushed halfway up, then the gamepad is turned off)
 
 ```text
 Ready! Drive with the two sticks.
-Left wheel 0  Right wheel 0
-Left wheel 200  Right wheel 200
-Left wheel -100  Right wheel 100
-Cannot read the gamepad -> STOP!
 Gamepad connected, you can drive!
+Left 100   Right 100
+Cannot read the gamepad -> stop!
 ```
 
-> [!NOTE]
-> If the receiver gets no gamepad data for **0.3 seconds**, it sets all buttons and sticks to zero and reports "not connected", so the car stops. This happens when the gamepad's battery is empty, when it is too far away, or when there is interference.
->
-> The program asks the receiver "is the gamepad still connected?" (box `0x31`) only every **0.4 seconds**, and reads only the gamepad data (box `0x11`) the rest of the time. Impossible data like "up and down together" or "left and right together" is thrown away, and the last good data is used. This way the car is less likely to move by itself because of a wrong reading. See the [FAQ](#faq-updown) for why.
->
-> Because the connection is checked only every 0.4 seconds, "Cannot read the gamepad -> STOP!" may be printed up to about 0.7 seconds later. But the sticks go to zero within 0.3 seconds, so the car stops first.
-
-**How to adjust the car so it is easier to drive:**
-
-| What the car does | What to change |
-| :--- | :--- |
-| Too fast, hard to control | Make `MAX_SPEED` smaller (for example 200 → 150) |
-| The car doesn't move when you push the stick a little | The motors need more power: make `MAX_SPEED` bigger, or use new batteries |
-| You push forward but it spins on the spot | One wheel turns the wrong way: change `LEFT_REVERSE` or `RIGHT_REVERSE` |
-| Too fast with the D-pad | Make `DPAD_SPEED` smaller |
+> [!TIP]
+> This example uses one `mbcReadMany(ADDR, 0x06, 14, v)` to read from `06` to `13` (14 values): `v[0]` is "connected", `v[11]` is LY, `v[13]` is RY, all from the same instant, so there is no need to read twice. The boxes `0C`~`0F` in the middle are empty and read as `-32768`; just ignore them.
 
 ---
 
 <h2 id="ex7">7️⃣ Make the gamepad rumble</h2>
 
-**What it does:** The Arduino makes the gamepad vibrate (rumble): **slowly press the R2 trigger**, and the deeper you press, the stronger it rumbles; **hold ✕** to rumble at full power; let go and it stops at once. Later you can use it for "rumble once when the robot hits a wall" or "rumble when time is up".
+**What it does:** Hold **✕** and the gamepad rumbles (strength 200); press the **R2** trigger and the harder you press, the stronger it rumbles. It uses the write command `E5`: `mbcWrite(ADDR, 0xE5, &strength, 1)`. Each command rumbles for 200 ms, so while you hold the button it sends again every 150 ms.
 
 <a href="/examples/ps4/arduino-en/ps4_07_rumble/ps4_07_rumble.ino" download data-ignore="true">📄 Download ps4_07_rumble.ino</a>
 
 <!-- ino: examples/ps4/arduino-en/ps4_07_rumble/ps4_07_rumble.ino -->
 ```cpp
 /*
- * Controller PS4/PS5 x Arduino  Example 7: Make the gamepad rumble
+ * Controller PS4/PS5 x Arduino   Example 7: Make the gamepad rumble
  * ------------------------------------------------------------
  * What does this example do?
- *   The Arduino makes the gamepad vibrate (rumble):
- *     slowly press the R2 trigger  -> the gamepad rumbles; the deeper you press, the stronger it rumbles
- *     hold ✕                       -> rumble at full power
- *     let go                       -> stops at once
- *   Later you can use it for "rumble once when the robot hits a wall" or "rumble when time is up".
+ *   Hold the ✕ button and the gamepad rumbles (strength 200); release it and it stops.
+ *   Press the R2 trigger: the harder you press, the stronger it rumbles (R2's 0~255 is used directly as the strength).
+ *   It uses command E5: write [0xE5][strength 0~255], 0 = stop. Each command rumbles for 200 ms,
+ *   so while you hold the button, the program sends it again every 150 ms to keep the rumble going.
  *
- * You need:
- *   Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad (already paired).
+ * You need: Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad (already paired), Arduino UNO / Nano / UNO R4 or ESP32.
  *
- * Wiring (Arduino UNO / Nano):
- *   Receiver VCC -> 5V              Receiver GND -> GND
- *   Receiver RX (= SDA) -> A4       Receiver TX (= SCL) -> A5
+ * Wiring:
+ *   Receiver VCC -> 5V      Receiver GND -> GND
+ *   Receiver RX (= SDA) -> A4      Receiver TX (= SCL) -> A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
+ *   (On the I2C edition, the pin marked TX is SCL and RX is SDA)
  *
  * How to see the result:
- *   Press R2 or hold ✕ and feel the gamepad rumble. The Serial Monitor (115200) prints the rumble power.
+ *   After uploading, press ✕ or R2 and the gamepad rumbles. The Serial Monitor (115200) prints the strength that was sent.
  *
- * Good to know:
- *   Write a power (0 ~ 255) into box 0x10 of the receiver and the gamepad rumbles for 0.2 seconds. Write 0 = stop.
- *   To keep it rumbling, write again every 0.1 seconds, like pressing a doorbell again and again.
+ * Tip:
+ *   The PS2 receiver replies ACK to E5 but ignores it (rumble is turned off for PS2 gamepads). This example only works with PS4/PS5.
  */
 
 #include <Wire.h>
 
-const uint8_t SENSOR_ADDR = 0x42;        // The Controller receiver's address
+const uint8_t ADDR = 0x42;               // The receiver's "house number" (I2C address). PS2 and PS4 are both 0x42
+const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
 
-const uint8_t BTN_CROSS = 14;            // Where ✕ Cross is in the 16-bit button number
+// Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
 
-uint8_t lastPower = 0;                   // The rumble power last time
-unsigned long lastSend  = 0;             // The last time we sent a rumble command
-unsigned long lastPrint = 0;             // The last time we printed the power
+const uint8_t BTN_CROSS = 14;            // ✕ is bit 14 of the 16 buttons
+const uint8_t RUMBLE_BY_CROSS = 200;     // 👉 You can change this: rumble strength when ✕ is held, 0~255
+
+uint8_t lastSent = 0;                    // The strength we sent last time
+unsigned long lastSend = 0;              // When we last sent it
 
 void setup() {
   Serial.begin(115200);
   mbcBegin();
   delay(500);
-
-  if (!mbcWaitReady(5000)) {
-    Serial.println(F("Receiver not found. Run example 1 first to check the wiring."));
+  if (!mbcWaitReady(ADDR, 5000)) {
+    Serial.println(F("Receiver not found. Run Example 1 first to check the wiring."));
     while (true) {}
   }
-  Serial.println(F("Ready! Slowly press the R2 trigger, or hold the ✕ button."));
+  Serial.println(F("Ready! Press ✕ or R2 and the gamepad rumbles."));
 }
 
 void loop() {
-  // Read the gamepad data (box 0x11, 9 numbers). readPad is at the bottom of the file and also checks for wrong readings
-  uint8_t d[9];
-  if (!readPad(d)) {
-    delay(100);
-    return;
-  }
+  // Read numbers 01 ~ 09 (9 values) in one go: v[0] = 01 16 buttons, v[8] = 09 R2 analog
+  int16_t v[9];
+  if (!mbcReadMany(ADDR, 0x01, 9, v)) { delay(100); return; }
 
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];   // The 16-bit button state
-  uint8_t  r2      = d[7];               // R2 trigger: 0 (not pressed) ~ 255 (all the way)
+  uint8_t strength = 0;                                  // The strength to send this pass
+  if ((uint16_t)v[0] & (1u << BTN_CROSS)) strength = RUMBLE_BY_CROSS;   // ✕ is held
+  if (v[8] > strength) strength = (uint8_t)v[8];         // If R2 is pressed harder, use R2's value
 
-  uint8_t power = r2;                    // The deeper you press, the stronger the rumble
-  if (buttons & (1u << BTN_CROSS)) power = 255;      // Hold ✕ -> full power
-
-  if (power > 0) {
-    // Rumble: write every 0.1 seconds (each write rumbles for 0.2 seconds, so they join up without a break)
-    if (millis() - lastSend >= 100) {
-      lastSend = millis();
-      mbcWrite(0x10, power);             // Box 0x10 = rumble power
+  // If the strength changed, or the button has been held for more than 150 ms, send E5 once (each rumble lasts only 200 ms, so keep sending)
+  if (strength != lastSent || (strength > 0 && millis() - lastSend >= 150)) {
+    mbcWrite(ADDR, 0xE5, &strength, 1);  // Command E5: [strength]
+    lastSend = millis();
+    if (strength != lastSent) {
+      Serial.print(F("Rumble strength -> ")); Serial.println(strength);
     }
-  } else if (lastPower > 0) {
-    mbcWrite(0x10, 0);                   // Just let go -> write 0, stop at once
-    Serial.println(F("Rumble stopped"));
+    lastSent = strength;
   }
-
-  if (power > 0 && power != lastPower && millis() - lastPrint >= 300) {
-    lastPrint = millis();
-    Serial.print(F("Rumble power: "));
-    Serial.println(power);
-  }
-
-  lastPower = power;
-  delay(20);
+  delay(50);
 }
 
 // ============================================================
-// Read the gamepad data and do a "sanity check" (the same in every example, no need to change it)
-// ============================================================
-// Why a sanity check?
-//   When the receiver is very busy (for example, talking wirelessly to the gamepad), once in a while
-//   it is not ready in time and gives the Arduino "the box it read last time" instead
-//   (for example the status data in box 0x31).
-//   Then the button and stick numbers are wrong, and a remote-control car could start moving by itself.
-// How can we tell?
-//   On the D-pad you cannot press "up" and "down" at the same time,
-//   and you cannot press "left" and "right" at the same time.
-//   If we read that, this reading is wrong: throw it away and keep using the last good one.
-
-uint8_t lastGood[9] = {0};               // The last good gamepad data (all 0 at the start = nothing pressed)
-
-// Read box 0x11 (gamepad data, 9 numbers) into d. Returns false if the receiver cannot be read
-bool readPad(uint8_t *d) {
-  if (!mbcRead(0x11, d, 9)) return false;
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];                     // The 16-bit button state
-  bool upDown    = (buttons & (1u << 4)) && (buttons & (1u << 6));   // Up (bit 4) and down (bit 6) pressed together?
-  bool leftRight = (buttons & (1u << 7)) && (buttons & (1u << 5));   // Left (bit 7) and right (bit 5) pressed together?
-  if (upDown || leftRight) {
-    memcpy(d, lastGood, 9);              // Wrong reading -> throw it away, use the last good one
-  } else {
-    memcpy(lastGood, d, 9);              // Good reading -> remember it, in case the next one is wrong
-  }
-  return true;
-}
-
-// ============================================================
-// Below are the "Communication helpers": they talk to the receiver.
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
 // They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] -> wait 2 ms -> read 2 x k bytes = k int16 values (little-endian) starting at that number
+//   If the number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
 // ============================================================
 
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -1502,228 +1359,153 @@ void mbcBegin() {
 #endif
 }
 
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// From the sensor at address addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting at number id
   if (Wire.endTransmission() != 0) return false;
-  delay(2);                              // Wait 2 ms for the receiver to get the data ready (the PS4 receiver needs this, do not delete it)
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // Wait 2 ms before reading (ESP32-based products need this)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-bool mbcWriteBytes(uint8_t reg, const uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(buf, n);
-  return Wire.endTransmission() == 0;
-}
-
-bool mbcWaitReady(uint16_t timeoutMs) {
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), up to ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;
 }
 ```
 
-**You will see:** (press R2 slowly all the way, then let go)
+**You will see:** (press ✕ and release, then press R2 slowly all the way)
 
 ```text
-Ready! Slowly press the R2 trigger, or hold the ✕ button.
-Rumble power: 36
-Rumble power: 140
-Rumble power: 255
-Rumble stopped
+Ready! Press ✕ or R2 and the gamepad rumbles.
+Rumble strength -> 200
+Rumble strength -> 0
+Rumble strength -> 63
+Rumble strength -> 180
+Rumble strength -> 255
+Rumble strength -> 0
 ```
-
-> [!NOTE]
-> Write a power (`0` ~ `255`) into box `0x10` and the gamepad rumbles for **0.2 seconds**. Write `0` and it stops at once. To keep it rumbling, write again every 0.1 seconds.
-
-> [!TIP]
-> **Try it:** In the tank car of example 6, add the line "`if (left > 180) mbcWrite(0x10, 100);`". When you drive too fast, the gamepad rumbles to warn you.
 
 ---
 
-<h2 id="ex8">8️⃣ Change the light bar color</h2>
+<h2 id="ex8">8️⃣ Set the light bar color with the sticks</h2>
 
-**What it does:** Changes the color of the gamepad's light bar: press **✕ blue, ● red, ■ pink, ▲ green**, and press the **PS button** for a random color. **Slowly press L2** and the light gets darker; all the way, it goes off. At a competition, the red team's and blue team's gamepads can shine different colors, so you can tell them apart at a glance.
+**What it does:** Left stick left/right → red, left stick up/down → green, right stick left/right → blue; `-100`~`+100` becomes `0`~`255`. It uses the write command `E6`: `mbcWrite(ADDR, 0xE6, rgb, 3)`, **exactly 3 bytes**. It only sends when the color changes, at most every 0.1 s.
 
 <a href="/examples/ps4/arduino-en/ps4_08_lightbar/ps4_08_lightbar.ino" download data-ignore="true">📄 Download ps4_08_lightbar.ino</a>
 
 <!-- ino: examples/ps4/arduino-en/ps4_08_lightbar/ps4_08_lightbar.ino -->
 ```cpp
 /*
- * Controller PS4/PS5 x Arduino  Example 8: Change the color of the gamepad's light bar
+ * Controller PS4/PS5 x Arduino   Example 8: Set the light bar color with the sticks
  * ------------------------------------------------------------
  * What does this example do?
- *   The Arduino changes the color of the gamepad's light bar:
- *     press ✕ -> blue    press ● -> red    press ■ -> pink    press ▲ -> green
- *     press the PS button -> a random color
- *     slowly press the L2 trigger -> the light gets darker; all the way = off
- *   At a competition, the red team's and blue team's gamepads can shine different colors, easy to tell apart.
+ *   Push the sticks to change the color of the gamepad's light bar:
+ *     left stick left/right (LX) -> red, left stick up/down (LY) -> green, right stick left/right (RX) -> blue
+ *     -100 ~ +100 becomes 0 ~ 255; all released = medium-brightness white.
+ *   It uses command E6: write [0xE6][R][G][B], exactly 3 bytes.
+ *   It only sends when the color changes (at most every 100 ms), so it does not flood the I2C bus.
  *
- * You need:
- *   Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad (already paired).
+ * You need: Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad (already paired), Arduino UNO / Nano / UNO R4 or ESP32.
  *
- * Wiring (Arduino UNO / Nano):
- *   Receiver VCC -> 5V              Receiver GND -> GND
- *   Receiver RX (= SDA) -> A4       Receiver TX (= SCL) -> A5
+ * Wiring:
+ *   Receiver VCC -> 5V      Receiver GND -> GND
+ *   Receiver RX (= SDA) -> A4      Receiver TX (= SCL) -> A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
+ *   (On the I2C edition, the pin marked TX is SCL and RX is SDA)
  *
  * How to see the result:
- *   Watch the light bar on the gamepad. The Serial Monitor (115200) prints the color.
+ *   After uploading, push the sticks and watch the light bar change color. The Serial Monitor (115200) prints R, G, B.
  *
- * Good to know:
- *   A color is made from 3 numbers, "red, green, blue" (each 0 ~ 255), like mixing paint.
- *   The 3 numbers must be written into box 0x23 of the receiver all at once.
- *   It's OK to write them before the gamepad connects: the receiver remembers the color and uses it after the gamepad connects.
+ * Tip:
+ *   It is fine to send a color before the gamepad is connected: the receiver remembers it and applies it once connected. The default color is blue (0,0,255).
+ *   A PS2 gamepad has no light bar; the PS2 receiver replies ACK to E6 but ignores it.
  */
 
 #include <Wire.h>
 
-const uint8_t SENSOR_ADDR = 0x42;        // The Controller receiver's address
+const uint8_t ADDR = 0x42;               // The receiver's "house number" (I2C address). PS2 and PS4 are both 0x42
+const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
 
-// Where the shape buttons are in the 16-bit button number (which bit)
-const uint8_t BTN_TRIANGLE = 12, BTN_CIRCLE = 13, BTN_CROSS = 14, BTN_SQUARE = 15;
+// Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
 
-uint8_t baseColor[3] = {0, 0, 255};      // The chosen color (red, green, blue); blue at the start
-uint8_t lastBright = 255;                // The brightness we sent last time
-uint16_t lastButtons = 0;                // The button state last time
-bool lastPs = false;                     // Was the PS button pressed last time?
-unsigned long lastSend = 0;              // The last time we sent a color
+uint8_t lastRGB[3] = {255, 255, 255};    // The color we sent last time (on purpose different from the start, so the first pass sends)
+unsigned long lastSend = 0;
 
 void setup() {
   Serial.begin(115200);
   mbcBegin();
   delay(500);
-
-  if (!mbcWaitReady(5000)) {
-    Serial.println(F("Receiver not found. Run example 1 first to check the wiring."));
+  if (!mbcWaitReady(ADDR, 5000)) {
+    Serial.println(F("Receiver not found. Run Example 1 first to check the wiring."));
     while (true) {}
   }
-
-  // Box 0x23 can be read and written: first read the color the receiver remembers
-  uint8_t c[3];
-  if (mbcRead(0x23, c, 3)) {
-    Serial.print(F("Light bar color the receiver remembers now: "));
-    printColor(c);
-  }
-  randomSeed(micros());                  // So the "random color" is different every time it powers on
-  Serial.println(F("Ready! Press ✕ ● ■ ▲ or the PS button to change the color, press L2 to make it darker."));
-  sendColor(255);                        // Send blue once first
+  Serial.println(F("Ready! Push the sticks to change the light bar color."));
 }
 
 void loop() {
-  // Read the gamepad data (box 0x11, 9 numbers). readPad is at the bottom of the file and also checks for wrong readings
-  uint8_t d[9];
-  if (!readPad(d)) {
-    delay(100);
-    return;
+  if (millis() - lastSend >= 100) {      // Send at most every 0.1 s
+    // Read numbers 10~12 (3 values) in one go: [0] LX [1] LY [2] RX (-100 ~ +100)
+    int16_t s[3];
+    if (!mbcReadMany(ADDR, 0x10, 3, s)) { delay(100); return; }
+
+    uint8_t rgb[3];
+    rgb[0] = map(s[0], -100, 100, 0, 255);   // Red: left stick left/right
+    rgb[1] = map(s[1], -100, 100, 0, 255);   // Green: left stick up/down
+    rgb[2] = map(s[2], -100, 100, 0, 255);   // Blue: right stick left/right
+
+    // Only send when the color changed (a difference of 1 or less counts as no change, so a slightly shaky stick does not keep sending)
+    if (abs(rgb[0] - lastRGB[0]) > 1 || abs(rgb[1] - lastRGB[1]) > 1 || abs(rgb[2] - lastRGB[2]) > 1) {
+      mbcWrite(ADDR, 0xE6, rgb, 3);      // Command E6: [R][G][B], must be exactly 3 bytes
+      lastSend = millis();
+      memcpy(lastRGB, rgb, 3);
+      Serial.print(F("Light bar -> R ")); Serial.print(rgb[0]);
+      Serial.print(F("   G ")); Serial.print(rgb[1]);
+      Serial.print(F("   B ")); Serial.println(rgb[2]);
+    }
   }
-
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];
-  uint16_t pressed = buttons & ~lastButtons;          // Buttons that were "just pressed"
-  lastButtons = buttons;
-  bool changed = false;                  // Did we change the color this time?
-
-  if (pressed & (1u << BTN_CROSS))    { setBase(0, 0, 255);   changed = true; }   // ✕ blue
-  if (pressed & (1u << BTN_CIRCLE))   { setBase(255, 0, 0);   changed = true; }   // ● red
-  if (pressed & (1u << BTN_SQUARE))   { setBase(255, 0, 128); changed = true; }   // ■ pink
-  if (pressed & (1u << BTN_TRIANGLE)) { setBase(0, 255, 0);   changed = true; }   // ▲ green
-
-  bool ps = d[8] & 0x01;                 // PS button: bit 0 of number 8 (system buttons)
-  if (ps && !lastPs) {                   // PS button just pressed -> random color
-    setBase(random(256), random(256), random(256));
-    changed = true;
-  }
-  lastPs = ps;
-
-  // The deeper you press L2, the darker the light: 0 (not pressed) -> brightness 255, 255 (all the way) -> brightness 0
-  uint8_t bright = 255 - d[6];
-
-  if (changed) {
-    sendColor(bright);
-    Serial.print(F("New color: "));
-    printColor(baseColor);
-  } else if (abs((int)bright - (int)lastBright) >= 8 && millis() - lastSend >= 50) {
-    sendColor(bright);                   // Only send when the brightness changed, and at most every 0.05 seconds, so we don't flood the line
-  }
-
-  delay(20);
-}
-
-// Remember the chosen color
-void setBase(uint8_t r, uint8_t g, uint8_t b) {
-  baseColor[0] = r;
-  baseColor[1] = g;
-  baseColor[2] = b;
-}
-
-// Make it darker by the brightness, then write the 3 numbers into box 0x23 all at once
-void sendColor(uint8_t bright) {
-  uint8_t rgb[3];
-  for (uint8_t i = 0; i < 3; i++) {
-    rgb[i] = (uint16_t)baseColor[i] * bright / 255;   // Change to uint16_t first, so the multiplication does not overflow
-  }
-  mbcWriteBytes(0x23, rgb, 3);
-  lastBright = bright;
-  lastSend = millis();
-}
-
-// Print "Red x  Green y  Blue z"
-void printColor(const uint8_t *c) {
-  Serial.print(F("Red "));
-  Serial.print(c[0]);
-  Serial.print(F("  Green "));
-  Serial.print(c[1]);
-  Serial.print(F("  Blue "));
-  Serial.println(c[2]);
+  delay(50);
 }
 
 // ============================================================
-// Read the gamepad data and do a "sanity check" (the same in every example, no need to change it)
-// ============================================================
-// Why a sanity check?
-//   When the receiver is very busy (for example, talking wirelessly to the gamepad), once in a while
-//   it is not ready in time and gives the Arduino "the box it read last time" instead
-//   (for example the status data in box 0x31).
-//   Then the button and stick numbers are wrong, and a remote-control car could start moving by itself.
-// How can we tell?
-//   On the D-pad you cannot press "up" and "down" at the same time,
-//   and you cannot press "left" and "right" at the same time.
-//   If we read that, this reading is wrong: throw it away and keep using the last good one.
-
-uint8_t lastGood[9] = {0};               // The last good gamepad data (all 0 at the start = nothing pressed)
-
-// Read box 0x11 (gamepad data, 9 numbers) into d. Returns false if the receiver cannot be read
-bool readPad(uint8_t *d) {
-  if (!mbcRead(0x11, d, 9)) return false;
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];                     // The 16-bit button state
-  bool upDown    = (buttons & (1u << 4)) && (buttons & (1u << 6));   // Up (bit 4) and down (bit 6) pressed together?
-  bool leftRight = (buttons & (1u << 7)) && (buttons & (1u << 5));   // Left (bit 7) and right (bit 5) pressed together?
-  if (upDown || leftRight) {
-    memcpy(d, lastGood, 9);              // Wrong reading -> throw it away, use the last good one
-  } else {
-    memcpy(lastGood, d, 9);              // Good reading -> remember it, in case the next one is wrong
-  }
-  return true;
-}
-
-// ============================================================
-// Below are the "Communication helpers": they talk to the receiver.
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
 // They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] -> wait 2 ms -> read 2 x k bytes = k int16 values (little-endian) starting at that number
+//   If the number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
 // ============================================================
 
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -1731,88 +1513,91 @@ void mbcBegin() {
 #endif
 }
 
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// From the sensor at address addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting at number id
   if (Wire.endTransmission() != 0) return false;
-  delay(2);                              // Wait 2 ms for the receiver to get the data ready (the PS4 receiver needs this, do not delete it)
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // Wait 2 ms before reading (ESP32-based products need this)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-bool mbcWriteBytes(uint8_t reg, const uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(buf, n);
-  return Wire.endTransmission() == 0;
-}
-
-bool mbcWaitReady(uint16_t timeoutMs) {
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), up to ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;
 }
 ```
 
-**You will see:** (press ●, then ▲, and last the PS button)
+**You will see:** (both sticks released, then the left stick pushed all the way right)
 
 ```text
-Light bar color the receiver remembers now: Red 0  Green 0  Blue 255
-Ready! Press ✕ ● ■ ▲ or the PS button to change the color, press L2 to make it darker.
-New color: Red 255  Green 0  Blue 0
-New color: Red 0  Green 255  Blue 0
-New color: Red 37  Green 201  Blue 148
+Ready! Push the sticks to change the light bar color.
+Light bar -> R 127   G 127   B 127
+Light bar -> R 255   G 127   B 127
 ```
 
 > [!NOTE]
-> A color is made from 3 numbers, "red, green, blue" (each `0` ~ `255`). Use `mbcWriteBytes` to write them into box `0x23` **all at once** (writing them one by one does not work). It's OK to write them before the gamepad connects: the receiver remembers the color and uses it after the gamepad connects.
+> It is fine to send a color before the gamepad is connected: the receiver remembers it and applies it once connected. The receiver's default color is blue `(0, 0, 255)`.
 
 ---
 
 ## ❓ FAQ
 
 **Q: It keeps saying "Receiver not found"?**
-1. Check whether TX and RX are swapped (UNO: RX → A4, TX → A5).
+1. Check that TX and RX are not swapped (UNO: RX → A4, TX → A5; R4: SDA / SCL; ESP32: 21 / 22).
 2. Check that VCC and GND are plugged in firmly. Is the light on the receiver on?
-3. Make sure it is the **Universal I2C edition**: the SPIKE and EV3 editions have different firmware and cannot connect to Arduino directly.
-4. The receiver needs a bit over 1 second to start, and the examples wait up to 5 seconds. If the receiver has its own power and starts later than the Arduino, press the Arduino's RESET button to start again.
+3. Make sure it is the **Universal I2C edition**. The SPIKE and EV3 editions have different firmware and cannot connect to Arduino directly.
+4. The receiver takes a little over 1 s to boot; the examples wait 5 s. If the receiver has its own power supply and boots later than the Arduino, press the RESET button on the Arduino and try again.
 
 **Q: The Serial Monitor shows strange characters?**
 The speed is not set to **115200**. Change it at the bottom right of the Serial Monitor and it will be fine.
 
 **Q: The receiver is found, but the gamepad is always "not connected"?**
-1. Press the gamepad's **PS** button to switch it on.
+1. Press the **PS** button on the gamepad to turn it on.
 2. A gamepad used for the first time must be [paired](#pair) first.
-3. The gamepad's battery is empty: charge it with a USB cable.
-4. The receiver only knows the one gamepad it was paired with. To use another gamepad, press the receiver's Reset button and pair again.
+3. The gamepad battery is empty: charge it with a USB cable.
+4. The receiver only accepts the one gamepad it was paired with. To use another gamepad, press Reset on the receiver and pair again.
 
-**Q: The numbers jump around, or the buttons and sticks don't match?**
-Check that the `delay(2)` inside the helper `mbcRead` has not been deleted. The PS4/PS5 receiver needs these 2 milliseconds to get the data ready.
+**Q: What does `-32768` mean?**
+It is the code for "no such value" (called `MBC_NONE` in the examples): either the box is empty (for example `0C`~`0F`), or the receiver cannot be read (a wire is loose). In your own code, check `v != MBC_NONE` before you use the value.
 
-<a id="faq-updown"></a>
+**Q: Can I remove the `delay(2)` in the helpers?**
+No. The PS4/PS5 receiver is an ESP32 slave device. It cannot hold the I2C clock while it prepares the data, so the host must wait 2 ms after writing the box number. If you remove it, you read the previous data. The same applies to the Sharpshooter.
 
-**Q: Why does the program ignore "up and down pressed together"?**
-From example 2 on, every program has a piece of code called `readPad`. When it reads "up and down pressed together" or "left and right pressed together" on the D-pad, it throws this reading away and keeps using the last one. Here is why:
-1. The D-pad of a gamepad is one piece, so **you cannot press up and down at the same time** (the same for left and right).
-2. When the PS4/PS5 receiver is very busy (for example, while Bluetooth is talking to the gamepad), once in a while it is not ready in time and gives "the box it read last time" instead (for example the status data in box `0x31`). Then the button and stick numbers are wrong, and a remote-control car could move by itself.
-3. This kind of wrong reading often looks like "up and down pressed together", so when we see it, we know the reading is wrong.
+**Q: What should I know when the ESP32 is the host?**
+The `delay(2)` is still needed; wire it to GPIO 21 (SDA) / 22 (SCL). The motor pins in the car example are different on ESP32 and UNO; the code already separates them with `#if defined(ESP32)`.
 
-Also, examples 3 and 6 read box `0x31` (is the gamepad connected?) only every **0.4 seconds**, and read only box `0x11` the rest of the time. This also makes wrong readings less likely. We suggest you do the same in your own programs: to drive or control things, read only box `0x11`, and check the connection status less often.
+**Q: Can I connect the PS4/PS5 and the PS2 receiver at the same time?**
+No. Both have the house number `0x42`, and only one of them can be on the same SDA/SCL wires. But their **box numbers are exactly the same**, so the [PS2 Arduino examples](/en/sensors/ps2/arduino-examples.md) also work with this receiver (rumble and the light bar only work on PS4/PS5; the PS2 receiver ignores them). The high byte of `F0` (1 = PS2, 2 = PS4/PS5) tells you which one is connected.
 
-**Q: Can I connect a PS4/PS5 receiver and a PS2 receiver at the same time?**
-No. Both have the address `0x42`, and only one can be on the same SDA/SCL wires. But the **box numbers of the two are exactly the same**, so the [PS2 Arduino examples](/en/sensors/ps2/arduino-examples.md) also work with this receiver (rumble and light bar are only on the PS4/PS5).
-
-**Q: I want to know what data is in each box.**
-See the [I2C register table on the PS4/PS5 home page](/en/sensors/ps4/index.md) and the [MBC Universal I2C Protocol](/en/i2c-protocol.md) (advanced information for people who write code).
+**Q: I want to know what data each box holds?**
+See the [Command overview](#cmds) above and the [MBC Universal I2C Protocol v2](/en/i2c-protocol.md) (advanced information for people who can code).

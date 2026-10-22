@@ -17,3 +17,7 @@ CLAUDE提示詞.md
 _site/
 _build/node_modules/
 *.md.test
+
+__pycache__/
+*.pyc
+

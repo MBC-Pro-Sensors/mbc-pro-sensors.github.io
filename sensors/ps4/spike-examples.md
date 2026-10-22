@@ -17,6 +17,9 @@
 > - **MBC 積木網站與 Pybricks 要先把主機換成 Pybricks 韌體**（MBC 積木網站上方選單「SPIKE 主機 → 安裝／更新 Pybricks 韌體」就能燒，約 3 分鐘；之後也能用 SPIKE App 換回樂高原廠韌體）。樂高官方 App 不用換。
 > - 樂高官方 App 這裡用的是**教育版（SPIKE 3）**。家用版（Robot Inventor）的「顏色」積木讀法不一樣，這頁的官方 App 範例不適用。
 
+> [!NOTE]
+> 最後的**範例 6** 是進階加碼，**只有 Pybricks 版**：它用的數值放在感應器 2026-10 以後韌體的新模式裡，樂高官方 App 和 MBC 積木網站的積木讀不到。
+
 ## 開始之前：配對手把（只要做一次）
 
 1. 接收器插在主機的 **C 孔**，主機開機。**插上去的時候不要按住接收器上的按鍵**（會進入燒錄模式，接收器就不會動作；放開按鍵、拔掉重插就好）。
@@ -498,6 +501,75 @@ while True:
 - **推一點點車子不會動？** → 這是死區，推到 7 以上（或拉到 3 以下）才會動。想要更靈敏，可以把「4 ～ 6」改成「5 ～ 5」，但放開時車子可能會慢慢滑。
 - **太快不好控制？** → 把「× 25」改成「× 15」（推到底變 60%）。
 - **前後顛倒或原地打轉？** → 同範例 4 的常見問題。
+
+---
+
+## 範例 6（進階）：連線狀態與電量
+
+> [!NOTE]
+> **這個範例只有 Pybricks 版。** 它用的「連線狀態」和「電量」放在接收器的模式 3，樂高官方 App 和 MBC 積木網站讀不到。接收器韌體要是 **2026-10 以後**的版本，舊韌體讀到的會是別的數字。 程式碼就是範例，不需要截圖。
+
+**這個範例會做什麼**：程式一開始亮**紅燈**，**等到手把連上**才亮綠燈、嗶一聲，並印出接收器種類和韌體版本；之後螢幕一直顯示手把**電量**（0～100，例如 80），手把關機或走太遠斷線就變回紅燈、螢幕顯示「--」。
+
+**要準備什麼**：同範例 1（主機＋接收器＋已配對的 PS4 或 PS5 手把）。
+
+**怎麼接**：接收器插 **C 孔**。
+
+**下載程式**
+
+| Pybricks |
+|---|
+| [ex06_connected_battery.py](/examples/ps4/spike_beginner/pybricks/ex06_connected_battery.py)＋[函式庫](/examples/ps4/spike_beginner/pybricks/MBC_gamepad_Lib.py) |
+
+<details>
+<summary>🐍 Pybricks 程式碼</summary>
+
+```python
+# 掌控者PS4 範例 6：連線狀態與電量（等手把連上才開始，螢幕顯示電量）
+# 接線：掌控者PS4 接收器 → C 埠
+# 只有 Pybricks 版：連線狀態和電量放在接收器的「模式 3」，官方 App 和積木網站讀不到；接收器韌體要 2026-10 以後
+from pybricks.hubs import PrimeHub
+from pybricks.parameters import Color, Port
+from pybricks.tools import wait
+from MBC_gamepad_Lib import MBC_GAMEPAD
+
+hub = PrimeHub()
+pad = MBC_GAMEPAD(Port.C)                    # 接收器插在 C 埠
+
+hub.light.on(Color.RED)                      # 紅燈 = 手把還沒連上
+while not pad.connected():                   # 等到手把連上（True）才往下
+    wait(200)
+hub.light.on(Color.GREEN)                    # 綠燈 = 連上了
+hub.speaker.beep()
+print('接收器種類', pad.kind(), ' 韌體', pad.firmware_version())   # 例如 PS4 (1, 0)
+
+while True:
+    if pad.connected():
+        battery = pad.battery()              # 手把電量 0~100
+        hub.display.number(min(battery, 99)) # 螢幕最多只能顯示兩位數
+        hub.light.on(Color.GREEN)
+        print('已連線  電量', battery, '%')
+    else:                                    # 手把關機或離太遠 → 斷線
+        hub.display.text('--')
+        hub.light.on(Color.RED)
+        print('斷線了')
+    wait(500)
+```
+
+</details>
+
+**一步一步看懂程式**
+1. `pad.connected()`：手把有沒有連上接收器（True／False）。開頭用「**等到**連上」取代範例 5 的「等搖桿在中間」，更可靠。
+2. `pad.kind()`、`pad.firmware_version()`：接收器是 PS2 還是 PS4 款、韌體幾版（讀感應器的模式 8）。
+3. **一直重複**：連著就顯示 `pad.battery()`、綠燈；斷線就紅燈、「--」。螢幕最多顯示兩位數，所以 100 會顯示 99。
+4. 這個範例沒有呼叫 `pad.update()`，因為沒有要讀按鍵。要讀按鍵的程式請照範例 1～5 的寫法，`connected()`、`battery()` 放在迴圈外或偶爾呼叫（每次呼叫接收器要切換模式，多花幾十 ms）。
+
+**跑起來應該看到什麼**：手把還沒連：紅燈。按手把 PS 鍵連上的瞬間：綠燈＋嗶，螢幕顯示電量（例如 80）。把手把關掉：紅燈、「--」。
+
+**常見問題**
+- **電量數字不會變？** → 手把每隔一段時間才回報一次電量，充電中也不一定馬上更新，是正常的。
+- **一直紅燈？** → 手把沒配對（看上面「配對手把」）、或接收器韌體太舊（2026-10 以前）沒有連線狀態，請更新韌體。
+- **可以跟範例 5 合併嗎？** → 可以：把範例 5 開頭的「等搖桿在中間」換成「等到 `pad.connected()`」，也可以在電量低於 20 時亮橘燈提醒。
 
 ---
 

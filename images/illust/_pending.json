@@ -1,0 +1,130 @@
+[
+  {
+    "out": "images/illust/host-ev3.png",
+    "prompt": "Square composition. A white and grey educational robotics brick with a small screen and four numbered ports (generic, no logo) on a classroom table, with a small black LEGO-compatible sensor module with teal accents attached by a cable. Clean product illustration, light background, no text, no LEGO trademark.",
+    "alt": "EV3 brick with MBC sensor",
+    "ratio": "1:1",
+    "error": "skipped: quota exhausted (429) on first test image",
+    "time": "2026-10-22 00:01:41"
+  },
+  {
+    "out": "images/illust/host-arduino.png",
+    "prompt": "Square composition. A blue microcontroller development board with pin headers and a USB port (generic, no logo) on a workbench, four colourful jumper wires (green, blue, red, black) connecting to a small black LEGO-compatible sensor module with teal accents. Clean product illustration, light background, no text.",
+    "alt": "Arduino UNO with MBC sensor",
+    "ratio": "1:1",
+    "error": "skipped: quota exhausted (429) on first test image",
+    "time": "2026-10-22 00:01:41"
+  },
+  {
+    "out": "images/illust/host-mblock.png",
+    "prompt": "Square composition. A small blue two-wheeled educational robot car with a round controller board (generic, no logo) on a classroom floor, a black LEGO-compatible sensor module with teal accents connected to its front via a phone-style modular cable. Clean product illustration, light background, no text.",
+    "alt": "mBot with MBC sensor",
+    "ratio": "1:1",
+    "error": "skipped: quota exhausted (429) on first test image",
+    "time": "2026-10-22 00:01:41"
+  },
+  {
+    "out": "images/illust/host-matrix.png",
+    "prompt": "Square composition. A green rectangular robotics controller board with several small white 4-pin sockets and motor ports (generic, no logo) mounted on a LEGO-compatible robot chassis, a black sensor module with teal accents connected by a short 4-wire cable. Clean product illustration, light background, no text, no LEGO trademark.",
+    "alt": "MATRIX Mini R4 with MBC sensor",
+    "ratio": "1:1",
+    "error": "skipped: quota exhausted (429) on first test image",
+    "time": "2026-10-22 00:01:41"
+  },
+  {
+    "out": "images/illust/host-microbit.png",
+    "prompt": "Square composition. A small pocket-sized education microcontroller board with a 5x5 red LED grid, two round buttons and a gold edge connector (generic, no logo), connected with alligator clips and wires to a black LEGO-compatible sensor module with teal accents, on a classroom desk. Clean product illustration, light background, no text.",
+    "alt": "micro:bit with MBC sensor",
+    "ratio": "1:1",
+    "error": "skipped: quota exhausted (429) on first test image",
+    "time": "2026-10-22 00:01:41"
+  },
+  {
+    "out": "images/illust/ref-line8.png",
+    "prompt": "Wide 16:9 composition. A LEGO-compatible robot car seen from a low front angle, a black 8-sensor line-following bar with teal accents mounted at its front, close to a white competition mat with a black line and a curve ahead, faint teal glow under the sensor. Robotics competition scene, light background, no text, no LEGO trademark.",
+    "alt": "8-channel line sensor following a black line",
+    "ratio": "16:9",
+    "error": "skipped: quota exhausted (429) on first test image",
+    "time": "2026-10-22 00:01:41"
+  },
+  {
+    "out": "images/illust/ref-line16.png",
+    "prompt": "Wide 16:9 composition. A LEGO-compatible robot car from a low front angle with a long black 16-sensor line-following bar with teal accents spanning its full width, over a white mat with a black line that splits into a fork, faint teal glow. Robotics competition scene, light background, no text, no LEGO trademark.",
+    "alt": "16-channel line sensor on a wide line",
+    "ratio": "16:9",
+    "error": "skipped: quota exhausted (429) on first test image",
+    "time": "2026-10-22 00:01:41"
+  },
+  {
+    "out": "images/illust/ref-tof2.png",
+    "prompt": "Wide 16:9 composition. A LEGO-compatible robot car with a small black module with two laser distance sensor windows and teal accents on its front, two thin red beams reaching a white wall ahead on a competition mat, seen from the side. Clean product illustration, light background, no text, no LEGO trademark.",
+    "alt": "Dual laser distance sensor approaching a wall",
+    "ratio": "16:9",
+    "error": "skipped: quota exhausted (429) on first test image",
+    "time": "2026-10-22 00:01:41"
+  },
+  {
+    "out": "images/illust/ref-tof8.png",
+    "prompt": "Wide 16:9 composition. A LEGO-compatible robot seen from above-front, a black semicircular module with eight laser distance sensor windows and teal accents on its front, eight faint red beams fanning out 180 degrees to detect boxes and obstacles on a competition mat. Clean product illustration, light background, no text, no LEGO trademark.",
+    "alt": "8-direction laser distance sensor scanning 180 degrees",
+    "ratio": "16:9",
+    "error": "skipped: quota exhausted (429) on first test image",
+    "time": "2026-10-22 00:01:41"
+  },
+  {
+    "out": "images/illust/ref-ps2.png",
+    "prompt": "Wide 16:9 composition. A student's hands holding a generic black wireless gamepad with two thumb sticks (no logo), in the background a LEGO-compatible robot car with a small black receiver module with teal accents driving on a classroom floor. Light background, no text, no LEGO trademark.",
+    "alt": "Wireless gamepad controlling a LEGO-compatible robot",
+    "ratio": "16:9",
+    "error": "skipped: quota exhausted (429) on first test image",
+    "time": "2026-10-22 00:01:41"
+  },
+  {
+    "out": "images/illust/ref-ps4.png",
+    "prompt": "Wide 16:9 composition. A modern generic black Bluetooth gamepad with a glowing light bar (no logo) resting next to a LEGO-compatible robot arm, with a small black receiver module with teal accents mounted on the robot, soft wireless signal arcs between them. Light background, no text, no LEGO trademark.",
+    "alt": "Bluetooth gamepad with a LEGO-compatible robot",
+    "ratio": "16:9",
+    "error": "skipped: quota exhausted (429) on first test image",
+    "time": "2026-10-22 00:01:41"
+  },
+  {
+    "out": "images/illust/ref-imu.png",
+    "prompt": "Wide 16:9 composition. A LEGO-compatible robot car turning exactly 90 degrees on a competition mat, a small black square sensor module with teal accents mounted on top, subtle arrows showing heading and tilt around it. Clean product illustration, light background, no text, no LEGO trademark.",
+    "alt": "IMU gyro sensor keeping a robot heading straight",
+    "ratio": "16:9",
+    "error": "skipped: quota exhausted (429) on first test image",
+    "time": "2026-10-22 00:01:41"
+  },
+  {
+    "out": "images/illust/ref-esp32cam.png",
+    "prompt": "Wide 16:9 composition. A small black camera sensor module with a tiny colour screen on its back and teal accents, mounted on a LEGO-compatible robot, looking at a red ball on a competition mat; the screen shows the ball outlined by a box. Clean product illustration, light background, no text, no LEGO trademark.",
+    "alt": "Vision sensor with colour screen tracking a colored object",
+    "ratio": "16:9",
+    "error": "skipped: quota exhausted (429) on first test image",
+    "time": "2026-10-22 00:01:41"
+  },
+  {
+    "out": "images/illust/ref-esp32cam-wro.png",
+    "prompt": "Wide 16:9 composition. A small black camera sensor module with teal accents on a LEGO-compatible robot looking down at a competition mat with a grid of twelve coloured square tiles (red, yellow, green, blue, white, black), the camera's small screen reflecting the grid. Robotics competition scene, light background, no text, no LEGO trademark.",
+    "alt": "Vision sensor reading twelve coloured spots",
+    "ratio": "16:9",
+    "error": "skipped: quota exhausted (429) on first test image",
+    "time": "2026-10-22 00:01:41"
+  },
+  {
+    "out": "images/illust/downloads.png",
+    "prompt": "Wide 16:9 composition. A flat-lay of a laptop showing a block-coding editor, a USB cable, a LEGO-compatible black sensor module with teal accents, and a few floating folder and file icons, on a light desk. Clean illustration, light background, no readable text, no LEGO trademark.",
+    "alt": "Downloads: libraries and example projects",
+    "ratio": "16:9",
+    "error": "skipped: quota exhausted (429) on first test image",
+    "time": "2026-10-22 00:01:41"
+  },
+  {
+    "out": "images/illust/host-spike.png",
+    "prompt": "Square composition. A yellow educational robotics hub brick (generic, no logo) on a competition mat, with a small black LEGO-compatible sensor module with teal accents plugged in by a cable. Clean product illustration, light background, no text, no LEGO trademark.",
+    "alt": "SPIKE Prime hub with MBC sensor",
+    "ratio": "1:1",
+    "error": "gemini-3-pro-image HTTP 429",
+    "time": "2026-10-22 10:21:51"
+  }
+]

@@ -387,13 +387,13 @@ body.landing { overflow-x: hidden; }
 body.landing.theme-light { background: #f6f8fa; color: #1f2933; }
 body.theme-light .topnav { background: rgba(255,255,255,0.95); border-bottom: 1px solid #e3e8ee; }
 body.theme-light .topnav .tn-links a { color: #33414e; }
-body.theme-light .topnav .tn-links a:hover { color: #0a8f8a; }
+body.theme-light .topnav .tn-links a:hover { color: #0a7c78; }
 body.theme-light .topnav .tn-logo { color: #0a7c78; }
 body.theme-light .topnav .tn-burger { color: #33414e; }
 @media (max-width: 900px) { body.theme-light .topnav .tn-links { background: #fff; border-bottom: 1px solid #e3e8ee; } }
 body.landing.theme-light .markdown-section { color: #33414e; }
 body.landing.theme-light .markdown-section h2 { color: #10212b; text-shadow: none; }
-body.landing.theme-light .markdown-section a { color: #0a8f8a; }
+body.landing.theme-light .markdown-section a { color: #0a7c78; }
 body.landing.theme-light .lp-sub { color: #5b6b78; }
 
 /* 深色主視覺帶（全寬） */
@@ -448,7 +448,7 @@ body.theme-light .site-footer { border-top-color: #e3e8ee; color: #5b6b78; }
 .markdown-section .product-hero .ph-wro a { color: var(--pc); }
 .site-footer .sf-social { font-size: 0.85rem; margin-bottom: 10px; }
 .site-footer .sf-social a { color: var(--theme-color); text-decoration: none; font-weight: 700; }
-body.theme-light .site-footer .sf-social a { color: #0a8f8a; }
+body.theme-light .site-footer .sf-social a { color: #0a7c78; }
 
 /* 首頁信任提示列與產品卡建議售價 */
 .lp-proof { text-align: center; margin: 18px auto 0; padding: 12px 16px; border-radius: 12px; background: rgba(10,186,181,0.08); font-size: 0.98rem; line-height: 1.6; }
@@ -558,7 +558,7 @@ body.docs .topnav .tn-toc svg.i { margin: 0; }
 /* 側欄 */
 body.docs .sidebar ul li a { color: #33414e; }
 body.docs .sidebar ul li a:hover, body.docs .sidebar-nav li .menu-toggle:hover { color: #0a7c78; text-shadow: none; }
-body.docs .sidebar ul li.active > a { color: #0a7c78; border-right-color: #0a8f8a; }
+body.docs .sidebar ul li.active > a { color: #0a7c78; border-right-color: #0a7c78; }
 body.docs .search input { background-color: #fff !important; border-color: #cfd8de !important; color: #10212b !important; }
 body.docs .search input:focus { box-shadow: 0 0 0 3px rgba(10,143,138,0.2) !important; }
 body.docs .search .matching-post { border-bottom-color: #e3e8ee !important; }
@@ -571,7 +571,7 @@ body.docs .search .empty { color: #5b6b78; }
 body.docs .markdown-section { color: #33414e; }
 body.docs .markdown-section h1, body.docs .markdown-section h2, body.docs .markdown-section h3, body.docs .markdown-section h4 { color: #10212b; text-shadow: none; }
 body.docs .markdown-section h1 a, body.docs .markdown-section h2 a, body.docs .markdown-section h3 a, body.docs .markdown-section h4 a { color: inherit; }
-body.docs .markdown-section h1 svg.i, body.docs .markdown-section h2 svg.i, body.docs .markdown-section h3 svg.i, body.docs .markdown-section h4 svg.i { color: #0a8f8a; }
+body.docs .markdown-section h1 svg.i, body.docs .markdown-section h2 svg.i, body.docs .markdown-section h3 svg.i, body.docs .markdown-section h4 svg.i { color: #0a7c78; }
 body.docs .markdown-section a { color: #0a7c78; }
 body.docs .markdown-section strong { color: #10212b; }
 body.docs .markdown-section blockquote { background: #fff8db; color: #33414e; }
@@ -718,3 +718,148 @@ body.landing.theme-light .markdown-section .lp-vcap a { color: #0a7c78; }
   .markdown-section #start + p + table { font-size: 0.8rem; }
   .markdown-section #start + p + table th, .markdown-section #start + p + table td { padding: 6px 3px; }
 }
+
+/* =========================================================
+   2026-10-21 #67 開發者文件版型（D8）：token、左側欄＋72ch 內容＋右側目錄、六平台色、chip、
+   指令參考 <details>、產品頁平台磁磚、首頁兩步選擇器
+   ========================================================= */
+:root {
+  --brand: #0ABAB5; --brand-ink: #0a7c78;        /* 品牌蒂芬妮綠；文字用深一階（白底對比 4.6:1） */
+  --spike: #F2C200; --spike-ink: #7a6100;        /* SPIKE 黃；文字用深黃 */
+  --ev3: #D62828; --ev3-ink: #b11f1f;
+  --arduino: #0ABAB5; --arduino-ink: #0a7c78;
+  --mblock: #1E6FE8; --mblock-ink: #1a5bc0;
+  --matrix: #2E9E4F; --matrix-ink: #237a3d;
+  --microbit: #E8711E; --microbit-ink: #b4530f;
+  --ink: #1f2933; --ink-2: #33414e; --ink-mute: #5b6b78;
+  --paper: #fff; --paper-2: #f6f8fa; --rule: #e3e8ee;
+  --font-text: 'Nunito', 'Noto Sans TC', 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+  --font-mono: 'JetBrains Mono', Consolas, 'Courier New', monospace;
+  --measure: 72ch;
+}
+body.docs, body.landing { font-family: var(--font-text); }
+body.docs .markdown-section { color: var(--ink); }
+body.docs .markdown-section pre, body.docs .markdown-section code, body.docs .markdown-section kbd { font-family: var(--font-mono); }
+
+/* 文件版型：側欄（docsify 既有）＋ 內容 72ch ＋ 右側目錄 */
+body.docs .doc-wrap { max-width: calc(var(--measure) + 30px); margin: 0 auto; padding: 0; }
+body.docs .doc-wrap > .markdown-section { max-width: none; margin: 0; }
+body.docs .toc { font-size: 0.9rem; }
+body.docs .toc details { border: 1px solid var(--rule); border-radius: 10px; background: var(--paper-2); padding: 8px 14px; margin: 16px 15px 0; }
+body.docs .toc summary { cursor: pointer; font-weight: 700; color: var(--ink-2); min-height: 36px; display: flex; align-items: center; }
+body.docs .toc ol { list-style: none; margin: 6px 0 4px; padding: 0; }
+body.docs .toc li a { display: block; padding: 6px 8px; color: var(--ink-mute); text-decoration: none; border-left: 2px solid transparent; line-height: 1.4; }
+body.docs .toc li.toc-h3 a { padding-left: 20px; font-size: 0.85rem; }
+body.docs .toc li a:hover { color: var(--brand-ink); }
+body.docs .toc li a.active { color: var(--brand-ink); border-left-color: var(--brand); font-weight: 700; background: #fff; }
+@media (min-width: 1200px) {
+  body.docs .doc-wrap.has-toc { display: grid; grid-template-columns: minmax(0, var(--measure)) 230px; gap: 28px; max-width: calc(var(--measure) + 258px + 30px); align-items: start; }
+  body.docs .toc { position: sticky; top: 76px; max-height: calc(100vh - 96px); overflow: auto; }
+  body.docs .toc details { margin: 30px 0 0; padding: 10px 12px; }
+  body.docs .toc summary { list-style: none; pointer-events: none; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-mute); }
+  body.docs .toc summary::-webkit-details-marker { display: none; }
+}
+@media (max-width: 1199px) { body.docs .doc-wrap.has-toc { display: flex; flex-direction: column; } body.docs .doc-wrap.has-toc > .toc { order: -1; } }
+
+/* 平台色：chip、<details class="plat">、磁磚共用 */
+.plat-spike, .chip-spike, .pg-spike, .ft-spike { --pc: var(--spike); --pc-ink: var(--spike-ink); }
+.plat-ev3, .chip-ev3, .pg-ev3, .ft-ev3 { --pc: var(--ev3); --pc-ink: var(--ev3-ink); }
+.plat-arduino, .chip-arduino, .pg-arduino, .ft-arduino { --pc: var(--arduino); --pc-ink: var(--arduino-ink); }
+.plat-mblock, .chip-mblock, .pg-mblock, .ft-mblock { --pc: var(--mblock); --pc-ink: var(--mblock-ink); }
+.plat-matrix, .chip-matrix, .pg-matrix, .ft-matrix { --pc: var(--matrix); --pc-ink: var(--matrix-ink); }
+.plat-microbit, .chip-microbit, .pg-microbit, .ft-microbit { --pc: var(--microbit); --pc-ink: var(--microbit-ink); }
+
+/* chip 列 */
+.markdown-section p.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 18px; }
+.markdown-section .chip { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 18px; border: 1.5px solid var(--pc, var(--brand)); color: var(--pc-ink, var(--brand-ink)); background: color-mix(in srgb, var(--pc, var(--brand)) 8%, #fff); font-weight: 700; font-size: 0.88rem; text-decoration: none; }
+.markdown-section a.chip:hover { background: color-mix(in srgb, var(--pc, var(--brand)) 18%, #fff); }
+.markdown-section .chip.current { background: var(--pc, var(--brand)); color: #0a0a0a; border-color: var(--pc, var(--brand)); }
+.markdown-section .chip-ev3.current, .markdown-section .chip-mblock.current, .markdown-section .chip-matrix.current, .markdown-section .chip-microbit.current { color: #fff; }
+.markdown-section .chip.off { opacity: 0.45; border-style: dashed; }
+
+/* 指令參考：每個值一節 */
+.markdown-section section.ref-item { padding: 6px 0 18px; margin: 0 0 18px; border-bottom: 1px solid var(--rule); scroll-margin-top: 76px; }
+.markdown-section section.ref-item h3 { margin-top: 1.2em; }
+.markdown-section section.ref-item h3 small { font-family: var(--font-mono); font-weight: 400; font-size: 0.75em; color: var(--ink-mute); margin-left: 8px; }
+.markdown-section section.ref-item h3 code { font-size: 0.85em; }
+.markdown-section figure.ref-fig { margin: 12px 0 16px; text-align: center; }
+.markdown-section figure.ref-fig img { max-width: 480px; width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 12px; background: #fff; }
+
+/* 六平台 <details>：左邊框平台色 */
+.markdown-section details.plat { margin: 0 0 8px; border: 1px solid var(--rule); border-left: 5px solid var(--pc, var(--brand)); border-radius: 10px; background: #fff; }
+.markdown-section details.plat > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 4px 14px; font-weight: 700; color: var(--ink-2); }
+.markdown-section details.plat > summary::-webkit-details-marker { display: none; }
+.markdown-section details.plat > summary::after { content: ""; margin-left: auto; width: 9px; height: 9px; border-right: 2px solid var(--ink-mute); border-bottom: 2px solid var(--ink-mute); transform: rotate(45deg); transition: transform 0.15s; }
+.markdown-section details.plat[open] > summary::after { transform: rotate(-135deg); }
+.markdown-section details.plat > summary:hover { color: var(--pc-ink, var(--brand-ink)); }
+.markdown-section details.plat > summary:focus-visible { outline: 3px solid color-mix(in srgb, var(--pc, var(--brand)) 45%, transparent); outline-offset: -3px; border-radius: 10px; }
+.markdown-section details.plat .plat-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--pc, var(--brand)); flex: none; }
+.markdown-section details.plat > :not(summary) { margin-left: 14px; margin-right: 14px; }
+.markdown-section details.plat > p:first-of-type { margin-top: 4px; }
+.markdown-section details.plat > pre { margin-top: 8px; }
+.markdown-section details.plat > :last-child { margin-bottom: 14px; }
+.markdown-section details.plat pre.blocks { background: var(--paper-2); border: 1px solid var(--rule); }
+
+/* 產品頁六平台磁磚 */
+.platform-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 18px 0 8px; }
+.pg-tile { border: 1px solid var(--rule); border-top: 4px solid var(--pc, var(--brand)); border-radius: 12px; padding: 10px 12px 8px; background: #fff; display: flex; flex-direction: column; gap: 2px; }
+.pg-tile b { color: var(--ink); font-size: 0.95rem; margin-bottom: 4px; }
+.markdown-section .pg-tile a { display: flex; align-items: center; min-height: 40px; color: var(--pc-ink, var(--brand-ink)); text-decoration: none; font-weight: 700; font-size: 0.9rem; border-top: 1px solid var(--rule); }
+.markdown-section .pg-tile a::before { content: "→"; margin-right: 6px; opacity: 0.6; }
+.markdown-section .pg-tile a:hover { text-decoration: underline; }
+.pg-tile.off { opacity: 0.55; border-top-color: var(--rule); background: var(--paper-2); }
+.pg-tile.off span { color: var(--ink-mute); font-size: 0.85rem; min-height: 40px; display: flex; align-items: center; }
+
+/* 首頁兩步選擇器 */
+.finder { max-width: 1180px; margin: 0 auto; }
+.finder-pick { display: none; }
+html.js .finder-pick { display: block; }
+html.js .finder-table { margin-top: 18px; }
+.markdown-section .finder-step { display: flex; align-items: center; gap: 10px; margin: 18px 0 10px; font-weight: 700; color: #10212b; }
+.markdown-section .finder-step b { width: 30px; height: 30px; border-radius: 50%; background: var(--spike); color: #0a0a0a; display: inline-flex; align-items: center; justify-content: center; }
+.finder-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 10px; }
+.finder-tiles button { min-height: 48px; padding: 10px 8px; border-radius: 12px; border: 1.5px solid var(--rule); background: #fff; color: var(--ink); font: inherit; font-weight: 700; font-size: 0.88rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; }
+.finder-prods button img { height: 64px; width: auto; max-width: 100%; object-fit: contain; }
+.finder-prods button .ft-noimg { height: 64px; width: 64px; border-radius: 12px; background: var(--paper-2); }
+.finder-tiles button:hover { border-color: var(--pc, var(--brand)); }
+.finder-tiles button[aria-checked="true"] { border-color: var(--pc, var(--brand)); background: color-mix(in srgb, var(--pc, var(--brand)) 12%, #fff); box-shadow: 0 0 0 2px color-mix(in srgb, var(--pc, var(--brand)) 40%, transparent); }
+.finder-hosts button { border-top: 4px solid var(--pc); min-height: 56px; }
+.finder-tiles button:focus-visible { outline: 3px solid rgba(10,143,138,0.45); outline-offset: 2px; }
+.finder-result { margin-top: 16px; padding: 16px 18px; border-radius: 12px; background: var(--paper-2); border: 1px solid var(--rule); }
+.markdown-section .finder-result p { margin: 0; color: var(--ink-mute); }
+.markdown-section .finder-result h3 { margin: 0 0 10px; color: #10212b; font-size: 1.1rem; }
+.finder-result .fr-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.markdown-section .finder-result .fr-links a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 22px; background: var(--brand-ink); color: #fff; font-weight: 700; text-decoration: none; }
+.markdown-section .finder-result .fr-links a.ghost { background: #fff; color: var(--ink-2); border: 1px solid #cfd8de; }
+/* 首頁 landing 主題的連結色權重較高，這裡再壓回來 */
+body.landing.theme-light .markdown-section .finder-result .fr-links a { color: #fff; }
+body.landing.theme-light .markdown-section .finder-result .fr-links a.ghost { color: var(--ink-2); }
+body.landing.theme-light .markdown-section .pg-tile a { color: var(--pc-ink, var(--brand-ink)); }
+.finder-table summary { cursor: pointer; font-weight: 700; color: #10212b; min-height: 44px; display: flex; align-items: center; }
+.finder-table table { width: 100%; font-size: 0.9rem; }
+@media (max-width: 600px) { .finder-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; } .finder-tiles button { font-size: 0.8rem; padding: 8px 4px; } .finder-prods button img { height: 48px; } .finder-table { overflow-x: auto; } }
+
+/* 2026-10-22 touch targets >= 44px (mobile audit): chips, TOC links, summaries, copy buttons, platform-grid buttons, heading anchors */
+.markdown-section .chip { min-height: 44px; }
+body.docs .toc li a { min-height: 44px; display: flex; align-items: center; }
+.markdown-section details > summary { min-height: 44px; }
+.code-copy { min-height: 44px; min-width: 44px; }
+.platform-grid a { min-height: 44px; }
+.markdown-section a.anchor, .markdown-section h2 > a, .markdown-section h3 > a { min-height: 44px; display: inline-flex; align-items: center; }
+
+/* 2026-10-22 Lighthouse contrast: Prism tokens on #f8f8f8, copy button, EV3 chip ink */
+.markdown-section pre code .token.keyword, .markdown-section pre code .token.important { color: #b34d00; }
+.markdown-section pre code .token.comment, .markdown-section pre code .token.prolog, .markdown-section pre code .token.doctype, .markdown-section pre code .token.cdata { color: #5f6368; }
+.markdown-section pre code .token.number, .markdown-section pre code .token.boolean { color: #8a3f00; }
+.markdown-section pre code .token.string, .markdown-section pre code .token.char { color: #1b6e20; }
+.markdown-section pre code .token.function { color: #6a1b9a; }
+.markdown-section pre code .token.operator, .markdown-section pre code .token.punctuation { color: #3c4043; }
+.code-copy { background: #0a6f6b !important; color: #fff !important; }
+:root { --ev3-ink: #a51f1f; --spike-ink: #6b5400; --arduino-ink: #086a66; --mblock-ink: #164fae; --matrix-ink: #1f6f38; --microbit-ink: #a44c0e; }
+
+/* 2026-10-22 touch targets round 2: platform-grid tile buttons, TOC summary */
+.platform-grid .pg-tile a { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+body.docs .toc summary { min-height: 44px; }
+
+/* 2026-10-22 chip ink must win over generic link colour */
+.markdown-section a.chip, body.docs .markdown-section a.chip { color: var(--pc-ink, var(--brand-ink)); }

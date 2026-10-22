@@ -1,162 +1,84 @@
 /*
- * 掌控者 PS4/PS5 × Arduino　範例 8：換手把燈條的顏色
+ * 掌控者 PS4/PS5 × Arduino　範例 8：搖桿調燈條顏色
  * ------------------------------------------------------------
  * 這個範例會做什麼？
- *   用 Arduino 改變手把燈條的顏色：
- *     按 ✕ → 藍色    按 ● → 紅色    按 ■ → 粉紅色    按 ▲ → 綠色
- *     按 PS 鍵 → 隨機變一個顏色
- *     慢慢壓 L2 扳機 → 燈變暗，壓到底就熄掉
- *   比賽時可以讓紅隊、藍隊的手把亮不同顏色，一眼就認得出來。
+ *   推搖桿就改手把燈條的顏色：
+ *     左搖桿左右（LX）→ 紅、左搖桿上下（LY）→ 綠、右搖桿左右（RX）→ 藍
+ *     -100 ~ +100 換算成 0 ~ 255；都放開 = 中間亮度的白。
+ *   用的是命令 E6：寫 [0xE6][R][G][B]，剛好 3 個 byte。
+ *   顏色有變才送（最快每 100 ms 一次），不會一直塞 I2C。
  *
- * 你需要：
- *   掌控者 PS4/PS5 接收器（通用 I2C 版）＋ PS4 或 PS5 手把（已配對好）。
+ * 你需要：掌控者 PS4/PS5 接收器（通用 I2C 版）＋ PS4 或 PS5 手把（已配對好）、Arduino UNO／Nano／UNO R4 或 ESP32。
  *
- * 接線（Arduino UNO / Nano）：
- *   接收器 VCC → 5V              接收器 GND → GND
- *   接收器 RX（= SDA）→ A4       接收器 TX（= SCL）→ A5
+ * 接線：
+ *   接收器 VCC → 5V      接收器 GND → GND
+ *   接收器 RX（= SDA） → A4      接收器 TX（= SCL） → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
+ *   （I2C 版接收器上印的 TX 就是 SCL、RX 就是 SDA）
  *
  * 怎麼看結果：
- *   看手把上的燈條。序列埠監控窗（115200）會印出顏色。
+ *   上傳後推搖桿，看手把燈條變色。序列埠監控窗（115200）會印出 R、G、B。
  *
  * 小提醒：
- *   顏色用「紅、綠、藍」3 個數字（各 0 ~ 255）調出來，跟調顏料一樣。
- *   3 個數字要一次寫進接收器的第 0x23 號格子。
- *   手把還沒連上時寫進去也沒關係，接收器會先記住，連上後就套用。
+ *   手把還沒連上時送進去也沒關係，接收器會先記住，連上後套用；預設顏色是藍 (0,0,255)。
+ *   PS2 手把沒有燈條，PS2 接收器收到 E6 會回 ACK 但忽略。
  */
 
 #include <Wire.h>
 
-const uint8_t SENSOR_ADDR = 0x42;        // 掌控者接收器的門牌號碼
+const uint8_t ADDR = 0x42;               // 掌控者接收器的「門牌號碼」（I2C 位址），PS2 與 PS4 都是 0x42
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
 
-// 形狀鍵在 16 位按鍵數字裡的位置（第幾位）
-const uint8_t BTN_TRIANGLE = 12, BTN_CIRCLE = 13, BTN_CROSS = 14, BTN_SQUARE = 15;
+// 小幫手的宣告（實作在檔案最下面）；mbcWrite 的參數可以省略
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
 
-uint8_t baseColor[3] = {0, 0, 255};      // 選好的顏色（紅, 綠, 藍），一開始是藍色
-uint8_t lastBright = 255;                // 上一次送出的亮度
-uint16_t lastButtons = 0;                // 上一次的按鍵狀態
-bool lastPs = false;                     // 上一次 PS 鍵有沒有按
-unsigned long lastSend = 0;              // 上一次送出顏色的時間
+uint8_t lastRGB[3] = {255, 255, 255};    // 上一次送出的顏色（故意跟一開始不一樣，第一圈就會送）
+unsigned long lastSend = 0;
 
 void setup() {
   Serial.begin(115200);
   mbcBegin();
   delay(500);
-
-  if (!mbcWaitReady(5000)) {
+  if (!mbcWaitReady(ADDR, 5000)) {
     Serial.println(F("找不到接收器，請先跑範例 1 檢查接線。"));
     while (true) {}
   }
-
-  // 第 0x23 號格子可以讀也可以寫：先讀出接收器記住的顏色
-  uint8_t c[3];
-  if (mbcRead(0x23, c, 3)) {
-    Serial.print(F("接收器現在記住的燈條顏色："));
-    printColor(c);
-  }
-  randomSeed(micros());                  // 讓「隨機顏色」每次開機都不一樣
-  Serial.println(F("準備好了！按 ✕ ● ■ ▲ 或 PS 鍵換顏色，壓 L2 變暗。"));
-  sendColor(255);                        // 先送一次藍色
+  Serial.println(F("準備好了！推搖桿改燈條顏色。"));
 }
 
 void loop() {
-  // 讀手把資料（第 0x11 號格子，9 個數字）。readPad 在檔案下面，會順便檢查有沒有讀錯
-  uint8_t d[9];
-  if (!readPad(d)) {
-    delay(100);
-    return;
+  if (millis() - lastSend >= 100) {      // 最快每 0.1 秒送一次
+    // 一次讀編號 10~12 共 3 個值：[0] LX [1] LY [2] RX（-100 ~ +100）
+    int16_t s[3];
+    if (!mbcReadMany(ADDR, 0x10, 3, s)) { delay(100); return; }
+
+    uint8_t rgb[3];
+    rgb[0] = map(s[0], -100, 100, 0, 255);   // 紅：左搖桿左右
+    rgb[1] = map(s[1], -100, 100, 0, 255);   // 綠：左搖桿上下
+    rgb[2] = map(s[2], -100, 100, 0, 255);   // 藍：右搖桿左右
+
+    // 顏色有變才送（差 1 以內當作沒變，搖桿輕微抖動不會一直送）
+    if (abs(rgb[0] - lastRGB[0]) > 1 || abs(rgb[1] - lastRGB[1]) > 1 || abs(rgb[2] - lastRGB[2]) > 1) {
+      mbcWrite(ADDR, 0xE6, rgb, 3);      // 命令 E6：[R][G][B]，要剛好 3 個 byte
+      lastSend = millis();
+      memcpy(lastRGB, rgb, 3);
+      Serial.print(F("燈條 → 紅 ")); Serial.print(rgb[0]);
+      Serial.print(F("　綠 ")); Serial.print(rgb[1]);
+      Serial.print(F("　藍 ")); Serial.println(rgb[2]);
+    }
   }
-
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];
-  uint16_t pressed = buttons & ~lastButtons;          // 「剛按下」的鍵
-  lastButtons = buttons;
-  bool changed = false;                  // 這一次有沒有換顏色
-
-  if (pressed & (1u << BTN_CROSS))    { setBase(0, 0, 255);   changed = true; }   // ✕ 藍
-  if (pressed & (1u << BTN_CIRCLE))   { setBase(255, 0, 0);   changed = true; }   // ● 紅
-  if (pressed & (1u << BTN_SQUARE))   { setBase(255, 0, 128); changed = true; }   // ■ 粉紅
-  if (pressed & (1u << BTN_TRIANGLE)) { setBase(0, 255, 0);   changed = true; }   // ▲ 綠
-
-  bool ps = d[8] & 0x01;                 // PS 鍵：第 8 個數字（系統鍵）的第 0 位
-  if (ps && !lastPs) {                   // 剛按下 PS 鍵 → 隨機顏色
-    setBase(random(256), random(256), random(256));
-    changed = true;
-  }
-  lastPs = ps;
-
-  // L2 扳機壓越深，燈越暗：0（沒壓）→ 亮度 255，255（壓到底）→ 亮度 0
-  uint8_t bright = 255 - d[6];
-
-  if (changed) {
-    sendColor(bright);
-    Serial.print(F("換顏色："));
-    printColor(baseColor);
-  } else if (abs((int)bright - (int)lastBright) >= 8 && millis() - lastSend >= 50) {
-    sendColor(bright);                   // 亮度變了才送，而且最快 0.05 秒送一次，不要塞爆通訊
-  }
-
-  delay(20);
-}
-
-// 記住選好的顏色
-void setBase(uint8_t r, uint8_t g, uint8_t b) {
-  baseColor[0] = r;
-  baseColor[1] = g;
-  baseColor[2] = b;
-}
-
-// 照亮度調暗之後，把 3 個數字一次寫進第 0x23 號格子
-void sendColor(uint8_t bright) {
-  uint8_t rgb[3];
-  for (uint8_t i = 0; i < 3; i++) {
-    rgb[i] = (uint16_t)baseColor[i] * bright / 255;   // 先轉成 uint16_t，乘起來才不會爆掉
-  }
-  mbcWriteBytes(0x23, rgb, 3);
-  lastBright = bright;
-  lastSend = millis();
-}
-
-// 印出「紅 x 綠 y 藍 z」
-void printColor(const uint8_t *c) {
-  Serial.print(F("紅 "));
-  Serial.print(c[0]);
-  Serial.print(F("　綠 "));
-  Serial.print(c[1]);
-  Serial.print(F("　藍 "));
-  Serial.println(c[2]);
+  delay(50);
 }
 
 // ============================================================
-// 讀手把資料，順便「防呆」（每個範例都一樣，不用改）
-// ============================================================
-// 為什麼要防呆？
-//   接收器很忙的時候（例如正在跟手把無線通訊），偶爾會來不及換資料，
-//   把「上一次讀的別的格子」（例如第 0x31 號狀態資料）交給 Arduino。
-//   這一筆的按鍵、搖桿數字就會是亂的，遙控車可能會自己動起來。
-// 怎麼看出來？
-//   手把的十字方向鍵，不可能同時按「上」和「下」，也不可能同時按「左」和「右」。
-//   讀到這種組合，就知道這一筆讀錯了：把它丟掉，沿用上一筆正確的資料。
-
-uint8_t lastGood[9] = {0};               // 上一筆正確的手把資料（一開始全部是 0 = 什麼都沒按）
-
-// 讀第 0x11 號格子（手把資料，9 個數字）放進 d。讀不到接收器回傳 false
-bool readPad(uint8_t *d) {
-  if (!mbcRead(0x11, d, 9)) return false;
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];                     // 16 位的按鍵狀態
-  bool upDown    = (buttons & (1u << 4)) && (buttons & (1u << 6));   // 上（第 4 位）和下（第 6 位）一起按？
-  bool leftRight = (buttons & (1u << 7)) && (buttons & (1u << 5));   // 左（第 7 位）和右（第 5 位）一起按？
-  if (upDown || leftRight) {
-    memcpy(d, lastGood, 9);              // 讀錯了 → 這一筆不要，改用上一筆
-  } else {
-    memcpy(lastGood, d, 9);              // 讀對了 → 記起來，下次讀錯時拿來用
-  }
-  return true;
-}
-
-// ============================================================
-// 以下是「通訊小幫手」：負責跟接收器講話。
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
 // 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
 // ============================================================
 
+// 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -164,35 +86,44 @@ void mbcBegin() {
 #endif
 }
 
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
   if (Wire.endTransmission() != 0) return false;
-  delay(2);                              // 等接收器準備資料 2 毫秒（PS4 接收器一定要，不能刪）
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-bool mbcWriteBytes(uint8_t reg, const uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(buf, n);
-  return Wire.endTransmission() == 0;
-}
-
-bool mbcWaitReady(uint16_t timeoutMs) {
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;

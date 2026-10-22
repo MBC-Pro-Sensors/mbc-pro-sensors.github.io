@@ -3,7 +3,7 @@
 
 [🔙 回到 循行者 16 路產品頁](/sensors/line16/index.md)
 
-這一頁有 5 個範例，給**完全沒寫過程式**的人：每個範例都有現成的程式檔可以下載，打開就能用，下面也有一步一步的白話說明。建議從範例 1 開始照順序做。
+這一頁有 6 個範例，給**完全沒寫過程式**的人：每個範例都有現成的程式檔可以下載，打開就能用，下面也有一步一步的白話說明。建議從範例 1 開始照順序做。
 
 ## 開始之前
 
@@ -12,7 +12,7 @@
 3. 會動的範例用樂高教育版基本車：**左輪馬達接 B、右輪馬達接 C**。
 4. 感應器在 EV3 上會顯示成「紅外線感應器」，這是正常的，讀數字就是用紅外線感應器的積木。
 
-**每個範例都有 5 種軟體的程式檔，選你用的那一種就好：**
+**每個範例都有 5 種軟體的程式檔，選你用的那一種就好：**（標「僅 Pybricks／EV3 MicroPython／clev3r」的範例只有這 3 種，因為 EV3-G、Classroom 的積木讀不到那個模式）
 
 | 軟體 | 適合誰 | 怎麼打開範例檔 |
 |---|---|---|
@@ -33,13 +33,14 @@
 
 **怎麼知道校準好了？** 跑範例 4 的程式前，先用範例 1 看線位置：線在正中間時是 0，往左移變負數、往右移變正數。
 
-## 這頁會用到的 3 個數值
+## 這頁會用到的 4 個數值
 
 | 名稱 | 範圍 | 從哪裡讀 |
 |---|---|---|
 | **線的位置** | -16 ~ +16，0＝線在正中間 | 模式 0 |
 | **線的寬度（壓到黑線的格數）** | 0 ~ 16，0＝看不到線 | 模式 2 第 2 個值 |
 | **線的位置（細）** | -100 ~ +100，0＝線在正中間 | 模式 2 第 1 個值 |
+| **壓線位元圖** | 0 ~ 65535：bit0＝第 1 路（最左）… bit15＝第 16 路，1＝那一路壓到線 | 模式 3 第 1 個值（只有 Pybricks／EV3 MicroPython／clev3r 讀得到） |
 
 > [!TIP]
 > 線不見的時候，「線位置」會**停在最後一次看到的值**，不會變回 0。所以判斷「有沒有線」一律看**線寬是不是 0**。
@@ -51,6 +52,7 @@
 3. [比例循線：偏越多、轉越多](#%E7%AF%84%E4%BE%8B-3%EF%BC%9A%E6%AF%94%E4%BE%8B%E5%BE%AA%E7%B7%9A%EF%BC%9A%E5%81%8F%E8%B6%8A%E5%A4%9A%E3%80%81%E8%BD%89%E8%B6%8A%E5%A4%9A)
 4. [碰到十字路口就停車](#%E7%AF%84%E4%BE%8B-4%EF%BC%9A%E7%A2%B0%E5%88%B0%E5%8D%81%E5%AD%97%E8%B7%AF%E5%8F%A3%E5%B0%B1%E5%81%9C%E8%BB%8A)
 5. [數路口：第 3 個路口停車](#%E7%AF%84%E4%BE%8B-5%EF%BC%9A%E6%95%B8%E8%B7%AF%E5%8F%A3%EF%BC%9A%E7%AC%AC-3-%E5%80%8B%E8%B7%AF%E5%8F%A3%E5%81%9C%E8%BB%8A)
+6. [壓線位元圖：在螢幕上畫一把 LED 尺](#%E7%AF%84%E4%BE%8B-6%EF%BC%9A%E5%A3%93%E7%B7%9A%E4%BD%8D%E5%85%83%E5%9C%96%EF%BC%9A%E5%9C%A8%E8%9E%A2%E5%B9%95%E4%B8%8A%E7%95%AB%E4%B8%80%E6%8A%8A-led-%E5%B0%BA)（僅 Pybricks／EV3 MicroPython／clev3r）
 
 ---
 
@@ -973,6 +975,178 @@ Motor.Stop("BC", "True")
 - **一個路口數成兩個？** 路口的黑線有破損或反光時會發生。把車速 25 調慢，或把線寬門檻調大。
 - **數字一直不變？** 先看感應器有沒有亮燈、線有沒有插緊。EV3 主機要先開機再接感應器，或拔掉重插一次。
 - **車子往反方向修正、越修越歪？** 把程式裡的「＋」和「－」對調（左右輪的修正互換），或確認左輪是不是接在 B、右輪接在 C。
+
+---
+
+## 範例 6：壓線位元圖：在螢幕上畫一把 LED 尺
+
+> **僅 Pybricks v4／EV3 MicroPython v2.0／clev3r**（EV3-G、Classroom 的積木讀不到這個模式）
+
+**這個範例會做什麼：** 模式 3 送出「壓線位元圖」：16 個位元，每一路壓到線就是 1。這個範例把它畫成一把尺（# ＝壓到線、. ＝沒壓到），跟感應器上的 LED 一樣，一眼就看出線在哪幾路、有沒有分岔。
+
+**要準備什麼：**
+
+- 循行者 16 路（EV3 版，韌體 v4.0 以上）
+- EV3 主機
+- 白底黑線的場地
+
+**怎麼接：** 循行者 16 路插 1 號孔，裝在車頭下方、離地約 1 公分，感應器正對地面。
+
+**下載程式（選你用的軟體）：**
+
+[⬇ Pybricks v4](/examples/line16/ev3_beginner/ex06_bitmap_ruler_pybricks_v4.py) ｜ [⬇ EV3 MicroPython v2.0](/examples/line16/ev3_beginner/ex06_bitmap_ruler_ev3micropython_v2.py) ｜ [⬇ clev3r](/examples/line16/ev3_beginner/ex06_bitmap_ruler.bp)
+
+（程式碼即範例，不需截圖。）
+
+<details><summary>Pybricks v4 程式碼</summary>
+
+```python
+# ============================================================
+# 循行者 16 路循線感應器 EV3 新手範例 06：壓線位元圖：在螢幕上畫一把 LED 尺
+# 軟體：Pybricks v4（用 Chrome 打開 https://code.pybricks.com ，EV3 版目前是 Beta）
+# 接法：循行者 16 路插 1 號孔
+# 這個範例會做什麼：模式 3 送出「壓線位元圖」：16 個位元，每一路壓到線就是 1。這個範例把它畫成一把尺（# ＝壓到線、. ＝沒壓到），跟感應器上的 LED 一樣，一眼就看出線在哪幾路、有沒有分岔。
+# ============================================================
+
+from pybricks.hubs import EV3Brick
+from pybricks.iodevices import LUMPDevice
+from pybricks.parameters import Port, Color
+from pybricks.tools import wait
+
+ev3 = EV3Brick()
+sensor = LUMPDevice(Port.S1)       # 循行者 16 路插 1 號孔
+
+
+def read_bitmap():
+    # 壓線位元圖：0 ~ 65535：bit0＝第 1 路（最左）… bit15＝第 16 路，1＝那一路壓到線
+    return sensor.read(3)[0] & 0xFFFF
+
+
+# ---------- 程式從這裡開始 ----------
+# 清除螢幕
+ev3.screen.clear()
+# 一直重複
+while True:
+    # 第 1 行畫尺：16 格，最左是第 1 路，# ＝壓到線、. ＝沒壓到
+    bits_value = read_bitmap()
+    bits_text = ""
+    for b in range(16):
+        if (bits_value // (2 ** b)) % 2 == 1:   # 第 b 個位元是 1
+            bits_text = bits_text + "#"
+        else:
+            bits_text = bits_text + "."
+    ev3.screen.draw_text(0, 0, "L " + bits_text + "  ", Color.BLACK, Color.WHITE)
+    # 第 2 行顯示位元圖的數字（第 1 路＝1、第 2 路＝2、第 3 路＝4…相加）
+    ev3.screen.draw_text(0, 16, "BITS " + str(read_bitmap()) + "      ", Color.BLACK, Color.WHITE)
+    # 等 0.1 秒
+    wait(100)
+```
+
+</details>
+
+<details><summary>EV3 MicroPython v2.0 程式碼</summary>
+
+```python
+#!/usr/bin/env pybricks-micropython
+# ============================================================
+# 循行者 16 路循線感應器 EV3 新手範例 06：壓線位元圖：在螢幕上畫一把 LED 尺
+# 軟體：樂高官方 EV3 MicroPython v2.0（microSD 開機卡＋VS Code「LEGO MINDSTORMS EV3 MicroPython」擴充套件）
+# 接法：循行者 16 路插 1 號孔
+# 這個範例會做什麼：模式 3 送出「壓線位元圖」：16 個位元，每一路壓到線就是 1。這個範例把它畫成一把尺（# ＝壓到線、. ＝沒壓到），跟感應器上的 LED 一樣，一眼就看出線在哪幾路、有沒有分岔。
+# ============================================================
+
+from pybricks.hubs import EV3Brick
+from pybricks.iodevices import Ev3devSensor
+from pybricks.parameters import Port, Color
+from pybricks.tools import wait
+
+ev3 = EV3Brick()
+sensor = Ev3devSensor(Port.S1)     # 循行者 16 路插 1 號孔
+
+
+def read_bitmap():
+    # 壓線位元圖：0 ~ 65535：bit0＝第 1 路（最左）… bit15＝第 16 路，1＝那一路壓到線
+    return sensor.read('IR-REM-A')[0] & 0xFFFF
+
+
+# ---------- 程式從這裡開始 ----------
+# 清除螢幕
+ev3.screen.clear()
+# 一直重複
+while True:
+    # 第 1 行畫尺：16 格，最左是第 1 路，# ＝壓到線、. ＝沒壓到
+    bits_value = read_bitmap()
+    bits_text = ""
+    for b in range(16):
+        if (bits_value // (2 ** b)) % 2 == 1:   # 第 b 個位元是 1
+            bits_text = bits_text + "#"
+        else:
+            bits_text = bits_text + "."
+    ev3.screen.draw_text(0, 0, "L " + bits_text + "  ", Color.BLACK, Color.WHITE)
+    # 第 2 行顯示位元圖的數字（第 1 路＝1、第 2 路＝2、第 3 路＝4…相加）
+    ev3.screen.draw_text(0, 16, "BITS " + str(read_bitmap()) + "      ", Color.BLACK, Color.WHITE)
+    # 等 0.1 秒
+    wait(100)
+```
+
+</details>
+
+<details><summary>clev3r 程式碼</summary>
+
+```vb
+' ============================================================
+' 循行者 16 路循線感應器 EV3 新手範例 06：壓線位元圖：在螢幕上畫一把 LED 尺
+' 軟體：clev3r
+' 接法：循行者 16 路插 1 號孔；左輪馬達接 B、右輪馬達接 C
+' 這個範例會做什麼：模式 3 送出「壓線位元圖」：16 個位元，每一路壓到線就是 1。這個範例把它畫成一把尺（# ＝壓到線、. ＝沒壓到），跟感應器上的 LED 一樣，一眼就看出線在哪幾路、有沒有分岔。
+' 讀值：bitmap＝壓線位元圖（0 ~ 65535：bit0＝第 1 路（最左）… bit15＝第 16 路，1＝那一路壓到線）
+' ============================================================
+folder "prjs" "MBC_line16_ex06"
+
+' 循行者 16 路插 1 號孔，使用模式 3
+Sensor.SetMode(1, 3)
+LCD.Clear()
+
+' 清除螢幕
+LCD.Clear()
+' 一直重複
+While "True"
+  ' 第 1 行畫尺：16 格，最左是第 1 路，# ＝壓到線、. ＝沒壓到
+  bitsValue = Math.Remainder(Sensor.ReadRawValue(1, 0) + 65536, 65536)
+  bitsText = ""
+  For b = 0 To 15
+    If Math.Remainder(Math.Floor(bitsValue / Math.Power(2, b)), 2) = 1 Then
+      bitsText = Text.Append(bitsText, "#")
+    Else
+      bitsText = Text.Append(bitsText, ".")
+    EndIf
+  EndFor
+  LCD.Text(1, 0, 0, 1, "L " + bitsText + "  ")
+  ' 第 2 行顯示位元圖的數字（第 1 路＝1、第 2 路＝2、第 3 路＝4…相加）
+  LCD.Text(1, 0, 16, 1, "BITS " + Math.Remainder(Sensor.ReadRawValue(1, 0) + 65536, 65536) + "      ")
+  ' 等 0.1 秒
+  Program.Delay(100)
+EndWhile
+```
+
+</details>
+
+**一步一步看懂程式：**
+
+1. 清除螢幕
+1. 一直重複
+   - 第 1 行畫尺：16 格，最左是第 1 路，# ＝壓到線、. ＝沒壓到
+   - 第 2 行顯示位元圖的數字（第 1 路＝1、第 2 路＝2、第 3 路＝4…相加）
+   - 等 0.1 秒
+
+**跑起來應該看到：** 把感應器放在黑線上，尺上有 2~3 個 # 跟著線移動；壓到十字路口 # 變成一整排；線不見時全部是 .。數字＝壓到線的那幾路的 1、2、4、8… 加起來，例如第 1、2 路壓線＝3。
+
+**常見問題：**
+
+- **尺跟感應器的 LED 左右相反？** 尺是站在車子後面看的（最左＝第 1 路）；感應器的 LED 從上面看可能相反。
+- **數字一直是 0 或不會動？** 感應器韌體要 v4.0（2026-10）以上才有這個模式，舊韌體請先更新。
+- **EV3-G／Classroom 怎麼沒有這個範例？** 這個範例用的是新模式（2026-10 韌體 v4 起），EV3-G 和 Classroom 的紅外線積木讀不到，只有 Pybricks、EV3 MicroPython、clev3r 能用。
+- **數字一直不變？** 先看感應器有沒有亮燈、線有沒有插緊。EV3 主機要先開機再接感應器，或拔掉重插一次。
 
 ---
 

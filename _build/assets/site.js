@@ -131,7 +131,7 @@
       btn.type = 'button';
       btn.className = 'code-copy';
       btn.textContent = lang === 'en' ? 'Copy' : '複製';
-      btn.style.cssText = 'position:absolute;top:8px;right:8px;min-height:36px;padding:6px 14px;border:1px solid rgba(10,186,181,.6);border-radius:6px;background:#0abab5;color:#fff;font-size:.85rem;font-weight:700;cursor:pointer;z-index:1';
+      btn.style.cssText = 'position:absolute;top:8px;right:8px;min-height:44px;padding:6px 14px;border:1px solid rgba(10,186,181,.6);border-radius:6px;background:#0abab5;color:#fff;font-size:.85rem;font-weight:700;cursor:pointer;z-index:1';
       pre.style.position = 'relative';
       btn.addEventListener('click', function () {
         navigator.clipboard.writeText(pre.querySelector('code').innerText).then(function () {
@@ -145,4 +145,99 @@
 
   // --- Scratch 積木圖 ---
   if (typeof renderScratchBlocks === 'function' && document.querySelector('.blocks')) renderScratchBlocks();
+})();
+
+// ===== 2026-10-21 #67：指令參考 ?host=、首頁選擇器、右側目錄 =====
+(function () {
+  document.documentElement.classList.add('js');
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // --- 指令參考：網址 ?host=spike 時只展開那個平台的 <details>（其他收起）；記住上次選的平台 ---
+  var HOSTS = ['spike', 'ev3', 'arduino', 'mblock', 'matrix', 'microbit'];
+  var host = (new URLSearchParams(location.search).get('host') || '').toLowerCase();
+  if (HOSTS.indexOf(host) < 0) { try { host = localStorage.getItem('mbc-host') || ''; } catch (e) { host = ''; } }
+  var plats = document.querySelectorAll('details.plat[data-host]');
+  if (plats.length && HOSTS.indexOf(host) > -1 && document.querySelector('details.plat[data-host="' + host + '"]')) {
+    plats.forEach(function (d) { d.open = d.dataset.host === host; });
+  }
+  plats.forEach(function (d) {
+    d.addEventListener('toggle', function () { if (d.open) { try { localStorage.setItem('mbc-host', d.dataset.host); } catch (e) {} } });
+  });
+
+  // --- 首頁兩步選擇器：產品 × 主機 → 入口連結（照 ph-pick 的 radio 行為） ---
+  var finder = document.getElementById('finder');
+  var dataEl = document.getElementById('finder-data');
+  if (finder && dataEl) {
+    var data = JSON.parse(dataEl.textContent);
+    var picked = { key: null, host: null };
+    try { picked.key = localStorage.getItem('mbc-finder-key'); picked.host = localStorage.getItem('mbc-host'); } catch (e) {}
+    var result = finder.querySelector('.finder-result');
+    var table = finder.querySelector('.finder-table');
+    if (table) table.removeAttribute('open');
+    function pick(group, attr, value) {
+      finder.querySelectorAll(group + ' button').forEach(function (b) { b.setAttribute('aria-checked', b.dataset[attr] === value ? 'true' : 'false'); });
+    }
+    function render() {
+      var L = data.labels;
+      if (!picked.key || !picked.host || !data.products[picked.key]) { result.innerHTML = '<p>' + L.result + '</p>'; return; }
+      var p = data.products[picked.key];
+      var h = p.hosts[picked.host];
+      var hostName = finder.querySelector('.finder-hosts button[data-host="' + picked.host + '"] span').textContent;
+      var html = '<h3>' + p.name + ' × ' + hostName + '</h3>';
+      if (!h) html += '<p>' + L.none + '</p><div class="fr-links"><a class="ghost" href="' + p.index + '">' + p.name + '</a></div>';
+      else {
+        html += '<div class="fr-links">';
+        var seen = {};
+        ['start', 'ref', 'lib'].forEach(function (k, i) {
+          if (!h[k] || seen[h[k]]) return;
+          seen[h[k]] = 1;
+          html += '<a class="' + (i ? 'ghost' : '') + '" href="' + h[k] + '"' + (/^https?:/.test(h[k]) ? ' target="_blank" rel="noopener"' : '') + '>' + L[k] + '</a>';
+        });
+        html += '</div>';
+      }
+      result.innerHTML = html;
+    }
+    finder.querySelectorAll('.finder-prods button').forEach(function (b) {
+      b.addEventListener('click', function () { picked.key = b.dataset.key; pick('.finder-prods', 'key', picked.key); try { localStorage.setItem('mbc-finder-key', picked.key); } catch (e) {} render(); });
+    });
+    finder.querySelectorAll('.finder-hosts button').forEach(function (b) {
+      b.addEventListener('click', function () { picked.host = b.dataset.host; pick('.finder-hosts', 'host', picked.host); try { localStorage.setItem('mbc-host', picked.host); } catch (e) {} render(); });
+    });
+    if (picked.key && data.products[picked.key]) pick('.finder-prods', 'key', picked.key); else picked.key = null;
+    if (picked.host && HOSTS.indexOf(picked.host) > -1) pick('.finder-hosts', 'host', picked.host); else picked.host = null;
+    render();
+  }
+
+  // --- 右側目錄：小螢幕收起；捲動時標示目前段落（IntersectionObserver）；reduced-motion 不平滑捲 ---
+  var toc = document.querySelector('.toc');
+  if (toc) {
+    var det = toc.querySelector('details');
+    var wide = window.matchMedia('(min-width: 1200px)');
+    function fit() { if (det) det.open = wide.matches; }
+    fit();
+    if (wide.addEventListener) wide.addEventListener('change', fit);
+    var links = toc.querySelectorAll('a[href^="#"]');
+    var map = {};
+    links.forEach(function (a) {
+      var id = decodeURIComponent(a.getAttribute('href').slice(1));
+      var el = document.getElementById(id);
+      if (el) map[id] = a;
+      a.addEventListener('click', function (e) {
+        if (!el) return;
+        e.preventDefault();
+        var box = el.closest('details'); if (box && !box.open) box.open = true;
+        el.scrollIntoView(reduced ? {} : { behavior: 'smooth', block: 'start' });
+        history.replaceState(null, '', '#' + encodeURIComponent(id));
+        if (!wide.matches && det) det.open = false;
+      });
+    });
+    if ('IntersectionObserver' in window) {
+      var current = null;
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { if (en.isIntersecting) current = en.target.id; });
+        if (current && map[current]) { links.forEach(function (a) { a.classList.remove('active'); }); map[current].classList.add('active'); }
+      }, { rootMargin: '-70px 0px -70% 0px', threshold: 0 });
+      Object.keys(map).forEach(function (id) { io.observe(document.getElementById(id)); });
+    }
+  }
 })();

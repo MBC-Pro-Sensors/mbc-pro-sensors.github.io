@@ -1,0 +1,8 @@
+    - [📖 產品介紹](/sensors/imu/index.md)
+    - [📋 指令參考](/sensors/imu/reference.md)
+    - [<img src="/images/hubs/ev3-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(10,186,181,0.5));">EV3 主機](/sensors/imu/index.md)
+      - [🧪 EV3 新手範例](/sensors/imu/ev3-examples.md)
+    - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#0abab5;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>通用 I2C（Arduino）](/sensors/imu/arduino-examples.md)
+    - [🤖 mBlock（MakeBlock）](/sensors/imu/mblock-examples.md)
+    - [🟩 MATRIX Mini R4](/sensors/imu/matrix.md)
+    - [🟧 micro:bit](/sensors/imu/microbit-examples.md)

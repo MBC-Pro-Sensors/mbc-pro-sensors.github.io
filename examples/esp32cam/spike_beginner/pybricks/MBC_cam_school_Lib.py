@@ -7,6 +7,12 @@
 #
 # 原理：感應器的「模式 9」一次送 8 個數字，Pybricks 讀成 7 個 16 位元整數，
 # 每個整數裡面裝 2 個數字（低位元組在前、高位元組在後）。
+#
+# 日期：2026.10　v1.1：新增 area()（模式 9 第 8~9 個位元組 = 色塊面積）、blob_xya()（模式 6 = [X, Y, 面積]）、
+#   device_id()／firmware_version()（模式 8）。原本的 read_all()～found() 一個字都沒改。
+#   面積與模式 6、8 要感應器韌體 2026-10 以後的版本；舊韌體的面積一直是 0。
+#   ★ blob_xya()、device_id() 會讓感應器暫時切到別的模式（幾十 ms），下一個模式 9 的方法再切回來；
+#     同一個迴圈裡不要 blob_x() 和 blob_xya() 混著用。
 from pybricks.iodevices import PUPDevice
 
 
@@ -62,3 +68,25 @@ class MBC_CAM_SCHOOL:
     def found(self):
         """有沒有找到 2:TRACK 設定的色塊（模式 9 沒有面積，所以用「寬 > 0」判斷）"""
         return self.blob_w() > 0
+
+    # ───── 以下是 v1.1（2026-10）新增 ─────
+    def area(self):
+        """色塊面積（寬 × 高，0~7500）：沒找到是 0。模式 9 的第 5 個整數（第 8~9 個位元組，無號 16 位元）。
+        跟 blob_x() 等一樣讀模式 9，不用換模式。感應器韌體 2026-10 以後才有，舊韌體一直是 0。"""
+        return int(self._dev.read(9)[4]) & 0xFFFF
+
+    def blob_xya(self):
+        """一次讀 [色塊X, 色塊Y, 面積]（模式 6，3 個 16 位元整數）。沒找到是 [0, 0, 0]。"""
+        v = self._dev.read(6)
+        return [int(v[0]), int(v[1]), int(v[2])]
+
+    def device_id(self):
+        """(id, hw0, 韌體版字)：id = 0x4C（76），hw0 = 1（學校版），韌體版字 = 主版×100＋次版。模式 8。"""
+        v = self._dev.read(8)
+        w = int(v[0]) & 0xFFFF
+        return (w & 0xFF, (w >> 8) & 0xFF, int(v[2]) & 0xFFFF)
+
+    def firmware_version(self):
+        """感應器韌體版本 (主版, 次版)，例如 (1, 0)"""
+        fw = self.device_id()[2]
+        return (fw // 100, fw % 100)

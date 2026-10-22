@@ -52,14 +52,20 @@ The 8 laser ranging units are distributed at fixed angles, covering a complete 1
 
 | Platform | How |
 | :--- | :--- |
-| LEGO SPIKE Prime / Robot Inventor | Official app, Pybricks |
-| LEGO MINDSTORMS EV3 | EV3 official software, Pybricks |
-| Arduino / ESP32 / Raspberry Pi | Universal I2C (address `0x29`) |
-| MATRIX Mini R4 | I2C |
+| LEGO SPIKE Prime / Robot Inventor | Official app, Pybricks (👉 [SPIKE beginner examples: official app / MBC blocks site / Pybricks, 5 each — in Chinese](/sensors/tof8/spike-examples.md)) |
+| LEGO MINDSTORMS EV3 | EV3 official software, Pybricks ([EV3 beginner examples](/en/sensors/tof8/ev3-examples.md)) |
+| Arduino / ESP32 / Raspberry Pi | Universal I2C (address `0x29`), [Arduino Examples](/en/sensors/tof8/arduino-examples.md) |
+| MATRIX Mini R4 | I2C (stock colour-sensor blocks or the LauMo big channel, see [MATRIX overview](/en/matrix.md)) |
 | MakeBlock (mBot etc.) | Dedicated edition, [blocks & wiring](/en/makeblock.md) |
 
 > [!IMPORTANT]
 > Each platform is a **different factory edition** (different connector and firmware). Please order the edition that matches your controller, or [contact us](/en/contact.md) if unsure.
+
+## 🎮 Select Your Hub
+
+Pick your controller first, then the software you use — each tile links to the start page, the command reference and the library for that host:
+
+<!-- platform-grid -->
 
 ## 📥 Example Downloads
 
@@ -67,7 +73,7 @@ The 8 laser ranging units are distributed at fixed angles, covering a complete 1
 | :--- | :--- |
 | SPIKE (Pybricks 4.0.0) | [Download all (.zip)](/examples/tof8/tof8_pybricks_spike_v4.0.0.zip) · [No library (blocks)](/examples/tof8/pybricks/For%20firmware%204.0.0/tof8_block_native_v400.py) · [Library example (blocks)](/examples/tof8/pybricks/For%20firmware%204.0.0/tof8_block_with_lib_v400.py) · [Library MBC_laser8_obj_Lib.py](/examples/tof8/pybricks/For%20firmware%204.0.0/MBC_laser8_obj_Lib.py) |
 | SPIKE (Pybricks 3.6.1) | [Download all (.zip)](/examples/tof8/tof8_pybricks_spike_v3.6.1.zip) · [No library (blocks)](/examples/tof8/pybricks/For%20firmware%203.6.1/tof8_block_native_v361.py) · [Library example (blocks)](/examples/tof8/pybricks/For%20firmware%203.6.1/tof8_block_with_lib_v361.py) · [Library MBC_laser8_Lib.py](/examples/tof8/pybricks/For%20firmware%203.6.1/MBC_laser8_Lib.py) |
-| EV3 | [EV3 beginner examples (in Chinese)](/sensors/tof8/ev3-examples.md) |
+| EV3 | [EV3 beginner examples](/en/sensors/tof8/ev3-examples.md) |
 | Arduino (Universal I2C edition) | [6 beginner examples (step by step)](/en/sensors/tof8/arduino-examples.md) · [Library and Wire examples (.zip)](/examples/tof8/tof8_arduino_examples.zip) |
 | mBot etc. (MakeBlock) | [Block extension and avoidance example](/en/makeblock.md) |
 

@@ -1,6 +1,9 @@
 # Python Object Library for MBC Line Tracer 8CH for Pybricks SPIKE Prime
 # Author : MBC robotics
-# Date   : 2026.07
+# Date   : 2026.10
+# v4.0.1 (2026.10): + line_device_id() / line_firmware_version() and line8.device_id() / .firmware_version()
+#                   (read SPIKE mode 8 = [ID word, protocol ver, firmware word, counter]; firmware 2026-10 or later).
+#                   Everything that reads mode 9 is unchanged.
 #
 # !! Import this file MBC_line8_Lib.py into your Pybricks editor !!
 #
@@ -234,6 +237,57 @@ def line_ir_ch(ch):
     return _IR_CH_FUNCS[ch - 1]()
 
 # ════════════════════════════════════════════════════════════════
+#  Extra mode (v4.0.1, 2026.10): mode 8 = identification
+#    4 x int16: [ID word, protocol version, firmware word, update counter]
+#    ID word : low byte = factory I2C address (0x16), high byte = hw[0] = 8 (channels)
+#    firmware word = major*100 + minor (e.g. 100 = 1.0)
+#  Reading another mode switches the sensor out of mode 9 for that one
+#  read; the next mode-9 call switches it back (a few 10 ms). So call
+#  these once at start-up, not inside the control loop. Each extra mode
+#  has its own cache; the mode-9 cache above is untouched.
+# ════════════════════════════════════════════════════════════════
+
+_ID_MODE = 8
+
+_mcache = {}   # mode -> (time_ms, raw tuple)
+
+def _parse_device_id(v):
+    """(id, hw0, firmware_word): e.g. (0x16, 8, 100). hw0 = 8 tells this is the 8-channel model."""
+    w = _u16(v[0])
+    return (w & 0xFF, (w >> 8) & 0xFF, _u16(v[2]))
+
+def _parse_firmware_version(v):
+    """(major, minor): e.g. (1, 0) for firmware 1.0."""
+    fw = _u16(v[2])
+    return (fw // 100, fw % 100)
+
+def _make_mode_func(mode, parse_fn):
+    """Same dual-mode + 10 ms cache pattern as _make_sensor_func, for another LUMP mode."""
+    async def _async():
+        now = _watch.time()
+        e = _mcache.get(mode)
+        if e is None or (now - e[0]) >= _CACHE_MS:
+            e = (now, await _selected_dev.read(mode))
+            _mcache[mode] = e
+        return parse_fn(e[1])
+
+    def _func():
+        _check_init()
+        if _async_mode:
+            return _async()
+        now = _watch.time()
+        e = _mcache.get(mode)
+        if e is None or (now - e[0]) >= _CACHE_MS:
+            e = (now, _selected_dev.read(mode))
+            _mcache[mode] = e
+        return parse_fn(e[1])
+
+    return _func
+
+line_device_id        = _make_mode_func(_ID_MODE, _parse_device_id)
+line_firmware_version = _make_mode_func(_ID_MODE, _parse_firmware_version)
+
+# ════════════════════════════════════════════════════════════════
 #  Initialization functions
 # ════════════════════════════════════════════════════════════════
 
@@ -362,6 +416,49 @@ class MBC_LINE8:
             raise ValueError("ch must be 1~8, got {}".format(ch))
         return self._get(_IR_CH_PARSERS[ch - 1])
 
+    # ---- extra modes (v4.0.1, 2026.10): own cache per mode; the mode-9 methods above are unchanged ----
+    def _mode_cache(self):
+        try:
+            return self._mcache
+        except AttributeError:
+            self._mcache = {}
+            return self._mcache
+
+    async def _read_mode_async(self, mode):
+        c = self._mode_cache()
+        now = _watch.time()
+        e = c.get(mode)
+        if e is None or (now - e[0]) >= _CACHE_MS:
+            e = (now, await self._selected_dev.read(mode))
+            c[mode] = e
+        return e[1]
+
+    def _read_mode_sync(self, mode):
+        c = self._mode_cache()
+        now = _watch.time()
+        e = c.get(mode)
+        if e is None or (now - e[0]) >= _CACHE_MS:
+            e = (now, self._selected_dev.read(mode))
+            c[mode] = e
+        return e[1]
+
+    def _get_mode(self, mode, parse_fn):
+        self._check_init()
+        if self._async_mode:
+            return self._get_mode_async(mode, parse_fn)
+        return parse_fn(self._read_mode_sync(mode))
+
+    async def _get_mode_async(self, mode, parse_fn):
+        return parse_fn(await self._read_mode_async(mode))
+
+    def device_id(self):
+        """(id, hw0, firmware_word) from mode 8, e.g. (22, 8, 100): id 0x16, 8 channels, firmware 1.0."""
+        return self._get_mode(_ID_MODE, _parse_device_id)
+
+    def firmware_version(self):
+        """(major, minor) from mode 8, e.g. (1, 0)."""
+        return self._get_mode(_ID_MODE, _parse_firmware_version)
+
 # ════════════════════════════════════════════════════════════════
 #  MBC_LINE8 -- callable methods (object-style API)
 #
@@ -380,6 +477,8 @@ class MBC_LINE8:
 #  line8.ir_calibration()   [int]*8  all 8 channels' calibrated IR value (0~100)
 #  line8.ir_ch(ch)          0~100    single channel's calibrated IR value, ch=1~8
 #  line8.read_all()         dict     all of the above in one dict, one hardware read
+#  line8.device_id()        tuple    (id, hw0, firmware_word) from mode 8, e.g. (22, 8, 100)  [v4.0.1]
+#  line8.firmware_version() tuple    (major, minor) from mode 8, e.g. (1, 0)                 [v4.0.1]
 #
 #  Example (sync):
 #      line8 = MBC_LINE8(3, False)

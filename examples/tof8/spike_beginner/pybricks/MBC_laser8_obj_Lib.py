@@ -1,6 +1,8 @@
 # Python Object Library for MBC Laser 8CH ToF Sensor for Pybricks SPIKE Prime
 # Author : MBC robotics
-# Date   : 2026.09
+# Date   : 2026.10
+# v2 (2026.10): + nearest_mm()/front_mm()/nearest_dir() (mode 6) and device_id()/firmware_version() (mode 8);
+#                 everything that reads mode 9 is unchanged.
 #
 # !! Import this file MBC_laser8_obj_Lib.py into your Pybricks editor !!
 #
@@ -66,6 +68,15 @@
 #  4. 物件式寫法（圖形化工具的 Setup 區使用）：
 #     laser8 = MBC_LASER8(port, multitask)，方法名稱去掉 laser8_ 前綴，
 #     例如 laser8.ch(3)、laser8.min_distance()，詳見檔案最下方說明。
+#
+#  5. 毫米讀取與識別（v2 2026.10 新增；感應器韌體 2026-10 以後才有）：
+#     laser8_nearest_mm()    - 最近目標的距離，0~1200（毫米）。
+#     laser8_front_mm()      - 正前方（第 4、5 顆平均）的距離，0~1200（毫米）。
+#     laser8_nearest_dir()   - 最近目標的方向 -8~+8（0 = 正前方，負 = CH1 側）。
+#       - 說明：讀「模式 6」[最近 mm, 正前方 mm, 最近方向]；三個一起呼叫只讀一次硬體（10 ms 快取）。
+#       - ★ 換模式要多花幾十 ms：同一個迴圈裡不要公分、毫米兩種混著用。
+#     laser8_device_id()     - (id, hw0, 韌體版字)，例如 (41, 8, 100)：ID 0x29、8 路、韌體 1.0（模式 8）。
+#     laser8_firmware_version() - (主版, 次版)，例如 (1, 0)。
 # ════════════════════════════════════════════════════════════════
 
 from pybricks.iodevices import PUPDevice
@@ -299,6 +310,74 @@ def laser8_is_ok(ch):
     return _IS_OK_FUNCS[ch - 1]()
 
 # ════════════════════════════════════════════════════════════════
+#  Extra modes (v2, 2026.10; sensor firmware 2026-10 or later)
+#    mode 6 (HSV, 3 x int16): [nearest mm, front mm (avg of ch4/ch5), nearest direction -8~+8]
+#    mode 8 (DEBUG, 4 x int16): [ID word, protocol version, firmware word, update counter]
+#      ID word: low byte = factory I2C address (0x29), high byte = hw[0] = 8 (channels)
+#      firmware word = major*100 + minor
+#  Reading another mode switches the sensor out of mode 9 for that read;
+#  the next mode-9 call switches it back (a few 10 ms). Do not mix cm and
+#  mm calls in the same loop. Each extra mode has its own 10 ms cache;
+#  the mode-9 cache above is untouched.
+# ════════════════════════════════════════════════════════════════
+
+_MM_MODE = 6
+_ID_MODE = 8
+
+_mcache = {}   # mode -> (time_ms, raw tuple)
+
+def _parse_nearest_mm(v):
+    """Closest target distance in mm, 0~1200."""
+    return int(v[0])
+
+def _parse_front_mm(v):
+    """Straight-ahead distance in mm (average of ch4 and ch5), 0~1200."""
+    return int(v[1])
+
+def _parse_nearest_dir(v):
+    """Closest target direction -8~+8 (0 = front, negative = CH1 side); already offset by the sensor."""
+    return int(v[2])
+
+def _parse_device_id(v):
+    """(id, hw0, firmware_word): e.g. (41, 8, 100) = id 0x29, 8 channels, firmware 1.0."""
+    w = _u16(v[0])
+    return (w & 0xFF, (w >> 8) & 0xFF, _u16(v[2]))
+
+def _parse_firmware_version(v):
+    """(major, minor): e.g. (1, 0)."""
+    fw = _u16(v[2])
+    return (fw // 100, fw % 100)
+
+def _make_mode_func(mode, parse_fn):
+    """Same dual-mode + 10 ms cache pattern as _make_sensor_func, for another LUMP mode."""
+    async def _async():
+        now = _watch.time()
+        e = _mcache.get(mode)
+        if e is None or (now - e[0]) >= _CACHE_MS:
+            e = (now, await _selected_dev.read(mode))
+            _mcache[mode] = e
+        return parse_fn(e[1])
+
+    def _func():
+        _check_init()
+        if _async_mode:
+            return _async()
+        now = _watch.time()
+        e = _mcache.get(mode)
+        if e is None or (now - e[0]) >= _CACHE_MS:
+            e = (now, _selected_dev.read(mode))
+            _mcache[mode] = e
+        return parse_fn(e[1])
+
+    return _func
+
+laser8_nearest_mm       = _make_mode_func(_MM_MODE, _parse_nearest_mm)
+laser8_front_mm         = _make_mode_func(_MM_MODE, _parse_front_mm)
+laser8_nearest_dir      = _make_mode_func(_MM_MODE, _parse_nearest_dir)
+laser8_device_id        = _make_mode_func(_ID_MODE, _parse_device_id)
+laser8_firmware_version = _make_mode_func(_ID_MODE, _parse_firmware_version)
+
+# ════════════════════════════════════════════════════════════════
 #  Initialization functions
 # ════════════════════════════════════════════════════════════════
 
@@ -428,6 +507,61 @@ class MBC_LASER8:
         _check_ch(ch)
         return self._get(_IS_OK_PARSERS[ch - 1])
 
+    # ---- extra modes (v2, 2026.10): own cache per mode; the mode-9 methods above are unchanged ----
+    def _mode_cache(self):
+        try:
+            return self._mcache
+        except AttributeError:
+            self._mcache = {}
+            return self._mcache
+
+    async def _read_mode_async(self, mode):
+        c = self._mode_cache()
+        now = _watch.time()
+        e = c.get(mode)
+        if e is None or (now - e[0]) >= _CACHE_MS:
+            e = (now, await self._selected_dev.read(mode))
+            c[mode] = e
+        return e[1]
+
+    def _read_mode_sync(self, mode):
+        c = self._mode_cache()
+        now = _watch.time()
+        e = c.get(mode)
+        if e is None or (now - e[0]) >= _CACHE_MS:
+            e = (now, self._selected_dev.read(mode))
+            c[mode] = e
+        return e[1]
+
+    def _get_mode(self, mode, parse_fn):
+        self._check_init()
+        if self._async_mode:
+            return self._get_mode_async(mode, parse_fn)
+        return parse_fn(self._read_mode_sync(mode))
+
+    async def _get_mode_async(self, mode, parse_fn):
+        return parse_fn(await self._read_mode_async(mode))
+
+    def nearest_mm(self):
+        """Closest target distance in mm, 0~1200 (mode 6; firmware 2026-10 or later)."""
+        return self._get_mode(_MM_MODE, _parse_nearest_mm)
+
+    def front_mm(self):
+        """Straight-ahead distance in mm (average of ch4 and ch5), 0~1200 (mode 6)."""
+        return self._get_mode(_MM_MODE, _parse_front_mm)
+
+    def nearest_dir(self):
+        """Closest target direction -8~+8 (0 = front, negative = CH1 side) (mode 6)."""
+        return self._get_mode(_MM_MODE, _parse_nearest_dir)
+
+    def device_id(self):
+        """(id, hw0, firmware_word) from mode 8, e.g. (41, 8, 100): id 0x29, 8 channels, firmware 1.0."""
+        return self._get_mode(_ID_MODE, _parse_device_id)
+
+    def firmware_version(self):
+        """(major, minor) from mode 8, e.g. (1, 0)."""
+        return self._get_mode(_ID_MODE, _parse_firmware_version)
+
 # ════════════════════════════════════════════════════════════════
 #  MBC_LASER8 -- callable methods (object-style API)
 #
@@ -446,6 +580,11 @@ class MBC_LASER8:
 #  laser8.init_status()     [bool]*8 initialized at power-up, per channel
 #  laser8.fault_status()    [bool]*8 currently faulty (I2C error / timeout), per channel
 #  laser8.read_all()        dict     all of the above in one dict, one hardware read
+#  laser8.nearest_mm()      0~1200   closest target distance in mm                [v2, mode 6]
+#  laser8.front_mm()        0~1200   straight-ahead distance in mm (avg ch4/ch5)   [v2, mode 6]
+#  laser8.nearest_dir()     -8~+8    closest target direction (0=front)            [v2, mode 6]
+#  laser8.device_id()       tuple    (id, hw0, firmware_word), e.g. (41, 8, 100)   [v2, mode 8]
+#  laser8.firmware_version() tuple   (major, minor), e.g. (1, 0)                   [v2, mode 8]
 #
 #  Distance 120 means no target or farther than 120 cm.
 #  Negative direction = CH1 side, positive direction = CH8 side.

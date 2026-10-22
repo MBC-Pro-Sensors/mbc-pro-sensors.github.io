@@ -1,125 +1,106 @@
 /*
- * IMU Gyro x Arduino  Example 1: Say hello to the sensor
+ * IMU Gyro x Arduino   Example 1: Say hello to the gyro
  * ------------------------------------------------------------
  * What does this example do?
- *   It checks that the sensor is connected. If it is, the computer shows
- *   the sensor's name and version, and "which face is pointing up now".
- *   Run this example first every time you connect a new sensor.
+ *   Checks that the gyro is connected. If it is, it prints the gyro's "ID card"
+ *   (device ID, protocol version, firmware version) and the 8 bits of status
+ *   flags F3 (still? calibrating? mounted crooked?).
+ *   Run this example first every time you connect a new gyro.
  *
- * You need:
- *   Arduino UNO / Nano (or ESP32), IMU gyro (Universal I2C edition), 4 jumper wires.
+ * You need: IMU Gyro (Universal I2C edition), Arduino UNO / Nano / UNO R4 or ESP32.
  *
- * Wiring (Arduino UNO / Nano):
- *   Sensor VCC -> 5V      Sensor GND -> GND
- *   Sensor SDA -> A4      Sensor SCL -> A5
+ * Wiring:
+ *   Gyro VCC -> 5V      Gyro GND -> GND
+ *   Gyro SDA -> A4      Gyro SCL -> A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *
  * How to see the result:
  *   After uploading, open the Serial Monitor and choose 115200 baud.
  *
- * Good to know:
- *   When the gyro powers on, it must stay "still" for about 0.5 seconds
- *   before it says "I am ready". So put the sensor flat on the table
- *   and do not touch it until you see the result.
+ * Tip:
+ *   Keep the gyro still for about 0.5 s when it powers on. It learns "which side is up"
+ *   by itself and sets the heading to zero.
  */
 
-#include <Wire.h>                        // Arduino's built-in I2C tool, used to talk to the sensor
+#include <Wire.h>                        // Arduino's built-in I2C tool, used to talk to the gyro
 
-const uint8_t SENSOR_ADDR = 0x6A;        // The gyro's "address" (like a house number). It is always 0x6A
+const uint8_t ADDR = 0x6A;               // The IMU Gyro's "house number" (I2C address)
+const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
+
+// Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
 
 void setup() {
-  Serial.begin(115200);                  // Open the line to the computer, speed 115200
-  mbcBegin();                            // Get I2C ready (the helpers are at the bottom of this file)
-  delay(500);                            // Give the sensor 0.5 seconds to power on
+  Serial.begin(115200);                  // Open the channel to the computer at 115200 baud
+  mbcBegin();                            // Get I2C ready (helper at the bottom of the file)
+  delay(500);                            // Give the gyro 0.5 s to boot
 
-  Serial.println(F("=== IMU Gyro: Say hello to the sensor ==="));
-  Serial.println(F("Put the sensor on the table and do not move it..."));
+  Serial.println(F("=== IMU Gyro: Say hello to the gyro ==="));
 
-  // Wait for the sensor to say "I am ready", up to 5 seconds (it must stay still for about 0.5 s first)
-  if (!mbcWaitReady(5000)) {
-    uint8_t id;
-    if (mbcRead(0x02, &id, 1) && id == 0x6A) {
-      // The sensor is found, but it keeps thinking it is moving
-      Serial.println(F("Sensor found, but it keeps feeling shaky and cannot get ready. Please check:"));
-      Serial.println(F("  1. Is the sensor on the table? Holding it in your hand always shakes it a little."));
-      Serial.println(F("  2. Is the table shaking? (A motor or fan running nearby can do this too)"));
-      Serial.println(F("  3. After it is still, press the Arduino RESET button and try again."));
-    } else {
-      Serial.println(F("Sensor not found! Please check:"));
-      Serial.println(F("  1. SDA to A4, SCL to A5. Are they swapped?"));
-      Serial.println(F("  2. VCC to 5V, GND to GND. Are they plugged in firmly? Is the red light on the sensor blinking?"));
-      Serial.println(F("  3. Is your sensor the Universal I2C edition? (The SPIKE and EV3 editions cannot connect to Arduino)"));
-      Serial.println(F("  4. Still not working: unplug the sensor power and plug it back in, wait 3 seconds, then press the Arduino RESET button."));
-    }
-    while (true) {}                      // Stop here and do nothing more
+  // Wait until the gyro says "I am ready" (bit0 of status flags F3), up to 3 seconds
+  if (!mbcWaitReady(ADDR, 3000)) {
+    Serial.println(F("Gyro not found! Please check:"));
+    Serial.println(F("  1. SDA -> A4, SCL -> A5 (ESP32: 21 / 22). Are they swapped?"));
+    Serial.println(F("  2. VCC -> 5V, GND -> GND. Plugged in firmly?"));
+    Serial.println(F("  3. Is your gyro the Universal I2C edition? (SPIKE and EV3 editions cannot connect to Arduino)"));
+    while (true) {}                      // Stop here if not found
   }
 
-  // ---- 1. Read the "version info": box 0x01 of the sensor, 17 numbers ----
-  uint8_t info[17];
-  mbcRead(0x01, info, 17);
+  // ---- F0 device ID: low byte = factory address (0x6A), high byte = hw[0] (IMU = 1) ----
+  int16_t id = mbcRead(ADDR, 0xF0);
+  Serial.print(F("Found it! Factory address 0x"));
+  Serial.print((uint8_t)(id & 0xFF), HEX);
+  Serial.print(F(", type code "));
+  Serial.println((uint8_t)((id >> 8) & 0xFF));   // IMU = 1
 
-  // Numbers 9 to 16 are the sensor's name (letters)
-  char name[9] = {0};
-  memcpy(name, &info[9], 8);
+  // ---- F1 protocol version (these examples are written for version 2) ----
+  Serial.print(F("Protocol version: "));
+  Serial.println(mbcRead(ADDR, 0xF1));
 
-  Serial.print(F("Found it! Sensor name: "));
-  Serial.println(name);                  // It should show IMU
-
+  // ---- F2 firmware version: major x 100 + minor (for example 102 = 1.2) ----
+  int16_t fw = mbcRead(ADDR, 0xF2);
   Serial.print(F("Firmware version: "));
-  Serial.print(info[2]);                 // Major version
+  Serial.print(fw / 100);
   Serial.print('.');
-  Serial.println(info[3]);               // Minor version
+  Serial.println(fw % 100);
 
-  Serial.print(F("Firmware date: 20"));
-  Serial.print(info[4]);                 // Year (last two digits)
-  Serial.print('/');
-  Serial.print(info[5]);                 // Month
-  Serial.print('/');
-  Serial.println(info[6]);               // Day
+  // ---- F3 status flags: 8 bits, each bit means one thing ----
+  int16_t st = mbcRead(ADDR, 0xF3);
+  Serial.println(F("Current status:"));
+  printFlags(st);
 
-  Serial.print(F("Magnetometer: "));
-  if (info[8] == 1) Serial.println(F("OK"));
-  else              Serial.println(F("not detected"));
+  // ---- F5 seconds since power-on ----
+  Serial.print(F("Seconds since power-on: "));
+  Serial.println(mbcRead(ADDR, 0xF5));
 
-  // ---- 2. Read the "status": box 0x31, 9 numbers ----
-  uint8_t st[9];
-  mbcRead(0x31, st, 9);
-  uint8_t flags = st[0];                 // A row of "switches"; each bit means one thing
-  uint8_t upFace = st[4];                // Which face is pointing up now: 0 to 5
-
-  Serial.print(F("Face pointing up now: "));
-  printFace(upFace);
-  Serial.println();
-
-  if (flags & (1u << 3)) {               // Switch 3 = mounted too tilted
-    Serial.println(F("Note: the sensor is mounted too tilted (more than about 45 degrees). The heading may be wrong. Please mount it straighter."));
-  }
-
-  Serial.println(F("Wiring is correct. You can start the other examples now!"));
+  Serial.println(F("Wiring is correct. You can try the other examples now!"));
 }
 
 void loop() {
   // This example only checks once at power-on, so loop does nothing
 }
 
-// Print the "face pointing up" number as words you can read
-void printFace(uint8_t f) {
-  switch (f) {
-    case 0:  Serial.print(F("+X face")); break;
-    case 1:  Serial.print(F("+Y face")); break;
-    case 2:  Serial.print(F("+Z face")); break;
-    case 3:  Serial.print(F("-X face")); break;
-    case 4:  Serial.print(F("-Y face")); break;
-    case 5:  Serial.print(F("-Z face")); break;
-    default: Serial.print(F("unknown")); break;
-  }
+// Print the 8 bits of F3, one line each
+void printFlags(int16_t st) {
+  Serial.print(F("  bit0 ready                   ")); Serial.println((st & 0x01) ? F("yes") : F("no"));
+  Serial.print(F("  bit1 still                   ")); Serial.println((st & 0x02) ? F("yes") : F("no (moving)"));
+  Serial.print(F("  bit2 mounting axis captured  ")); Serial.println((st & 0x04) ? F("yes (knows which side is up)") : F("no (keep it still and wait)"));
+  Serial.print(F("  bit3 mounted crooked         ")); Serial.println((st & 0x08) ? F("yes (please mount it flatter)") : F("no"));
+  Serial.print(F("  bit4 accel calibrating       ")); Serial.println((st & 0x10) ? F("yes") : F("no"));
+  Serial.print(F("  bit5 mag calibrating         ")); Serial.println((st & 0x20) ? F("yes") : F("no"));
+  Serial.print(F("  bit6 mag fusion initialized  ")); Serial.println((st & 0x40) ? F("yes (fused heading available)") : F("no"));
+  Serial.print(F("  bit7 mag auto-cal converged  ")); Serial.println((st & 0x80) ? F("yes") : F("no"));
 }
 
 // ============================================================
-// Below are the "Communication helpers": they talk to the sensor.
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
 // They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] -> wait 2 ms -> read 2 x k bytes = k int16 values (little-endian) starting at that number
+//   If the number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
 // ============================================================
 
-// Start I2C communication (call once in setup)
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -127,31 +108,44 @@ void mbcBegin() {
 #endif
 }
 
-// Read n numbers from box reg of the sensor into buf. Returns true if it worked
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// From the sensor at address addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting at number id
   if (Wire.endTransmission() != 0) return false;
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // Wait 2 ms before reading (ESP32-based products need this)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-// Write the number value into box reg of the sensor. Returns true if it worked
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-// Wait until the sensor is ready, up to timeoutMs milliseconds. Returns true when ready
-// (The gyro must stay still for about 0.5 s before it is ready, so the examples wait 5 seconds)
-bool mbcWaitReady(uint16_t timeoutMs) {
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), up to ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;

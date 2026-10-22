@@ -1,183 +1,187 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-# ∿ Universal I2C Version Development Guide
+<!-- 本頁由 _build/gen-reference.mjs 從 _build/protocol/line16.json 產生（arduino-i2c），請勿手改；改內容請改 JSON 後重跑 node _build/gen-reference.mjs -->
+# Line Follower 16-ch × Arduino I2C (universal I2C edition)
 
-[🔙 Back to 16-Way Line Follower Home](/en/sensors/line16/index.md)
+[🔙 Back to Line Follower 16-ch](/en/sensors/line16/index.md)
 
-<div style="display: flex; align-items: center; justify-content: center; gap: 30px; margin: 30px 0; flex-wrap: wrap;">
-  <div style="background: rgba(10,186,181,0.03); border: 1px solid rgba(10,186,181,0.25); border-radius: 12px; padding: 25px 45px; display: flex; align-items: center; gap: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
-    <img src="/images/sensors/line16/line16-product-arduino.webp" alt="Pathfinder 16-Way Sensor (Universal I2C Edition)" style="max-height: 144px; object-fit: contain; filter: drop-shadow(0 0 20px rgba(10,186,181,0.75)) drop-shadow(0 0 45px rgba(10,186,181,0.45));" />
-    <span style="font-size: 2.5rem; color: #777; font-weight: 300; line-height: 1;">+</span>
-    <div style="display: flex; gap: 15px; align-items: center;">
-      <svg viewBox="0 0 100 40" style="height: 60px; fill: none; stroke: #00d2ff; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 10px rgba(0, 210, 255, 0.4));">
-        <path d="M 5,25 H 25 V 5 H 45 V 35 H 65 V 5 H 85 V 35 H 95" />
-      </svg>
-    </div>
-  </div>
-</div>
+The universal I2C edition of the Line Follower 16-ch speaks **MBC I2C protocol v2**: write one id, read 2 bytes = one int16 little-endian value; consecutive ids can be read in one go. This page has the value table, commands and wiring for this product; the shared rules (F0~F5 version & status, F8 re-address, EF reboot) are on the [universal I2C protocol](/en/i2c-protocol.md) page.
 
-Welcome to the professional hardware development zone! In addition to perfectly supporting the LEGO ecosystem, the MBC 16-Way Line Follower also provides an open, standard I2C communication interface for developers using **Arduino, ESP32, Raspberry Pi, and various custom master boards**. 
-The read and write registers of this sensor are completely separated, utilizing a conflict-free design, making it highly suitable for developing high-speed line-following robots or PC visualization dashboards.
-
----
-
-> [!IMPORTANT]
-> **This page documents the new v1 protocol (address `0x16`).** For the read/write rules, status registers and Arduino helper functions shared by every MBC product, see the [MBC Universal I2C Protocol](/en/i2c-protocol.md) first.
+<p class="chips"><a class="chip chip-spike" href="/en/sensors/line16/spike-hub.md">SPIKE</a><a class="chip chip-ev3" href="/en/sensors/line16/ev3-hub.md">EV3</a><a class="chip chip-arduino current" href="/en/sensors/line16/arduino-i2c.md">Arduino I2C</a><a class="chip chip-mblock" href="/en/sensors/line16/mblock.md">mBlock</a><a class="chip chip-matrix" href="/en/sensors/line16/matrix.md">MATRIX</a><a class="chip chip-microbit" href="/en/sensors/line16/microbit.md">micro:bit</a></p>
 
 > [!TIP]
-> **First time, or new to coding?** Go straight to [🧪 Pathfinder 16-Way × Arduino Examples](/en/sensors/line16/arduino-examples.md): 6 examples you can copy and upload right away, with an English note on every line.
+> **New to coding?** Start with the [Arduino examples](/en/sensors/line16/arduino-examples.md); every sketch is copy-and-upload. The six-host reading of every value is in the [reference](/en/sensors/line16/reference.md).
 
-## 📡 Basics
+## Basics
 
-| Item | Value |
+| Item | Detail |
 | :--- | :--- |
-| I2C address | `0x16` (shared by the line sensor family) |
-| Model string `0x07` | `LINE16` |
-| Variant `0x06` | `[16, PCB revision]` (byte 1 = channel count) |
-| Channel order | **CH0 = leftmost**, CH15 = rightmost (sensor mounted on the robot, viewed from behind the robot looking forward) |
-| Line position sign | **Negative = line on the left, positive = line on the right**, 0 = centered |
+| I2C address | `0x16`（change with F8） |
+| F0 device ID | low byte `0x16`、high byte `16` |
+| Model | `LINE16` |
+| Protocol F1 | `2` |
+| Speed | 100 kHz (recommended) / 400 kHz; wait 2 ms after writing the id |
+| Read | 主機寫 [編號] → 等 2 ms → 讀 2×k byte（k≤16）= 從該編號起連續 k 個 int16 小端；空號回 -32768 |
+| Snapshot | updated every 10 ms; a multi-value read is atomic |
 
-## 1️⃣ Line Result (most used)
+## Wiring
 
-| Register | Dir | Len | Content |
-| :---: | :---: | :---: | :--- |
-| `0x10` | W | 1 | Target: `0` = black line, `1` = white line (reverts to the button setting after reboot) |
-| `0x11` | R | 7 | **Line bundle** (= `0x12` ~ `0x17`, easiest to read in one go) |
-| `0x12` | R | 1 | Line position int8: `-15` ~ `+15` while the line is seen. When the line is lost it keeps the last value; if the line touched the outermost edge within 200 ms before it was lost, it becomes `±16` (the side the line ran off). To check for a lost line, use `0x15` = 0 |
-| `0x13` | R | 1 | **High-resolution position** int8: `-100` ~ `+100` (best for PID). Keeps the last value when the line is lost |
-| `0x14` | R | 1 | Line width: number of channels on the line |
-| `0x15` | R | 1 | Line groups: `0` = line lost, `1` = single line, `2+` = fork / intersection |
-| `0x16` | R | 2 | Binary map uint16: bit i = CH i on the line (in white-line mode, bit = 1 means it sees white) |
-| `0x17` | R | 1 | Last exit side int8: `-16` = left edge, `+16` = right edge (the edge the line touched last) (also updates while the line is seen; use it to know which way to search when the line is lost). `0` after power-on until the line touches an edge |
+<figure class="ref-fig"><img src="/images/figures/line16/wiring-uno.svg" alt="Line Follower 16-ch × Arduino UNO" loading="lazy"></figure>
 
-## 2️⃣ Calibration
+| Sensor | Arduino UNO / Nano | Arduino R4 | ESP32 |
+| :--- | :--- | :--- | :--- |
+| SDA | A4 | SDA | GPIO 21 |
+| SCL | A5 | SCL | GPIO 22 |
+| 5V | 5V | 5V | 5V |
+| GND | GND | GND | GND |
 
-| Register | Dir | Len | Content |
-| :---: | :---: | :---: | :--- |
-| `0x20` | W | 1 | `1` = 5-second dynamic calibration (sweep the robot across the line), `2` = store current reading as white, `3` = store current reading as black (`2` and `3` only sample for about 50 ms and update only the white or the black side; we recommend `1`). Saved to EEPROM. A new calibration command sent during calibration (`0x32` bit2 = 1) is ignored |
-| `0x21` | R | 2 | Calibration bundle (= `0x22` ~ `0x23`) |
-| `0x22` | RW | 1 | Threshold `1` ~ `99` (default 50; resets on reboot) |
-| `0x23` | R | 1 | Calibration counter (+1 each time a calibration finishes) |
+Works directly with 5 V hosts, no level shifter; two products with the same address cannot share a bus (re-address one with F8 first).
 
-## 3️⃣ Status Flags `0x32`
+## Value table
 
-| Bit | Meaning |
-| :---: | :--- |
-| bit0 | Ready |
-| bit1 | White-line mode (0 = black line) |
-| bit2 | Calibrating (the update counter `0x33` pauses during the 5-second calibration — normal) |
-| bit3 | Line lost |
-| bit4 | Fork (groups ≥ 2) |
+Each id returns one int16; click an id for the six-host reading and figure.
 
-## 🔬 Per-Channel Values
+| Id | Value | Range | Meaning |
+| :--- | :--- | :--- | :--- |
+| [`01`](/en/sensors/line16/reference.md#v01) | line position `linePos` | -16~+16 | which channel the line is under: −16 (far left) to +16 (far right), 0 = centre; seen from behind the robot, negative = left (normally ±15; ±16 only for 200 ms after the line leaves the outermost channel) |
+| [`02`](/en/sensors/line16/reference.md#v02) | fine position `linePosFine` | -100~+100 | sub-channel position: −100 to +100, 0 = centre, negative = left (same sign as line position) |
+| [`03`](/en/sensors/line16/reference.md#v03) | line width `lineWidth` | 0~16 路 | number of channels on the line, 0~16; 0 = no line |
+| [`04`](/en/sensors/line16/reference.md#v04) | line segments `groupCount` | 0~8 | number of separate line segments: 0 = lost, 1 = one line, ≥2 = fork / crossing |
+| [`05`](/en/sensors/line16/reference.md#v05) | line bitmap `bitmap` | 0~65535 bit | bit0 = channel 1 (left) … bit15 = channel 16; 1 = that channel sees the line |
+| [`06`](/en/sensors/line16/reference.md#v06) | last exit direction `lastDir` | -16~+16 | where the line was before it was lost: −16 to +16 (negative = left); keeps the last value |
+| [`07`](/en/sensors/line16/reference.md#v07) | threshold `threshold` | 1~99 | reflect threshold for 'on line', 1~99, default 50; set with E4 |
+| [`08`](/en/sensors/line16/reference.md#v08) | calibrations done `calibCount` | 0~255 次 | number of calibrations completed since power-on (button calibrations included); not in the MATRIX big channel (tail bytes locked at 0 for the 16-ch) |
+| [`10~1F`](/en/sensors/line16/reference.md#v10) | channel 1~16 reflect `light` | 0~100 | calibrated reflect of channel 1~16, 0~100 (channel 1 = left); ids 10~1F |
 
-| Register | Dir | Len | Content |
-| :---: | :---: | :---: | :--- |
-| `0x40` ~ `0x4F` | R | 1 | One channel, calibrated `0` ~ `100` (`0x40` + channel) |
-| `0x50` | R | 16 | All channels, calibrated `0` ~ `100` |
-| `0x51` | R | 16 | White reference (EEPROM) |
-| `0x52` | R | 16 | Black reference (EEPROM) |
-| `0x53` | R | 16 | Raw ADC (8-bit) |
+## Write commands
 
----
+| Id | Command | Parameters | Meaning |
+| :--- | :--- | :--- | :--- |
+| [`E0`](/en/sensors/line16/reference.md#ce0) | black line mode `blackLine` | — | follow a black line (default) |
+| [`E1`](/en/sensors/line16/reference.md#ce1) | white line mode `whiteLine` | — | follow a white line (F3 b1 = 1) |
+| [`E2`](/en/sensors/line16/reference.md#ce2) | calibrate black `calibBlack` | — | store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM（F3 bit2 = 1 while running） |
+| [`E3`](/en/sensors/line16/reference.md#ce3) | calibrate white `calibWhite` | — | store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM（F3 bit2 = 1 while running） |
+| [`E4`](/en/sensors/line16/reference.md#ce4) | set threshold `setThreshold` | threshold 1~99 | threshold 1~99 (RAM only, back to 50 after reboot) |
+| [`E7`](/en/sensors/line16/reference.md#ce7) | 5-second auto calibration `calibAuto` | — | sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile（F3 bit2 = 1 while running） |
 
-## 💻 Arduino Example: Read the Line Result
+## Status flags F3
+
+| bit | Name | Meaning |
+| :--- | :--- | :--- |
+| b0 | ready (`ready`) | always 1 |
+| b1 | white line mode (`whiteMode`) | 1 = following a white line |
+| b2 | calibrating (`calibrating`) | E2/E3/E7 in progress; new calibration commands are ignored |
+| b3 | line lost (`lost`) | segment count = 0 |
+| b4 | fork (`fork`) | segment count ≥ 2 |
+
+## Shared registers
+
+| Id | Name | Meaning |
+| :--- | :--- | :--- |
+| [`F0`](/en/i2c-protocol.md#rf0) | device ID | low byte = factory I2C address (unchanged after re-addressing), high byte = hw[0] (channels / sensors / variant) |
+| [`F1`](/en/i2c-protocol.md#rf1) | protocol version | 2 for this release (same number reported in SPIKE mode 8 v[1]) |
+| [`F2`](/en/i2c-protocol.md#rf2) | firmware version | major×100 + minor (e.g. 102 = 1.2) |
+| [`F3`](/en/i2c-protocol.md#rf3) | status flags | b0 = ready; other bits per product (see flags); same byte as MATRIX big-channel byte 24 |
+| [`F4`](/en/i2c-protocol.md#rf4) | update counter | +1 every 10 ms snapshot, wraps 0~255 (2.56 s per cycle, not usable for reboot detection; frozen = module busy) |
+| [`F5`](/en/i2c-protocol.md#rf5) | uptime seconds | seconds since boot, saturates at 32767 (~9 h); a drop means the module rebooted |
+| [`F8`](/en/i2c-protocol.md#rf8) | change I2C address | [F8][new 0x08~0x77][~new], saved to EEPROM, takes effect after reboot; [F8][0x00][0xFF] = back to factory address |
+| [`EF`](/en/i2c-protocol.md#ref) | reboot | [EF][0xA5]; mBlock sends ACK first, then reboots |
+
+## Single-file helper functions
+
+Paste this at the bottom of every sketch; no library to install:
 
 ```cpp
 #include <Wire.h>
 
-const uint8_t LINE_ADDR = 0x16;
+const int16_t MBC_NONE = -32768;   // no answer / undefined id
 
-bool iicRead(uint8_t addr, uint8_t reg, uint8_t *buf, uint8_t n) {
+// read k consecutive values (k ≤ 16) starting at id, int16 little-endian
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
   Wire.beginTransmission(addr);
-  Wire.write(reg);
+  Wire.write(id);
   if (Wire.endTransmission() != 0) return false;
-  if (Wire.requestFrom(addr, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                                        // always wait 2 ms (ESP32 products cannot clock-stretch)
+  if (Wire.requestFrom(addr, (uint8_t)(k * 2)) != (uint8_t)(k * 2)) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint8_t lo = Wire.read(), hi = Wire.read();
+    out[i] = (int16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-void iicWrite(uint8_t addr, uint8_t reg, uint8_t v) {
+// read one value; MBC_NONE when nothing answers
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// write a command (0~3 parameters)
+void mbcWrite(uint8_t addr, uint8_t id, const uint8_t *args, uint8_t n) {
   Wire.beginTransmission(addr);
-  Wire.write(reg);
-  Wire.write(v);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(args[i]);
   Wire.endTransmission();
 }
+void mbcWrite(uint8_t addr, uint8_t id) { mbcWrite(addr, id, nullptr, 0); }
+void mbcWrite(uint8_t addr, uint8_t id, uint8_t a) { mbcWrite(addr, id, &a, 1); }
+void mbcWrite(uint8_t addr, uint8_t id, uint8_t a, uint8_t b) { uint8_t p[2] = {a, b}; mbcWrite(addr, id, p, 2); }
+void mbcWrite(uint8_t addr, uint8_t id, uint8_t a, uint8_t b, uint8_t c) { uint8_t p[3] = {a, b, c}; mbcWrite(addr, id, p, 3); }
+
+// wait until ready (F3 bit0 = 1), at most ms milliseconds
+bool mbcWaitReady(uint8_t addr, unsigned long ms) {
+  unsigned long t0 = millis();
+  while (millis() - t0 < ms) {
+    int16_t st = mbcRead(addr, 0xF3);
+    if (st != MBC_NONE && (st & 1)) return true;
+    delay(20);
+  }
+  return false;
+}
+```
+
+## Example: print the whole value table
+
+```cpp
+const uint8_t ADDR = 0x16;
 
 void setup() {
   Serial.begin(115200);
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
-  Wire.setWireTimeout(25000, true);  // AVR: does not freeze if the sensor does not answer
+  Wire.setWireTimeout(25000, true);   // AVR: never hang when the module is silent
 #endif
-
-  // Wait until the sensor is ready (0x32 bit0 = 1), up to 1 second
-  uint8_t flags = 0;
-  for (uint8_t t = 0; t < 20 && !(iicRead(LINE_ADDR, 0x32, &flags, 1) && (flags & 0x01)); t++) delay(50);
-
-  iicWrite(LINE_ADDR, 0x10, 0);     // 0 = black line, 1 = white line
+  if (!mbcWaitReady(ADDR, 2000)) Serial.println("module not found: check wiring and address");
+  Serial.print("ID 0x"); Serial.println(mbcRead(ADDR, 0xF0), HEX);   // low byte address, high byte hw[0]
+  Serial.print("FW ");    Serial.println(mbcRead(ADDR, 0xF2));
 }
 
 void loop() {
-  uint8_t d[7];
-  if (iicRead(LINE_ADDR, 0x11, d, 7)) {
-    int8_t   pos    = (int8_t)d[0];        // -15 ~ +15 (can be ±16 when the line is lost)
-    int8_t   posHi  = (int8_t)d[1];        // -100 ~ +100, use this for PID
-    uint8_t  width  = d[2];                // line width
-    uint8_t  groups = d[3];                // 0 lost / 1 single / 2+ fork
-    uint16_t bin    = ((uint16_t)d[4] << 8) | d[5];  // one bit per channel
-
-    Serial.print("pos ");      Serial.print(pos);
-    Serial.print("  hi-res "); Serial.print(posHi);
-    Serial.print("  width ");  Serial.print(width);
-    Serial.print("  groups "); Serial.print(groups);
-    Serial.print("  bin ");    Serial.println(bin, BIN);
-  }
-  delay(10);
-}
-```
-
-### A Starting Point for PID Line Following
-
-```cpp
-// posHi: negative = line on the left, positive = on the right.
-// Line on the right -> turn right -> speed up the left wheel
-float Kp = 0.6;
-int base = 120;                        // base speed (adjust for your motor driver)
-int turn = Kp * posHi;
-int leftSpeed  = base + turn;
-int rightSpeed = base - turn;
-```
-
-### Trigger Calibration from Code
-
-```cpp
-uint8_t before[2] = {0}, after[2] = {0};
-iicRead(LINE_ADDR, 0x21, before, 2);   // [threshold, calibration counter]
-iicWrite(LINE_ADDR, 0x20, 1);          // start 5-second calibration: sweep the robot across the line
-unsigned long t0 = millis();
-do {
+  Serial.print("linePos: "); Serial.println(mbcRead(ADDR, 0x01));   // line position
+  Serial.print("linePosFine: "); Serial.println(mbcRead(ADDR, 0x02));   // fine position
+  Serial.print("lineWidth: "); Serial.println(mbcRead(ADDR, 0x03));   // line width
+  Serial.print("groupCount: "); Serial.println(mbcRead(ADDR, 0x04));   // line segments
+  Serial.print("bitmap: "); Serial.println(mbcRead(ADDR, 0x05));   // line bitmap
+  Serial.print("lastDir: "); Serial.println(mbcRead(ADDR, 0x06));   // last exit direction
+  Serial.print("threshold: "); Serial.println(mbcRead(ADDR, 0x07));   // threshold
+  Serial.print("calibCount: "); Serial.println(mbcRead(ADDR, 0x08));   // calibrations done
+  { int16_t a[16]; mbcReadMany(ADDR, 0x10, 16, a); Serial.print("light: "); for (uint8_t i = 0; i < 16; i++) { Serial.print(a[i]); Serial.print(' '); } Serial.println(); }
+  Serial.println();
   delay(200);
-  iicRead(LINE_ADDR, 0x21, after, 2);
-} while (after[1] == before[1] && millis() - t0 < 7000);   // counter +1 = calibration finished; wait 7 seconds at most
+}
+
+// paste the helper functions below
 ```
 
-<br>
+## Sources and assumptions
 
-!!! success "🚀 Want to learn more advanced line-following control methods?"
-You can take classes from these awesome coaches! They have rich experience in competitions and teaching, guaranteeing you'll learn a lot! 💯
+Generated by `_build/gen-reference.mjs` from `_build/protocol/line16.json` (single source of truth, transcribed from the 2026-10-21 protocol decisions).
 
-<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 15px; margin-bottom: 30px;">
-<div style="flex: 1; min-width: 250px; max-width: 320px; display: flex; flex-direction: column; align-items: center;">
-<h4 style="margin: 0 0 10px 0; text-align: center;">🏆 <a href="https://www.youtube.com/@LegoLauXiao" target="_blank" style="color: inherit; text-decoration: none;">Coach LegoLauXiao</a></h4>
-<div style="width: 100%; aspect-ratio: 9/16; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,210,255,0.2); box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
-<iframe src="https://www.youtube.com/embed/WgacdWLatbk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="width: 100%; height: 100%; border: none;"></iframe>
-</div>
-</div>
-<div style="flex: 1; min-width: 250px; max-width: 320px; display: flex; flex-direction: column; align-items: center;">
-<h4 style="margin: 0 0 10px 0; text-align: center;">🏆 <a href="https://www.youtube.com/@legolaumo" target="_blank" style="color: inherit; text-decoration: none;">Coach legolaumo</a></h4>
-<div style="width: 100%; aspect-ratio: 9/16; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,210,255,0.2); box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
-<iframe src="https://www.youtube.com/embed/T9bcndBNQvQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="width: 100%; height: 100%; border: none;"></iframe>
-</div>
-</div>
-</div>
-
+- B-11：細位置 02 與線位置 01 同號（負 = 左）；韌體 F16:1290 註解寫反，程式碼同號（IR:11 為準）。
+- B-12：E7 五秒動態校準補回（v1 的 0x20=0x01），定案表沒列。
+- MATRIX 大通道已流出：[0..18] 與尾段 24~28 鎖住維持 0（common.json lockedTail0），所以 F3、F1/F2 次數、ID、hw[0]、08 校準次數都不進大通道；只追加 [19..20] 位元圖 u16 小端、[21] 線段數（MATRIX 定案 §4）。0x22 命令 4~12 全部不動（11 = 0、12 = ((位置+16)>>1)×10 + (線寬>>1)，schema 不收 11/12 所以沒寫進 ch22）。
+- EV3：模式 0~2 鎖住；模式 3 原本不送 → 16 bit 位元圖；模式 4 原本不送 → 同模式 2；模式 5 ID 格式 B（共用函式）。
+- SPIKE：0/5/7/9 鎖住，1~4、6 維持不動；教育版模式 0 的 16 路光值是 2-bit（玩具版 1-bit），跟 8 路的 4-bit 不同；byte 8~15 補 0（#65 已改，使用者保留）；模式 9 排法照盤點（四路 4-bit 一個 int16，v6 = 位元圖）；模式 8 v[0] 改 ID|hw[0]<<8。
+- 線段數 04 範圍：定案沒寫，16 路最多 8 段（交錯壓線），採 0~8。
+- mBlock 舊版：MBC_MBLOCK_LEGACY=1 時逐 byte 同 2026-10-21 統一後韌體（0x01 位置、0x02 線寬、n<<4|03 反向兩路壓一 byte、0x07 細位置 0~200），0x0B 回 1（B-1）。
+- Flash：C031 硬體鎖 28 KB，I2C 版餘 848 B；不夠時照 B-17 順序瘦身，JSON 不受影響。
+- Pin table uses each board's common defaults (ESP32: change with `Wire.begin(sda, scl)`).

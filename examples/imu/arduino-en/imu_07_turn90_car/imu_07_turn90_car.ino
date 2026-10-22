@@ -1,43 +1,48 @@
 /*
- * IMU Gyro x Arduino  Example 7 (advanced): Car turns 90 degrees in place
+ * IMU Gyro x Arduino   Example 7: Car turns 90 degrees on the spot (advanced)
  * ------------------------------------------------------------
  * What does this example do?
- *   It makes a two-wheel car "turn right 90 degrees in place", stop for 1 second, turn 90 degrees again...
- *   After 4 turns (one full circle) it stops.
- *   While the car turns, it keeps checking the gyro angle:
- *     Still far from the target -> turn faster
- *     Almost there              -> turn slowly
- *     Arrived                   -> stop the car
- *   This way of "watching the sensor and correcting at the same time" is called "feedback control".
- *   If you turn only by "running the motors for some seconds", a weak battery or a slippery floor
- *   makes the turn wrong. With the gyro, it is much more accurate.
+ *   At power-on it sends command E0 to set the heading to zero. Then every 3 s it makes a
+ *   two-wheel car turn right 90 degrees on the spot:
+ *   number 02 (fused heading) tells "how far have I turned". Far from the target = turn fast,
+ *   almost there = turn slow, arrived = stop. After 4 turns the car faces the original direction again.
+ *   Seen from above, clockwise (turning right) makes the heading bigger, so for a right turn target = current + 90.
  *
- * You need:
- *   A two-wheel car, an L298N motor driver board (or a TB6612 or other driver wired the same way), batteries.
+ * You need: IMU Gyro (Universal I2C edition), Arduino UNO / Nano / UNO R4 or ESP32. Also: a two-wheel car, an L298N motor driver board (or a TB6612 wired the same way), batteries.
  *
- * Wiring (Arduino UNO / Nano):
- *   Sensor VCC -> 5V      Sensor GND -> GND
- *   Sensor SDA -> A4      Sensor SCL -> A5
+ * Wiring:
+ *   Gyro VCC -> 5V      Gyro GND -> GND
+ *   Gyro SDA -> A4      Gyro SCL -> A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *   L298N ENA -> 5     IN1 -> 7     IN2 -> 8      (left wheel)
  *   L298N ENB -> 6     IN3 -> 9     IN4 -> 10     (right wheel)
- *   (For ESP32 use: ENA -> 25, IN1 -> 26, IN2 -> 27, ENB -> 14, IN3 -> 32, IN4 -> 33)
  *   The L298N GND must be connected to the Arduino GND!
- *   Fix the gyro onto the car with screws or bricks (flat, standing up, or on its side are all OK, but it must not wobble).
+ *   (ESP32 uses different pins, see "Motor pins" below)
  *
- * Before the first run:
- *   1. Run "Example 2" first and check that the angle number gets bigger when you turn right.
- *   2. Lift the car up (wheels off the ground) and upload. Check that both wheels turn "forward".
- *      If a wheel turns the wrong way, change LEFT_REVERSE or RIGHT_REVERSE below to true.
- *   3. At power-on, keep the car still. It only starts after "Ready".
+ * Before you start:
+ *   1. Mount the gyro flat and firmly on the car. Do not move the car at power-on (the gyro first learns which side is up).
+ *   2. Test with the car lifted up: on a right turn the left wheel should go forward and the right wheel backward.
+ *      If a wheel turns the wrong way, change LEFT_REVERSE / RIGHT_REVERSE.
+ *   3. If it overshoots, make TURN_SPEED smaller or SLOW_ZONE bigger.
+ *
+ * How to see the result:
+ *   The Serial Monitor (115200) prints the target angle and the current heading.
+ *
+ * Tip:
+ *   To turn left: change TURN_ANGLE to -90.
  */
 
 #include <Wire.h>
 
-const uint8_t SENSOR_ADDR = 0x6A;        // The gyro's address
+const uint8_t ADDR = 0x6A;               // The IMU Gyro's "house number" (I2C address)
+const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
+
+// Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
 
 // ---- Motor pins ----
 #if defined(ESP32)
-// ESP32 pins 6 to 11 are connected to the memory chip on the board and cannot be used, so we use these pins
+// ESP32 pins 6 ~ 11 are connected to the on-board memory chip and cannot be used, so we use these instead
 const int ENA = 25, IN1 = 26, IN2 = 27;  // Left wheel
 const int ENB = 14, IN3 = 32, IN4 = 33;  // Right wheel
 #else
@@ -45,15 +50,19 @@ const int ENA = 5, IN1 = 7, IN2 = 8;     // Left wheel
 const int ENB = 6, IN3 = 9, IN4 = 10;    // Right wheel
 #endif
 
-// ---- 👉 You can change these settings ----
-const int   TURN_ANGLE = 90;             // Degrees for each turn: positive = turn right, negative = turn left
-const int   TURN_TIMES = 4;              // How many turns in total (4 x 90 degrees = one full circle)
-const int   MAX_SPEED  = 150;            // Speed when far from the target: 0 to 255
-const int   MIN_SPEED  = 70;             // The slowest speed when almost there (too small and the wheels will not move)
-const float KP         = 3.0;            // How much speed to add for each 1 degree left: change this if it does not stop in the right place
-const int   TOLERANCE  = 2;              // Within 2 degrees counts as "arrived"
-const bool  LEFT_REVERSE  = false;       // Change to true if the left wheel turns the wrong way
-const bool  RIGHT_REVERSE = false;       // Change to true if the right wheel turns the wrong way
+// ---- 👉 You can change these ----
+const int  TURN_ANGLE    = 90;           // Degrees per turn: positive = right, negative = left
+const int  TURN_SPEED    = 150;          // Turning speed 0~255
+const int  SLOW_SPEED    = 80;           // Slow speed when almost there
+const int  SLOW_ZONE     = 25;           // Switch to slow speed when fewer than this many degrees remain
+const int  DONE_ZONE     = 2;            // Within this many degrees counts as arrived
+const unsigned long WAIT_MS = 3000;      // How many ms to wait after each turn
+const bool LEFT_REVERSE  = false;        // Change to true if the left wheel turns the wrong way
+const bool RIGHT_REVERSE = false;        // Change to true if the right wheel turns the wrong way
+
+long target = 0;                         // The angle to turn to this time
+unsigned long doneAt = 0;                // When the last turn finished
+bool turning = false;                    // Are we turning right now?
 
 void setup() {
   Serial.begin(115200);
@@ -62,92 +71,52 @@ void setup() {
   drive(0, 0);                           // Stop first
 
   mbcBegin();
-  delay(500);
-
-  Serial.println(F("Do not move the car. Getting the gyro ready..."));
-  if (!mbcWaitReady(5000)) {
-    Serial.println(F("Sensor not found, or it keeps shaking. Run Example 1 first to check."));
-    while (true) {}                      // The motors are already stopped, so just stop here
+  delay(1000);                           // Wait a little longer so the gyro can learn which side is up
+  if (!mbcWaitReady(ADDR, 3000)) {
+    Serial.println(F("Gyro not found. Run Example 1 first to check the wiring."));
+    while (true) {}
   }
-  mbcWrite(0x10, 0x01);                  // Reset the heading: the direction the car faces now = 0 degrees
-  delay(50);                             // Wait a little after the reset before reading
 
-  Serial.println(F("Ready! Turning starts in 3 seconds."));
-  delay(3000);
-
-  long target = 0;                       // Target angle
-  for (int i = 1; i <= TURN_TIMES; i++) {
-    target = target + TURN_ANGLE;        // Turn 90 degrees more each time: 90, 180, 270, 360
-    Serial.print(F("Turn "));
-    Serial.print(i);
-    Serial.print(F(": going to "));
-    Serial.print(target);
-    Serial.print(F(" degrees... "));
-
-    if (!turnTo(target)) {               // The turn failed (the car is already stopped for safety)
-      while (true) {}
-    }
-    delay(1000);                         // Stop for 1 second before the next turn
-  }
-  Serial.println(F("Done! Press the Arduino RESET button to run it again."));
+  mbcWrite(ADDR, 0xE0);                  // Command E0: heading to zero (current direction = 0 degrees)
+  delay(100);
+  Serial.println(F("Heading set to zero. Turning 90 degrees on the spot every 3 s."));
+  doneAt = millis();
 }
 
 void loop() {
-  // Everything was done in setup, so nothing happens here (the car stays stopped)
-}
-
-// Turn in place to target degrees. Returns true if it worked; false if it could not get there (the car is stopped)
-bool turnTo(long target) {
-  unsigned long start = millis();
-  while (true) {
-    // ---- 1. Read the heading (box 0x11, use numbers 2 and 3 = Gyro3D) ----
-    uint8_t d[6];
-    if (!mbcRead(0x11, d, 6)) {          // Cannot read the sensor -> stop the car first, to be safe
-      drive(0, 0);
-      if (millis() - start > 5000) {
-        Serial.println(F("Cannot read the gyro. Car stopped! Please check the wiring."));
-        return false;
-      }
-      delay(20);
-      continue;
-    }
-    long heading = (int16_t)(((uint16_t)d[2] << 8) | d[3]);   // Turn right = bigger
-
-    // ---- 2. How many degrees are left? ----
-    long error = target - heading;       // Positive = still need to turn right, negative = turned too far
-
-    if (abs(error) <= TOLERANCE) {       // Arrived!
-      drive(0, 0);
-      delay(300);                        // Wait until the car has fully stopped
-      mbcRead(0x11, d, 6);               // Check once more where it stopped
-      heading = (int16_t)(((uint16_t)d[2] << 8) | d[3]);
-      Serial.print(F("stopped at "));
-      Serial.print(heading);
-      Serial.println(F(" degrees"));
-      return true;
-    }
-
-    // ---- 3. Safety checks ----
-    if (abs(error) > abs(TURN_ANGLE) + 45) {   // Getting farther and farther -> wrong direction
-      drive(0, 0);
-      Serial.println(F("Getting farther away. Car stopped! A wheel may turn the wrong way: change LEFT_REVERSE / RIGHT_REVERSE."));
-      return false;
-    }
-    if (millis() - start > 5000) {       // Still not there after 5 seconds
-      drive(0, 0);
-      Serial.println(F("Could not get there in 5 seconds. Car stopped! Check the batteries, or make MIN_SPEED bigger."));
-      return false;
-    }
-
-    // ---- 4. The farther away, the faster it turns; slow down when almost there ----
-    int speed = constrain((int)(KP * abs(error)), MIN_SPEED, MAX_SPEED);
-    if (error > 0) drive(speed, -speed);    // Left wheel forward, right wheel backward -> turn right in place (angle gets bigger)
-    else           drive(-speed, speed);    // Turned too far -> turn left in place to come back
-    delay(10);
+  int16_t heading = mbcRead(ADDR, 0x02); // 02 fused heading (degrees), bigger when turning right
+  if (heading == MBC_NONE) {             // Cannot read the gyro -> stop, to be safe
+    drive(0, 0);
+    Serial.println(F("Cannot read the gyro -> stop"));
+    delay(50);
+    return;
   }
+
+  if (!turning) {
+    // ---- Resting: when the time is up, set the next target ----
+    if (millis() - doneAt >= WAIT_MS) {
+      target += TURN_ANGLE;
+      turning = true;
+      Serial.print(F("Start turning, target ")); Serial.print(target); Serial.println(F(" deg"));
+    }
+  } else {
+    // ---- Turning: how many degrees are left? ----
+    long error = target - heading;       // Positive = still need to turn right, negative = turn left (or overshot)
+    if (abs(error) <= DONE_ZONE) {       // Arrived
+      drive(0, 0);
+      turning = false;
+      doneAt = millis();
+      Serial.print(F("Arrived! Heading now ")); Serial.println(heading);
+    } else {
+      int spd = (abs(error) < SLOW_ZONE) ? SLOW_SPEED : TURN_SPEED;   // Slow down when almost there
+      if (error > 0) drive(spd, -spd);   // Right turn: left wheel forward, right wheel backward
+      else           drive(-spd, spd);   // Left turn
+    }
+  }
+  delay(50);
 }
 
-// Control the two wheels: speed -255 (full speed backward) to 255 (full speed forward)
+// Control the two wheels: speed -255 (full speed backward) ~ 255 (full speed forward)
 void drive(int left, int right) {
   if (LEFT_REVERSE)  left  = -left;
   if (RIGHT_REVERSE) right = -right;
@@ -163,10 +132,14 @@ void setMotor(int en, int inA, int inB, int speed) {
 }
 
 // ============================================================
-// Below are the "Communication helpers": they talk to the sensor.
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
 // They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] -> wait 2 ms -> read 2 x k bytes = k int16 values (little-endian) starting at that number
+//   If the number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
 // ============================================================
 
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -174,27 +147,44 @@ void mbcBegin() {
 #endif
 }
 
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// From the sensor at address addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting at number id
   if (Wire.endTransmission() != 0) return false;
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // Wait 2 ms before reading (ESP32-based products need this)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-bool mbcWaitReady(uint16_t timeoutMs) {
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), up to ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;

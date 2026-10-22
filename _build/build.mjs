@@ -21,6 +21,8 @@ const Prism = require('prismjs');
 require('prismjs/components/prism-python');
 require('prismjs/components/prism-c');
 require('prismjs/components/prism-cpp');
+require('prismjs/components/prism-typescript'); // micro:bit MakeCode 片段
+require('prismjs/components/prism-basic');      // clev3r 片段
 
 const BUILD = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(BUILD, '..');
@@ -37,7 +39,7 @@ const git = (args) => execSync(`git ${args}`, { cwd: ROOT, encoding: 'utf8' });
 const tracked = git('-c core.quotepath=off ls-files --cached --others --exclude-standard').split('\n').filter(Boolean);
 
 // ---------------------------------------------------------------- URL mapping
-const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol|makeblock|guide|privacy|wro-rules|competitions|faq|where-to-buy|distributors)\.md$/.test(f) || /^(en\/)?(sensors|articles)\//.test(f));
+const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol|makeblock|guide|privacy|wro-rules|competitions|faq|where-to-buy|distributors|reference|matrix|microbit|downloads)\.md$/.test(f) || /^(en\/)?(sensors|articles)\//.test(f));
 const pages = tracked.filter(isPage);
 
 function urlFor(mdPath) {
@@ -162,7 +164,14 @@ function imageSize(src) {
   let size = null;
   try {
     const b = fs.readFileSync(path.join(ROOT, decodeURI(src)));
-    if (b.toString('ascii', 1, 4) === 'PNG') size = [b.readUInt32BE(16), b.readUInt32BE(20)];
+    if (/\.svg$/i.test(src)) {
+      // SVG：先讀根元素的 width/height，沒有就用 viewBox 的寬高（產生器出的圖兩者都有）
+      const root = (b.toString('utf8').match(/<svg\b[^>]*>/) || [''])[0];
+      const wh = [root.match(/\swidth="(\d+(?:\.\d+)?)(?:px)?"/), root.match(/\sheight="(\d+(?:\.\d+)?)(?:px)?"/)];
+      const vb = root.match(/viewBox="\s*[-\d.]+[\s,]+[-\d.]+[\s,]+([\d.]+)[\s,]+([\d.]+)\s*"/);
+      if (wh[0] && wh[1]) size = [Math.round(+wh[0][1]), Math.round(+wh[1][1])];
+      else if (vb) size = [Math.round(+vb[1]), Math.round(+vb[2])];
+    } else if (b.toString('ascii', 1, 4) === 'PNG') size = [b.readUInt32BE(16), b.readUInt32BE(20)];
     else if (b.toString('ascii', 0, 3) === 'GIF') size = [b.readUInt16LE(6), b.readUInt16LE(8)];
     else if (b.toString('ascii', 0, 4) === 'RIFF' && b.toString('ascii', 8, 12) === 'WEBP') {
       const kind = b.toString('ascii', 12, 16);
@@ -356,6 +365,84 @@ function productHero(key, lang, file, name) {
     `</div>`;
 }
 
+// ------------------------------------------------- 六平台（D8：固定順序、固定顏色）
+const PLATFORMS = [
+  { id: 'spike', name: { zh: 'SPIKE', en: 'SPIKE' } },
+  { id: 'ev3', name: { zh: 'EV3', en: 'EV3' } },
+  { id: 'arduino', name: { zh: 'Arduino I2C', en: 'Arduino I2C' } },
+  { id: 'mblock', name: { zh: 'mBlock', en: 'mBlock' } },
+  { id: 'matrix', name: { zh: 'MATRIX', en: 'MATRIX' } },
+  { id: 'microbit', name: { zh: 'micro:bit', en: 'micro:bit' } },
+];
+const ROUTE_LABEL = {
+  zh: { start: '開始', ref: '指令參考', lib: '函式庫', none: '不支援', step1: '選產品', step2: '選主機', result: '選好產品和主機後，這裡會出現入口', table: '所有產品 × 主機對照表', title: '找到你的程式' },
+  en: { start: 'Start', ref: 'Reference', lib: 'Library', none: 'Not supported', step1: 'Pick a product', step2: 'Pick a host', result: 'Pick a product and a host to see the links', table: 'All products × hosts', title: 'Find your program' },
+};
+// products.json routes 裡的路徑（中文 .md）→ 該語言的靜態網址；英文頁不存在就退回中文頁；目標頁還沒有就回 null（不出斷鏈）
+let pageSet = new Set();
+function routeHref(p, lang) {
+  if (!p) return null;
+  if (/^https?:/.test(p)) return p;
+  const md = p.replace(/^\//, '');
+  if (lang === 'en' && pageSet.has('en/' + md)) return urlFor('en/' + md);
+  if (pageSet.has(md)) return urlFor(md);
+  return null;
+}
+// <!-- platform-grid -->（產品 index 頁）：六平台磁磚，每格 開始／指令參考／函式庫；沒有的平台灰掉
+function platformGrid(key, lang) {
+  const p = PRODUCT_DATA[key];
+  if (!p || !p.routes) return '';
+  const L = ROUTE_LABEL[lang];
+  const tiles = PLATFORMS.map((pl) => {
+    const r = p.routes[pl.id];
+    const links = r ? ['start', 'ref', 'lib'].map((k) => [k, routeHref(r[k], lang)]).filter(([, h]) => h) : [];
+    // 同一個網址只留一個按鈕（例如 ref 與 lib 都指 arduino-i2c）
+    const seen = new Set();
+    const uniq = links.filter(([, h]) => !seen.has(h) && seen.add(h));
+    if (!uniq.length) return `<div class="pg-tile pg-${pl.id} off"><b>${pl.name[lang]}</b><span>${L.none}</span></div>`;
+    return `<div class="pg-tile pg-${pl.id}"><b>${pl.name[lang]}</b>${uniq.map(([k, h]) => `<a href="${h}"${/^https?:/.test(h) ? ' target="_blank" rel="noopener"' : ''}>${L[k]}</a>`).join('')}</div>`;
+  });
+  return `<div class="platform-grid">${tiles.join('')}</div>`;
+}
+// <!-- finder -->（首頁）：兩步選擇器（產品磁磚列＋主機磁磚列）＋無 JS 時的對照表
+function finderHtml(lang) {
+  const L = ROUTE_LABEL[lang];
+  const prods = Object.entries(PRODUCT_DATA).filter(([, p]) => p.routes && p.name);
+  const data = {};
+  for (const [key, p] of prods) {
+    data[key] = { name: p.name[lang], index: urlFor(`${lang === 'en' ? 'en/' : ''}sensors/${key}/index.md`), hosts: {} };
+    for (const pl of PLATFORMS) {
+      const r = p.routes[pl.id];
+      const links = r ? Object.fromEntries(['start', 'ref', 'lib'].map((k) => [k, routeHref(r[k], lang)]).filter(([, h]) => h)) : {};
+      data[key].hosts[pl.id] = Object.keys(links).length ? links : null;
+    }
+  }
+  const prodTiles = prods.map(([key, p]) => `<button type="button" role="radio" aria-checked="false" data-key="${key}" style="--pc:${p.color}">${p.image ? `<img src="${p.image}" alt="" loading="lazy">` : '<span class="ft-noimg"></span>'}<span>${escAttr(p.name[lang])}</span></button>`).join('');
+  const hostTiles = PLATFORMS.map((pl) => `<button type="button" role="radio" aria-checked="false" data-host="${pl.id}" class="ft-${pl.id}"><span>${pl.name[lang]}</span></button>`).join('');
+  const rows = prods.map(([key, p]) => `<tr><td><a href="${data[key].index}">${escAttr(p.name[lang])}</a></td>${PLATFORMS.map((pl) => { const h = data[key].hosts[pl.id]; return `<td>${h ? `<a href="${h.start || h.ref}">${L.start}</a>` : '—'}</td>`; }).join('')}</tr>`).join('');
+  return `<div class="finder" id="finder">` +
+    `<div class="finder-pick">` +
+    `<p class="finder-step"><b>1</b>${L.step1}</p><div class="finder-tiles finder-prods" role="radiogroup" aria-label="${L.step1}">${prodTiles}</div>` +
+    `<p class="finder-step"><b>2</b>${L.step2}</p><div class="finder-tiles finder-hosts" role="radiogroup" aria-label="${L.step2}">${hostTiles}</div>` +
+    `<div class="finder-result" aria-live="polite"><p>${L.result}</p></div>` +
+    `</div>` +
+    `<details class="finder-table" open><summary>${L.table}</summary><table><thead><tr><th>${lang === 'en' ? 'Product' : '產品'}</th>${PLATFORMS.map((pl) => `<th>${pl.name[lang]}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></details>` +
+    `<script type="application/json" id="finder-data">${JSON.stringify({ labels: L, products: data }).replace(/</g, '\\u003c')}</script>` +
+    `</div>`;
+}
+
+// ------------------------------------------------- 右側目錄（h2／h3；≥1200px 固定在右，小螢幕變 <details>）
+function tocHtml(html, lang) {
+  const items = [];
+  for (const m of html.matchAll(/<h([23]) id="([^"]+)">(?:<a [^>]*><span>)?([\s\S]*?)(?:<\/span><\/a>)?<\/h\1>/g)) {
+    const text = stripEmoji(stripTags(m[3])).replace(/\s+/g, ' ').trim();
+    if (text) items.push({ level: +m[1], id: m[2], text });
+  }
+  if (items.length < 3) return '';
+  const li = items.map((it) => `<li class="toc-h${it.level}"><a href="#${encodeURI(it.id)}">${escAttr(it.text)}</a></li>`).join('');
+  return `<nav class="toc" aria-label="${UI[lang].toc}"><details open><summary>${UI[lang].toc}</summary><ol>${li}</ol></details></nav>`;
+}
+
 // Product pages: every <h2> section below the sales block becomes a collapsible <details> (first one open),
 // so the page stays short; the text is still in the HTML for search engines and find-in-page.
 function collapseSections(html, file) {
@@ -428,7 +515,7 @@ function topNav(lang, langHref, docs = false) {
     `${quoteLink(lang, 'tn-line', u.line)}</nav></header>`;
 }
 
-function page({ lang, url, title, description, ogImage, alternates, jsonLd, extraHead = '', sidebar, body, langHref, layout = 'docs', noindex = false }) {
+function page({ lang, url, title, description, ogImage, alternates, jsonLd, extraHead = '', sidebar, body, langHref, layout = 'docs', noindex = false, toc = '' }) {
   const htmlLang = lang === 'en' ? 'en' : 'zh-TW';
   const abs = SITE + url;
   const alt = alternates.map((a) => `<link rel="alternate" hreflang="${a.hreflang}" href="${SITE + a.url}">`).join('\n  ');
@@ -463,7 +550,7 @@ function page({ lang, url, title, description, ogImage, alternates, jsonLd, extr
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Orbitron:wght@500;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Noto+Sans+TC:wght@400;700&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@500;700&display=swap">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4.13.1/lib/themes/${layout === 'landing' ? 'dark' : 'vue'}.css">
   <link rel="stylesheet" href="/assets/site.css?v=${BUILD_ID}">
 </head>
@@ -479,9 +566,9 @@ ${topNav(lang, langHref, true)}
 <h1 class="app-name"><a class="app-name-link" href="${lang === 'en' ? '/en/' : '/'}">MBC-Pro-Sensors</a></h1>
 <div class="sidebar-nav">${sidebar}</div>
 </aside>
-<section class="content"><article class="markdown-section" id="main">
+<section class="content"><div class="doc-wrap${toc ? ' has-toc' : ''}"><article class="markdown-section" id="main">
 ${body}
-</article>${footerHtml(lang)}</section>
+</article>${toc}</div>${footerHtml(lang)}</section>
 </main>`}
 ${ctaDock(lang)}
 <script src="https://cdn.jsdelivr.net/npm/scratchblocks@3.6.4/build/scratchblocks.min.js" defer></script>
@@ -511,7 +598,7 @@ fs.cpSync(path.join(BUILD, 'assets'), path.join(OUT, 'assets'), { recursive: tru
 fs.writeFileSync(path.join(OUT, '.nojekyll'), '');
 
 // 2. render pages
-const pageSet = new Set(pages);
+pageSet = new Set(pages);
 const homeHead = JSON.parse(fs.readFileSync(path.join(BUILD, 'home.json'), 'utf8'));
 const searchIndex = { zh: [], en: [] };
 const sitemap = [];
@@ -567,12 +654,17 @@ for (const file of pages) {
   }
   if (isProductIndex) {
     html = html.replace('<!-- product-hero -->', productHero(product, lang, file, h1Text));
+    html = html.replace('<!-- platform-grid -->', platformGrid(product, lang));
     html = collapseSections(html, file);
     html += ctaHtml(lang);
   }
+  if (html.includes('<!-- finder -->')) html = html.replace('<!-- finder -->', finderHtml(lang));
   const layout = src.includes('<!-- layout: landing -->') ? 'landing' : 'docs';
-  // edition chooser pages (SPIKE / EV3 hub) are navigation only: keep them out of the index and the sitemap
-  const noindex = /(spike|ev3)-hub\.md$/.test(file);
+  // edition chooser pages (SPIKE / EV3 hub) are navigation only: keep them out of the index and the sitemap;
+  // micro:bit 範例頁在擴充上機驗證前也先不收錄
+  const noindex = /(spike|ev3)-hub\.md$/.test(file) || /microbit-examples\.md$/.test(file);
+  // 右側目錄：文件頁（非產品 index，產品 index 的 h2 已摺成 details）
+  const toc = layout === 'docs' && !isProductIndex ? tocHtml(html, lang) : '';
 
   const jsonLd = home ? home.jsonLd : {
     '@context': 'https://schema.org',
@@ -602,7 +694,7 @@ for (const file of pages) {
   const out = page({
     lang, url, title, description, ogImage: ogImageFor(product), alternates, jsonLd,
     extraHead: home && home.keywords ? `<meta name="keywords" content="${escAttr(home.keywords)}">` : '',
-    sidebar: renderSidebar(lang, url), body: html, langHref, layout, noindex,
+    sidebar: renderSidebar(lang, url), body: html, langHref, layout, noindex, toc,
   });
   const outFile = path.join(OUT, url.endsWith('/') ? url + 'index.html' : url);
   fs.mkdirSync(path.dirname(outFile), { recursive: true });

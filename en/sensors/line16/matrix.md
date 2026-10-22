@@ -1,0 +1,95 @@
+<!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
+<!-- 本頁由 _build/gen-reference.mjs 從 _build/protocol/line16.json 產生（matrix），請勿手改；改內容請改 JSON 後重跑 node _build/gen-reference.mjs -->
+# Line Follower 16-ch × MATRIX Mini R4
+
+[🔙 Back to Line Follower 16-ch](/en/sensors/line16/index.md)
+
+The MATRIX edition of the Line Follower 16-ch plugs into a Mini R4 I2C port at address `0x22` and can be read two ways: **A. stock colour-sensor blocks** (no library change, R~K = seven 0~255 numbers) or **B. the LauMo big channel** (swap in the big-channel library, one 30-byte packet with everything). They need different library files and cannot be mixed.
+
+<p class="chips"><a class="chip chip-spike" href="/en/sensors/line16/spike-hub.md">SPIKE</a><a class="chip chip-ev3" href="/en/sensors/line16/ev3-hub.md">EV3</a><a class="chip chip-arduino" href="/en/sensors/line16/arduino-i2c.md">Arduino I2C</a><a class="chip chip-mblock" href="/en/sensors/line16/mblock.md">mBlock</a><a class="chip chip-matrix current" href="/en/sensors/line16/matrix.md">MATRIX</a><a class="chip chip-microbit" href="/en/sensors/line16/microbit.md">micro:bit</a></p>
+
+## Wiring
+
+<figure class="ref-fig"><img src="/images/figures/line16/wiring-matrix.svg" alt="Line Follower 16-ch × MATRIX Mini R4" loading="lazy"></figure>
+
+Use the stock MATRIX 4-pin sensor cable on I2C1 or I2C2 and pick that port in the block.
+
+## A. Stock blocks (0x22)
+
+The "colour sensor → R / G / B / C / M / Y / K" blocks each return one 0~255 number. ⚠️ Do not use the stock H / S / V or colour-ID blocks (the host computes them from R, G, B; meaningless here); the grayscale and colour-number blocks were removed by MATRIX.
+
+| Block | Content | Decode |
+| :--- | :--- | :--- |
+| R | [line position](/en/sensors/line16/reference.md#v01) + 16 | subtract 16 |
+| B | [fine position](/en/sensors/line16/reference.md#v02) + 100 | subtract 100 |
+| G | [line width](/en/sensors/line16/reference.md#v03) |  |
+| C | [channel 1~16 reflect](/en/sensors/line16/reference.md#v10)  1~2  | C~K 四路一組，每路 2 bit（convert3：0~24→0、25~49→1、50~74→2、75~100→3）：第 1 路在 bit7-6 … 第 4 路在 bit1-0；C = 第 1~4 路、M = 5~8、Y = 9~12、K = 13~16 |
+| M | [channel 1~16 reflect](/en/sensors/line16/reference.md#v10)  3~4  | C~K 四路一組，每路 2 bit（convert3：0~24→0、25~49→1、50~74→2、75~100→3）：第 1 路在 bit7-6 … 第 4 路在 bit1-0；C = 第 1~4 路、M = 5~8、Y = 9~12、K = 13~16 |
+| Y | [channel 1~16 reflect](/en/sensors/line16/reference.md#v10)  5~6  | C~K 四路一組，每路 2 bit（convert3：0~24→0、25~49→1、50~74→2、75~100→3）：第 1 路在 bit7-6 … 第 4 路在 bit1-0；C = 第 1~4 路、M = 5~8、Y = 9~12、K = 13~16 |
+| K | [channel 1~16 reflect](/en/sensors/line16/reference.md#v10)  7~8  | C~K 四路一組，每路 2 bit（convert3：0~24→0、25~49→1、50~74→2、75~100→3）：第 1 路在 bit7-6 … 第 4 路在 bit1-0；C = 第 1~4 路、M = 5~8、Y = 9~12、K = 13~16 |
+
+```cpp
+// MATRIXblock → Arduino：stock library
+int r = MiniR4.I2C1.MXColor.getColor(R);   // line position + 16
+```
+
+## B. Big channel (LauMo library)
+
+After swapping in the `MiniR4ColorSensorExt` big-channel library ([download](/en/downloads.md)) the same blocks become pointer reads: ColorID resets the pointer and returns the status byte, Blue reads 1 byte, Green 1 signed byte, Saturation 2 bytes, Hue 2 signed bytes, Value a 4-byte float, Red advances the pointer by the size of the last read.
+
+<figure class="ref-fig"><img src="/images/figures/common/packet-big30.svg" alt="LauMo 30-byte packet" loading="lazy"></figure>
+
+| byte | Block | Content | Note |
+| :--- | :--- | :--- | :--- |
+| 0 | Blue | [line position](/en/sensors/line16/reference.md#v01) + 16 | subtract 16 |
+| 2 | Blue | [fine position](/en/sensors/line16/reference.md#v02) + 100 | subtract 100 |
+| 1 | Blue | [line width](/en/sensors/line16/reference.md#v03) |  |
+| 21 | Blue | [line segments](/en/sensors/line16/reference.md#v04) | #67 追加（MATRIX 定案 §4：[21] 線段數） |
+| 19~20 | Saturation | [line bitmap](/en/sensors/line16/reference.md#v05) | #67 追加（MATRIX 定案 §4：[19..20] 小端） |
+| 3~18 | Blue | [channel 1~16 reflect](/en/sensors/line16/reference.md#v10)（1 byte each） |  |
+| 24~28 | ColorID / C / M / Y / K | stay 0 (shipped layout locked) |  |
+| 29 | — | CRC-8 | poly 0x07 over bytes 0~28; checked by the library |
+
+**Actions**：Cyan = calibrate black, Magenta = calibrate white
+
+### Arduino code (MATRIXblock Arduino mode)
+
+```cpp
+// big channel: read byte n (uint8) / 2 bytes from n (uint16 little-endian)
+uint8_t bigU8(uint8_t n) {
+  MiniR4.I2C1.MXColor.getColorID();                 // pointer back to byte 0
+  uint8_t v = MiniR4.I2C1.MXColor.getColor(B);      // read byte 0
+  for (uint8_t i = 0; i < n; i++) { MiniR4.I2C1.MXColor.getColor(R); v = MiniR4.I2C1.MXColor.getColor(B); }   // Red = advance 1
+  return v;
+}
+uint16_t bigU16(uint8_t n) {
+  MiniR4.I2C1.MXColor.getColorID();
+  MiniR4.I2C1.MXColor.getColor(B);
+  for (uint8_t i = 0; i < n; i++) MiniR4.I2C1.MXColor.getColor(R);
+  return (uint16_t)MiniR4.I2C1.MXColor.getS();      // Saturation = read 2 bytes
+}
+int16_t bigI16(uint8_t n) {
+  MiniR4.I2C1.MXColor.getColorID();
+  MiniR4.I2C1.MXColor.getColor(B);
+  for (uint8_t i = 0; i < n; i++) MiniR4.I2C1.MXColor.getColor(R);
+  return (int16_t)MiniR4.I2C1.MXColor.getH();       // Hue = read signed 2 bytes
+}
+```
+
+```cpp
+int linePos = bigU8(0) - 16;   // line position
+```
+
+## Sources and assumptions
+
+Generated by `_build/gen-reference.mjs` from `_build/protocol/line16.json` (single source of truth, transcribed from the 2026-10-21 protocol decisions).
+
+- B-11：細位置 02 與線位置 01 同號（負 = 左）；韌體 F16:1290 註解寫反，程式碼同號（IR:11 為準）。
+- B-12：E7 五秒動態校準補回（v1 的 0x20=0x01），定案表沒列。
+- MATRIX 大通道已流出：[0..18] 與尾段 24~28 鎖住維持 0（common.json lockedTail0），所以 F3、F1/F2 次數、ID、hw[0]、08 校準次數都不進大通道；只追加 [19..20] 位元圖 u16 小端、[21] 線段數（MATRIX 定案 §4）。0x22 命令 4~12 全部不動（11 = 0、12 = ((位置+16)>>1)×10 + (線寬>>1)，schema 不收 11/12 所以沒寫進 ch22）。
+- EV3：模式 0~2 鎖住；模式 3 原本不送 → 16 bit 位元圖；模式 4 原本不送 → 同模式 2；模式 5 ID 格式 B（共用函式）。
+- SPIKE：0/5/7/9 鎖住，1~4、6 維持不動；教育版模式 0 的 16 路光值是 2-bit（玩具版 1-bit），跟 8 路的 4-bit 不同；byte 8~15 補 0（#65 已改，使用者保留）；模式 9 排法照盤點（四路 4-bit 一個 int16，v6 = 位元圖）；模式 8 v[0] 改 ID|hw[0]<<8。
+- 線段數 04 範圍：定案沒寫，16 路最多 8 段（交錯壓線），採 0~8。
+- mBlock 舊版：MBC_MBLOCK_LEGACY=1 時逐 byte 同 2026-10-21 統一後韌體（0x01 位置、0x02 線寬、n<<4|03 反向兩路壓一 byte、0x07 細位置 0~200），0x0B 回 1（B-1）。
+- Flash：C031 硬體鎖 28 KB，I2C 版餘 848 B；不夠時照 B-17 順序瘦身，JSON 不受影響。
+- Library rules (command 1 returns 0x43, CRC-8, 5 ms minimum interval) follow the LauMo big-channel library source.

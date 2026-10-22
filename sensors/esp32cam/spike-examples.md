@@ -17,6 +17,9 @@
 > - 樂高官方 App 這裡用的是**教育版（SPIKE 3）**。家用版（Robot Inventor）的「顏色」只有 **0～10**（是教育版的十分之一），範例 2 的數字要自己改。
 > - 本頁的數字是**目前出貨的韌體**（色相 0～100）。怎麼確認：開機後看感應器螢幕上方 `X` 的數字，**最大只到 98 左右**就是新版；如果會跑到 100 以上（最多 159），是舊版韌體，請先聯絡我們更新。
 
+> [!NOTE]
+> 最後的**範例 6** 是進階加碼，**只有 Pybricks 版**：它用的數值放在感應器 2026-10 以後韌體的新模式裡，樂高官方 App 和 MBC 積木網站的積木讀不到。
+
 ## 開始之前：在感應器上設定要看的顏色
 
 神攝手要先「告訴它」要看哪個顏色，**只能用感應器機身上的按鍵設定**（程式不能改）。設定會記在感應器裡，重新開機也還在。
@@ -445,6 +448,77 @@ while True:
 - **沒人動也一直響？** → 「20」太小了。先用 Pybricks 印出 `cam.motion()` 或看感應器螢幕上的 `M` 數字，看平常靜止時是多少，再把門檻設比它大一些。教室燈光閃爍、窗外有樹在動都會讓數字變大。
 - **揮手都沒反應？** → 門檻太大，改小一點（例如 10），或手離鏡頭近一點。
 - **可以裝在會跑的車上嗎？** → 不行。車子自己在動，整個畫面一直變，動態值會一直很大。動態值**只有機器人停住時**才準。
+
+---
+
+## 範例 6（進階）：色塊面積：靠近就停
+
+> [!NOTE]
+> **這個範例只有 Pybricks 版。** 它用的「色塊面積」是感應器 2026-10 以後韌體才有的數字（模式 9 多出來的兩個位元組），樂高官方 App 的積木和 MBC 積木網站目前的積木讀不到。 程式碼就是範例，不需要截圖。
+
+**這個範例會做什麼**：機器人往你設定的顏色色塊開過去，色塊在畫面裡**越近越大**；面積到 **1500** 以上就停車、亮綠燈。沒看到色塊停車、紅燈；還在開的時候黃燈，色塊偏左偏右會順便修正方向。
+
+**要準備什麼**：同範例 4（小車＋一個有顏色的積木或盒子）。
+
+**怎麼接**：神攝手插 **C 孔**、裝在車頭；**左輪接 E、右輪接 F**。先照「開始之前」在感應器上設定 2:TRACK 的顏色。
+
+**下載程式**
+
+| Pybricks |
+|---|
+| [ex06_area_stop.py](/examples/esp32cam/spike_beginner/pybricks/ex06_area_stop.py)＋[函式庫](/examples/esp32cam/spike_beginner/pybricks/MBC_cam_school_Lib.py) |
+
+<details>
+<summary>🐍 Pybricks 程式碼</summary>
+
+```python
+# 神攝手（學校版）範例 6（進階）：色塊面積：往色塊開過去，色塊在畫面裡變得夠大（夠近）就停
+# 接線：神攝手 → C 埠（裝在車頭）；左輪馬達 → E 埠；右輪馬達 → F 埠。先在感應器上設定 2:TRACK 的顏色
+# 只有 Pybricks 版：面積是感應器韌體 2026-10 以後才有的數字，官方 App 和積木網站的積木讀不到
+from pybricks.hubs import PrimeHub
+from pybricks.parameters import Color, Direction, Port
+from pybricks.tools import wait
+from MBC_cam_school_Lib import MBC_CAM_SCHOOL
+from pybricks.pupdevices import Motor
+from pybricks.robotics import DriveBase
+
+hub = PrimeHub()
+cam = MBC_CAM_SCHOOL(Port.C)
+left = Motor(Port.E, Direction.COUNTERCLOCKWISE)
+right = Motor(Port.F)
+robot = DriveBase(left, right, wheel_diameter=56, axle_track=112)
+
+while True:
+    area = cam.area()                 # 色塊面積 = 寬 × 高（0~7500）；沒找到是 0。越近越大
+    x = cam.blob_x()                  # 色塊左右位置 0~98，50 = 中間
+    if area == 0:                     # 沒看到色塊 → 停
+        robot.stop()
+        hub.light.on(Color.RED)
+    elif area >= 1500:                # 夠大了 = 夠近了 → 停、綠燈
+        robot.stop()
+        hub.light.on(Color.GREEN)
+    else:                             # 還小 = 還遠 → 往色塊開過去，偏左偏右順便修正
+        robot.drive(80, (x - 50) * 2)
+        hub.light.on(Color.YELLOW)
+    print('面積', area, ' X', x)
+    wait(50)
+```
+
+</details>
+
+**一步一步看懂程式**
+1. `cam.area()`：色塊面積＝寬 × 高（0～7500），沒找到是 0。它跟範例 3、4 的 X、Y 一樣讀模式 9，不用換模式。
+2. **如果 面積 = 0** → 沒看到 → 停、紅燈。
+3. **否則，如果 面積 ≥ 1500** → 夠近了 → 停、綠燈。
+4. **都不是** → 往前開（每秒 80 mm），轉向＝（X − 50）× 2，色塊偏哪邊就往哪邊修（跟範例 4 一樣的想法）。
+5. 函式庫還有 `cam.blob_xya()`（一次拿 [X, Y, 面積]，讀模式 6）和 `cam.device_id()`、`cam.firmware_version()`。
+
+**跑起來應該看到什麼**：把紅色積木放在 50 公分外：黃燈、小車往積木開；越近面積越大，大概在 15 公分左右停下來、綠燈。把積木拿走：紅燈。
+
+**常見問題**
+- **還很遠就停了／撞上才停？** → 「1500」要依你的積木大小調：先用 Pybricks 印出 `cam.area()`，看想停的距離面積是多少，填那個數字。
+- **面積一直是 0 但範例 3 看得到 X？** → 感應器韌體太舊（2026-10 以前）沒有面積，請更新韌體；舊韌體可以暫時用「寬 × 高」自己算：`cam.blob_w() * cam.blob_h()`。
+- **左右修正反了？** → 馬達裝反了，照範例 4 常見問題的做法對調。
 
 ---
 

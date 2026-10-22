@@ -1,0 +1,177 @@
+{
+  "generatedBy": "_build/pack-downloads.mjs",
+  "items": [
+    {
+      "out": "/downloads/MBC_EXP6_Pybricks_Lib_v2.zip",
+      "label": {
+        "zh": "SPIKE 6 路擴充器 EXP6：Pybricks 函式庫 v2＋範例",
+        "en": "EXP6 expander: Pybricks library v2 + examples"
+      },
+      "version": "2.0",
+      "firmware": "EXP6 v2",
+      "legacy": false,
+      "files": [
+        "EXP6_Pybricks_Manual.pdf",
+        "Exp6_objMode_Demo.py",
+        "MBC_exp6_obj_Lib_v2.py",
+        "examples/01_Motor_Basic.py",
+        "examples/02_Motor_Run_Degrees.py",
+        "examples/03_Motor_Track_Target.py",
+        "examples/04_Motor_Inverted.py",
+        "examples/05_Drive_Base.py",
+        "examples/06_Stop_Continue_NoOp.py",
+        "examples/07_Sensor_Distance_Force.py",
+        "examples/08_Sensor_Color.py",
+        "examples/09_System_Misc.py",
+        "examples/10_Multitask_KeepAlive.py",
+        "examples/11_MBC_Sensors_v2.py"
+      ],
+      "size": 1589451
+    },
+    {
+      "out": "/downloads/MBC_EXP6_Official_App_Lib_v2.zip",
+      "label": {
+        "zh": "SPIKE 6 路擴充器 EXP6：官方 SPIKE App 函式庫 v2＋範例",
+        "en": "EXP6 expander: official SPIKE App library v2 + examples"
+      },
+      "version": "2.0",
+      "firmware": "EXP6 v2",
+      "legacy": false,
+      "files": [
+        "MBC_exp6_SPIKE_App_Lib.py",
+        "Robot_Inventor/ENGINEERING_NOTE_MINDSTORMS_ImportError.md",
+        "Robot_Inventor/Install_MBC_exp6_Lib.py",
+        "Robot_Inventor/Install_MBC_exp6_Lib_v2.py",
+        "Robot_Inventor/MBC_exp6_SPIKE_App_Lib.py",
+        "Robot_Inventor/MBC_exp6_SPIKE_App_Lib_v2.py",
+        "Robot_Inventor/Uninstall_MBC_exp6_Lib_v2.py",
+        "SPIKE_Education/EXP6_SPIKE_App_Manual.pdf",
+        "SPIKE_Education/Install_MBC_exp6_Lib.py",
+        "SPIKE_Education/Install_MBC_exp6_Lib_v2.py",
+        "SPIKE_Education/MBC_exp6_SPIKE_App_Lib.py",
+        "SPIKE_Education/MBC_exp6_SPIKE_App_Lib_v2.py",
+        "SPIKE_Education/README.md",
+        "SPIKE_Education/Uninstall_MBC_exp6_Lib.py",
+        "SPIKE_Education/Uninstall_MBC_exp6_Lib_v2.py",
+        "examples/01_Motor_Basic.py",
+        "examples/02_Motor_Advanced.py",
+        "examples/03_Drive_Base.py",
+        "examples/04_Sensor_Distance_Force.py",
+        "examples/05_Sensor_Color_Pro.py",
+        "examples/06_System_Misc.py",
+        "examples/07_Motor_Inverted.py",
+        "examples/08_Stop_Modes.py",
+        "examples/09_MBC_Sensors_v2.py"
+      ],
+      "size": 1250472
+    },
+    {
+      "out": "/downloads/MBC_EXP6_Pybricks_Lib.zip",
+      "label": {
+        "zh": "EXP6 Pybricks 函式庫（舊版，v1 韌體）",
+        "en": "EXP6 Pybricks library (legacy, v1 firmware)"
+      },
+      "version": "1.x",
+      "firmware": "EXP6 v1",
+      "legacy": true,
+      "files": null,
+      "size": 1593848
+    },
+    {
+      "out": "/downloads/MBC_EXP6_Official_App_Lib.zip",
+      "label": {
+        "zh": "EXP6 官方 SPIKE App 函式庫（舊版，v1 韌體）",
+        "en": "EXP6 official SPIKE App library (legacy, v1 firmware)"
+      },
+      "version": "1.x",
+      "firmware": "EXP6 v1",
+      "legacy": true,
+      "files": null,
+      "size": 1187008
+    },
+    {
+      "out": "/downloads/MBC_Servo6_Pybricks_Lib.zip",
+      "label": {
+        "zh": "SPIKE 6 路舵機擴充器 Servo6：Pybricks 函式庫",
+        "en": "Servo6 expander: Pybricks library"
+      },
+      "version": "1.0",
+      "firmware": "Servo6",
+      "legacy": true,
+      "files": null,
+      "size": 8921
+    },
+    {
+      "out": "/downloads/MBC_Servo6_Official_App_Lib.zip",
+      "label": {
+        "zh": "SPIKE 6 路舵機擴充器 Servo6：官方 SPIKE App 函式庫",
+        "en": "Servo6 expander: official SPIKE App library"
+      },
+      "version": "1.0",
+      "firmware": "Servo6",
+      "legacy": true,
+      "files": null,
+      "size": 5424
+    },
+    {
+      "out": "/examples/line8/line8_pybricks_spike_v4.0.0.zip",
+      "label": {
+        "zh": "循行者 8 路：SPIKE Pybricks 函式庫與範例（韌體 4.0.0）",
+        "en": "Line Follower 8-ch: SPIKE Pybricks library + examples (firmware 4.0.0)"
+      },
+      "version": "4.0.0",
+      "firmware": "Pybricks 4.0.0",
+      "legacy": false,
+      "files": [
+        "MBC_line8_obj_Lib_v400.py",
+        "line8_block_native_v400.py",
+        "line8_block_with_lib_v400.py",
+        "line8_python_native_v400.py",
+        "line8_python_with_lib_v400.py"
+      ],
+      "size": 14511
+    },
+    {
+      "out": "/downloads/MBC_TOF8_Pybricks_Lib.zip",
+      "label": {
+        "zh": "測距者 8 路 TOF8：SPIKE Pybricks 函式庫",
+        "en": "Ranger 8-ch TOF8: SPIKE Pybricks library"
+      },
+      "version": "1.0",
+      "firmware": "Pybricks",
+      "legacy": false,
+      "files": [
+        "MBC_laser8_Lib.py",
+        "MBC_laser8_obj_Lib.py"
+      ],
+      "size": 8758
+    },
+    {
+      "out": "/downloads/MiniR4ColorSensorExt_LauMo_v2.zip",
+      "label": {
+        "zh": "MATRIX Mini R4：LauMo 大通道函式庫（取代原廠 MiniR4ColorSensorExt 兩個檔）",
+        "en": "MATRIX Mini R4: LauMo big-channel library (replaces the stock MiniR4ColorSensorExt files)"
+      },
+      "version": "2.0",
+      "firmware": "MATRIX 大通道",
+      "legacy": false,
+      "files": [
+        "MiniR4ColorSensorExt.cpp",
+        "MiniR4ColorSensorExt.h"
+      ],
+      "size": 4198
+    },
+    {
+      "out": "/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext",
+      "label": {
+        "zh": "mBlock 5 擴展 v1.0.0（舊版，搭配 2026-10 以前的韌體）",
+        "en": "mBlock 5 extension v1.0.0 (legacy, firmware before 2026-10)"
+      },
+      "version": "1.0.0",
+      "firmware": "mBlock v1（2026-10 前）",
+      "legacy": true,
+      "files": null,
+      "size": 1994688
+    }
+  ]
+}

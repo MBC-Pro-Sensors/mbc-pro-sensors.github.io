@@ -1,44 +1,49 @@
 /*
- * Controller PS4/PS5 x Arduino  Example 6 (advanced): Tank-style remote-control car
+ * Controller PS4/PS5 x Arduino   Example 6: Tank-style remote-control car (advanced)
  * ------------------------------------------------------------
  * What does this example do?
- *   Drive a two-wheel car with the gamepad, the same way you drive a tank:
- *     left stick up/down  -> controls the left wheel (push up = forward, push down = backward)
- *     right stick up/down -> controls the right wheel
- *     push both up = go straight; one up and one down = turn on the spot.
- *   When both sticks are let go, you can also drive with the D-pad (↑ forward, ↓ backward, ← → turn on the spot).
- *   If the receiver cannot be read, or the gamepad disconnects, the car stops at once.
+ *   Drives a two-wheel car with the gamepad, the same way a tank is driven:
+ *     left stick up/down (LY) -> left wheel; right stick up/down (RY) -> right wheel
+ *     both sticks up = go straight; one up and one down = turn on the spot.
+ *   The stick value -100 ~ +100 is used directly as the motor speed (times the top speed).
+ *   If the gamepad disconnects, or the receiver cannot be read, the car stops at once.
  *
- * You need:
- *   Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad (already paired),
- *   a two-wheel car, an L298N motor driver board (or a TB6612 or similar board wired the same way), batteries.
+ * You need: Controller PS4/PS5 receiver (Universal I2C edition) + a PS4 or PS5 gamepad (already paired), Arduino UNO / Nano / UNO R4 or ESP32. Also: a two-wheel car, an L298N motor driver board (or a TB6612 wired the same way), batteries.
  *
- * Wiring (Arduino UNO / Nano):
- *   Receiver VCC -> 5V              Receiver GND -> GND
- *   Receiver RX (= SDA) -> A4       Receiver TX (= SCL) -> A5
+ * Wiring:
+ *   Receiver VCC -> 5V      Receiver GND -> GND
+ *   Receiver RX (= SDA) -> A4      Receiver TX (= SCL) -> A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
+ *   (On the I2C edition, the pin marked TX is SCL and RX is SDA)
  *   L298N ENA -> 5     IN1 -> 7     IN2 -> 8      (left wheel)
  *   L298N ENB -> 6     IN3 -> 9     IN4 -> 10     (right wheel)
  *   The L298N GND must be connected to the Arduino GND!
  *   (ESP32 uses different pins, see "Motor pins" below)
  *
- * Before the first run:
- *   1. Lift the car up (wheels off the ground) before uploading. Push both sticks up and check that both wheels turn "forward".
- *      If a wheel turns the wrong way, change LEFT_REVERSE or RIGHT_REVERSE below to true.
- *   2. ⚠️ Safety test: with the car still lifted, hold the PS button on the gamepad for 10 seconds to switch it off.
- *      Check that the wheels stop. Then put the car on the floor and drive.
- *   3. If the receiver gets no gamepad data for 0.3 seconds, it sets all buttons and sticks to zero, so the car stops.
- *   4. To avoid wrong readings, the program asks "is the gamepad still connected?" only every 0.4 seconds,
- *      and reads only the gamepad data the rest of the time.
- *      Impossible data like "up and down together" or "left and right together" is thrown away, and the last good data is used.
+ * Before you start:
+ *   1. Lift the car up (wheels in the air) and upload. Push both sticks up and check that both wheels turn "forward".
+ *      If a wheel turns the wrong way, change LEFT_REVERSE or RIGHT_REVERSE to true.
+ *   2. ⚠️ While the car is still lifted, turn the gamepad off and check that the wheels stop. Only then put it on the floor.
+ *
+ * How to see the result:
+ *   The Serial Monitor (115200) prints the left and right wheel speed every 0.3 s.
+ *
+ * Tip:
+ *   The first time, you must pair: within 30 s after the receiver powers on (or after you press Reset),
+ *   hold SHARE + PS on a PS4 gamepad, or Create + PS on a PS5 gamepad, until the light bar blinks fast.
  */
 
 #include <Wire.h>
 
-const uint8_t SENSOR_ADDR = 0x42;        // The Controller receiver's address
+const uint8_t ADDR = 0x42;               // The receiver's "house number" (I2C address). PS2 and PS4 are both 0x42
+const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
+
+// Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
 
 // ---- Motor pins ----
 #if defined(ESP32)
-// ESP32 pins 6 ~ 11 are connected to the memory chip on the board and cannot be used, so we use these pins
+// ESP32 pins 6 ~ 11 are connected to the on-board memory chip and cannot be used, so we use these instead
 const int ENA = 25, IN1 = 26, IN2 = 27;  // Left wheel
 const int ENB = 14, IN3 = 32, IN4 = 33;  // Right wheel
 #else
@@ -46,19 +51,13 @@ const int ENA = 5, IN1 = 7, IN2 = 8;     // Left wheel
 const int ENB = 6, IN3 = 9, IN4 = 10;    // Right wheel
 #endif
 
-// ---- 👉 You can change these settings ----
-const int  MAX_SPEED  = 200;             // Speed with the stick pushed all the way: 0 ~ 255. Beginners: start slower
-const int  DPAD_SPEED = 150;             // Speed when driving with the D-pad
-const bool LEFT_REVERSE  = false;        // Left wheel turns the wrong way? Change to true
-const bool RIGHT_REVERSE = false;        // Right wheel turns the wrong way? Change to true
+// ---- 👉 You can change these ----
+const int  MAX_SPEED     = 200;          // Speed when the stick is pushed all the way: 0 ~ 255, start slow
+const bool LEFT_REVERSE  = false;        // Change to true if the left wheel turns the wrong way
+const bool RIGHT_REVERSE = false;        // Change to true if the right wheel turns the wrong way
 
-// Where the D-pad buttons are in the 16-bit button number (which bit)
-const uint8_t BTN_UP = 4, BTN_RIGHT = 5, BTN_DOWN = 6, BTN_LEFT = 7;
-
-bool stopped = false;                    // Is the car stopped now because of a lost connection?
-bool connected = false;                  // Is the gamepad connected? (updated every 0.4 seconds)
-unsigned long lastStatus = 0;            // The last time we checked "is the gamepad connected?"
-unsigned long lastPrint = 0;             // The last time we printed the speed
+bool stopped = true;                     // Are we stopped right now? (we start out stopped)
+unsigned long lastPrint = 0;
 
 void setup() {
   Serial.begin(115200);
@@ -68,31 +67,21 @@ void setup() {
 
   mbcBegin();
   delay(500);
-  if (!mbcWaitReady(5000)) {
-    Serial.println(F("Receiver not found. Run example 1 first to check the wiring."));
-    while (true) {}                      // The car stays stopped
+  if (!mbcWaitReady(ADDR, 5000)) {
+    Serial.println(F("Receiver not found. Run Example 1 first to check the wiring."));
+    while (true) {}
   }
   Serial.println(F("Ready! Drive with the two sticks."));
 }
 
 void loop() {
-  // ---- 1. Every 0.4 seconds, check if the gamepad is connected (box 0x31: status data) ----
-  //   Don't read it every loop: switching between two boxes all the time makes it easier for the receiver
-  //   to mix up the data, and the car could move by itself. To drive, just keep reading box 0x11.
-  if (millis() - lastStatus >= 400) {
-    lastStatus = millis();
-    uint8_t st[9];
-    connected = mbcRead(0x31, st, 9) && (st[0] & 0x02);   // Bit 1 of number 0: 1 = gamepad connected
-  }
-  if (!connected) {
+  // Read numbers 06 ~ 13 (14 values) in one go (data from the same instant):
+  //   v[0] = 06 connected ... v[10] = 10 LX, v[11] = 11 LY, v[12] = 12 RX, v[13] = 13 RY
+  //   (0C~0F in the middle are empty slots and read as -32768; just ignore them)
+  int16_t v[14];
+  if (!mbcReadMany(ADDR, 0x06, 14, v) || v[0] == 0) {
     safeStop();                          // Cannot read the receiver, or the gamepad is not connected -> stop at once
-    return;
-  }
-
-  // ---- 2. Read the gamepad (box 0x11). readPad is at the bottom of the file and also checks for wrong readings ----
-  uint8_t d[9];
-  if (!readPad(d)) {
-    safeStop();                          // Cannot read -> stop
+    delay(50);
     return;
   }
   if (stopped) {
@@ -100,43 +89,29 @@ void loop() {
     Serial.println(F("Gamepad connected, you can drive!"));
   }
 
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];   // The 16-bit button state
-  int ly = (int8_t)d[3];                 // Left stick up/down: up = positive (-127 ~ +127)
-  int ry = (int8_t)d[5];                 // Right stick up/down: up = positive
+  int ly = v[11];                        // Left stick up/down: up = positive (-100 ~ +100)
+  int ry = v[13];                        // Right stick up/down: up = positive
 
-  // The more you push the stick, the faster the wheel turns: -127 ~ +127 becomes -MAX_SPEED ~ +MAX_SPEED
-  int left  = (long)ly * MAX_SPEED / 127;
-  int right = (long)ry * MAX_SPEED / 127;
-
-  // When both sticks are let go, look at the D-pad instead
-  if (ly == 0 && ry == 0) {
-    if      (buttons & (1u << BTN_UP))    { left =  DPAD_SPEED; right =  DPAD_SPEED; }  // Forward
-    else if (buttons & (1u << BTN_DOWN))  { left = -DPAD_SPEED; right = -DPAD_SPEED; }  // Backward
-    else if (buttons & (1u << BTN_LEFT))  { left = -DPAD_SPEED; right =  DPAD_SPEED; }  // Turn left on the spot
-    else if (buttons & (1u << BTN_RIGHT)) { left =  DPAD_SPEED; right = -DPAD_SPEED; }  // Turn right on the spot
-  }
-
+  // The further the stick is pushed, the faster the wheel turns: -100 ~ +100 becomes -MAX_SPEED ~ +MAX_SPEED
+  int left  = (long)ly * MAX_SPEED / 100;
+  int right = (long)ry * MAX_SPEED / 100;
   drive(left, right);
 
-  if (millis() - lastPrint >= 300) {     // Print the speed every 0.3 seconds
+  if (millis() - lastPrint >= 300) {     // Print the speeds every 0.3 s
     lastPrint = millis();
-    Serial.print(F("Left wheel "));
-    Serial.print(left);
-    Serial.print(F("  Right wheel "));
-    Serial.println(right);
+    Serial.print(F("Left ")); Serial.print(left);
+    Serial.print(F("   Right ")); Serial.println(right);
   }
-
-  delay(20);
+  delay(50);
 }
 
-// Stop the car, and say so only once, at the moment it stops
+// Stop the car, and say so only once, right when it stops
 void safeStop() {
   drive(0, 0);
   if (!stopped) {
     stopped = true;
-    Serial.println(F("Cannot read the gamepad -> STOP!"));
+    Serial.println(F("Cannot read the gamepad -> stop!"));
   }
-  delay(50);
 }
 
 // Control the two wheels: speed -255 (full speed backward) ~ 255 (full speed forward)
@@ -148,46 +123,21 @@ void drive(int left, int right) {
 }
 
 void setMotor(int en, int inA, int inB, int speed) {
-  speed = constrain(speed, -255, 255);   // Keep the speed inside the range
+  speed = constrain(speed, -255, 255);   // Keep the speed inside the allowed range
   digitalWrite(inA, speed >= 0 ? HIGH : LOW);
   digitalWrite(inB, speed >= 0 ? LOW : HIGH);
   analogWrite(en, abs(speed));
 }
 
 // ============================================================
-// Read the gamepad data and do a "sanity check" (the same in every example, no need to change it)
-// ============================================================
-// Why a sanity check?
-//   When the receiver is very busy (for example, talking wirelessly to the gamepad), once in a while
-//   it is not ready in time and gives the Arduino "the box it read last time" instead
-//   (for example the status data in box 0x31).
-//   Then the button and stick numbers are wrong, and a remote-control car could start moving by itself.
-// How can we tell?
-//   On the D-pad you cannot press "up" and "down" at the same time,
-//   and you cannot press "left" and "right" at the same time.
-//   If we read that, this reading is wrong: throw it away and keep using the last good one.
-
-uint8_t lastGood[9] = {0};               // The last good gamepad data (all 0 at the start = nothing pressed)
-
-// Read box 0x11 (gamepad data, 9 numbers) into d. Returns false if the receiver cannot be read
-bool readPad(uint8_t *d) {
-  if (!mbcRead(0x11, d, 9)) return false;
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];                     // The 16-bit button state
-  bool upDown    = (buttons & (1u << 4)) && (buttons & (1u << 6));   // Up (bit 4) and down (bit 6) pressed together?
-  bool leftRight = (buttons & (1u << 7)) && (buttons & (1u << 5));   // Left (bit 7) and right (bit 5) pressed together?
-  if (upDown || leftRight) {
-    memcpy(d, lastGood, 9);              // Wrong reading -> throw it away, use the last good one
-  } else {
-    memcpy(lastGood, d, 9);              // Good reading -> remember it, in case the next one is wrong
-  }
-  return true;
-}
-
-// ============================================================
-// Below are the "Communication helpers": they talk to the receiver.
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
 // They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] -> wait 2 ms -> read 2 x k bytes = k int16 values (little-endian) starting at that number
+//   If the number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
 // ============================================================
 
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -195,35 +145,44 @@ void mbcBegin() {
 #endif
 }
 
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// From the sensor at address addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting at number id
   if (Wire.endTransmission() != 0) return false;
-  delay(2);                              // Wait 2 ms for the receiver to get the data ready (the PS4 receiver needs this, do not delete it)
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // Wait 2 ms before reading (ESP32-based products need this)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-bool mbcWriteBytes(uint8_t reg, const uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(buf, n);
-  return Wire.endTransmission() == 0;
-}
-
-bool mbcWaitReady(uint16_t timeoutMs) {
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), up to ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;

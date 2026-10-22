@@ -1,0 +1,53 @@
+' ============================================================
+' 掌控者 PS4/PS5 藍牙遙控接收器 EV3 新手範例 06：手把連上才出發
+' 軟體：clev3r
+' 接法：掌控者 PS4插 1 號孔；左輪馬達接 B、右輪馬達接 C
+' 這個範例會做什麼：手把還沒連上時搖桿是中間、按鍵是 0，程式分不出「沒按」和「沒連上」。模式 3 的數字加了「已連線」：大於等於 256 就是手把連上了。這個範例等手把連上才嗶一聲出發，之後用方向鍵上（256＋1）前進、下（256＋4）後退，手把斷線就馬上停車。
+' 讀值：status3＝方向鍵＋形狀鍵＋連線狀態（0 ~ 511：方向鍵（0~15）＋ 形狀鍵 × 16 ＋ 已連線 × 256，大於等於 256＝手把已連上）
+' ============================================================
+folder "prjs" "MBC_ps4_ex06"
+
+' 掌控者 PS4插 1 號孔，使用模式 3
+Sensor.SetMode(1, 3)
+LCD.Clear()
+
+' 清除螢幕
+LCD.Clear()
+' 螢幕顯示 WAIT PAD：等手把
+LCD.Text(1, 0, 0, 1, "WAIT PAD      ")
+' 等到狀態值大於等於 256（手把已連上）
+While Sensor.ReadRawValue(1, 0) < 256
+  Program.Delay(10)
+EndWhile
+' 連上了：嗶一聲
+Speaker.Tone(50, 1000, 100)
+Speaker.Wait()
+' 一直重複
+While "True"
+  ' 第 2 行顯示狀態值
+  LCD.Text(1, 0, 16, 1, "STATUS " + Sensor.ReadRawValue(1, 0) + "      ")
+  ' 如果狀態值小於 256（手把斷線了）
+  If Sensor.ReadRawValue(1, 0) < 256 Then
+    ' 手把斷線：馬上停車
+    Motor.Stop("BC", "True")
+    ' 螢幕顯示 PAD LOST
+    LCD.Text(1, 0, 0, 1, "PAD LOST      ")
+  Else
+    ' 螢幕顯示 PAD OK
+    LCD.Text(1, 0, 0, 1, "PAD OK      ")
+    ' 如果狀態值＝257（已連上＋方向鍵上）
+    If Sensor.ReadRawValue(1, 0) = 257 Then
+      ' 已連上＋方向鍵上（256＋1）：前進
+      Motor.StartPower("B", 40)
+      Motor.StartPower("C", 40)
+    ' 否則，如果狀態值＝260（已連上＋方向鍵下）
+    ElseIf Sensor.ReadRawValue(1, 0) = 260 Then
+      ' 已連上＋方向鍵下（256＋4）：後退
+      Motor.StartPower("B", -40)
+      Motor.StartPower("C", -40)
+    Else
+      ' 連上但沒按：停車
+      Motor.Stop("BC", "True")
+    EndIf
+  EndIf
+EndWhile

@@ -16,6 +16,9 @@
 > - **MBC 積木網站與 Pybricks 要先把主機換成 Pybricks 韌體**（MBC 積木網站上方選單「SPIKE 主機 → 安裝／更新 Pybricks 韌體」就能燒，約 3 分鐘；之後也能用 SPIKE App 換回樂高原廠韌體）。樂高官方 App 不用換。
 > - 樂高官方 App 這裡用的是**教育版（SPIKE 3）**。
 
+> [!NOTE]
+> 最後的**範例 6** 是進階加碼，**只有 Pybricks 版**：它用的數值放在感應器 2026-10 以後韌體的新模式裡，樂高官方 App 和 MBC 積木網站的積木讀不到。
+
 ## 開始之前：認識測距者 2 路
 
 測距者 2 路前面有**兩顆並排、都朝正前方**的雷射，分別量「左邊那顆」和「右邊那顆」前面的東西有多遠。不用校準，插上去就能用；開機後等 1～2 秒讓雷射準備好。
@@ -430,6 +433,74 @@ hub.display.icon(Icon.HAPPY)
 - **轉正的方向反了，越轉越歪？** → 回到範例 1 確認左右；左右相反的話，把「往左轉」「往右轉」對調。
 - **斜太多（超過 30 度）就轉不正？** → 斜太多時，其中一顆雷射會打到牆外面去（讀到 120）。先把車大致擺正再開始。
 - **牆是黑色的？** → 黑色牆面雷射量得比較短、比較不準，換成淺色的牆或在牆上貼白紙。
+
+---
+
+## 範例 6（進階）：用毫米精準停車
+
+> [!NOTE]
+> **這個範例只有 Pybricks 版。** 它用的「毫米距離」放在感應器的模式 6，樂高官方 App 和 MBC 積木網站讀不到（它們只讀公分）。感應器韌體要是 **2026-10 以後**的版本，舊韌體讀到的會是別的數字。 程式碼就是範例，不需要截圖。
+
+**這個範例會做什麼**：機器人往前開，離牆 **20 公分**時放慢，到 **15 公分（150 mm）** 就停，嗶一聲、螢幕顯示停下來時的距離（公分）。公分只能分到 1 公分，毫米可以分到 0.1 公分，所以停的位置更準。
+
+**要準備什麼**：同範例 5（小車＋一面牆）。
+
+**怎麼接**：測距者 2 路插 **C 孔**、裝在車頭朝前；**左輪接 E、右輪接 F**。
+
+**下載程式**
+
+| Pybricks |
+|---|
+| [ex06_park_mm.py](/examples/tof2/spike_beginner/pybricks/ex06_park_mm.py)＋[函式庫](/examples/tof2/spike_beginner/pybricks/MBC_laser2_obj_Lib.py) |
+
+<details>
+<summary>🐍 Pybricks 程式碼</summary>
+
+```python
+# 測距者 2 路 範例 6（進階）：用毫米精準停車（離牆 20 公分放慢、15 公分停）
+# 接線：測距者 2 路 → C 埠（裝在車頭朝前）；左輪馬達 → E 埠；右輪馬達 → F 埠
+# 只有 Pybricks 版：毫米距離放在感應器的「模式 6」，官方 App 和積木網站讀不到；感應器韌體要 2026-10 以後
+from pybricks.hubs import PrimeHub
+from pybricks.parameters import Direction, Port
+from pybricks.pupdevices import Motor
+from pybricks.robotics import DriveBase
+from pybricks.tools import wait
+from MBC_laser2_obj_Lib import MBC_LASER2
+
+hub = PrimeHub()
+laser2 = MBC_LASER2(3)                                 # 3 = C 埠
+left = Motor(Port.E, Direction.COUNTERCLOCKWISE)
+right = Motor(Port.F)
+robot = DriveBase(left, right, wheel_diameter=56, axle_track=112)
+
+robot.drive(100, 0)                                    # 每秒 100 mm 往前開
+while laser2.average_mm() > 200:                       # 左右平均距離（毫米）還大於 200 mm = 20 公分
+    wait(10)
+robot.drive(40, 0)                                     # 剩 20 公分：放慢到每秒 40 mm
+while laser2.average_mm() > 150:                       # 到 150 mm = 15 公分
+    wait(10)
+robot.stop()                                           # 停車
+hub.speaker.beep()
+mm = laser2.average_mm()                               # 停下來之後再量一次
+hub.display.number(mm // 10)                           # 螢幕顯示公分（15 或 14）
+print('停在', mm, 'mm')
+```
+
+</details>
+
+**一步一步看懂程式**
+1. `laser2.average_mm()`：左右平均距離，單位**毫米**（0～1200；1200＝前面沒東西）。感應器自己算好平均，不用自己加。
+2. 先用每秒 100 mm 往前開，**等到**平均距離 ≤ 200 mm（20 公分）。
+3. 換成每秒 40 mm 慢慢開，**等到** ≤ 150 mm 就停車。
+4. 嗶一聲，把停下來的距離 ÷ 10 顯示在螢幕上（公分）。
+5. 函式庫還有 `laser2.left_mm()`、`laser2.right_mm()`（左、右各自的毫米）和 `laser2.device_id()`、`laser2.firmware_version()`（感應器型號與韌體版本）。
+
+**跑起來應該看到什麼**：小車往前開、接近牆時變慢、在離牆 15 公分左右停下來，嗶一聲、螢幕顯示 15 或 14。
+
+**常見問題**
+- **停的位置每次都差 1～2 公分？** → 雷射本身有 1～2 公分的誤差，而且車子有慣性。把「40」改更小（例如 25），停得更準。
+- **想同時用公分和毫米？** → 可以，但不要在同一個迴圈裡混著用：每次切換模式感應器要多花幾十 ms。
+- **數字一直是 1200 不動？** → 前面真的沒東西；或感應器韌體太舊（2026-10 以前）沒有毫米模式，請更新韌體。
 
 ---
 

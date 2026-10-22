@@ -5,28 +5,28 @@
 
 ---
 
-> **Lightweight and agile: Say goodbye to bulky ultrasonics. A micro-laser that accurately captures the left and right movements of objects.**
+> **Lightweight and agile: say goodbye to bulky ultrasonics. A micro-laser that accurately captures which way an object leaves.**
 
 ## 🚀 Product Overview
 
-Traditional ultrasonic sensors are not only bulky but also suffer from slow reaction speeds and susceptibility to echo interference (producing ghost data). In high-speed robotics applications, they are completely inadequate.
+Traditional ultrasonic sensors are not only bulky, they also react slowly and are easily fooled by echoes (ghost readings). In high-speed robot applications they simply cannot keep up.
 
-The Ranger 2-Way utilizes **Laser Time-of-Flight (ToF) technology**, measuring distance at the speed of light. Its reaction speed far exceeds ultrasonic sensors. Its extremely lightweight design makes it suitable for installation in various positions on a robot. Even more uniquely, its dual-laser configuration enables the robot to accurately determine whether an object **left from the left side or the right side**—a feature ultrasonic sensors simply cannot achieve.
+The Ranger 2-Way uses **laser time-of-flight (ToF)**: it measures at the speed of light, so it reacts far faster than ultrasonics. The module is tiny and fits almost anywhere on a robot. Best of all, its two laser beams let the robot tell whether an object **left to the left or to the right** — something a single ultrasonic sensor can never do.
 
 ## 🎯 Core Advantages
 
-- ⚡ **Laser-Speed Reaction**: Unconstrained by the speed of sound, detection speed is vastly faster than ultrasonics.
-- 🎯 **Directional Judgment**: Unique dual-beam design can determine whether an object finally left the sensing range from the left or right side.
-- 📦 **Extremely Lightweight**: Significantly smaller than ultrasonics, saving valuable installation space on the robot.
-- 🔌 **Plug & Play**: Plug directly into SPIKE / EV3; no extra power supply or complex setup required.
-- 🔼 **Seamless Upgrade Path**: Retains a dual 0-degree design compatible with TOF8, allowing future upgrades to TOF8 without modifying core programming logic.
+- ⚡ **Laser-speed reaction**: not limited by the speed of sound, detection is far faster than ultrasonics
+- 🎯 **Direction judgment**: the dual-beam layout tells which side the object finally left the sensing range from
+- 📦 **Extremely compact**: much smaller than an ultrasonic sensor, saving precious mounting space
+- 🔌 **Plug and play**: plug straight into SPIKE / EV3; no extra power supply or setup
+- 🔼 **Seamless upgrade path**: shares the dual 0° layout with the TOF8, so you can upgrade to the TOF8 later without rewriting your core logic
 
-## 📊 Application Scenarios Comparison
+## 📊 Which Model Do I Need?
 
-| Scenario | Recommended Model |
+| Scenario | Recommended model |
 | :--- | :--- |
-| Simple collision avoidance, distance detection, directional judgment | ✅ **TOF2 (This model)** |
-| Sumo battles, full 180-degree obstacle avoidance | ➡️ TOF8 (8-channel full view) |
+| Simple collision avoidance, distance detection, left / right judgment | ✅ **TOF2 (this model)** |
+| Sumo battles, full 180° obstacle avoidance | ➡️ TOF8 (8-way full view) |
 
 ## 📋 Specifications
 
@@ -40,13 +40,19 @@ The Ranger 2-Way utilizes **Laser Time-of-Flight (ToF) technology**, measuring d
 
 | Platform | How |
 | :--- | :--- |
-| LEGO SPIKE Prime / Robot Inventor | Official app, Pybricks |
-| LEGO MINDSTORMS EV3 | EV3 official software, Pybricks |
+| LEGO SPIKE Prime / Robot Inventor | Official app, Pybricks (👉 [SPIKE beginner examples: official app / MBC blocks site / Pybricks, 5 each — in Chinese](/sensors/tof2/spike-examples.md)) |
+| LEGO MINDSTORMS EV3 | EV3 official software, Pybricks ([EV3 beginner examples](/en/sensors/tof2/ev3-examples.md)) |
 | MakeBlock (mBot etc.) | Dedicated edition, [blocks & wiring](/en/makeblock.md) |
 | Arduino / ESP32 (Universal I2C edition, coming soon) | Address `0x29`, [Arduino Examples](/en/sensors/tof2/arduino-examples.md) |
 
 > [!IMPORTANT]
 > Each platform is a **different factory edition**; please order the one that matches your controller.
+
+## 🎮 Select Your Hub
+
+Pick your controller first, then the software you use — each tile links to the start page, the command reference and the library for that host:
+
+<!-- platform-grid -->
 
 ## 📥 Example Downloads
 
@@ -54,7 +60,8 @@ The Ranger 2-Way utilizes **Laser Time-of-Flight (ToF) technology**, measuring d
 | :--- | :--- |
 | SPIKE (Pybricks 4.0.0) | [Download all (.zip)](/examples/tof2/tof2_pybricks_spike_v4.0.0.zip) · [No library (blocks)](/examples/tof2/pybricks/For%20firmware%204.0.0/tof2_block_native_v400.py) · [Library example (blocks)](/examples/tof2/pybricks/For%20firmware%204.0.0/tof2_block_with_lib_v400.py) · [Library MBC_laser2_obj_Lib.py](/examples/tof2/pybricks/For%20firmware%204.0.0/MBC_laser2_obj_Lib.py) |
 | SPIKE (Pybricks 3.6.1) | [No library (Python)](/examples/tof2/pybricks/For%20firmware%203.6.1/tof2_python_native_v361.py) |
-| EV3 | [EV3 beginner examples (in Chinese)](/sensors/tof2/ev3-examples.md) |
+| EV3 | [EV3 beginner examples](/en/sensors/tof2/ev3-examples.md) |
+| Arduino (Universal I2C edition) | [Arduino Examples](/en/sensors/tof2/arduino-examples.md) |
 | mBot etc. (MakeBlock) | [Block extension and examples](/en/makeblock.md) |
 
 > Import the library file into the same Pybricks project without renaming it.
@@ -69,13 +76,19 @@ The Ranger 2-Way utilizes **Laser Time-of-Flight (ToF) technology**, measuring d
 
 ## 🔌 Hardware Wiring
 
-1. Plug in using a standard connection cable to SPIKE (Ports A~F) or EV3 (Ports 1~4).
-2. After powering on, confirm the sensor indicator light is on.
+1. Plug into SPIKE (Port A~F) or EV3 (Port 1~4) with a standard connection cable.
+2. After powering on, check that the sensor indicator LED is lit — you are ready to go.
 
-## 💡 Directional Judgment Explanation
+## 💡 How Direction Judgment Works
 
-The two laser points on the sensor are arranged side-by-side. When an object leaves the sensing range:
-- **Left laser loses signal first** → The object left from the **right** side.
-- **Right laser loses signal first** → The object left from the **left** side.
+The two laser points sit side by side. When an object leaves the sensing range:
+- **Left laser loses the signal first** → the object left to the **right**
+- **Right laser loses the signal first** → the object left to the **left**
 
-This allows your robot to make intelligent decisions regarding "which direction to turn after the target disappears".
+This lets your robot decide "which way to turn after the target disappears".
+
+## ❓ FAQ
+
+- **❓ Reading 120 cm?** → Nothing is within range on that side — this is normal (EV3 reads 100).
+- **❓ Left and right read slightly differently against a flat wall?** → Tiny angle differences between the two beams cause small deviations; use the average (EV3 mode 0 already does) when you only need "how far".
+- **❓ One side never reports?** → Check the init / fault bitmaps (I2C edition) or swap the cable and port, then [contact us](/en/contact.md) for service.

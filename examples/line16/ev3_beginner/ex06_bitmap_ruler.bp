@@ -1,0 +1,33 @@
+' ============================================================
+' 循行者 16 路循線感應器 EV3 新手範例 06：壓線位元圖：在螢幕上畫一把 LED 尺
+' 軟體：clev3r
+' 接法：循行者 16 路插 1 號孔；左輪馬達接 B、右輪馬達接 C
+' 這個範例會做什麼：模式 3 送出「壓線位元圖」：16 個位元，每一路壓到線就是 1。這個範例把它畫成一把尺（# ＝壓到線、. ＝沒壓到），跟感應器上的 LED 一樣，一眼就看出線在哪幾路、有沒有分岔。
+' 讀值：bitmap＝壓線位元圖（0 ~ 65535：bit0＝第 1 路（最左）… bit15＝第 16 路，1＝那一路壓到線）
+' ============================================================
+folder "prjs" "MBC_line16_ex06"
+
+' 循行者 16 路插 1 號孔，使用模式 3
+Sensor.SetMode(1, 3)
+LCD.Clear()
+
+' 清除螢幕
+LCD.Clear()
+' 一直重複
+While "True"
+  ' 第 1 行畫尺：16 格，最左是第 1 路，# ＝壓到線、. ＝沒壓到
+  bitsValue = Math.Remainder(Sensor.ReadRawValue(1, 0) + 65536, 65536)
+  bitsText = ""
+  For b = 0 To 15
+    If Math.Remainder(Math.Floor(bitsValue / Math.Power(2, b)), 2) = 1 Then
+      bitsText = Text.Append(bitsText, "#")
+    Else
+      bitsText = Text.Append(bitsText, ".")
+    EndIf
+  EndFor
+  LCD.Text(1, 0, 0, 1, "L " + bitsText + "  ")
+  ' 第 2 行顯示位元圖的數字（第 1 路＝1、第 2 路＝2、第 3 路＝4…相加）
+  LCD.Text(1, 0, 16, 1, "BITS " + Math.Remainder(Sensor.ReadRawValue(1, 0) + 65536, 65536) + "      ")
+  ' 等 0.1 秒
+  Program.Delay(100)
+EndWhile

@@ -1,125 +1,127 @@
 /*
- * Ranger 8-Way x Arduino  Example 3: Which way is the nearest thing?
+ * Ranger 8-Way × Arduino   Example 3: Which direction is the nearest object?
  * ------------------------------------------------------------
  * What does this example do?
- *   The sensor compares the 8 lasers by itself and finds which direction the nearest thing is in,
- *   and how far away it is. The computer draws a small ruler with a * where the thing is,
- *   and an arrow that tells you the direction:
- *     ←  left    ↖  front-left    ↑  straight ahead    ↗  front-right    →  right
- *   Sumo robots use this to "find the opponent", and cars use it to "follow your hand".
+ *   The sensor compares its 8 lasers by itself and tells you which direction the nearest object is in, and how far:
+ *     01 nearest distance cm, 02 nearest direction (-7 far left ~ +7 far right, 0 = straight ahead), 06 nearest distance mm.
+ *   The computer draws a small ruler with * at that direction, then says it with an arrow. A sumo robot uses this to "find the opponent".
  *
- * Wiring (Arduino UNO / Nano):
- *   Sensor VCC -> 5V      Sensor GND -> GND
- *   Sensor SDA -> A4      Sensor SCL -> A5
+ * You need: Ranger 8-Way (universal I2C edition) + a box or your hand.
+ *
+ * Wiring:
+ *   Sensor VCC → 5V      Sensor GND → GND
+ *   Sensor SDA → A4      Sensor SCL → A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *
  * How to see the result:
- *   After uploading, open the Serial Monitor and choose 115200 baud.
- *   Hold your hand about 30 cm in front of the sensor and move it slowly from left to right.
+ *   Serial Monitor at 115200. Move your hand from the front left to straight ahead, then to the right.
  *
- * What is the bearing number?
- *   -7 (far left) ~ 0 (straight ahead) ~ +7 (far right). Negative = left, positive = right.
- *   When the thing is right between two lasers, you get the number in between (for example -6, -4).
+ * Note:
+ *   When there is nothing within 120 cm, the direction becomes ±8 (meaning "which side it was on last time"), not a real object.
+ *   So always look at the distance first, then the direction.
  */
 
 #include <Wire.h>
 
-const uint8_t SENSOR_ADDR = 0x29;        // The Ranger sensor's address
-const uint16_t NO_TARGET = 1200;         // 1200 or more = nothing there
+const uint8_t ADDR = 0x29;               // The sensor's house number (I2C address)
+const int16_t MBC_NONE = -32768;         // Code for "no such value / cannot read"
+
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
 
 void setup() {
   Serial.begin(115200);
   mbcBegin();
   delay(500);
-
-  // The 8 lasers need 2 ~ 4 seconds to start. Distances are 0 until then, so always wait until ready
-  if (!mbcWaitReady(6000)) {
-    Serial.println(F("Sensor not found. Run example 1 first to check the wiring."));
+  if (!mbcWaitReady(ADDR, 6000)) {
+    Serial.println(F("Sensor not found. Run Example 1 first to check the wiring."));
     while (true) {}
   }
-  Serial.println(F("Ready! Hold your hand in front of the sensor and move it slowly from left to right."));
+  Serial.println(F("Ready! Move an object around the sensor."));
 }
 
 void loop() {
-  // Box 0x11: 6 numbers
-  //   Number 0: which direction the nearest thing is in (-7 left ~ +7 right)
-  //   Numbers 1, 2: how far the nearest thing is (mm)
-  //   Numbers 3 ~ 5: direction and distance of the farthest (most open) way. Not used here
-  uint8_t d[6];
-  if (!mbcRead(0x11, d, 6)) {
-    Serial.println(F("Read failed. Check if a wire is loose."));
-    delay(500);
-    return;
+  int16_t v[6];                          // 01 nearest cm, 02 nearest direction, 03, 04, 05, 06 nearest mm
+  if (!mbcReadMany(ADDR, 0x01, 6, v)) { Serial.println(F("Cannot read the sensor")); delay(500); return; }
+  int16_t nearCm = v[0], dir = v[1], nearMm = v[5];
+
+  // Draw a small ruler with 15 cells: one cell for each direction -7 ~ +7, * = nearest object, + = straight ahead
+  Serial.print(F("L ["));
+  for (int8_t i = -7; i <= 7; i++) {
+    if (nearCm < 120 && i == dir) Serial.print('*');
+    else if (i == 0)              Serial.print('+');
+    else                          Serial.print('.');
   }
+  Serial.print(F("] R   "));
 
-  int8_t   dir = (int8_t)d[0];                         // Direction: turn it into a number with a +/- sign
-  uint16_t mm  = ((uint16_t)d[1] << 8) | d[2];         // Join 2 numbers into the distance
-
-  // First make sure something is really there, then look at the direction. With nothing there, the direction means nothing
-  if (mm >= NO_TARGET) {
-    Serial.println(F("Left [...............] Right   Nothing within 120 cm in front"));
-    delay(300);
-    return;
+  if (nearCm >= 120) {                   // Look at the distance first! When there is nothing, the direction is ±8 and cannot be trusted
+    Serial.println(F("Nothing within 120 cm ahead"));
+  } else {
+    if      (dir <= -6) Serial.print(F("← left       "));
+    else if (dir <= -2) Serial.print(F("↖ front left "));
+    else if (dir <=  1) Serial.print(F("↑ ahead      "));
+    else if (dir <=  5) Serial.print(F("↗ front right"));
+    else                Serial.print(F("→ right      "));
+    Serial.print(' '); Serial.print(nearCm); Serial.print(F(" cm ("));
+    Serial.print(nearMm); Serial.print(F(" mm, direction ")); Serial.print(dir); Serial.println(')');
   }
-
-  // ---- 1. Draw the small ruler: 15 spots for -7 ~ +7. Put a * where the thing is ----
-  Serial.print(F("Left ["));
-  for (int8_t pos = -7; pos <= 7; pos++) {
-    if (pos == dir)      Serial.print('*');            // The thing is here
-    else if (pos == 0)   Serial.print('+');            // Mark the middle
-    else                 Serial.print('.');
-  }
-  Serial.print(F("] Right   "));
-
-  // ---- 2. Show the direction with an arrow ----
-  if (dir <= -6)      Serial.print(F("← Left       "));  // 👉 You can change this: where each zone starts and ends
-  else if (dir <= -2) Serial.print(F("↖ Front-left "));
-  else if (dir <= 1)  Serial.print(F("↑ Ahead      "));
-  else if (dir <= 5)  Serial.print(F("↗ Front-right"));
-  else                Serial.print(F("→ Right      "));
-
-  // ---- 3. Print the distance (cm) and the bearing number ----
-  Serial.print(F("  "));
-  Serial.print(mm / 10);                               // mm divided by 10 = cm
-  Serial.print(F(" cm (bearing "));
-  Serial.print((int)dir);                              // Change to int before printing, so it prints as a number
-  Serial.println(F(")"));
-
-  delay(300);                                          // 👉 You can change this: check every 0.3 seconds
+  delay(50);
+  delay(150);                            // Print one line every 0.2 s   👉 You can change this
 }
 
 // ============================================================
-// Below are the "Communication helpers": they talk to the sensor.
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
 // They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] → wait 2 ms → read 2×k bytes = k int16 values in a row (little-endian) from that number
+//   If a number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
 // ============================================================
 
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
-  Wire.setWireTimeout(25000, true);      // If a wire is loose, the Arduino will not freeze
+  Wire.setWireTimeout(25000, true);      // If a wire is loose, Arduino will not freeze
 #endif
 }
 
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// From the sensor at addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting from number id
   if (Wire.endTransmission() != 0) return false;
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // Wait 2 ms before reading (a must for ESP32-based products)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave them out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-bool mbcWaitReady(uint16_t timeoutMs) {
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), at most ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;

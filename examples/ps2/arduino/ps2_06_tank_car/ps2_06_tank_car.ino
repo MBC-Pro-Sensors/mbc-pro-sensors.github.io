@@ -1,40 +1,44 @@
 /*
- * 掌控者 PS2 × Arduino　範例 6（進階）：坦克遙控車
+ * 掌控者 PS2 × Arduino　範例 6：坦克遙控車（進階）
  * ------------------------------------------------------------
  * 這個範例會做什麼？
  *   用手把開兩輪小車，開法跟坦克一樣：
- *     左搖桿上下 → 控制左輪（往上推前進、往下推後退）
- *     右搖桿上下 → 控制右輪
+ *     左搖桿上下（LY）→ 左輪；右搖桿上下（RY）→ 右輪
  *     兩支一起往上推 = 直走；一前一後 = 原地轉彎。
- *   搖桿放開時，也可以用方向鍵開（↑ 前進、↓ 後退、← → 原地轉）。
- *   讀不到接收器、或手把斷線，車子會立刻停下來。
+ *   搖桿的 -100 ~ +100 直接當馬達速度用（再乘上最高速度）。
+ *   手把斷線、或讀不到接收器，車子會立刻停下來。
  *
- * 你需要：
- *   掌控者 PS2 接收器（通用 I2C 版）＋ PS2 2.4G 無線手把、
- *   兩輪小車、L298N 馬達驅動板（或同樣接法的 TB6612 等驅動板）、電池。
+ * 你需要：掌控者 PS2 接收器（通用 I2C 版）＋ PS2 手把、Arduino UNO／Nano／UNO R4 或 ESP32。另外要：兩輪小車、L298N 馬達驅動板（或同樣接法的 TB6612）、電池。
  *
- * 接線（Arduino UNO / Nano）：
- *   接收器 VCC → 5V              接收器 GND → GND
- *   接收器 RX（= SDA）→ A4       接收器 TX（= SCL）→ A5
+ * 接線：
+ *   接收器 VCC → 5V      接收器 GND → GND
+ *   接收器 RX（= SDA） → A4      接收器 TX（= SCL） → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
+ *   （I2C 版接收器上印的 TX 就是 SCL、RX 就是 SDA）
  *   L298N ENA → 5     IN1 → 7     IN2 → 8      （左輪）
  *   L298N ENB → 6     IN3 → 9     IN4 → 10     （右輪）
  *   L298N 的 GND 要跟 Arduino 的 GND 接在一起！
  *   （ESP32 的接腳不一樣，請看下面「馬達接腳」）
  *
- * 第一次跑之前：
- *   1. 把車子架高（輪子懸空）再上傳，兩支搖桿一起往上推，確認兩個輪子都是「往前」轉。
- *      哪個輪子轉反了，就把下面的 LEFT_REVERSE 或 RIGHT_REVERSE 改成 true。
- *   2. 手把要在「類比模式」（中間 ANALOG 鍵的燈亮著），搖桿才會動。
- *      數位模式時搖桿沒反應，但方向鍵還是可以開。
- *   3. ⚠️ 安全測試：車子還架高時，把手把關機、或拔掉電池，
- *      確認輪子會停下來，再放到地上開。
- *   4. 為了不讀錯，程式每 0.4 秒才問一次「手把還連著嗎？」，其他時間只讀手把資料；
- *      讀到「上下同時按」「左右同時按」這種不可能的資料，會丟掉、沿用上一筆。
+ * 準備：
+ *   1. 把車子架高（輪子懸空）再上傳，兩支搖桿一起往上推，確認兩個輪子都「往前」轉。
+ *      哪個輪子轉反了，就把 LEFT_REVERSE 或 RIGHT_REVERSE 改成 true。
+ *   2. ⚠️ 車子還架高時，把手把關機，確認輪子會停下來，再放到地上開。
+ *
+ * 怎麼看結果：
+ *   序列埠監控窗（115200）每 0.3 秒印一次左右輪速度。
+ *
+ * 小提醒：
+ *   手把中間的 ANALOG 鍵要讓燈亮著（類比模式），搖桿才會有數字。
  */
 
 #include <Wire.h>
 
-const uint8_t SENSOR_ADDR = 0x42;        // 掌控者接收器的門牌號碼
+const uint8_t ADDR = 0x42;               // 掌控者接收器的「門牌號碼」（I2C 位址），PS2 與 PS4 都是 0x42
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
+
+// 小幫手的宣告（實作在檔案最下面）；mbcWrite 的參數可以省略
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
 
 // ---- 馬達接腳 ----
 #if defined(ESP32)
@@ -47,18 +51,12 @@ const int ENB = 6, IN3 = 9, IN4 = 10;    // 右輪
 #endif
 
 // ---- 👉 可以改的參數 ----
-const int  MAX_SPEED  = 200;             // 搖桿推到底的速度：0 ~ 255，新手先用慢一點
-const int  DPAD_SPEED = 150;             // 用方向鍵開的速度
+const int  MAX_SPEED     = 200;          // 搖桿推到底的速度：0 ~ 255，新手先用慢一點
 const bool LEFT_REVERSE  = false;        // 左輪轉反了改成 true
 const bool RIGHT_REVERSE = false;        // 右輪轉反了改成 true
 
-// 方向鍵在 16 位按鍵數字裡的位置（第幾位）
-const uint8_t BTN_UP = 4, BTN_RIGHT = 5, BTN_DOWN = 6, BTN_LEFT = 7;
-
-bool stopped = false;                    // 現在是不是因為斷線而停車
-bool connected = false;                  // 手把有沒有連上（每 0.4 秒更新一次）
-unsigned long lastStatus = 0;            // 上一次看「手把有沒有連上」的時間
-unsigned long lastPrint = 0;             // 上一次印速度的時間
+bool stopped = true;                     // 現在是不是停車狀態（一開始算停車）
+unsigned long lastPrint = 0;
 
 void setup() {
   Serial.begin(115200);
@@ -68,31 +66,21 @@ void setup() {
 
   mbcBegin();
   delay(500);
-  if (!mbcWaitReady(5000)) {
+  if (!mbcWaitReady(ADDR, 5000)) {
     Serial.println(F("找不到接收器，請先跑範例 1 檢查接線。"));
-    while (true) {}                      // 車子保持停止
+    while (true) {}
   }
   Serial.println(F("準備好了！用兩支搖桿開車。"));
 }
 
 void loop() {
-  // ---- 1. 每 0.4 秒看一次手把有沒有連線（第 0x31 號格子：狀態資料）----
-  //   不要每一圈都讀：一直在兩個格子之間換來換去，接收器比較容易交錯資料，
-  //   車子可能會自己動。開車只要一直讀第 0x11 號格子就好。
-  if (millis() - lastStatus >= 400) {
-    lastStatus = millis();
-    uint8_t st[9];
-    connected = mbcRead(0x31, st, 9) && (st[0] & 0x02);   // 第 0 個數字的「第 1 位」：1 = 手把已連線
-  }
-  if (!connected) {
+  // 一次讀編號 06 ~ 13 共 14 個值（同一瞬間的資料）：
+  //   v[0] = 06 已連線 … v[10] = 10 LX、v[11] = 11 LY、v[12] = 12 RX、v[13] = 13 RY
+  //   （中間的 0C~0F 是空號，會讀到 -32768，不用理它）
+  int16_t v[14];
+  if (!mbcReadMany(ADDR, 0x06, 14, v) || v[0] == 0) {
     safeStop();                          // 讀不到接收器，或手把沒連線 → 立刻停車
-    return;
-  }
-
-  // ---- 2. 讀手把（第 0x11 號格子）。readPad 在檔案下面，會順便檢查有沒有讀錯 ----
-  uint8_t d[9];
-  if (!readPad(d)) {
-    safeStop();                          // 讀不到 → 停車
+    delay(50);
     return;
   }
   if (stopped) {
@@ -100,33 +88,20 @@ void loop() {
     Serial.println(F("手把連上了，可以開車！"));
   }
 
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];   // 16 位的按鍵狀態
-  int ly = (int8_t)d[3];                 // 左搖桿上下：上 = 正（-127 ~ +127）
-  int ry = (int8_t)d[5];                 // 右搖桿上下：上 = 正
+  int ly = v[11];                        // 左搖桿上下：上 = 正（-100 ~ +100）
+  int ry = v[13];                        // 右搖桿上下：上 = 正
 
-  // 搖桿推多少，輪子就轉多快：-127 ~ +127 換算成 -MAX_SPEED ~ +MAX_SPEED
-  int left  = (long)ly * MAX_SPEED / 127;
-  int right = (long)ry * MAX_SPEED / 127;
-
-  // 兩支搖桿都放開時，改看方向鍵
-  if (ly == 0 && ry == 0) {
-    if      (buttons & (1u << BTN_UP))    { left =  DPAD_SPEED; right =  DPAD_SPEED; }  // 前進
-    else if (buttons & (1u << BTN_DOWN))  { left = -DPAD_SPEED; right = -DPAD_SPEED; }  // 後退
-    else if (buttons & (1u << BTN_LEFT))  { left = -DPAD_SPEED; right =  DPAD_SPEED; }  // 原地左轉
-    else if (buttons & (1u << BTN_RIGHT)) { left =  DPAD_SPEED; right = -DPAD_SPEED; }  // 原地右轉
-  }
-
+  // 搖桿推多少，輪子就轉多快：-100 ~ +100 換算成 -MAX_SPEED ~ +MAX_SPEED
+  int left  = (long)ly * MAX_SPEED / 100;
+  int right = (long)ry * MAX_SPEED / 100;
   drive(left, right);
 
   if (millis() - lastPrint >= 300) {     // 每 0.3 秒印一次速度
     lastPrint = millis();
-    Serial.print(F("左輪 "));
-    Serial.print(left);
-    Serial.print(F("　右輪 "));
-    Serial.println(right);
+    Serial.print(F("左輪 ")); Serial.print(left);
+    Serial.print(F("　右輪 ")); Serial.println(right);
   }
-
-  delay(20);
+  delay(50);
 }
 
 // 停車，並且只在剛停的那一下說一次
@@ -136,7 +111,6 @@ void safeStop() {
     stopped = true;
     Serial.println(F("讀不到手把 → 停車！"));
   }
-  delay(50);
 }
 
 // 控制兩個輪子：速度 -255（全速後退）~ 255（全速前進）
@@ -155,37 +129,14 @@ void setMotor(int en, int inA, int inB, int speed) {
 }
 
 // ============================================================
-// 讀手把資料，順便「防呆」（每個範例都一樣，不用改）
-// ============================================================
-// 為什麼要防呆？
-//   接收器很忙的時候（例如正在跟手把無線通訊），偶爾會來不及換資料，
-//   把「上一次讀的別的格子」（例如第 0x31 號狀態資料）交給 Arduino。
-//   這一筆的按鍵、搖桿數字就會是亂的，遙控車可能會自己動起來。
-// 怎麼看出來？
-//   手把的十字方向鍵，不可能同時按「上」和「下」，也不可能同時按「左」和「右」。
-//   讀到這種組合，就知道這一筆讀錯了：把它丟掉，沿用上一筆正確的資料。
-
-uint8_t lastGood[9] = {0};               // 上一筆正確的手把資料（一開始全部是 0 = 什麼都沒按）
-
-// 讀第 0x11 號格子（手把資料，9 個數字）放進 d。讀不到接收器回傳 false
-bool readPad(uint8_t *d) {
-  if (!mbcRead(0x11, d, 9)) return false;
-  uint16_t buttons = ((uint16_t)d[0] << 8) | d[1];                     // 16 位的按鍵狀態
-  bool upDown    = (buttons & (1u << 4)) && (buttons & (1u << 6));   // 上（第 4 位）和下（第 6 位）一起按？
-  bool leftRight = (buttons & (1u << 7)) && (buttons & (1u << 5));   // 左（第 7 位）和右（第 5 位）一起按？
-  if (upDown || leftRight) {
-    memcpy(d, lastGood, 9);              // 讀錯了 → 這一筆不要，改用上一筆
-  } else {
-    memcpy(lastGood, d, 9);              // 讀對了 → 記起來，下次讀錯時拿來用
-  }
-  return true;
-}
-
-// ============================================================
-// 以下是「通訊小幫手」：負責跟接收器講話。
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
 // 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
 // ============================================================
 
+// 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -193,28 +144,44 @@ void mbcBegin() {
 #endif
 }
 
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
   if (Wire.endTransmission() != 0) return false;
-  delay(2);                              // 等接收器準備資料 2 毫秒（PS4 版一定要；PS2 版留著也沒關係）
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-bool mbcWaitReady(uint16_t timeoutMs) {
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;

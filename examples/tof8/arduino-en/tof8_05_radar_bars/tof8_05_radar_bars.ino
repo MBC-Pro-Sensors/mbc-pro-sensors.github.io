@@ -1,124 +1,127 @@
 /*
- * Ranger 8-Way x Arduino  Example 5: Radar bar chart
+ * Ranger 8-Way × Arduino   Example 5: Radar bar chart
  * ------------------------------------------------------------
  * What does this example do?
- *   It draws the distances of the 8 lasers as 8 bars, one bar per laser:
- *     Long bar  = that direction is open (things are far away)
- *     Short bar = something is blocking that direction
- *   One look tells you "where the obstacles are and which way is free", like a small radar.
+ *   Reads "10~17 lasers 1~8 distance cm" in one go and draws the 8 directions as 8 bars:
+ *   a longer bar = that direction is more open, a very short bar = something is blocking it. One look tells you where you can go.
+ *   It also reads "08 fault bitmap" and marks a failed laser with XX.
  *
- * Wiring (Arduino UNO / Nano):
- *   Sensor VCC -> 5V      Sensor GND -> GND
- *   Sensor SDA -> A4      Sensor SCL -> A5
+ * You need: Ranger 8-Way (universal I2C edition) + a few books as obstacles.
+ *
+ * Wiring:
+ *   Sensor VCC → 5V      Sensor GND → GND
+ *   Sensor SDA → A4      Sensor SCL → A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *
  * How to see the result:
- *   After uploading, open the Serial Monitor and choose 115200 baud.
- *   Put the sensor on a table. Block the front, the left and the right with a book.
+ *   Serial Monitor at 115200.
+ *
+ * Where do the 8 lasers look? (standing behind the robot, looking forward)
+ *   Laser 1 left 90°, laser 2 left 60°, laser 3 left 30°, lasers 4 and 5 straight ahead,
+ *   laser 6 right 30°, laser 7 right 60°, laser 8 right 90°
  */
 
 #include <Wire.h>
 
-const uint8_t SENSOR_ADDR = 0x29;        // The Ranger sensor's address
-const uint8_t LASERS = 8;                // 8 lasers
-const uint16_t NO_TARGET = 1200;         // 1200 or more = nothing there
-const uint16_t FAULT = 0xFFFF;           // 0xFFFF = this laser is broken
+const uint8_t ADDR = 0x29;               // The sensor's house number (I2C address)
+const int16_t MBC_NONE = -32768;         // Code for "no such value / cannot read"
 
-// About which angle each laser looks at (negative = left, positive = right, 0 = straight ahead)
-const int ANGLE[LASERS] = {-90, -60, -30, 0, 0, 30, 60, 90};
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
 
-const uint16_t MM_PER_BLOCK = 50;        // 👉 You can change this: one # = 50 mm (5 cm). 1200 mm = exactly 24 #
+const int8_t ANGLE[8] = {-90, -60, -30, 0, 0, 30, 60, 90};   // Angle of each laser (negative = left)
 
 void setup() {
   Serial.begin(115200);
   mbcBegin();
   delay(500);
-
-  // The 8 lasers need 2 ~ 4 seconds to start. Distances are 0 until then, so always wait until ready
-  if (!mbcWaitReady(6000)) {
-    Serial.println(F("Sensor not found. Run example 1 first to check the wiring."));
+  if (!mbcWaitReady(ADDR, 6000)) {
+    Serial.println(F("Sensor not found. Run Example 1 first to check the wiring."));
     while (true) {}
   }
-  Serial.println(F("Ready! Block the front, the left and the right of the sensor with a book."));
+  Serial.println(F("Ready! Put a few books next to the sensor."));
 }
 
 void loop() {
-  // Box 0x21: the distances of the 8 lasers, 2 numbers each, 16 in total
-  uint8_t d[16];
-  if (!mbcRead(0x21, d, 16)) {
-    Serial.println(F("Read failed. Check if a wire is loose."));
-    delay(500);
-    return;
-  }
+  int16_t cm[8];
+  int16_t fault = mbcRead(ADDR, 0x08);   // 08 fault bitmap: bit0 = laser 1
+  if (!mbcReadMany(ADDR, 0x10, 8, cm) || fault == MBC_NONE) { Serial.println(F("Cannot read the sensor")); delay(500); return; }
 
-  Serial.println();
-  Serial.println(F("====== Radar (longer bar = more open) ======"));
+  Serial.println(F("====== Radar view (longer bar = more open) ======"));
+  for (uint8_t i = 0; i < 8; i++) {
+    Serial.print(i + 1);                 // Laser number (1~8)
+    Serial.print(' ');
+    if (ANGLE[i] >= 0) Serial.print('+');
+    if (ANGLE[i] > -10 && ANGLE[i] < 10) Serial.print(' ');
+    Serial.print(ANGLE[i]); Serial.print(F("° |"));
 
-  for (uint8_t i = 0; i < LASERS; i++) {
-    uint16_t mm = ((uint16_t)d[2 * i] << 8) | d[2 * i + 1];   // Join 2 numbers into the distance
-
-    // ---- 1. Print "which laser, which angle" ----
-    Serial.print(i);
-    if (ANGLE[i] > 0)       Serial.print(F("  +"));            // Put a + in front of right-side angles
-    else if (ANGLE[i] == 0) Serial.print(F("   "));
-    else                    Serial.print(F("  "));
-    if (abs(ANGLE[i]) < 10) Serial.print(' ');                 // To line things up
-    Serial.print(ANGLE[i]);
-    Serial.print(F(" deg |"));
-
-    // ---- 2. Draw the bar ----
-    if (mm == FAULT) {                                         // First check if it is broken
-      Serial.println(F("XXXXXXXX  This laser is broken"));
-      continue;                                                // Done with this laser, go to the next one
+    if ((fault >> i) & 1) {              // This laser failed
+      Serial.println(F("XX fault"));
+      continue;
     }
-    uint16_t blocks = mm / MM_PER_BLOCK;                       // How many # to draw
-    for (uint16_t k = 0; k < blocks; k++) Serial.print('#');
-
-    // ---- 3. Write the distance after the bar ----
-    if (mm >= NO_TARGET) {
-      Serial.println(F("> nothing there"));
-    } else {
-      Serial.print(F(" "));
-      Serial.print(mm / 10);                                   // mm divided by 10 = cm
-      Serial.println(F(" cm"));
-    }
+    int8_t n = cm[i] / 5;                // One cell per 5 cm, at most 24 cells
+    if (n > 24) n = 24;
+    for (int8_t k = 0; k < n; k++) Serial.print('#');
+    if (cm[i] >= 120) Serial.println(F("> nothing"));
+    else { Serial.print(' '); Serial.print(cm[i]); Serial.println(F(" cm")); }
   }
-
-  delay(500);                                                  // 👉 You can change this: draw every 0.5 seconds
+  delay(50);
+  delay(450);                            // Redraw every 0.5 s   👉 You can change this
 }
 
 // ============================================================
-// Below are the "Communication helpers": they talk to the sensor.
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
 // They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] → wait 2 ms → read 2×k bytes = k int16 values in a row (little-endian) from that number
+//   If a number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
 // ============================================================
 
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
-  Wire.setWireTimeout(25000, true);      // If a wire is loose, the Arduino will not freeze
+  Wire.setWireTimeout(25000, true);      // If a wire is loose, Arduino will not freeze
 #endif
 }
 
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// From the sensor at addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting from number id
   if (Wire.endTransmission() != 0) return false;
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // Wait 2 ms before reading (a must for ESP32-based products)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave them out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-bool mbcWaitReady(uint16_t timeoutMs) {
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), at most ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;

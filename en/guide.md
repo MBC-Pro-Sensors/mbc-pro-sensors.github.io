@@ -10,17 +10,21 @@ Not sure which product or edition you need? Two steps: **pick your controller, t
 
 Pick your product and controller to go straight to setup steps, blocks and example downloads (SPIKE includes Robot Inventor; Arduino includes ESP32 and other I2C controllers; mBot includes Ranger and other Makeblock boards):
 
-| Product | SPIKE | EV3 | Arduino | mBot |
-| :--- | :---: | :---: | :---: | :---: |
-| Pathfinder 8-Way | [App · Pybricks](/en/sensors/line8/spike-hub.md) | [EV3 · Pybricks](/en/sensors/line8/ev3-hub.md) | [Examples](/en/sensors/line8/arduino-examples.md) | [Blocks](/en/makeblock.md) |
-| Pathfinder 16-Way | [App · Pybricks](/en/sensors/line16/spike-hub.md) | [EV3 · Pybricks](/en/sensors/line16/ev3-hub.md) | [Examples](/en/sensors/line16/arduino-examples.md) | [Blocks](/en/makeblock.md) |
-| Ranger 2-Way | [Page](/en/sensors/tof2/index.md) | [Page](/en/sensors/tof2/index.md) | — | [Blocks](/en/makeblock.md) |
-| Ranger 8-Way | [Page](/en/sensors/tof8/index.md) | [Page](/en/sensors/tof8/index.md) | [Examples](/en/sensors/tof8/arduino-examples.md) | [Blocks](/en/makeblock.md) |
-| Controller PS4/PS5 | [Page](/en/sensors/ps4/index.md) | [Page](/en/sensors/ps4/index.md) | [Examples](/en/sensors/ps4/arduino-examples.md) | [Blocks](/en/makeblock.md) |
-| Controller 2.4G (PS2, Taiwan only) | [Page](/en/sensors/ps2/index.md) | [Page](/en/sensors/ps2/index.md) | [Examples](/en/sensors/ps2/arduino-examples.md) | [Blocks](/en/makeblock.md) |
-| Sharpshooter Vision (ESP32CAM) | [Page](/en/sensors/esp32cam/index.md) | [Page](/en/sensors/esp32cam/index.md) | — | — |
-| SPIKE 6-Port Expander | [Official app](/en/sensors/exp6/spike-official.md) · [Pybricks](/en/sensors/exp6/spike-pybricks.md) | — | [Examples](/en/sensors/exp6/arduino-examples.md) | — |
-| SPIKE 6-Port Servo Expander (coming soon) | [Official app](/en/sensors/servo6/spike-official.md) · [Pybricks](/en/sensors/servo6/spike-pybricks.md) | — | — | — |
+<!-- gen:guide-start -->
+| Product | SPIKE | EV3 | Arduino I2C | mBlock | MATRIX | micro:bit |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| [Pathfinder 8-Way (Line8)](/en/sensors/line8/index.md) | [App · Pybricks](/en/sensors/line8/spike-hub.md) | [App · Pybricks](/en/sensors/line8/ev3-hub.md) | [Examples](/en/sensors/line8/arduino-examples.md) | [Examples](/en/sensors/line8/mblock-examples.md) | [Library](/en/sensors/line8/matrix.md) | [Examples](/en/sensors/line8/microbit-examples.md) |
+| [Pathfinder 16-Way (Line16)](/en/sensors/line16/index.md) | [App · Pybricks](/en/sensors/line16/spike-hub.md) | [App · Pybricks](/en/sensors/line16/ev3-hub.md) | [Examples](/en/sensors/line16/arduino-examples.md) | [Examples](/en/sensors/line16/mblock-examples.md) | [Library](/en/sensors/line16/matrix.md) | [Examples](/en/sensors/line16/microbit-examples.md) |
+| [Ranger 2-Way (TOF2)](/en/sensors/tof2/index.md) | [Product page](/en/sensors/tof2/index.md) | [Product page](/en/sensors/tof2/index.md) | [Examples](/en/sensors/tof2/arduino-examples.md) | [Examples](/en/sensors/tof2/mblock-examples.md) | [Library](/en/sensors/tof2/matrix.md) | [Examples](/en/sensors/tof2/microbit-examples.md) |
+| [Ranger 8-Way (TOF8)](/en/sensors/tof8/index.md) | [Product page](/en/sensors/tof8/index.md) | [Product page](/en/sensors/tof8/index.md) | [Examples](/en/sensors/tof8/arduino-examples.md) | [Examples](/en/sensors/tof8/mblock-examples.md) | [Library](/en/sensors/tof8/matrix.md) | [Examples](/en/sensors/tof8/microbit-examples.md) |
+| [Controller 2.4G (PS2)](/en/sensors/ps2/index.md) | [Product page](/en/sensors/ps2/index.md) | [Product page](/en/sensors/ps2/index.md) | [Examples](/en/sensors/ps2/arduino-examples.md) | [Examples](/en/sensors/ps2/mblock-examples.md) | [Library](/en/sensors/ps2/matrix.md) | [Examples](/en/sensors/ps2/microbit-examples.md) |
+| [Controller PS4/PS5](/en/sensors/ps4/index.md) | [Product page](/en/sensors/ps4/index.md) | [Product page](/en/sensors/ps4/index.md) | [Examples](/en/sensors/ps4/arduino-examples.md) | [Examples](/en/sensors/ps4/mblock-examples.md) | [Library](/en/sensors/ps4/matrix.md) | [Examples](/en/sensors/ps4/microbit-examples.md) |
+| [Sharpshooter Vision (ESP32CAM)](/en/sensors/esp32cam/index.md) | [Product page](/en/sensors/esp32cam/index.md) | [Product page](/en/sensors/esp32cam/index.md) | [Examples](/en/sensors/esp32cam/arduino-examples.md) | [Examples](/en/sensors/esp32cam/mblock-examples.md) | [Library](/en/sensors/esp32cam/matrix.md) | [Examples](/en/sensors/esp32cam/microbit-examples.md) |
+| [SPIKE 6-Way Expander (EXP6)](/en/sensors/exp6/index.md) | [Guide](/en/sensors/exp6/spike-official.md) | — | [Examples](/en/sensors/exp6/arduino-examples.md) | — | — | — |
+| [IMU 9-Axis Gyro](/en/sensors/imu/index.md) | — | [Product page](/en/sensors/imu/index.md) | [Examples](/en/sensors/imu/arduino-examples.md) | [Examples](/en/sensors/imu/mblock-examples.md) | [Library](/en/sensors/imu/matrix.md) | [Examples](/en/sensors/imu/microbit-examples.md) |
+| [SPIKE 6-Port Servo Expander (Servo6)](/en/sensors/servo6/index.md) | [Guide](/en/sensors/servo6/spike-official.md) | — | — | — | — | — |
+| [Long-Range Colour Sensor OV3660](/en/sensors/ov3660/index.md) | — | — | — | — | — | — |
+<!-- /gen -->
 
 > [!TIP]
 > **Not sure which software?** SPIKE hub: the official app's blocks are the easiest for class; for competitions, Pybricks is faster and more consistent. EV3 hub: the EV3 software or EV3 Classroom both work; use Pybricks for Python.

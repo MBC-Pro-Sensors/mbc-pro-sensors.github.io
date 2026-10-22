@@ -119,7 +119,7 @@ MBC 16路循線感應器是一款專為樂高 (LEGO) 及各式高階機器人競
   <div style="display: flex; align-items: center; gap: 15px; background: rgba(255, 50, 50, 0.06); border: 1px solid rgba(255, 50, 50, 0.25); border-radius: 8px; padding: 12px 15px;">
     <span style="font-size: 1.5rem; filter: drop-shadow(0 0 5px rgba(255,50,50,0.5)); line-height: 1;">🔴</span>
     <div style="flex: 1;">
-      <strong style="color: #ff4a4a; font-size: 1.05rem;">紅色指示燈 (通訊除錯燈)</strong>
+      <strong style="color: #c62828; font-size: 1.05rem;">紅色指示燈 (通訊除錯燈)</strong>
       <div style="color: #ddd; font-size: 0.95rem; margin-top: 4px; line-height: 1.5;">
         <strong>正常狀態</strong>：熄滅。<br>
         <strong>紅色 LED 燈長亮狀態</strong>：表示與主控板通訊失敗。請檢查連接線是否插緊，或更換主機連接埠 / 連接線進行交叉測試。
@@ -152,42 +152,9 @@ MBC 16路循線感應器是一款專為樂高 (LEGO) 及各式高階機器人競
 
 ## 🎮 選擇你的主機
 
-請先選擇您使用的控制器系統，進入後再選擇您的軟體環境：
+請先選你的主機，再選軟體：每格都有「新手範例」「指令參考」「函式庫／積木」三個入口。
 
-<div class="env-hub-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
-  <a href="/sensors/line16/spike-hub.md" class="env-card spike" style="padding: 40px 20px;">
-    <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
-      <img src="/images/hubs/spike-hub.webp" alt="SPIKE Prime Hub" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(242,194,0,0.3));" />
-      <img src="/images/hubs/inventor-hub.webp" alt="Robot Inventor Hub" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.3));" />
-    </div>
-    <h3 style="font-size: 1.8rem; margin-bottom: 15px !important;">🧱 SPIKE 系列主機</h3>
-    <p style="font-size: 1.1rem;">教育版 (SPIKE 3) / 家用版 (Robot Inventor) / pyBricks</p>
-  </a>
-  
-  <a href="/sensors/line16/ev3-hub.md" class="env-card ev3" style="padding: 40px 20px;">
-    <div style="display: flex; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
-      <img src="/images/hubs/ev3-hub.webp" alt="EV3 Hub" style="max-height: 100px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(10,186,181,0.3));" />
-    </div>
-    <h3 style="font-size: 1.8rem; margin-bottom: 15px !important;">🧱 EV3 系列主機</h3>
-    <p style="font-size: 1.1rem;">官方軟體 / Classroom / clev3r / pyBricks</p>
-  </a>
-
-  <a href="/sensors/line16/arduino-i2c.md" class="env-card mcu" style="padding: 40px 20px;">
-    <div style="display: flex; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
-      <svg viewBox="0 0 100 40" style="width: 120px; height: 50px; fill: none; stroke: #00d2ff; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.6));">
-        <path d="M 5,25 H 25 V 5 H 45 V 35 H 65 V 5 H 85 V 35 H 95" />
-      </svg>
-    </div>
-    <h3 style="font-size: 1.8rem; margin-bottom: 15px !important;">∿ 通用 I2C 版本</h3>
-    <p style="font-size: 1.1rem;">Arduino / ESP32 / 樹莓派 / 各式自主開發主控板</p>
-  </a>
-
-  <a href="/makeblock.md" class="env-card mcu" style="padding: 40px 20px;">
-    <div style="display: flex; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end; font-size: 72px; line-height: 1;">🤖</div>
-    <h3 style="font-size: 1.8rem; margin-bottom: 15px !important;">MakeBlock 版本</h3>
-    <p style="font-size: 1.1rem;">mBot / mBot Ranger / Orion / MegaPi（mBlock 5 積木）</p>
-  </a>
-</div>
+<!-- platform-grid -->
 
 ---
 

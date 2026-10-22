@@ -17,8 +17,8 @@ MBC-Pro Sensors 解決了樂高原廠感測器在機器人競賽中的痛點（�
 - [陀螺儀 IMU 九軸 (IMU 9-Axis Gyro, 即將推出)](https://mbc-pro-sensors.github.io/sensors/imu/): 陀螺儀＋加速度計＋磁力計，任意角度安裝、磁力計融合航向長距離不飄移，EV3 可直接當原廠陀螺儀使用。
 - [SPIKE 6 路舵機擴充器 Servo6 (SPIKE 6-Port Servo Expander, 即將推出)](https://mbc-pro-sensors.github.io/sensors/servo6/): 一個 SPIKE Prime 孔接 6 顆舵機，角度／速度控制、每孔電流回報與堵轉保護，舵機電源由主機供給；官方 SPIKE App 與 Pybricks 函式庫。
 - [遠距離顏色感應器 OV3660 (Long-Range Colour Sensor, 開發中)](https://mbc-pro-sensors.github.io/sensors/ov3660/): 300 萬畫素影像感測器只取畫面中央區塊判色，遠距離穩定；開發中。
-- [MBC 通用 I2C 協議 (Universal I2C Protocol)](https://mbc-pro-sensors.github.io/i2c-protocol.html): Arduino / ESP32 / 樹莓派 讀取全系列感應器的共用暫存器規則與範例程式。
-- [MakeBlock（mBot）積木擴展 (mBlock 5 extension)](https://mbc-pro-sensors.github.io/makeblock.html): mBot、mBot Ranger、Orion、Ultimate 2.0（MegaPi）、MegaPi Pro 用 mBlock 5 積木讀取循行者、測距者、掌控者（MakeBlock 版＋mBot 插座片），含 .mext 下載、各主板可用連接埠與範例專案。
+- [MBC 通用 I2C 協議 v2 (Universal I2C Protocol v2)](https://mbc-pro-sensors.github.io/i2c-protocol.html): Arduino / ESP32 / R4 / micro:bit 讀取全系列感應器：暫存器編號＝值編號、int16 小端、連續讀，共用 F0~F5／F8 換位址／EF 重開機。
+- [MakeBlock（mBot）積木擴展 v2 (mBlock 5 extension)](https://mbc-pro-sensors.github.io/makeblock.html): mBot、mBot Ranger、Orion、Ultimate 2.0（MegaPi）、MegaPi Pro 用 mBlock 5 積木讀取循行者、測距者、掌控者、陀螺儀、神攝手（95 顆積木，值直接是使用者要的數字），含 .mext 下載、各主板可用連接埠與範例。
 - [選購指南・已經買好？找程式 (Find your program)](https://mbc-pro-sensors.github.io/guide.html#start): 產品 × 主機（SPIKE、EV3、Arduino、mBot）對照表，直接連到該主機的安裝步驟與範例下載。
 - [神攝手 ESP32CAM (Vision AI Camera)](https://mbc-pro-sensors.github.io/sensors/esp32cam/): 機器人視覺鏡頭，支援色塊追蹤與座標定位。
 
@@ -27,7 +27,15 @@ MBC-Pro Sensors 解決了樂高原廠感測器在機器人競賽中的痛點（�
 - [LEGO SPIKE Prime 官方 App (SPIKE 3 / Education)](https://mbc-pro-sensors.github.io/sensors/line8/spike-education.html): 支援官方 Scratch 積木拖曳直讀，初學者免繁瑣設定。
 - [Pybricks (MicroPython)](https://mbc-pro-sensors.github.io/sensors/line8/spike-pybricks.html): 提供原生高效 Python 函式庫，專為極速競賽選手調校。
 - [LEGO MINDSTORMS EV3](https://mbc-pro-sensors.github.io/sensors/line8/ev3-hub.html): 支援 EV3-G 官方軟體、EV3 Classroom 與 clev3r (BASIC)。
-- [通用微控制器 (Arduino / ESP32 / STM32 via I2C)](https://mbc-pro-sensors.github.io/sensors/line8/arduino-i2c.html): 標準 I2C 通訊協議，供創客靈活整合。
+- [通用微控制器 (Arduino / ESP32 / R4 / micro:bit via I2C v2)](https://mbc-pro-sensors.github.io/sensors/line8/arduino-i2c.html): I2C 協議 v2（寫值編號、讀 int16 小端），供創客靈活整合。
+<!-- gen:llms-platforms -->
+- [產品 × 平台指令參考索引](https://mbc-pro-sensors.github.io/reference.html): 每款產品每個值在六個平台（SPIKE、EV3、Arduino I2C、mBlock、MATRIX、micro:bit）各怎麼讀。
+- [MBC 通用 I2C 協議 v2](https://mbc-pro-sensors.github.io/i2c-protocol.html): 寫編號讀 int16 小端；共用 F0~F5 版本／狀態、F8 換位址、EF 重開機。
+- [mBlock 5 擴展 v2](https://mbc-pro-sensors.github.io/makeblock.html): UART 38400，3 byte 回應帶檢查碼，整包 FD。
+- [MATRIX Mini R4](https://mbc-pro-sensors.github.io/matrix.html): 原廠 0x22 R~K 對照與 LauMo 大通道 30 byte。
+- [micro:bit MakeCode](https://mbc-pro-sensors.github.io/microbit.html): pxt-mbc-sensors 擴充 v2。
+- [協定純文字版](https://mbc-pro-sensors.github.io/llms-protocol.txt): 每款產品的值表、命令、狀態旗標。
+<!-- /gen -->
 
 ## 建議售價 (MSRP)
 

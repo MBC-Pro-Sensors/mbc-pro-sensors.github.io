@@ -59,19 +59,42 @@ The EV3 edition ships with one of two firmwares:
 | School / creative edition (color pick + blob tracking + motion) | Infrared Sensor | Mode 0: Hue (`0` ~ `100`; red 0/100, yellow ≈17, green ≈33, blue ≈67; `-1` = black/white/gray). Mode 1 (8 values): Hue, saturation, brightness, motion, blob X (`0` ~ `100`, left→right), Y (`0` ~ `75`, bottom→top), width, height; X/Y/width/height are all `0` when nothing is found, so test "width = 0" |
 | WRO 2026 edition (HUE12, 12 color points) | Third-party sensor (type 95) | Hue code of each of the 12 points (`0` ~ `239` color, `240` ~ `245` white, `246` ~ `250` black, `255` = point not enabled) plus saturation. Works with EV3-G (MBC custom block), clev3r and Pybricks; **EV3 Classroom cannot read it** |
 
+EV3 beginner examples: [school / creative edition](/en/sensors/esp32cam/ev3-examples.md) · [WRO 2026 edition](/en/sensors/esp32cam/ev3-examples-wro.md).
+
 ## 🧩 Supported Platforms
 
 | Platform | How |
 | :--- | :--- |
-| LEGO SPIKE Prime / Robot Inventor | Official app, Pybricks |
-| LEGO MINDSTORMS EV3 | EV3 official software, Pybricks |
-| MATRIX Mini R4 | UART |
+| LEGO SPIKE Prime / Robot Inventor | Official app, Pybricks (👉 [SPIKE beginner examples: official app / MBC blocks site / Pybricks, 5 each — in Chinese](/sensors/esp32cam/spike-examples.md) · [WRO edition HUE12 — in Chinese](/sensors/esp32cam/spike-examples-wro.md)) |
+| LEGO MINDSTORMS EV3 | EV3 official software, Pybricks ([school edition examples](/en/sensors/esp32cam/ev3-examples.md) · [WRO edition examples](/en/sensors/esp32cam/ev3-examples-wro.md)) |
+| MATRIX Mini R4 | UART, using the stock **mVision** camera blocks (see [MATRIX overview](/en/matrix.md)) |
+| Arduino / ESP32 / micro:bit (new) | I2C address `0x4C` (MBC protocol v2). **Hardware confirmed, bench test pending** — see the [Arduino Examples (in Chinese)](/sensors/esp32cam/arduino-examples.md) |
 
 > [!IMPORTANT]
 > Each platform is a **different factory edition**; please order the one that matches your controller.
+
+## 🎮 Select Your Hub
+
+Pick your controller first, then the software you use — each tile links to the start page, the command reference and the library for that host:
+
+<!-- platform-grid -->
 
 ## 🔌 Hardware Wiring
 
 1. Plug the sensor into SPIKE (Port A~F) or EV3 (Port 1~4)
 2. The sensor starts only after it is connected to a controller that is **already powered on** (the screen shows "LEGO Sync..." first); once the camera image appears it is ready
 3. Short-press the side button to open the setup menu; use left / right to choose and enter to confirm. Color setups and camera settings are saved automatically
+
+## ⚙️ General Tips
+
+- **Set the color where you will compete**: hue tolerances depend on the venue lighting. Point the camera at the target on the actual field, open the menu and pick the color there; turn on the flash light if the venue is dim.
+- **Minimum blob area filters noise**: if small patches of a similar color trigger false detections, raise the minimum blob area in the menu.
+- **Check "found" before using X / Y**: when no blob is found, X / Y / width / height all read `0`. Test area (SPIKE) or width (EV3) first, then use the coordinates.
+- **Clear a color slot**: in the menu, hold the side button for 1 s on that slot.
+
+## ❓ FAQ
+
+- **❓ The screen stays on "LEGO Sync..."?** → The sensor only starts after the hub is powered on. Power the hub first, then plug the sensor in, or re-plug the cable; try another port if it still does not sync.
+- **❓ The blob jumps around or is lost?** → Lighting changed since you set the color. Re-pick the color on the field, widen the HSV tolerance a little, or turn on the flash light.
+- **❓ Hue reads `0` but the target is not red?** → The color point has not been set yet (reads `0`, same as red) or the point is on a black / white / gray area (`-1`). Set the pick point in the menu.
+- **❓ Which firmware is on my EV3 edition?** → Plug it into an EV3: the school edition shows as an Infrared Sensor, the WRO 2026 edition as a third-party sensor (type 95).

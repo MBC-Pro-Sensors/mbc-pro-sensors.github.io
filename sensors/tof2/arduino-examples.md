@@ -3,42 +3,63 @@
 
 [🔙 回到 2 路雷射測距首頁](/sensors/tof2/index.md)　｜　[📡 MBC 通用 I2C 協議（進階）](/i2c-protocol.md)
 
-> [!NOTE]
-> 通用 I2C 版即將推出，以下範例適用新版（2026 年 10 月之後）硬體。
-
-這一頁有 **5 個範例**，從「確認接好了沒」一路做到測距者 2 路最厲害的功能：**判斷東西從哪一邊溜走**。每個範例都可以直接複製、上傳，程式裡每一行都有中文說明。**完全沒寫過程式也沒關係**，照順序一個一個做就好。
+這一頁有 **6 個產品範例＋3 個共用範例**，從「確認接好了沒」一路做到「用 mm 精準停車」。每個範例都可以直接複製、上傳，程式裡每一行都有中文說明。**完全沒寫過程式也沒關係**，照順序一個一個做就好。
 
 > [!TIP]
 > 第一次用 Arduino？先看 [🔰 第一次用 Arduino：從零開始](/sensors/arduino-start.md)，15 分鐘學會安裝軟體、上傳程式、看結果。
 
 <div style="display: flex; gap: 15px; flex-wrap: wrap; margin: 25px 0;">
 <a href="/examples/tof2/arduino/tof2_arduino_examples.zip" target="_blank" data-ignore="true" download class="btn-download" style="flex: 1; min-width: 220px; text-align: center; background: linear-gradient(135deg, #00d2ff, #007a75); color: #fff; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 1rem;">📥 下載全部範例（ZIP）</a>
+<a href="/examples/i2c/arduino/i2c_arduino_examples.zip" target="_blank" data-ignore="true" download class="btn-download" style="flex: 1; min-width: 220px; text-align: center; background: linear-gradient(135deg, #5b6cff, #2a2f8f); color: #fff; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 1rem;">📥 下載共用命令範例（ZIP）</a>
 </div>
 
 ---
 
 ## 🔌 接線（所有範例都一樣）
 
-| 感應器 | 新版板子焊錫點 | Arduino UNO / Nano | ESP32 |
+| 感應器 | Arduino UNO / Nano | ESP32 | Arduino UNO R4 |
 | :---: | :---: | :---: | :---: |
-| SCL | 1 | A5 | GPIO 22 |
-| SDA | 2 | A4 | GPIO 21 |
-| VCC | 3 | 5V | 5V（VIN）或 3.3V |
-| GND | 4 | GND | GND |
+| VCC | 5V | 5V（VIN） | 5V |
+| GND | GND | GND | GND |
+| SDA | A4 | GPIO 21 | SDA |
+| SCL | A5 | GPIO 22 | SCL |
+
+圖：`/images/figures/tof2/wiring-uno.svg`
 
 > [!IMPORTANT]
-> - 請用 **通用 I2C 版**（新版板子）的測距者 2 路。SPIKE 版、EV3 版的韌體不同，不能直接接 Arduino；舊版板子不支援 I2C。
-> - 新版板子的焊錫點是 **1 = SCL、2 = SDA**，跟舊版板子印的 SDA／SCL 剛好相反。接不上時，先把 SDA、SCL 兩條線對調試試看（對調不會弄壞東西）。
-> - 感應器一通電要先把 2 顆雷射叫醒，這段時間讀到的距離**全部是 0**，看起來就像貼著障礙物。所以每個範例一開始都會先等它「準備好」，你自己寫程式時也要這樣做。
+> - 請用 **通用 I2C 版** 的測距者 2 路。SPIKE 版、EV3 版的韌體不同，不能直接接 Arduino。
+> - 兩顆雷射開機初始化要 1～3 秒，每個範例一開始都會先等 `F3` 就緒。
+> - 「左、右」是**感應器裝在車頭（雷射朝前）、你站在車子後面往前看**的左右。
 > - 接線前先拔掉 USB 線。
 
-**距離怎麼看？**（單位都是 mm，10 mm = 1 公分）
+---
 
-| 讀到的數字 | 意思 |
-| :--- | :--- |
-| `0xFFFF`（65535） | 這一顆**故障**（要最先檢查） |
-| `1200` 以上 | 這一邊 120 公分內**沒有東西** |
-| 其他 | 前面的東西有多遠 |
+<h2 id="cmd-table">📖 指令總覽表（協議 v2）</h2>
+
+感應器像一排有編號的「格子」，每一格放一個 16 位元的數字（int16，小端）。讀法：寫 `[編號]` → 等 2 ms → 讀 2×k 個 byte，就能從那個編號起一次拿到連續 k 格（k ≤ 16）。沒有的編號會回 `-32768`。門牌號碼（I2C 位址）是 `0x29`。
+
+<!-- gen:cmd-table -->
+| 編號 | 名稱 | 範圍 / 單位 | 說明 | 出現在 |
+| :---: | :--- | :--- | :--- | :--- |
+| `01` | 左距離 | 0～120 cm | 左邊那顆的距離；120 = 前面沒東西／那顆失效 | [範例 2](#ex2)、[3](#ex3) |
+| `02` | 右距離 | 0～120 cm | 右邊那顆的距離；120 = 沒東西／失效 | [範例 2](#ex2)、[3](#ex3) |
+| `03` | 較近距離 | 0～120 cm | 左右兩顆取較近的 | [範例 3](#ex3)、[5](#ex5) |
+| `04` | 左距離 | 0～1200 mm | 左邊那顆，精細到 1 mm；1200 = 沒東西／失效 | [範例 2](#ex2)、[4](#ex4) |
+| `05` | 右距離 | 0～1200 mm | 右邊那顆，精細到 1 mm | [範例 2](#ex2)、[4](#ex4) |
+| `06` | 初始化位元圖 | 0～3（bit） | bit0 = 左、bit1 = 右，1 = 那顆開機初始化成功；3 = 兩顆都好 | [範例 2](#ex2)、[6](#ex6) |
+| `07` | 故障位元圖 | 0～3（bit） | bit0 = 左、bit1 = 右，1 = 那顆目前失效（讀失敗或 200 ms 沒更新） | [範例 2](#ex2)、[6](#ex6) |
+| `08` | 左右平均 | 0～1200 mm | (左 mm + 右 mm) / 2；跟 EV3 模式 3、SPIKE 模式 6 一致 | [範例 2](#ex2)、[4](#ex4) |
+| `F0` | 裝置 ID | — | 低 byte = 出廠位址 0x29、高 byte = 2（雷射顆數） | [範例 1](#ex1)、[共用 2](#exi2)、[共用 3](#exi3) |
+| `F1` | 協議版本 | 2 | 這份範例照版本 2 寫 | [範例 1](#ex1) |
+| `F2` | 韌體版本 | 主×100＋次 | 例 102 = 1.2 | [範例 1](#ex1) |
+| `F3` | 狀態旗標 | bit | b0 就緒（兩顆都初始化完）、b1 任一顆失效 | [範例 1](#ex1)、[6](#ex6) |
+| `F4` | 更新序號 | 0～255 | 每 10 ms +1，一直跳 = 感應器活著 | [共用 2](#exi2) |
+| `F5` | 開機秒數 | 0～32767 秒 | 變小 = 重開機過 | [範例 1](#ex1)、[共用 2](#exi2) |
+| `F8` | 換 I2C 位址（命令） | `[新位址][取反]` | `[F8][00][FF]` = 回出廠；重開機後生效 | [共用 1](#exi1) |
+| `EF` | 重新開機（命令） | `[A5]` | 送 `[EF][A5]` | [共用 1](#exi1)、[共用 2](#exi2) |
+<!-- /gen -->
+
+測距者 2 路沒有產品專用的寫入命令（E0～EE）。
 
 ---
 
@@ -46,20 +67,24 @@
 
 | # | 範例 | 學會什麼 | 另外要準備 |
 | :---: | :--- | :--- | :--- |
-| 1 | [跟感應器打招呼](#ex1) | 確認接線正確、兩顆雷射都正常 | 無 |
-| 2 | [左右兩邊各多遠？](#ex2) | 讀左、右兩顆的距離 | 無 |
-| 3 | [東西在左邊、右邊，還是正前方？](#ex3) | 用兩顆雷射判斷東西在哪一邊 | 一個盒子或你的手 |
-| 4 | [倒車雷達警報燈](#ex4) | 用距離控制燈，越近閃越快 | 無 |
-| 5 | [東西從哪一邊溜走了？](#ex5) | 判斷東西往左還是往右離開 | 一個盒子 |
+| 1 | [跟感應器打招呼](#ex1) | 確認接線正確，讀 F0～F3 身分證與狀態 | 無 |
+| 2 | [一次看完所有讀值](#ex2) | 整張值表 01～08 每一格是什麼 | 你的手 |
+| 3 | [左邊近還是右邊近？](#ex3) | 01／02／03 三格，畫長條 | 一個盒子 |
+| 4 | [用 mm 精準停車（進階）](#ex4) | 04／05／08 mm，到 200 mm 剛好停 | 兩輪小車、L298N 馬達驅動板 |
+| 5 | [倒車雷達警報](#ex5) | 用 03 較近距離控制燈與蜂鳴器 | 蜂鳴器（可不接） |
+| 6 | [雷射健康檢查](#ex6) | 06／07 初始化與故障位元圖、F3 | 無 |
+| 共 1 | [換 I2C 位址](#exi1) | F8 換位址／回出廠、EF 重開機 | 無 |
+| 共 2 | [身分證＋重新開機](#exi2) | F0～F5 六格共用暫存器 | 無 |
+| 共 3 | [掃描線上裝置](#exi3) | 掃 0x08～0x77、用 F0 認產品 | 無 |
 
 > [!TIP]
-> **建議順序：1 → 2 → 3 → 4 → 5。** 範例 5 會用到範例 3 的「看到」判斷，先玩過範例 3 會比較好懂。
+> **建議順序：1 → 2 → 3 → 6 → 5 → 4。** 先確認接好（1），看懂每一格（2），再做應用。
 
 ---
 
 <h2 id="ex1">1️⃣ 跟感應器打招呼</h2>
 
-**做什麼：** 確認感應器接好了，並檢查左、右兩顆雷射是不是都正常開機。每次接新的感應器，都先跑這一個。
+**做什麼：** 確認感應器接好了，並讀出它的身分證：`F0` 裝置 ID（出廠位址＋雷射顆數）、`F1` 協議版本、`F2` 韌體版本、`F3` 狀態旗標逐 bit 用中文印出來。每次接新的感應器，都先跑這一個。
 
 **步驟：**
 1. 照上面的表格接好 4 條線，USB 插上電腦。
@@ -74,26 +99,28 @@
  * 測距者 2 路 × Arduino　範例 1：跟感應器打招呼
  * ------------------------------------------------------------
  * 這個範例會做什麼？
- *   確認感應器有沒有接好。接好了，會在電腦上印出感應器的名字、版本，
- *   並檢查左、右兩顆雷射是不是都正常。
+ *   確認感應器有沒有接好。接好了，會印出它的身分證（裝置 ID、協議版本、
+ *   韌體版本）和目前狀態（兩顆雷射是不是都正常）。
  *   每次接新感應器，都建議先跑這個範例。
  *
- * 接線（Arduino UNO / Nano）：
+ * 你需要：測距者 2 路（通用 I2C 版）、Arduino UNO／Nano／UNO R4 或 ESP32。
+ *
+ * 接線：
  *   感應器 VCC → 5V      感應器 GND → GND
- *   感應器 SDA → A4      感應器 SCL → A5
- *   （新版板子的焊錫點：1 = SCL、2 = SDA、3 = VCC、4 = GND）
+ *   感應器 SDA → A4      感應器 SCL → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
  *
  * 怎麼看結果：
  *   上傳後，打開「序列埠監控窗」，速度選 115200。
- *
- * 小提醒：
- *   感應器一開機要先把 2 顆雷射叫醒，這段時間讀到的距離都是 0，
- *   所以一定要先等它「準備好」。
  */
 
 #include <Wire.h>                        // Arduino 內建的 I2C 通訊工具，用來跟感應器講話
 
-const uint8_t SENSOR_ADDR = 0x29;        // 測距者感應器的「門牌號碼」，固定是 0x29
+const uint8_t ADDR = 0x29;               // 測距者的「門牌號碼」（I2C 位址），2 路與 8 路都是 0x29
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
+
+// 小幫手的宣告（實作在檔案最下面）；mbcWrite 的參數可以省略
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
 
 void setup() {
   Serial.begin(115200);                  // 打開跟電腦講話的通道，速度 115200
@@ -101,60 +128,47 @@ void setup() {
   delay(500);                            // 等感應器開機 0.5 秒
 
   Serial.println(F("=== 測距者 2 路：跟感應器打招呼 ==="));
+  Serial.println(F("等兩顆雷射開機（最多 4 秒）..."));
 
-  // 等感應器說「我準備好了」，最多等 6 秒
-  if (!mbcWaitReady(6000)) {
+  // 等感應器說「我準備好了」（狀態旗標 F3 的 bit0 = 兩顆都初始化完），最多等 4 秒
+  if (!mbcWaitReady(ADDR, 4000)) {
     Serial.println(F("找不到感應器！請檢查："));
-    Serial.println(F("  1. SDA 接 A4、SCL 接 A5，有沒有接反？（新版焊錫點 1 = SCL、2 = SDA）"));
+    Serial.println(F("  1. SDA 接 A4、SCL 接 A5（ESP32：21 / 22），有沒有接反？"));
     Serial.println(F("  2. VCC 接 5V、GND 接 GND，有沒有插緊？"));
     Serial.println(F("  3. 你的感應器是「通用 I2C 版」嗎？（SPIKE 版、EV3 版不能接 Arduino）"));
-    Serial.println(F("  4. 同一組 SDA/SCL 上有沒有接其他門牌號碼也是 0x29 的東西（例如測距者 8 路、市售 VL53L0X 模組）？"));
     while (true) {}                      // 找不到就停在這裡
   }
 
-  // 讀「版本資料」：感應器的第 0x01 號格子，共 17 個數字
-  uint8_t info[17];
-  if (!mbcRead(0x01, info, 17)) {
-    Serial.println(F("讀取失敗，檢查一下線有沒有鬆掉。"));
-    while (true) {}
-  }
-
-  // 第 9 ~ 16 個數字是感應器的名字（英文字母）
-  char name[9] = {0};
-  memcpy(name, &info[9], 8);
-
-  Serial.print(F("找到了！感應器名字："));
-  Serial.println(name);                  // 應該會印出 LASER2
-
-  Serial.print(F("韌體版本："));
-  Serial.print(info[2]);                 // 主版本
-  Serial.print('.');
-  Serial.println(info[3]);               // 次版本
-
-  Serial.print(F("雷射數量："));
-  Serial.print(info[7]);                 // 測距者 2 路 = 2
+  // ---- F0 裝置 ID：低 byte = 出廠位址、高 byte = 雷射顆數 ----
+  int16_t id = mbcRead(ADDR, 0xF0);
+  uint8_t factoryAddr = (uint8_t)(id & 0xFF);        // 出廠位址（換過位址也不變）
+  uint8_t sensors     = (uint8_t)((id >> 8) & 0xFF); // hw[0] = 幾顆雷射
+  Serial.print(F("找到了！出廠位址 0x"));
+  Serial.print(factoryAddr, HEX);
+  Serial.print(F("，雷射數量 "));
+  Serial.print(sensors);                 // 測距者 2 路 = 2
   Serial.println(F(" 顆"));
 
-  Serial.print(F("最遠量得到："));
-  Serial.print(info[8] * 10);            // 這格存的是「幾個 10 毫米」，乘 10 變成毫米（1200）
-  Serial.println(F(" mm（超過就當作「沒有東西」）"));
+  // ---- F1 協議版本（這份範例是照版本 2 寫的） ----
+  Serial.print(F("協議版本："));
+  Serial.println(mbcRead(ADDR, 0xF1));
 
-  // 讀「健康檢查」：第 0x31 號格子，共 9 個數字
-  //   第 0 個：狀態（第 1 個位元 = 有沒有雷射故障）
-  //   第 2 個：第 0 個位元 = 左邊雷射開機成功、第 1 個位元 = 右邊雷射開機成功
-  uint8_t st[9];
-  if (!mbcRead(0x31, st, 9)) {
-    Serial.println(F("讀取失敗，檢查一下線有沒有鬆掉。"));
-    while (true) {}
-  }
+  // ---- F2 韌體版本：主版×100 + 次版（例如 102 = 1.2） ----
+  int16_t fw = mbcRead(ADDR, 0xF2);
+  Serial.print(F("韌體版本："));
+  Serial.print(fw / 100);
+  Serial.print('.');
+  Serial.println(fw % 100);
 
-  if (st[0] & 0x02) {                    // 第 1 個位元是 1 → 有雷射故障
-    if (!(st[2] & (1u << 0))) Serial.println(F("注意：左邊的雷射沒開機成功"));
-    if (!(st[2] & (1u << 1))) Serial.println(F("注意：右邊的雷射沒開機成功"));
-    Serial.println(F("（可以跑範例 2 看看是哪一邊一直顯示「故障」，再聯絡我們）"));
-  } else {
-    Serial.println(F("左、右兩顆雷射都正常！"));
-  }
+  // ---- F3 狀態旗標：一個 bit 代表一件事 ----
+  int16_t st = mbcRead(ADDR, 0xF3);
+  Serial.println(F("目前狀態："));
+  Serial.print(F("  bit0 就緒        ")); Serial.println((st & 0x01) ? F("是（兩顆都初始化完）") : F("否"));
+  Serial.print(F("  bit1 任一顆失效  ")); Serial.println((st & 0x02) ? F("是！（看範例 6 查哪一顆）") : F("否（兩顆都正常）"));
+
+  // ---- F5 開機秒數 ----
+  Serial.print(F("開機秒數："));
+  Serial.println(mbcRead(ADDR, 0xF5));
 
   Serial.println(F("接線正確，可以開始玩其他範例了！"));
 }
@@ -164,11 +178,14 @@ void loop() {
 }
 
 // ============================================================
-// 以下是「通訊小幫手」：負責跟感應器講話。
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
 // 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
 // ============================================================
 
 // 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -176,30 +193,44 @@ void mbcBegin() {
 #endif
 }
 
-// 從感應器的第 reg 號格子，讀 n 個數字放進 buf。讀到了回傳 true
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
   if (Wire.endTransmission() != 0) return false;
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-// 把數字 value 寫進感應器的第 reg 號格子。成功回傳 true
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-// 等感應器準備好，最多等 timeoutMs 毫秒。準備好了回傳 true
-bool mbcWaitReady(uint16_t timeoutMs) {
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;
@@ -210,260 +241,103 @@ bool mbcWaitReady(uint16_t timeoutMs) {
 
 ```text
 === 測距者 2 路：跟感應器打招呼 ===
-找到了！感應器名字：LASER2
-韌體版本：1.0
-雷射數量：2 顆
-最遠量得到：1200 mm（超過就當作「沒有東西」）
-左、右兩顆雷射都正常！
+等兩顆雷射開機（最多 4 秒）...
+找到了！出廠位址 0x29，雷射數量 2 顆
+協議版本：2
+韌體版本：2.0
+目前狀態：
+  bit0 就緒        是（兩顆都初始化完）
+  bit1 任一顆失效  否（兩顆都正常）
+開機秒數：5
 接線正確，可以開始玩其他範例了！
 ```
 
 > [!NOTE]
 > **「通訊小幫手」是什麼？** 每個範例最下面都有一段一模一樣的程式，負責跟感應器「講話」。你不用改它，也不用看懂。只要記得：
-> - `mbcRead(格子編號, 放哪裡, 幾個)`：從感應器讀資料
-> - `mbcWaitReady(最多等幾毫秒)`：等感應器開機完成
->
-> 感應器就像一排有編號的「格子」，每一格放著不同的資料，例如第 `0x11` 格放著「左、右兩邊的距離」。
+> - `mbcRead(位址, 編號)`：讀一格，讀不到回 `MBC_NONE`（−32768）
+> - `mbcReadMany(位址, 起始編號, 幾格, 陣列)`：從起始編號一次讀連續幾格（最多 16），全部來自同一瞬間
+> - `mbcWrite(位址, 命令, 參數, 參數幾個)`：送命令，沒參數時後兩個可以不寫
+> - `mbcWaitReady(位址, 最多等幾毫秒)`：等 `F3` bit0 就緒
 
 ---
 
-<h2 id="ex2">2️⃣ 左右兩邊各多遠？</h2>
+<h2 id="ex2">2️⃣ 一次看完所有讀值</h2>
 
-**做什麼：** 把左、右兩顆雷射量到的距離印出來，並畫成小長條（越長 = 越遠）。
+**做什麼：** 每 0.5 秒用一次 `mbcReadMany` 把 `01`～`08` 整張值表印出來。先在這裡認識每一格，之後的範例只是各挑幾格來用。
 
-<a href="/examples/tof2/arduino/tof2_02_left_right/tof2_02_left_right.ino" download data-ignore="true">📄 下載 tof2_02_left_right.ino</a>
+<a href="/examples/tof2/arduino/tof2_02_all_values/tof2_02_all_values.ino" download data-ignore="true">📄 下載 tof2_02_all_values.ino</a>
 
-<!-- ino: examples/tof2/arduino/tof2_02_left_right/tof2_02_left_right.ino -->
+<!-- ino: examples/tof2/arduino/tof2_02_all_values/tof2_02_all_values.ino -->
 ```cpp
 /*
- * 測距者 2 路 × Arduino　範例 2：左右兩邊各多遠？
+ * 測距者 2 路 × Arduino　範例 2：一次看完所有讀值
  * ------------------------------------------------------------
  * 這個範例會做什麼？
- *   測距者 2 路有左、右兩顆雷射，都朝正前方看。
- *   這個範例把兩顆量到的距離印出來（單位：公分），並用長條畫出來：
- *     數字      = 前面的東西有多遠
- *     沒有東西  = 這一邊 120 公分內什麼都沒有
- *     故障      = 這一顆雷射壞了
+ *   把感應器「整張值表」每 0.5 秒印一次：
+ *     01 左 cm、02 右 cm、03 較近 cm、04 左 mm、05 右 mm、
+ *     06 初始化位元圖、07 故障位元圖、08 左右平均 mm。
+ *   之後的範例只是各挑其中幾格來用，先在這裡把每一格認識一遍。
  *
- * 接線（Arduino UNO / Nano）：
+ * 你需要：測距者 2 路（通用 I2C 版）＋ 你的手或一個盒子。
+ *
+ * 接線：
  *   感應器 VCC → 5V      感應器 GND → GND
- *   感應器 SDA → A4      感應器 SCL → A5
+ *   感應器 SDA → A4      感應器 SCL → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
  *
  * 怎麼看結果：
- *   上傳後，打開「序列埠監控窗」，速度選 115200。
- *   用手只擋住左邊的雷射，再只擋右邊，看看哪一邊的數字在變。
- */
-
-#include <Wire.h>
-
-const uint8_t SENSOR_ADDR = 0x29;        // 測距者感應器的門牌號碼
-const uint16_t NO_TARGET = 1200;         // 量到 1200 以上 = 這一邊沒有東西
-const uint16_t FAULT = 0xFFFF;           // 收到 0xFFFF（65535）= 這一顆故障
-
-void setup() {
-  Serial.begin(115200);
-  mbcBegin();
-  delay(500);
-
-  // 雷射開機這段時間距離都是 0，一定要等它準備好
-  if (!mbcWaitReady(6000)) {
-    Serial.println(F("找不到感應器，請先跑範例 1 檢查接線。"));
-    while (true) {}
-  }
-  Serial.println(F("準備好了！用手擋住左邊或右邊的雷射看看。"));
-}
-
-void loop() {
-  // 第 0x11 號格子：4 個數字
-  //   第 0、1 個合起來 = 左邊的距離（mm）
-  //   第 2、3 個合起來 = 右邊的距離（mm）
-  uint8_t d[4];
-  if (!mbcRead(0x11, d, 4)) {
-    Serial.println(F("讀取失敗，檢查一下線有沒有鬆掉。"));
-    delay(500);
-    return;
-  }
-
-  uint16_t left  = ((uint16_t)d[0] << 8) | d[1];   // 2 個數字合成一個距離
-  uint16_t right = ((uint16_t)d[2] << 8) | d[3];
-
-  Serial.print(F("左 "));
-  printSide(left);
-  Serial.print(F("   右 "));
-  printSide(right);
-  Serial.println();
-
-  delay(300);                            // 👉 可以改：每 0.3 秒看一次
-}
-
-// 印出一邊的距離：短長條 + 公分。判斷順序：先看故障，再看有沒有東西，最後才是距離
-void printSide(uint16_t mm) {
-  if (mm == FAULT) {
-    Serial.print(F("[    故障    ] 這顆雷射壞了"));
-    return;
-  }
-  if (mm >= NO_TARGET) {
-    Serial.print(F("[############] 沒有東西"));
-    return;
-  }
-  // 畫長條：每 100 mm（10 公分）一格，最多 12 格。越長 = 越遠
-  Serial.print('[');
-  uint8_t blocks = mm / 100;
-  for (uint8_t k = 0; k < 12; k++) Serial.print(k < blocks ? '#' : ' ');
-  Serial.print(F("] "));
-  Serial.print(mm / 10);                 // mm 除以 10 = 公分
-  Serial.print(F(" 公分"));
-}
-
-// ============================================================
-// 以下是「通訊小幫手」：負責跟感應器講話。
-// 所有 MBC 範例都一樣，不用改，也不用看懂。
-// ============================================================
-
-void mbcBegin() {
-  Wire.begin();
-#if defined(WIRE_HAS_TIMEOUT)
-  Wire.setWireTimeout(25000, true);      // 線沒接好時，不會讓 Arduino 當機卡住
-#endif
-}
-
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  if (Wire.endTransmission() != 0) return false;
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
-  return true;
-}
-
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
-  return Wire.endTransmission() == 0;
-}
-
-bool mbcWaitReady(uint16_t timeoutMs) {
-  unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
-    delay(50);
-  }
-  return false;
-}
-```
-
-**你會看到：**（先只擋左邊，再兩邊都不擋，前面遠遠的有一面牆）
-
-```text
-準備好了！用手擋住左邊或右邊的雷射看看。
-左 [###         ] 32 公分   右 [############] 沒有東西
-左 [########    ] 85 公分   右 [########    ] 87 公分
-```
-
-> [!TIP]
-> **試試看：** 用手只擋住一顆雷射，確認「左」真的是你以為的左邊。之後的範例都靠這個判斷方向。
-
----
-
-<h2 id="ex3">3️⃣ 東西在左邊、右邊，還是正前方？</h2>
-
-**做什麼：** 兩顆雷射並排朝前看，就像兩隻眼睛：**兩顆都看到 = 正前方**、只有左邊看到 = 偏左、只有右邊看到 = 偏右。機器人「追著東西走」的第一步就是這個。
-
-**準備：** 一個盒子或你的手，放在感應器前面 20 公分左右。
-
-<a href="/examples/tof2/arduino/tof2_03_where_is_it/tof2_03_where_is_it.ino" download data-ignore="true">📄 下載 tof2_03_where_is_it.ino</a>
-
-<!-- ino: examples/tof2/arduino/tof2_03_where_is_it/tof2_03_where_is_it.ino -->
-```cpp
-/*
- * 測距者 2 路 × Arduino　範例 3：東西在左邊、右邊，還是正前方？
- * ------------------------------------------------------------
- * 這個範例會做什麼？
- *   左、右兩顆雷射並排朝前看，就像兩隻眼睛：
- *     兩顆都看到東西   → 東西在正前方
- *     只有左邊看到     → 東西偏左
- *     只有右邊看到     → 東西偏右
- *     兩顆都沒看到     → 前面沒有東西
- *   機器人「追著東西走」或「找到目標」，第一步就是知道東西在哪一邊。
- *
- * 接線（Arduino UNO / Nano）：
- *   感應器 VCC → 5V      感應器 GND → GND
- *   感應器 SDA → A4      感應器 SCL → A5
- *
- * 怎麼看結果：
- *   上傳後，打開「序列埠監控窗」，速度選 115200。
- *   把一個盒子（或手）放在感應器前面 20 公分左右，慢慢左右移動。
+ *   序列埠監控窗 115200。拿手在左邊、右邊的雷射前面移動。
  *
  * 小提醒：
- *   只算 50 公分內的東西（SEE_DIST），免得後面的牆壁也被當成目標。
+ *   01~08 編號連續，一次讀 8 個值（mbcReadMany），保證是同一瞬間的值。
+ *   120 cm／1200 mm = 前面沒東西（或那顆失效）。
  */
 
 #include <Wire.h>
 
-const uint8_t SENSOR_ADDR = 0x29;        // 測距者感應器的門牌號碼
-const uint16_t FAULT = 0xFFFF;           // 0xFFFF = 這一顆故障
+const uint8_t ADDR = 0x29;               // 測距者的門牌號碼（I2C 位址）
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
 
-const uint16_t SEE_DIST = 500;           // 👉 可以改：多近才算「看到」（mm）。500 = 50 公分，最多 1199
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
 
 void setup() {
   Serial.begin(115200);
   mbcBegin();
   delay(500);
-
-  // 雷射開機這段時間距離都是 0（會被當成「兩邊都貼著東西」），一定要等它準備好
-  if (!mbcWaitReady(6000)) {
+  if (!mbcWaitReady(ADDR, 4000)) {
     Serial.println(F("找不到感應器，請先跑範例 1 檢查接線。"));
     while (true) {}
   }
-  Serial.println(F("準備好了！把東西放在感應器前面，慢慢左右移動。"));
+  Serial.println(F("準備好了！拿手在左右兩顆雷射前面移動看看。"));
 }
 
 void loop() {
-  // 第 0x11 號格子：左邊距離（2 個數字）+ 右邊距離（2 個數字）
-  uint8_t d[4];
-  if (!mbcRead(0x11, d, 4)) {
-    Serial.println(F("讀取失敗，檢查一下線有沒有鬆掉。"));
-    delay(500);
-    return;
-  }
+  int16_t a[8];                          // 放 01~08 這 8 格
+  if (!mbcReadMany(ADDR, 0x01, 8, a)) { Serial.println(F("讀不到")); delay(500); return; }
 
-  uint16_t left  = ((uint16_t)d[0] << 8) | d[1];
-  uint16_t right = ((uint16_t)d[2] << 8) | d[3];
+  Serial.println(F("---------------------------------------"));
+  Serial.print(F("01 左距離     ")); Serial.print(a[0]); Serial.println(F(" cm   （0~120，120 = 沒東西）"));
+  Serial.print(F("02 右距離     ")); Serial.print(a[1]); Serial.println(F(" cm"));
+  Serial.print(F("03 較近距離   ")); Serial.print(a[2]); Serial.println(F(" cm   （左右取比較近的那個）"));
+  Serial.print(F("04 左距離     ")); Serial.print(a[3]); Serial.println(F(" mm   （0~1200，比 cm 精細 10 倍）"));
+  Serial.print(F("05 右距離     ")); Serial.print(a[4]); Serial.println(F(" mm"));
+  Serial.print(F("06 初始化位元圖 ")); Serial.print(a[5]); Serial.println(F("     （bit0 左、bit1 右；3 = 兩顆都開機成功）"));
+  Serial.print(F("07 故障位元圖   ")); Serial.print(a[6]); Serial.println(F("     （bit0 左、bit1 右；0 = 都正常）"));
+  Serial.print(F("08 左右平均   ")); Serial.print(a[7]); Serial.println(F(" mm   （(左 mm + 右 mm) / 2）"));
 
-  // 「看到」= 不是故障，而且夠近。故障的那一邊當作沒看到
-  bool seeL = (left  != FAULT) && (left  < SEE_DIST);
-  bool seeR = (right != FAULT) && (right < SEE_DIST);
-
-  if (seeL && seeR) {
-    Serial.print(F("↑ 正前方   距離 "));
-    Serial.print(min(left, right) / 10);           // 兩邊比較近的那個，換成公分
-    Serial.println(F(" 公分"));
-  } else if (seeL) {
-    Serial.print(F("↖ 偏左     距離 "));
-    Serial.print(left / 10);
-    Serial.println(F(" 公分   → 機器人要往左轉"));
-  } else if (seeR) {
-    Serial.print(F("↗ 偏右     距離 "));
-    Serial.print(right / 10);
-    Serial.println(F(" 公分   → 機器人要往右轉"));
-  } else {
-    Serial.println(F("   前面沒有東西"));
-  }
-
-  if (left == FAULT || right == FAULT) {
-    Serial.println(F("（注意：有一顆雷射故障，請跑範例 1 檢查）"));
-  }
-
-  delay(200);                            // 👉 可以改：每 0.2 秒看一次
+  delay(50);                             // 讀完值歇一下
+  delay(450);                            // 每 0.5 秒更新一次，比較好看
 }
 
 // ============================================================
-// 以下是「通訊小幫手」：負責跟感應器講話。
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
 // 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
 // ============================================================
 
+// 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -471,103 +345,484 @@ void mbcBegin() {
 #endif
 }
 
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
   if (Wire.endTransmission() != 0) return false;
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-bool mbcWaitReady(uint16_t timeoutMs) {
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;
 }
 ```
 
-**你會看到：**（盒子從正前方慢慢往左移開）
+**你會看到：**（手放在左邊 30 公分，右邊沒東西）
 
 ```text
-↑ 正前方   距離 18 公分
-↖ 偏左     距離 22 公分   → 機器人要往左轉
-   前面沒有東西
+---------------------------------------
+01 左距離     30 cm   （0~120，120 = 沒東西）
+02 右距離     120 cm
+03 較近距離   30 cm   （左右取比較近的那個）
+04 左距離     304 mm   （0~1200，比 cm 精細 10 倍）
+05 右距離     1200 mm
+06 初始化位元圖 3     （bit0 左、bit1 右；3 = 兩顆都開機成功）
+07 故障位元圖   0     （bit0 左、bit1 右；0 = 都正常）
+08 左右平均   752 mm   （(左 mm + 右 mm) / 2）
 ```
 
 > [!TIP]
-> **試試看：** 範例只算 50 公分內的東西（`SEE_DIST = 500`），免得把後面的牆當成目標。桌子很大、後面很空的話，可以改成 `1000` 看看。
+> **試試看：** 用一張紙斜著放在兩顆雷射前面，看 `04` 和 `05` 差多少——這就是測「牆壁斜不斜」的方法。
 
 ---
 
-<h2 id="ex4">4️⃣ 倒車雷達警報燈</h2>
+<h2 id="ex3">3️⃣ 左邊近還是右邊近？</h2>
 
-**做什麼：** 用 Arduino 板子上內建的小燈（標著 **L** 那顆）當警報燈：沒有東西燈熄，有東西就閃，**越近閃越快**，貼到 10 公分內就一直亮。左、右哪一邊比較近就看哪一邊。
+**做什麼：** 讀 `01` 左 cm、`02` 右 cm、`03` 較近 cm 三格，把兩顆的距離畫成兩條長條，並說出東西在哪一邊比較近。
 
-<a href="/examples/tof2/arduino/tof2_04_distance_alarm/tof2_04_distance_alarm.ino" download data-ignore="true">📄 下載 tof2_04_distance_alarm.ino</a>
+**準備：** 一個盒子或你的手。
 
-<!-- ino: examples/tof2/arduino/tof2_04_distance_alarm/tof2_04_distance_alarm.ino -->
+<a href="/examples/tof2/arduino/tof2_03_left_right/tof2_03_left_right.ino" download data-ignore="true">📄 下載 tof2_03_left_right.ino</a>
+
+<!-- ino: examples/tof2/arduino/tof2_03_left_right/tof2_03_left_right.ino -->
 ```cpp
 /*
- * 測距者 2 路 × Arduino　範例 4：倒車雷達警報燈
+ * 測距者 2 路 × Arduino　範例 3：左邊近還是右邊近？
  * ------------------------------------------------------------
  * 這個範例會做什麼？
- *   用 Arduino 板子上內建的小燈（標著 L 的那顆）當警報燈，就像汽車的倒車雷達：
- *     前面沒有東西          → 燈熄
- *     有東西，越近閃得越快
- *     貼得很近（10 公分內） → 燈一直亮
- *   左、右兩顆雷射，哪一顆比較近就看哪一顆。
+ *   讀「01 左 cm」「02 右 cm」「03 較近 cm」三格，把兩顆雷射的距離畫成兩條長條，
+ *   並告訴你東西在哪一邊比較近。這是避障、找對手最常用的三格。
  *
- * 接線（Arduino UNO / Nano）：
+ * 你需要：測距者 2 路（通用 I2C 版）＋ 一個盒子或你的手。
+ *
+ * 接線：
  *   感應器 VCC → 5V      感應器 GND → GND
- *   感應器 SDA → A4      感應器 SCL → A5
- *   不用另外接燈，用板子上內建的燈就好。
+ *   感應器 SDA → A4      感應器 SCL → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
  *
  * 怎麼看結果：
- *   上傳後，看 Arduino 板子上的 L 燈。手慢慢靠近感應器，燈會越閃越快。
- *   也可以打開「序列埠監控窗」（115200）看最近的距離。
+ *   序列埠監控窗 115200。拿手從左邊移到右邊，看長條怎麼變。
+ *
+ * 左、右怎麼算？
+ *   感應器裝在車頭（雷射朝前），你站在車子後面往前看的左、右。
+ */
+
+#include <Wire.h>
+
+const uint8_t ADDR = 0x29;               // 測距者的門牌號碼（I2C 位址）
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
+
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+
+void setup() {
+  Serial.begin(115200);
+  mbcBegin();
+  delay(500);
+  if (!mbcWaitReady(ADDR, 4000)) {
+    Serial.println(F("找不到感應器，請先跑範例 1 檢查接線。"));
+    while (true) {}
+  }
+  Serial.println(F("準備好了！拿手從左邊移到右邊看看。（長條越長 = 越遠）"));
+}
+
+void loop() {
+  int16_t v[3];                          // v[0] = 01 左 cm、v[1] = 02 右 cm、v[2] = 03 較近 cm
+  if (!mbcReadMany(ADDR, 0x01, 3, v)) { Serial.println(F("讀不到感應器")); delay(500); return; }
+  int16_t left = v[0], right = v[1], nearest = v[2];
+
+  Serial.print(F("左 "));
+  printBar(left);
+  Serial.print(F("  右 "));
+  printBar(right);
+
+  if (nearest >= 120)        Serial.println(F("  → 120 公分內沒有東西"));
+  else if (left < right)     { Serial.print(F("  → 左邊比較近：")); Serial.print(nearest); Serial.println(F(" 公分")); }
+  else if (right < left)     { Serial.print(F("  → 右邊比較近：")); Serial.print(nearest); Serial.println(F(" 公分")); }
+  else                       { Serial.print(F("  → 正前方："));     Serial.print(nearest); Serial.println(F(" 公分")); }
+
+  delay(50);
+  delay(150);                            // 每 0.2 秒印一行   👉 可以改
+}
+
+// 把 0~120 公分畫成 0~12 格的長條
+void printBar(int16_t cm) {
+  int8_t n = cm / 10;
+  if (n > 12) n = 12;
+  Serial.print('[');
+  for (int8_t i = 0; i < 12; i++) Serial.print(i < n ? '#' : '.');
+  Serial.print(']');
+  if (cm < 10)  Serial.print(' ');
+  if (cm < 100) Serial.print(' ');
+  Serial.print(cm);
+}
+
+// ============================================================
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
+// 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
+// ============================================================
+
+// 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // 線沒接好時，不會讓 Arduino 當機卡住
+#endif
+}
+
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+```
+
+**你會看到：**（手從左邊移到右邊）
+
+```text
+左 [###.........] 35  右 [############]120  → 左邊比較近：35 公分
+左 [###.........] 32  右 [###.........] 32  → 正前方：32 公分
+左 [############]120  右 [####........] 41  → 右邊比較近：41 公分
+左 [############]120  右 [############]120  → 120 公分內沒有東西
+```
+
+---
+
+<h2 id="ex4">4️⃣ 用 mm 精準停車（進階）</h2>
+
+**做什麼：** 用 `04` 左 mm、`05` 右 mm、`08` 平均 mm（精細到 1 mm），讓小車往牆開，到 `STOP_MM`（預設 200 mm）剛好停下；接近時自動減速。沒有小車也可以跑，只看序列埠數字。
+
+**另外要準備：** 兩輪小車、L298N 馬達驅動板（或同樣接法的 TB6612）、電池、一面牆。
+
+**馬達接線：**
+
+| L298N | Arduino UNO / Nano / R4 | ESP32 | 控制 |
+| :---: | :---: | :---: | :--- |
+| ENA | 5 | GPIO 25 | 左輪速度 |
+| IN1 / IN2 | 7 / 8 | GPIO 26 / 27 | 左輪方向 |
+| ENB | 6 | GPIO 14 | 右輪速度 |
+| IN3 / IN4 | 9 / 10 | GPIO 32 / 33 | 右輪方向 |
+| GND | GND | GND | **一定要跟 Arduino 共地** |
+
+<a href="/examples/tof2/arduino/tof2_04_mm_precise/tof2_04_mm_precise.ino" download data-ignore="true">📄 下載 tof2_04_mm_precise.ino</a>
+
+<!-- ino: examples/tof2/arduino/tof2_04_mm_precise/tof2_04_mm_precise.ino -->
+```cpp
+/*
+ * 測距者 2 路 × Arduino　範例 4（進階）：用 mm 精準停車
+ * ------------------------------------------------------------
+ * 這個範例會做什麼？
+ *   用「04 左 mm」「05 右 mm」「08 左右平均 mm」三格（精細到 1 mm），
+ *   讓小車往前開，到距離牆壁 STOP_MM（預設 200 mm = 20 公分）時剛好停下。
+ *   接近時會自動減速，所以不會衝過頭。沒有小車也可以跑：只看序列埠的數字。
+ *
+ * 你需要：兩輪小車、L298N 馬達驅動板（或同樣接法的 TB6612 等）、電池、一面牆或盒子。
+ *
+ * 接線：
+ *   感應器 VCC → 5V      感應器 GND → GND
+ *   感應器 SDA → A4      感應器 SCL → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
+ *   L298N ENA → 5     IN1 → 7     IN2 → 8      （左輪）
+ *   L298N ENB → 6     IN3 → 9     IN4 → 10     （右輪）
+ *   （ESP32 改接：ENA → 25、IN1 → 26、IN2 → 27、ENB → 14、IN3 → 32、IN4 → 33）
+ *   L298N 的 GND 要跟 Arduino 的 GND 接在一起！感應器裝在車頭，雷射朝前。
+ *
+ * 怎麼看結果：
+ *   序列埠監控窗 115200。車子停下時印出的距離應該很接近 STOP_MM。
+ */
+
+#include <Wire.h>
+
+const uint8_t ADDR = 0x29;               // 測距者的門牌號碼（I2C 位址）
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
+
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+
+// ---- 馬達接腳 ----
+#if defined(ESP32)
+const int ENA = 25, IN1 = 26, IN2 = 27;  // 左輪（ESP32 的 6~11 腳不能用）
+const int ENB = 14, IN3 = 32, IN4 = 33;  // 右輪
+#else
+const int ENA = 5, IN1 = 7, IN2 = 8;     // 左輪
+const int ENB = 6, IN3 = 9, IN4 = 10;    // 右輪
+#endif
+
+// ---- 👉 可以改的參數 ----
+const int16_t STOP_MM    = 200;          // 停在離牆幾 mm（200 = 20 公分）
+const int16_t SLOW_MM    = 500;          // 離牆幾 mm 以內開始減速
+const int     FAST_SPEED = 150;          // 全速 0~255
+const int     SLOW_SPEED = 70;           // 最慢的爬行速度（太慢馬達會不動）
+const bool    LEFT_REVERSE  = false;     // 左輪轉反了改成 true
+const bool    RIGHT_REVERSE = false;     // 右輪轉反了改成 true
+
+bool stopped = false;
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(ENA, OUTPUT); pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
+  pinMode(ENB, OUTPUT); pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);
+  drive(0, 0);
+  mbcBegin();
+  delay(500);
+  if (!mbcWaitReady(ADDR, 4000)) {
+    Serial.println(F("找不到感應器，請先跑範例 1 檢查接線。"));
+    while (true) {}
+  }
+  Serial.print(F("3 秒後出發，目標：停在 ")); Serial.print(STOP_MM); Serial.println(F(" mm"));
+  delay(3000);
+}
+
+void loop() {
+  int16_t v[5];                          // 04 左 mm、05 右 mm、06、07、08 平均 mm
+  if (!mbcReadMany(ADDR, 0x04, 5, v)) {  // 從 04 號起一次讀 5 格（04~08）
+    drive(0, 0);                         // 讀不到 → 安全停車
+    delay(50);
+    return;
+  }
+  int16_t leftMm = v[0], rightMm = v[1], avgMm = v[4];
+  int16_t dist = (leftMm < rightMm) ? leftMm : rightMm;   // 用比較近的那顆，避免斜著撞到
+
+  Serial.print(F("左 ")); Serial.print(leftMm);
+  Serial.print(F(" mm  右 ")); Serial.print(rightMm);
+  Serial.print(F(" mm  平均 ")); Serial.print(avgMm);
+  Serial.print(F(" mm  "));
+
+  if (stopped || dist <= STOP_MM) {
+    drive(0, 0);
+    if (!stopped) { stopped = true; Serial.println(F("→ 到了，停車！")); }
+    else Serial.println(F("（已停）"));
+  } else if (dist <= SLOW_MM) {
+    // 越近越慢：距離從 SLOW_MM 到 STOP_MM，速度從 FAST 降到 SLOW
+    int speed = map(dist, STOP_MM, SLOW_MM, SLOW_SPEED, FAST_SPEED);
+    drive(speed, speed);
+    Serial.print(F("→ 減速 ")); Serial.println(speed);
+  } else {
+    drive(FAST_SPEED, FAST_SPEED);
+    Serial.println(F("→ 全速前進"));
+  }
+  delay(50);
+}
+
+void drive(int left, int right) {
+  if (LEFT_REVERSE)  left  = -left;
+  if (RIGHT_REVERSE) right = -right;
+  setMotor(ENA, IN1, IN2, left);
+  setMotor(ENB, IN3, IN4, right);
+}
+
+void setMotor(int en, int inA, int inB, int speed) {
+  speed = constrain(speed, -255, 255);
+  digitalWrite(inA, speed >= 0 ? HIGH : LOW);
+  digitalWrite(inB, speed >= 0 ? LOW : HIGH);
+  analogWrite(en, abs(speed));
+}
+
+// ============================================================
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
+// 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
+// ============================================================
+
+// 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // 線沒接好時，不會讓 Arduino 當機卡住
+#endif
+}
+
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+```
+
+**你會看到：**
+
+```text
+3 秒後出發，目標：停在 200 mm
+左 812 mm  右 805 mm  平均 808 mm  → 全速前進
+左 486 mm  右 480 mm  平均 483 mm  → 減速 139
+左 231 mm  右 226 mm  平均 228 mm  → 減速 77
+左 199 mm  右 196 mm  平均 197 mm  → 到了，停車！
+```
+
+> [!TIP]
+> 停得太遠就把 `SLOW_SPEED` 調大、太近（撞到）就把 `SLOW_MM` 調大。程式用「比較近的那顆」判斷，車子斜著靠近牆也不會撞到。
+
+---
+
+<h2 id="ex5">5️⃣ 倒車雷達警報</h2>
+
+**做什麼：** 讀 `03` 較近距離，用板子內建的小燈（**L**）和蜂鳴器當倒車雷達：沒有東西安靜，有東西就閃／嗶，**越近越急**，貼到 10 公分內就一直亮。
+
+**準備：** 有源蜂鳴器（可不接）：`+` → 8（ESP32 → 27）、`−` → GND。
+
+<a href="/examples/tof2/arduino/tof2_05_distance_alarm/tof2_05_distance_alarm.ino" download data-ignore="true">📄 下載 tof2_05_distance_alarm.ino</a>
+
+<!-- ino: examples/tof2/arduino/tof2_05_distance_alarm/tof2_05_distance_alarm.ino -->
+```cpp
+/*
+ * 測距者 2 路 × Arduino　範例 5：倒車雷達警報
+ * ------------------------------------------------------------
+ * 這個範例會做什麼？
+ *   用板子內建的小燈（L）和一顆蜂鳴器（可不接）當倒車雷達：
+ *   讀「03 較近距離 cm」，沒有東西就安靜，有東西就閃／嗶，越近越急，
+ *   貼到 STOP_CM 以內就一直亮、一直響。
+ *
+ * 你需要：測距者 2 路（通用 I2C 版）；蜂鳴器可有可無（有的話接「有源蜂鳴器」）。
+ *
+ * 接線：
+ *   感應器 VCC → 5V      感應器 GND → GND
+ *   感應器 SDA → A4      感應器 SCL → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
+ *   蜂鳴器 + → 8（ESP32 → 27）   蜂鳴器 − → GND
+ *
+ * 怎麼看結果：
+ *   手慢慢靠近感應器，L 燈（和蜂鳴器）越閃越快；序列埠 115200 也會印距離。
  */
 
 #include <Wire.h>
 
 #ifndef LED_BUILTIN
-#define LED_BUILTIN 2                    // 有些 ESP32 板子沒寫內建燈在哪，就用第 2 腳
+#define LED_BUILTIN 2                    // ESP32 開發板的內建燈通常接在 GPIO 2
 #endif
 
-const uint8_t SENSOR_ADDR = 0x29;        // 測距者感應器的門牌號碼
-const uint8_t LED = LED_BUILTIN;         // 板子內建的燈（UNO 是第 13 腳）
-const uint16_t NO_TARGET = 1200;         // 距離 1200 以上 = 沒有東西
-const uint16_t FAULT = 0xFFFF;           // 0xFFFF = 這一顆故障
+const uint8_t ADDR = 0x29;               // 測距者的門牌號碼（I2C 位址）
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
+
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+
+#if defined(ESP32)
+const int BUZZER = 27;                   // 蜂鳴器腳位（ESP32）
+#else
+const int BUZZER = 8;                    // 蜂鳴器腳位（UNO）
+#endif
 
 // ---- 👉 可以改的參數 ----
-const uint16_t ALARM_START = 1000;       // 多近開始閃（mm）：1000 = 1 公尺
-const uint16_t ALWAYS_ON   = 100;        // 多近變成一直亮（mm）：100 = 10 公分
+const int16_t ALARM_START_CM = 80;       // 幾公分以內開始警報
+const int16_t STOP_CM        = 10;       // 幾公分以內一直亮、一直響
 
-uint16_t nearest = NO_TARGET;            // 最近的東西有多遠（mm）
-bool ledOn = false;                      // 燈現在是亮還是熄
-unsigned long lastBlink = 0;             // 上一次切換燈的時間
-unsigned long lastRead = 0;              // 上一次讀感應器的時間
-unsigned long lastPrint = 0;             // 上一次印到電腦的時間
+unsigned long lastPrint = 0;
 
 void setup() {
   Serial.begin(115200);
-  pinMode(LED, OUTPUT);                  // 把燈的腳設成「輸出」，才能控制它亮或熄
+  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(BUZZER, OUTPUT);
   mbcBegin();
   delay(500);
-
-  // 雷射開機這段時間距離都是 0（會被當成貼著東西狂閃），一定要等它準備好
-  if (!mbcWaitReady(6000)) {
+  if (!mbcWaitReady(ADDR, 4000)) {
     Serial.println(F("找不到感應器，請先跑範例 1 檢查接線。"));
     while (true) {}
   }
@@ -575,54 +830,42 @@ void setup() {
 }
 
 void loop() {
-  // ---- 1. 每 0.05 秒讀一次左右距離，取比較近的那個 ----
-  if (millis() - lastRead >= 50) {
-    lastRead = millis();
-    uint8_t d[4];
-    if (mbcRead(0x11, d, 4)) {                         // 第 0x11 號格子：左距離 + 右距離
-      uint16_t left  = ((uint16_t)d[0] << 8) | d[1];
-      uint16_t right = ((uint16_t)d[2] << 8) | d[3];
-      if (left == FAULT)  left  = NO_TARGET;           // 故障的那一邊不算
-      if (right == FAULT) right = NO_TARGET;
-      nearest = min(left, right);                      // 比較近的那一邊
-    } else {
-      nearest = NO_TARGET;                             // 讀不到：先當作沒有東西，燈熄
-    }
-  }
+  int16_t cm = mbcRead(ADDR, 0x03);      // 03 = 左右兩顆取較近的距離（cm）
+  if (cm == MBC_NONE) { delay(100); return; }
 
-  // ---- 2. 依距離決定燈怎麼亮 ----
-  if (nearest >= ALARM_START) {
-    ledOn = false;                                     // 太遠或沒有東西：燈熄
-  } else if (nearest <= ALWAYS_ON) {
-    ledOn = true;                                      // 非常近：燈一直亮
-  } else {
-    // 越近，閃的間隔越短：距離 100 mm → 每 0.05 秒切換；1000 mm → 每 0.5 秒切換
-    unsigned long interval = map(nearest, ALWAYS_ON, ALARM_START, 50, 500);
-    if (millis() - lastBlink >= interval) {
-      lastBlink = millis();
-      ledOn = !ledOn;                                  // 亮變熄、熄變亮
-    }
-  }
-  digitalWrite(LED, ledOn ? HIGH : LOW);
-
-  // ---- 3. 每 0.5 秒把距離印到電腦上 ----
-  if (millis() - lastPrint >= 500) {
+  if (millis() - lastPrint >= 500) {     // 每 0.5 秒印一次距離
     lastPrint = millis();
-    if (nearest >= NO_TARGET) {
-      Serial.println(F("沒有東西"));
-    } else {
-      Serial.print(F("最近的東西："));
-      Serial.print(nearest / 10);
-      Serial.println(F(" 公分"));
-    }
+    if (cm >= 120) Serial.println(F("沒有東西"));
+    else { Serial.print(F("最近的東西：")); Serial.print(cm); Serial.println(F(" 公分")); }
+  }
+
+  if (cm >= ALARM_START_CM) {            // 太遠：安靜
+    alarm(false);
+    delay(50);
+  } else if (cm <= STOP_CM) {            // 太近：一直亮
+    alarm(true);
+    delay(50);
+  } else {                               // 中間：越近閃越快（間隔 50 ~ 400 ms）
+    int gap = map(cm, STOP_CM, ALARM_START_CM, 50, 400);
+    alarm(true);  delay(gap / 2);
+    alarm(false); delay(gap / 2);
   }
 }
 
+void alarm(bool on) {
+  digitalWrite(LED_BUILTIN, on ? HIGH : LOW);
+  digitalWrite(BUZZER, on ? HIGH : LOW);
+}
+
 // ============================================================
-// 以下是「通訊小幫手」：負責跟感應器講話。
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
 // 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
 // ============================================================
 
+// 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -630,177 +873,150 @@ void mbcBegin() {
 #endif
 }
 
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
   if (Wire.endTransmission() != 0) return false;
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-bool mbcWaitReady(uint16_t timeoutMs) {
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;
 }
 ```
 
-**你會看到：**（手慢慢靠近，L 燈越閃越快）
+**你會看到：**（手慢慢靠近）
 
 ```text
 準備好了！手慢慢靠近感應器，看 L 燈越閃越快。
 沒有東西
-最近的東西：85 公分
-最近的東西：42 公分
-最近的東西：9 公分
+最近的東西：65 公分
+最近的東西：30 公分
+最近的東西：8 公分
 ```
-
-> [!TIP]
-> **試試看：** 把 `ALARM_START` 改成 `500`，變成 50 公分內才開始閃。
 
 ---
 
-<h2 id="ex5">5️⃣ 東西從哪一邊溜走了？</h2>
+<h2 id="ex6">6️⃣ 雷射健康檢查</h2>
 
-**做什麼：** 這是測距者 2 路最厲害的功能。東西往右邊移走時，**左邊的雷射會先看不到它**，這時只剩右邊還看得到；等右邊也看不到，就知道它是**往右邊**溜走的。往左邊移走也是一樣的道理。相撲機器人的對手跑掉時，就知道要往哪邊轉去追。
+**做什麼：** 讀 `06` 初始化位元圖、`07` 故障位元圖和 `F3`，每秒報告兩顆雷射是不是都健康。失效那顆的距離會固定回 120／1200，看起來像「沒東西」，所以要靠這兩格分辨。比賽前跑一下。
 
-| 東西消失前，最後是誰看得到？ | 東西往哪邊離開 |
-| :--- | :--- |
-| 只剩**右邊**的雷射（左邊先看不到） | 往**右邊** → |
-| 只剩**左邊**的雷射（右邊先看不到） | 往**左邊** ← |
-| 兩邊同時看不到 | 往後退開，或移得太快 |
+<a href="/examples/tof2/arduino/tof2_06_fault_check/tof2_06_fault_check.ino" download data-ignore="true">📄 下載 tof2_06_fault_check.ino</a>
 
-**準備：** 一個盒子。先放在感應器正前方 20 公分（兩顆雷射都要看到），再**往左或往右**移開。
-
-<a href="/examples/tof2/arduino/tof2_05_leave_direction/tof2_05_leave_direction.ino" download data-ignore="true">📄 下載 tof2_05_leave_direction.ino</a>
-
-<!-- ino: examples/tof2/arduino/tof2_05_leave_direction/tof2_05_leave_direction.ino -->
+<!-- ino: examples/tof2/arduino/tof2_06_fault_check/tof2_06_fault_check.ino -->
 ```cpp
 /*
- * 測距者 2 路 × Arduino　範例 5：東西從哪一邊溜走了？
+ * 測距者 2 路 × Arduino　範例 6：雷射健康檢查
  * ------------------------------------------------------------
  * 這個範例會做什麼？
- *   這是測距者 2 路最厲害的功能：判斷東西是「從左邊」還是「從右邊」離開的。
- *   原理很簡單：東西往右邊移走時，左邊的雷射會「先」看不到它，
- *   這時只剩右邊的雷射還看得到；等右邊也看不到，就知道它是往右邊溜走的。
- *     最後只剩右邊看到 → 東西往右邊離開 →
- *     最後只剩左邊看到 → 東西往左邊離開 ←
- *   相撲機器人的對手跑掉時，就知道要往哪邊轉去追。
+ *   讀「06 初始化位元圖」「07 故障位元圖」和「F3 狀態旗標」，
+ *   每秒報告兩顆雷射是不是都健康。比賽前跑一下，就知道感應器有沒有壞。
+ *     06：bit0 = 左、bit1 = 右，1 = 那顆開機初始化成功（失敗不會重試，要重新上電）
+ *     07：bit0 = 左、bit1 = 右，1 = 那顆現在失效（讀不到或 200 ms 沒更新）
+ *   失效那顆的距離會固定回 120 cm／1200 mm，看起來像「沒東西」，所以要靠這兩格分辨。
  *
- * 接線（Arduino UNO / Nano）：
+ * 你需要：測距者 2 路（通用 I2C 版）。
+ *
+ * 接線：
  *   感應器 VCC → 5V      感應器 GND → GND
- *   感應器 SDA → A4      感應器 SCL → A5
- *   不用另外接燈，用板子上內建的燈就好（看到東西時亮）。
+ *   感應器 SDA → A4      感應器 SCL → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
  *
  * 怎麼看結果：
- *   上傳後，打開「序列埠監控窗」，速度選 115200。
- *   把一個盒子放在感應器正前方 20 公分（兩顆雷射都看到），
- *   然後把盒子往左邊或往右邊移開，看電腦說它往哪邊走了。
+ *   序列埠監控窗 115200。
  */
 
 #include <Wire.h>
 
-#ifndef LED_BUILTIN
-#define LED_BUILTIN 2                    // 有些 ESP32 板子沒寫內建燈在哪，就用第 2 腳
-#endif
+const uint8_t ADDR = 0x29;               // 測距者的門牌號碼（I2C 位址）
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
 
-const uint8_t SENSOR_ADDR = 0x29;        // 測距者感應器的門牌號碼
-const uint8_t LED = LED_BUILTIN;         // 板子內建的燈（UNO 是第 13 腳）
-const uint16_t FAULT = 0xFFFF;           // 0xFFFF = 這一顆故障
-
-// ---- 👉 可以改的參數 ----
-const uint16_t SEE_DIST = 500;           // 多近才算「看到」（mm）：500 = 50 公分，免得把後面的牆當成目標
-const unsigned long GONE_MS = 150;       // 兩邊都看不到超過多久（毫秒），才算真的離開
-
-// 目前誰看得到：0 = 都看不到、1 = 只有左邊、2 = 只有右邊、3 = 兩邊都看到
-uint8_t state = 0;
-uint8_t lastOneSide = 0;                 // 東西消失前「只剩哪一邊」看到：0 = 沒有（兩邊同時消失）、1 = 左、2 = 右
-bool present = false;                    // 現在是不是有東西在前面
-unsigned long goneSince = 0;             // 從什麼時候開始兩邊都看不到
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
 
 void setup() {
   Serial.begin(115200);
-  pinMode(LED, OUTPUT);
   mbcBegin();
   delay(500);
-
-  // 雷射開機這段時間距離都是 0（會被當成「兩邊都看到」），一定要等它準備好
-  if (!mbcWaitReady(6000)) {
-    Serial.println(F("找不到感應器，請先跑範例 1 檢查接線。"));
-    while (true) {}
-  }
-  Serial.println(F("準備好了！把盒子放在正前方，再往左或往右移開。"));
+  Serial.println(F("=== 測距者 2 路：雷射健康檢查 ==="));
+  // 這個範例故意不等就緒，開機失敗時也看得到 06 哪一顆沒起來
+  delay(3000);                           // 兩顆雷射開機最多約 3 秒
 }
 
 void loop() {
-  // 第 0x11 號格子：左邊距離（2 個數字）+ 右邊距離（2 個數字）
-  uint8_t d[4];
-  if (!mbcRead(0x11, d, 4)) {
-    Serial.println(F("讀取失敗，檢查一下線有沒有鬆掉。"));
-    delay(500);
+  int16_t v[2];                          // v[0] = 06 初始化、v[1] = 07 故障
+  int16_t st = mbcRead(ADDR, 0xF3);
+  if (!mbcReadMany(ADDR, 0x06, 2, v) || st == MBC_NONE) {
+    Serial.println(F("整個感應器都讀不到：檢查接線，或它是不是 SPIKE／EV3 版"));
+    delay(1000);
     return;
   }
-  uint16_t left  = ((uint16_t)d[0] << 8) | d[1];
-  uint16_t right = ((uint16_t)d[2] << 8) | d[3];
+  int16_t initOk = v[0], fault = v[1];
 
-  // 「看到」= 不是故障，而且夠近
-  bool seeL = (left  != FAULT) && (left  < SEE_DIST);
-  bool seeR = (right != FAULT) && (right < SEE_DIST);
+  Serial.println(F("---------------------------"));
+  Serial.print(F("F3 就緒 "));       Serial.print((st & 0x01) ? F("是") : F("否"));
+  Serial.print(F("  任一顆失效 "));  Serial.println((st & 0x02) ? F("是") : F("否"));
 
-  // 把兩邊看到的情形合成一個數字：左邊看到 +1、右邊看到 +2
-  uint8_t now = (seeL ? 1 : 0) + (seeR ? 2 : 0);
+  reportOne(F("左"), initOk & 0x01, fault & 0x01);
+  reportOne(F("右"), initOk & 0x02, fault & 0x02);
 
-  // ---- 1. 情形改變了，印出來 ----
-  if (now != state) {
-    state = now;
-    if (state == 3)      Serial.println(F("  左 ● ● 右   兩邊都看到（在正前方）"));
-    else if (state == 1) Serial.println(F("  左 ● ○ 右   只剩左邊看到"));
-    else if (state == 2) Serial.println(F("  左 ○ ● 右   只剩右邊看到"));
-    else                 Serial.println(F("  左 ○ ○ 右   兩邊都看不到"));
-  }
+  if (initOk == 3 && fault == 0) Serial.println(F("兩顆雷射都健康！"));
+  else Serial.println(F("有問題：先重新上電；還是一樣就檢查那顆雷射有沒有被遮住或接頭鬆了"));
 
-  // ---- 2. 有看到東西：記住「最後只剩哪一邊」 ----
-  if (state != 0) {
-    if (!present) {
-      present = true;
-      Serial.println(F("發現東西！"));
-    }
-    if (state == 3) lastOneSide = 0;          // 兩邊都看到 → 還沒開始離開
-    else            lastOneSide = state;      // 只剩一邊看到 → 記下是哪一邊
-    goneSince = millis();                     // 還看得到，重新計時
-  }
+  delay(50);
+  delay(950);
+}
 
-  // ---- 3. 兩邊都看不到一段時間了：宣布它從哪邊離開 ----
-  if (state == 0 && present && millis() - goneSince >= GONE_MS) {
-    present = false;
-    if (lastOneSide == 1)      Serial.println(F("←←← 東西往「左邊」離開了！（右邊的雷射先看不到）"));
-    else if (lastOneSide == 2) Serial.println(F("→→→ 東西往「右邊」離開了！（左邊的雷射先看不到）"));
-    else                       Serial.println(F("東西兩邊同時消失了（可能是往後退開，或移得太快）"));
-    Serial.println();
-  }
-
-  digitalWrite(LED, present ? HIGH : LOW);    // 有東西時燈亮
-
-  delay(30);                                  // 讀快一點，才抓得到「哪一邊先」
+// 印一顆雷射的狀況
+void reportOne(const __FlashStringHelper *name, int16_t ok, int16_t bad) {
+  Serial.print(F("  "));
+  Serial.print(name);
+  Serial.print(F(" 顆：初始化 "));
+  Serial.print(ok ? F("成功") : F("失敗"));
+  Serial.print(F("，目前 "));
+  Serial.println(bad ? F("失效！") : F("正常"));
 }
 
 // ============================================================
-// 以下是「通訊小幫手」：負責跟感應器講話。
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
 // 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
 // ============================================================
 
+// 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -808,77 +1024,561 @@ void mbcBegin() {
 #endif
 }
 
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
   if (Wire.endTransmission() != 0) return false;
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-bool mbcWaitReady(uint16_t timeoutMs) {
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;
 }
 ```
 
-**你會看到：**（盒子放在正前方，再往右移開）
+**你會看到：**
 
 ```text
-準備好了！把盒子放在正前方，再往左或往右移開。
-  左 ● ● 右   兩邊都看到（在正前方）
-發現東西！
-  左 ○ ● 右   只剩右邊看到
-  左 ○ ○ 右   兩邊都看不到
-→→→ 東西往「右邊」離開了！（左邊的雷射先看不到）
+=== 測距者 2 路：雷射健康檢查 ===
+---------------------------
+F3 就緒 是  任一顆失效 否
+  左 顆：初始化 成功，目前 正常
+  右 顆：初始化 成功，目前 正常
+兩顆雷射都健康！
 ```
 
-> [!TIP]
-> **試試看：** 如果一直出現「兩邊同時消失」，把盒子移慢一點，或用寬一點的盒子。學會以後，可以在「往右邊離開了」那一行後面加上讓機器人右轉的程式，做出會追對手的相撲機器人。
+---
+
+## 🔧 共用命令範例（所有 MBC 通用 I2C 產品都一樣）
+
+這三支放在 `examples/i2c/arduino/`，循行者、測距者、掌控者、IMU、神攝手都能用；程式開頭的 `ADDR`／`OLD_ADDR` 改成 `0x29` 即可。
+
+<h3 id="exi1">共用 1：換 I2C 位址（F8）</h3>
+
+**做什麼：** 兩個測距者 2 路要接在同一條線上（例如車頭、車尾各一個）時，用 `[F8][新位址][新位址取反]` 把其中一個換成別的位址（存 EEPROM）；`[F8][00][FF]` 回出廠。換完自動送 `[EF][A5]` 重開機，再掃一次確認。
+
+<a href="/examples/i2c/arduino/i2c_01_change_address/i2c_01_change_address.ino" download data-ignore="true">📄 下載 i2c_01_change_address.ino</a>
+
+<!-- ino: examples/i2c/arduino/i2c_01_change_address/i2c_01_change_address.ino -->
+```cpp
+/*
+ * MBC 通用 I2C × Arduino　共用範例 1：換 I2C 位址（F8）
+ * ------------------------------------------------------------
+ * 這個範例會做什麼？
+ *   同一條 I2C 線上要接兩個「門牌號碼」一樣的 MBC 感應器（例如兩個測距者 2 路，都是 0x29）
+ *   時，先把其中一個換成別的位址。做法：
+ *     寫 [F8][新位址][新位址取反]  → 存進感應器 EEPROM，重開機後生效
+ *     寫 [F8][0x00][0xFF]          → 回出廠位址
+ *   換完會自動送 [EF][0xA5] 重新開機，再掃一次確認新位址有出現。
+ *
+ * 你需要：任何一款 MBC 通用 I2C 版感應器（一次只接一個！）。
+ *
+ * 接線：
+ *   感應器 VCC → 5V      感應器 GND → GND
+ *   感應器 SDA → A4      感應器 SCL → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
+ *
+ * 怎麼用：
+ *   1. 把下面 OLD_ADDR 改成感應器現在的位址、NEW_ADDR 改成想換的位址（0x08~0x77）。
+ *   2. 上傳，打開序列埠監控窗 115200，打 y 按 Enter 就換；打 r 按 Enter 回出廠。
+ *   3. 之後所有範例裡的 ADDR 都要改成新位址。
+ *
+ * 小提醒：
+ *   F0「裝置 ID」低 byte 永遠是出廠位址，換了位址也不變，所以掃描時還是認得出是哪一款。
+ */
+
+#include <Wire.h>
+
+const uint8_t OLD_ADDR = 0x29;           // 感應器現在的位址   👉 改這裡（循行者 0x16、測距者 0x29、掌控者 0x42、IMU 0x6A、神攝手 0x4C）
+const uint8_t NEW_ADDR = 0x2A;           // 想換成的位址       👉 改這裡（0x08 ~ 0x77，別跟其他裝置撞號）
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
+
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+
+void setup() {
+  Serial.begin(115200);
+  mbcBegin();
+  delay(500);
+  Serial.println(F("=== MBC 通用 I2C：換位址 ==="));
+  Serial.print(F("目前線上有哪些 MBC 裝置：")); scan();
+  if (!mbcWaitReady(OLD_ADDR, 6000)) {
+    Serial.print(F("在 0x")); Serial.print(OLD_ADDR, HEX); Serial.println(F(" 找不到感應器，請確認 OLD_ADDR 和接線。"));
+    while (true) {}
+  }
+  Serial.print(F("找到了 0x")); Serial.print(OLD_ADDR, HEX);
+  Serial.print(F("（出廠位址 0x")); Serial.print(mbcRead(OLD_ADDR, 0xF0) & 0xFF, HEX); Serial.println(')');
+  Serial.print(F("打 y 換成 0x")); Serial.print(NEW_ADDR, HEX); Serial.println(F("；打 r 回出廠位址。然後按 Enter"));
+}
+
+void loop() {
+  if (!Serial.available()) { delay(50); return; }
+  char c = Serial.read();
+  if (c == 'y') {
+    if (NEW_ADDR < 0x08 || NEW_ADDR > 0x77) { Serial.println(F("NEW_ADDR 要在 0x08 ~ 0x77 之間")); return; }
+    uint8_t p[2] = { NEW_ADDR, (uint8_t)~NEW_ADDR };   // [新位址][新位址取反]：兩個都對才會寫入，避免誤觸
+    Serial.print(F("換位址 → 0x")); Serial.println(NEW_ADDR, HEX);
+    if (!mbcWrite(OLD_ADDR, 0xF8, p, 2)) { Serial.println(F("寫入失敗")); return; }
+    rebootAndCheck(NEW_ADDR);
+  } else if (c == 'r') {
+    uint8_t p[2] = { 0x00, 0xFF };       // [F8][00][FF] = 回出廠位址
+    Serial.println(F("回出廠位址"));
+    if (!mbcWrite(OLD_ADDR, 0xF8, p, 2)) { Serial.println(F("寫入失敗")); return; }
+    rebootAndCheck(0);                   // 0 = 不知道出廠位址，掃描看結果
+  }
+}
+
+// 送重開機命令，等它起來，再掃描一次
+void rebootAndCheck(uint8_t expect) {
+  delay(50);                             // 給 EEPROM 一點時間寫完
+  uint8_t magic = 0xA5;
+  mbcWrite(OLD_ADDR, 0xEF, &magic, 1);   // [EF][A5] = 重新開機（新位址重開後才生效）
+  Serial.println(F("重新開機中..."));
+  delay(3000);                           // 測距者 8 路開機要 2~4 秒
+  Serial.print(F("掃描結果：")); scan();
+  if (expect && mbcRead(expect, 0xF3) != MBC_NONE) {
+    Serial.print(F("成功！感應器現在在 0x")); Serial.println(expect, HEX);
+    Serial.println(F("記得把其他範例的 ADDR 改成新位址。"));
+  } else if (expect) {
+    Serial.println(F("新位址沒有回應。請重新上電再掃一次（有些板子的 I2C 要重新上電才會更新）。"));
+  }
+  Serial.println(F("（把 OLD_ADDR 改成新位址再上傳，就可以再換一次或回出廠）"));
+}
+
+// 掃 0x08~0x77，有回應的就讀 F0 看是不是 MBC 裝置
+void scan() {
+  uint8_t found = 0;
+  for (uint8_t a = 0x08; a <= 0x77; a++) {
+    Wire.beginTransmission(a);
+    if (Wire.endTransmission() != 0) continue;
+    int16_t id = mbcRead(a, 0xF0);
+    Serial.print(F(" 0x")); Serial.print(a, HEX);
+    if (id != MBC_NONE) { Serial.print(F("(出廠 0x")); Serial.print(id & 0xFF, HEX); Serial.print(')'); }
+    found++;
+  }
+  if (!found) Serial.print(F("（沒有）"));
+  Serial.println();
+}
+
+// ============================================================
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
+// 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
+// ============================================================
+
+// 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // 線沒接好時，不會讓 Arduino 當機卡住
+#endif
+}
+
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+```
+
+<h3 id="exi2">共用 2：身分證＋重新開機（F0～F5、EF）</h3>
+
+**做什麼：** 一次讀 `F0`～`F5` 六格共用暫存器並認出產品；打 `r` 送 `[EF][A5]` 重開機，看 `F5` 開機秒數歸零。
+
+<a href="/examples/i2c/arduino/i2c_02_reboot_and_version/i2c_02_reboot_and_version.ino" download data-ignore="true">📄 下載 i2c_02_reboot_and_version.ino</a>
+
+<!-- ino: examples/i2c/arduino/i2c_02_reboot_and_version/i2c_02_reboot_and_version.ino -->
+```cpp
+/*
+ * MBC 通用 I2C × Arduino　共用範例 2：讀身分證＋重新開機（F0~F5、EF）
+ * ------------------------------------------------------------
+ * 這個範例會做什麼？
+ *   每一款 MBC 通用 I2C 感應器都有同樣的 6 格「身分證」：
+ *     F0 裝置 ID（低 byte 出廠位址、高 byte hw[0]）、F1 協議版本、F2 韌體版本、
+ *     F3 狀態旗標、F4 更新序號（每 10 ms +1，0~255 循環）、F5 開機秒數
+ *   這個範例每秒印一次，並認出是哪一款產品。
+ *   在序列埠打 r 按 Enter → 送 [EF][0xA5] 重新開機，你會看到 F5 開機秒數歸零、F4 繼續跳。
+ *
+ * 你需要：任何一款 MBC 通用 I2C 版感應器。
+ *
+ * 接線：
+ *   感應器 VCC → 5V      感應器 GND → GND
+ *   感應器 SDA → A4      感應器 SCL → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
+ *
+ * 怎麼看結果：
+ *   序列埠監控窗 115200。
+ *
+ * 小提醒：
+ *   F4 一圈只有 2.56 秒，不能拿來判斷有沒有重開機；要看 F5 有沒有變小。
+ *   F4 不動 = 感應器忙（例如校準中）。
+ */
+
+#include <Wire.h>
+
+const uint8_t ADDR = 0x16;               // 感應器位址   👉 改這裡（循行者 0x16、測距者 0x29、掌控者 0x42、IMU 0x6A、神攝手 0x4C）
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
+
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+
+void setup() {
+  Serial.begin(115200);
+  mbcBegin();
+  delay(500);
+  Serial.println(F("=== MBC 通用 I2C：身分證＋重新開機 ==="));
+  if (!mbcWaitReady(ADDR, 6000)) {
+    Serial.println(F("找不到感應器，請確認 ADDR 和接線（可以先跑 i2c_03_scan 掃描）。"));
+    while (true) {}
+  }
+  Serial.println(F("打 r 按 Enter = 重新開機"));
+}
+
+void loop() {
+  if (Serial.available() && Serial.read() == 'r') {
+    uint8_t magic = 0xA5;
+    mbcWrite(ADDR, 0xEF, &magic, 1);     // [EF][A5] = 重新開機；其他數字會被忽略
+    Serial.println(F(">>> 已送重新開機，看 F5 會不會歸零"));
+    delay(500);
+  }
+
+  int16_t f[6];                          // F0~F5 編號連續，一次讀 6 格
+  if (!mbcReadMany(ADDR, 0xF0, 6, f)) { Serial.println(F("（重開機中／讀不到）")); delay(500); return; }
+
+  uint8_t factory = (uint8_t)(f[0] & 0xFF);
+  uint8_t hw0     = (uint8_t)((f[0] >> 8) & 0xFF);
+  Serial.println(F("---------------------------"));
+  Serial.print(F("F0 裝置 ID    出廠位址 0x")); Serial.print(factory, HEX);
+  Serial.print(F("  hw[0] = ")); Serial.print(hw0);
+  Serial.print(F("  → ")); printProduct(factory, hw0); Serial.println();
+  Serial.print(F("F1 協議版本   ")); Serial.println(f[1]);
+  Serial.print(F("F2 韌體版本   ")); Serial.print(f[2] / 100); Serial.print('.'); Serial.println(f[2] % 100);
+  Serial.print(F("F3 狀態旗標   0b"));
+  for (int8_t i = 7; i >= 0; i--) Serial.print((f[3] >> i) & 1);
+  Serial.println(F("  （bit0 = 就緒，其他 bit 看各產品說明）"));
+  Serial.print(F("F4 更新序號   ")); Serial.print(f[4]); Serial.println(F("  （一直在跳 = 感應器活著）"));
+  Serial.print(F("F5 開機秒數   ")); Serial.print(f[5]); Serial.println(F(" 秒"));
+
+  delay(50);
+  delay(950);
+}
+
+// 用出廠位址＋hw[0] 認產品
+void printProduct(uint8_t factory, uint8_t hw0) {
+  if      (factory == 0x16 && hw0 == 8)  Serial.print(F("循行者 8 路"));
+  else if (factory == 0x16 && hw0 == 16) Serial.print(F("循行者 16 路"));
+  else if (factory == 0x29 && hw0 == 2)  Serial.print(F("測距者 2 路"));
+  else if (factory == 0x29 && hw0 == 8)  Serial.print(F("測距者 8 路"));
+  else if (factory == 0x42 && hw0 == 1)  Serial.print(F("掌控者 PS2"));
+  else if (factory == 0x42 && hw0 == 2)  Serial.print(F("掌控者 PS4"));
+  else if (factory == 0x6A)              Serial.print(F("IMU 陀螺儀"));
+  else if (factory == 0x4C && hw0 == 1)  Serial.print(F("神攝手 學校版"));
+  else if (factory == 0x4C && hw0 == 2)  Serial.print(F("神攝手 WRO 版"));
+  else                                   Serial.print(F("不認識的 MBC 裝置"));
+}
+
+// ============================================================
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
+// 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
+// ============================================================
+
+// 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // 線沒接好時，不會讓 Arduino 當機卡住
+#endif
+}
+
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+```
+
+<h3 id="exi3">共用 3：掃描線上裝置</h3>
+
+**做什麼：** 掃 `0x08`～`0x77`，有回應的就讀 `F0` 認出是哪一款 MBC 產品、韌體幾版、位址有沒有換過。
+
+<a href="/examples/i2c/arduino/i2c_03_scan/i2c_03_scan.ino" download data-ignore="true">📄 下載 i2c_03_scan.ino</a>
+
+<!-- ino: examples/i2c/arduino/i2c_03_scan/i2c_03_scan.ino -->
+```cpp
+/*
+ * MBC 通用 I2C × Arduino　共用範例 3：掃描線上有哪些裝置
+ * ------------------------------------------------------------
+ * 這個範例會做什麼？
+ *   把 I2C 位址 0x08~0x77 全部敲一遍，有回應的就讀 F0「裝置 ID」認出是哪一款 MBC 產品
+ *   （不是 MBC 的裝置會印「其他裝置」）。接線有沒有通、位址換成什麼、同一條線上接了幾個，
+ *   一跑就知道。每 3 秒掃一次。
+ *
+ * 你需要：任何 MBC 通用 I2C 版感應器（可以同時接好幾個，位址不同就行）。
+ *
+ * 接線：
+ *   感應器 VCC → 5V      感應器 GND → GND
+ *   感應器 SDA → A4      感應器 SCL → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
+ *
+ * 怎麼看結果：
+ *   序列埠監控窗 115200。
+ */
+
+#include <Wire.h>
+
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
+
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+
+void setup() {
+  Serial.begin(115200);
+  mbcBegin();
+  delay(500);
+  Serial.println(F("=== MBC 通用 I2C：掃描 ==="));
+}
+
+void loop() {
+  uint8_t found = 0;
+  Serial.println(F("掃描 0x08 ~ 0x77 ..."));
+  for (uint8_t a = 0x08; a <= 0x77; a++) {
+    Wire.beginTransmission(a);           // 敲門
+    if (Wire.endTransmission() != 0) continue;   // 沒人應門 → 下一個
+    found++;
+    Serial.print(F("  0x"));
+    if (a < 0x10) Serial.print('0');
+    Serial.print(a, HEX);
+    Serial.print(F("  "));
+
+    int16_t id = mbcRead(a, 0xF0);       // 讀裝置 ID
+    if (id == MBC_NONE) { Serial.println(F("其他裝置（不是 MBC，或不是通用 I2C 版）")); continue; }
+    uint8_t factory = (uint8_t)(id & 0xFF);
+    uint8_t hw0     = (uint8_t)((id >> 8) & 0xFF);
+    printProduct(factory, hw0);
+    int16_t fw = mbcRead(a, 0xF2);
+    Serial.print(F("  韌體 ")); Serial.print(fw / 100); Serial.print('.'); Serial.print(fw % 100);
+    Serial.print(F("  協議 v")); Serial.print(mbcRead(a, 0xF1));
+    if (factory != a) { Serial.print(F("  （位址已換過，出廠是 0x")); Serial.print(factory, HEX); Serial.print(')'); }
+    Serial.println();
+  }
+  if (!found) Serial.println(F("  沒有任何裝置：檢查 SDA/SCL 有沒有接反、VCC/GND 有沒有插緊"));
+  Serial.print(F("共 ")); Serial.print(found); Serial.println(F(" 個裝置"));
+  delay(50);
+  delay(2950);
+}
+
+// 用出廠位址＋hw[0] 認產品
+void printProduct(uint8_t factory, uint8_t hw0) {
+  if      (factory == 0x16 && hw0 == 8)  Serial.print(F("循行者 8 路"));
+  else if (factory == 0x16 && hw0 == 16) Serial.print(F("循行者 16 路"));
+  else if (factory == 0x29 && hw0 == 2)  Serial.print(F("測距者 2 路"));
+  else if (factory == 0x29 && hw0 == 8)  Serial.print(F("測距者 8 路"));
+  else if (factory == 0x42 && hw0 == 1)  Serial.print(F("掌控者 PS2"));
+  else if (factory == 0x42 && hw0 == 2)  Serial.print(F("掌控者 PS4"));
+  else if (factory == 0x6A)              Serial.print(F("IMU 陀螺儀"));
+  else if (factory == 0x4C && hw0 == 1)  Serial.print(F("神攝手 學校版"));
+  else if (factory == 0x4C && hw0 == 2)  Serial.print(F("神攝手 WRO 版"));
+  else                                   Serial.print(F("不認識的 MBC 裝置"));
+}
+
+// ============================================================
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
+// 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
+// ============================================================
+
+// 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // 線沒接好時，不會讓 Arduino 當機卡住
+#endif
+}
+
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+```
+
+**你會看到：**
+
+```text
+=== MBC 通用 I2C：掃描 ===
+掃描 0x08 ~ 0x77 ...
+  0x29  測距者 2 路  韌體 2.0  協議 v2
+共 1 個裝置
+```
 
 ---
 
 ## ❓ 常見問題
 
 **Q：一直出現「找不到感應器」？**
-1. 檢查 SDA、SCL 有沒有接反（UNO：SDA → A4、SCL → A5）。新版板子焊錫點 **1 = SCL、2 = SDA**，跟舊版印的字相反，先對調兩條線試試看。
-2. 檢查 VCC、GND 有沒有插緊。感應器上的燈有沒有亮？
-3. 確認是 **通用 I2C 版**（新版板子）：SPIKE 版、EV3 版的韌體不同，不能直接接 Arduino。
+1. 檢查 SDA、SCL 有沒有接反（UNO：SDA → A4、SCL → A5；ESP32：21 / 22）。
+2. 檢查 VCC、GND 有沒有插緊。
+3. 確認是 **通用 I2C 版**：SPIKE 版、EV3 版的韌體不同，不能直接接 Arduino。舊板（PA9/PA10 沒有 I2C）也沒有通用 I2C 版。
+4. 跑 [共用 3 掃描](#exi3)，看線上到底有沒有裝置、位址是不是被換過。
+
+**Q：讀到 `-32768` 代表什麼？**
+`-32768`（程式裡叫 `MBC_NONE`）有兩種意思：① 小幫手讀不到感應器（接線鬆了、位址錯了）；② 那個編號是空號——測距者 2 路只有 `01`～`08`，去讀 `09` 就會拿到 `-32768`。正常的距離不可能是這個數字，所以可以直接拿來判斷「這筆資料不能用」。
+
+**Q：ESP32 讀不到、或讀到的值怪怪的？**
+MBC 有些產品（掌控者 PS4、神攝手）本身是 ESP32 做的，不能「時脈延展」，主機寫完編號要**等 2 ms** 再讀。小幫手 `mbcReadMany` 裡已經有 `delay(2)`，請不要刪掉。ESP32 當主機時 I2C 腳位預設是 GPIO 21（SDA）／22（SCL）。
+
+**Q：距離一直是 120／1200？**
+那個方向 120 公分內真的沒東西，或那顆雷射失效了。跑 [範例 6](#ex6) 看 `07` 故障位元圖就知道是哪一種。
 
 **Q：序列埠監控窗一堆亂碼？**
 速度沒選 **115200**，在監控窗右下角改好就正常了。
 
-**Q：一開機距離是 0？**
-感應器還在把雷射叫醒，這段時間的資料都是 0。範例都已經用 `mbcWaitReady(6000)` 等好了；你自己寫程式時，也要先等第 `0x32` 格的第 0 個位元變成 1 再開始讀。
-
-**Q：有一邊一直顯示「故障」？**
-先關掉電源、重新插好再試一次。還是一樣的話，跑 [範例 1](#ex1) 看是哪一邊沒開機成功，再 [聯絡我們](/contact.md) 協助檢修。
-
-**Q：東西明明在前面，卻顯示「沒有東西」？**
-測距者最遠量到 120 公分。另外，**黑色絨布、透明玻璃、亮面鏡子**這類東西反射的雷射光很少或很亂，比較難量到，換成白色或淺色的東西試試看。
-
-**Q：可以跟測距者 8 路，或市售的 VL53L0X 雷射模組接在一起嗎？**
-不行。它們的門牌號碼都是 `0x29`，同一組 SDA/SCL 上只能接一個。可以跟其他門牌號碼不同的 MBC 產品（例如循行者 `0x16`）接在同一組線上。
-
-**Q：想知道每一個格子放什麼資料？**
-
-| 格子 | 讀幾個 | 內容 |
-| :---: | :---: | :--- |
-| `0x01` | 17 | 版本資料（第 9 ~ 16 個是名字 `LASER2`） |
-| `0x11` | 4 | 左距離、右距離（各 2 個數字，大的那一半在前，單位 mm） |
-| `0x31` | 9 | 狀態（第 0 個：第 0 位元 = 準備好、第 1 位元 = 有雷射故障；第 2 個：開機成功的雷射） |
-
-完整的共通規則請看 [MBC 通用 I2C 協議](/i2c-protocol.md)。
+**Q：可以同時接測距者 2 路和 8 路嗎？**
+兩款出廠都是 `0x29`，要先用 [共用 1](#exi1) 把其中一個換位址。位址不同的 MBC 產品（例如循行者 `0x16`）本來就能接在同一組線上。

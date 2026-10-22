@@ -1,0 +1,13 @@
+| 產品 | SPIKE | EV3 | Arduino I2C | mBlock | MATRIX | micro:bit |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| [循行者 8 路 (Line8)](/sensors/line8/index.md) | [App・Pybricks](/sensors/line8/spike-hub.md) | [App・Pybricks](/sensors/line8/ev3-hub.md) | [範例](/sensors/line8/arduino-examples.md) | [範例](/sensors/line8/mblock-examples.md) | [函式庫](/sensors/line8/matrix.md) | [範例](/sensors/line8/microbit-examples.md) |
+| [循行者 16 路 (Line16)](/sensors/line16/index.md) | [App・Pybricks](/sensors/line16/spike-hub.md) | [App・Pybricks](/sensors/line16/ev3-hub.md) | [範例](/sensors/line16/arduino-examples.md) | [範例](/sensors/line16/mblock-examples.md) | [函式庫](/sensors/line16/matrix.md) | [範例](/sensors/line16/microbit-examples.md) |
+| [測距者 2 路 (TOF2)](/sensors/tof2/index.md) | [產品頁](/sensors/tof2/index.md) | [產品頁](/sensors/tof2/index.md) | [範例](/sensors/tof2/arduino-examples.md) | [範例](/sensors/tof2/mblock-examples.md) | [函式庫](/sensors/tof2/matrix.md) | [範例](/sensors/tof2/microbit-examples.md) |
+| [測距者 8 路 (TOF8)](/sensors/tof8/index.md) | [產品頁](/sensors/tof8/index.md) | [產品頁](/sensors/tof8/index.md) | [範例](/sensors/tof8/arduino-examples.md) | [範例](/sensors/tof8/mblock-examples.md) | [函式庫](/sensors/tof8/matrix.md) | [範例](/sensors/tof8/microbit-examples.md) |
+| [掌控者 PS2 (PS2)](/sensors/ps2/index.md) | [產品頁](/sensors/ps2/index.md) | [產品頁](/sensors/ps2/index.md) | [範例](/sensors/ps2/arduino-examples.md) | [範例](/sensors/ps2/mblock-examples.md) | [函式庫](/sensors/ps2/matrix.md) | [範例](/sensors/ps2/microbit-examples.md) |
+| [掌控者 PS4/PS5](/sensors/ps4/index.md) | [產品頁](/sensors/ps4/index.md) | [產品頁](/sensors/ps4/index.md) | [範例](/sensors/ps4/arduino-examples.md) | [範例](/sensors/ps4/mblock-examples.md) | [函式庫](/sensors/ps4/matrix.md) | [範例](/sensors/ps4/microbit-examples.md) |
+| [神攝手 ESP32CAM](/sensors/esp32cam/index.md) | [產品頁](/sensors/esp32cam/index.md) | [產品頁](/sensors/esp32cam/index.md) | [範例](/sensors/esp32cam/arduino-examples.md) | [範例](/sensors/esp32cam/mblock-examples.md) | [函式庫](/sensors/esp32cam/matrix.md) | [範例](/sensors/esp32cam/microbit-examples.md) |
+| [SPIKE 6 路擴充器 (EXP6)](/sensors/exp6/index.md) | [說明](/sensors/exp6/spike-official.md) | — | [範例](/sensors/exp6/arduino-examples.md) | — | — | — |
+| [陀螺儀 IMU 九軸](/sensors/imu/index.md) | — | [產品頁](/sensors/imu/index.md) | [範例](/sensors/imu/arduino-examples.md) | [範例](/sensors/imu/mblock-examples.md) | [函式庫](/sensors/imu/matrix.md) | [範例](/sensors/imu/microbit-examples.md) |
+| [SPIKE 6 路舵機擴充器 (Servo6)](/sensors/servo6/index.md) | [說明](/sensors/servo6/spike-official.md) | — | — | — | — | — |
+| [遠距離顏色感應器 OV3660](/sensors/ov3660/index.md) | — | — | — | — | — | — |

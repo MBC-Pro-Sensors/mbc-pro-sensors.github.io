@@ -3,6 +3,12 @@
 
 <!-- product-hero -->
 
+## 🎮 Select Your Hub
+
+Pick your hub first, then the software: every tile links to beginner examples, the command reference and the library / blocks.
+
+<!-- platform-grid -->
+
 > [!IMPORTANT]
 > **⚠️ Important Notice on Purchase and Compatibility**
 > This expander is designed **EXCLUSIVELY for the SPIKE series**, featuring the LPF2 (Lego 6-pin) interface.

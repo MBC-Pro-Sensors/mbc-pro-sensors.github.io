@@ -2,25 +2,31 @@
  * 測距者 8 路 × Arduino　範例 1：跟感應器打招呼
  * ------------------------------------------------------------
  * 這個範例會做什麼？
- *   確認感應器有沒有接好。接好了，會在電腦上印出感應器的名字、版本，
- *   並檢查 8 顆雷射是不是都正常。
+ *   確認感應器有沒有接好。接好了，會印出它的身分證（裝置 ID、協議版本、
+ *   韌體版本）和目前狀態（8 顆雷射是不是都正常）。
  *   每次接新感應器，都建議先跑這個範例。
  *
- * 接線（Arduino UNO / Nano）：
+ * 你需要：測距者 8 路（通用 I2C 版）、Arduino UNO／Nano／UNO R4 或 ESP32。
+ *
+ * 接線：
  *   感應器 VCC → 5V      感應器 GND → GND
- *   感應器 SDA → A4      感應器 SCL → A5
+ *   感應器 SDA → A4      感應器 SCL → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
  *
  * 怎麼看結果：
  *   上傳後，打開「序列埠監控窗」，速度選 115200。
  *
  * 小提醒：
- *   測距者 8 路一開機要花 2 ~ 4 秒把 8 顆雷射一顆一顆叫醒，
- *   這段時間讀到的距離全部都是 0（看起來像貼著東西），所以一定要先等它「準備好」。
+ *   8 顆雷射一顆一顆叫醒要 2～4 秒，還沒就緒前距離都是 0，所以一定要先等 F3 bit0。
  */
 
 #include <Wire.h>                        // Arduino 內建的 I2C 通訊工具，用來跟感應器講話
 
-const uint8_t SENSOR_ADDR = 0x29;        // 測距者感應器的「門牌號碼」，固定是 0x29
+const uint8_t ADDR = 0x29;               // 測距者的「門牌號碼」（I2C 位址），2 路與 8 路都是 0x29
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
+
+// 小幫手的宣告（實作在檔案最下面）；mbcWrite 的參數可以省略
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
 
 void setup() {
   Serial.begin(115200);                  // 打開跟電腦講話的通道，速度 115200
@@ -30,65 +36,51 @@ void setup() {
   Serial.println(F("=== 測距者 8 路：跟感應器打招呼 ==="));
   Serial.println(F("等 8 顆雷射開機（最多 6 秒）..."));
 
-  // 等感應器說「我準備好了」，最多等 6 秒（8 顆雷射開機要 2 ~ 4 秒）
-  if (!mbcWaitReady(6000)) {
+  // 等感應器說「我準備好了」（狀態旗標 F3 的 bit0 = 8 顆都初始化完），最多等 6 秒
+  if (!mbcWaitReady(ADDR, 6000)) {
     Serial.println(F("找不到感應器！請檢查："));
-    Serial.println(F("  1. SDA 接 A4、SCL 接 A5，有沒有接反？"));
+    Serial.println(F("  1. SDA 接 A4、SCL 接 A5（ESP32：21 / 22），有沒有接反？"));
     Serial.println(F("  2. VCC 接 5V、GND 接 GND，有沒有插緊？"));
     Serial.println(F("  3. 你的感應器是「通用 I2C 版」嗎？（SPIKE 版、EV3 版不能接 Arduino）"));
-    Serial.println(F("  4. 同一組 SDA/SCL 上有沒有接其他門牌號碼也是 0x29 的東西（例如測距者 2 路、市售 VL53L0X 模組）？"));
     while (true) {}                      // 找不到就停在這裡
   }
 
-  // 讀「版本資料」：感應器的第 0x01 號格子，共 17 個數字
-  uint8_t info[17];
-  if (!mbcRead(0x01, info, 17)) {
-    Serial.println(F("讀取失敗，檢查一下線有沒有鬆掉。"));
-    while (true) {}
-  }
-
-  // 第 9 ~ 16 個數字是感應器的名字（英文字母）
-  char name[9] = {0};
-  memcpy(name, &info[9], 8);
-
-  Serial.print(F("找到了！感應器名字："));
-  Serial.println(name);                  // 應該會印出 LASER8
-
-  Serial.print(F("韌體版本："));
-  Serial.print(info[2]);                 // 主版本
-  Serial.print('.');
-  Serial.println(info[3]);               // 次版本
-
-  Serial.print(F("雷射數量："));
-  Serial.print(info[7]);                 // 測距者 8 路 = 8
+  // ---- F0 裝置 ID：低 byte = 出廠位址、高 byte = 雷射顆數 ----
+  int16_t id = mbcRead(ADDR, 0xF0);
+  uint8_t factoryAddr = (uint8_t)(id & 0xFF);        // 出廠位址（換過位址也不變）
+  uint8_t sensors     = (uint8_t)((id >> 8) & 0xFF); // hw[0] = 幾顆雷射
+  Serial.print(F("找到了！出廠位址 0x"));
+  Serial.print(factoryAddr, HEX);
+  Serial.print(F("，雷射數量 "));
+  Serial.print(sensors);                 // 測距者 8 路 = 8
   Serial.println(F(" 顆"));
 
-  Serial.print(F("最遠量得到："));
-  Serial.print(info[8] * 10);            // 這格存的是「幾個 10 毫米」，乘 10 變成毫米（1200）
-  Serial.println(F(" mm（超過就當作「沒有東西」）"));
+  // ---- F1 協議版本（這份範例是照版本 2 寫的） ----
+  Serial.print(F("協議版本："));
+  Serial.println(mbcRead(ADDR, 0xF1));
 
-  // 讀「健康檢查」：第 0x31 號格子，共 9 個數字
-  //   第 0 個：狀態（第 1 個位元 = 有沒有雷射故障）
-  //   第 2 個：每一個位元代表一顆雷射有沒有開機成功（1 = 成功）
-  uint8_t st[9];
-  if (!mbcRead(0x31, st, 9)) {
-    Serial.println(F("讀取失敗，檢查一下線有沒有鬆掉。"));
-    while (true) {}
-  }
+  // ---- F2 韌體版本：主版×100 + 次版（例如 102 = 1.2） ----
+  int16_t fw = mbcRead(ADDR, 0xF2);
+  Serial.print(F("韌體版本："));
+  Serial.print(fw / 100);
+  Serial.print('.');
+  Serial.println(fw % 100);
 
-  if (st[0] & 0x02) {                    // 第 1 個位元是 1 → 有雷射故障
-    Serial.print(F("注意：有雷射沒開機成功，編號："));
-    for (uint8_t i = 0; i < 8; i++) {
-      if (!(st[2] & (1u << i))) {        // 這一顆的位元是 0 → 沒開機成功
-        Serial.print(i);
-        Serial.print(' ');
-      }
-    }
-    Serial.println();
-    Serial.println(F("（可以跑範例 2 看看是哪一顆一直顯示 XX，再聯絡我們）"));
-  } else {
-    Serial.println(F("8 顆雷射都正常！"));
-  }
+  // ---- F3 狀態旗標：一個 bit 代表一件事 ----
+  int16_t st = mbcRead(ADDR, 0xF3);
+  Serial.println(F("目前狀態："));
+  Serial.print(F("  bit0 就緒        ")); Serial.println((st & 0x01) ? F("是（8 顆都初始化完）") : F("否"));
+  Serial.print(F("  bit1 任一顆失效  ")); Serial.println((st & 0x02) ? F("是！（跑範例 2 看是哪一顆）") : F("否（8 顆都正常）"));
+
+  // ---- 07 初始化位元圖：bit0 = 第 1 顆（最左）… bit7 = 第 8 顆 ----
+  int16_t initOk = mbcRead(ADDR, 0x07);
+  Serial.print(F("初始化成功的雷射（左→右）："));
+  for (uint8_t i = 0; i < 8; i++) Serial.print((initOk >> i) & 1 ? 'O' : 'X');
+  Serial.println(initOk == 255 ? F("  全部成功") : F("  有 X 的那顆開機失敗，請重新上電"));
+
+  // ---- F5 開機秒數 ----
+  Serial.print(F("開機秒數："));
+  Serial.println(mbcRead(ADDR, 0xF5));
 
   Serial.println(F("接線正確，可以開始玩其他範例了！"));
 }
@@ -98,11 +90,14 @@ void loop() {
 }
 
 // ============================================================
-// 以下是「通訊小幫手」：負責跟感應器講話。
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
 // 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
 // ============================================================
 
 // 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
 void mbcBegin() {
   Wire.begin();
 #if defined(WIRE_HAS_TIMEOUT)
@@ -110,30 +105,44 @@ void mbcBegin() {
 #endif
 }
 
-// 從感應器的第 reg 號格子，讀 n 個數字放進 buf。讀到了回傳 true
-bool mbcRead(uint8_t reg, uint8_t *buf, uint8_t n) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
   if (Wire.endTransmission() != 0) return false;
-  if (Wire.requestFrom(SENSOR_ADDR, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
   return true;
 }
 
-// 把數字 value 寫進感應器的第 reg 號格子。成功回傳 true
-bool mbcWrite(uint8_t reg, uint8_t value) {
-  Wire.beginTransmission(SENSOR_ADDR);
-  Wire.write(reg);
-  Wire.write(value);
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
   return Wire.endTransmission() == 0;
 }
 
-// 等感應器準備好，最多等 timeoutMs 毫秒。準備好了回傳 true
-bool mbcWaitReady(uint16_t timeoutMs) {
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   unsigned long start = millis();
-  uint8_t flags;
-  while (millis() - start < timeoutMs) {
-    if (mbcRead(0x32, &flags, 1) && (flags & 0x01)) return true;
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
     delay(50);
   }
   return false;

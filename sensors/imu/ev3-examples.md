@@ -3,7 +3,7 @@
 
 [🔙 回到 IMU 陀螺儀產品頁](/sensors/imu/index.md)
 
-這一頁有 5 個範例，給**完全沒寫過程式**的人：每個範例都有現成的程式檔可以下載，打開就能用，下面也有一步一步的白話說明。建議從範例 1 開始照順序做。
+這一頁有 7 個範例，給**完全沒寫過程式**的人：每個範例都有現成的程式檔可以下載，打開就能用，下面也有一步一步的白話說明。建議從範例 1 開始照順序做。
 
 ## 開始之前
 
@@ -12,7 +12,7 @@
 3. 會動的範例用樂高教育版基本車：**左輪馬達接 B、右輪馬達接 C**。
 4. 感應器在 EV3 上會顯示成「陀螺儀」，直接用原廠陀螺儀的積木。
 
-**每個範例都有 5 種軟體的程式檔，選你用的那一種就好：**
+**每個範例都有 5 種軟體的程式檔，選你用的那一種就好：**（標「僅 Pybricks／EV3 MicroPython／clev3r」的範例只有這 3 種，因為 EV3-G、Classroom 的積木讀不到那個模式）
 
 | 軟體 | 適合誰 | 怎麼打開範例檔 |
 |---|---|---|
@@ -22,11 +22,13 @@
 | **EV3 MicroPython v2.0** | 已經在用樂高官方 EV3 MicroPython 的人 | 用樂高官方「EV3 MicroPython」microSD 開機卡＋VS Code 擴充套件，把程式內容貼到 `main.py`，按 F5 下載執行。 |
 | **clev3r** | 已經在用 clev3r（EV3 Basic）的人 | 在 clev3r 開啟 `.bp` 檔，按「編譯並下載」，在 EV3 的檔案選單找到 `MBC_` 開頭的資料夾執行。 |
 
-## 這頁會用到的 1 個數值
+## 這頁會用到的 3 個數值
 
 | 名稱 | 範圍 | 從哪裡讀 |
 |---|---|---|
 | **機器人轉了幾度** | 連續累加（轉一圈＝360，可超過 360） | 陀螺儀「角度」 |
+| **俯仰角（車頭上抬或下壓幾度）** | -90 ~ +90 度，平放＝0（板子絲印 X 軸） | 陀螺儀模式 6（只有 Pybricks／EV3 MicroPython／clev3r 讀得到） |
+| **轉向的角速度（每秒幾度 × 10）** | ±3000 左右，正負跟角度同方向；100＝每秒 10 度 | 陀螺儀模式 2（只有 Pybricks／EV3 MicroPython／clev3r 讀得到） |
 
 **範例列表：**
 
@@ -35,6 +37,8 @@
 3. [走正方形](#%E7%AF%84%E4%BE%8B-3%EF%BC%9A%E8%B5%B0%E6%AD%A3%E6%96%B9%E5%BD%A2)
 4. [走直線自動修正](#%E7%AF%84%E4%BE%8B-4%EF%BC%9A%E8%B5%B0%E7%9B%B4%E7%B7%9A%E8%87%AA%E5%8B%95%E4%BF%AE%E6%AD%A3)
 5. [不倒的指南針：自己轉回原來的方向](#%E7%AF%84%E4%BE%8B-5%EF%BC%9A%E4%B8%8D%E5%80%92%E7%9A%84%E6%8C%87%E5%8D%97%E9%87%9D%EF%BC%9A%E8%87%AA%E5%B7%B1%E8%BD%89%E5%9B%9E%E5%8E%9F%E4%BE%86%E7%9A%84%E6%96%B9%E5%90%91)
+6. [俯仰角：上坡就減速](#%E7%AF%84%E4%BE%8B-6%EF%BC%9A%E4%BF%AF%E4%BB%B0%E8%A7%92%EF%BC%9A%E4%B8%8A%E5%9D%A1%E5%B0%B1%E6%B8%9B%E9%80%9F)（僅 Pybricks／EV3 MicroPython／clev3r）
+7. [轉太快就警告](#%E7%AF%84%E4%BE%8B-7%EF%BC%9A%E8%BD%89%E5%A4%AA%E5%BF%AB%E5%B0%B1%E8%AD%A6%E5%91%8A)（僅 Pybricks／EV3 MicroPython／clev3r）
 
 ---
 
@@ -904,6 +908,350 @@ EndWhile
 - **在原位附近抖動？** 把 × 1 改小（例如 × 0.6）。
 - **車子沒動，角度卻一直慢慢變？** 開機或歸零的那一下車子要完全靜止。把車子放好，拔掉感應器重插一次再試。
 - **角度變化方向跟範例說的相反？** 感應器可能裝反了（上下顛倒）。範例 2、3 用「絕對值」所以不受影響；範例 4、5 請把程式裡的「＋」「－」對調。
+
+---
+
+## 範例 6：俯仰角：上坡就減速
+
+> **僅 Pybricks v4／EV3 MicroPython v2.0／clev3r**（EV3-G、Classroom 的積木讀不到這個模式）
+
+**這個範例會做什麼：** 模式 6 是「俯仰角」：車頭上抬或下壓幾度，平放是 0。車子在平地用 50 的速度跑，一上坡（或下坡）俯仰角超過 8 度就放慢到 20，比較不會翻車或衝太快。
+
+**要準備什麼：**
+
+- EV3 主機＋教育版基本車（左輪接 B、右輪接 C）
+- IMU 陀螺儀（EV3 版，韌體 v4.0 以上）
+- 一塊斜板或書本堆成的小坡
+
+**怎麼接：** IMU 陀螺儀插 1 號孔，平放固定在車身上，板子絲印的 X 軸要跟車子前後方向平行。
+
+**下載程式（選你用的軟體）：**
+
+[⬇ Pybricks v4](/examples/imu/ev3_beginner/ex06_tilt_slow_pybricks_v4.py) ｜ [⬇ EV3 MicroPython v2.0](/examples/imu/ev3_beginner/ex06_tilt_slow_ev3micropython_v2.py) ｜ [⬇ clev3r](/examples/imu/ev3_beginner/ex06_tilt_slow.bp)
+
+（程式碼即範例，不需截圖。）
+
+<details><summary>Pybricks v4 程式碼</summary>
+
+```python
+# ============================================================
+# IMU 陀螺儀感應器 EV3 新手範例 06：俯仰角：上坡就減速
+# 軟體：Pybricks v4（用 Chrome 打開 https://code.pybricks.com ，EV3 版目前是 Beta）
+# 接法：IMU 陀螺儀插 1 號孔；左輪馬達接 B、右輪馬達接 C
+# 這個範例會做什麼：模式 6 是「俯仰角」：車頭上抬或下壓幾度，平放是 0。車子在平地用 50 的速度跑，一上坡（或下坡）俯仰角超過 8 度就放慢到 20，比較不會翻車或衝太快。
+# ============================================================
+
+from pybricks.hubs import EV3Brick
+from pybricks.ev3devices import Motor
+from pybricks.iodevices import LUMPDevice
+from pybricks.parameters import Port, Color
+from pybricks.tools import wait
+
+ev3 = EV3Brick()
+sensor = LUMPDevice(Port.S1)       # IMU 陀螺儀插 1 號孔（當一般 UART 裝置讀原始值）
+left_motor = Motor(Port.B)        # 左輪
+right_motor = Motor(Port.C)       # 右輪
+
+
+def read_tilt():
+    # 俯仰角（車頭上抬或下壓幾度）：-90 ~ +90 度，平放＝0（板子絲印 X 軸）
+    return sensor.read(6)[0]
+
+
+# ---------- 程式從這裡開始 ----------
+# 清除螢幕
+ev3.screen.clear()
+# 一直重複
+while True:
+    # 第 1 行顯示俯仰角（度）
+    ev3.screen.draw_text(0, 0, "TILT " + str(read_tilt()) + "      ", Color.BLACK, Color.WHITE)
+    # 如果俯仰角的絕對值大於 8 度
+    if abs(read_tilt()) > 8:
+        # 在坡上（俯仰角超過 8 度）：放慢到 20
+        left_motor.dc(20)
+        right_motor.dc(20)
+        # 第 2 行顯示 SLOPE
+        ev3.screen.draw_text(0, 16, "SLOPE      ", Color.BLACK, Color.WHITE)
+    else:
+        # 平地：用 50 往前開
+        left_motor.dc(50)
+        right_motor.dc(50)
+        # 第 2 行顯示 FLAT
+        ev3.screen.draw_text(0, 16, "FLAT      ", Color.BLACK, Color.WHITE)
+```
+
+</details>
+
+<details><summary>EV3 MicroPython v2.0 程式碼</summary>
+
+```python
+#!/usr/bin/env pybricks-micropython
+# ============================================================
+# IMU 陀螺儀感應器 EV3 新手範例 06：俯仰角：上坡就減速
+# 軟體：樂高官方 EV3 MicroPython v2.0（microSD 開機卡＋VS Code「LEGO MINDSTORMS EV3 MicroPython」擴充套件）
+# 接法：IMU 陀螺儀插 1 號孔；左輪馬達接 B、右輪馬達接 C
+# 這個範例會做什麼：模式 6 是「俯仰角」：車頭上抬或下壓幾度，平放是 0。車子在平地用 50 的速度跑，一上坡（或下坡）俯仰角超過 8 度就放慢到 20，比較不會翻車或衝太快。
+# ============================================================
+
+from pybricks.hubs import EV3Brick
+from pybricks.ev3devices import Motor
+from pybricks.iodevices import Ev3devSensor
+from pybricks.parameters import Port, Color
+from pybricks.tools import wait
+
+ev3 = EV3Brick()
+sensor = Ev3devSensor(Port.S1)     # IMU 陀螺儀插 1 號孔（當一般 UART 裝置讀原始值）
+left_motor = Motor(Port.B)        # 左輪
+right_motor = Motor(Port.C)       # 右輪
+
+
+def read_tilt():
+    # 俯仰角（車頭上抬或下壓幾度）：-90 ~ +90 度，平放＝0（板子絲印 X 軸）
+    return sensor.read('TILT-ANG')[0]
+
+
+# ---------- 程式從這裡開始 ----------
+# 清除螢幕
+ev3.screen.clear()
+# 一直重複
+while True:
+    # 第 1 行顯示俯仰角（度）
+    ev3.screen.draw_text(0, 0, "TILT " + str(read_tilt()) + "      ", Color.BLACK, Color.WHITE)
+    # 如果俯仰角的絕對值大於 8 度
+    if abs(read_tilt()) > 8:
+        # 在坡上（俯仰角超過 8 度）：放慢到 20
+        left_motor.dc(20)
+        right_motor.dc(20)
+        # 第 2 行顯示 SLOPE
+        ev3.screen.draw_text(0, 16, "SLOPE      ", Color.BLACK, Color.WHITE)
+    else:
+        # 平地：用 50 往前開
+        left_motor.dc(50)
+        right_motor.dc(50)
+        # 第 2 行顯示 FLAT
+        ev3.screen.draw_text(0, 16, "FLAT      ", Color.BLACK, Color.WHITE)
+```
+
+</details>
+
+<details><summary>clev3r 程式碼</summary>
+
+```vb
+' ============================================================
+' IMU 陀螺儀感應器 EV3 新手範例 06：俯仰角：上坡就減速
+' 軟體：clev3r
+' 接法：IMU 陀螺儀插 1 號孔；左輪馬達接 B、右輪馬達接 C
+' 這個範例會做什麼：模式 6 是「俯仰角」：車頭上抬或下壓幾度，平放是 0。車子在平地用 50 的速度跑，一上坡（或下坡）俯仰角超過 8 度就放慢到 20，比較不會翻車或衝太快。
+' 讀值：tilt＝俯仰角（車頭上抬或下壓幾度）（-90 ~ +90 度，平放＝0（板子絲印 X 軸））
+' ============================================================
+folder "prjs" "MBC_imu_ex06"
+
+' IMU 陀螺儀插 1 號孔，使用模式 6
+Sensor.SetMode(1, 6)
+LCD.Clear()
+
+' 清除螢幕
+LCD.Clear()
+' 一直重複
+While "True"
+  ' 第 1 行顯示俯仰角（度）
+  LCD.Text(1, 0, 0, 1, "TILT " + Sensor.ReadRawValue(1, 0) + "      ")
+  ' 如果俯仰角的絕對值大於 8 度
+  If Math.Abs(Sensor.ReadRawValue(1, 0)) > 8 Then
+    ' 在坡上（俯仰角超過 8 度）：放慢到 20
+    Motor.StartPower("B", 20)
+    Motor.StartPower("C", 20)
+    ' 第 2 行顯示 SLOPE
+    LCD.Text(1, 0, 16, 1, "SLOPE      ")
+  Else
+    ' 平地：用 50 往前開
+    Motor.StartPower("B", 50)
+    Motor.StartPower("C", 50)
+    ' 第 2 行顯示 FLAT
+    LCD.Text(1, 0, 16, 1, "FLAT      ")
+  EndIf
+EndWhile
+```
+
+</details>
+
+**一步一步看懂程式：**
+
+1. 清除螢幕
+1. 一直重複
+   - 第 1 行顯示俯仰角（度）
+   - 如果俯仰角的絕對值大於 8 度
+      - 在坡上（俯仰角超過 8 度）：放慢到 20
+      - 第 2 行顯示 SLOPE
+      - 否則：
+         - 平地：用 50 往前開
+         - 第 2 行顯示 FLAT
+
+**跑起來應該看到：** 平地上車子快跑、螢幕顯示 FLAT 和 0 附近的角度；開上斜板時角度變大、顯示 SLOPE 並明顯變慢；回到平地又加速。
+
+**常見問題：**
+
+- **平地上角度就不是 0？** 感應器沒有平放，或裝的方向轉了 90 度（俯仰角看的是板子絲印的 X 軸）。
+- **上坡角度是負的？** 正常，正負跟安裝方向有關；這個範例用絕對值，所以上坡下坡都會減速。
+- **車子沒動，角度卻一直慢慢變？** 開機或歸零的那一下車子要完全靜止。把車子放好，拔掉感應器重插一次再試。
+- **數字一直是 0 或不會動？** 感應器韌體要 v4.0（2026-10）以上才有這個模式，舊韌體請先更新。
+- **EV3-G／Classroom 怎麼沒有這個範例？** 這個範例用的是新模式（2026-10 韌體 v4 起），EV3-G 和 Classroom 的紅外線積木讀不到，只有 Pybricks、EV3 MicroPython、clev3r 能用。
+
+---
+
+## 範例 7：轉太快就警告
+
+> **僅 Pybricks v4／EV3 MicroPython v2.0／clev3r**（EV3-G、Classroom 的積木讀不到這個模式）
+
+**這個範例會做什麼：** 模式 2 是「轉向角速度」：現在每秒轉幾度（×10）。角度告訴你轉了多少，角速度告訴你轉得多快。這個範例把角速度顯示出來，轉太快（超過每秒 90 度，也就是 900）就嗶一聲，可以拿來檢查機器人轉彎會不會甩尾。
+
+**要準備什麼：**
+
+- IMU 陀螺儀（EV3 版，韌體 v4.0 以上）
+- EV3 主機
+
+**怎麼接：** IMU 陀螺儀插 1 號孔，平放固定在車身上。
+
+**下載程式（選你用的軟體）：**
+
+[⬇ Pybricks v4](/examples/imu/ev3_beginner/ex07_rate_warn_pybricks_v4.py) ｜ [⬇ EV3 MicroPython v2.0](/examples/imu/ev3_beginner/ex07_rate_warn_ev3micropython_v2.py) ｜ [⬇ clev3r](/examples/imu/ev3_beginner/ex07_rate_warn.bp)
+
+（程式碼即範例，不需截圖。）
+
+<details><summary>Pybricks v4 程式碼</summary>
+
+```python
+# ============================================================
+# IMU 陀螺儀感應器 EV3 新手範例 07：轉太快就警告
+# 軟體：Pybricks v4（用 Chrome 打開 https://code.pybricks.com ，EV3 版目前是 Beta）
+# 接法：IMU 陀螺儀插 1 號孔
+# 這個範例會做什麼：模式 2 是「轉向角速度」：現在每秒轉幾度（×10）。角度告訴你轉了多少，角速度告訴你轉得多快。這個範例把角速度顯示出來，轉太快（超過每秒 90 度，也就是 900）就嗶一聲，可以拿來檢查機器人轉彎會不會甩尾。
+# ============================================================
+
+from pybricks.hubs import EV3Brick
+from pybricks.iodevices import LUMPDevice
+from pybricks.parameters import Port, Color
+from pybricks.tools import wait
+
+ev3 = EV3Brick()
+sensor = LUMPDevice(Port.S1)       # IMU 陀螺儀插 1 號孔（當一般 UART 裝置讀原始值）
+
+
+def read_rate():
+    # 轉向的角速度（每秒幾度 × 10）：±3000 左右，正負跟角度同方向；100＝每秒 10 度
+    return sensor.read(2)[0]
+
+
+# ---------- 程式從這裡開始 ----------
+# 清除螢幕
+ev3.screen.clear()
+# 一直重複
+while True:
+    # 第 1 行顯示角速度（每秒幾度 × 10）
+    ev3.screen.draw_text(0, 0, "RATE " + str(read_rate()) + "      ", Color.BLACK, Color.WHITE)
+    # 如果角速度的絕對值大於 900（每秒 90 度）
+    if abs(read_rate()) > 900:
+        # 轉太快（超過每秒 90 度）：嗶一聲
+        ev3.speaker.beep()
+    # 等 0.1 秒
+    wait(100)
+```
+
+</details>
+
+<details><summary>EV3 MicroPython v2.0 程式碼</summary>
+
+```python
+#!/usr/bin/env pybricks-micropython
+# ============================================================
+# IMU 陀螺儀感應器 EV3 新手範例 07：轉太快就警告
+# 軟體：樂高官方 EV3 MicroPython v2.0（microSD 開機卡＋VS Code「LEGO MINDSTORMS EV3 MicroPython」擴充套件）
+# 接法：IMU 陀螺儀插 1 號孔
+# 這個範例會做什麼：模式 2 是「轉向角速度」：現在每秒轉幾度（×10）。角度告訴你轉了多少，角速度告訴你轉得多快。這個範例把角速度顯示出來，轉太快（超過每秒 90 度，也就是 900）就嗶一聲，可以拿來檢查機器人轉彎會不會甩尾。
+# ============================================================
+
+from pybricks.hubs import EV3Brick
+from pybricks.iodevices import Ev3devSensor
+from pybricks.parameters import Port, Color
+from pybricks.tools import wait
+
+ev3 = EV3Brick()
+sensor = Ev3devSensor(Port.S1)     # IMU 陀螺儀插 1 號孔（當一般 UART 裝置讀原始值）
+
+
+def read_rate():
+    # 轉向的角速度（每秒幾度 × 10）：±3000 左右，正負跟角度同方向；100＝每秒 10 度
+    return sensor.read('GYRO-FAS')[0]
+
+
+# ---------- 程式從這裡開始 ----------
+# 清除螢幕
+ev3.screen.clear()
+# 一直重複
+while True:
+    # 第 1 行顯示角速度（每秒幾度 × 10）
+    ev3.screen.draw_text(0, 0, "RATE " + str(read_rate()) + "      ", Color.BLACK, Color.WHITE)
+    # 如果角速度的絕對值大於 900（每秒 90 度）
+    if abs(read_rate()) > 900:
+        # 轉太快（超過每秒 90 度）：嗶一聲
+        ev3.speaker.beep()
+    # 等 0.1 秒
+    wait(100)
+```
+
+</details>
+
+<details><summary>clev3r 程式碼</summary>
+
+```vb
+' ============================================================
+' IMU 陀螺儀感應器 EV3 新手範例 07：轉太快就警告
+' 軟體：clev3r
+' 接法：IMU 陀螺儀插 1 號孔；左輪馬達接 B、右輪馬達接 C
+' 這個範例會做什麼：模式 2 是「轉向角速度」：現在每秒轉幾度（×10）。角度告訴你轉了多少，角速度告訴你轉得多快。這個範例把角速度顯示出來，轉太快（超過每秒 90 度，也就是 900）就嗶一聲，可以拿來檢查機器人轉彎會不會甩尾。
+' 讀值：rate＝轉向的角速度（每秒幾度 × 10）（±3000 左右，正負跟角度同方向；100＝每秒 10 度）
+' ============================================================
+folder "prjs" "MBC_imu_ex07"
+
+' IMU 陀螺儀插 1 號孔，使用模式 2
+Sensor.SetMode(1, 2)
+LCD.Clear()
+
+' 清除螢幕
+LCD.Clear()
+' 一直重複
+While "True"
+  ' 第 1 行顯示角速度（每秒幾度 × 10）
+  LCD.Text(1, 0, 0, 1, "RATE " + Sensor.ReadRawValue(1, 0) + "      ")
+  ' 如果角速度的絕對值大於 900（每秒 90 度）
+  If Math.Abs(Sensor.ReadRawValue(1, 0)) > 900 Then
+    ' 轉太快（超過每秒 90 度）：嗶一聲
+    Speaker.Tone(50, 1000, 100)
+    Speaker.Wait()
+  EndIf
+  ' 等 0.1 秒
+  Program.Delay(100)
+EndWhile
+```
+
+</details>
+
+**一步一步看懂程式：**
+
+1. 清除螢幕
+1. 一直重複
+   - 第 1 行顯示角速度（每秒幾度 × 10）
+   - 如果角速度的絕對值大於 900（每秒 90 度）
+      - 轉太快（超過每秒 90 度）：嗶一聲
+   - 等 0.1 秒
+
+**跑起來應該看到：** 機器人不動時數字在 0 附近；用手慢慢轉它，數字幾百；快速一甩，數字超過 900 並嗶一聲。往另一邊轉數字是負的。
+
+**常見問題：**
+
+- **不動也一直嗶？** 把 900 改大，或確認感應器有固定好、沒有在晃。
+- **數字一直是 0 或不會動？** 感應器韌體要 v4.0（2026-10）以上才有這個模式，舊韌體請先更新。
+- **EV3-G／Classroom 怎麼沒有這個範例？** 這個範例用的是新模式（2026-10 韌體 v4 起），EV3-G 和 Classroom 的紅外線積木讀不到，只有 Pybricks、EV3 MicroPython、clev3r 能用。
 
 ---
 

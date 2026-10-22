@@ -1,135 +1,127 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-# ∿ MBC 通用 I2C 協議 (v1)
+# ∿ MBC 通用 I2C 協議 v2
 
-MBC-Pro 全系列的「通用 I2C 版」感應器都使用同一套暫存器規則：學會一款，其他款照著用就好。本頁說明所有產品共用的部分；各產品的資料暫存器請看各自的說明頁。
+MBC-Pro 全系列的「通用 I2C 版」感應器都用同一套規則：**暫存器編號就是值的編號**，寫一個編號、讀回一個或連續好幾個 16 位元整數。學會一款，其他款照著用就好；每款產品的值表請看它的 [指令參考](/reference.md)。
 
-適用主機：**Arduino UNO / Nano / Mega / R4、ESP32、Raspberry Pi**，以及任何能當 I2C 主機的控制板。
+適用主機：**Arduino UNO / Nano / Mega / R4、ESP32、micro:bit、Raspberry Pi**，以及任何能當 I2C 主機的控制板。
 
 > [!TIP]
-> **不會寫程式也能用：** 每款產品都有可以直接複製上傳的 Arduino 範例，請從 [🔰 第一次用 Arduino](/sensors/arduino-start.md) 開始。
+> **不會寫程式也能用：** 每款產品都有可以直接複製上傳的 Arduino 範例，請從 [🔰 第一次用 Arduino](/sensors/arduino-start.md) 開始；micro:bit 請用 [MakeCode 擴充](/microbit.md)；MBC 圖控編程與 jBot 網頁版有現成積木。
+
+> [!IMPORTANT]
+> 這是 **2026-10 起的 v2 協議**（協議版本 2，`F1` 讀回 2）。2026-10 以前的韌體是 v1（0x01 版本包、0x11 合併包、高位元組在前），舊程式不相容；舊版檔案保留在 [下載中心](/downloads.md) 的舊版區。
 
 ---
 
 ## 📋 產品位址總覽
 
-| 產品 | I2C 位址 | 型號字串 (`0x07`) | 暫存器說明 | 新手範例 |
-| :--- | :---: | :---: | :--- | :--- |
-| 循行者 8 路 (Line8) | `0x16` | `LINE8` | [Line8 I2C 說明](/sensors/line8/arduino-i2c.md) | [Arduino 範例](/sensors/line8/arduino-examples.md) |
-| 循行者 16 路 (Line16) | `0x16` | `LINE16` | [Line16 I2C 說明](/sensors/line16/arduino-i2c.md) | [Arduino 範例](/sensors/line16/arduino-examples.md) |
-| 測距者 8 路 (TOF8) | `0x29` | `LASER8` | [TOF8 產品頁](/sensors/tof8/index.md) | [Arduino 範例](/sensors/tof8/arduino-examples.md) |
-| 測距者 2 路 (TOF2，新版即將推出) | `0x29` | `LASER2` | [TOF2 產品頁](/sensors/tof2/index.md) | [Arduino 範例](/sensors/tof2/arduino-examples.md) |
-| 掌控者 PS2 | `0x42` | `PS2` | [PS2 產品頁](/sensors/ps2/index.md) | [Arduino 範例](/sensors/ps2/arduino-examples.md) |
-| 掌控者 PS4/PS5 | `0x42` | `PS4` | [PS4/PS5 產品頁](/sensors/ps4/index.md) | [Arduino 範例](/sensors/ps4/arduino-examples.md) |
-| 陀螺儀 IMU | `0x6A` | `IMU` | [IMU 產品頁](/sensors/imu/index.md) | [Arduino 範例](/sensors/imu/arduino-examples.md) |
+<!-- gen:i2c-addr-table -->
+| 產品 | I2C 位址 | hw[0] | 型號 | 值表 | 指令參考 | 新手範例 |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 神攝手 學校版 | `0x4C` | `1` | `CAMSCH` | [I2C](/sensors/esp32cam/arduino-i2c.md) | [參考](/sensors/esp32cam/reference.md) | [Arduino](/sensors/esp32cam/arduino-examples.md) |
+| 神攝手 WRO 版（HUE12） | `0x4C` | `2` | `HUE12` | [I2C](/sensors/esp32cam/arduino-i2c-wro.md) | [參考](/sensors/esp32cam/reference-wro.md) | [Arduino](/sensors/esp32cam/arduino-examples.md) |
+| IMU 陀螺儀 | `0x6A` | `1` | `IMU` | [I2C](/sensors/imu/arduino-i2c.md) | [參考](/sensors/imu/reference.md) | [Arduino](/sensors/imu/arduino-examples.md) |
+| 循行者 16 路 | `0x16` | `16` | `LINE16` | [I2C](/sensors/line16/arduino-i2c.md) | [參考](/sensors/line16/reference.md) | [Arduino](/sensors/line16/arduino-examples.md) |
+| 循行者 8 路 | `0x16` | `8` | `LINE8` | [I2C](/sensors/line8/arduino-i2c.md) | [參考](/sensors/line8/reference.md) | [Arduino](/sensors/line8/arduino-examples.md) |
+| 掌控者 PS2 | `0x42` | `1` | `PS2` | [I2C](/sensors/ps2/arduino-i2c.md) | [參考](/sensors/ps2/reference.md) | [Arduino](/sensors/ps2/arduino-examples.md) |
+| 掌控者 PS4／PS5 接收器 | `0x42` | `2` | `PS4` | [I2C](/sensors/ps4/arduino-i2c.md) | [參考](/sensors/ps4/reference.md) | [Arduino](/sensors/ps4/arduino-examples.md) |
+| 測距者 2 路 | `0x29` | `2` | `LASER2` | [I2C](/sensors/tof2/arduino-i2c.md) | [參考](/sensors/tof2/reference.md) | [Arduino](/sensors/tof2/arduino-examples.md) |
+| 測距者 8 路 | `0x29` | `8` | `LASER8` | [I2C](/sensors/tof8/arduino-i2c.md) | [參考](/sensors/tof8/reference.md) | [Arduino](/sensors/tof8/arduino-examples.md) |
+<!-- /gen -->
 
 > [!NOTE]
-> **SPIKE 6 路擴充器（EXP6）不走 I2C**：它的主機接頭有隔離保護，Arduino 要用序列埠（UART）控制，請看 [EXP6 Arduino 範例](/sensors/exp6/arduino-examples.md)。
->
-> 同一組 SDA／SCL 上，**位址相同的產品不能同時接**（例如循行者 8 路和 16 路、測距者 8 路和 2 路）。位址 `0x29` 也是市售 VL53L0X 雷射模組的預設位址，不能和測距者接在同一組線上。
-
-> [!TIP]
-> 同一類產品共用一個位址（例如循線系列都是 `0x16`），用 `0x06` 暫存器分辨款式。主機開機時讀一次 `0x01`，就能知道接上的是哪一款。
+> - **SPIKE 6 路擴充器（EXP6）不走 I2C**：主機接頭有隔離保護，Arduino 要用序列埠（UART）控制，請看 [EXP6 Arduino 範例](/sensors/exp6/arduino-examples.md)。
+> - 同一條 SDA／SCL 上，**位址相同的產品不能同時接**（循行者 8 路和 16 路、測距者 2 路和 8 路、PS2 和 PS4、神攝手兩版）。要同時接就先用 `F8` 把其中一台換位址。
+> - 同一類產品共用一個位址，用 `F0` 的高位元組（hw0）分辨款式：循行者 8／16、測距者 2／8、PS2＝1／PS4＝2、神攝手學校版＝1／WRO 版＝2。
 
 ---
 
 ## 🔌 接線與電壓
 
-- 依感應器排針標示接 **SCL、SDA、VCC、GND**。
-- 支援 **100 kHz** 與 **400 kHz**。
-- 本頁列出的產品，I2C 都可直接接 Arduino UNO 等 5 V 主機，不需要另外加準位轉換。
-- 建議用 **100 kHz**（Arduino 預設值）。STM32 系列產品（循行者、測距者、PS2、陀螺儀）會用「時脈延展」（clock stretching）爭取準備資料的時間，Arduino、ESP32 都支援；PS4/PS5 接收器（ESP32）不會延展，所以寫完暫存器編號要等 2 ms 再讀。**Raspberry Pi 的硬體 I2C 處理時脈延展有已知問題**，讀值不穩時請把 I2C 速度降到 10~50 kHz，或改用軟體 I2C（`i2c-gpio`）。
+- 依感應器排針標示接 **SCL、SDA、VCC、GND**（SPIKE／EV3 接頭的 4P 線：TX 腳＝SCL、RX 腳＝SDA）。
+- 支援 **100 kHz**（建議，Arduino 預設）與 400 kHz。
+- STM32 產品（循行者、測距者、PS2、陀螺儀）可直接接 5 V 主機；**ESP32 產品（PS4／PS5 接收器、神攝手）腳位不耐 5 V**，接 UNO 等 5 V 主機時上拉電阻要接 3.3 V。
+- STM32 產品會「時脈延展」（clock stretching）；Arduino、ESP32 都支援。**Raspberry Pi 的硬體 I2C 處理時脈延展有已知問題**，讀值不穩時把速度降到 10~50 kHz 或改用 `i2c-gpio`。micro:bit V2 若讀值不穩請回報，韌體有「不延展」選項。
 
 ---
 
-## 📥 讀取資料（模組 → 主機）
+## 📥 讀取：寫編號、等 2 ms、讀 2×k 個 byte
 
-1. 主機寫 1 byte：要讀的**暫存器編號**。
-2. 主機 `requestFrom(位址, n)`，n = 1~32。
-3. 模組固定準備 32 bytes：有效資料在前、其餘補 0。主機要幾個就收幾個，多讀只會拿到 0，不會卡住匯流排。
+1. 主機寫 **1 byte：值的編號**（例如 `0x01`）。
+2. **等 2 ms**（ESP32 產品需要；STM32 產品不等也可以，函式庫一律等，代價很小）。
+3. `requestFrom(位址, 2×k)`：從該編號起**連續 k 個值**（k ≤ 16，也就是最多 32 byte）。
+4. 每個值是 **int16，低位元組在前（little-endian）**，與樂高、MATRIX、mBlock 一致。
 
-- 多位元組數值一律 **高位元組在前（MSB-first）**；有號數為二補數。
-- 未定義的暫存器讀回全 0。
-- **PS4/PS5 接收器**：寫完暫存器編號後要**等至少 2 ms 再讀**。其他產品不需要等待。
+- 沒有定義的編號回 **−32768**（`0x00 0x80`）；跨過空號連續讀也沒關係，空號就是 −32768。
+- 模組每 **10 ms** 更新一次快照，一次連續讀到的值保證是同一瞬間的。
+- 數值直接是使用者要的數字：線位置 −8~+8（負＝線在左）、搖桿 −100~+100、距離 cm／mm、色相 −1＝黑白灰。不用再減 100、減 50。
 
-## 📤 寫入命令（主機 → 模組）
+## 📤 寫入命令（E0～EE）
 
-- 格式：`[暫存器編號, 值0, 值1, …]`，多位元組同樣高位元組在前。
-- 長度不足整筆忽略；多出來的 bytes 丟棄。只有標示 **W** 或 **RW** 的暫存器可以寫。
-- 命令是**非同步**執行的（例如校準、寫入 EEPROM），請用狀態旗標或計數器確認已完成，不要假設寫完就生效。
-
-## 🔄 資料一致性
-
-模組每 **10 ms** 更新一次資料快照，讀取時一次取出整份快照。所以同一個「合併包」裡的各個數值，一定是同一時間點的資料，不會讀到半新半舊的值。
+主機寫 `[命令編號][參數…]`；參數長度依命令（沒有參數就只寫 1 byte）。命令是**非同步**執行的（校準、寫 EEPROM），用 `F3` 狀態旗標確認完成。各產品的命令在它的指令參考頁，例如循行者 `E0` 切黑線、`E2` 黑色校準、`E4 [門檻]`；PS4 `E5 [強度]` 震動、`E6 [R][G][B]` 燈條；IMU `E0` 航向歸零。
 
 ---
 
-## 🗂️ 暫存器分區
+## 🧾 共用暫存器（所有產品都有）
 
-| 範圍 | 用途 |
-| :--- | :--- |
-| `0x01` ~ `0x0F` | 裝置資訊（所有產品共通） |
-| `0x10` ~ `0x1F` | 第 1 組：主要資料 |
-| `0x20` ~ `0x2F` | 第 2 組：次要資料／校準 |
-| `0x30` ~ `0x3F` | 第 3 組：系統與狀態（前段共通） |
-| `0x40` 以上 | 產品擴充區：陣列、各通道、各埠 |
+<!-- gen:i2c-common -->
+| 編號 | 讀寫 | 名稱 | 說明 |
+| :--- | :---: | :--- | :--- |
+| <span id="rf0">`F0`</span> | R | 裝置 ID | 低 byte = 出廠 I2C 位址（換位址後不變），高 byte = hw[0]（通道數／顆數／類別） |
+| <span id="rf1">`F1`</span> | R | 協議版本 | 本版 = 2（SPIKE 模式 8 v[1]、EV3 ID 封包同一個數字）（2） |
+| <span id="rf2">`F2`</span> | R | 韌體版本 | 主版×100 + 次版（例 102 = 1.2） |
+| <span id="rf3">`F3`</span> | R | 狀態旗標 | b0 就緒，其餘各產品定義（見各產品 flags）；MATRIX 大通道 byte 24 同一個 byte（bit） |
+| <span id="rf4">`F4`</span> | R | 更新序號 | 每 10 ms 快照 +1，0~255 循環（2.56 秒一圈，不能拿來偵測重開機；不動 = 模組忙）（0~255） |
+| <span id="rf5">`F5`</span> | R | 開機秒數 | 開機後秒數，到 32767 停住（約 9 小時）；數字變小 = 重開機過（0~32767） |
+| <span id="rf8">`F8`</span> | W | 換 I2C 位址 | [F8][新位址 0x08~0x77][新位址取反]，存 EEPROM，重開機後生效；[F8][0x00][0xFF] = 回出廠位址（共識 B-5）；參數：新位址 0x08~0x77、新位址取反 |
+| <span id="ref">`EF`</span> | W | 重新開機 | [EF][0xA5]；mBlock 先回 ACK 再重開；參數：確認碼 0xA5 |
+<!-- /gen -->
 
-每一組的規則都一樣：
+**建議主機流程：** 開機讀 `F0`（認產品與款式）→ 讀 `F3` 等 bit0 = 1（就緒）→ 開始連續讀值。
 
-- **`0xN0`** = 該組的命令暫存器（寫入用）
-- **`0xN1`** = 該組的**合併包**：把 `0xN2` 起的單項依序串在一起，一次讀完
-- **`0xN2` 起** = 各個單項
-
-## 🧾 共通暫存器（所有產品都有）
-
-| 暫存器 | 方向 | 長度 | 內容 |
-| :---: | :---: | :---: | :--- |
-| `0x01` | R | 17 | 版本合併包（= `0x02` ~ `0x07`） |
-| `0x02` | R | 1 | 裝置 ID（= 該產品出廠位址，用來辨識產品） |
-| `0x03` | R | 1 | 協議版本（目前 = 1） |
-| `0x04` | R | 2 | 韌體版本（主, 次） |
-| `0x05` | R | 3 | 韌體編譯日期（年末兩位, 月, 日） |
-| `0x06` | R | 2 | 硬體／款式（各產品定義） |
-| `0x07` | R | 8 | 型號字串（ASCII，不足補 0，例如 `LINE16`） |
-| `0x30` | W | 1 | 系統命令：`0x01` = 重新開機 |
-| `0x31` | R | 9 | 狀態合併包（= `0x32` ~ `0x37`） |
-| `0x32` | R | 1 | 狀態旗標：**bit0 = 就緒**；bit1~7 各產品定義 |
-| `0x33` | R | 1 | 更新序號：每 10 ms 快照更新時 +1（不代表感測值一定有變）；數字不動代表模組忙碌中 |
-| `0x34` ~ `0x36` | R | 1 | 各產品定義 |
-| `0x37` | R | 4 | 開機經過時間（ms）；數字變小代表模組重開機過 |
-
-**建議主機流程：** 開機先讀 `0x01` 確認產品 → 讀 `0x32` 等到 bit0 = 1（就緒）→ 開始讀取各產品資料。
+**換位址：** 寫 `[F8][新位址][新位址取反]`（例如改成 0x17：`F8 17 E8`），重新開機後生效；寫 `[F8][00][FF]` 回出廠位址。`F0` 的低位元組永遠回出廠位址，所以換過位址也認得出是哪一款。
 
 ---
 
 ## 💻 Arduino 共用函式
 
-以下函式適用所有 MBC 通用 I2C 產品，各產品範例都會用到：
+每支範例的底部都有這一段，單檔就能用：
 
 ```cpp
 #include <Wire.h>
+const int16_t MBC_NONE = -32768;          // 空號／沒回應
 
-// 讀 n bytes（n ≤ 32）。回傳 false = 裝置沒回應
-bool iicRead(uint8_t addr, uint8_t reg, uint8_t *buf, uint8_t n) {
+// 從編號 id 起連續讀 k 個值（k ≤ 16）。回傳 false = 裝置沒回應
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1; if (k > 16) k = 16;
   Wire.beginTransmission(addr);
-  Wire.write(reg);
+  Wire.write(id);
   if (Wire.endTransmission() != 0) return false;
-  delay(2);                                   // PS4/PS5 需要；其他產品可刪
-  if (Wire.requestFrom(addr, n) != n) return false;
-  for (uint8_t i = 0; i < n; i++) buf[i] = Wire.read();
+  delay(2);                                  // ESP32 產品需要；其他產品不等也可以
+  if (Wire.requestFrom(addr, (uint8_t)(2 * k)) != 2 * k) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read(), hi = Wire.read();
+    out[i] = (int16_t)(lo | (hi << 8));     // 低位元組在前
+  }
   return true;
 }
 
-// 寫 1 byte 命令／設定
-void iicWrite(uint8_t addr, uint8_t reg, uint8_t v) {
-  Wire.beginTransmission(addr);
-  Wire.write(reg);
-  Wire.write(v);
-  Wire.endTransmission();
+int16_t mbcRead(uint8_t addr, uint8_t id) {  // 讀 1 個值
+  int16_t v; return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
 }
 
-// 高位元組在前 → 數值
-int16_t  be16(const uint8_t *p)  { return (int16_t)((p[0] << 8) | p[1]); }
-uint16_t beU16(const uint8_t *p) { return (uint16_t)((p[0] << 8) | p[1]); }
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0) {  // 命令／換位址／重開機
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {   // 等 F3 bit0
+  uint32_t t0 = millis();
+  while (millis() - t0 < ms) { int16_t s = mbcRead(addr, 0xF3); if (s != MBC_NONE && (s & 1)) return true; delay(20); }
+  return false;
+}
 ```
 
 ### 範例：辨識接上的產品
@@ -138,18 +130,13 @@ uint16_t beU16(const uint8_t *p) { return (uint16_t)((p[0] << 8) | p[1]); }
 void setup() {
   Serial.begin(115200);
   Wire.begin();
-
-  uint8_t info[17];
-  if (iicRead(0x16, 0x01, info, 17)) {        // 0x16 = 循線系列
-    char model[9] = {0};
-    memcpy(model, &info[9], 8);               // 0x07 型號字串位於合併包第 9~16 byte
-    Serial.print("型號: ");     Serial.println(model);
-    Serial.print("韌體版本: "); Serial.print(info[2]); Serial.print('.'); Serial.println(info[3]);
-  } else {
-    Serial.println("找不到裝置，請檢查接線與位址");
-  }
+  int16_t id = mbcRead(0x16, 0xF0);           // 0x16 = 循線系列
+  if (id == MBC_NONE) { Serial.println("找不到裝置，請檢查接線與位址"); return; }
+  Serial.print("出廠位址 0x"); Serial.print(id & 0xFF, HEX);
+  Serial.print("，款式 hw0 = "); Serial.println(id >> 8);   // 8 = 8 路、16 = 16 路
+  int16_t fw = mbcRead(0x16, 0xF2);
+  Serial.print("韌體 "); Serial.print(fw / 100); Serial.print('.'); Serial.println(fw % 100);
 }
-
 void loop() {}
 ```
 
