@@ -657,6 +657,15 @@ function expandExamples(src, lang) {
 }
 
 // ------------------------------------------------- 右側目錄（h2／h3；≥1200px 固定在右，小螢幕變 <details>）
+// 目錄放進文章：有切換列（產品 › 主機 › 軟體）就接在它後面，沒有就放文章最前面
+function withToc(body, toc) {
+  if (!toc) return body;
+  const m = body.match(/<nav class="gsw[\s\S]*?<\/nav>/);
+  if (!m) return toc + body;
+  const i = m.index + m[0].length;
+  return body.slice(0, i) + toc + body.slice(i);
+}
+
 function tocHtml(html, lang) {
   const items = [];
   for (const m of html.matchAll(/<h([23]) id="([^"]+)">(?:<a [^>]*><span>)?([\s\S]*?)(?:<\/span><\/a>)?<\/h\1>/g)) {
@@ -665,7 +674,10 @@ function tocHtml(html, lang) {
   }
   if (items.length < 3) return '';
   const li = items.map((it) => `<li class="toc-h${it.level}"><a href="#${encodeURI(it.id)}">${escAttr(it.text)}</a></li>`).join('');
-  return `<nav class="toc" aria-label="${UI[lang].toc}"><details open><summary>${UI[lang].toc}</summary><ol>${li}</ol></details></nav>`;
+  // 目錄 HTML 直接放在文章開頭（有切換列就放在切換列下方），預設收起＝手機版的樣子；桌機（≥1200px）由 <details> 裡的小腳本在解析當下
+  // 打開並搬到右側欄。以前是先畫在右側／上方、等 site.js 才搬，慢網路下整頁往上跳（Lighthouse 手機 CLS 0.3）。
+  const early = `<script>(function(d){if(!matchMedia('(min-width: 1200px)').matches)return;d.open=true;var n=d.parentNode,w=n.closest('.doc-wrap');if(w)w.appendChild(n);})(document.currentScript.parentNode)</script>`;
+  return `<nav class="toc" aria-label="${UI[lang].toc}"><details><summary>${UI[lang].toc}</summary>${early}<ol>${li}</ol></details></nav>`;
 }
 
 // Product pages: every <h2> section below the sales block becomes a collapsible <details> (first one open),
@@ -792,8 +804,8 @@ ${topNav(lang, langHref, true)}
 <div class="sidebar-nav">${sidebar}</div>
 </aside>
 <section class="content"><div class="doc-wrap${toc ? ' has-toc' : ''}"><article class="markdown-section" id="main">
-${body}
-</article>${toc}</div>${footerHtml(lang)}</section>
+${withToc(body, toc)}
+</article></div>${footerHtml(lang)}</section>
 </main>`}
 ${ctaDock(lang)}
 <script src="https://cdn.jsdelivr.net/npm/scratchblocks@3.6.4/build/scratchblocks.min.js" defer></script>

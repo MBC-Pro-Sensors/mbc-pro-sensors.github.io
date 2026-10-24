@@ -129,7 +129,7 @@
         "line8_python_native_v400.py",
         "line8_python_with_lib_v400.py"
       ],
-      "size": 14511
+      "size": 15313
     },
     {
       "out": "/downloads/MBC_TOF8_Pybricks_Lib.zip",
@@ -144,7 +144,7 @@
         "MBC_laser8_Lib.py",
         "MBC_laser8_obj_Lib.py"
       ],
-      "size": 8758
+      "size": 10287
     },
     {
       "out": "/downloads/MiniR4ColorSensorExt_LauMo_v2.zip",

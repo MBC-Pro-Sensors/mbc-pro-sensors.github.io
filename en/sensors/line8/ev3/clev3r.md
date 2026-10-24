@@ -53,7 +53,7 @@ Sensor.SetMode(1, 2)
 linePosFine = Sensor.ReadRawValue(1, 0)
 ```
 
-<p class="ref-note">mode 2 · int8 · IR-REMOTE byte0 = 細位置+100 存成 uint8（主機減 100） (locked mode: firmware and hosts will not change it)</p>
+<p class="ref-note">mode 2 · int8 · IR-REMOTE byte0 = highRes−100 存成 int8（F030 ev3Uart case 2），主機直接讀 (locked mode: firmware and hosts will not change it)</p>
 
 </section>
 

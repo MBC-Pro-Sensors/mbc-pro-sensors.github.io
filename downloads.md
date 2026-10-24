@@ -15,14 +15,14 @@ MBC 全系列的函式庫、積木擴充、範例程式與型錄，集中在這�
 | :--- | :--- | :---: | :--- | :---: | :---: |
 | [MBC_EXP6_Pybricks_Lib_v2.zip](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip) | SPIKE 6 路擴充器 EXP6：Pybricks 函式庫 v2＋範例（`MBC_exp6_obj_Lib_v2.py`、`Exp6_objMode_Demo.py`、指令說明書 PDF、`examples/` 11 支） | 2.0 | EXP6 v2 | 1.5 MB | 2026-10-21 |
 | [MBC_EXP6_Official_App_Lib_v2.zip](/downloads/MBC_EXP6_Official_App_Lib_v2.zip) | SPIKE 6 路擴充器 EXP6：官方 SPIKE App 函式庫 v2＋範例（`MBC_exp6_SPIKE_App_Lib.py`、`SPIKE_Education/`、`Robot_Inventor/` 安裝／解除安裝腳本、`examples/` 9 支） | 2.0 | EXP6 v2 | 1.2 MB | 2026-10-21 |
-| [MBC_EXP6_Pybricks_Lib.zip](/downloads/MBC_EXP6_Pybricks_Lib.zip) <span style="display:inline-block;background:#777;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | EXP6 Pybricks 函式庫（舊版，v1 韌體）— 搭配 2026-10 以前韌體 | 1.x | EXP6 v1 | 1.5 MB | 2026-10-07 |
-| [MBC_EXP6_Official_App_Lib.zip](/downloads/MBC_EXP6_Official_App_Lib.zip) <span style="display:inline-block;background:#777;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | EXP6 官方 SPIKE App 函式庫（舊版，v1 韌體）— 搭配 2026-10 以前韌體 | 1.x | EXP6 v1 | 1.1 MB | 2026-10-21 |
-| [MBC_Servo6_Pybricks_Lib.zip](/downloads/MBC_Servo6_Pybricks_Lib.zip) <span style="display:inline-block;background:#777;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | SPIKE 6 路舵機擴充器 Servo6：Pybricks 函式庫 — 搭配 2026-10 以前韌體 | 1.0 | Servo6 | 8.7 KB | 2026-10-21 |
-| [MBC_Servo6_Official_App_Lib.zip](/downloads/MBC_Servo6_Official_App_Lib.zip) <span style="display:inline-block;background:#777;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | SPIKE 6 路舵機擴充器 Servo6：官方 SPIKE App 函式庫 — 搭配 2026-10 以前韌體 | 1.0 | Servo6 | 5.3 KB | 2026-10-21 |
-| [line8_pybricks_spike_v4.0.0.zip](/examples/line8/line8_pybricks_spike_v4.0.0.zip) | 循行者 8 路：SPIKE Pybricks 函式庫與範例（`MBC_line8_obj_Lib_v400.py`＋積木／Python 各 2 支） | 4.0.0 | Pybricks 4.0.0 | 14 KB | 2026-10-21 |
-| [MBC_TOF8_Pybricks_Lib.zip](/downloads/MBC_TOF8_Pybricks_Lib.zip) | 測距者 8 路 TOF8：SPIKE Pybricks 函式庫（`MBC_laser8_Lib.py`、`MBC_laser8_obj_Lib.py`） | 1.0 | Pybricks | 8.6 KB | 2026-10-21 |
+| [MBC_EXP6_Pybricks_Lib.zip](/downloads/MBC_EXP6_Pybricks_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | EXP6 Pybricks 函式庫（舊版，v1 韌體）— 搭配 2026-10 以前韌體 | 1.x | EXP6 v1 | 1.5 MB | 2026-10-07 |
+| [MBC_EXP6_Official_App_Lib.zip](/downloads/MBC_EXP6_Official_App_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | EXP6 官方 SPIKE App 函式庫（舊版，v1 韌體）— 搭配 2026-10 以前韌體 | 1.x | EXP6 v1 | 1.1 MB | 2026-10-21 |
+| [MBC_Servo6_Pybricks_Lib.zip](/downloads/MBC_Servo6_Pybricks_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | SPIKE 6 路舵機擴充器 Servo6：Pybricks 函式庫 — 搭配 2026-10 以前韌體 | 1.0 | Servo6 | 8.7 KB | 2026-10-21 |
+| [MBC_Servo6_Official_App_Lib.zip](/downloads/MBC_Servo6_Official_App_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | SPIKE 6 路舵機擴充器 Servo6：官方 SPIKE App 函式庫 — 搭配 2026-10 以前韌體 | 1.0 | Servo6 | 5.3 KB | 2026-10-21 |
+| [line8_pybricks_spike_v4.0.0.zip](/examples/line8/line8_pybricks_spike_v4.0.0.zip) | 循行者 8 路：SPIKE Pybricks 函式庫與範例（`MBC_line8_obj_Lib_v400.py`＋積木／Python 各 2 支） | 4.0.0 | Pybricks 4.0.0 | 15 KB | 2026-10-24 |
+| [MBC_TOF8_Pybricks_Lib.zip](/downloads/MBC_TOF8_Pybricks_Lib.zip) | 測距者 8 路 TOF8：SPIKE Pybricks 函式庫（`MBC_laser8_Lib.py`、`MBC_laser8_obj_Lib.py`） | 1.0 | Pybricks | 10 KB | 2026-10-24 |
 | [MiniR4ColorSensorExt_LauMo_v2.zip](/downloads/MiniR4ColorSensorExt_LauMo_v2.zip) | MATRIX Mini R4：LauMo 大通道函式庫（`MiniR4ColorSensorExt.cpp`／`.h`，取代原廠兩個檔） | 2.0 | MATRIX 大通道 | 4.1 KB | 2026-10-21 |
-| [MBC_Pro_Sensors_mBlock5_v1.0.0.mext](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext) <span style="display:inline-block;background:#777;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | mBlock 5 擴展 v1.0.0（舊版，15 顆積木）— 搭配 2026-10 以前韌體 | 1.0.0 | mBlock v1（2026-10 前） | 1.9 MB | 2026-10-21 |
+| [MBC_Pro_Sensors_mBlock5_v1.0.0.mext](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | mBlock 5 擴展 v1.0.0（舊版，15 顆積木）— 搭配 2026-10 以前韌體 | 1.0.0 | mBlock v1（2026-10 前） | 1.9 MB | 2026-10-21 |
 <!-- /gen -->
 
 > 這張表由 `_build/pack-downloads.mjs` 的清單產生（`_build/generated/downloads.json`），之後重新打包會自動覆寫。
@@ -34,13 +34,13 @@ MBC 全系列的函式庫、積木擴充、範例程式與型錄，集中在這�
 | 檔案 | 狀態 | 說明 |
 | :--- | :--- | :--- |
 | [MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext) | **上架中：自行匯入（進階）** | v2.0.0，95 顆積木（循行者、測距者、掌控者、IMU、神攝手、MBC 共用），搭配協定 v2 韌體。這是「匯入檔」：到 [ext.mblock.cc](https://ext.mblock.cc) 登入 → 我的擴展 → 匯入資料 → 上傳 → 下載正式 `.mext`。上架後在 mBlock 擴展中心搜「MBC」即可，不用自己匯入 |
-| [MBC_Pro_Sensors_mBlock5_v1.0.0.mext](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext) <span style="display:inline-block;background:#777;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | 舊版 | v1.0.0，15 顆積木，搭配 2026-10 以前韌體；可直接拖進 mBlock |
+| [MBC_Pro_Sensors_mBlock5_v1.0.0.mext](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | 舊版 | v1.0.0，15 顆積木，搭配 2026-10 以前韌體；可直接拖進 mBlock |
 
 安裝步驟與積木說明：[MakeBlock（mBot）積木擴展](/makeblock.md)。
 
 ## 🟠 micro:bit（MakeCode 擴充）
 
-不用下載檔案：MakeCode → 擴充 → 貼 `https://github.com/contactmbcrobot/pxt-mbc-sensors`（v2.0.1，83 顆積木，MIT）。接線、硬體關卡與積木清單：[micro:bit 總覽](/microbit.md)。
+不用下載檔案：MakeCode → 擴充 → 貼 `https://github.com/contactmbcrobot/pxt-mbc-sensors`（v2.0.2，83 顆積木，MIT）。接線、硬體關卡與積木清單：[micro:bit 總覽](/microbit.md)。
 
 ## 🟢 MATRIX Mini R4
 

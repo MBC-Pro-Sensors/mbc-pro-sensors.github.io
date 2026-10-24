@@ -187,6 +187,10 @@ MiniR4.I2C1.MXColor.getColor(M);   // big channel F2（Magenta）= calibrate whi
 
 <p class="ref-missing"><b>Not available here</b>：black line mode, white line mode, set threshold, 5-second auto calibration</p>
 
+## Examples
+
+<p class="no-examples">There is no full example program for this software yet. Each item under “Reading values” and “Commands” above comes with code you can use as is; put them together in order, or <a href="/en/contact.html">contact us</a> for a full example.</p>
+
 ## More questions
 
 - **Can I mix stock blocks and the big channel?** No: they need different library files; pick one per program.

@@ -59,7 +59,7 @@ sensor = LUMPDevice(Port.S1)   # sensor on port 1
 linePosFine = sensor.read(2)[0]   # fine position：-100~+100
 ```
 
-<p class="ref-note">mode 2 · int8 · IR-REMOTE byte0 = 細位置+100 存成 uint8（主機減 100） (locked mode: firmware and hosts will not change it)</p>
+<p class="ref-note">mode 2 · int8 · IR-REMOTE byte0 = highRes−100 存成 int8（F030 ev3Uart case 2），主機直接讀 (locked mode: firmware and hosts will not change it)</p>
 
 </section>
 

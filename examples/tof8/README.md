@@ -13,9 +13,9 @@
 | `pybricks/For firmware 4.0.0/tof8_block_with_lib_v400.py` | SPIKE Prime | Pybricks 4.0.0 | 積木版，使用函式庫物件 `MBC_LASER8`，多工模式讀 8 顆距離。感應器接 Port B |
 | `pybricks/For firmware 4.0.0/MBC_laser8_obj_Lib.py` | SPIKE Prime | Pybricks 4.0.0 | 函式庫（物件寫法）：8 顆距離、最近／最遠方位（-8 ~ +8，0 = 正前方）與距離、初始化與故障狀態 |
 | `tof8_pybricks_spike_v3.6.1.zip`、`tof8_pybricks_spike_v4.0.0.zip` | SPIKE Prime | 3.6.1／4.0.0 | 各版本全部檔案打包 |
-| `arduino/TOF8_Arduino_Library_Example/` | Arduino Uno／Nano | Arduino IDE | 通用 I2C 版（位址 `0x29`），用同資料夾的 `MBC_TOF8.h` 讀 8 顆距離（mm）與最近／最遠方位 |
-| `arduino/TOF8_Arduino_Wire_Example/` | Arduino Uno／Nano | Arduino IDE | 同上，直接用 `Wire.h` 讀暫存器 `0x21`、`0x11`、`0x24` |
-| `tof8_arduino_examples.zip` | Arduino Uno／Nano | Arduino IDE | 兩個 Arduino 範例打包 |
+| `arduino/tof8_01_hello/` … `arduino/tof8_06_avoid_car/` | Arduino Uno／Nano／ESP32／R4 | Arduino IDE | 通用 I2C 版（位址 `0x29`，I2C 協議 v2），6 個新手範例，說明見 [Arduino 範例頁](/sensors/tof8/arduino-examples.md) |
+| `arduino/tof8_arduino_examples.zip`、`arduino-en/tof8_arduino_examples_en.zip` | 同上 | Arduino IDE | 6 個範例打包（中文註解／英文註解） |
+| `tof8_arduino_examples.zip` | Arduino Uno／Nano | Arduino IDE | **舊版**：給 I2C 協議 v1 韌體（暫存器 `0x21`、`0x11`、`0x24`）用，v2 韌體請用上一列 |
 
 **使用方式（Pybricks）**
 
@@ -28,7 +28,7 @@
 
 1. 只適用**通用 I2C 版**硬體（SPIKE／EV3 版接頭不同、不能互換）。接線：A4 → SDA、A5 → SCL、5V → VCC、GND → GND。
 2. 用 Arduino IDE 開啟資料夾內的 `.ino`，選 Arduino Uno（或 Nano）上傳，序列埠監控視窗設 115200 bps。
-3. 距離單位 mm：`1200` = 該方向沒有目標、`65535`（`0xFFFF`）= 該顆故障。
+3. 編號 `18`～`1F` 是 8 顆距離（mm）：`1200` = 該方向沒有目標或該顆故障，要分辨故障就讀編號 `08`。
 
 ## English
 
@@ -43,9 +43,9 @@ Sensor 1 = far left (-90°) … sensor 8 = far right (+90°); sensors 4 and 5 bo
 | `pybricks/For firmware 4.0.0/tof8_block_with_lib_v400.py` | SPIKE Prime | Pybricks 4.0.0 | Block version using the `MBC_LASER8` library object in multitask mode. Sensor on Port B |
 | `pybricks/For firmware 4.0.0/MBC_laser8_obj_Lib.py` | SPIKE Prime | Pybricks 4.0.0 | Library (object style): 8 distances, nearest / farthest direction (-8 – +8, 0 = front) and distance, init and fault status |
 | `tof8_pybricks_spike_v3.6.1.zip`, `tof8_pybricks_spike_v4.0.0.zip` | SPIKE Prime | 3.6.1 / 4.0.0 | All files of each version in one archive |
-| `arduino/TOF8_Arduino_Library_Example/` | Arduino Uno / Nano | Arduino IDE | Universal I2C version (address `0x29`). Uses `MBC_TOF8.h` in the same folder to read 8 distances (mm) and nearest / farthest direction |
-| `arduino/TOF8_Arduino_Wire_Example/` | Arduino Uno / Nano | Arduino IDE | Same, reading registers `0x21`, `0x11` and `0x24` directly with `Wire.h` |
-| `tof8_arduino_examples.zip` | Arduino Uno / Nano | Arduino IDE | Both Arduino examples in one archive |
+| `arduino/tof8_01_hello/` … `arduino/tof8_06_avoid_car/` | Arduino Uno / Nano / ESP32 / R4 | Arduino IDE | Universal I2C version (address `0x29`, I2C protocol v2). 6 beginner examples, see the [Arduino examples page](/en/sensors/tof8/arduino-examples.md) |
+| `arduino/tof8_arduino_examples.zip`, `arduino-en/tof8_arduino_examples_en.zip` | Same | Arduino IDE | The 6 examples in one archive (Chinese / English comments) |
+| `tof8_arduino_examples.zip` | Arduino Uno / Nano | Arduino IDE | **Legacy**: for I2C protocol v1 firmware (registers `0x21`, `0x11`, `0x24`). For v2 firmware use the row above |
 
 **How to use (Pybricks)**
 
@@ -58,4 +58,4 @@ Sensor 1 = far left (-90°) … sensor 8 = far right (+90°); sensors 4 and 5 bo
 
 1. For the **Universal I2C version** hardware only (SPIKE / EV3 versions have different connectors and are not interchangeable). Wiring: A4 → SDA, A5 → SCL, 5V → VCC, GND → GND.
 2. Open the `.ino` in the folder with the Arduino IDE, select Arduino Uno (or Nano), upload, and set the Serial Monitor to 115200 bps.
-3. Distances are in mm: `1200` = no target in that direction, `65535` (`0xFFFF`) = that sensor is faulty.
+3. Ids `18`–`1F` are the 8 distances in mm: `1200` = no target that way or that sensor failed; read id `08` to tell a fault apart.

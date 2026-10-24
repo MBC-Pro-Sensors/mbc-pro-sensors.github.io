@@ -4,7 +4,7 @@
 MBC 通用 I2C 版的循行者、測距者、掌控者、IMU 陀螺儀與神攝手，都能接 BBC micro:bit V1／V2：在 MakeCode 加一個擴充 **pxt-mbc-sensors v2**，積木區就多出「MBC 感應器」分類，每個數值一顆積木，內部走 [MBC 通用 I2C 協議 v2](/i2c-protocol.md)。
 
 > [!IMPORTANT]
-> **上機待測**：擴充 v2.0.1 已在 MakeCode 編譯通過（V1＋V2），但還沒有接實機逐顆積木核對數值。積木名稱以 GitHub 發布版為準：<https://github.com/contactmbcrobot/pxt-mbc-sensors>。實測後本頁會更新。
+> **上機待測**：擴充 v2.0.2 已在 MakeCode 編譯通過（V1＋V2），但還沒有接實機逐顆積木核對數值。積木名稱以 GitHub 發布版為準：<https://github.com/contactmbcrobot/pxt-mbc-sensors>。實測後本頁會更新。
 
 ---
 
@@ -17,7 +17,7 @@ MBC 通用 I2C 版的循行者、測距者、掌控者、IMU 陀螺儀與神攝�
 5. 編輯器語言切到 **繁體中文**（右上齒輪 → Language），積木就會顯示中文。
 
 > [!TIP]
-> 不需要送審、不需要下載檔案：老師把上面這個網址給學生貼就能用。要固定版本可貼 `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.1`。
+> 不需要送審、不需要下載檔案：老師把上面這個網址給學生貼就能用。要固定版本可貼 `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.2`。
 
 ## 🔌 接線
 
@@ -132,7 +132,7 @@ micro:bit 的 I2C 腳位是固定的：**P19 = SCL、P20 = SDA**（金手指邊�
 | 掌控者 搖桿 … ｜ gamepad joystick … | 左 X／左 Y／右 X／右 Y，右、上為正 | −100 ~ +100，0 = 中間 |
 | 掌控者 扳機 … 類比值 ｜ gamepad trigger … analog | L2／R2 壓力（PS2 數位手把按下 = 255） | 0 ~ 255 |
 | 掌控者 手把已連線？ ｜ gamepad is connected | F3 bit1 | 是／否 |
-| 掌控者 電量（%） ｜ gamepad battery percent | PS4／PS5 手把電量；PS2 恆 0 | 0 ~ 100 |
+| 掌控者 電量（百分比） ｜ gamepad battery percent | PS4／PS5 手把電量；PS2 恆 0 | 0 ~ 100 |
 | 掌控者 系統鍵 … 被按住？ ｜ gamepad system button … is pressed | PS 鍵／擷取鍵（PS4／PS5 才有） | 是／否 |
 | 掌控者 手把類型 ｜ gamepad type | 0 無、1 PS2 數位、2 PS2 類比、3 PS4、4 PS5 | 0 ~ 4 |
 | 掌控者 震動 強度 … ｜ gamepad rumble strength … | E5，PS4／PS5 手把震動 200 ms；PS2 忽略 | 0 ~ 255，0 = 停 |
@@ -211,5 +211,5 @@ basic.forever(function () {
 
 ## 📦 下載與原始碼
 
-- 擴充 repo（MIT）：<https://github.com/contactmbcrobot/pxt-mbc-sensors>（v2.0.1，2026-10）
+- 擴充 repo（MIT）：<https://github.com/contactmbcrobot/pxt-mbc-sensors>（v2.0.2，2026-10）
 - 其他平台的函式庫與範例：[下載專區](/downloads.md)

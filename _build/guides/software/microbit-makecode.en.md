@@ -6,7 +6,7 @@
 - **Extension**: **pxt-mbc-sensors v2** (MIT, nothing to download, just paste the URL).
 
 > [!IMPORTANT]
-> **Bench test pending**: extension v2.0.1 compiles in MakeCode (V1 + V2) but has not yet been checked block by block on real hardware. Block names follow the [GitHub release](https://github.com/contactmbcrobot/pxt-mbc-sensors).
+> **Bench test pending**: extension v2.0.2 compiles in MakeCode (V1 + V2) but has not yet been checked block by block on real hardware. Block names follow the [GitHub release](https://github.com/contactmbcrobot/pxt-mbc-sensors).
 
 ### Install the software
 
@@ -21,7 +21,7 @@
 4. To use an example: switch to **JavaScript** at the top right → paste the example → download the `.hex` and drag it onto the **MICROBIT** drive.
 
 > [!TIP]
-> No approval, no download: teachers just hand the URL to students. To pin a version, paste `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.1`.
+> No approval, no download: teachers just hand the URL to students. To pin a version, paste `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.2`.
 
 ### Wiring
 

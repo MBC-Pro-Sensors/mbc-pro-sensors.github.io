@@ -34,6 +34,10 @@ _PORT_LETTER = {1: 'S1', 2: 'S2', 3: 'S3', 4: 'S4'}
 #          data[1] = width,   range 0~8
 #          data[2] = ch1,     range 0~100  (rightmost boundary)
 #          data[3] = ch8,     range 0~100  (leftmost  boundary)
+#  --- firmware v4.0 (2026-10, #67) ---
+#  mode 3: data[0] = line bitmap (1 x int16), bit0 = ch1 ... bit7 = ch8, 1 = on line
+#  mode 5: data[0] = device id | hw[0] << 8   (id = factory I2C address, hw[0] = 8)
+#          data[1] = firmware major * 100 + minor
 # ════════════════════════════════════════════════════════════════
 
 # ════════════════════════════════════════════════════════════════
@@ -64,10 +68,14 @@ _selected_port = None
 _cache_mode0 = None
 _cache_mode1 = None
 _cache_mode2 = None
+_cache_mode3 = None
+_cache_mode5 = None
 
 _time_mode0  = 0
 _time_mode1  = 0
 _time_mode2  = 0
+_time_mode3  = 0
+_time_mode5  = 0
 
 _CACHE_MS    = 10
 _watch       = _StopWatch()
@@ -116,6 +124,22 @@ def _read_mode2():
         _time_mode2  = now
     return _cache_mode2
 
+def _read_mode3():
+    global _cache_mode3, _time_mode3
+    now = _watch.time()
+    if _cache_mode3 is None or (now - _time_mode3) >= _CACHE_MS:
+        _cache_mode3 = _selected_dev.read(3)
+        _time_mode3  = now
+    return _cache_mode3
+
+def _read_mode5():
+    global _cache_mode5, _time_mode5
+    now = _watch.time()
+    if _cache_mode5 is None or (now - _time_mode5) >= _CACHE_MS:
+        _cache_mode5 = _selected_dev.read(5)
+        _time_mode5  = now
+    return _cache_mode5
+
 async def _async_read_mode0():
     global _cache_mode0, _time_mode0
     now = _watch.time()
@@ -139,6 +163,22 @@ async def _async_read_mode2():
         _cache_mode2 = await _selected_dev.read(2)
         _time_mode2  = now
     return _cache_mode2
+
+async def _async_read_mode3():
+    global _cache_mode3, _time_mode3
+    now = _watch.time()
+    if _cache_mode3 is None or (now - _time_mode3) >= _CACHE_MS:
+        _cache_mode3 = await _selected_dev.read(3)
+        _time_mode3  = now
+    return _cache_mode3
+
+async def _async_read_mode5():
+    global _cache_mode5, _time_mode5
+    now = _watch.time()
+    if _cache_mode5 is None or (now - _time_mode5) >= _CACHE_MS:
+        _cache_mode5 = await _selected_dev.read(5)
+        _time_mode5  = now
+    return _cache_mode5
 
 # ════════════════════════════════════════════════════════════════
 #  Factory function: takes read functions and a parser,
@@ -181,6 +221,15 @@ def _parse_edge_ch8(data):
     """mode 2: rightmost channel (ch8) IR value, range 0~100."""
     return data[3]
 
+def _parse_bitmap(data):
+    """mode 3: line bitmap, bit0 = ch1 ... bit7 = ch8 (1 = that channel is on the line), range 0~255."""
+    return data[0] & 0xFF
+
+def _parse_device_id(data):
+    """mode 5: (id, hw0, fw) = (factory I2C address, hardware code 8, firmware major*100+minor)."""
+    word = data[0] & 0xFFFF
+    return (word & 0xFF, word >> 8, data[1])
+
 def _make_ir_ch_parser(ch):
     """mode 1: single channel raw IR value, range 0~100."""
     idx = ch - 1
@@ -197,6 +246,12 @@ line_pos100 = _make_sensor_func(_read_mode2, _async_read_mode2, _parse_pos100)
 line_width  = _make_sensor_func(_read_mode2, _async_read_mode2, _parse_width)
 line_edge_l = _make_sensor_func(_read_mode2, _async_read_mode2, _parse_edge_ch1)
 line_edge_r = _make_sensor_func(_read_mode2, _async_read_mode2, _parse_edge_ch8)
+
+# firmware v4.0 (2026-10, #67): mode 3 line bitmap, mode 5 device id
+# bitmap()    -> int 0~255, bit0 = ch1 (leftmost) ... bit7 = ch8; (bitmap() >> (ch - 1)) & 1 == 1 means ch is on the line
+# device_id() -> (id, hw0, fw): id = factory I2C address (0x16 = 22), hw0 = 8 for the 8-channel sensor, fw = major*100+minor
+bitmap    = _make_sensor_func(_read_mode3, _async_read_mode3, _parse_bitmap)
+device_id = _make_sensor_func(_read_mode5, _async_read_mode5, _parse_device_id)
 
 # ★ line_ir_ch: 8 parsers and functions pre-built at import time.
 #   No new objects are created on each call.
@@ -231,15 +286,15 @@ def line_init_port_multitask(port, multitask=False):
     'await line_init_port_multitask(...)'.
     """
     global _selected_dev, _async_mode, _selected_port
-    global _cache_mode0, _cache_mode1, _cache_mode2
-    global _time_mode0,  _time_mode1,  _time_mode2
+    global _cache_mode0, _cache_mode1, _cache_mode2, _cache_mode3, _cache_mode5
+    global _time_mode0,  _time_mode1,  _time_mode2,  _time_mode3,  _time_mode5
 
     _selected_port = port
     _selected_dev  = _devices.get(port)
     _async_mode    = bool(multitask)
 
     # Reset cache on port change
-    _cache_mode0 = _cache_mode1 = _cache_mode2 = None
-    _time_mode0  = _time_mode1  = _time_mode2  = 0
+    _cache_mode0 = _cache_mode1 = _cache_mode2 = _cache_mode3 = _cache_mode5 = None
+    _time_mode0  = _time_mode1  = _time_mode2  = _time_mode3  = _time_mode5  = 0
 
     return _noop()

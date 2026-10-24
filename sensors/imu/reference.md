@@ -1073,7 +1073,7 @@ mbcWrite(0x6A, 0xE0);   // 航向歸零
 只有大通道函式庫有這個動作；0x22 原廠函式庫沒有。
 
 ```cpp
-MiniR4.I2C1.MXColor.getColor(undefined);   // 大通道 F1~F4（undefined）= 航向歸零，回傳上一包的完成次數
+MiniR4.I2C1.MXColor.getColor(C);   // 大通道 F1~F4（任一個都可以，這裡用 F1 = Cyan）= 航向歸零，回傳上一包的完成次數
 ```
 
 </details>

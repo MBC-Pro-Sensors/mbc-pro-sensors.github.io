@@ -193,6 +193,10 @@ for (uint8_t i = 0; i < 4; i++) stick[i] = bigU8(4 + i);   // stick axis 1~4
 
 This software cannot send commands; use Arduino I2C, mBlock or micro:bit if you need them.
 
+## Examples
+
+<p class="no-examples">There is no full example program for this software yet. Each item under “Reading values” and “Commands” above comes with code you can use as is; put them together in order, or <a href="/en/contact.html">contact us</a> for a full example.</p>
+
 ## More questions
 
 - **Can I mix stock blocks and the big channel?** No: they need different library files; pick one per program.

@@ -4,7 +4,7 @@
 The universal I2C editions of the Pathfinder, Ranger, Controller, IMU gyro and Sharpshooter all work with BBC micro:bit V1 / V2: add one MakeCode extension, **pxt-mbc-sensors v2**, and an "MBC Sensors" category appears with one block per value. Under the hood it speaks the [MBC universal I2C protocol v2](/en/i2c-protocol.md).
 
 > [!IMPORTANT]
-> **Bench test pending**: extension v2.0.1 compiles in MakeCode for V1 and V2, but the blocks have not yet been checked against real sensors one by one. Block names follow the GitHub release: <https://github.com/contactmbcrobot/pxt-mbc-sensors>. This page will be updated after testing.
+> **Bench test pending**: extension v2.0.2 compiles in MakeCode for V1 and V2, but the blocks have not yet been checked against real sensors one by one. Block names follow the GitHub release: <https://github.com/contactmbcrobot/pxt-mbc-sensors>. This page will be updated after testing.
 
 ---
 
@@ -17,7 +17,7 @@ The universal I2C editions of the Pathfinder, Ranger, Controller, IMU gyro and S
 5. Traditional Chinese block names are included: switch the editor language to 繁體中文 if you prefer.
 
 > [!TIP]
-> No approval, no download: teachers just hand the URL to students. To pin a version, paste `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.1`.
+> No approval, no download: teachers just hand the URL to students. To pin a version, paste `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.2`.
 
 ## 🔌 Wiring
 
@@ -132,7 +132,7 @@ All 8 sensors take about 2 ~ 4 s to initialise after power-on: use "Device → w
 | gamepad joystick … ｜ 掌控者 搖桿 … | left X / left Y / right X / right Y, right and up positive | −100 ~ +100, 0 = centre |
 | gamepad trigger … analog ｜ 掌控者 扳機 … 類比值 | L2 / R2 pressure (PS2 digital pads report 255 when pressed) | 0 ~ 255 |
 | gamepad is connected ｜ 掌控者 手把已連線？ | F3 bit1 | true / false |
-| gamepad battery percent ｜ 掌控者 電量（%） | PS4 / PS5 gamepad battery; PS2 always 0 | 0 ~ 100 |
+| gamepad battery percent ｜ 掌控者 電量（百分比） | PS4 / PS5 gamepad battery; PS2 always 0 | 0 ~ 100 |
 | gamepad system button … is pressed ｜ 掌控者 系統鍵 … 被按住？ | PS / capture button (PS4 / PS5 only) | true / false |
 | gamepad type ｜ 掌控者 手把類型 | 0 none, 1 PS2 digital, 2 PS2 analog, 3 PS4, 4 PS5 | 0 ~ 4 |
 | gamepad rumble strength … ｜ 掌控者 震動 強度 … | E5, rumbles a PS4 / PS5 gamepad for 200 ms; PS2 ignores | 0 ~ 255, 0 = stop |
@@ -211,5 +211,5 @@ Advanced: `mbc.readValue(address, id)` reads any I2C v2 value (int16 little-endi
 
 ## 📦 Download and source
 
-- Extension repo (MIT): <https://github.com/contactmbcrobot/pxt-mbc-sensors> (v2.0.1, 2026-10)
+- Extension repo (MIT): <https://github.com/contactmbcrobot/pxt-mbc-sensors> (v2.0.2, 2026-10)
 - Libraries and examples for the other platforms: [Downloads](/en/downloads.md)

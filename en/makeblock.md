@@ -21,7 +21,7 @@ Software: **mBlock 5 for PC** (Upload mode — the program is flashed to the boa
 
 <div style="background: rgba(128,128,128,0.06); border: 1px solid rgba(128,128,128,0.3); border-radius: 12px; padding: 18px; margin: 20px 0;">
 <p style="margin: 0 0 10px 0;"><b>Legacy v1.0.0</b> (15 blocks: Pathfinder, Ranger, Controller): <b>for firmware shipped before 2026-10</b>. To use the old blocks with new firmware, flash the Pathfinder 8/16 with the <code>MBC_MBLOCK_LEGACY=1</code> build (no legacy build exists for the other products).</p>
-<a href="/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext" style="display: inline-block; background: #777; color: white; text-decoration: none; padding: 10px 22px; border-radius: 30px; font-weight: bold;">Download legacy .mext</a>
+<a href="/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext" style="display: inline-block; background: #666; color: white; text-decoration: none; padding: 10px 22px; border-radius: 30px; font-weight: bold;">Download legacy .mext</a>
 </div>
 
 ### Install steps (once you have the .mext)

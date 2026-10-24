@@ -202,7 +202,7 @@ linePosFine = line.pos100()
 <details class="plat plat-ev3" data-host="ev3">
 <summary><span class="plat-dot"></span>EV3</summary>
 
-mode 2 · int8 · IR-REMOTE byte0 = 細位置+100 存成 uint8（主機減 100） (locked mode: firmware and hosts will not change it)
+mode 2 · int8 · IR-REMOTE byte0 = highRes−100 存成 int8（F030 ev3Uart case 2），主機直接讀 (locked mode: firmware and hosts will not change it)
 
 ```python
 from pybricks.iodevices import LUMPDevice
@@ -799,7 +799,7 @@ no 0x22; big byte 25 u8. A and B need different library files and cannot be mixe
 
 ```cpp
 // B. big channel byte 25：calibrations done（尾段 F1/F2 完成次數）
-int calibCount = bigU8(25);
+int calibCount = MiniR4.I2C1.MXColor.getColor(C);   // calibrations done; byte 25 only comes back with F1, so this line also runs "calibrate black"
 ```
 
 </details>

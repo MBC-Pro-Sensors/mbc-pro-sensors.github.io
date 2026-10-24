@@ -15,14 +15,14 @@ Every MBC library, block extension, example pack and catalog on one page. Check 
 | :--- | :--- | :---: | :--- | :---: | :---: |
 | [MBC_EXP6_Pybricks_Lib_v2.zip](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip) | EXP6 expander: Pybricks library v2 + examples (`MBC_exp6_obj_Lib_v2.py`, `Exp6_objMode_Demo.py`, command manual PDF, 11 programs in `examples/`) | 2.0 | EXP6 v2 | 1.5 MB | 2026-10-21 |
 | [MBC_EXP6_Official_App_Lib_v2.zip](/downloads/MBC_EXP6_Official_App_Lib_v2.zip) | EXP6 expander: official SPIKE App library v2 + examples (`MBC_exp6_SPIKE_App_Lib.py`, install / uninstall scripts for `SPIKE_Education/` and `Robot_Inventor/`, 9 programs in `examples/`) | 2.0 | EXP6 v2 | 1.2 MB | 2026-10-21 |
-| [MBC_EXP6_Pybricks_Lib.zip](/downloads/MBC_EXP6_Pybricks_Lib.zip) <span style="display:inline-block;background:#777;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | EXP6 Pybricks library (legacy, v1 firmware) — for firmware shipped before 2026-10 | 1.x | EXP6 v1 | 1.5 MB | 2026-10-07 |
-| [MBC_EXP6_Official_App_Lib.zip](/downloads/MBC_EXP6_Official_App_Lib.zip) <span style="display:inline-block;background:#777;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | EXP6 official SPIKE App library (legacy, v1 firmware) — for firmware shipped before 2026-10 | 1.x | EXP6 v1 | 1.1 MB | 2026-10-21 |
-| [MBC_Servo6_Pybricks_Lib.zip](/downloads/MBC_Servo6_Pybricks_Lib.zip) <span style="display:inline-block;background:#777;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | Servo6 expander: Pybricks library — for firmware shipped before 2026-10 | 1.0 | Servo6 | 8.7 KB | 2026-10-21 |
-| [MBC_Servo6_Official_App_Lib.zip](/downloads/MBC_Servo6_Official_App_Lib.zip) <span style="display:inline-block;background:#777;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | Servo6 expander: official SPIKE App library — for firmware shipped before 2026-10 | 1.0 | Servo6 | 5.3 KB | 2026-10-21 |
-| [line8_pybricks_spike_v4.0.0.zip](/examples/line8/line8_pybricks_spike_v4.0.0.zip) | Line Follower 8-ch: SPIKE Pybricks library + examples (`MBC_line8_obj_Lib_v400.py` plus 2 block-style and 2 Python examples) | 4.0.0 | Pybricks 4.0.0 | 14 KB | 2026-10-21 |
-| [MBC_TOF8_Pybricks_Lib.zip](/downloads/MBC_TOF8_Pybricks_Lib.zip) | Ranger 8-ch TOF8: SPIKE Pybricks library (`MBC_laser8_Lib.py`, `MBC_laser8_obj_Lib.py`) | 1.0 | Pybricks | 8.6 KB | 2026-10-21 |
+| [MBC_EXP6_Pybricks_Lib.zip](/downloads/MBC_EXP6_Pybricks_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | EXP6 Pybricks library (legacy, v1 firmware) — for firmware shipped before 2026-10 | 1.x | EXP6 v1 | 1.5 MB | 2026-10-07 |
+| [MBC_EXP6_Official_App_Lib.zip](/downloads/MBC_EXP6_Official_App_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | EXP6 official SPIKE App library (legacy, v1 firmware) — for firmware shipped before 2026-10 | 1.x | EXP6 v1 | 1.1 MB | 2026-10-21 |
+| [MBC_Servo6_Pybricks_Lib.zip](/downloads/MBC_Servo6_Pybricks_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | Servo6 expander: Pybricks library — for firmware shipped before 2026-10 | 1.0 | Servo6 | 8.7 KB | 2026-10-21 |
+| [MBC_Servo6_Official_App_Lib.zip](/downloads/MBC_Servo6_Official_App_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | Servo6 expander: official SPIKE App library — for firmware shipped before 2026-10 | 1.0 | Servo6 | 5.3 KB | 2026-10-21 |
+| [line8_pybricks_spike_v4.0.0.zip](/examples/line8/line8_pybricks_spike_v4.0.0.zip) | Line Follower 8-ch: SPIKE Pybricks library + examples (`MBC_line8_obj_Lib_v400.py` plus 2 block-style and 2 Python examples) | 4.0.0 | Pybricks 4.0.0 | 15 KB | 2026-10-24 |
+| [MBC_TOF8_Pybricks_Lib.zip](/downloads/MBC_TOF8_Pybricks_Lib.zip) | Ranger 8-ch TOF8: SPIKE Pybricks library (`MBC_laser8_Lib.py`, `MBC_laser8_obj_Lib.py`) | 1.0 | Pybricks | 10 KB | 2026-10-24 |
 | [MiniR4ColorSensorExt_LauMo_v2.zip](/downloads/MiniR4ColorSensorExt_LauMo_v2.zip) | MATRIX Mini R4: LauMo big-channel library (`MiniR4ColorSensorExt.cpp` / `.h`, replaces the two stock files) | 2.0 | MATRIX big channel | 4.1 KB | 2026-10-21 |
-| [MBC_Pro_Sensors_mBlock5_v1.0.0.mext](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext) <span style="display:inline-block;background:#777;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | mBlock 5 extension v1.0.0 (legacy, 15 blocks) — for firmware shipped before 2026-10 | 1.0.0 | mBlock v1 (before 2026-10) | 1.9 MB | 2026-10-21 |
+| [MBC_Pro_Sensors_mBlock5_v1.0.0.mext](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | mBlock 5 extension v1.0.0 (legacy, 15 blocks) — for firmware shipped before 2026-10 | 1.0.0 | mBlock v1 (before 2026-10) | 1.9 MB | 2026-10-21 |
 <!-- /gen -->
 
 > This table is generated from the `_build/pack-downloads.mjs` list (`_build/generated/downloads.json`) and is overwritten whenever the packs are rebuilt.
@@ -34,13 +34,13 @@ Every MBC library, block extension, example pack and catalog on one page. Check 
 | File | Status | Notes |
 | :--- | :--- | :--- |
 | [MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext) | **Publishing in progress: import it yourself (advanced)** | v2.0.0, 95 blocks (Pathfinder, Ranger, Controller, IMU, Vision, MBC common), for protocol v2 firmware. This is an *import file*: sign in to [ext.mblock.cc](https://ext.mblock.cc) → My extensions → Import data → upload → Download the final `.mext`. Once listed, just search "MBC" in the mBlock Extension Center |
-| [MBC_Pro_Sensors_mBlock5_v1.0.0.mext](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext) <span style="display:inline-block;background:#777;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | Legacy | v1.0.0, 15 blocks, for firmware shipped before 2026-10; drop straight into mBlock |
+| [MBC_Pro_Sensors_mBlock5_v1.0.0.mext](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | Legacy | v1.0.0, 15 blocks, for firmware shipped before 2026-10; drop straight into mBlock |
 
 Install steps and block reference: [MakeBlock (mBot) block extension](/en/makeblock.md).
 
 ## 🟠 micro:bit (MakeCode extension)
 
-Nothing to download: MakeCode → Extensions → paste `https://github.com/contactmbcrobot/pxt-mbc-sensors` (v2.0.1, 83 blocks, MIT). Wiring, hardware checklist and block list: [micro:bit overview](/en/microbit.md).
+Nothing to download: MakeCode → Extensions → paste `https://github.com/contactmbcrobot/pxt-mbc-sensors` (v2.0.2, 83 blocks, MIT). Wiring, hardware checklist and block list: [micro:bit overview](/en/microbit.md).
 
 ## 🟢 MATRIX Mini R4
 

@@ -1073,7 +1073,7 @@ Host sends `[E0]` → reply `[00][00][E0]` (ack), then it runs.
 Big-channel library only; the stock 0x22 library has no actions.
 
 ```cpp
-MiniR4.I2C1.MXColor.getColor(undefined);   // big channel F1~F4（undefined）= zero heading, returns the completion counter from the previous packet
+MiniR4.I2C1.MXColor.getColor(C);   // big channel F1~F4（any of them works, here F1 = Cyan）= zero heading, returns the completion counter from the previous packet
 ```
 
 </details>

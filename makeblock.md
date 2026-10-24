@@ -21,7 +21,7 @@
 
 <div style="background: rgba(128,128,128,0.06); border: 1px solid rgba(128,128,128,0.3); border-radius: 12px; padding: 18px; margin: 20px 0;">
 <p style="margin: 0 0 10px 0;"><b>舊版 v1.0.0</b>（15 個積木：循行者、測距者、掌控者）：<b>搭配 2026-10 以前出貨的韌體</b>。新韌體要用舊積木時，循行者 8／16 路請燒 <code>MBC_MBLOCK_LEGACY=1</code> 版本（其他產品沒有舊版）。</p>
-<a href="/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext" style="display: inline-block; background: #777; color: white; text-decoration: none; padding: 10px 22px; border-radius: 30px; font-weight: bold;">下載舊版 .mext</a>
+<a href="/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext" style="display: inline-block; background: #666; color: white; text-decoration: none; padding: 10px 22px; border-radius: 30px; font-weight: bold;">下載舊版 .mext</a>
 </div>
 
 ### 安裝步驟（拿到 .mext 之後）

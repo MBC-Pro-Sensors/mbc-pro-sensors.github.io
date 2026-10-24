@@ -37,6 +37,10 @@ int raw = MiniR4.I2C1.MXColor.getColor(R);   // group 1
 
 <p class="ref-missing"><b>Not readable here</b>：nearest distance (cm), nearest direction, farthest distance (cm), farthest direction, front distance (cm), nearest distance (mm), init bitmap, fault bitmap, front distance (mm), sensor 1~8 distance (mm). Use <a href="/en/sensors/tof8/matrix/bigchannel.md">Big-channel library</a> for these.</p>
 
+## Examples
+
+<p class="no-examples">There is no full example program for this software yet. Each item under “Reading values” above comes with code you can use as is; put them together in order, or <a href="/en/contact.html">contact us</a> for a full example.</p>
+
 ## More questions
 
 - **Can I mix stock blocks and the big channel?** No: they need different library files; pick one per program.

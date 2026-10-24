@@ -577,7 +577,8 @@ body.docs .markdown-section a { color: #0a7c78; }
 body.docs .markdown-section strong { color: #10212b; }
 body.docs .markdown-section blockquote { background: #fff8db; color: #33414e; }
 body.docs .markdown-section blockquote.callout { background: color-mix(in srgb, var(--c) 10%, #fff); }
-body.docs .markdown-section blockquote .callout-title { color: color-mix(in srgb, var(--c) 70%, #000); }
+/* 2026-10-24 70% → 60%：提示（綠）70% 只有 4.46:1（Lighthouse color-contrast） */
+body.docs .markdown-section blockquote .callout-title { color: color-mix(in srgb, var(--c) 60%, #000); }
 body.docs .markdown-section code { background: #eef7f6; color: #0a6f6b; }
 body.docs .markdown-section pre { box-shadow: none; border: 1px solid #e3e8ee; }
 body.docs .markdown-section pre code { background: transparent; color: #33414e; }
@@ -611,10 +612,10 @@ body.docs .guide-host small { color: #5b6b78; }
 /* 舊頁面內嵌的深色主題文字顏色 → 淺底可讀的顏色（程式碼區塊內不動） */
 body.docs .markdown-section :is([style*="color: #aaa"], [style*="color: #888"], [style*="color: #999"], [style*="color: #bbb"], [style*="color: #777"]):not(pre *, .code-block-wrapper *, [style*="background: #1e1e1e"] *) { color: #5b6b78 !important; }
 body.docs .markdown-section :is([style*="color: #ccc"], [style*="color: #ddd"], [style*="color: #e0e0e0"]):not(pre *, .code-block-wrapper *, [style*="background: #1e1e1e"] *) { color: #33414e !important; }
-body.docs .markdown-section :is([style*="color: #0abab5"], [style*="color:#0abab5"]):not(pre *, .code-block-wrapper *, [style*="background: #1e1e1e"] *) { color: #0a7c78 !important; }
+body.docs .markdown-section :is([style*="color: #0abab5"], [style*="color:#0abab5"]):not(pre *, .code-block-wrapper *, [style*="background: #1e1e1e"] *) { color: #086a66 !important; }
 body.docs .markdown-section :is([style*="color: #00d2ff"], [style*="color:#00d2ff"]):not(pre *, .code-block-wrapper *, [style*="background: #1e1e1e"] *) { color: #0077a8 !important; }
-body.docs .markdown-section [style*="color: #ff6b35"]:not(pre *, .code-block-wrapper *, [style*="background: #1e1e1e"] *) { color: #c2410c !important; }
-body.docs .markdown-section :is([style*="color: #d9a300"], [style*="color: #f2c200"]):not(pre *, .code-block-wrapper *, [style*="background: #1e1e1e"] *) { color: #8a6d00 !important; }
+body.docs .markdown-section [style*="color: #ff6b35"]:not(pre *, .code-block-wrapper *, [style*="background: #1e1e1e"] *) { color: #b03a0a !important; }
+body.docs .markdown-section :is([style*="color: #d9a300"], [style*="color: #f2c200"]):not(pre *, .code-block-wrapper *, [style*="background: #1e1e1e"] *) { color: #7a6100 !important; }
 body.docs .markdown-section [style*="color: #ce93d8"] { color: #8e24aa !important; }
 body.docs .markdown-section [style*="background: rgba(255,255,255,0.15); color: #fff"] { background: rgba(16,33,43,0.08) !important; color: #33414e !important; }
 body.docs .markdown-section [style*="background: rgba(255,255,255,0.02)"] { background: #fff !important; box-shadow: 0 4px 14px rgba(16,33,43,0.06) !important; }
@@ -628,8 +629,8 @@ body.docs .contact-hero h1 { background: none; -webkit-text-fill-color: #10212b;
 body.docs .contact-hero p, body.docs .channel-info p, body.docs .reason-card p { color: #5b6b78; }
 body.docs .reason-card h3, body.docs .markdown-section .section-title { color: #10212b; }
 body.docs .support-list li { color: #33414e; }
-body.docs .channel-card.email .channel-info h3, body.docs .channel-card.email .channel-info code { color: #0077a8; }
-body.docs .channel-card.line .channel-info h3, body.docs .channel-card.line .channel-info code { color: #0a7c78; }
+body.docs .channel-card.email .channel-info h3, body.docs .channel-card.email .channel-info code { color: #006c99; }
+body.docs .channel-card.line .channel-info h3, body.docs .channel-card.line .channel-info code { color: #0a7470; }
 body.docs .markdown-section .product-hero .buy-btn.more { color: #eee; border-color: rgba(255,255,255,0.35); }
 .markdown-section .buy-btn { white-space: nowrap; }
 @media (max-width: 767px) {
@@ -649,8 +650,8 @@ body.docs .markdown-section .lp-final .lp-btn.line { color: #fff; }
 body.docs .markdown-section [style*="color: var(--theme-color)"]:not(pre *, [style*="background: #1e1e1e"] *) { color: #0a7c78 !important; }
 body.docs .markdown-section [style*="color: var(--accent-color)"]:not(pre *, [style*="background: #1e1e1e"] *) { color: #8a6d00 !important; }
 body.docs .markdown-section [style*="color: #00ff64"]:not(pre *, [style*="background: #1e1e1e"] *) { color: #13803d !important; }
-body.docs .markdown-section [style*="color: #ff4500"]:not(pre *, [style*="background: #1e1e1e"] *) { color: #c2410c !important; }
-body.docs .markdown-section :is([style*="color: #4caf50" i], [style*="color: #ec5959" i], [style*="color: #ff4a4a"]):not(pre *, [style*="background: #1e1e1e"] *) { filter: brightness(0.72); }
+body.docs .markdown-section [style*="color: #ff4500"]:not(pre *, [style*="background: #1e1e1e"] *) { color: #b03a0a !important; }
+body.docs .markdown-section :is([style*="color: #4caf50" i], [style*="color: #ec5959" i], [style*="color: #ff4a4a"]):not(pre *, [style*="background: #1e1e1e"] *) { filter: brightness(0.6); }
 body.docs .markdown-section [style*="background: #1e1e1e"] [style*="color: #f2c200"] { color: #f2c200 !important; }
 body.docs .sidebar .search { padding: 0 14px; border-bottom: 0; }
 .product-hero .ph-cta { margin-bottom: 22px; }
@@ -944,3 +945,22 @@ body.docs .markdown-section a.pick-tile, body.docs .markdown-section a.pick-tile
 .markdown-section .pt-tag { font-weight: 400; }
 /* docsify 在手機把 body／main 設 overflow-x: hidden，會讓 sticky 失效：改成 clip（一樣不橫向捲動，但不建立捲動容器） */
 @media (max-width: 767px) { body.docs, body.docs > main { overflow: visible; overflow-x: clip; } }
+/* 2026-10-24 對比：下載按鈕是白字，內文 inline 漸層從淺青／黃開始（1.7~2.4:1），用 CSS 統一壓深到 ≥5:1；黃色那顆改深色字 */
+.markdown-section a:is(.btn-download, .btn-download-lib):is([style*="#00d2ff"], [style*="#0abab5"]) { background: linear-gradient(135deg, #007a8a, #005e5a) !important; color: #fff !important; }
+.markdown-section a.btn-download[style*="#5b6cff"] { background: linear-gradient(135deg, #4f5bd5, #2a2f8f) !important; }
+.markdown-section a.btn-download[style*="#f2c200"] { color: #10212b !important; }
+/* 2026-10-24 目錄預設收起（手機的樣子），桌機由頁內腳本打開；停用 JS 時桌機也要能點開 */
+@media (min-width: 1200px) { html:not(.js) body.docs .toc summary { pointer-events: auto; cursor: pointer; } }
+@media (max-width: 1199px) { body.docs .markdown-section > .toc details { margin: 0 0 18px; } }
+/* 2026-10-24 全站對比掃描（_build/tests/layout_scan.mjs --all）：舊頁內嵌色在淡色底上不到 4.5:1 */
+body.docs .markdown-section [style*="color: #d32f2f"]:not(pre *, [style*="background: #1e1e1e"] *) { color: #a51f1f !important; }
+body.docs .markdown-section [style*="color: #007a75"]:not(pre *, [style*="background: #1e1e1e"] *) { color: #006a66 !important; }
+body.docs .markdown-section [style*="color: #b88600"]:not(pre *, [style*="background: #1e1e1e"] *) { color: #7a6100 !important; }
+body.docs .markdown-section [style*="color: #0077b6"]:not(pre *, [style*="background: #1e1e1e"] *) { color: #005f91 !important; }
+body.docs .markdown-section .code-badge.sync { color: #93c5fd; }
+body.docs .markdown-section .code-badge.async { color: #d8b4fe; }
+/* 舊頁平台晶片：目前這一顆用深一階底＋白字（原本 a.chip 的字色規則蓋掉 .current，字跟底同色系 1.6~2.7:1） */
+.markdown-section .chip.current, body.docs .markdown-section a.chip.current { background: var(--pc-ink, var(--brand-ink)); border-color: var(--pc-ink, var(--brand-ink)); color: #fff; }
+.markdown-section a:is([style*="linear-gradient(135deg, #00d2ff"], [style*="linear-gradient(135deg, #0abab5"]):is([style*="color: white"], [style*="color: #fff"], [style*="color:#fff"]) { background: linear-gradient(135deg, #007a8a, #005e5a) !important; }
+/* 警告（黃）標題混黑 60% 仍只有 4.2:1，直接用深黃 */
+body.docs .markdown-section blockquote.callout-warning .callout-title { color: #6b5400; }

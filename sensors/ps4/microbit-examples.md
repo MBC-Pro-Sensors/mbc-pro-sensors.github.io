@@ -65,7 +65,7 @@ micro:bit 是 3.3 V 的板子，接 MBC 產品前每一關都要過；打「上�
 | 當掌控者 按鈕 … 按下／放開 | `mbc.onPadButton(MbcPadButton.Cross, MbcPadButtonEvent.Pressed, ...)` | 事件 | 按下或放開的那一瞬間執行一次 | 2 |
 | 掌控者 扳機 L2／R2 類比值 | `mbc.padTrigger(MbcPadTrigger.R2)` | 0～255 | 扳機壓多深（PS2 數位手把只有 0 或 255） | 3 |
 | 掌控者 手把已連線？ | `mbc.padConnected()` | true / false | 沒連線時按鍵全 0、搖桿回中 | 1, 2, 4, 5 |
-| 掌控者 電量（%） | `mbc.padBattery()` | 0～100 | 手把電量（PS2 手把恆 0） | 5 |
+| 掌控者 電量（百分比） | `mbc.padBattery()` | 0～100 | 手把電量（PS2 手把恆 0） | 5 |
 | 掌控者 震動 強度 … | `mbc.padRumble(200)` | 0～255（命令 E5） | 震 200 ms，0 = 停（PS2 忽略） | 2 |
 | 掌控者 燈條顏色 … | `mbc.padLight(0xFF0000)` | RGB（命令 E6） | PS4／PS5 手把燈條顏色（PS2 忽略） | 2, 5 |
 | 等位址 … 的裝置就緒 | `mbc.waitReady(mbc.ADDR_PAD, 3000)` | true / false | 最多等 3 秒，接收器有回應就 true（進階 → 裝置） | 1 |

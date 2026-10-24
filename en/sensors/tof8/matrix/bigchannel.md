@@ -209,6 +209,10 @@ for (uint8_t i = 0; i < 8; i++) distCm[i] = bigU8(0 + i);   // sensor 1~8 distan
 
 <p class="ref-missing"><b>Not readable here</b>：front distance (cm), sensor 1~8 distance (mm). Use <a href="/en/sensors/tof8/arduino/ide.md">Arduino</a> / <a href="/en/sensors/tof8/mblock/mblock5.md">mBlock</a> / <a href="/en/sensors/tof8/microbit/makecode.md">micro:bit</a> for these.</p>
 
+## Examples
+
+<p class="no-examples">There is no full example program for this software yet. Each item under “Reading values” above comes with code you can use as is; put them together in order, or <a href="/en/contact.html">contact us</a> for a full example.</p>
+
 ## More questions
 
 - **Can I mix stock blocks and the big channel?** No: they need different library files; pick one per program.

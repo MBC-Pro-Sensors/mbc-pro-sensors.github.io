@@ -13,6 +13,9 @@
 #   mode 1: data[0~7] = 16 channels packed 2 per value (tens=odd ch, ones=even ch, each 1~9)
 #   mode 2: data[0] = pos100 (-100~+100), data[1] = width (0~16),
 #           data[2] = leftmost channel (ch1) IR 0~100, data[3] = rightmost channel (ch16) IR 0~100
+#   --- firmware v4.0 (2026-10, #67) ---
+#   mode 3: data[0] = line bitmap (1 x int16), bit0 = ch1 ... bit15 = ch16, 1 = on line (read as unsigned 0~65535)
+#   mode 5: data[0] = device id | hw[0] << 8 (id = factory I2C address, hw[0] = 16), data[1] = firmware major*100+minor
 
 from pybricks.iodevices import PUPDevice
 from pybricks.parameters import Port
@@ -43,10 +46,14 @@ _async_mode    = False
 _cache_mode0 = None
 _cache_mode1 = None
 _cache_mode2 = None
+_cache_mode3 = None
+_cache_mode5 = None
 
 _time_mode0 = 0
 _time_mode1 = 0
 _time_mode2 = 0
+_time_mode3 = 0
+_time_mode5 = 0
 
 _CACHE_MS = 10
 _watch = _StopWatch()
@@ -63,8 +70,8 @@ def _check_init():
 # ════════════════════════════════════════════════════════════════
 
 def _read_mode(mode_num):
-    global _cache_mode0, _cache_mode1, _cache_mode2
-    global _time_mode0, _time_mode1, _time_mode2
+    global _cache_mode0, _cache_mode1, _cache_mode2, _cache_mode3, _cache_mode5
+    global _time_mode0, _time_mode1, _time_mode2, _time_mode3, _time_mode5
     now = _watch.time()
 
     if mode_num == 0:
@@ -82,27 +89,47 @@ def _read_mode(mode_num):
             _cache_mode2 = _selected_dev.read(2)
             _time_mode2 = now
         return _cache_mode2
+    elif mode_num == 3:
+        if _cache_mode3 is None or (now - _time_mode3) >= _CACHE_MS:
+            _cache_mode3 = _selected_dev.read(3)
+            _time_mode3 = now
+        return _cache_mode3
+    elif mode_num == 5:
+        if _cache_mode5 is None or (now - _time_mode5) >= _CACHE_MS:
+            _cache_mode5 = _selected_dev.read(5)
+            _time_mode5 = now
+        return _cache_mode5
 
 async def _async_read_mode(mode_num):
-    global _cache_mode0, _cache_mode1, _cache_mode2
-    global _time_mode0, _time_mode1, _time_mode2
+    global _cache_mode0, _cache_mode1, _cache_mode2, _cache_mode3, _cache_mode5
+    global _time_mode0, _time_mode1, _time_mode2, _time_mode3, _time_mode5
     now = _watch.time()
 
     if mode_num == 0:
         if _cache_mode0 is None or (now - _time_mode0) >= _CACHE_MS:
-            _cache_mode0 = _selected_dev.read(0)
+            _cache_mode0 = await _selected_dev.read(0)
             _time_mode0 = now
         return _cache_mode0
     elif mode_num == 1:
         if _cache_mode1 is None or (now - _time_mode1) >= _CACHE_MS:
-            _cache_mode1 = _selected_dev.read(1)
+            _cache_mode1 = await _selected_dev.read(1)
             _time_mode1 = now
         return _cache_mode1
     elif mode_num == 2:
         if _cache_mode2 is None or (now - _time_mode2) >= _CACHE_MS:
-            _cache_mode2 = _selected_dev.read(2)
+            _cache_mode2 = await _selected_dev.read(2)
             _time_mode2 = now
         return _cache_mode2
+    elif mode_num == 3:
+        if _cache_mode3 is None or (now - _time_mode3) >= _CACHE_MS:
+            _cache_mode3 = await _selected_dev.read(3)
+            _time_mode3 = now
+        return _cache_mode3
+    elif mode_num == 5:
+        if _cache_mode5 is None or (now - _time_mode5) >= _CACHE_MS:
+            _cache_mode5 = await _selected_dev.read(5)
+            _time_mode5 = now
+        return _cache_mode5
 
 def _make_sensor_func(mode_num, parse_fn):
     async def _async():
@@ -137,6 +164,15 @@ def _parse_edge_l(data):
 def _parse_edge_r(data):
     return data[3]
 
+def _parse_bitmap(data):
+    """mode 3: line bitmap, bit0 = ch1 ... bit15 = ch16 (1 = on the line), read as unsigned 0~65535."""
+    return data[0] & 0xFFFF
+
+def _parse_device_id(data):
+    """mode 5: (id, hw0, fw) = (factory I2C address, hardware code 16, firmware major*100+minor)."""
+    word = data[0] & 0xFFFF
+    return (word & 0xFF, word >> 8, data[1])
+
 def _make_ir_ch_parser(ch):
     idx = ch - 1
     byte_idx = idx // 2
@@ -159,6 +195,12 @@ line_width  = _make_sensor_func(2, _parse_width)
 line_edge_l = _make_sensor_func(2, _parse_edge_l)
 line_edge_r = _make_sensor_func(2, _parse_edge_r)
 
+# firmware v4.0 (2026-10, #67): mode 3 line bitmap, mode 5 device id
+# bitmap()    -> int 0~65535, bit0 = ch1 (leftmost) ... bit15 = ch16; (bitmap() >> (ch - 1)) & 1 == 1 means ch is on the line
+# device_id() -> (id, hw0, fw): id = factory I2C address, hw0 = 16 for the 16-channel sensor, fw = major*100+minor
+bitmap    = _make_sensor_func(3, _parse_bitmap)
+device_id = _make_sensor_func(5, _parse_device_id)
+
 _IR_CH_PARSERS = [_make_ir_ch_parser(ch) for ch in range(1, 17)]
 _IR_CH_FUNCS = [_make_sensor_func(1, parser) for parser in _IR_CH_PARSERS]
 
@@ -180,14 +222,14 @@ def line_init_port_multitask(port, multitask=False):
     'await line_init_port_multitask(...)'.
     """
     global _selected_port, _selected_dev, _async_mode
-    global _cache_mode0, _cache_mode1, _cache_mode2
-    global _time_mode0, _time_mode1, _time_mode2
+    global _cache_mode0, _cache_mode1, _cache_mode2, _cache_mode3, _cache_mode5
+    global _time_mode0, _time_mode1, _time_mode2, _time_mode3, _time_mode5
     
     _selected_port = port
     _selected_dev  = _devices.get(port)
     if _selected_dev is None:
         raise RuntimeError("No sensor found on port %s. Check the cable." % port)
     _async_mode    = bool(multitask)
-    _cache_mode0 = _cache_mode1 = _cache_mode2 = None
-    _time_mode0 = _time_mode1 = _time_mode2 = 0
+    _cache_mode0 = _cache_mode1 = _cache_mode2 = _cache_mode3 = _cache_mode5 = None
+    _time_mode0 = _time_mode1 = _time_mode2 = _time_mode3 = _time_mode5 = 0
     return _noop()

@@ -172,6 +172,10 @@ int fault = bigU8(4);   // fault bitmap
 
 <p class="ref-missing"><b>Not readable here</b>：average distance (mm). Use <a href="/en/sensors/tof2/arduino/ide.md">Arduino</a> / <a href="/en/sensors/tof2/mblock/mblock5.md">mBlock</a> / <a href="/en/sensors/tof2/microbit/makecode.md">micro:bit</a> for these.</p>
 
+## Examples
+
+<p class="no-examples">There is no full example program for this software yet. Each item under “Reading values” above comes with code you can use as is; put them together in order, or <a href="/en/contact.html">contact us</a> for a full example.</p>
+
 ## More questions
 
 - **Can I mix stock blocks and the big channel?** No: they need different library files; pick one per program.

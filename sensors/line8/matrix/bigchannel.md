@@ -143,7 +143,7 @@ int bitmap = bigU8(11);   // 壓線位元圖
 | `0~255` 次 | 開機後完成校準的次數（按鈕校準也算） |
 
 ```cpp
-int calibCount = bigU8(25);   // 校準完成次數
+int calibCount = MiniR4.I2C1.MXColor.getColor(C);   // 校準完成次數；byte 25 只在送 F1 時回傳，這行會同時執行「黑色校準」
 ```
 
 <p class="ref-note">大通道 byte 25（u8）；尾段 F1/F2 完成次數</p>
@@ -202,6 +202,10 @@ MiniR4.I2C1.MXColor.getColor(M);   // 大通道 F2（Magenta）= 白色校準，
 </section>
 
 <p class="ref-missing"><b>這個軟體送不了</b>：切黑線、切白線、設定門檻、5 秒動態校準</p>
+
+## 範例
+
+<p class="no-examples">這個軟體還沒有整支的範例程式。上面「讀值」和「命令」每一項都附了可以直接照著做的寫法，照順序組起來就能用；需要整支範例請 <a href="/contact.html">聯絡我們</a>。</p>
 
 ## 其他問題
 

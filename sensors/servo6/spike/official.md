@@ -13,6 +13,10 @@
 > 這個軟體的安裝步驟正在搬到這一頁。先看原本的說明：[SPIKE 6 路舵機擴充器 (Servo6)：樂高官方 App（SPIKE 3、Robot Inventor） 說明](/sensors/servo6/spike-official.md)。
 <!-- /include-fallback -->
 
+## 範例
+
+<p class="no-examples">這個軟體的範例程式還在準備中，會跟產品一起上線；需要的話請先 <a href="/contact.html">聯絡我們</a>。</p>
+
 ## 其他問題
 
 - **主機認不到感應器？** 拔掉重插一次，等 2 秒；換一個孔試試。官方 App 會把它顯示成「顏色感應器」，這是正常的。

@@ -7,7 +7,7 @@
 
 ### 安裝軟體
 
-1. 到 [mBlock 官網](https://mblock.makeblock.com/en/download/) 安裝 **mBlock 5 電腦版**。
+1. 到 [mBlock 官網](https://mblock.cc/pages/downloads) 安裝 **mBlock 5 電腦版**。
 2. 打開 mBlock 5，左下「**設備**」加入你的主板（例如 mBot）。
 3. 右下「模式開關」切到 **上傳**。
 

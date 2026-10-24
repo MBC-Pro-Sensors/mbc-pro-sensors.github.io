@@ -13,6 +13,10 @@ This page covers **Official LEGO App (SPIKE 3, Robot Inventor)** only: how to se
 > Setup steps for this software are being moved onto this page. Meanwhile see the previous guide: [SPIKE 6-Port Servo Expander (Servo6): Official LEGO App (SPIKE 3, Robot Inventor)](/en/sensors/servo6/spike-official.md).
 <!-- /include-fallback -->
 
+## Examples
+
+<p class="no-examples">Example programs for this software are being prepared and will go live with the product; <a href="/en/contact.html">contact us</a> if you need one sooner.</p>
+
 ## More questions
 
 - **The hub does not detect the sensor?** Unplug and replug, wait 2 s, try another port. The official app shows it as a colour sensor — that is expected.

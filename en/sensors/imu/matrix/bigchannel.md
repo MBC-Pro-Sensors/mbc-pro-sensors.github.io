@@ -173,7 +173,7 @@ int pitchRate = bigI16(12);   // pitch rate
 zero all four headings (zeroHeadings()); EV3 also accepts the stock gyro-reset WRITE 0x11
 
 ```cpp
-MiniR4.I2C1.MXColor.getColor(undefined);   // big channel F1~F4（undefined）= zero heading, returns the completion counter from the previous packet
+MiniR4.I2C1.MXColor.getColor(C);   // big channel F1~F4（any of them works, here F1 = Cyan）= zero heading, returns the completion counter from the previous packet
 ```
 
 <p class="ref-note">Big-channel library only; the stock 0x22 library has no actions.</p>
@@ -181,6 +181,10 @@ MiniR4.I2C1.MXColor.getColor(undefined);   // big channel F1~F4（undefined）= 
 </section>
 
 <p class="ref-missing"><b>Not available here</b>：start accelerometer calibration, end accelerometer calibration, start magnetometer calibration, end magnetometer calibration</p>
+
+## Examples
+
+<p class="no-examples">There is no full example program for this software yet. Each item under “Reading values” and “Commands” above comes with code you can use as is; put them together in order, or <a href="/en/contact.html">contact us</a> for a full example.</p>
 
 ## More questions
 

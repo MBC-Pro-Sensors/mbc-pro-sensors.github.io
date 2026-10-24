@@ -59,7 +59,7 @@ sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 linePosFine = sensor.read(2)[0]   # 細位置：-100~+100
 ```
 
-<p class="ref-note">模式 2 · int8 · IR-REMOTE byte0 = 細位置+100 存成 uint8（主機減 100）（已鎖住的模式，韌體與主機端都不再改）</p>
+<p class="ref-note">模式 2 · int8 · IR-REMOTE byte0 = highRes−100 存成 int8（F030 ev3Uart case 2），主機直接讀（已鎖住的模式，韌體與主機端都不再改）</p>
 
 </section>
 

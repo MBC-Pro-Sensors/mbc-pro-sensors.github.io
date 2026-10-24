@@ -7,7 +7,7 @@
 
 ### Install the software
 
-1. Install **mBlock 5 for PC** from the [mBlock website](https://mblock.makeblock.com/en/download/).
+1. Install **mBlock 5 for PC** from the [mBlock website](https://mblock.cc/pages/downloads).
 2. Open mBlock 5 and add your board (for example mBot) under "**Devices**" at the bottom left.
 3. Switch the mode toggle at the bottom right to **Upload**.
 

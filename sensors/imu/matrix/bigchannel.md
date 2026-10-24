@@ -173,7 +173,7 @@ int pitchRate = bigI16(12);   // 俯仰角速度
 四個航向都歸零（zeroHeadings()）；EV3 另有原廠 WRITE 0x11 陀螺歸零
 
 ```cpp
-MiniR4.I2C1.MXColor.getColor(undefined);   // 大通道 F1~F4（undefined）= 航向歸零，回傳上一包的完成次數
+MiniR4.I2C1.MXColor.getColor(C);   // 大通道 F1~F4（任一個都可以，這裡用 F1 = Cyan）= 航向歸零，回傳上一包的完成次數
 ```
 
 <p class="ref-note">只有大通道函式庫有這個動作；0x22 原廠函式庫沒有。</p>
@@ -181,6 +181,10 @@ MiniR4.I2C1.MXColor.getColor(undefined);   // 大通道 F1~F4（undefined）= �
 </section>
 
 <p class="ref-missing"><b>這個軟體送不了</b>：加速度計校準開始、加速度計校準結束、磁力計校準開始、磁力計校準結束</p>
+
+## 範例
+
+<p class="no-examples">這個軟體還沒有整支的範例程式。上面「讀值」和「命令」每一項都附了可以直接照著做的寫法，照順序組起來就能用；需要整支範例請 <a href="/contact.html">聯絡我們</a>。</p>
 
 ## 其他問題
 

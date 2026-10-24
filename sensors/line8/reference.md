@@ -202,7 +202,7 @@ linePosFine = line.pos100()
 <details class="plat plat-ev3" data-host="ev3">
 <summary><span class="plat-dot"></span>EV3</summary>
 
-模式 2 · int8 · IR-REMOTE byte0 = 細位置+100 存成 uint8（主機減 100）（已鎖住的模式，韌體與主機端都不再改）
+模式 2 · int8 · IR-REMOTE byte0 = highRes−100 存成 int8（F030 ev3Uart case 2），主機直接讀（已鎖住的模式，韌體與主機端都不再改）
 
 ```python
 from pybricks.iodevices import LUMPDevice
@@ -799,7 +799,7 @@ int16_t calibCount = mbcRead(0x16, 0x08);   // 校準完成次數：0~255 次
 
 ```cpp
 // B. 大通道 byte 25：校準完成次數（尾段 F1/F2 完成次數）
-int calibCount = bigU8(25);
+int calibCount = MiniR4.I2C1.MXColor.getColor(C);   // 校準完成次數；byte 25 只在送 F1 時回傳，這行會同時執行「黑色校準」
 ```
 
 </details>

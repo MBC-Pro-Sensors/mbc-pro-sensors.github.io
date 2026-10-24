@@ -73,6 +73,10 @@ int nearCm = MiniR4.I2C1.MXColor.getColor(B);   // nearer distance (cm)
 
 <p class="ref-missing"><b>Not readable here</b>：left distance (mm), right distance (mm), init bitmap, fault bitmap, average distance (mm). Use <a href="/en/sensors/tof2/matrix/bigchannel.md">Big-channel library</a> for these.</p>
 
+## Examples
+
+<p class="no-examples">There is no full example program for this software yet. Each item under “Reading values” above comes with code you can use as is; put them together in order, or <a href="/en/contact.html">contact us</a> for a full example.</p>
+
 ## More questions
 
 - **Can I mix stock blocks and the big channel?** No: they need different library files; pick one per program.

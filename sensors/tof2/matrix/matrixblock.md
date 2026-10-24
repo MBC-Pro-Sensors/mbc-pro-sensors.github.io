@@ -73,6 +73,10 @@ int nearCm = MiniR4.I2C1.MXColor.getColor(B);   // 較近距離 cm
 
 <p class="ref-missing"><b>這個軟體讀不到</b>：左距離 mm、右距離 mm、初始化位元圖、故障位元圖、左右平均 mm。要用這些值請改用 <a href="/sensors/tof2/matrix/bigchannel.md">大通道函式庫</a>。</p>
 
+## 範例
+
+<p class="no-examples">這個軟體還沒有整支的範例程式。上面「讀值」每一項都附了可以直接照著做的寫法，照順序組起來就能用；需要整支範例請 <a href="/contact.html">聯絡我們</a>。</p>
+
 ## 其他問題
 
 - **原廠積木和大通道可以一起用嗎？** 不行：兩種要裝不同的函式庫檔，一個程式只能選一種。

@@ -126,7 +126,8 @@
 
   // --- 程式碼區塊右上角「複製」按鈕（新手照抄範例用）---
   if (navigator.clipboard) {
-    document.querySelectorAll('.markdown-section pre[data-lang="cpp"], .markdown-section pre[data-lang="python"]').forEach(function (pre) {
+    // cpp／python 之外，MakeCode（typescript）、clev3r（basic、vb）也要能複製；text 是序列埠輸出範例，不加
+    document.querySelectorAll(['cpp', 'python', 'typescript', 'basic', 'vb'].map(function (l) { return '.markdown-section pre[data-lang="' + l + '"]'; }).join(', ')).forEach(function (pre) {
       var btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'code-copy';
@@ -303,15 +304,17 @@
   }
 })();
 
-// 2026-10-22 手機版：有切換列（產品 › 主機 › 軟體）的頁面，目錄放在切換列下方，不要壓在它上面；桌機（≥1200px）放回右側欄
+// 目錄位置：手機（<1200px）放文章開頭、有切換列（產品 › 主機 › 軟體）就放它下方；桌機放右側欄（.doc-wrap 最後）。
+// 2026-10-24：build.mjs 已直接把目錄寫在手機位置，桌機由目錄裡的小腳本在解析當下搬過去；這裡只處理之後視窗寬度改變
 (function () {
-  var sw = document.querySelector('nav.gsw'), toc = document.querySelector('.doc-wrap > .toc, .gsw ~ .toc, nav.toc');
-  if (!sw || !toc) return;
-  var home = toc.parentElement, next = toc.nextSibling;
+  var toc = document.querySelector('nav.toc'), wrap = toc && toc.closest('.doc-wrap'), art = wrap && wrap.querySelector('article');
+  if (!toc || !wrap || !art) return;
+  var sw = art.querySelector('nav.gsw');
   var mq = window.matchMedia('(min-width: 1200px)');
   function place() {
-    if (mq.matches) { if (toc.parentElement !== home) home.insertBefore(toc, next && next.parentElement === home ? next : null); }
-    else if (toc.previousElementSibling !== sw) sw.insertAdjacentElement('afterend', toc);
+    if (mq.matches) { if (toc.parentElement !== wrap) wrap.appendChild(toc); }
+    else if (sw) { if (toc.previousElementSibling !== sw) sw.insertAdjacentElement('afterend', toc); }
+    else if (art.firstElementChild !== toc) art.insertBefore(toc, art.firstChild);
   }
   place();
   if (mq.addEventListener) mq.addEventListener('change', place); else if (mq.addListener) mq.addListener(place);

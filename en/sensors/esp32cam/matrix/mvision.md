@@ -191,6 +191,10 @@ The MATRIXblock mVision block reads data slot 6~8: 不動：byte 12~17 = 12 格�
 
 </section>
 
+## Examples
+
+<p class="no-examples">There is no full example program for this software yet. Each item under “Reading values” above comes with code you can use as is; put them together in order, or <a href="/en/contact.html">contact us</a> for a full example.</p>
+
 ## More questions
 
 - **Can I mix stock blocks and the big channel?** No: they need different library files; pick one per program.

@@ -13,7 +13,7 @@
      "matrix": {"ch22": {"cmd": 4, "offset": 8, "note": "R"}, "big": {"byte": 0, "type": "u8", "offset": 8}},
      "mvision": null, "microbit": {"block": {"zh": "線的位置", "en": "line position"}}, "examples": ["arduino:03", "ev3:02", "spike:02"], "locked": true},
     {"id": "02", "key": "linePosFine", "name": {"zh": "細位置", "en": "fine position"}, "desc": {"zh": "線位置的細分：−100 ~ +100，0 = 正中間，負 = 線在左（與線位置同號）", "en": "sub-channel position: −100 to +100, 0 = centre, negative = left (same sign as line position)"}, "unit": "", "range": "-100~+100", "min": -100, "max": 100, "figure": {"tpl": "ruler", "params": {"min": -100, "max": 100, "zero": true}}, "i2c": true, "mblock": {"block": {"zh": "線的細位置", "en": "fine line position"}},
-     "ev3": [{"mode": 2, "index": 0, "format": "int8", "offset": 0, "note": "IR-REMOTE byte0 = 細位置+100 存成 uint8（主機減 100）"}],
+     "ev3": [{"mode": 2, "index": 0, "format": "int8", "offset": 0, "note": "IR-REMOTE byte0 = highRes−100 存成 int8（F030 ev3Uart case 2），主機直接讀"}],
      "spike": [{"mode": 0, "hub": "edu", "byte": 2, "format": "i16", "offset": 100}, {"mode": 3, "byte": 0, "format": "u8", "offset": 100}, {"mode": 4, "v": 0, "offset": 100}, {"mode": 9, "v": 5, "part": "lo", "offset": 100}],
      "matrix": {"ch22": {"cmd": 6, "offset": 100, "note": "B"}, "big": {"byte": 2, "type": "u8", "offset": 100}},
      "mvision": null, "microbit": {"block": {"zh": "線的細位置", "en": "fine line position"}}, "examples": ["arduino:06", "ev3:04"], "locked": true},

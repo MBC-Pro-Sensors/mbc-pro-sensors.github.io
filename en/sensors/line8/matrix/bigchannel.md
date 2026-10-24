@@ -143,7 +143,7 @@ int bitmap = bigU8(11);   // line bitmap
 | `0~255` 次 | number of calibrations completed since power-on (button calibrations included) |
 
 ```cpp
-int calibCount = bigU8(25);   // calibrations done
+int calibCount = MiniR4.I2C1.MXColor.getColor(C);   // calibrations done; byte 25 only comes back with F1, so this line also runs "calibrate black"
 ```
 
 <p class="ref-note">Big channel byte 25（u8）; 尾段 F1/F2 完成次數</p>
@@ -202,6 +202,10 @@ MiniR4.I2C1.MXColor.getColor(M);   // big channel F2（Magenta）= calibrate whi
 </section>
 
 <p class="ref-missing"><b>Not available here</b>：black line mode, white line mode, set threshold, 5-second auto calibration</p>
+
+## Examples
+
+<p class="no-examples">There is no full example program for this software yet. Each item under “Reading values” and “Commands” above comes with code you can use as is; put them together in order, or <a href="/en/contact.html">contact us</a> for a full example.</p>
 
 ## More questions
 

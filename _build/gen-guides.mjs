@@ -342,10 +342,19 @@ function swPage(key, host, sw, lang, sp, protos, avail) {
     out.push(...readingsBlock(key, host, sw, p, lang, sp, avail, T(lang, `讀值${ed ? `（${ed}）` : ''}`, `Reading values${ed ? ` (${ed})` : ''}`), wro ? 'w' : 'v'));
   }
   // 範例
-  if (cam) {
-    out.push(...examplesBlock(key, host, sw, lang, T(lang, `範例（${L(GUIDES.editions.camSchool, lang)}）`, `Examples (${L(GUIDES.editions.camSchool, lang)})`), ''));
-    out.push(...examplesBlock(key, host, sw, lang, T(lang, `範例（${L(GUIDES.editions.camWro, lang)}）`, `Examples (${L(GUIDES.editions.camWro, lang)})`), '-wro'));
-  } else out.push(...examplesBlock(key, host, sw, lang, T(lang, '範例', 'Examples'), ''));
+  const ex = cam
+    ? [...examplesBlock(key, host, sw, lang, T(lang, `範例（${L(GUIDES.editions.camSchool, lang)}）`, `Examples (${L(GUIDES.editions.camSchool, lang)})`), ''),
+      ...examplesBlock(key, host, sw, lang, T(lang, `範例（${L(GUIDES.editions.camWro, lang)}）`, `Examples (${L(GUIDES.editions.camWro, lang)})`), '-wro')]
+    : examplesBlock(key, host, sw, lang, T(lang, '範例', 'Examples'), '');
+  // 沒有範例頁的軟體（MATRIX、即將推出的產品）：保留「範例」節並說明，不讓讀者以為漏了
+  if (!ex.length) {
+    out.push(`## ${T(lang, '範例', 'Examples')}`, '');
+    out.push(protos.length
+      ? T(lang, `<p class="no-examples">這個軟體還沒有整支的範例程式。上面「讀值」${protos.some((p) => (p.commands || []).length) ? '和「命令」' : ''}每一項都附了可以直接照著做的寫法，照順序組起來就能用；需要整支範例請 <a href="/contact.html">聯絡我們</a>。</p>`,
+        `<p class="no-examples">There is no full example program for this software yet. Each item under “Reading values”${protos.some((p) => (p.commands || []).length) ? ' and “Commands”' : ''} above comes with code you can use as is; put them together in order, or <a href="/en/contact.html">contact us</a> for a full example.</p>`)
+      : T(lang, '<p class="no-examples">這個軟體的範例程式還在準備中，會跟產品一起上線；需要的話請先 <a href="/contact.html">聯絡我們</a>。</p>',
+        '<p class="no-examples">Example programs for this software are being prepared and will go live with the product; <a href="/en/contact.html">contact us</a> if you need one sooner.</p>'), '');
+  } else out.push(...ex);
   // 常見問題
   out.push(`## ${T(lang, '其他問題', 'More questions')}`, '');
   out.push((h.faq || []).map((f) => `- **${L(f.q, lang)}** ${L(f.a, lang)}`).join('\n'), '');

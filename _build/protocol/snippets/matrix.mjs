@@ -31,6 +31,21 @@ int16_t bigI16(uint8_t n) {
 }`;
 }
 
+// 大通道尾段 byte 24~28 不在指標串流裡（Red 前進到 24 會繞回 0，bigU8(24 以上) 會讀錯格）：
+// 24 用 ColorID 讀；25~28 用 C／M／Y／K 讀，但這四個積木同時會送 F1~F4 命令
+// matrix.f 可以是單一個（"F1"）或範圍（"F1~F4" = 任一個都做同一件事，IMU 航向歸零）
+const fList = (f) => { const m = /^F([1-4])~F([1-4])$/.exec(f || ''); return m ? Array.from({ length: m[2] - m[1] + 1 }, (_, i) => `F${+m[1] + i}`) : f ? [f] : []; };
+const TAIL = { 24: ['getColorID()', null], 25: ['getColor(C)', 'F1'], 26: ['getColor(M)', 'F2'], 27: ['getColor(Y)', 'F3'], 28: ['getColor(K)', 'F4'] };
+function tailCode(product, v, b, lang) {
+  const t = !b.count && TAIL[b.byte];
+  if (!t) return null;
+  const act = t[1] && (product.commands || []).find((c) => c.matrix && fList(c.matrix.f).includes(t[1]));
+  const warn = act
+    ? T(lang, `；byte ${b.byte} 只在送 ${t[1]} 時回傳，這行會同時執行「${L(act.name, lang)}」`, `; byte ${b.byte} only comes back with ${t[1]}, so this line also runs "${L(act.name, lang)}"`)
+    : '';
+  return `int ${v.key} = ${OBJ}.${t[0]};   // ${valueName(v, lang)}${warn}`;
+}
+
 export function value(product, v, lang) {
   const m = v.matrix;
   if (!m || (!m.ch22 && !m.big)) {
@@ -53,7 +68,7 @@ export function value(product, v, lang) {
     const cast = b.type === 'i8' ? '(int8_t)' : '';
     let bc;
     if (b.count) bc = `// B. ${T(lang, '大通道', 'big channel')} byte ${b.byte}~${b.byte + b.count * (b.type.endsWith('16') ? 2 : 1) - 1}：${name}\nint ${v.key}[${b.count}];\nfor (uint8_t i = 0; i < ${b.count}; i++) ${v.key}[i] = ${cast}${fn}(${b.byte} + i${b.type.endsWith('16') ? ' * 2' : ''});`;
-    else bc = `// B. ${T(lang, '大通道', 'big channel')} byte ${b.byte}${b.type.endsWith('16') ? `~${b.byte + 1}` : ''}：${name}${b.offset ? ` + ${b.offset}` : ''}${b.note ? `（${b.note}）` : ''}\nint ${v.key} = ${cast}${fn}(${b.byte})${b.offset ? ` - ${b.offset}` : ''};`;
+    else bc = `// B. ${T(lang, '大通道', 'big channel')} byte ${b.byte}${b.type.endsWith('16') ? `~${b.byte + 1}` : ''}：${name}${b.offset ? ` + ${b.offset}` : ''}${b.note ? `（${b.note}）` : ''}\n${tailCode(product, v, b, lang) || `int ${v.key} = ${cast}${fn}(${b.byte})${b.offset ? ` - ${b.offset}` : ''};`}`;
     if (code) extra.push({ title: T(lang, 'B. 大通道（LauMo 函式庫）', 'B. big channel (LauMo library)'), code: bc, codeLang: CPP });
     else code = bc;
   }
@@ -63,8 +78,10 @@ export function value(product, v, lang) {
 
 export function command(product, c, lang) {
   if (!c.matrix || !c.matrix.f) return { text: T(lang, 'MATRIX 沒有這個命令（大通道只有 F1／F2 兩個動作）。', 'Not available on MATRIX (the big channel only carries the F1 / F2 actions).') };
-  const name = { F1: 'C', F2: 'M', F3: 'Y', F4: 'K' }[c.matrix.f];
-  return { code: `${OBJ}.getColor(${name});   // ${T(lang, '大通道', 'big channel')} ${c.matrix.f}（${{ C: 'Cyan', M: 'Magenta', Y: 'Yellow', K: 'Key' }[name]}）= ${L(c.name, lang)}${T(lang, '，回傳上一包的完成次數', ', returns the completion counter from the previous packet')}`, codeLang: CPP, note: T(lang, '只有大通道函式庫有這個動作；0x22 原廠函式庫沒有。', 'Big-channel library only; the stock 0x22 library has no actions.') };
+  const fs = fList(c.matrix.f);
+  const name = { F1: 'C', F2: 'M', F3: 'Y', F4: 'K' }[fs[0]];
+  const any = fs.length > 1 ? T(lang, `任一個都可以，這裡用 ${fs[0]} =`, `any of them works, here ${fs[0]} =`) + ' ' : '';
+  return { code: `${OBJ}.getColor(${name});   // ${T(lang, '大通道', 'big channel')} ${c.matrix.f}（${any}${{ C: 'Cyan', M: 'Magenta', Y: 'Yellow', K: 'Key' }[name]}）= ${L(c.name, lang)}${T(lang, '，回傳上一包的完成次數', ', returns the completion counter from the previous packet')}`, codeLang: CPP, note: T(lang, '只有大通道函式庫有這個動作；0x22 原廠函式庫沒有。', 'Big-channel library only; the stock 0x22 library has no actions.') };
 }
 
 export function status(product, lang) {
@@ -92,7 +109,7 @@ export function bySoftware(sw, product, v, lang) {
     const two = b.type.endsWith('16');
     const code = b.count
       ? `int ${v.key}[${b.count}];\nfor (uint8_t i = 0; i < ${b.count}; i++) ${v.key}[i] = ${cast}${fn}(${b.byte} + i${two ? ' * 2' : ''});   // ${name}`
-      : `int ${v.key} = ${cast}${fn}(${b.byte})${b.offset ? ` - ${b.offset}` : ''};   // ${name}`;
+      : tailCode(product, v, b, lang) || `int ${v.key} = ${cast}${fn}(${b.byte})${b.offset ? ` - ${b.offset}` : ''};   // ${name}`;
     const span = b.count ? `${b.byte}~${b.byte + b.count * (two ? 2 : 1) - 1}` : two ? `${b.byte}~${b.byte + 1}` : `${b.byte}`;
     return { code, codeLang: CPP, note: `${T(lang, '大通道', 'Big channel')} byte ${span}（${b.type}）${b.note ? T(lang, '；', '; ') + b.note : ''}` };
   }
