@@ -7,6 +7,11 @@ import { loadProducts, loadSiteProducts, makeWriter, siteKey, hostOn, L } from '
 import * as values from './figures/templates/values.svg.mjs';
 import * as wiring from './figures/templates/wiring.svg.mjs';
 import * as packet from './figures/templates/packet.svg.mjs';
+import { HIDE_BIG } from './site-flags.mjs';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const argv = process.argv.slice(2);
 const CHECK = argv.includes('--check');
@@ -45,7 +50,15 @@ for (const p of products) {
   for (const h of hosts) w.write(`images/figures/${key}/wiring-${h}.svg`, wiring.render({ host: h, product: siteProducts[key] && siteProducts[key].name ? L(siteProducts[key].name, 'en').replace(/\s*\(.*\)$/, '') : L(p.name, 'en'), addr: ['uno', 'esp32', 'r4', 'microbit'].includes(h) ? `I2C ${p.addr}` : h === 'matrix' ? 'I2C 0x22' : '' }));
 }
 // 封包圖（共用）
-for (const name of Object.keys(packet.PACKETS)) w.write(`images/figures/common/packet-${name}.svg`, packet.render(name));
+for (const name of Object.keys(packet.PACKETS)) {
+  // site-flags.json hideMatrixBigChannel：大通道 30 B 封包圖不產生，舊檔刪掉（build 會把 git 追蹤的圖直接複製上網站）
+  if (HIDE_BIG && name === 'big30') {
+    const f = path.join(ROOT, 'images/figures/common/packet-big30.svg');
+    if (fs.existsSync(f)) { if (CHECK) { console.log('應隱藏但還在：images/figures/common/packet-big30.svg'); process.exitCode = 1; } else fs.rmSync(f); }
+    continue;
+  }
+  w.write(`images/figures/common/packet-${name}.svg`, packet.render(name));
+}
 
 if (generic.length && !CHECK) { console.log(`以下樣板還沒畫，先用通用佔位（${generic.length}）：`); generic.forEach((g) => console.log('  ' + g)); }
 w.done();

@@ -322,24 +322,6 @@
      "colMatch": null
     },
     {
-     "id": "bigchannel",
-     "name": {
-      "zh": "大通道函式庫",
-      "en": "Big-channel library"
-     },
-     "longName": {
-      "zh": "LauMo 大通道函式庫（MATRIXblock／Arduino）",
-      "en": "LauMo big-channel library (MATRIXblock / Arduino)"
-     },
-     "tagline": {
-      "zh": "換函式庫，一包 30 byte 什麼都讀得到",
-      "en": "Swap the library and read everything in one 30-byte packet"
-     },
-     "icon": "sliders-horizontal",
-     "summaryMatch": null,
-     "colMatch": null
-    },
-    {
      "id": "mvision",
      "name": {
       "zh": "mVision 積木",
@@ -443,8 +425,7 @@
     {
      "id": "matrix",
      "sws": [
-      "matrixblock",
-      "bigchannel"
+      "matrixblock"
      ]
     },
     {
@@ -499,8 +480,7 @@
     {
      "id": "matrix",
      "sws": [
-      "matrixblock",
-      "bigchannel"
+      "matrixblock"
      ]
     },
     {
@@ -555,8 +535,7 @@
     {
      "id": "matrix",
      "sws": [
-      "matrixblock",
-      "bigchannel"
+      "matrixblock"
      ]
     },
     {
@@ -611,8 +590,7 @@
     {
      "id": "matrix",
      "sws": [
-      "matrixblock",
-      "bigchannel"
+      "matrixblock"
      ]
     },
     {
@@ -667,8 +645,7 @@
     {
      "id": "matrix",
      "sws": [
-      "matrixblock",
-      "bigchannel"
+      "matrixblock"
      ]
     },
     {
@@ -723,8 +700,7 @@
     {
      "id": "matrix",
      "sws": [
-      "matrixblock",
-      "bigchannel"
+      "matrixblock"
      ]
     },
     {
@@ -854,8 +830,7 @@
     {
      "id": "matrix",
      "sws": [
-      "matrixblock",
-      "bigchannel"
+      "matrixblock"
      ]
     },
     {
@@ -914,7 +889,7 @@
   "sensors/imu/arduino-examples.md": "/sensors/imu/arduino/ide.md",
   "sensors/imu/arduino-i2c.md": "/sensors/imu/arduino/ide.md",
   "sensors/imu/ev3-examples.md": "/sensors/imu/ev3/index.md",
-  "sensors/imu/matrix.md": "/sensors/imu/matrix/index.md",
+  "sensors/imu/matrix.md": "/sensors/imu/matrix/matrixblock.md",
   "sensors/imu/mblock-examples.md": "/sensors/imu/mblock/mblock5.md",
   "sensors/imu/mblock.md": "/sensors/imu/mblock/mblock5.md",
   "sensors/imu/microbit-examples.md": "/sensors/imu/microbit/makecode.md",
@@ -928,7 +903,7 @@
   "sensors/line16/ev3-hub.md": "/sensors/line16/ev3/index.md",
   "sensors/line16/ev3-official.md": "/sensors/line16/ev3/ev3g.md",
   "sensors/line16/ev3-pybricks.md": "/sensors/line16/ev3/pybricks.md",
-  "sensors/line16/matrix.md": "/sensors/line16/matrix/index.md",
+  "sensors/line16/matrix.md": "/sensors/line16/matrix/matrixblock.md",
   "sensors/line16/mblock-examples.md": "/sensors/line16/mblock/mblock5.md",
   "sensors/line16/mblock.md": "/sensors/line16/mblock/mblock5.md",
   "sensors/line16/microbit-examples.md": "/sensors/line16/microbit/makecode.md",
@@ -947,7 +922,7 @@
   "sensors/line8/ev3-hub.md": "/sensors/line8/ev3/index.md",
   "sensors/line8/ev3-official.md": "/sensors/line8/ev3/ev3g.md",
   "sensors/line8/ev3-pybricks.md": "/sensors/line8/ev3/pybricks.md",
-  "sensors/line8/matrix.md": "/sensors/line8/matrix/index.md",
+  "sensors/line8/matrix.md": "/sensors/line8/matrix/matrixblock.md",
   "sensors/line8/mblock-examples.md": "/sensors/line8/mblock/mblock5.md",
   "sensors/line8/mblock.md": "/sensors/line8/mblock/mblock5.md",
   "sensors/line8/microbit-examples.md": "/sensors/line8/microbit/makecode.md",
@@ -961,7 +936,7 @@
   "sensors/ps2/arduino-examples.md": "/sensors/ps2/arduino/ide.md",
   "sensors/ps2/arduino-i2c.md": "/sensors/ps2/arduino/ide.md",
   "sensors/ps2/ev3-examples.md": "/sensors/ps2/ev3/index.md",
-  "sensors/ps2/matrix.md": "/sensors/ps2/matrix/index.md",
+  "sensors/ps2/matrix.md": "/sensors/ps2/matrix/matrixblock.md",
   "sensors/ps2/mblock-examples.md": "/sensors/ps2/mblock/mblock5.md",
   "sensors/ps2/mblock.md": "/sensors/ps2/mblock/mblock5.md",
   "sensors/ps2/microbit-examples.md": "/sensors/ps2/microbit/makecode.md",
@@ -971,7 +946,7 @@
   "sensors/ps4/arduino-examples.md": "/sensors/ps4/arduino/ide.md",
   "sensors/ps4/arduino-i2c.md": "/sensors/ps4/arduino/ide.md",
   "sensors/ps4/ev3-examples.md": "/sensors/ps4/ev3/index.md",
-  "sensors/ps4/matrix.md": "/sensors/ps4/matrix/index.md",
+  "sensors/ps4/matrix.md": "/sensors/ps4/matrix/matrixblock.md",
   "sensors/ps4/mblock-examples.md": "/sensors/ps4/mblock/mblock5.md",
   "sensors/ps4/mblock.md": "/sensors/ps4/mblock/mblock5.md",
   "sensors/ps4/microbit-examples.md": "/sensors/ps4/microbit/makecode.md",
@@ -983,7 +958,7 @@
   "sensors/tof2/arduino-examples.md": "/sensors/tof2/arduino/ide.md",
   "sensors/tof2/arduino-i2c.md": "/sensors/tof2/arduino/ide.md",
   "sensors/tof2/ev3-examples.md": "/sensors/tof2/ev3/index.md",
-  "sensors/tof2/matrix.md": "/sensors/tof2/matrix/index.md",
+  "sensors/tof2/matrix.md": "/sensors/tof2/matrix/matrixblock.md",
   "sensors/tof2/mblock-examples.md": "/sensors/tof2/mblock/mblock5.md",
   "sensors/tof2/mblock.md": "/sensors/tof2/mblock/mblock5.md",
   "sensors/tof2/microbit-examples.md": "/sensors/tof2/microbit/makecode.md",
@@ -993,7 +968,7 @@
   "sensors/tof8/arduino-examples.md": "/sensors/tof8/arduino/ide.md",
   "sensors/tof8/arduino-i2c.md": "/sensors/tof8/arduino/ide.md",
   "sensors/tof8/ev3-examples.md": "/sensors/tof8/ev3/index.md",
-  "sensors/tof8/matrix.md": "/sensors/tof8/matrix/index.md",
+  "sensors/tof8/matrix.md": "/sensors/tof8/matrix/matrixblock.md",
   "sensors/tof8/mblock-examples.md": "/sensors/tof8/mblock/mblock5.md",
   "sensors/tof8/mblock.md": "/sensors/tof8/mblock/mblock5.md",
   "sensors/tof8/microbit-examples.md": "/sensors/tof8/microbit/makecode.md",
@@ -1025,7 +1000,7 @@
   "en/sensors/imu/arduino-examples.md": "/en/sensors/imu/arduino/ide.md",
   "en/sensors/imu/arduino-i2c.md": "/en/sensors/imu/arduino/ide.md",
   "en/sensors/imu/ev3-examples.md": "/en/sensors/imu/ev3/index.md",
-  "en/sensors/imu/matrix.md": "/en/sensors/imu/matrix/index.md",
+  "en/sensors/imu/matrix.md": "/en/sensors/imu/matrix/matrixblock.md",
   "en/sensors/imu/mblock-examples.md": "/en/sensors/imu/mblock/mblock5.md",
   "en/sensors/imu/mblock.md": "/en/sensors/imu/mblock/mblock5.md",
   "en/sensors/imu/microbit-examples.md": "/en/sensors/imu/microbit/makecode.md",
@@ -1039,7 +1014,7 @@
   "en/sensors/line16/ev3-hub.md": "/en/sensors/line16/ev3/index.md",
   "en/sensors/line16/ev3-official.md": "/en/sensors/line16/ev3/ev3g.md",
   "en/sensors/line16/ev3-pybricks.md": "/en/sensors/line16/ev3/pybricks.md",
-  "en/sensors/line16/matrix.md": "/en/sensors/line16/matrix/index.md",
+  "en/sensors/line16/matrix.md": "/en/sensors/line16/matrix/matrixblock.md",
   "en/sensors/line16/mblock-examples.md": "/en/sensors/line16/mblock/mblock5.md",
   "en/sensors/line16/mblock.md": "/en/sensors/line16/mblock/mblock5.md",
   "en/sensors/line16/microbit-examples.md": "/en/sensors/line16/microbit/makecode.md",
@@ -1058,7 +1033,7 @@
   "en/sensors/line8/ev3-hub.md": "/en/sensors/line8/ev3/index.md",
   "en/sensors/line8/ev3-official.md": "/en/sensors/line8/ev3/ev3g.md",
   "en/sensors/line8/ev3-pybricks.md": "/en/sensors/line8/ev3/pybricks.md",
-  "en/sensors/line8/matrix.md": "/en/sensors/line8/matrix/index.md",
+  "en/sensors/line8/matrix.md": "/en/sensors/line8/matrix/matrixblock.md",
   "en/sensors/line8/mblock-examples.md": "/en/sensors/line8/mblock/mblock5.md",
   "en/sensors/line8/mblock.md": "/en/sensors/line8/mblock/mblock5.md",
   "en/sensors/line8/microbit-examples.md": "/en/sensors/line8/microbit/makecode.md",
@@ -1072,7 +1047,7 @@
   "en/sensors/ps2/arduino-examples.md": "/en/sensors/ps2/arduino/ide.md",
   "en/sensors/ps2/arduino-i2c.md": "/en/sensors/ps2/arduino/ide.md",
   "en/sensors/ps2/ev3-examples.md": "/en/sensors/ps2/ev3/index.md",
-  "en/sensors/ps2/matrix.md": "/en/sensors/ps2/matrix/index.md",
+  "en/sensors/ps2/matrix.md": "/en/sensors/ps2/matrix/matrixblock.md",
   "en/sensors/ps2/mblock-examples.md": "/en/sensors/ps2/mblock/mblock5.md",
   "en/sensors/ps2/mblock.md": "/en/sensors/ps2/mblock/mblock5.md",
   "en/sensors/ps2/microbit-examples.md": "/en/sensors/ps2/microbit/makecode.md",
@@ -1082,7 +1057,7 @@
   "en/sensors/ps4/arduino-examples.md": "/en/sensors/ps4/arduino/ide.md",
   "en/sensors/ps4/arduino-i2c.md": "/en/sensors/ps4/arduino/ide.md",
   "en/sensors/ps4/ev3-examples.md": "/en/sensors/ps4/ev3/index.md",
-  "en/sensors/ps4/matrix.md": "/en/sensors/ps4/matrix/index.md",
+  "en/sensors/ps4/matrix.md": "/en/sensors/ps4/matrix/matrixblock.md",
   "en/sensors/ps4/mblock-examples.md": "/en/sensors/ps4/mblock/mblock5.md",
   "en/sensors/ps4/mblock.md": "/en/sensors/ps4/mblock/mblock5.md",
   "en/sensors/ps4/microbit-examples.md": "/en/sensors/ps4/microbit/makecode.md",
@@ -1094,7 +1069,7 @@
   "en/sensors/tof2/arduino-examples.md": "/en/sensors/tof2/arduino/ide.md",
   "en/sensors/tof2/arduino-i2c.md": "/en/sensors/tof2/arduino/ide.md",
   "en/sensors/tof2/ev3-examples.md": "/en/sensors/tof2/ev3/index.md",
-  "en/sensors/tof2/matrix.md": "/en/sensors/tof2/matrix/index.md",
+  "en/sensors/tof2/matrix.md": "/en/sensors/tof2/matrix/matrixblock.md",
   "en/sensors/tof2/mblock-examples.md": "/en/sensors/tof2/mblock/mblock5.md",
   "en/sensors/tof2/mblock.md": "/en/sensors/tof2/mblock/mblock5.md",
   "en/sensors/tof2/microbit-examples.md": "/en/sensors/tof2/microbit/makecode.md",
@@ -1104,7 +1079,7 @@
   "en/sensors/tof8/arduino-examples.md": "/en/sensors/tof8/arduino/ide.md",
   "en/sensors/tof8/arduino-i2c.md": "/en/sensors/tof8/arduino/ide.md",
   "en/sensors/tof8/ev3-examples.md": "/en/sensors/tof8/ev3/index.md",
-  "en/sensors/tof8/matrix.md": "/en/sensors/tof8/matrix/index.md",
+  "en/sensors/tof8/matrix.md": "/en/sensors/tof8/matrix/matrixblock.md",
   "en/sensors/tof8/mblock-examples.md": "/en/sensors/tof8/mblock/mblock5.md",
   "en/sensors/tof8/mblock.md": "/en/sensors/tof8/mblock/mblock5.md",
   "en/sensors/tof8/microbit-examples.md": "/en/sensors/tof8/microbit/makecode.md",

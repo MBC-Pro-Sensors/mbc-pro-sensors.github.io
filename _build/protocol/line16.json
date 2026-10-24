@@ -3,65 +3,861 @@
   "addr": "0x16",
   "hw0": 16,
   "model": "LINE16",
-  "name": {"zh": "循行者 16 路", "en": "Line Follower 16-ch"},
-  "hosts": {"ev3": true, "spike": true, "i2c": true, "mblock": {"legacy": true}, "matrix": {"ch22": true, "big": true}, "mvision": false, "microbit": true},
-  "lego": {"ev3Type": 33, "spikeType": 61, "ev3Locked": [0, 1, 2], "spikeLocked": [0, 5, 7, 9], "spikeKeep": [1, 2, 3, 4, 6], "matrixLocked": {"ch22": "4~12 全部", "big": "[0..18] 與尾段 24~28 = 0"}},
+  "name": {
+    "zh": "循行者 16 路",
+    "en": "Line Follower 16-ch"
+  },
+  "hosts": {
+    "ev3": true,
+    "spike": true,
+    "i2c": true,
+    "mblock": {
+      "legacy": true
+    },
+    "matrix": {
+      "ch22": true
+    },
+    "mvision": false,
+    "microbit": true
+  },
+  "lego": {
+    "ev3Type": 33,
+    "spikeType": 61,
+    "ev3Locked": [
+      0,
+      1,
+      2
+    ],
+    "spikeLocked": [
+      0,
+      5,
+      7,
+      9
+    ],
+    "spikeKeep": [
+      1,
+      2,
+      3,
+      4,
+      6
+    ],
+    "matrixLocked": {
+      "ch22": "4~12 全部"
+    }
+  },
   "values": [
-    {"id": "01", "key": "linePos", "name": {"zh": "線位置", "en": "line position"}, "desc": {"zh": "線在哪一路：−16（最左）~+16（最右），0 = 正中間；站在車後往前看，負 = 線在左（平常 ±15，±16 只在最外側掉線後 200 ms 內）", "en": "which channel the line is under: −16 (far left) to +16 (far right), 0 = centre; seen from behind the robot, negative = left (normally ±15; ±16 only for 200 ms after the line leaves the outermost channel)"}, "unit": "", "range": "-16~+16", "min": -16, "max": 16, "figure": {"tpl": "line-position", "params": {"n": 16}}, "i2c": true, "mblock": {"block": {"zh": "線的位置", "en": "line position"}},
-     "ev3": [{"mode": 0, "index": 0, "format": "int8", "offset": 0, "note": "IR-PROX（F16:739-741）"}],
-     "spike": [{"mode": 0, "hub": "edu", "byte": 1, "format": "u8", "offset": 16}, {"mode": 0, "hub": "toy", "byte": 0, "format": "u8", "offset": 16}, {"mode": 1, "byte": 0, "format": "u8", "offset": 16}, {"mode": 5, "v": 0, "note": "Pybricks reflection() 編碼：X = (線位置+16)×100 + 線寬，a = X/25、b = (X−a×25+1)×10−1，3 個 int16 = a×256+b；主機 ×3200/32768 ≈ X（X ≥ 3200 時讀到負數，F16:905）"}, {"mode": 9, "v": 4, "part": "lo", "offset": 16}],
-     "matrix": {"ch22": {"cmd": 4, "offset": 16, "note": "R"}, "big": {"byte": 0, "type": "u8", "offset": 16}},
-     "mvision": null, "microbit": {"block": {"zh": "線的位置", "en": "line position"}}, "examples": [], "locked": true},
-    {"id": "02", "key": "linePosFine", "name": {"zh": "細位置", "en": "fine position"}, "desc": {"zh": "線位置的細分：−100 ~ +100，0 = 正中間，負 = 線在左（與線位置同號）", "en": "sub-channel position: −100 to +100, 0 = centre, negative = left (same sign as line position)"}, "unit": "", "range": "-100~+100", "min": -100, "max": 100, "figure": {"tpl": "ruler", "params": {"min": -100, "max": 100, "zero": true}}, "i2c": true, "mblock": {"block": {"zh": "線的細位置", "en": "fine line position"}},
-     "ev3": [{"mode": 2, "index": 0, "format": "int8", "offset": 0, "note": "IR-REMOTE byte0 = highRes−100 存成 int8（F16:745-751）"}, {"mode": 4, "index": 0, "format": "int8", "offset": 0, "note": "#67 新：IR-S-ALT 內容同模式 2（原本不送）"}],
-     "spike": [{"mode": 0, "hub": "edu", "byte": 2, "format": "u16", "offset": 100, "note": "byte2 = 細位置+100（0~200）、byte3 = 0；App 原始紅讀成 int16"}, {"mode": 0, "hub": "toy", "byte": 2, "format": "u8×2 查表", "offset": 100, "note": "細位置+100 經玩具版查表編碼成 byte2~3"}, {"mode": 3, "byte": 0, "format": "u8", "offset": 100}, {"mode": 4, "v": 0, "offset": 100}, {"mode": 7, "v": 0, "offset": 0, "note": "Pybricks ambient()：4 個相同 int16 = (細位置+100)×100 + 線寬（0~20016），主機 ÷100 → 位置.線寬"}, {"mode": 9, "v": 5, "part": "lo", "offset": 100}],
-     "matrix": {"ch22": {"cmd": 6, "offset": 100, "note": "B"}, "big": {"byte": 2, "type": "u8", "offset": 100}},
-     "mvision": null, "microbit": {"block": {"zh": "線的細位置", "en": "fine line position"}}, "examples": [], "locked": true},
-    {"id": "03", "key": "lineWidth", "name": {"zh": "線寬", "en": "line width"}, "desc": {"zh": "壓到線的路數 0~16，0 = 找不到線", "en": "number of channels on the line, 0~16; 0 = no line"}, "unit": "路", "range": "0~16", "min": 0, "max": 16, "figure": {"tpl": "line-width", "params": {"n": 16}}, "i2c": true, "mblock": {"block": {"zh": "線寬", "en": "line width"}},
-     "ev3": [{"mode": 2, "index": 1, "format": "int8", "offset": 0}, {"mode": 4, "index": 1, "format": "int8", "offset": 0, "note": "#67 新：同模式 2"}],
-     "spike": [{"mode": 0, "hub": "edu", "byte": 0, "format": "u8"}, {"mode": 0, "hub": "toy", "byte": 1, "format": "u8", "note": "min(線寬, 10)"}, {"mode": 2, "byte": 0, "format": "u8"}, {"mode": 3, "byte": 1, "format": "u8"}, {"mode": 9, "v": 4, "part": "hi"}],
-     "matrix": {"ch22": {"cmd": 5, "offset": 0, "note": "G"}, "big": {"byte": 1, "type": "u8"}},
-     "mvision": null, "microbit": {"block": {"zh": "線寬", "en": "line width"}}, "examples": [], "locked": true},
-    {"id": "04", "key": "groupCount", "name": {"zh": "線段數", "en": "line segments"}, "desc": {"zh": "看到幾段線：0 丟線、1 一條線、2 以上 = 分岔／十字", "en": "number of separate line segments: 0 = lost, 1 = one line, ≥2 = fork / crossing"}, "unit": "", "range": "0~8", "min": 0, "max": 8, "figure": {"tpl": "line-segments", "params": {"n": 16}}, "i2c": true, "mblock": {"block": {"zh": "線段數", "en": "line segments"}},
-     "ev3": [], "spike": [{"mode": 9, "v": 5, "part": "hi"}],
-     "matrix": {"ch22": null, "big": {"byte": 21, "type": "u8", "note": "#67 追加（MATRIX 定案 §4：[21] 線段數）"}},
-     "mvision": null, "microbit": {"block": {"zh": "線段數", "en": "line segments"}}, "examples": []},
-    {"id": "05", "key": "bitmap", "name": {"zh": "壓線位元圖", "en": "line bitmap"}, "desc": {"zh": "bit0 = 第 1 路（最左）… bit15 = 第 16 路，1 = 那一路在線上", "en": "bit0 = channel 1 (left) … bit15 = channel 16; 1 = that channel sees the line"}, "unit": "bit", "range": "0~65535", "min": 0, "max": 65535, "figure": {"tpl": "bitmap", "params": {"n": 16}}, "i2c": true, "mblock": {"block": {"zh": "壓線位元圖", "en": "line bitmap"}},
-     "ev3": [{"mode": 3, "index": 0, "format": "int16", "note": "#67 新：IR-REM-A 1×int16 = 16 bit 位元圖（原本不送）"}],
-     "spike": [{"mode": 4, "v": 1, "note": "binRaw 16 bit（byte2 低、byte3 高）"}, {"mode": 9, "v": 6, "note": "byte12 低、byte13 高"}],
-     "matrix": {"ch22": null, "big": {"byte": 19, "type": "u16", "note": "#67 追加（MATRIX 定案 §4：[19..20] 小端）"}},
-     "mvision": null, "microbit": {"block": {"zh": "壓線位元圖", "en": "line bitmap"}}, "examples": []},
-    {"id": "06", "key": "lastDir", "name": {"zh": "最後離線方向", "en": "last exit direction"}, "desc": {"zh": "丟線前線最後在哪一側：−16 ~ +16（負 = 左），找回線後維持最後一次", "en": "where the line was before it was lost: −16 to +16 (negative = left); keeps the last value"}, "unit": "", "range": "-16~+16", "min": -16, "max": 16, "figure": null, "i2c": true, "mblock": {"block": {"zh": "最後離線方向", "en": "last exit direction"}},
-     "ev3": [], "spike": [], "matrix": null, "mvision": null, "microbit": {"block": {"zh": "最後離線方向", "en": "last exit direction"}}, "examples": []},
-    {"id": "07", "key": "threshold", "name": {"zh": "二值化門檻", "en": "threshold"}, "desc": {"zh": "判斷「在線上」的光值門檻 1~99，預設 50；用 E4 改", "en": "reflect threshold for 'on line', 1~99, default 50; set with E4"}, "unit": "", "range": "1~99", "min": 1, "max": 99, "figure": null, "i2c": true, "mblock": {"block": {"zh": "門檻", "en": "threshold"}},
-     "ev3": [], "spike": [], "matrix": null, "mvision": null, "microbit": {"block": {"zh": "門檻", "en": "threshold"}}, "examples": []},
-    {"id": "08", "key": "calibCount", "name": {"zh": "校準完成次數", "en": "calibrations done"}, "desc": {"zh": "開機後完成校準的次數（按鈕校準也算）；16 路大通道尾段鎖住為 0，不進大通道", "en": "number of calibrations completed since power-on (button calibrations included); not in the MATRIX big channel (tail bytes locked at 0 for the 16-ch)"}, "unit": "次", "range": "0~255", "min": 0, "max": 255, "figure": null, "i2c": true, "mblock": {"block": {"zh": "校準次數", "en": "calibration count"}},
-     "ev3": [], "spike": [], "matrix": null, "mvision": null, "microbit": false, "examples": []},
-    {"id": "10", "key": "light", "count": 16, "name": {"zh": "第 N 路光值", "en": "channel N reflect"}, "desc": {"zh": "第 1~16 路校準後光值 0~100（第 1 路最左）；編號 10~1F", "en": "calibrated reflect of channel 1~16, 0~100 (channel 1 = left); ids 10~1F"}, "unit": "", "range": "0~100", "min": 0, "max": 100, "figure": {"tpl": "channels", "params": {"n": 16}}, "i2c": true, "mblock": {"block": {"zh": "第 [N] 路光值", "en": "channel [N] reflect"}},
-     "ev3": [{"mode": 1, "index": 0, "count": 8, "format": "int8", "note": "IR-SEEK 8×int8 兩路壓一 byte：byte i = convert9(第 2i+1 路)×10 + convert9(第 2i+2 路)（11~99；convert9：0~11→1、12~22→2 … 89~100→9，F16:716-723）"}, {"mode": 2, "index": 2, "count": 2, "format": "int8", "note": "index 2 = 第 1 路、index 3 = 第 16 路（0~100）"}, {"mode": 4, "index": 2, "count": 2, "format": "int8", "note": "#67 新：同模式 2"}],
-     "spike": [{"mode": 0, "hub": "edu", "byte": 4, "format": "2bit×16", "note": "每路 2 bit（(v×10)>>8：0~25→0、26~51→1、52~76→2、77~100→3）；byte4 = 第 5~8 路（第 5 路在 bit7-6）、byte5 = 第 1~4 路、byte6 = 第 13~16 路、byte7 = 第 9~12 路 → App 原始綠 = 第 1~8 路（bit15-14 = 第 1 路）、原始藍 = 第 9~16 路；byte 8~15 = 0"}, {"mode": 0, "hub": "toy", "byte": 4, "format": "1bit×16 查表", "note": "每路 1 bit（光值 > 50 = 1 亮）：第 1~8 路合成 1 byte（第 1 路在 bit7）經玩具版查表編碼成 byte4~5；第 9~16 路 → byte6~7"}, {"mode": 3, "byte": 2, "count": 2, "format": "u8", "note": "byte2 = 第 1 路、byte3 = 第 16 路（描述表只宣告 3×int8，第 4 byte 主機可能砍掉）"}, {"mode": 6, "v": 0, "count": 3, "note": "byte0~5 = 第 6~11 路光值 → 3×int16，每個 lo = 前一路、hi = 後一路"}, {"mode": 8, "v": 0, "count": 2, "note": "byte0~3 = 第 7~10 路（只送 4 B）"}, {"mode": 9, "v": 0, "count": 4, "note": "每 int16 四路 4-bit（(v×5)>>5，0~15）：bit0-3 = 第 1 路、bit4-7 = 第 2 路、bit8-11 = 第 3 路、bit12-15 = 第 4 路；v0~v3 = 第 1~16 路"}],
-     "matrix": {"ch22": {"cmd": 7, "count": 4, "note": "C~K 四路一組，每路 2 bit（convert3：0~24→0、25~49→1、50~74→2、75~100→3）：第 1 路在 bit7-6 … 第 4 路在 bit1-0；C = 第 1~4 路、M = 5~8、Y = 9~12、K = 13~16"}, "big": {"byte": 3, "count": 16, "type": "u8"}},
-     "mvision": null, "microbit": {"block": {"zh": "第 [N] 路光值", "en": "channel [N] reflect"}}, "examples": [], "locked": true}
+    {
+      "id": "01",
+      "key": "linePos",
+      "name": {
+        "zh": "線位置",
+        "en": "line position"
+      },
+      "desc": {
+        "zh": "線在哪一路：−16（最左）~+16（最右），0 = 正中間；站在車後往前看，負 = 線在左（平常 ±15，±16 只在最外側掉線後 200 ms 內）",
+        "en": "which channel the line is under: −16 (far left) to +16 (far right), 0 = centre; seen from behind the robot, negative = left (normally ±15; ±16 only for 200 ms after the line leaves the outermost channel)"
+      },
+      "unit": "",
+      "range": "-16~+16",
+      "min": -16,
+      "max": 16,
+      "figure": {
+        "tpl": "line-position",
+        "params": {
+          "n": 16
+        }
+      },
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "線的位置",
+          "en": "line position"
+        }
+      },
+      "ev3": [
+        {
+          "mode": 0,
+          "index": 0,
+          "format": "int8",
+          "offset": 0,
+          "note": "IR-PROX（F16:739-741）"
+        }
+      ],
+      "spike": [
+        {
+          "mode": 0,
+          "hub": "edu",
+          "byte": 1,
+          "format": "u8",
+          "offset": 16
+        },
+        {
+          "mode": 0,
+          "hub": "toy",
+          "byte": 0,
+          "format": "u8",
+          "offset": 16
+        },
+        {
+          "mode": 1,
+          "byte": 0,
+          "format": "u8",
+          "offset": 16
+        },
+        {
+          "mode": 5,
+          "v": 0,
+          "note": "Pybricks reflection() 編碼：X = (線位置+16)×100 + 線寬，a = X/25、b = (X−a×25+1)×10−1，3 個 int16 = a×256+b；主機 ×3200/32768 ≈ X（X ≥ 3200 時讀到負數，F16:905）"
+        },
+        {
+          "mode": 9,
+          "v": 4,
+          "part": "lo",
+          "offset": 16
+        }
+      ],
+      "matrix": {
+        "ch22": {
+          "cmd": 4,
+          "offset": 16,
+          "note": "R"
+        }
+      },
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "線的位置",
+          "en": "line position"
+        }
+      },
+      "examples": [],
+      "locked": true
+    },
+    {
+      "id": "02",
+      "key": "linePosFine",
+      "name": {
+        "zh": "細位置",
+        "en": "fine position"
+      },
+      "desc": {
+        "zh": "線位置的細分：−100 ~ +100，0 = 正中間，負 = 線在左（與線位置同號）",
+        "en": "sub-channel position: −100 to +100, 0 = centre, negative = left (same sign as line position)"
+      },
+      "unit": "",
+      "range": "-100~+100",
+      "min": -100,
+      "max": 100,
+      "figure": {
+        "tpl": "ruler",
+        "params": {
+          "min": -100,
+          "max": 100,
+          "zero": true
+        }
+      },
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "線的細位置",
+          "en": "fine line position"
+        }
+      },
+      "ev3": [
+        {
+          "mode": 2,
+          "index": 0,
+          "format": "int8",
+          "offset": 0,
+          "note": "IR-REMOTE byte0 = highRes−100 存成 int8（F16:745-751）"
+        },
+        {
+          "mode": 4,
+          "index": 0,
+          "format": "int8",
+          "offset": 0,
+          "note": "#67 新：IR-S-ALT 內容同模式 2（原本不送）"
+        }
+      ],
+      "spike": [
+        {
+          "mode": 0,
+          "hub": "edu",
+          "byte": 2,
+          "format": "u16",
+          "offset": 100,
+          "note": "byte2 = 細位置+100（0~200）、byte3 = 0；App 原始紅讀成 int16"
+        },
+        {
+          "mode": 0,
+          "hub": "toy",
+          "byte": 2,
+          "format": "u8×2 查表",
+          "offset": 100,
+          "note": "細位置+100 經玩具版查表編碼成 byte2~3"
+        },
+        {
+          "mode": 3,
+          "byte": 0,
+          "format": "u8",
+          "offset": 100
+        },
+        {
+          "mode": 4,
+          "v": 0,
+          "offset": 100
+        },
+        {
+          "mode": 7,
+          "v": 0,
+          "offset": 0,
+          "note": "Pybricks ambient()：4 個相同 int16 = (細位置+100)×100 + 線寬（0~20016），主機 ÷100 → 位置.線寬"
+        },
+        {
+          "mode": 9,
+          "v": 5,
+          "part": "lo",
+          "offset": 100
+        }
+      ],
+      "matrix": {
+        "ch22": {
+          "cmd": 6,
+          "offset": 100,
+          "note": "B"
+        }
+      },
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "線的細位置",
+          "en": "fine line position"
+        }
+      },
+      "examples": [],
+      "locked": true
+    },
+    {
+      "id": "03",
+      "key": "lineWidth",
+      "name": {
+        "zh": "線寬",
+        "en": "line width"
+      },
+      "desc": {
+        "zh": "壓到線的路數 0~16，0 = 找不到線",
+        "en": "number of channels on the line, 0~16; 0 = no line"
+      },
+      "unit": "路",
+      "range": "0~16",
+      "min": 0,
+      "max": 16,
+      "figure": {
+        "tpl": "line-width",
+        "params": {
+          "n": 16
+        }
+      },
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "線寬",
+          "en": "line width"
+        }
+      },
+      "ev3": [
+        {
+          "mode": 2,
+          "index": 1,
+          "format": "int8",
+          "offset": 0
+        },
+        {
+          "mode": 4,
+          "index": 1,
+          "format": "int8",
+          "offset": 0,
+          "note": "#67 新：同模式 2"
+        }
+      ],
+      "spike": [
+        {
+          "mode": 0,
+          "hub": "edu",
+          "byte": 0,
+          "format": "u8"
+        },
+        {
+          "mode": 0,
+          "hub": "toy",
+          "byte": 1,
+          "format": "u8",
+          "note": "min(線寬, 10)"
+        },
+        {
+          "mode": 2,
+          "byte": 0,
+          "format": "u8"
+        },
+        {
+          "mode": 3,
+          "byte": 1,
+          "format": "u8"
+        },
+        {
+          "mode": 9,
+          "v": 4,
+          "part": "hi"
+        }
+      ],
+      "matrix": {
+        "ch22": {
+          "cmd": 5,
+          "offset": 0,
+          "note": "G"
+        }
+      },
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "線寬",
+          "en": "line width"
+        }
+      },
+      "examples": [],
+      "locked": true
+    },
+    {
+      "id": "04",
+      "key": "groupCount",
+      "name": {
+        "zh": "線段數",
+        "en": "line segments"
+      },
+      "desc": {
+        "zh": "看到幾段線：0 丟線、1 一條線、2 以上 = 分岔／十字",
+        "en": "number of separate line segments: 0 = lost, 1 = one line, ≥2 = fork / crossing"
+      },
+      "unit": "",
+      "range": "0~8",
+      "min": 0,
+      "max": 8,
+      "figure": {
+        "tpl": "line-segments",
+        "params": {
+          "n": 16
+        }
+      },
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "線段數",
+          "en": "line segments"
+        }
+      },
+      "ev3": [],
+      "spike": [
+        {
+          "mode": 9,
+          "v": 5,
+          "part": "hi"
+        }
+      ],
+      "matrix": {
+        "ch22": null
+      },
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "線段數",
+          "en": "line segments"
+        }
+      },
+      "examples": []
+    },
+    {
+      "id": "05",
+      "key": "bitmap",
+      "name": {
+        "zh": "壓線位元圖",
+        "en": "line bitmap"
+      },
+      "desc": {
+        "zh": "bit0 = 第 1 路（最左）… bit15 = 第 16 路，1 = 那一路在線上",
+        "en": "bit0 = channel 1 (left) … bit15 = channel 16; 1 = that channel sees the line"
+      },
+      "unit": "bit",
+      "range": "0~65535",
+      "min": 0,
+      "max": 65535,
+      "figure": {
+        "tpl": "bitmap",
+        "params": {
+          "n": 16
+        }
+      },
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "壓線位元圖",
+          "en": "line bitmap"
+        }
+      },
+      "ev3": [
+        {
+          "mode": 3,
+          "index": 0,
+          "format": "int16",
+          "note": "#67 新：IR-REM-A 1×int16 = 16 bit 位元圖（原本不送）"
+        }
+      ],
+      "spike": [
+        {
+          "mode": 4,
+          "v": 1,
+          "note": "binRaw 16 bit（byte2 低、byte3 高）"
+        },
+        {
+          "mode": 9,
+          "v": 6,
+          "note": "byte12 低、byte13 高"
+        }
+      ],
+      "matrix": {
+        "ch22": null
+      },
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "壓線位元圖",
+          "en": "line bitmap"
+        }
+      },
+      "examples": []
+    },
+    {
+      "id": "06",
+      "key": "lastDir",
+      "name": {
+        "zh": "最後離線方向",
+        "en": "last exit direction"
+      },
+      "desc": {
+        "zh": "丟線前線最後在哪一側：−16 ~ +16（負 = 左），找回線後維持最後一次",
+        "en": "where the line was before it was lost: −16 to +16 (negative = left); keeps the last value"
+      },
+      "unit": "",
+      "range": "-16~+16",
+      "min": -16,
+      "max": 16,
+      "figure": null,
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "最後離線方向",
+          "en": "last exit direction"
+        }
+      },
+      "ev3": [],
+      "spike": [],
+      "matrix": null,
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "最後離線方向",
+          "en": "last exit direction"
+        }
+      },
+      "examples": []
+    },
+    {
+      "id": "07",
+      "key": "threshold",
+      "name": {
+        "zh": "二值化門檻",
+        "en": "threshold"
+      },
+      "desc": {
+        "zh": "判斷「在線上」的光值門檻 1~99，預設 50；用 E4 改",
+        "en": "reflect threshold for 'on line', 1~99, default 50; set with E4"
+      },
+      "unit": "",
+      "range": "1~99",
+      "min": 1,
+      "max": 99,
+      "figure": null,
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "門檻",
+          "en": "threshold"
+        }
+      },
+      "ev3": [],
+      "spike": [],
+      "matrix": null,
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "門檻",
+          "en": "threshold"
+        }
+      },
+      "examples": []
+    },
+    {
+      "id": "08",
+      "key": "calibCount",
+      "name": {
+        "zh": "校準完成次數",
+        "en": "calibrations done"
+      },
+      "desc": {
+        "zh": "開機後完成校準的次數（按鈕校準也算）",
+        "en": "number of calibrations completed since power-on (button calibrations included)"
+      },
+      "unit": "次",
+      "range": "0~255",
+      "min": 0,
+      "max": 255,
+      "figure": null,
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "校準次數",
+          "en": "calibration count"
+        }
+      },
+      "ev3": [],
+      "spike": [],
+      "matrix": null,
+      "mvision": null,
+      "microbit": false,
+      "examples": []
+    },
+    {
+      "id": "10",
+      "key": "light",
+      "count": 16,
+      "name": {
+        "zh": "第 N 路光值",
+        "en": "channel N reflect"
+      },
+      "desc": {
+        "zh": "第 1~16 路校準後光值 0~100（第 1 路最左）；編號 10~1F",
+        "en": "calibrated reflect of channel 1~16, 0~100 (channel 1 = left); ids 10~1F"
+      },
+      "unit": "",
+      "range": "0~100",
+      "min": 0,
+      "max": 100,
+      "figure": {
+        "tpl": "channels",
+        "params": {
+          "n": 16
+        }
+      },
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "第 [N] 路光值",
+          "en": "channel [N] reflect"
+        }
+      },
+      "ev3": [
+        {
+          "mode": 1,
+          "index": 0,
+          "count": 8,
+          "format": "int8",
+          "note": "IR-SEEK 8×int8 兩路壓一 byte：byte i = convert9(第 2i+1 路)×10 + convert9(第 2i+2 路)（11~99；convert9：0~11→1、12~22→2 … 89~100→9，F16:716-723）"
+        },
+        {
+          "mode": 2,
+          "index": 2,
+          "count": 2,
+          "format": "int8",
+          "note": "index 2 = 第 1 路、index 3 = 第 16 路（0~100）"
+        },
+        {
+          "mode": 4,
+          "index": 2,
+          "count": 2,
+          "format": "int8",
+          "note": "#67 新：同模式 2"
+        }
+      ],
+      "spike": [
+        {
+          "mode": 0,
+          "hub": "edu",
+          "byte": 4,
+          "format": "2bit×16",
+          "note": "每路 2 bit（(v×10)>>8：0~25→0、26~51→1、52~76→2、77~100→3）；byte4 = 第 5~8 路（第 5 路在 bit7-6）、byte5 = 第 1~4 路、byte6 = 第 13~16 路、byte7 = 第 9~12 路 → App 原始綠 = 第 1~8 路（bit15-14 = 第 1 路）、原始藍 = 第 9~16 路；byte 8~15 = 0"
+        },
+        {
+          "mode": 0,
+          "hub": "toy",
+          "byte": 4,
+          "format": "1bit×16 查表",
+          "note": "每路 1 bit（光值 > 50 = 1 亮）：第 1~8 路合成 1 byte（第 1 路在 bit7）經玩具版查表編碼成 byte4~5；第 9~16 路 → byte6~7"
+        },
+        {
+          "mode": 3,
+          "byte": 2,
+          "count": 2,
+          "format": "u8",
+          "note": "byte2 = 第 1 路、byte3 = 第 16 路（描述表只宣告 3×int8，第 4 byte 主機可能砍掉）"
+        },
+        {
+          "mode": 6,
+          "v": 0,
+          "count": 3,
+          "note": "byte0~5 = 第 6~11 路光值 → 3×int16，每個 lo = 前一路、hi = 後一路"
+        },
+        {
+          "mode": 8,
+          "v": 0,
+          "count": 2,
+          "note": "byte0~3 = 第 7~10 路（只送 4 B）"
+        },
+        {
+          "mode": 9,
+          "v": 0,
+          "count": 4,
+          "note": "每 int16 四路 4-bit（(v×5)>>5，0~15）：bit0-3 = 第 1 路、bit4-7 = 第 2 路、bit8-11 = 第 3 路、bit12-15 = 第 4 路；v0~v3 = 第 1~16 路"
+        }
+      ],
+      "matrix": {
+        "ch22": {
+          "cmd": 7,
+          "count": 4,
+          "note": "C~K 四路一組，每路 2 bit（convert3：0~24→0、25~49→1、50~74→2、75~100→3）：第 1 路在 bit7-6 … 第 4 路在 bit1-0；C = 第 1~4 路、M = 5~8、Y = 9~12、K = 13~16"
+        }
+      },
+      "mvision": null,
+      "microbit": {
+        "block": {
+          "zh": "第 [N] 路光值",
+          "en": "channel [N] reflect"
+        }
+      },
+      "examples": [],
+      "locked": true
+    }
   ],
   "commands": [
-    {"id": "E0", "key": "blackLine", "name": {"zh": "切黑線", "en": "black line mode"}, "desc": {"zh": "追黑線（預設）", "en": "follow a black line (default)"}, "params": [], "i2c": true, "mblock": true, "matrix": null, "microbit": {"block": {"zh": "切換為黑線", "en": "set black line"}}, "busyFlag": null},
-    {"id": "E1", "key": "whiteLine", "name": {"zh": "切白線", "en": "white line mode"}, "desc": {"zh": "追白線（F3 b1 = 1）", "en": "follow a white line (F3 b1 = 1)"}, "params": [], "i2c": true, "mblock": true, "matrix": null, "microbit": {"block": {"zh": "切換為白線", "en": "set white line"}}, "busyFlag": null},
-    {"id": "E2", "key": "calibBlack", "name": {"zh": "黑色校準", "en": "calibrate black"}, "desc": {"zh": "把目前讀值記為黑（感應器壓在黑線上），約 50 ms；寫入 EEPROM", "en": "store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM"}, "params": [], "i2c": true, "mblock": true, "matrix": {"f": "F1"}, "microbit": {"block": {"zh": "黑色校準", "en": "calibrate black"}}, "busyFlag": 2},
-    {"id": "E3", "key": "calibWhite", "name": {"zh": "白色校準", "en": "calibrate white"}, "desc": {"zh": "把目前讀值記為白（感應器壓在白底上），約 50 ms；寫入 EEPROM", "en": "store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM"}, "params": [], "i2c": true, "mblock": true, "matrix": {"f": "F2"}, "microbit": {"block": {"zh": "白色校準", "en": "calibrate white"}}, "busyFlag": 2},
-    {"id": "E4", "key": "setThreshold", "name": {"zh": "設定門檻", "en": "set threshold"}, "desc": {"zh": "二值化門檻 1~99（RAM，重開機回預設 50）", "en": "threshold 1~99 (RAM only, back to 50 after reboot)"}, "params": [{"name": {"zh": "門檻", "en": "threshold"}, "range": "1~99", "bytes": 1}], "i2c": true, "mblock": true, "matrix": null, "microbit": {"block": {"zh": "門檻設為 [n]", "en": "set threshold [n]"}}, "busyFlag": null},
-    {"id": "E7", "key": "calibAuto", "name": {"zh": "5 秒動態校準", "en": "5-second auto calibration"}, "desc": {"zh": "5 秒內把感應器在黑線與白底上來回掃，取極值當黑白參考（共識 B-12，= v1 的 0x20=0x01）；期間 F3 b2 = 1", "en": "sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile"}, "params": [], "i2c": true, "mblock": true, "matrix": null, "microbit": {"block": {"zh": "5 秒動態校準", "en": "auto calibrate (5 s)"}}, "busyFlag": 2}
+    {
+      "id": "E0",
+      "key": "blackLine",
+      "name": {
+        "zh": "切黑線",
+        "en": "black line mode"
+      },
+      "desc": {
+        "zh": "追黑線（預設）",
+        "en": "follow a black line (default)"
+      },
+      "params": [],
+      "i2c": true,
+      "mblock": true,
+      "matrix": null,
+      "microbit": {
+        "block": {
+          "zh": "切換為黑線",
+          "en": "set black line"
+        }
+      },
+      "busyFlag": null
+    },
+    {
+      "id": "E1",
+      "key": "whiteLine",
+      "name": {
+        "zh": "切白線",
+        "en": "white line mode"
+      },
+      "desc": {
+        "zh": "追白線（F3 b1 = 1）",
+        "en": "follow a white line (F3 b1 = 1)"
+      },
+      "params": [],
+      "i2c": true,
+      "mblock": true,
+      "matrix": null,
+      "microbit": {
+        "block": {
+          "zh": "切換為白線",
+          "en": "set white line"
+        }
+      },
+      "busyFlag": null
+    },
+    {
+      "id": "E2",
+      "key": "calibBlack",
+      "name": {
+        "zh": "黑色校準",
+        "en": "calibrate black"
+      },
+      "desc": {
+        "zh": "把目前讀值記為黑（感應器壓在黑線上），約 50 ms；寫入 EEPROM",
+        "en": "store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM"
+      },
+      "params": [],
+      "i2c": true,
+      "mblock": true,
+      "microbit": {
+        "block": {
+          "zh": "黑色校準",
+          "en": "calibrate black"
+        }
+      },
+      "busyFlag": 2
+    },
+    {
+      "id": "E3",
+      "key": "calibWhite",
+      "name": {
+        "zh": "白色校準",
+        "en": "calibrate white"
+      },
+      "desc": {
+        "zh": "把目前讀值記為白（感應器壓在白底上），約 50 ms；寫入 EEPROM",
+        "en": "store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM"
+      },
+      "params": [],
+      "i2c": true,
+      "mblock": true,
+      "microbit": {
+        "block": {
+          "zh": "白色校準",
+          "en": "calibrate white"
+        }
+      },
+      "busyFlag": 2
+    },
+    {
+      "id": "E4",
+      "key": "setThreshold",
+      "name": {
+        "zh": "設定門檻",
+        "en": "set threshold"
+      },
+      "desc": {
+        "zh": "二值化門檻 1~99（RAM，重開機回預設 50）",
+        "en": "threshold 1~99 (RAM only, back to 50 after reboot)"
+      },
+      "params": [
+        {
+          "name": {
+            "zh": "門檻",
+            "en": "threshold"
+          },
+          "range": "1~99",
+          "bytes": 1
+        }
+      ],
+      "i2c": true,
+      "mblock": true,
+      "matrix": null,
+      "microbit": {
+        "block": {
+          "zh": "門檻設為 [n]",
+          "en": "set threshold [n]"
+        }
+      },
+      "busyFlag": null
+    },
+    {
+      "id": "E7",
+      "key": "calibAuto",
+      "name": {
+        "zh": "5 秒動態校準",
+        "en": "5-second auto calibration"
+      },
+      "desc": {
+        "zh": "5 秒內把感應器在黑線與白底上來回掃，取極值當黑白參考（共識 B-12，= v1 的 0x20=0x01）；期間 F3 b2 = 1",
+        "en": "sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile"
+      },
+      "params": [],
+      "i2c": true,
+      "mblock": true,
+      "matrix": null,
+      "microbit": {
+        "block": {
+          "zh": "5 秒動態校準",
+          "en": "auto calibrate (5 s)"
+        }
+      },
+      "busyFlag": 2
+    }
   ],
   "flags": [
-    {"bit": 0, "key": "ready", "name": {"zh": "就緒", "en": "ready"}, "desc": {"zh": "恆 1", "en": "always 1"}},
-    {"bit": 1, "key": "whiteMode", "name": {"zh": "白線模式", "en": "white line mode"}, "desc": {"zh": "1 = 正在追白線", "en": "1 = following a white line"}},
-    {"bit": 2, "key": "calibrating", "name": {"zh": "校準中", "en": "calibrating"}, "desc": {"zh": "E2／E3／E7 執行中；此時拒收新的校準命令", "en": "E2/E3/E7 in progress; new calibration commands are ignored"}},
-    {"bit": 3, "key": "lost", "name": {"zh": "丟線", "en": "line lost"}, "desc": {"zh": "線段數 = 0", "en": "segment count = 0"}},
-    {"bit": 4, "key": "fork", "name": {"zh": "分岔", "en": "fork"}, "desc": {"zh": "線段數 ≥ 2", "en": "segment count ≥ 2"}}
+    {
+      "bit": 0,
+      "key": "ready",
+      "name": {
+        "zh": "就緒",
+        "en": "ready"
+      },
+      "desc": {
+        "zh": "恆 1",
+        "en": "always 1"
+      }
+    },
+    {
+      "bit": 1,
+      "key": "whiteMode",
+      "name": {
+        "zh": "白線模式",
+        "en": "white line mode"
+      },
+      "desc": {
+        "zh": "1 = 正在追白線",
+        "en": "1 = following a white line"
+      }
+    },
+    {
+      "bit": 2,
+      "key": "calibrating",
+      "name": {
+        "zh": "校準中",
+        "en": "calibrating"
+      },
+      "desc": {
+        "zh": "E2／E3／E7 執行中；此時拒收新的校準命令",
+        "en": "E2/E3/E7 in progress; new calibration commands are ignored"
+      }
+    },
+    {
+      "bit": 3,
+      "key": "lost",
+      "name": {
+        "zh": "丟線",
+        "en": "line lost"
+      },
+      "desc": {
+        "zh": "線段數 = 0",
+        "en": "segment count = 0"
+      }
+    },
+    {
+      "bit": 4,
+      "key": "fork",
+      "name": {
+        "zh": "分岔",
+        "en": "fork"
+      },
+      "desc": {
+        "zh": "線段數 ≥ 2",
+        "en": "segment count ≥ 2"
+      }
+    }
   ],
   "assumptions": [
     "B-11：細位置 02 與線位置 01 同號（負 = 左）；韌體 F16:1290 註解寫反，程式碼同號（IR:11 為準）。",
     "B-12：E7 五秒動態校準補回（v1 的 0x20=0x01），定案表沒列。",
-    "MATRIX 大通道已流出：[0..18] 與尾段 24~28 鎖住維持 0（common.json lockedTail0），所以 F3、F1/F2 次數、ID、hw[0]、08 校準次數都不進大通道；只追加 [19..20] 位元圖 u16 小端、[21] 線段數（MATRIX 定案 §4）。0x22 命令 4~12 全部不動（11 = 0、12 = ((位置+16)>>1)×10 + (線寬>>1)，schema 不收 11/12 所以沒寫進 ch22）。",
     "EV3：模式 0~2 鎖住；模式 3 原本不送 → 16 bit 位元圖；模式 4 原本不送 → 同模式 2；模式 5 ID 格式 B（共用函式）。",
     "SPIKE：0/5/7/9 鎖住，1~4、6 維持不動；教育版模式 0 的 16 路光值是 2-bit（玩具版 1-bit），跟 8 路的 4-bit 不同；byte 8~15 補 0（#65 已改，使用者保留）；模式 9 排法照盤點（四路 4-bit 一個 int16，v6 = 位元圖）；模式 8 v[0] 改 ID|hw[0]<<8。",
     "線段數 04 範圍：定案沒寫，16 路最多 8 段（交錯壓線），採 0~8。",

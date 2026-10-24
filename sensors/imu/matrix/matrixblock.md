@@ -5,6 +5,12 @@
 
 這一頁只講 **MATRIXblock 原廠顏色感應器積木（0x22）**：在 MATRIX Mini R4 上用它讀陀螺儀 IMU 九軸的安裝步驟、每個值怎麼讀、能用的命令與範例。要換產品、主機或軟體，用上方的切換列。
 
+## 要買哪個版本、怎麼接
+
+買 **MATRIX 版**，用 MATRIX 原廠 4 pin 感應器線接 Mini R4 的 I2C1 或 I2C2（位址 `0x22`），積木裡選對應的孔。
+
+<figure class="ref-fig"><img src="/images/figures/imu/wiring-matrix.svg" alt="陀螺儀 IMU 九軸 × MATRIX Mini R4" loading="lazy"></figure>
+
 ## 安裝與設定
 
 <!-- setup: _build/guides/software/matrix-matrixblock.zh.md + _build/guides/product/imu/matrix-matrixblock.zh.md {"product":"陀螺儀 IMU 九軸","edition":"MATRIX 版","port":"I2C1","lib":"","libUrl":"","addr":"0x6A"} -->
@@ -25,7 +31,7 @@
 | :--- | :--- |
 | `-32768~32767` ° | 四元數算出的航向，度，開機／歸零 = 0，連續累積可超過 360（int16 到 ±32767 繞回，約 91 圈） |
 
-積木「顏色感應器 → R~G」：R = (航向+32768) 低 byte、G = 高 byte（R4 大通道版：低在前）；主機 hi×256+lo−32768
+積木「顏色感應器 → R~G」：R = (航向+32768) 低 byte、G = 高 byte（R4 版：低在前）；主機 hi×256+lo−32768
 
 ```cpp
 int raw = MiniR4.I2C1.MXColor.getColor(R);   // 第 1 組
@@ -65,7 +71,7 @@ int raw = MiniR4.I2C1.MXColor.getColor(M);   // 第 1 組
 
 </section>
 
-<p class="ref-missing"><b>這個軟體讀不到</b>：磁力航向、轉向軸角速度、俯仰角、俯仰角速度、磁力信任度、磁場干擾度、朝上的面、角速度 1~3 軸、加速度 1~3 軸、磁力 1~3 軸。要用這些值請改用 <a href="/sensors/imu/matrix/bigchannel.md">大通道函式庫</a>。</p>
+<p class="ref-missing"><b>這個軟體讀不到</b>：磁力航向、轉向軸角速度、俯仰角、俯仰角速度、磁力信任度、磁場干擾度、朝上的面、角速度 1~3 軸、加速度 1~3 軸、磁力 1~3 軸。要用這些值請改用 <a href="/sensors/imu/arduino/ide.md">Arduino</a>／<a href="/sensors/imu/mblock/mblock5.md">mBlock</a>／<a href="/sensors/imu/microbit/makecode.md">micro:bit</a>。</p>
 
 ## 命令
 
@@ -77,7 +83,7 @@ int raw = MiniR4.I2C1.MXColor.getColor(M);   // 第 1 組
 
 ## 其他問題
 
-- **原廠積木和大通道可以一起用嗎？** 不行：兩種要裝不同的函式庫檔，一個程式只能選一種。
+
 
 還有問題？到 [聯絡我們](/contact.md) 附上你用的軟體和程式截圖。
 

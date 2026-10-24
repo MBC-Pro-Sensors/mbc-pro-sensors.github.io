@@ -21,7 +21,6 @@ Every MBC library, block extension, example pack and catalog on one page. Check 
 | [MBC_Servo6_Official_App_Lib.zip](/downloads/MBC_Servo6_Official_App_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | Servo6 expander: official SPIKE App library — for firmware shipped before 2026-10 | 1.0 | Servo6 | 5.3 KB | 2026-10-21 |
 | [line8_pybricks_spike_v4.0.0.zip](/examples/line8/line8_pybricks_spike_v4.0.0.zip) | Line Follower 8-ch: SPIKE Pybricks library + examples (`MBC_line8_obj_Lib_v400.py` plus 2 block-style and 2 Python examples) | 4.0.0 | Pybricks 4.0.0 | 15 KB | 2026-10-24 |
 | [MBC_TOF8_Pybricks_Lib.zip](/downloads/MBC_TOF8_Pybricks_Lib.zip) | Ranger 8-ch TOF8: SPIKE Pybricks library (`MBC_laser8_Lib.py`, `MBC_laser8_obj_Lib.py`) | 1.0 | Pybricks | 10 KB | 2026-10-24 |
-| [MiniR4ColorSensorExt_LauMo_v2.zip](/downloads/MiniR4ColorSensorExt_LauMo_v2.zip) | MATRIX Mini R4: LauMo big-channel library (`MiniR4ColorSensorExt.cpp` / `.h`, replaces the two stock files) | 2.0 | MATRIX big channel | 4.1 KB | 2026-10-21 |
 | [MBC_Pro_Sensors_mBlock5_v1.0.0.mext](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | mBlock 5 extension v1.0.0 (legacy, 15 blocks) — for firmware shipped before 2026-10 | 1.0.0 | mBlock v1 (before 2026-10) | 1.9 MB | 2026-10-21 |
 <!-- /gen -->
 
@@ -44,11 +43,16 @@ Nothing to download: MakeCode → Extensions → paste `https://github.com/conta
 
 ## 🟢 MATRIX Mini R4
 
+<!-- hide:hideMatrixBigChannel -->
 | File | Notes |
 | :--- | :--- |
 | [MiniR4ColorSensorExt_LauMo_v2.zip](/downloads/MiniR4ColorSensorExt_LauMo_v2.zip) | LauMo big-channel library v2 (`begin()` wait raised to 5 ms for ESP32 products). Unzip and overwrite `arduino\libraries\MatrixMiniR4\src\Modules\Sensors\MiniR4ColorSensorExt.cpp` and `.h` in the MATRIXblock install folder; put the stock files back to return to the 0x22 blocks |
 
 Method A (stock 0x22 blocks) needs no download. Both methods and every product's byte table: [MATRIX overview](/en/matrix.md).
+<!-- /hide -->
+<!-- show:hideMatrixBigChannel -->
+MATRIX uses the stock colour-sensor blocks (0x22): nothing to download. Mapping for every product: [MATRIX overview](/en/matrix.md).
+<!-- /show -->
 
 ## ∿ Arduino examples (.zip, 5~6 sketches each)
 

@@ -15,6 +15,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { ROOT, BUILD, loadProducts, loadSiteProducts, makeWriter, siteKey, L, T, table, pageHref, valueName } from './gen-lib.mjs';
 import { AI_NOTE, fence } from './protocol/pages/common.mjs';
+import { FLAGS } from './site-flags.mjs';
 import * as spike from './protocol/snippets/spike.mjs';
 import * as ev3 from './protocol/snippets/ev3.mjs';
 import * as i2c from './protocol/snippets/i2c.mjs';
@@ -56,7 +57,7 @@ export function availability(siteProducts, protos) {
       if (ov[h.id]) sws = ov[h.id];
       else {
         if (!ps.length || !ps.some((p) => hostOk(p, h))) continue;
-        sws = h.software.filter((s) => !s.requires || ps.some((p) => reqOk(p, s.requires))).map((s) => s.id);
+        sws = h.software.filter((s) => !(s.hideWhen && FLAGS[s.hideWhen]) && (!s.requires || ps.some((p) => reqOk(p, s.requires)))).map((s) => s.id);
       }
       if (sws.length) hosts.push({ id: h.id, sws });
     }
@@ -357,7 +358,7 @@ function swPage(key, host, sw, lang, sp, protos, avail) {
   } else out.push(...ex);
   // 常見問題
   out.push(`## ${T(lang, '其他問題', 'More questions')}`, '');
-  out.push((h.faq || []).map((f) => `- **${L(f.q, lang)}** ${L(f.a, lang)}`).join('\n'), '');
+  out.push((h.faq || []).filter((f) => !(f.hideWhen && FLAGS[f.hideWhen])).map((f) => `- **${L(f.q, lang)}** ${L(f.a, lang)}`).join('\n'), '');
   out.push(T(lang, `還有問題？到 [聯絡我們](/contact.md) 附上你用的軟體和程式截圖。`, `Still stuck? [Contact us](/en/contact.md) with your software and a screenshot of the program.`), '');
   // 下載
   out.push(`## ${T(lang, '下載', 'Downloads')}`, '', downloads(key, host, sw, lang, protos), '');
@@ -444,7 +445,7 @@ function main() {
   const index = {
     _說明: '由 _build/gen-guides.mjs 產生，請勿手改',
     hosts: GUIDES.hosts.map((h) => ({ id: h.id, name: h.name, fullName: h.fullName, tagline: h.tagline, icon: h.icon, illust: h.illust, colorToken: h.colorToken,
-      software: h.software.map((s) => ({ id: s.id, name: s.name, longName: s.longName, tagline: s.tagline, icon: s.icon, summaryMatch: s.summaryMatch || null, colMatch: s.colMatch || null })) })),
+      software: h.software.filter((s) => !(s.hideWhen && FLAGS[s.hideWhen])).map((s) => ({ id: s.id, name: s.name, longName: s.longName, tagline: s.tagline, icon: s.icon, summaryMatch: s.summaryMatch || null, colMatch: s.colMatch || null })) })),
     products: Object.fromEntries(Object.entries(avail).map(([key, a]) => [key, { name: siteProducts[key].name, short: { zh: shortName(siteProducts[key], 'zh'), en: shortName(siteProducts[key], 'en') }, image: siteProducts[key].image || null, color: siteProducts[key].color, hosts: a.hosts }])),
     moved,
   };

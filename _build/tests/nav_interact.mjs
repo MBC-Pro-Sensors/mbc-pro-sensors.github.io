@@ -52,9 +52,8 @@ const cases = [
   ['/sensors/line8/spike/official.html', 'p', 'exp6', '換到 EXP6 保留官方 App'],
   ['/sensors/exp6/spike/mbcblocks.html', 'p', 'servo6', 'Servo6 沒有 MBC 積木網站 → 平台頁'],
   ['/sensors/line8/arduino/ide.html', 'p', 'tof2', '換產品保留 Arduino IDE'],
-  ['/sensors/imu/matrix/bigchannel.html', 'p', 'esp32cam', '神攝手 MATRIX 只有 mVision → 直接到 mVision'],
+  ['/sensors/imu/matrix/matrixblock.html', 'p', 'esp32cam', '神攝手 MATRIX 只有 mVision → 直接到 mVision'],
   ['/sensors/line8/mblock/mblock5.html', 'h', 'microbit', '換主機到只有一種軟體的 micro:bit'],
-  ['/sensors/line8/matrix/matrixblock.html', 's', 'bigchannel', 'MATRIX 換軟體'],
   ['/en/sensors/line8/spike/pybricks.html', 'p', 'tof2', '英文頁換產品'],
   ['/en/sensors/ps4/ev3/pybricks.html', 'h', 'arduino', '英文頁換主機'],
 ];

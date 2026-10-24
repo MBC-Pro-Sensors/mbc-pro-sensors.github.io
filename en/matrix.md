@@ -1,8 +1,14 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # 🟢 MATRIX Mini R4
 
+<!-- hide:hideMatrixBigChannel -->
 MBC MATRIX-edition sensors plug into a Mini R4 **I2C port** (address `0x22`) and are read with the stock "colour sensor" blocks in MATRIXblock; the Sharpshooter uses the **serial port** and the stock "mVision" camera blocks. This page is the overview of the three methods; each product has its own page at the bottom.
+<!-- /hide -->
+<!-- show:hideMatrixBigChannel -->
+MBC MATRIX-edition sensors plug into a Mini R4 **I2C port** (address `0x22`) and are read with the stock "colour sensor" blocks in MATRIXblock; the Sharpshooter uses the **serial port** and the stock "mVision" camera blocks. Neither needs any file to be installed or replaced. This page is the overview; each product has its own page at the bottom.
+<!-- /show -->
 
+<!-- hide:hideMatrixBigChannel -->
 | Method | Products | What to install | What you get |
 | :--- | :--- | :--- | :--- |
 | **A. Stock blocks (0x22)** | Pathfinder 8 / 16, Ranger 2 / 8, IMU, Controller PS2 / PS4 | Nothing, built into MATRIXblock | R, G, B, C, M, Y, K: seven 0~255 numbers |
@@ -11,6 +17,13 @@ MBC MATRIX-edition sensors plug into a Mini R4 **I2C port** (address `0x22`) and
 
 > [!IMPORTANT]
 > A and B need **different library files**; one computer can use only one at a time. The firmware supports both, so switching methods never needs a sensor re-flash.
+<!-- /hide -->
+<!-- show:hideMatrixBigChannel -->
+| Method | Products | What to install | What you get |
+| :--- | :--- | :--- | :--- |
+| **A. Stock blocks (0x22)** | Pathfinder 8 / 16, Ranger 2 / 8, IMU, Controller PS2 / PS4 | Nothing, built into MATRIXblock | R, G, B, C, M, Y, K: seven 0~255 numbers |
+| **B. mVision (serial)** | Sharpshooter school / WRO edition | Nothing | camera blocks "mVision data 0~9" |
+<!-- /show -->
 
 ---
 
@@ -42,7 +55,7 @@ The "colour sensor → R / G / B / C / M / Y / K" blocks each return one 0~255 n
 | Pathfinder 16 | R / B | line position = R − 16; fine position = B − 100 |
 | | C~K | four channels per slot, 2 bits each (0 darkest ~ 3 brightest): channel 1 = ÷64 rounded down, channel 2 = (÷16 rounded down) mod 4, channel 3 = (÷4 rounded down) mod 4, channel 4 = mod 4 |
 | Ranger 2 | R~B | 0~120 cm, 120 = nothing on that side |
-| Ranger 8 | R~K | use directly, 0~120 cm (1 cm steps), 120 = nothing in that direction; ordered left to right, C = straight ahead (nearer of sensors 4 and 5 so a narrow object is not averaged away). Find the nearest distance / direction with compare blocks; for all 8 raw values or mm use the big channel |
+| Ranger 8 | R~K | use directly, 0~120 cm (1 cm steps), 120 = nothing in that direction; ordered left to right, C = straight ahead (nearer of sensors 4 and 5 so a narrow object is not averaged away). Find the nearest distance / direction with compare blocks |
 | IMU | R~Y | angle = high byte × 256 + low byte − 32768 (keeps counting past 360, left turn negative) |
 | Controller | R | up 1, right 2, down 4, left 8, ▲ 16, ● 32, ✕ 64, ■ 128 (add when pressed together) |
 | | G | L2 1, R2 2, L1 4, R1 8, SELECT 16, L3 32, R3 64, START 128 |
@@ -56,6 +69,7 @@ int linePos = r - 8;
 
 ---
 
+<!-- hide:hideMatrixBigChannel -->
 ## B. LauMo big channel
 
 The big channel was designed by coach LauMo: replace the two stock `MiniR4ColorSensorExt` files and the same colour-sensor blocks become *pointer reads* that fetch one **30-byte packet** (24 bytes of product data + status + 4 extension bytes + CRC). The Pathfinder 16 and the IMU (R4 big-channel firmware) have shipped with this format for a while; every other product supports it from 2026-10.
@@ -203,10 +217,21 @@ int heading = bigI16(2);    // IMU: fused heading (bytes 2~3)
 > The PS4 receiver is an ESP32 whose I2C slave needs ≥ 2 ms to answer; the firmware pre-loads the latest packet, and the 5 ms wait in the v2 `begin()` exists for it. **Bench test pending.**
 
 ---
+<!-- /hide -->
 
+<!-- hide:hideMatrixBigChannel -->
 ## C. Sharpshooter: mVision camera blocks (serial)
+<!-- /hide -->
+<!-- show:hideMatrixBigChannel -->
+## B. Sharpshooter: mVision camera blocks (serial)
+<!-- /show -->
 
+<!-- hide:hideMatrixBigChannel -->
 MATRIXblock's camera blocks are mVision (Serial1 115200) and HuskyLens only — there is no I2C camera block — so the Sharpshooter **does not use 0x22 or the big channel**. It sends data in the mVision packet format: the "mVision data 0~9" blocks each hold one number, **one packet every 20 ms**.
+<!-- /hide -->
+<!-- show:hideMatrixBigChannel -->
+MATRIXblock's camera blocks are mVision (Serial1 115200) and HuskyLens only — there is no I2C camera block — so the Sharpshooter **does not use 0x22**. It sends data in the mVision packet format: the "mVision data 0~9" blocks each hold one number, **one packet every 20 ms**.
+<!-- /show -->
 
 > [!WARNING]
 > **Do not use data 10**: the MATRIX program declares only 10 slots (data 0~9); slot 10 reads unrelated memory.
@@ -232,7 +257,12 @@ Ranges match the EV3 / SPIKE editions, so program logic carries over. The HUE12 
 
 ## 📖 Per-product MATRIX pages
 
+<!-- hide:hideMatrixBigChannel -->
 One page per product: wiring figure, the 0x22 seven-slot map, the big-channel byte table (linked to each value's command reference) and the Arduino form.
+<!-- /hide -->
+<!-- show:hideMatrixBigChannel -->
+One page per product: wiring figure, the 0x22 seven-slot map (linked to each value's command reference) and the Arduino form.
+<!-- /show -->
 
 | Product | MATRIX page |
 | :--- | :--- |

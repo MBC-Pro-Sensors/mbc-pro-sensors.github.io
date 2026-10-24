@@ -197,7 +197,7 @@ The MATRIXblock mVision block reads data slot 6~8: 不動：byte 12~17 = 12 格�
 
 ## More questions
 
-- **Can I mix stock blocks and the big channel?** No: they need different library files; pick one per program.
+
 
 Still stuck? [Contact us](/en/contact.md) with your software and a screenshot of the program.
 

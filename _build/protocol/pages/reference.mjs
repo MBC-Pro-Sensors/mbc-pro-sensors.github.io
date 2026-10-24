@@ -1,5 +1,6 @@
 // sensors/<p>/reference.md：每個值一節（示意圖＋資訊表＋六平台怎麼讀）、命令、F3 旗標、共用暫存器連結、假設
 import { PLATFORMS } from '../../gen-lib.mjs';
+import { HIDE_BIG } from '../../site-flags.mjs';
 import { AI_NOTE, genNote, backLink, chips, figure, howTo, valueInfo, examplesLine, assumptions, flagsTable, commonRef, hex, L, T, table, pageHref, siteKey, valueName, valueIdRange } from './common.mjs';
 
 export function render(product, common, ctx, lang) {
@@ -18,7 +19,7 @@ export function render(product, common, ctx, lang) {
   // 基本資訊
   out.push(table([T(lang, '項目', 'Item'), T(lang, '內容', 'Detail')], [
     [T(lang, 'I2C 出廠位址', 'Factory I2C address'), `\`${product.addr}\``],
-    ['hw[0]', `\`${product.hw0}\`（${T(lang, 'F0 高 byte、SPIKE 模式 8／EV3 模式 5 ID 高 byte、大通道 byte 28', 'F0 high byte; ID high byte in SPIKE mode 8 / EV3 mode 5; big-channel byte 28')}）`],
+    ['hw[0]', `\`${product.hw0}\`（${(HIDE_BIG ? T(lang, 'F0 高 byte、SPIKE 模式 8／EV3 模式 5 ID 高 byte', 'F0 high byte; ID high byte in SPIKE mode 8 / EV3 mode 5') : T(lang, 'F0 高 byte、SPIKE 模式 8／EV3 模式 5 ID 高 byte、大通道 byte 28', 'F0 high byte; ID high byte in SPIKE mode 8 / EV3 mode 5; big-channel byte 28'))}）`],
     [T(lang, '型號', 'Model'), `\`${product.model}\``],
     [T(lang, '協議版本', 'Protocol version'), `\`${common.protoVer}\``],
     [T(lang, '支援平台', 'Hosts'), PLATFORMS.filter((p) => product.hosts && product.hosts[p.hostKey]).map((p) => p.name[lang]).join(T(lang, '、', ', '))],
@@ -51,7 +52,7 @@ export function render(product, common, ctx, lang) {
   // 命令
   if (product.commands && product.commands.length) {
     out.push('', `## ${T(lang, '寫入命令', 'Write commands')}`, '');
-    out.push(T(lang, '只有 Arduino I2C、mBlock、micro:bit（與 MATRIX 大通道的 F1／F2）能送命令；SPIKE／EV3 接頭是唯讀的。', 'Only Arduino I2C, mBlock, micro:bit (and MATRIX big-channel F1 / F2) can send commands; the SPIKE / EV3 ports are read-only.'));
+    out.push(HIDE_BIG ? T(lang, '只有 Arduino I2C、mBlock、micro:bit 能送命令；SPIKE／EV3 接頭是唯讀的。', 'Only Arduino I2C, mBlock and micro:bit can send commands; the SPIKE / EV3 ports are read-only.') : T(lang, '只有 Arduino I2C、mBlock、micro:bit（與 MATRIX 大通道的 F1／F2）能送命令；SPIKE／EV3 接頭是唯讀的。', 'Only Arduino I2C, mBlock, micro:bit (and MATRIX big-channel F1 / F2) can send commands; the SPIKE / EV3 ports are read-only.'));
     for (const c of product.commands) {
       out.push('', `<section id="c${c.id.toLowerCase()}" class="ref-item ref-cmd">`, '');
       out.push(`### \`${c.id}\` ${L(c.name, lang)} <small>${c.key}</small>`, '');
@@ -69,7 +70,7 @@ export function render(product, common, ctx, lang) {
 
   // 狀態旗標
   out.push('', `<section id="flags" class="ref-item">`, '', `## ${T(lang, '狀態旗標 F3', 'Status flags F3')}`, '');
-  out.push(T(lang, '`F3` 每個 bit 一個狀態；I2C、mBlock、micro:bit 直接讀，MATRIX 大通道是 byte 24。', 'One status per bit of `F3`; read directly over I2C, mBlock, micro:bit; MATRIX big-channel byte 24.'), '');
+  out.push(HIDE_BIG ? T(lang, '`F3` 每個 bit 一個狀態；I2C、mBlock、micro:bit 直接讀。', 'One status per bit of `F3`; read directly over I2C, mBlock, micro:bit.') : T(lang, '`F3` 每個 bit 一個狀態；I2C、mBlock、micro:bit 直接讀，MATRIX 大通道是 byte 24。', 'One status per bit of `F3`; read directly over I2C, mBlock, micro:bit; MATRIX big-channel byte 24.'), '');
   out.push(flagsTable(product, lang), '');
   out.push(howTo(product, null, lang, 'status'));
   out.push('', '</section>');

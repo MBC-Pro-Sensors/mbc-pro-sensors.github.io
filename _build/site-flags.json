@@ -1,0 +1,5 @@
+{
+  "_說明": "網站內容開關。改完要重跑 node _build/sync-protocol.mjs、gen-guides、gen-reference、gen-figures、pack-downloads、build.mjs。",
+  "hideMatrixBigChannel": true,
+  "_hideMatrixBigChannel": "2026-10-24 使用者指示：MATRIX 大通道（LauMo）函式庫只給特定客戶用，使用者要改自己電腦裡的函式庫檔，容易出事，網站先全部隱藏。true = 協議副本拿掉 matrix.big／commands.matrix.f／hosts.matrix.big、說明文字刪掉大通道字句、不產生大通道軟體頁與下載、手寫頁 <!-- hide:hideMatrixBigChannel -->…<!-- /hide --> 中間不輸出。改回 false 就全部恢復。 例外：downloads.md／en/downloads.md 的下載總表（gen:downloads-table）是手動維護，已刪掉 MiniR4ColorSensorExt_LauMo_v2.zip 那一列，恢復時要加回去。 matrix.md／en/matrix.md A 段解碼表「測距者 8 路」那列原本結尾有「；要 8 顆原始值或 mm 用大通道」，表格裡不能放標記，已直接刪掉。en/sensors/tof8/index.md、en/llms.txt、llms-full.txt 的大通道字句也是直接改掉的。"
+}

@@ -14,7 +14,7 @@
 | 項目 | 內容 |
 | :--- | :--- |
 | I2C 出廠位址 | `0x4C` |
-| hw[0] | `2`（F0 高 byte、SPIKE 模式 8／EV3 模式 5 ID 高 byte、大通道 byte 28） |
+| hw[0] | `2`（F0 高 byte、SPIKE 模式 8／EV3 模式 5 ID 高 byte） |
 | 型號 | `HUE12` |
 | 協議版本 | `2` |
 | 支援平台 | SPIKE、EV3、Arduino I2C、mBlock、micro:bit |
@@ -238,7 +238,7 @@ let spotVivid = MBC.readValues(0x4C, 0x20, 12)   // 色點 1~12 鮮豔度
 
 ## 狀態旗標 F3
 
-`F3` 每個 bit 一個狀態；I2C、mBlock、micro:bit 直接讀，MATRIX 大通道是 byte 24。
+`F3` 每個 bit 一個狀態；I2C、mBlock、micro:bit 直接讀。
 
 | bit | 名稱 | 說明 |
 | :--- | :--- | :--- |
@@ -322,7 +322,7 @@ let ready = (st & 1) != 0
 | [`F0`](/i2c-protocol.md#rf0) | 裝置 ID | 低 byte = 出廠 I2C 位址（換位址後不變），高 byte = hw[0]（通道數／顆數／類別） |
 | [`F1`](/i2c-protocol.md#rf1) | 協議版本 | 本版 = 2（SPIKE 模式 8 v[1]、EV3 ID 封包同一個數字） |
 | [`F2`](/i2c-protocol.md#rf2) | 韌體版本 | 主版×100 + 次版（例 102 = 1.2） |
-| [`F3`](/i2c-protocol.md#rf3) | 狀態旗標 | b0 就緒，其餘各產品定義（見各產品 flags）；MATRIX 大通道 byte 24 同一個 byte |
+| [`F3`](/i2c-protocol.md#rf3) | 狀態旗標 | b0 就緒，其餘各產品定義（見各產品 flags） |
 | [`F4`](/i2c-protocol.md#rf4) | 更新序號 | 每 10 ms 快照 +1，0~255 循環（2.56 秒一圈，不能拿來偵測重開機；不動 = 模組忙） |
 | [`F5`](/i2c-protocol.md#rf5) | 開機秒數 | 開機後秒數，到 32767 停住（約 9 小時）；數字變小 = 重開機過 |
 | [`F8`](/i2c-protocol.md#rf8) | 換 I2C 位址 | [F8][新位址 0x08~0x77][新位址取反]，存 EEPROM，重開機後生效；[F8][0x00][0xFF] = 回出廠位址（共識 B-5） |
@@ -339,4 +339,4 @@ let ready = (st & 1) != 0
 - mVision 鎖住照盤點 §4：[0xAA][9][18 B][xor]，byte 0~11 顏色碼、12~17 鮮豔度 4 bit；WRO 隊伍的 HUE12_AS_mVisionSensor_v1.0.8.mbr4 在用，不動；B-6：不節流（每圈 loop 送）。
 - mVision 的鮮豔度是 S>>4（0~15），值表 20~2B 是完整 0~255；兩者不同是既有設計，不改。
 - 顏色碼 255 只代表「色點沒開」，不代表「沒找到」（沒抓到時仍回種子點顏色，盤點 §0-1）。
-- 不做 0x22／大通道（hosts.matrix = false）；沒有寫入命令；F3 只有 b0。
+- 不做 0x22（hosts.matrix = false）；沒有寫入命令；F3 只有 b0。

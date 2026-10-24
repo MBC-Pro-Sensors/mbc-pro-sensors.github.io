@@ -14,7 +14,7 @@ Every value and command the Gamepad Receiver PS4/PS5 reports to each host: what 
 | Item | Detail |
 | :--- | :--- |
 | Factory I2C address | `0x42` |
-| hw[0] | `2`（F0 high byte; ID high byte in SPIKE mode 8 / EV3 mode 5; big-channel byte 28） |
+| hw[0] | `2`（F0 high byte; ID high byte in SPIKE mode 8 / EV3 mode 5） |
 | Model | `PS4` |
 | Protocol version | `2` |
 | Hosts | SPIKE, EV3, Arduino I2C, mBlock, MATRIX, micro:bit |
@@ -23,13 +23,13 @@ Every value and command the Gamepad Receiver PS4/PS5 reports to each host: what 
 
 | Id | Value | Range | SPIKE | EV3 | Arduino I2C | mBlock | MATRIX | micro:bit |
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| [`01`](#v01) | [16 buttons](#v01) | 0~65535 bit | ✓ | — | ✓ | ✓ | ✓ | ✓ |
+| [`01`](#v01) | [16 buttons](#v01) | 0~65535 bit | ✓ | — | ✓ | ✓ | — | ✓ |
 | [`02`](#v02) | [D-pad](#v02) | 0~15 bit | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`03`](#v03) | [shape buttons](#v03) | 0~15 bit | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| [`03`](#v03) | [shape buttons](#v03) | 0~15 bit | ✓ | ✓ | ✓ | ✓ | — | ✓ |
 | [`04`](#v04) | [shoulder buttons](#v04) | 0~15 bit | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`05`](#v05) | [function buttons](#v05) | 0~15 bit | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| [`05`](#v05) | [function buttons](#v05) | 0~15 bit | ✓ | ✓ | ✓ | ✓ | — | ✓ |
 | [`06`](#v06) | [connected](#v06) | 0~1 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`07`](#v07) | [battery](#v07) | 0~100 % | ✓ | — | ✓ | ✓ | ✓ | ✓ |
+| [`07`](#v07) | [battery](#v07) | 0~100 % | ✓ | — | ✓ | ✓ | — | ✓ |
 | [`08`](#v08) | [L2 analog](#v08) | 0~255 | — | — | ✓ | ✓ | — | ✓ |
 | [`09`](#v09) | [R2 analog](#v09) | 0~255 | — | — | ✓ | ✓ | — | ✓ |
 | [`0A`](#v0a) | [system buttons](#v0a) | 0~3 bit | — | — | ✓ | ✓ | — | ✓ |
@@ -112,12 +112,7 @@ Block returns 16 buttons（0~65535 bit）。Host sends `[01]` → reply `[lo][hi
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 8~9 u16. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 8~9：16 buttons（PSX 排列（Saturation 積木讀 2 byte））
-int buttons16 = bigU16(8);
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -233,18 +228,11 @@ Block returns D-pad（0~15 bit）。Host sends `[02]` → reply `[lo][hi][02 ^ l
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 R; big byte 0 u8. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
+0x22 R.
 
 ```cpp
 // A. stock 0x22 blocks：R = D-pad（R = 方向鍵 | 形狀鍵<<4（上 1 右 2 下 4 左 8、▲16 ●32 ✕64 ■128））
 int dpad = MiniR4.I2C1.MXColor.getColor(R);
-```
-
-**B. big channel (LauMo library)**
-
-```cpp
-// B. big channel byte 0：D-pad
-int dpad = bigU8(0);
 ```
 
 </details>
@@ -358,12 +346,7 @@ Block returns shape buttons（0~15 bit）。Host sends `[03]` → reply `[lo][hi
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 1 u8. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 1：shape buttons
-int shapeKeys = bigU8(1);
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -470,18 +453,11 @@ Block returns shoulder buttons（0~15 bit）。Host sends `[04]` → reply `[lo]
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 G; big byte 2 u8. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
+0x22 G.
 
 ```cpp
 // A. stock 0x22 blocks：G = shoulder buttons（G = 肩鍵 | 功能鍵<<4（L2 1 R2 2 L1 4 R1 8、SELECT 16 L3 32 R3 64 START 128））
 int shoulderKeys = MiniR4.I2C1.MXColor.getColor(G);
-```
-
-**B. big channel (LauMo library)**
-
-```cpp
-// B. big channel byte 2：shoulder buttons
-int shoulderKeys = bigU8(2);
 ```
 
 </details>
@@ -589,12 +565,7 @@ Block returns function buttons（0~15 bit）。Host sends `[05]` → reply `[lo]
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 3 u8. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 3：function buttons
-int funcKeys = bigU8(3);
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -697,18 +668,11 @@ Block returns connected（0~1）。Host sends `[06]` → reply `[lo][hi][06 ^ lo
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 K; big byte 10 u8. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
+0x22 K.
 
 ```cpp
 // A. stock 0x22 blocks：K = connected（K = 1／0）
 int connected = MiniR4.I2C1.MXColor.getColor(K);
-```
-
-**B. big channel (LauMo library)**
-
-```cpp
-// B. big channel byte 10：connected
-int connected = bigU8(10);
 ```
 
 </details>
@@ -799,12 +763,7 @@ Block returns battery（0~100 %）。Host sends `[07]` → reply `[lo][hi][07 ^ 
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 11 u8. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 11：battery
-int battery = bigU8(11);
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -874,7 +833,7 @@ Block returns L2 analog（0~255）。Host sends `[08]` → reply `[lo][hi][08 ^ 
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available over MATRIX 0x22 or the big channel.
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -944,7 +903,7 @@ Block returns R2 analog（0~255）。Host sends `[09]` → reply `[lo][hi][09 ^ 
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available over MATRIX 0x22 or the big channel.
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1014,7 +973,7 @@ Block returns system buttons（0~3 bit）。Host sends `[0A]` → reply `[lo][hi
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available over MATRIX 0x22 or the big channel.
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1082,7 +1041,7 @@ Block returns gamepad type（0~4）。Host sends `[0B]` → reply `[lo][hi][0B ^
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available over MATRIX 0x22 or the big channel.
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1201,19 +1160,11 @@ Block returns stick axis 1~4（-100~+100）。Host sends `[10]` → reply `[lo][
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 B~Y; big byte 4~7 u8. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
+0x22 B~Y.
 
 ```cpp
 // A. stock 0x22 blocks：B~Y = stick axis 1~4（B C M Y = LX LY RX RY，0~99，50 = 中間）
 int raw = MiniR4.I2C1.MXColor.getColor(B);   // group 1
-```
-
-**B. big channel (LauMo library)**
-
-```cpp
-// B. big channel byte 4~7：stick axis 1~4
-int stick[4];
-for (uint8_t i = 0; i < 4; i++) stick[i] = bigU8(4 + i);
 ```
 
 </details>
@@ -1235,7 +1186,7 @@ let stick = MBC.readValues(0x42, 0x10, 4)   // stick axis 1~4
 
 ## Write commands
 
-Only Arduino I2C, mBlock, micro:bit (and MATRIX big-channel F1 / F2) can send commands; the SPIKE / EV3 ports are read-only.
+Only Arduino I2C, mBlock and micro:bit can send commands; the SPIKE / EV3 ports are read-only.
 
 <section id="ce5" class="ref-item ref-cmd">
 
@@ -1284,7 +1235,7 @@ Host sends `[E5][params…]` → reply `[00][00][E5]` (ack), then it runs.
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available on MATRIX (the big channel only carries the F1 / F2 actions).
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1348,7 +1299,7 @@ Host sends `[E6][params…]` → reply `[00][00][E6]` (ack), then it runs.
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available on MATRIX (the big channel only carries the F1 / F2 actions).
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1369,7 +1320,7 @@ MBC.writeCmd(0x42, 0xE6, [50, 50, 50])   // light bar colour
 
 ## Status flags F3
 
-One status per bit of `F3`; read directly over I2C, mBlock, micro:bit; MATRIX big-channel byte 24.
+One status per bit of `F3`; read directly over I2C, mBlock, micro:bit.
 
 | bit | Name | Meaning |
 | :--- | :--- | :--- |
@@ -1435,12 +1386,7 @@ The extension splits status flags F3 into boolean blocks (ready, calibrating, �
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-```cpp
-uint8_t st = MiniR4.I2C1.MXColor.getColorID();   // big channel byte 24 = F3 status flags
-bool ready = st & 1;
-uint8_t id  = MiniR4.I2C1.MXColor.getColor(Y);    // byte 27 device ID 0x42
-uint8_t hw0 = MiniR4.I2C1.MXColor.getColor(K);    // byte 28 hw[0] = 2
-```
+The status flags are not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1467,7 +1413,7 @@ Identical on every product, documented once in the [universal I2C protocol](/en/
 | [`F0`](/en/i2c-protocol.md#rf0) | device ID | low byte = factory I2C address (unchanged after re-addressing), high byte = hw[0] (channels / sensors / variant) |
 | [`F1`](/en/i2c-protocol.md#rf1) | protocol version | 2 for this release (same number reported in SPIKE mode 8 v[1]) |
 | [`F2`](/en/i2c-protocol.md#rf2) | firmware version | major×100 + minor (e.g. 102 = 1.2) |
-| [`F3`](/en/i2c-protocol.md#rf3) | status flags | b0 = ready; other bits per product (see flags); same byte as MATRIX big-channel byte 24 |
+| [`F3`](/en/i2c-protocol.md#rf3) | status flags | b0 = ready; other bits per product (see flags) |
 | [`F4`](/en/i2c-protocol.md#rf4) | update counter | +1 every 10 ms snapshot, wraps 0~255 (2.56 s per cycle, not usable for reboot detection; frozen = module busy) |
 | [`F5`](/en/i2c-protocol.md#rf5) | uptime seconds | seconds since boot, saturates at 32767 (~9 h); a drop means the module rebooted |
 | [`F8`](/en/i2c-protocol.md#rf8) | change I2C address | [F8][new 0x08~0x77][~new], saved to EEPROM, takes effect after reboot; [F8][0x00][0xFF] = back to factory address |
@@ -1480,9 +1426,8 @@ Generated by `_build/gen-reference.mjs` from `_build/protocol/ps4.json` (single 
 - 值表、命令、旗標與 PS2 完全相同（mBlock 定案「兩款相同」＋I2C 定案 §3／§4）；只有 hw0 = 2、model = PS4、E5／E6 有作用。
 - D3：SPIKE 模式 0 教育版 byte 6~7、模式 6 v[2]、模式 9 v[6] 的 button16 都是 PSX 排列（#65 已把 PS4 改成 PSX，盤點檔寫的 Bluepad32 排列已過時）。
 - 0x22 命令 4 同時裝方向鍵（低 nibble）與形狀鍵（高 nibble）、命令 5 裝肩鍵（低）與功能鍵（高）；JSON 只能把一個命令掛在一個值上，所以掛在 02／04，03／05 的 ch22 = null（內容寫在 02／04 的 note）。SPIKE 模式 0／1／2／9 的 nibble 也用同樣方式在 note 說明。
-- 搖桿：I2C／mBlock 送 ±100；EV3／0x22／大通道送 0~99（50 = 中間）、SPIKE 送 1~9（5 = 中間），不是線性 offset，主機端各自換算（網站範例已是這樣）。
+- 搖桿：I2C／mBlock 送 ±100；EV3／0x22送 0~99（50 = 中間）、SPIKE 送 1~9（5 = 中間），不是線性 offset，主機端各自換算（網站範例已是這樣）。
 - EV3 模式 3 = 方向鍵 | 形狀鍵<<4 | 已連線<<8（#67 新增 bit8）；模式 4 內容不變（[方向鍵, LX, 形狀鍵, LY]）；模式 5 改送裝置 ID 格式 B [0x42 | 2<<8, 韌體版]。
 - SPIKE 模式 3 改 [已連線, 電量, 0]（3×int8）、模式 8 改 [0x42 | 2<<8, 協議版 2, 韌體版, 更新序號]；其餘空模式 1、2、4、6 維持現狀。
-- 大通道尾段：byte 24 = F3、25~26 = 0（無 F1／F2 動作）、27 = 0x42、28 = 2；F1~F4 收到不做任何動作。
-- ESP32 從機不能時脈延展：I2C v2 在 onReceive 就預載從該編號起 32 B；0x22／大通道照 MATRIX 定案 §5 #2 預載最新一包，待上機。
+- ESP32 從機不能時脈延展：I2C v2 在 onReceive 就預載從該編號起 32 B；0x22照 MATRIX 定案 §5 #2 預載最新一包，待上機。
 - I2C 0A 系統鍵 b1 = 擷取鍵（v1 0x15 放在 b3，v2 改 b1，照 I2C 定案 §4）。

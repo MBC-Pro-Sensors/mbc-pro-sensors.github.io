@@ -4,12 +4,22 @@
 - **Controller**: MATRIX Mini R4.
 - **Software**: **MATRIXblock**, with the built-in **mVision** camera blocks. **No library needed.**
 
+<!-- hide:hideMatrixBigChannel -->
 MATRIXblock only has camera blocks for mVision (Serial1 115200) and HuskyLens, with no I2C version, so this product **does not use 0x22 or the big channel**: it sends data in the mVision packet format instead.
+<!-- /hide -->
+<!-- show:hideMatrixBigChannel -->
+MATRIXblock only has camera blocks for mVision (Serial1 115200) and HuskyLens, with no I2C version, so this product **does not use 0x22**: it sends data in the mVision packet format instead.
+<!-- /show -->
 
 ### Install the software
 
 1. Install MATRIXblock (default folder `C:\matrixblock-r4\`).
+<!-- hide:hideMatrixBigChannel -->
 2. No library files to change; the stock 0x22 or big-channel library does not affect this method.
+<!-- /hide -->
+<!-- show:hideMatrixBigChannel -->
+2. No library files to change.
+<!-- /show -->
 
 ### Make the software see the sensor
 

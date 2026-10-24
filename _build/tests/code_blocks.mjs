@@ -35,7 +35,7 @@ for (const u of mblockPages) {
 console.log(`mBlock 頁 ${mblockPages.length} 頁，積木共 ${totalBlocks} 段`);
 
 // 2. 複製按鈕
-const codePages = ['/sensors/line8/spike/pybricks.html', '/sensors/tof8/arduino/ide.html', '/en/sensors/ps4/arduino/ide.html', '/sensors/line16/microbit/makecode.html', '/sensors/line8/ev3/clev3r.html', '/en/sensors/esp32cam/ev3/clev3r.html', '/sensors/imu/matrix/bigchannel.html', '/i2c-protocol.html'];
+const codePages = ['/sensors/line8/spike/pybricks.html', '/sensors/tof8/arduino/ide.html', '/en/sensors/ps4/arduino/ide.html', '/sensors/line16/microbit/makecode.html', '/sensors/line8/ev3/clev3r.html', '/en/sensors/esp32cam/ev3/clev3r.html', '/sensors/imu/matrix/matrixblock.html', '/i2c-protocol.html'];
 for (const u of codePages) {
   await tab.goto(BASE + u, 400);
   const r = await tab.eval(`(() => { const sel = ${JSON.stringify(LANGS)}.map(l => '.markdown-section pre[data-lang="' + l + '"]').join(','); const pres = [...document.querySelectorAll(sel)]; return { n: pres.length, btn: pres.filter(p => p.querySelector('button.code-copy')).length, langs: [...new Set(pres.map(p => p.dataset.lang))] } })()`);

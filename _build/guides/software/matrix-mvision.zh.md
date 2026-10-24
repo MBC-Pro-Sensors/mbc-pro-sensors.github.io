@@ -4,12 +4,22 @@
 - **主機**：MATRIX Mini R4。
 - **軟體**：**MATRIXblock**，用內建的 **mVision** 攝影機積木。**不用裝函式庫**。
 
+<!-- hide:hideMatrixBigChannel -->
 MATRIXblock 的攝影機積木只有 mVision（Serial1 115200）和 HuskyLens，沒有 I2C 版，所以這個產品**不走 0x22／大通道**，而是照 mVision 的封包格式送資料。
+<!-- /hide -->
+<!-- show:hideMatrixBigChannel -->
+MATRIXblock 的攝影機積木只有 mVision（Serial1 115200）和 HuskyLens，沒有 I2C 版，所以這個產品**不走 0x22**，而是照 mVision 的封包格式送資料。
+<!-- /show -->
 
 ### 安裝軟體
 
 1. 安裝 MATRIXblock（預設裝在 `C:\matrixblock-r4\`）。
+<!-- hide:hideMatrixBigChannel -->
 2. 不用換任何函式庫檔，0x22 原廠或大通道的函式庫都不影響這個用法。
+<!-- /hide -->
+<!-- show:hideMatrixBigChannel -->
+2. 不用換任何函式庫檔。
+<!-- /show -->
 
 ### 讓軟體認得感應器
 

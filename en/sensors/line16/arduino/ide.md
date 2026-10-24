@@ -205,7 +205,7 @@ int16_t threshold = mbcRead(0x16, 0x07);   // threshold：1~99
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~255` 次 | number of calibrations completed since power-on (button calibrations included); not in the MATRIX big channel (tail bytes locked at 0 for the 16-ch) |
+| `0~255` 次 | number of calibrations completed since power-on (button calibrations included) |
 
 ```cpp
 int16_t calibCount = mbcRead(0x16, 0x08);   // calibrations done：0~255 次

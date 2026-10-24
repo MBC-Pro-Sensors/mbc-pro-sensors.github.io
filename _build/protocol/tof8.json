@@ -13,8 +13,7 @@
     "i2c": true,
     "mblock": true,
     "matrix": {
-      "ch22": true,
-      "big": true
+      "ch22": true
     },
     "mvision": false,
     "microbit": true
@@ -42,8 +41,7 @@
       8
     ],
     "matrixLocked": {
-      "ch22": "改（R~K 7 顆 cm）",
-      "big": "[0..11]"
+      "ch22": "改（R~K 7 顆 cm）"
     }
   },
   "values": [
@@ -114,11 +112,7 @@
         }
       ],
       "matrix": {
-        "ch22": null,
-        "big": {
-          "byte": 9,
-          "type": "u8"
-        }
+        "ch22": null
       },
       "mvision": null,
       "microbit": {
@@ -212,13 +206,7 @@
         }
       ],
       "matrix": {
-        "ch22": null,
-        "big": {
-          "byte": 8,
-          "type": "u8",
-          "offset": 8,
-          "note": "原始方位 0~16"
-        }
+        "ch22": null
       },
       "mvision": null,
       "microbit": {
@@ -274,11 +262,7 @@
         }
       ],
       "matrix": {
-        "ch22": null,
-        "big": {
-          "byte": 11,
-          "type": "u8"
-        }
+        "ch22": null
       },
       "mvision": null,
       "microbit": {
@@ -336,13 +320,7 @@
         }
       ],
       "matrix": {
-        "ch22": null,
-        "big": {
-          "byte": 10,
-          "type": "u8",
-          "offset": 8,
-          "note": "原始方位 1~15"
-        }
+        "ch22": null
       },
       "mvision": null,
       "microbit": {
@@ -362,8 +340,8 @@
         "en": "front distance (cm)"
       },
       "desc": {
-        "zh": "第 4、5 顆（兩顆平行朝前）平均 0~120 cm；EV3 模式 3、SPIKE 模式 6、大通道 [16..17] 給的是同一個值的 mm；0x22 的 C 是 min(第 4, 第 5 顆) 不是平均（見 10）",
-        "en": "average of sensors 4 and 5 (both facing forward), 0~120 cm; EV3 mode 3, SPIKE mode 6 and big-channel [16..17] carry the same thing in mm; 0x22 'C' is min(4, 5), not the average (see 10)"
+        "zh": "第 4、5 顆（兩顆平行朝前）平均 0~120 cm；EV3 模式 3、SPIKE 模式 6 給的是同一個值的 mm；0x22 的 C 是 min(第 4, 第 5 顆) 不是平均（見 10）",
+        "en": "average of sensors 4 and 5 (both facing forward), 0~120 cm; EV3 mode 3 and SPIKE mode 6 carry the same thing in mm; 0x22 'C' is min(4, 5), not the average (see 10)"
       },
       "unit": "cm",
       "range": "0~120",
@@ -393,8 +371,7 @@
       ],
       "spike": [],
       "matrix": {
-        "ch22": null,
-        "big": null
+        "ch22": null
       },
       "mvision": null,
       "microbit": {
@@ -449,12 +426,7 @@
         }
       ],
       "matrix": {
-        "ch22": null,
-        "big": {
-          "byte": 14,
-          "type": "u16",
-          "note": "#67 追加（[14..15] 小端）"
-        }
+        "ch22": null
       },
       "mvision": null,
       "microbit": {
@@ -502,12 +474,7 @@
         }
       ],
       "matrix": {
-        "ch22": null,
-        "big": {
-          "byte": 12,
-          "type": "u8",
-          "note": "#67 補填（註解有寫、原本沒填）"
-        }
+        "ch22": null
       },
       "mvision": null,
       "microbit": {
@@ -556,12 +523,7 @@
         }
       ],
       "matrix": {
-        "ch22": null,
-        "big": {
-          "byte": 13,
-          "type": "u8",
-          "note": "#67 補填"
-        }
+        "ch22": null
       },
       "mvision": null,
       "microbit": {
@@ -619,13 +581,7 @@
         }
       ],
       "matrix": {
-        "ch22": null,
-        "big": {
-          "byte": 16,
-          "type": "u16",
-          "scale": "mm（0~1200）",
-          "note": "#67 追加（MATRIX 定案 §4：[16..17] 正前方 mm 小端）"
-        }
+        "ch22": null
       },
       "mvision": null,
       "microbit": {
@@ -729,11 +685,6 @@
           "cmd": 4,
           "count": 7,
           "note": "#67 改（使用者最終定案）：R、G、B = 第 1、2、3 顆；C = min(第 4, 第 5 顆)（正前方取較近）；M、Y、K = 第 6、7、8 顆；全部 cm 0~120；11、12 = 0"
-        },
-        "big": {
-          "byte": 0,
-          "count": 8,
-          "type": "u8"
         }
       },
       "mvision": null,
@@ -816,13 +767,11 @@
     }
   ],
   "assumptions": [
-    "正前方 mm（EV3 模式 3、SPIKE 模式 6 v[1]、大通道 [16..17]）在定案 §5 沒有獨立 I2C 編號 → 掛在 05 正前方 cm 底下，用 scale:mm 標示，不自己加編號。",
-    "0x22（使用者 2026-10-21 最終定案）：只用一個位址，R~K 由左到右 7 個 cm：第 1、2、3 顆、min(第 4, 第 5)、第 6、7、8 顆；11、12 不放資料；最近距離／方向由主機自己比較。此排法只用在 0x22，EV3／SPIKE／大通道不動。",
-    "大通道 [0..11] 不動（8 顆 cm、最近方向 0~16、最近 cm、最空曠方向、最空曠 cm）；補填 [12] 初始化、[13] 故障（原本註解有寫沒填）；追加 [14..15] 最近 mm、[16..17] 正前方 mm；尾段 [24] = F3、[27] = 0x29、[28] = 8（原本 [24] 沒填）。",
-    "EV3：模式 0、1、2、4 鎖住（照盤點）；模式 3 改正前方 mm（原本 = 第 1 顆 0~100）、模式 5 改 [最近 mm, 最近方向 −8~+8]（原本 = 前 4 顆兩兩合併）。方向在 EV3／I2C／mBlock 一律 −8~+8 的 int8／int16，SPIKE 模式 1/3/4/9 與大通道維持原始 0~16（offset 8）。",
+    "正前方 mm（EV3 模式 3、SPIKE 模式 6 v[1]）在定案 §5 沒有獨立 I2C 編號 → 掛在 05 正前方 cm 底下，用 scale:mm 標示，不自己加編號。",
+    "0x22（使用者 2026-10-21 最終定案）：只用一個位址，R~K 由左到右 7 個 cm：第 1、2、3 顆、min(第 4, 第 5)、第 6、7、8 顆；11、12 不放資料；最近距離／方向由主機自己比較。此排法只用在 0x22，EV3／SPIKE不動。",
     "SPIKE：0/5/7/9 鎖住，1、2、3、4、8 維持不動；模式 6 改 [最近 mm, 正前方 mm, 最近方向 −8~+8]（原本 = 第 2~7 顆兩兩合併）；模式 8 v[0] 改 ID|hw[0]<<8。",
     "最空曠方向 04 範圍 −7~+7（maxDirection 永遠不會是 0／16，盤點 INO:1086-1088）；最近方向 02 ±8 = 沒目標、沿用上次偏向側，開機預設 −8。",
     "沒有寫入命令；F8 換位址／EF 重開機用共用的。",
-    "主對話 2026-10-21：補 09 正前方 mm（定案 §5 只有 05 正前方 cm，但 EV3 模式 3、SPIKE 模式 6、大通道 [16..17] 都送 mm，I2C／mBlock 應有同一個值）。"
+    "主對話 2026-10-21：補 09 正前方 mm（定案 §5 只有 05 正前方 cm，但 EV3 模式 3、SPIKE 模式 6 都送 mm，I2C／mBlock 應有同一個值）。"
   ]
 }

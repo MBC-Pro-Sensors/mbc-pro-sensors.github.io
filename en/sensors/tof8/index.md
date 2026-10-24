@@ -57,7 +57,7 @@ The 8 laser ranging units are distributed at fixed angles, covering a complete 1
 | LEGO SPIKE Prime / Robot Inventor | Official app, Pybricks (👉 [SPIKE beginner examples: official app / MBC blocks site / Pybricks, 5 each — in Chinese](/sensors/tof8/spike-examples.md)) |
 | LEGO MINDSTORMS EV3 | EV3 official software, Pybricks ([EV3 beginner examples](/en/sensors/tof8/ev3-examples.md)) |
 | Arduino / ESP32 / Raspberry Pi | Universal I2C (address `0x29`), [Arduino Examples](/en/sensors/tof8/arduino-examples.md) |
-| MATRIX Mini R4 | I2C (stock colour-sensor blocks or the LauMo big channel, see [MATRIX overview](/en/matrix.md)) |
+| MATRIX Mini R4 | I2C (stock colour-sensor blocks, see [MATRIX overview](/en/matrix.md)) |
 | MakeBlock (mBot etc.) | Dedicated edition, [blocks & wiring](/en/makeblock.md) |
 
 > [!IMPORTANT]

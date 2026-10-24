@@ -6,6 +6,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { FLAGS } from './site-flags.mjs';
 
 const BUILD = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(BUILD, '..');
@@ -45,6 +46,11 @@ const generated = [];
 let bad = 0;
 for (const it of spec.items) {
   const outAbs = path.join(ROOT, it.out);
+  // site-flags.json 隱藏的項目：不打包、不列進下載表，已存在的 zip 拿掉（正本在 src，要恢復把旗標改回 false 重跑）
+  if (it.hideWhen && FLAGS[it.hideWhen]) {
+    if (fs.existsSync(outAbs)) { if (CHECK) { console.log(`應隱藏但還在：${it.out}`); bad++; } else { fs.rmSync(outAbs); console.log(`已移除（隱藏）：${it.out}`); } }
+    continue;
+  }
   const entry = { out: '/' + it.out, label: it.label, version: it.version, firmware: it.firmware, legacy: !!it.legacy, files: null, size: null };
   if (it.legacy || !it.src) {
     if (!fs.existsSync(outAbs)) { console.log(`缺既有檔：${it.out}`); bad++; }

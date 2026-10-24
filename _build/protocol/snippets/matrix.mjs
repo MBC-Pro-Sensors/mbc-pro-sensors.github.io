@@ -1,5 +1,6 @@
 // MATRIX Mini R4 片段：A 原廠 0x22 getColor(R~K)、B LauMo 大通道指標讀法（MATRIX大通道定案、MATRIX積木對照表）
 import { L, T, valueName } from '../../gen-lib.mjs';
+import { HIDE_BIG } from '../../site-flags.mjs';
 
 export function available(product) { return !!(product.hosts && product.hosts.matrix); }
 
@@ -49,6 +50,7 @@ function tailCode(product, v, b, lang) {
 export function value(product, v, lang) {
   const m = v.matrix;
   if (!m || (!m.ch22 && !m.big)) {
+    if (HIDE_BIG) return { text: T(lang, 'MATRIX 原廠 0x22 積木沒有這個值。', 'Not available with the stock MATRIX 0x22 blocks.') };
     return { text: T(lang, 'MATRIX 0x22 與大通道都沒有這個值。', 'Not available over MATRIX 0x22 or the big channel.') };
   }
   const name = valueName(v, lang);
@@ -72,11 +74,13 @@ export function value(product, v, lang) {
     if (code) extra.push({ title: T(lang, 'B. 大通道（LauMo 函式庫）', 'B. big channel (LauMo library)'), code: bc, codeLang: CPP });
     else code = bc;
   }
+  if (HIDE_BIG) return { code, codeLang: CPP, extra, note: `0x22 ${m.ch22.count ? `${CH[m.ch22.cmd]}~${CH[m.ch22.cmd + m.ch22.count - 1]}` : CH[m.ch22.cmd]}${m.ch22.offset ? ` (+${m.ch22.offset})` : ''}${T(lang, '。', '.')}` };
   const where = [m.ch22 ? `0x22 ${m.ch22.count ? `${CH[m.ch22.cmd]}~${CH[m.ch22.cmd + m.ch22.count - 1]}` : CH[m.ch22.cmd]}${m.ch22.offset ? ` (+${m.ch22.offset})` : ''}` : T(lang, '0x22 沒有', 'no 0x22'), m.big ? `${T(lang, '大通道', 'big')} byte ${m.big.byte}${m.big.count ? `~${m.big.byte + m.big.count * (m.big.type.endsWith('16') ? 2 : 1) - 1}` : m.big.type.endsWith('16') ? `~${m.big.byte + 1}` : ''} ${m.big.type}${m.big.offset ? ` (+${m.big.offset})` : ''}` : T(lang, '大通道沒有', 'no big channel')].join(T(lang, '；', '; '));
   return { code, codeLang: CPP, extra, note: where + T(lang, '。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。', '. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product\'s MATRIX page.') };
 }
 
 export function command(product, c, lang) {
+  if (HIDE_BIG && (!c.matrix || !c.matrix.f)) return { text: T(lang, 'MATRIX 原廠 0x22 積木沒有這個命令。', 'Not available with the stock MATRIX 0x22 blocks.') };
   if (!c.matrix || !c.matrix.f) return { text: T(lang, 'MATRIX 沒有這個命令（大通道只有 F1／F2 兩個動作）。', 'Not available on MATRIX (the big channel only carries the F1 / F2 actions).') };
   const fs = fList(c.matrix.f);
   const name = { F1: 'C', F2: 'M', F3: 'Y', F4: 'K' }[fs[0]];
@@ -85,6 +89,7 @@ export function command(product, c, lang) {
 }
 
 export function status(product, lang) {
+  if (HIDE_BIG) return { text: T(lang, 'MATRIX 原廠 0x22 積木讀不到狀態旗標。', 'The status flags are not available with the stock MATRIX 0x22 blocks.') };
   const tail0 = (product.id === 'line16' || product.id === 'imu');
   if (tail0) return { code: `uint8_t st = ${OBJ}.getColorID();   // ${T(lang, '這款已流出：byte 24 維持 0', 'shipped product: byte 24 stays 0')}`, codeLang: CPP, note: T(lang, '已流出的大通道格式鎖住，狀態 byte 維持 0。', 'The shipped big-channel layout is locked; the status byte stays 0.') };
   return { code: `uint8_t st = ${OBJ}.getColorID();   // ${T(lang, '大通道 byte 24 = F3 狀態旗標', 'big channel byte 24 = F3 status flags')}\nbool ready = st & 1;\nuint8_t id  = ${OBJ}.getColor(Y);    // byte 27 ${T(lang, '裝置 ID', 'device ID')} ${product.addr}\nuint8_t hw0 = ${OBJ}.getColor(K);    // byte 28 hw[0] = ${product.hw0}`, codeLang: CPP, note: '' };

@@ -14,7 +14,7 @@ const BASE = opt('--base', 'http://localhost:8772').replace(/\/$/, '');
 const SHOTS = opt('--shots', '');
 
 const MOBILE_PAGES = ['/', '/en/', '/sensors/line8/', '/sensors/tof8/', '/sensors/exp6/', '/sensors/line8/spike/', '/sensors/ps4/ev3/', '/sensors/imu/matrix/',
-  '/sensors/line8/spike/pybricks.html', '/sensors/tof2/mblock/mblock5.html', '/sensors/line16/microbit/makecode.html', '/sensors/ps2/matrix/bigchannel.html',
+  '/sensors/line8/spike/pybricks.html', '/sensors/tof2/mblock/mblock5.html', '/sensors/line16/microbit/makecode.html', '/sensors/ps2/matrix/matrixblock.html',
   '/sensors/tof8/arduino/ide.html', '/en/sensors/esp32cam/ev3/classroom.html', '/downloads.html', '/i2c-protocol.html', '/reference.html', '/en/sensors/line8/'];
 const CONTRAST_PAGES = [...MOBILE_PAGES, '/en/downloads.html', '/en/i2c-protocol.html', '/guide.html', '/faq.html', '/contact.html', '/competitions.html', '/where-to-buy.html',
   '/sensors/esp32cam/', '/sensors/servo6/', '/sensors/ps2/spike/mbcblocks.html', '/sensors/line8/ev3/ev3g.html', '/sensors/imu/arduino/ide.html',

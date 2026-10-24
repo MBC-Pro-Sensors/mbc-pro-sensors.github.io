@@ -1,8 +1,14 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # 🟢 MATRIX Mini R4
 
+<!-- hide:hideMatrixBigChannel -->
 MBC 的 MATRIX 版感應器接在 Mini R4 的 **I2C 孔**（位址 `0x22`），在 MATRIXblock 裡用原廠「顏色感應器」積木就能讀；神攝手走 **串口**，用原廠「mVision」攝影機積木。本頁是三種用法的總覽，每個產品各自的頁面在最後。
+<!-- /hide -->
+<!-- show:hideMatrixBigChannel -->
+MBC 的 MATRIX 版感應器接在 Mini R4 的 **I2C 孔**（位址 `0x22`），在 MATRIXblock 裡用原廠「顏色感應器」積木就能讀；神攝手走 **串口**，用原廠「mVision」攝影機積木。兩種都不用安裝或更換任何檔案。本頁是總覽，每個產品各自的頁面在最後。
+<!-- /show -->
 
+<!-- hide:hideMatrixBigChannel -->
 | 用法 | 產品 | 要裝的東西 | 能讀到 |
 | :--- | :--- | :--- | :--- |
 | **A. 原廠積木（0x22）** | 循行者 8／16 路、測距者 2／8 路、IMU、掌控者 PS2／PS4 | 不用裝，MATRIXblock 內建 | R、G、B、C、M、Y、K 七個 0~255 的數 |
@@ -11,6 +17,13 @@ MBC 的 MATRIX 版感應器接在 Mini R4 的 **I2C 孔**（位址 `0x22`），�
 
 > [!IMPORTANT]
 > A 和 B 要裝**不同的函式庫檔**，同一台電腦一次只能用一種；韌體兩種都支援，換用法不用重燒感應器。
+<!-- /hide -->
+<!-- show:hideMatrixBigChannel -->
+| 用法 | 產品 | 要裝的東西 | 能讀到 |
+| :--- | :--- | :--- | :--- |
+| **A. 原廠積木（0x22）** | 循行者 8／16 路、測距者 2／8 路、IMU、掌控者 PS2／PS4 | 不用裝，MATRIXblock 內建 | R、G、B、C、M、Y、K 七個 0~255 的數 |
+| **B. mVision（串口）** | 神攝手 學校版／WRO 版 | 不用裝 | 攝影機積木「mVision 資料 0~9」 |
+<!-- /show -->
 
 ---
 
@@ -42,7 +55,7 @@ MBC 的 MATRIX 版感應器接在 Mini R4 的 **I2C 孔**（位址 `0x22`），�
 | 循行者 16 路 | R／B | 線位置 = R − 16；細位置 = B − 100 |
 | | C~K | 四路一組，每路 2 bit（0 最暗 ~ 3 最亮）：第 1 路 = ÷64 取整數、第 2 路 = ÷16 取整數再除以 4 的餘數、第 3 路 = ÷4 取整數再除以 4 的餘數、第 4 路 = 除以 4 的餘數 |
 | 測距者 2 路 | R~B | 0~120 cm，120 = 那一側沒東西 |
-| 測距者 8 路 | R~K | 直接用，0~120 cm（1 cm），120 = 那個方向沒東西；由左到右排，C = 正前方（第 4、5 顆取較近，避免窄物體被平均掉）。最近距離／方向用「比較」積木自己找；要 8 顆原始值或 mm 用大通道 |
+| 測距者 8 路 | R~K | 直接用，0~120 cm（1 cm），120 = 那個方向沒東西；由左到右排，C = 正前方（第 4、5 顆取較近，避免窄物體被平均掉）。最近距離／方向用「比較」積木自己找 |
 | IMU | R~Y | 角度 = 高 byte × 256 ＋ 低 byte − 32768（可以超過 360，左轉為負） |
 | 掌控者 | R | 上 1、右 2、下 4、左 8、▲ 16、● 32、✕ 64、■ 128（同時按相加） |
 | | G | L2 1、R2 2、L1 4、R1 8、SELECT 16、L3 32、R3 64、START 128 |
@@ -56,6 +69,7 @@ int linePos = r - 8;
 
 ---
 
+<!-- hide:hideMatrixBigChannel -->
 ## B. LauMo 大通道
 
 大通道由 LauMo 教練設計：把原廠 `MiniR4ColorSensorExt` 兩個檔換掉，同一組顏色感應器積木就變成「指標讀法」，一次拿到一包 **30 byte**（24 byte 產品資料＋狀態＋4 byte 擴充＋CRC）。循行者 16 路與 IMU（R4 大通道版韌體）早已用這個格式出貨，其他產品 2026-10 起全部支援。
@@ -203,10 +217,21 @@ int heading = bigI16(2);    // IMU：融合航向（byte 2~3）
 > PS4 接收器是 ESP32，I2C 從機要 ≥ 2 ms 才能回應；韌體會預先載好最新一包，函式庫 v2 的 `begin()` 等 5 ms 就是為了它。**上機待測**。
 
 ---
+<!-- /hide -->
 
+<!-- hide:hideMatrixBigChannel -->
 ## C. 神攝手：mVision 攝影機積木（串口）
+<!-- /hide -->
+<!-- show:hideMatrixBigChannel -->
+## B. 神攝手：mVision 攝影機積木（串口）
+<!-- /show -->
 
+<!-- hide:hideMatrixBigChannel -->
 MATRIXblock 的攝影機積木只有 mVision（Serial1 115200）和 HuskyLens，沒有 I2C 版，所以神攝手 **不走 0x22／大通道**，而是照 mVision 的封包格式送資料：積木「mVision 資料 0~9」每格一個數，**每 20 ms 一包**。
+<!-- /hide -->
+<!-- show:hideMatrixBigChannel -->
+MATRIXblock 的攝影機積木只有 mVision（Serial1 115200）和 HuskyLens，沒有 I2C 版，所以神攝手 **不走 0x22**，而是照 mVision 的封包格式送資料：積木「mVision 資料 0~9」每格一個數，**每 20 ms 一包**。
+<!-- /show -->
 
 > [!WARNING]
 > **資料 10 不要用**：MATRIX 程式只宣告 10 格（資料 0~9），第 10 格讀到的是別的記憶體。
@@ -232,7 +257,12 @@ MATRIXblock 的攝影機積木只有 mVision（Serial1 115200）和 HuskyLens，
 
 ## 📖 各產品的 MATRIX 頁
 
+<!-- hide:hideMatrixBigChannel -->
 每款產品一頁：接線圖、0x22 七格對照、大通道 byte 表（連到該值的指令參考）與 Arduino 寫法。
+<!-- /hide -->
+<!-- show:hideMatrixBigChannel -->
+每款產品一頁：接線圖、0x22 七格對照（連到該值的指令參考）與 Arduino 寫法。
+<!-- /show -->
 
 | 產品 | MATRIX 頁 |
 | :--- | :--- |

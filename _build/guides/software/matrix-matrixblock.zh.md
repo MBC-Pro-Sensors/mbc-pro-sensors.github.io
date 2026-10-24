@@ -8,7 +8,9 @@
 ### 安裝軟體
 
 1. 安裝 MATRIXblock（預設裝在 `C:\matrixblock-r4\`）。
+<!-- hide:hideMatrixBigChannel -->
 2. 如果之前裝過「LauMo 大通道」函式庫，要先把原廠的 `MiniR4ColorSensorExt.cpp`／`.h` 兩個檔放回去，原廠積木才會照下面的方式讀。
+<!-- /hide -->
 
 ### 讓軟體認得感應器
 
@@ -34,5 +36,9 @@
 ### 常見問題
 
 - **讀到的數字看不懂？** 確認用的是 R／G／B／C／M／Y／K 七格，不是 H／S／V 或顏色辨識積木。
+<!-- hide:hideMatrixBigChannel -->
 - **想讀更多資料（mm、位元圖、狀態）？** 原廠七格只放得下 7 個 0~255 的數；換成「大通道函式庫」一次拿 30 byte。
+<!-- /hide -->
+<!-- hide:hideMatrixBigChannel -->
 - **原廠積木和大通道可以一起用嗎？** 不行。兩種要裝**不同的函式庫檔**，同一台電腦一次只能用一種；感應器韌體兩種都支援，換用法**不用重燒感應器**。
+<!-- /hide -->

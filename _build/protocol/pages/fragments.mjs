@@ -1,6 +1,7 @@
 // 標記式片段（<!-- gen:name -->…<!-- /gen -->）與全站索引：i2c-protocol、makeblock、guide#start、llms、reference.md、llms-protocol.txt
 import { PLATFORMS, L, T, hex, table, pageHref, siteKey, pageFile, valueName, valueIdRange } from '../../gen-lib.mjs';
 import { AI_NOTE } from './common.mjs';
+import { HIDE_BIG } from '../../site-flags.mjs';
 import * as mb from '../snippets/mblock.mjs';
 import { HOST_BY_ID, swMd } from '../../gen-guides.mjs';
 
@@ -58,7 +59,7 @@ export function llmsPlatforms(lang) {
     `- [${T(lang, '產品 × 平台指令參考索引', 'Product × host value reference index')}](${S}/reference.html): ${T(lang, '每款產品每個值在六個平台（SPIKE、EV3、Arduino I2C、mBlock、MATRIX、micro:bit）各怎麼讀。', 'how every value of every product is read on the six hosts (SPIKE, EV3, Arduino I2C, mBlock, MATRIX, micro:bit).')}`,
     `- [${T(lang, 'MBC 通用 I2C 協議 v2', 'MBC universal I2C protocol v2')}](${S}/i2c-protocol.html): ${T(lang, '寫編號讀 int16 小端；共用 F0~F5 版本／狀態、F8 換位址、EF 重開機。', 'write an id, read int16 little-endian; shared F0~F5 version / status, F8 re-address, EF reboot.')}`,
     `- [${T(lang, 'mBlock 5 擴展 v2', 'mBlock 5 extension v2')}](${S}/makeblock.html): ${T(lang, 'UART 38400，3 byte 回應帶檢查碼，整包 FD。', 'UART 38400, 3-byte replies with checksum, FD pack-all.')}`,
-    `- [MATRIX Mini R4](${S}/matrix.html): ${T(lang, '原廠 0x22 R~K 對照與 LauMo 大通道 30 byte。', 'stock 0x22 R~K mapping and the LauMo 30-byte big channel.')}`,
+    `- [MATRIX Mini R4](${S}/matrix.html): ${(HIDE_BIG ? T(lang, '原廠 0x22 R~K 對照與神攝手 mVision。', 'stock 0x22 R~K mapping and the Sharpshooter mVision format.') : T(lang, '原廠 0x22 R~K 對照與 LauMo 大通道 30 byte。', 'stock 0x22 R~K mapping and the LauMo 30-byte big channel.'))}`,
     `- [micro:bit MakeCode](${S}/microbit.html): ${T(lang, 'pxt-mbc-sensors 擴充 v2。', 'pxt-mbc-sensors extension v2.')}`,
     `- [${T(lang, '協定純文字版', 'Protocol plain text')}](${S}/llms-protocol.txt): ${T(lang, '每款產品的值表、命令、狀態旗標。', 'value tables, commands and status flags of every product.')}`,
   ].join('\n');

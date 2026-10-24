@@ -1,6 +1,7 @@
 // sensors/<p>/matrix.md：A 原廠 0x22 對照、B 大通道 byte 表＋指標讀法；神攝手產 mVision 表
 import { AI_NOTE, genNote, backLink, chips, figureFile, assumptions, pageFile, rootLink, fence, L, T, table, pageHref, siteKey, valueName, valueIdRange } from './common.mjs';
 import * as mx from '../snippets/matrix.mjs';
+import { HIDE_BIG } from '../../site-flags.mjs';
 
 export function render(product, common, ctx, lang) {
   const name = L(product.name, lang);
@@ -24,7 +25,10 @@ export function render(product, common, ctx, lang) {
 
   const hasCh22 = product.hosts.matrix && product.hosts.matrix.ch22;
   const hasBig = product.hosts.matrix && product.hosts.matrix.big;
-  out.push(T(lang,
+  if (!hasBig) out.push(T(lang,
+    `${name} MATRIX 版接在 Mini R4 的 I2C 孔，位址 \`0x22\`，用 **原廠顏色感應器積木** 讀：不用換函式庫，R~K 七個 0~255 的數。`,
+    `The MATRIX edition of the ${name} plugs into a Mini R4 I2C port at address \`0x22\` and is read with the **stock colour-sensor blocks**: no library change, R~K = seven 0~255 numbers.`));
+  else out.push(T(lang,
     `${name} MATRIX 版接在 Mini R4 的 I2C 孔，位址 \`0x22\`，有兩種用法：**A. 原廠顏色感應器積木**（不用換函式庫，R~K 七個 0~255 的數）與 **B. LauMo 大通道**（換成大通道函式庫，一包 30 byte 什麼都有）。兩種要裝不同的函式庫檔，不能同時用。`,
     `The MATRIX edition of the ${name} plugs into a Mini R4 I2C port at address \`0x22\` and can be read two ways: **A. stock colour-sensor blocks** (no library change, R~K = seven 0~255 numbers) or **B. the LauMo big channel** (swap in the big-channel library, one 30-byte packet with everything). They need different library files and cannot be mixed.`));
   out.push('', chips(product, lang, routes, 'matrix'), '');
@@ -78,6 +82,7 @@ export function render(product, common, ctx, lang) {
     if (first) out.push('', fence(`int ${first.key} = bigU8(${first.matrix.big.byte})${first.matrix.big.offset ? ` - ${first.matrix.big.offset}` : ''};   // ${valueName(first, lang)}`, 'cpp'));
   }
 
-  out.push('', assumptions(product, lang, [T(lang, '函式庫規則（命令 1 回 0x43、CRC-8、最快 5 ms 讀一次）以 `80_上位機研究\\MatrixMiniR4\\MiniR4ColorSensorExt大通道版` 為準。', 'Library rules (command 1 returns 0x43, CRC-8, 5 ms minimum interval) follow the LauMo big-channel library source.')]));
+  if (HIDE_BIG) out.push('', assumptions(product, lang, []));
+  else out.push('', assumptions(product, lang, [T(lang, '函式庫規則（命令 1 回 0x43、CRC-8、最快 5 ms 讀一次）以 `80_上位機研究\\MatrixMiniR4\\MiniR4ColorSensorExt大通道版` 為準。', 'Library rules (command 1 returns 0x43, CRC-8, 5 ms minimum interval) follow the LauMo big-channel library source.')]));
   return out.join('\n') + '\n';
 }

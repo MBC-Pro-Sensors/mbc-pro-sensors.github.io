@@ -14,7 +14,7 @@
 | 項目 | 內容 |
 | :--- | :--- |
 | I2C 出廠位址 | `0x16` |
-| hw[0] | `16`（F0 高 byte、SPIKE 模式 8／EV3 模式 5 ID 高 byte、大通道 byte 28） |
+| hw[0] | `16`（F0 高 byte、SPIKE 模式 8／EV3 模式 5 ID 高 byte） |
 | 型號 | `LINE16` |
 | 協議版本 | `2` |
 | 支援平台 | SPIKE、EV3、Arduino I2C、mBlock、MATRIX、micro:bit |
@@ -26,8 +26,8 @@
 | [`01`](#v01) | [線位置](#v01) | -16~+16 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | [`02`](#v02) | [細位置](#v02) | -100~+100 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | [`03`](#v03) | [線寬](#v03) | 0~16 路 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`04`](#v04) | [線段數](#v04) | 0~8 | ✓ | — | ✓ | ✓ | ✓ | ✓ |
-| [`05`](#v05) | [壓線位元圖](#v05) | 0~65535 bit | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| [`04`](#v04) | [線段數](#v04) | 0~8 | ✓ | — | ✓ | ✓ | — | ✓ |
+| [`05`](#v05) | [壓線位元圖](#v05) | 0~65535 bit | ✓ | ✓ | ✓ | ✓ | — | ✓ |
 | [`06`](#v06) | [最後離線方向](#v06) | -16~+16 | — | — | ✓ | ✓ | — | ✓ |
 | [`07`](#v07) | [二值化門檻](#v07) | 1~99 | — | — | ✓ | ✓ | — | ✓ |
 | [`08`](#v08) | [校準完成次數](#v08) | 0~255 次 | — | — | ✓ | ✓ | — | — |
@@ -124,18 +124,11 @@ int16_t linePos = mbcRead(0x16, 0x01);   // 線位置：-16~+16
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 R (+16)；大通道 byte 0 u8 (+16)。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
+0x22 R (+16)。
 
 ```cpp
 // A. 原廠 0x22 積木：R = 線位置 + 16
 int linePos = MiniR4.I2C1.MXColor.getColor(R) - 16;
-```
-
-**B. 大通道（LauMo 函式庫）**
-
-```cpp
-// B. 大通道 byte 0：線位置 + 16
-int linePos = bigU8(0) - 16;
 ```
 
 </details>
@@ -245,18 +238,11 @@ int16_t linePosFine = mbcRead(0x16, 0x02);   // 細位置：-100~+100
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 B (+100)；大通道 byte 2 u8 (+100)。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
+0x22 B (+100)。
 
 ```cpp
 // A. 原廠 0x22 積木：B = 細位置 + 100
 int linePosFine = MiniR4.I2C1.MXColor.getColor(B) - 100;
-```
-
-**B. 大通道（LauMo 函式庫）**
-
-```cpp
-// B. 大通道 byte 2：細位置 + 100
-int linePosFine = bigU8(2) - 100;
 ```
 
 </details>
@@ -366,18 +352,11 @@ int16_t lineWidth = mbcRead(0x16, 0x03);   // 線寬：0~16 路
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 G；大通道 byte 1 u8。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
+0x22 G。
 
 ```cpp
 // A. 原廠 0x22 積木：G = 線寬
 int lineWidth = MiniR4.I2C1.MXColor.getColor(G);
-```
-
-**B. 大通道（LauMo 函式庫）**
-
-```cpp
-// B. 大通道 byte 1：線寬
-int lineWidth = bigU8(1);
 ```
 
 </details>
@@ -468,12 +447,7 @@ int16_t groupCount = mbcRead(0x16, 0x04);   // 線段數：0~8
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 21 u8。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 21：線段數（#67 追加（MATRIX 定案 §4：[21] 線段數））
-int groupCount = bigU8(21);
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -577,12 +551,7 @@ int16_t bitmap = mbcRead(0x16, 0x05);   // 壓線位元圖：0~65535 bit
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 19~20 u16。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 19~20：壓線位元圖（#67 追加（MATRIX 定案 §4：[19..20] 小端））
-int bitmap = bigU16(19);
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -650,7 +619,7 @@ int16_t lastDir = mbcRead(0x16, 0x06);   // 最後離線方向：-16~+16
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 0x22 與大通道都沒有這個值。
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -718,7 +687,7 @@ int16_t threshold = mbcRead(0x16, 0x07);   // 二值化門檻：1~99
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 0x22 與大通道都沒有這個值。
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -743,7 +712,7 @@ let threshold = MBC.readValue(0x16, 0x07)   // 二值化門檻：1~99
 
 | 項目 | 內容 |
 | :--- | :--- |
-| 用途 | 開機後完成校準的次數（按鈕校準也算）；16 路大通道尾段鎖住為 0，不進大通道 |
+| 用途 | 開機後完成校準的次數（按鈕校準也算） |
 | 範圍 | `0~255` 次 |
 | I2C／mBlock 編號 | `08` |
 
@@ -786,7 +755,7 @@ int16_t calibCount = mbcRead(0x16, 0x08);   // 校準完成次數：0~255 次
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 0x22 與大通道都沒有這個值。
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -898,19 +867,11 @@ Serial.println();
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 C~K；大通道 byte 3~18 u8。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
+0x22 C~K。
 
 ```cpp
 // A. 原廠 0x22 積木：C~K = 第 1~16 路光值（C~K 四路一組，每路 2 bit（convert3：0~24→0、25~49→1、50~74→2、75~100→3）：第 1 路在 bit7-6 … 第 4 路在 bit1-0；C = 第 1~4 路、M = 5~8、Y = 9~12、K = 13~16）
 int raw = MiniR4.I2C1.MXColor.getColor(C);   // 第 1 組
-```
-
-**B. 大通道（LauMo 函式庫）**
-
-```cpp
-// B. 大通道 byte 3~18：第 1~16 路光值
-int light[16];
-for (uint8_t i = 0; i < 16; i++) light[i] = bigU8(3 + i);
 ```
 
 </details>
@@ -932,7 +893,7 @@ let light = MBC.readValues(0x16, 0x10, 16)   // 第 1~16 路光值
 
 ## 寫入命令
 
-只有 Arduino I2C、mBlock、micro:bit（與 MATRIX 大通道的 F1／F2）能送命令；SPIKE／EV3 接頭是唯讀的。
+只有 Arduino I2C、mBlock、micro:bit 能送命令；SPIKE／EV3 接頭是唯讀的。
 
 <section id="ce0" class="ref-item ref-cmd">
 
@@ -981,7 +942,7 @@ mbcWrite(0x16, 0xE0);   // 切黑線
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 沒有這個命令（大通道只有 F1／F2 兩個動作）。
+MATRIX 原廠 0x22 積木沒有這個命令。
 
 </details>
 
@@ -1045,7 +1006,7 @@ mbcWrite(0x16, 0xE1);   // 切白線
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 沒有這個命令（大通道只有 F1／F2 兩個動作）。
+MATRIX 原廠 0x22 積木沒有這個命令。
 
 </details>
 
@@ -1110,11 +1071,7 @@ while (mbcRead(0x16, 0xF3) & (1 << 2)) delay(10);   // 等 F3 bit2 歸零 = 做�
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-只有大通道函式庫有這個動作；0x22 原廠函式庫沒有。
-
-```cpp
-MiniR4.I2C1.MXColor.getColor(C);   // 大通道 F1（Cyan）= 黑色校準，回傳上一包的完成次數
-```
+MATRIX 原廠 0x22 積木沒有這個命令。
 
 </details>
 
@@ -1179,11 +1136,7 @@ while (mbcRead(0x16, 0xF3) & (1 << 2)) delay(10);   // 等 F3 bit2 歸零 = 做�
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-只有大通道函式庫有這個動作；0x22 原廠函式庫沒有。
-
-```cpp
-MiniR4.I2C1.MXColor.getColor(M);   // 大通道 F2（Magenta）= 白色校準，回傳上一包的完成次數
-```
+MATRIX 原廠 0x22 積木沒有這個命令。
 
 </details>
 
@@ -1247,7 +1200,7 @@ mbcWrite(0x16, 0xE4, 50);   // 設定門檻（門檻 1~99）
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 沒有這個命令（大通道只有 F1／F2 兩個動作）。
+MATRIX 原廠 0x22 積木沒有這個命令。
 
 </details>
 
@@ -1312,7 +1265,7 @@ while (mbcRead(0x16, 0xF3) & (1 << 2)) delay(10);   // 等 F3 bit2 歸零 = 做�
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 沒有這個命令（大通道只有 F1／F2 兩個動作）。
+MATRIX 原廠 0x22 積木沒有這個命令。
 
 </details>
 
@@ -1333,7 +1286,7 @@ MBC.writeCmd(0x16, 0xE7)   // 5 秒動態校準
 
 ## 狀態旗標 F3
 
-`F3` 每個 bit 一個狀態；I2C、mBlock、micro:bit 直接讀，MATRIX 大通道是 byte 24。
+`F3` 每個 bit 一個狀態；I2C、mBlock、micro:bit 直接讀。
 
 | bit | 名稱 | 說明 |
 | :--- | :--- | :--- |
@@ -1405,11 +1358,7 @@ bool fork = st & (1 << 4);   // 分岔
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-已流出的大通道格式鎖住，狀態 byte 維持 0。
-
-```cpp
-uint8_t st = MiniR4.I2C1.MXColor.getColorID();   // 這款已流出：byte 24 維持 0
-```
+MATRIX 原廠 0x22 積木讀不到狀態旗標。
 
 </details>
 
@@ -1436,7 +1385,7 @@ let ready = (st & 1) != 0
 | [`F0`](/i2c-protocol.md#rf0) | 裝置 ID | 低 byte = 出廠 I2C 位址（換位址後不變），高 byte = hw[0]（通道數／顆數／類別） |
 | [`F1`](/i2c-protocol.md#rf1) | 協議版本 | 本版 = 2（SPIKE 模式 8 v[1]、EV3 ID 封包同一個數字） |
 | [`F2`](/i2c-protocol.md#rf2) | 韌體版本 | 主版×100 + 次版（例 102 = 1.2） |
-| [`F3`](/i2c-protocol.md#rf3) | 狀態旗標 | b0 就緒，其餘各產品定義（見各產品 flags）；MATRIX 大通道 byte 24 同一個 byte |
+| [`F3`](/i2c-protocol.md#rf3) | 狀態旗標 | b0 就緒，其餘各產品定義（見各產品 flags） |
 | [`F4`](/i2c-protocol.md#rf4) | 更新序號 | 每 10 ms 快照 +1，0~255 循環（2.56 秒一圈，不能拿來偵測重開機；不動 = 模組忙） |
 | [`F5`](/i2c-protocol.md#rf5) | 開機秒數 | 開機後秒數，到 32767 停住（約 9 小時）；數字變小 = 重開機過 |
 | [`F8`](/i2c-protocol.md#rf8) | 換 I2C 位址 | [F8][新位址 0x08~0x77][新位址取反]，存 EEPROM，重開機後生效；[F8][0x00][0xFF] = 回出廠位址（共識 B-5） |
@@ -1448,7 +1397,6 @@ let ready = (st & 1) != 0
 
 - B-11：細位置 02 與線位置 01 同號（負 = 左）；韌體 F16:1290 註解寫反，程式碼同號（IR:11 為準）。
 - B-12：E7 五秒動態校準補回（v1 的 0x20=0x01），定案表沒列。
-- MATRIX 大通道已流出：[0..18] 與尾段 24~28 鎖住維持 0（common.json lockedTail0），所以 F3、F1/F2 次數、ID、hw[0]、08 校準次數都不進大通道；只追加 [19..20] 位元圖 u16 小端、[21] 線段數（MATRIX 定案 §4）。0x22 命令 4~12 全部不動（11 = 0、12 = ((位置+16)>>1)×10 + (線寬>>1)，schema 不收 11/12 所以沒寫進 ch22）。
 - EV3：模式 0~2 鎖住；模式 3 原本不送 → 16 bit 位元圖；模式 4 原本不送 → 同模式 2；模式 5 ID 格式 B（共用函式）。
 - SPIKE：0/5/7/9 鎖住，1~4、6 維持不動；教育版模式 0 的 16 路光值是 2-bit（玩具版 1-bit），跟 8 路的 4-bit 不同；byte 8~15 補 0（#65 已改，使用者保留）；模式 9 排法照盤點（四路 4-bit 一個 int16，v6 = 位元圖）；模式 8 v[0] 改 ID|hw[0]<<8。
 - 線段數 04 範圍：定案沒寫，16 路最多 8 段（交錯壓線），採 0~8。

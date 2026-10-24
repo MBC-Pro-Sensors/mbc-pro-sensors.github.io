@@ -37,7 +37,7 @@
 | Pathfinder port [port] line bitmap | 0~65535 bit | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | bit0 = channel 1 (left) … bit15 = channel 16; 1 = that channel sees the line |
 | Pathfinder port [port] last exit direction | -16~+16 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | where the line was before it was lost: −16 to +16 (negative = left); keeps the last value |
 | Pathfinder port [port] threshold | 1~99 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | reflect threshold for 'on line', 1~99, default 50; set with E4 |
-| Pathfinder port [port] calibration count | 0~255 次 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | number of calibrations completed since power-on (button calibrations included); not in the MATRIX big channel (tail bytes locked at 0 for the 16-ch) |
+| Pathfinder port [port] calibration count | 0~255 次 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | number of calibrations completed since power-on (button calibrations included) |
 | Pathfinder port [port] channel [1~16] reflect | 0~100 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | calibrated reflect of channel 1~16, 0~100 (channel 1 = left); ids 10~1F |
 | Pathfinder port [port] black line mode | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | follow a black line (default) |
 | Pathfinder port [port] white line mode | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | follow a white line (F3 b1 = 1) |
@@ -100,7 +100,7 @@
 | Ranger 8 port [port] nearest direction | -8~+8 | [Laser Ranger 8-ch](/en/sensors/tof8/mblock.md) | direction of the nearest object: −7 (left) to +7 (right), 0 = straight ahead, negative = left; ±8 = nothing around (keeps the last side) |
 | Ranger 8 port [port] farthest distance cm | 0~120 cm | [Laser Ranger 8-ch](/en/sensors/tof8/mblock.md) | largest of the 8 distances, 0~120 cm (a failed sensor always reads 120 and looks 'farthest') |
 | Ranger 8 port [port] farthest direction | -7~+7 | [Laser Ranger 8-ch](/en/sensors/tof8/mblock.md) | direction of the most open side: −7 to +7, 0 = straight ahead, negative = left; 0 when all 8 read 120 |
-| Ranger 8 port [port] front distance cm | 0~120 cm | [Laser Ranger 8-ch](/en/sensors/tof8/mblock.md) | average of sensors 4 and 5 (both facing forward), 0~120 cm; EV3 mode 3, SPIKE mode 6 and big-channel [16..17] carry the same thing in mm; 0x22 'C' is min(4, 5), not the average (see 10) |
+| Ranger 8 port [port] front distance cm | 0~120 cm | [Laser Ranger 8-ch](/en/sensors/tof8/mblock.md) | average of sensors 4 and 5 (both facing forward), 0~120 cm; EV3 mode 3 and SPIKE mode 6 carry the same thing in mm; 0x22 'C' is min(4, 5), not the average (see 10) |
 | Ranger 8 port [port] nearest distance mm | 0~1200 mm | [Laser Ranger 8-ch](/en/sensors/tof8/mblock.md) | smallest of the 8 mm readings, 0~1200 (failed sensor counts as 1200); 1200 = nothing around |
 | Ranger 8 port [port] init bitmap | 0~255 bit | [Laser Ranger 8-ch](/en/sensors/tof8/mblock.md) | bit0 = sensor 1 (left) … bit7 = sensor 8; 1 = initialised at power-on (8 sensors take ~2~4 s, no retry); 255 = all OK |
 | Ranger 8 port [port] fault bitmap | 0~255 bit | [Laser Ranger 8-ch](/en/sensors/tof8/mblock.md) | bit0 = sensor 1 … bit7 = sensor 8; 1 = currently failing (I2C error or no update for 200 ms); its distance reads 120 / 1200 |

@@ -8,7 +8,9 @@
 ### Install the software
 
 1. Install MATRIXblock (default folder `C:\matrixblock-r4\`).
+<!-- hide:hideMatrixBigChannel -->
 2. If you installed the "LauMo big-channel" library before, put the stock `MiniR4ColorSensorExt.cpp` / `.h` files back first, so the stock blocks read the way described below.
+<!-- /hide -->
 
 ### Make the software see the sensor
 
@@ -34,5 +36,9 @@ The Mini R4 sees the sensor as a stock **colour sensor** (I2C address `0x22`); r
 ### FAQ
 
 - **The numbers make no sense?** Make sure you use the seven slots R / G / B / C / M / Y / K, not the H / S / V or colour ID blocks.
+<!-- hide:hideMatrixBigChannel -->
 - **Need more data (mm, bitmaps, status)?** The seven stock slots hold only 7 numbers of 0~255; switch to the "big-channel library" to get 30 bytes at once.
+<!-- /hide -->
+<!-- hide:hideMatrixBigChannel -->
 - **Can I use the stock blocks and the big channel together?** No. They need **different library files**, so one computer uses one method at a time. The sensor firmware supports both, so switching methods **does not require reflashing the sensor**.
+<!-- /hide -->

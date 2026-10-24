@@ -1,6 +1,6 @@
 - [Product × host value reference index](https://mbc-pro-sensors.github.io/reference.html): how every value of every product is read on the six hosts (SPIKE, EV3, Arduino I2C, mBlock, MATRIX, micro:bit).
 - [MBC universal I2C protocol v2](https://mbc-pro-sensors.github.io/i2c-protocol.html): write an id, read int16 little-endian; shared F0~F5 version / status, F8 re-address, EF reboot.
 - [mBlock 5 extension v2](https://mbc-pro-sensors.github.io/makeblock.html): UART 38400, 3-byte replies with checksum, FD pack-all.
-- [MATRIX Mini R4](https://mbc-pro-sensors.github.io/matrix.html): stock 0x22 R~K mapping and the LauMo 30-byte big channel.
+- [MATRIX Mini R4](https://mbc-pro-sensors.github.io/matrix.html): stock 0x22 R~K mapping and the Sharpshooter mVision format.
 - [micro:bit MakeCode](https://mbc-pro-sensors.github.io/microbit.html): pxt-mbc-sensors extension v2.
 - [Protocol plain text](https://mbc-pro-sensors.github.io/llms-protocol.txt): value tables, commands and status flags of every product.

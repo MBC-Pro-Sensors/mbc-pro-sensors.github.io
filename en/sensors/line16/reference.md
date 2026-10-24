@@ -14,7 +14,7 @@ Every value and command the Line Follower 16-ch reports to each host: what it me
 | Item | Detail |
 | :--- | :--- |
 | Factory I2C address | `0x16` |
-| hw[0] | `16`（F0 high byte; ID high byte in SPIKE mode 8 / EV3 mode 5; big-channel byte 28） |
+| hw[0] | `16`（F0 high byte; ID high byte in SPIKE mode 8 / EV3 mode 5） |
 | Model | `LINE16` |
 | Protocol version | `2` |
 | Hosts | SPIKE, EV3, Arduino I2C, mBlock, MATRIX, micro:bit |
@@ -26,8 +26,8 @@ Every value and command the Line Follower 16-ch reports to each host: what it me
 | [`01`](#v01) | [line position](#v01) | -16~+16 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | [`02`](#v02) | [fine position](#v02) | -100~+100 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | [`03`](#v03) | [line width](#v03) | 0~16 路 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`04`](#v04) | [line segments](#v04) | 0~8 | ✓ | — | ✓ | ✓ | ✓ | ✓ |
-| [`05`](#v05) | [line bitmap](#v05) | 0~65535 bit | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| [`04`](#v04) | [line segments](#v04) | 0~8 | ✓ | — | ✓ | ✓ | — | ✓ |
+| [`05`](#v05) | [line bitmap](#v05) | 0~65535 bit | ✓ | ✓ | ✓ | ✓ | — | ✓ |
 | [`06`](#v06) | [last exit direction](#v06) | -16~+16 | — | — | ✓ | ✓ | — | ✓ |
 | [`07`](#v07) | [threshold](#v07) | 1~99 | — | — | ✓ | ✓ | — | ✓ |
 | [`08`](#v08) | [calibrations done](#v08) | 0~255 次 | — | — | ✓ | ✓ | — | — |
@@ -124,18 +124,11 @@ Block returns line position（-16~+16）。Host sends `[01]` → reply `[lo][hi]
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 R (+16); big byte 0 u8 (+16). A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
+0x22 R (+16).
 
 ```cpp
 // A. stock 0x22 blocks：R = line position + 16
 int linePos = MiniR4.I2C1.MXColor.getColor(R) - 16;
-```
-
-**B. big channel (LauMo library)**
-
-```cpp
-// B. big channel byte 0：line position + 16
-int linePos = bigU8(0) - 16;
 ```
 
 </details>
@@ -245,18 +238,11 @@ Block returns fine position（-100~+100）。Host sends `[02]` → reply `[lo][h
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 B (+100); big byte 2 u8 (+100). A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
+0x22 B (+100).
 
 ```cpp
 // A. stock 0x22 blocks：B = fine position + 100
 int linePosFine = MiniR4.I2C1.MXColor.getColor(B) - 100;
-```
-
-**B. big channel (LauMo library)**
-
-```cpp
-// B. big channel byte 2：fine position + 100
-int linePosFine = bigU8(2) - 100;
 ```
 
 </details>
@@ -366,18 +352,11 @@ Block returns line width（0~16 路）。Host sends `[03]` → reply `[lo][hi][0
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 G; big byte 1 u8. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
+0x22 G.
 
 ```cpp
 // A. stock 0x22 blocks：G = line width
 int lineWidth = MiniR4.I2C1.MXColor.getColor(G);
-```
-
-**B. big channel (LauMo library)**
-
-```cpp
-// B. big channel byte 1：line width
-int lineWidth = bigU8(1);
 ```
 
 </details>
@@ -468,12 +447,7 @@ Block returns line segments（0~8）。Host sends `[04]` → reply `[lo][hi][04 
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 21 u8. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 21：line segments（#67 追加（MATRIX 定案 §4：[21] 線段數））
-int groupCount = bigU8(21);
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -577,12 +551,7 @@ Block returns line bitmap（0~65535 bit）。Host sends `[05]` → reply `[lo][h
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 19~20 u16. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 19~20：line bitmap（#67 追加（MATRIX 定案 §4：[19..20] 小端））
-int bitmap = bigU16(19);
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -650,7 +619,7 @@ Block returns last exit direction（-16~+16）。Host sends `[06]` → reply `[l
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available over MATRIX 0x22 or the big channel.
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -718,7 +687,7 @@ Block returns threshold（1~99）。Host sends `[07]` → reply `[lo][hi][07 ^ l
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available over MATRIX 0x22 or the big channel.
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -743,7 +712,7 @@ let threshold = MBC.readValue(0x16, 0x07)   // threshold：1~99
 
 | Item | Detail |
 | :--- | :--- |
-| Meaning | number of calibrations completed since power-on (button calibrations included); not in the MATRIX big channel (tail bytes locked at 0 for the 16-ch) |
+| Meaning | number of calibrations completed since power-on (button calibrations included) |
 | Range | `0~255` 次 |
 | I2C / mBlock id | `08` |
 
@@ -786,7 +755,7 @@ Block returns calibrations done（0~255 次）。Host sends `[08]` → reply `[l
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available over MATRIX 0x22 or the big channel.
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -898,19 +867,11 @@ Block returns channel 1~16 reflect（0~100）。Host sends `[10]` → reply `[lo
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 C~K; big byte 3~18 u8. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
+0x22 C~K.
 
 ```cpp
 // A. stock 0x22 blocks：C~K = channel 1~16 reflect（C~K 四路一組，每路 2 bit（convert3：0~24→0、25~49→1、50~74→2、75~100→3）：第 1 路在 bit7-6 … 第 4 路在 bit1-0；C = 第 1~4 路、M = 5~8、Y = 9~12、K = 13~16）
 int raw = MiniR4.I2C1.MXColor.getColor(C);   // group 1
-```
-
-**B. big channel (LauMo library)**
-
-```cpp
-// B. big channel byte 3~18：channel 1~16 reflect
-int light[16];
-for (uint8_t i = 0; i < 16; i++) light[i] = bigU8(3 + i);
 ```
 
 </details>
@@ -932,7 +893,7 @@ let light = MBC.readValues(0x16, 0x10, 16)   // channel 1~16 reflect
 
 ## Write commands
 
-Only Arduino I2C, mBlock, micro:bit (and MATRIX big-channel F1 / F2) can send commands; the SPIKE / EV3 ports are read-only.
+Only Arduino I2C, mBlock and micro:bit can send commands; the SPIKE / EV3 ports are read-only.
 
 <section id="ce0" class="ref-item ref-cmd">
 
@@ -981,7 +942,7 @@ Host sends `[E0]` → reply `[00][00][E0]` (ack), then it runs.
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available on MATRIX (the big channel only carries the F1 / F2 actions).
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1045,7 +1006,7 @@ Host sends `[E1]` → reply `[00][00][E1]` (ack), then it runs.
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available on MATRIX (the big channel only carries the F1 / F2 actions).
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1110,11 +1071,7 @@ Host sends `[E2]` → reply `[00][00][E2]` (ack), then it runs; F3 bit2 = 1 whil
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Big-channel library only; the stock 0x22 library has no actions.
-
-```cpp
-MiniR4.I2C1.MXColor.getColor(C);   // big channel F1（Cyan）= calibrate black, returns the completion counter from the previous packet
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1179,11 +1136,7 @@ Host sends `[E3]` → reply `[00][00][E3]` (ack), then it runs; F3 bit2 = 1 whil
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Big-channel library only; the stock 0x22 library has no actions.
-
-```cpp
-MiniR4.I2C1.MXColor.getColor(M);   // big channel F2（Magenta）= calibrate white, returns the completion counter from the previous packet
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1247,7 +1200,7 @@ Host sends `[E4][params…]` → reply `[00][00][E4]` (ack), then it runs.
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available on MATRIX (the big channel only carries the F1 / F2 actions).
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1312,7 +1265,7 @@ Host sends `[E7]` → reply `[00][00][E7]` (ack), then it runs; F3 bit2 = 1 whil
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available on MATRIX (the big channel only carries the F1 / F2 actions).
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1333,7 +1286,7 @@ MBC.writeCmd(0x16, 0xE7)   // 5-second auto calibration
 
 ## Status flags F3
 
-One status per bit of `F3`; read directly over I2C, mBlock, micro:bit; MATRIX big-channel byte 24.
+One status per bit of `F3`; read directly over I2C, mBlock, micro:bit.
 
 | bit | Name | Meaning |
 | :--- | :--- | :--- |
@@ -1405,11 +1358,7 @@ The extension splits status flags F3 into boolean blocks (ready, calibrating, �
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-The shipped big-channel layout is locked; the status byte stays 0.
-
-```cpp
-uint8_t st = MiniR4.I2C1.MXColor.getColorID();   // shipped product: byte 24 stays 0
-```
+The status flags are not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1436,7 +1385,7 @@ Identical on every product, documented once in the [universal I2C protocol](/en/
 | [`F0`](/en/i2c-protocol.md#rf0) | device ID | low byte = factory I2C address (unchanged after re-addressing), high byte = hw[0] (channels / sensors / variant) |
 | [`F1`](/en/i2c-protocol.md#rf1) | protocol version | 2 for this release (same number reported in SPIKE mode 8 v[1]) |
 | [`F2`](/en/i2c-protocol.md#rf2) | firmware version | major×100 + minor (e.g. 102 = 1.2) |
-| [`F3`](/en/i2c-protocol.md#rf3) | status flags | b0 = ready; other bits per product (see flags); same byte as MATRIX big-channel byte 24 |
+| [`F3`](/en/i2c-protocol.md#rf3) | status flags | b0 = ready; other bits per product (see flags) |
 | [`F4`](/en/i2c-protocol.md#rf4) | update counter | +1 every 10 ms snapshot, wraps 0~255 (2.56 s per cycle, not usable for reboot detection; frozen = module busy) |
 | [`F5`](/en/i2c-protocol.md#rf5) | uptime seconds | seconds since boot, saturates at 32767 (~9 h); a drop means the module rebooted |
 | [`F8`](/en/i2c-protocol.md#rf8) | change I2C address | [F8][new 0x08~0x77][~new], saved to EEPROM, takes effect after reboot; [F8][0x00][0xFF] = back to factory address |
@@ -1448,7 +1397,6 @@ Generated by `_build/gen-reference.mjs` from `_build/protocol/line16.json` (sing
 
 - B-11：細位置 02 與線位置 01 同號（負 = 左）；韌體 F16:1290 註解寫反，程式碼同號（IR:11 為準）。
 - B-12：E7 五秒動態校準補回（v1 的 0x20=0x01），定案表沒列。
-- MATRIX 大通道已流出：[0..18] 與尾段 24~28 鎖住維持 0（common.json lockedTail0），所以 F3、F1/F2 次數、ID、hw[0]、08 校準次數都不進大通道；只追加 [19..20] 位元圖 u16 小端、[21] 線段數（MATRIX 定案 §4）。0x22 命令 4~12 全部不動（11 = 0、12 = ((位置+16)>>1)×10 + (線寬>>1)，schema 不收 11/12 所以沒寫進 ch22）。
 - EV3：模式 0~2 鎖住；模式 3 原本不送 → 16 bit 位元圖；模式 4 原本不送 → 同模式 2；模式 5 ID 格式 B（共用函式）。
 - SPIKE：0/5/7/9 鎖住，1~4、6 維持不動；教育版模式 0 的 16 路光值是 2-bit（玩具版 1-bit），跟 8 路的 4-bit 不同；byte 8~15 補 0（#65 已改，使用者保留）；模式 9 排法照盤點（四路 4-bit 一個 int16，v6 = 位元圖）；模式 8 v[0] 改 ID|hw[0]<<8。
 - 線段數 04 範圍：定案沒寫，16 路最多 8 段（交錯壓線），採 0~8。

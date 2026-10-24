@@ -14,7 +14,7 @@
 | 項目 | 內容 |
 | :--- | :--- |
 | I2C 出廠位址 | `0x29` |
-| hw[0] | `8`（F0 高 byte、SPIKE 模式 8／EV3 模式 5 ID 高 byte、大通道 byte 28） |
+| hw[0] | `8`（F0 高 byte、SPIKE 模式 8／EV3 模式 5 ID 高 byte） |
 | 型號 | `LASER8` |
 | 協議版本 | `2` |
 | 支援平台 | SPIKE、EV3、Arduino I2C、mBlock、MATRIX、micro:bit |
@@ -23,15 +23,15 @@
 
 | 編號 | 值 | 範圍 | SPIKE | EV3 | Arduino I2C | mBlock | MATRIX | micro:bit |
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| [`01`](#v01) | [最近距離 cm](#v01) | 0~120 cm | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`02`](#v02) | [最近方向](#v02) | -8~+8 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`03`](#v03) | [最空曠距離 cm](#v03) | 0~120 cm | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`04`](#v04) | [最空曠方向](#v04) | -7~+7 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| [`01`](#v01) | [最近距離 cm](#v01) | 0~120 cm | ✓ | ✓ | ✓ | ✓ | — | ✓ |
+| [`02`](#v02) | [最近方向](#v02) | -8~+8 | ✓ | ✓ | ✓ | ✓ | — | ✓ |
+| [`03`](#v03) | [最空曠距離 cm](#v03) | 0~120 cm | ✓ | ✓ | ✓ | ✓ | — | ✓ |
+| [`04`](#v04) | [最空曠方向](#v04) | -7~+7 | ✓ | ✓ | ✓ | ✓ | — | ✓ |
 | [`05`](#v05) | [正前方 cm](#v05) | 0~120 cm | — | ✓ | ✓ | ✓ | — | ✓ |
-| [`06`](#v06) | [最近距離 mm](#v06) | 0~1200 mm | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`07`](#v07) | [初始化位元圖](#v07) | 0~255 bit | ✓ | — | ✓ | ✓ | ✓ | ✓ |
-| [`08`](#v08) | [故障位元圖](#v08) | 0~255 bit | ✓ | — | ✓ | ✓ | ✓ | ✓ |
-| [`09`](#v09) | [正前方距離 mm](#v09) | 0~1200 mm | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| [`06`](#v06) | [最近距離 mm](#v06) | 0~1200 mm | ✓ | ✓ | ✓ | ✓ | — | ✓ |
+| [`07`](#v07) | [初始化位元圖](#v07) | 0~255 bit | ✓ | — | ✓ | ✓ | — | ✓ |
+| [`08`](#v08) | [故障位元圖](#v08) | 0~255 bit | ✓ | — | ✓ | ✓ | — | ✓ |
+| [`09`](#v09) | [正前方距離 mm](#v09) | 0~1200 mm | ✓ | ✓ | ✓ | ✓ | — | ✓ |
 | [`10~17`](#v10) | [第 1~8 顆距離 cm](#v10) | 0~120 cm | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | [`18~1F`](#v18) | [第 1~8 顆距離 mm](#v18) | 0~1200 mm | — | — | ✓ | ✓ | — | ✓ |
 
@@ -126,12 +126,7 @@ int16_t nearCm = mbcRead(0x29, 0x01);   // 最近距離 cm：0~120 cm
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 9 u8。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 9：最近距離 cm
-int nearCm = bigU8(9);
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -240,12 +235,7 @@ int16_t nearDir = mbcRead(0x29, 0x02);   // 最近方向：-8~+8
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 8 u8 (+8)。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 8：最近方向 + 8（原始方位 0~16）
-int nearDir = bigU8(8) - 8;
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -351,12 +341,7 @@ int16_t farCm = mbcRead(0x29, 0x03);   // 最空曠距離 cm：0~120 cm
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 11 u8。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 11：最空曠距離 cm
-int farCm = bigU8(11);
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -462,12 +447,7 @@ int16_t farDir = mbcRead(0x29, 0x04);   // 最空曠方向：-7~+7
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 10 u8 (+8)。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 10：最空曠方向 + 8（原始方位 1~15）
-int farDir = bigU8(10) - 8;
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -494,7 +474,7 @@ let farDir = MBC.readValue(0x29, 0x04)   // 最空曠方向：-7~+7
 
 | 項目 | 內容 |
 | :--- | :--- |
-| 用途 | 第 4、5 顆（兩顆平行朝前）平均 0~120 cm；EV3 模式 3、SPIKE 模式 6、大通道 [16..17] 給的是同一個值的 mm；0x22 的 C 是 min(第 4, 第 5 顆) 不是平均（見 10） |
+| 用途 | 第 4、5 顆（兩顆平行朝前）平均 0~120 cm；EV3 模式 3、SPIKE 模式 6 給的是同一個值的 mm；0x22 的 C 是 min(第 4, 第 5 顆) 不是平均（見 10） |
 | 範圍 | `0~120` cm |
 | I2C／mBlock 編號 | `05` |
 
@@ -552,7 +532,7 @@ int16_t frontCm = mbcRead(0x29, 0x05);   // 正前方 cm：0~120 cm
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 0x22 與大通道都沒有這個值。
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -656,12 +636,7 @@ int16_t nearMm = mbcRead(0x29, 0x06);   // 最近距離 mm：0~1200 mm
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 14~15 u16。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 14~15：最近距離 mm（#67 追加（[14..15] 小端））
-int nearMm = bigU16(14);
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -752,12 +727,7 @@ int16_t initOk = mbcRead(0x29, 0x07);   // 初始化位元圖：0~255 bit
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 12 u8。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 12：初始化位元圖（#67 補填（註解有寫、原本沒填））
-int initOk = bigU8(12);
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -848,12 +818,7 @@ int16_t fault = mbcRead(0x29, 0x08);   // 故障位元圖：0~255 bit
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 13 u8。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 13：故障位元圖（#67 補填）
-int fault = bigU8(13);
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -957,12 +922,7 @@ int16_t frontMm = mbcRead(0x29, 0x09);   // 正前方距離 mm：0~1200 mm
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 16~17 u16。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 16~17：正前方距離 mm（#67 追加（MATRIX 定案 §4：[16..17] 正前方 mm 小端））
-int frontMm = bigU16(16);
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -1077,19 +1037,11 @@ Serial.println();
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 R~K；大通道 byte 0~7 u8。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
+0x22 R~K。
 
 ```cpp
 // A. 原廠 0x22 積木：R~K = 第 1~8 顆距離 cm（#67 改（使用者最終定案）：R、G、B = 第 1、2、3 顆；C = min(第 4, 第 5 顆)（正前方取較近）；M、Y、K = 第 6、7、8 顆；全部 cm 0~120；11、12 = 0）
 int raw = MiniR4.I2C1.MXColor.getColor(R);   // 第 1 組
-```
-
-**B. 大通道（LauMo 函式庫）**
-
-```cpp
-// B. 大通道 byte 0~7：第 1~8 顆距離 cm
-int distCm[8];
-for (uint8_t i = 0; i < 8; i++) distCm[i] = bigU8(0 + i);
 ```
 
 </details>
@@ -1163,7 +1115,7 @@ Serial.println();
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 0x22 與大通道都沒有這個值。
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -1186,7 +1138,7 @@ let distMm = MBC.readValues(0x29, 0x18, 8)   // 第 1~8 顆距離 mm
 
 ## 狀態旗標 F3
 
-`F3` 每個 bit 一個狀態；I2C、mBlock、micro:bit 直接讀，MATRIX 大通道是 byte 24。
+`F3` 每個 bit 一個狀態；I2C、mBlock、micro:bit 直接讀。
 
 | bit | 名稱 | 說明 |
 | :--- | :--- | :--- |
@@ -1252,12 +1204,7 @@ bool fault = st & (1 << 1);   // 任一顆失效
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-```cpp
-uint8_t st = MiniR4.I2C1.MXColor.getColorID();   // 大通道 byte 24 = F3 狀態旗標
-bool ready = st & 1;
-uint8_t id  = MiniR4.I2C1.MXColor.getColor(Y);    // byte 27 裝置 ID 0x29
-uint8_t hw0 = MiniR4.I2C1.MXColor.getColor(K);    // byte 28 hw[0] = 8
-```
+MATRIX 原廠 0x22 積木讀不到狀態旗標。
 
 </details>
 
@@ -1284,7 +1231,7 @@ let ready = (st & 1) != 0
 | [`F0`](/i2c-protocol.md#rf0) | 裝置 ID | 低 byte = 出廠 I2C 位址（換位址後不變），高 byte = hw[0]（通道數／顆數／類別） |
 | [`F1`](/i2c-protocol.md#rf1) | 協議版本 | 本版 = 2（SPIKE 模式 8 v[1]、EV3 ID 封包同一個數字） |
 | [`F2`](/i2c-protocol.md#rf2) | 韌體版本 | 主版×100 + 次版（例 102 = 1.2） |
-| [`F3`](/i2c-protocol.md#rf3) | 狀態旗標 | b0 就緒，其餘各產品定義（見各產品 flags）；MATRIX 大通道 byte 24 同一個 byte |
+| [`F3`](/i2c-protocol.md#rf3) | 狀態旗標 | b0 就緒，其餘各產品定義（見各產品 flags） |
 | [`F4`](/i2c-protocol.md#rf4) | 更新序號 | 每 10 ms 快照 +1，0~255 循環（2.56 秒一圈，不能拿來偵測重開機；不動 = 模組忙） |
 | [`F5`](/i2c-protocol.md#rf5) | 開機秒數 | 開機後秒數，到 32767 停住（約 9 小時）；數字變小 = 重開機過 |
 | [`F8`](/i2c-protocol.md#rf8) | 換 I2C 位址 | [F8][新位址 0x08~0x77][新位址取反]，存 EEPROM，重開機後生效；[F8][0x00][0xFF] = 回出廠位址（共識 B-5） |
@@ -1294,11 +1241,9 @@ let ready = (st & 1) != 0
 
 本頁由 `_build/gen-reference.mjs` 從 `_build/protocol/tof8.json`（單一真相來源，轉錄自 2026-10-21 協定定案）產生。
 
-- 正前方 mm（EV3 模式 3、SPIKE 模式 6 v[1]、大通道 [16..17]）在定案 §5 沒有獨立 I2C 編號 → 掛在 05 正前方 cm 底下，用 scale:mm 標示，不自己加編號。
-- 0x22（使用者 2026-10-21 最終定案）：只用一個位址，R~K 由左到右 7 個 cm：第 1、2、3 顆、min(第 4, 第 5)、第 6、7、8 顆；11、12 不放資料；最近距離／方向由主機自己比較。此排法只用在 0x22，EV3／SPIKE／大通道不動。
-- 大通道 [0..11] 不動（8 顆 cm、最近方向 0~16、最近 cm、最空曠方向、最空曠 cm）；補填 [12] 初始化、[13] 故障（原本註解有寫沒填）；追加 [14..15] 最近 mm、[16..17] 正前方 mm；尾段 [24] = F3、[27] = 0x29、[28] = 8（原本 [24] 沒填）。
-- EV3：模式 0、1、2、4 鎖住（照盤點）；模式 3 改正前方 mm（原本 = 第 1 顆 0~100）、模式 5 改 [最近 mm, 最近方向 −8~+8]（原本 = 前 4 顆兩兩合併）。方向在 EV3／I2C／mBlock 一律 −8~+8 的 int8／int16，SPIKE 模式 1/3/4/9 與大通道維持原始 0~16（offset 8）。
+- 正前方 mm（EV3 模式 3、SPIKE 模式 6 v[1]）在定案 §5 沒有獨立 I2C 編號 → 掛在 05 正前方 cm 底下，用 scale:mm 標示，不自己加編號。
+- 0x22（使用者 2026-10-21 最終定案）：只用一個位址，R~K 由左到右 7 個 cm：第 1、2、3 顆、min(第 4, 第 5)、第 6、7、8 顆；11、12 不放資料；最近距離／方向由主機自己比較。此排法只用在 0x22，EV3／SPIKE不動。
 - SPIKE：0/5/7/9 鎖住，1、2、3、4、8 維持不動；模式 6 改 [最近 mm, 正前方 mm, 最近方向 −8~+8]（原本 = 第 2~7 顆兩兩合併）；模式 8 v[0] 改 ID|hw[0]<<8。
 - 最空曠方向 04 範圍 −7~+7（maxDirection 永遠不會是 0／16，盤點 INO:1086-1088）；最近方向 02 ±8 = 沒目標、沿用上次偏向側，開機預設 −8。
 - 沒有寫入命令；F8 換位址／EF 重開機用共用的。
-- 主對話 2026-10-21：補 09 正前方 mm（定案 §5 只有 05 正前方 cm，但 EV3 模式 3、SPIKE 模式 6、大通道 [16..17] 都送 mm，I2C／mBlock 應有同一個值）。
+- 主對話 2026-10-21：補 09 正前方 mm（定案 §5 只有 05 正前方 cm，但 EV3 模式 3、SPIKE 模式 6 都送 mm，I2C／mBlock 應有同一個值）。

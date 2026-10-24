@@ -5,6 +5,12 @@
 
 This page covers **MATRIXblock stock colour-sensor blocks (0x22)** only: how to set it up for the Pathfinder 16-Way (Line16) on MATRIX Mini R4, how to read every value, the commands it supports and examples. Use the switcher above to change product, host or software.
 
+## Which edition and how to connect
+
+Get the **MATRIX edition** and connect it with the stock MATRIX 4-pin cable to I2C1 or I2C2 of the Mini R4 (address `0x22`); pick that port in the block.
+
+<figure class="ref-fig"><img src="/images/figures/line16/wiring-matrix.svg" alt="Pathfinder 16-Way (Line16) × MATRIX Mini R4" loading="lazy"></figure>
+
 ## Setup
 
 <!-- setup: _build/guides/software/matrix-matrixblock.en.md + _build/guides/product/line16/matrix-matrixblock.en.md {"product":"Pathfinder 16-Way (Line16)","edition":"MATRIX edition","port":"I2C1","lib":"","libUrl":"","addr":"0x16"} -->
@@ -89,7 +95,7 @@ int raw = MiniR4.I2C1.MXColor.getColor(C);   // group 1
 
 </section>
 
-<p class="ref-missing"><b>Not readable here</b>：line segments, line bitmap, last exit direction, threshold, calibrations done. Use <a href="/en/sensors/line16/matrix/bigchannel.md">Big-channel library</a> for these.</p>
+<p class="ref-missing"><b>Not readable here</b>：line segments, line bitmap, last exit direction, threshold, calibrations done. Use <a href="/en/sensors/line16/arduino/ide.md">Arduino</a> / <a href="/en/sensors/line16/mblock/mblock5.md">mBlock</a> / <a href="/en/sensors/line16/microbit/makecode.md">micro:bit</a> for these.</p>
 
 ## Commands
 
@@ -101,7 +107,7 @@ This software cannot send commands; use Arduino I2C, mBlock or micro:bit if you 
 
 ## More questions
 
-- **Can I mix stock blocks and the big channel?** No: they need different library files; pick one per program.
+
 
 Still stuck? [Contact us](/en/contact.md) with your software and a screenshot of the program.
 

@@ -14,7 +14,7 @@ Every value and command the Laser Ranger 8-ch reports to each host: what it mean
 | Item | Detail |
 | :--- | :--- |
 | Factory I2C address | `0x29` |
-| hw[0] | `8`（F0 high byte; ID high byte in SPIKE mode 8 / EV3 mode 5; big-channel byte 28） |
+| hw[0] | `8`（F0 high byte; ID high byte in SPIKE mode 8 / EV3 mode 5） |
 | Model | `LASER8` |
 | Protocol version | `2` |
 | Hosts | SPIKE, EV3, Arduino I2C, mBlock, MATRIX, micro:bit |
@@ -23,15 +23,15 @@ Every value and command the Laser Ranger 8-ch reports to each host: what it mean
 
 | Id | Value | Range | SPIKE | EV3 | Arduino I2C | mBlock | MATRIX | micro:bit |
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| [`01`](#v01) | [nearest distance (cm)](#v01) | 0~120 cm | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`02`](#v02) | [nearest direction](#v02) | -8~+8 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`03`](#v03) | [farthest distance (cm)](#v03) | 0~120 cm | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`04`](#v04) | [farthest direction](#v04) | -7~+7 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| [`01`](#v01) | [nearest distance (cm)](#v01) | 0~120 cm | ✓ | ✓ | ✓ | ✓ | — | ✓ |
+| [`02`](#v02) | [nearest direction](#v02) | -8~+8 | ✓ | ✓ | ✓ | ✓ | — | ✓ |
+| [`03`](#v03) | [farthest distance (cm)](#v03) | 0~120 cm | ✓ | ✓ | ✓ | ✓ | — | ✓ |
+| [`04`](#v04) | [farthest direction](#v04) | -7~+7 | ✓ | ✓ | ✓ | ✓ | — | ✓ |
 | [`05`](#v05) | [front distance (cm)](#v05) | 0~120 cm | — | ✓ | ✓ | ✓ | — | ✓ |
-| [`06`](#v06) | [nearest distance (mm)](#v06) | 0~1200 mm | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`07`](#v07) | [init bitmap](#v07) | 0~255 bit | ✓ | — | ✓ | ✓ | ✓ | ✓ |
-| [`08`](#v08) | [fault bitmap](#v08) | 0~255 bit | ✓ | — | ✓ | ✓ | ✓ | ✓ |
-| [`09`](#v09) | [front distance (mm)](#v09) | 0~1200 mm | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| [`06`](#v06) | [nearest distance (mm)](#v06) | 0~1200 mm | ✓ | ✓ | ✓ | ✓ | — | ✓ |
+| [`07`](#v07) | [init bitmap](#v07) | 0~255 bit | ✓ | — | ✓ | ✓ | — | ✓ |
+| [`08`](#v08) | [fault bitmap](#v08) | 0~255 bit | ✓ | — | ✓ | ✓ | — | ✓ |
+| [`09`](#v09) | [front distance (mm)](#v09) | 0~1200 mm | ✓ | ✓ | ✓ | ✓ | — | ✓ |
 | [`10~17`](#v10) | [sensor 1~8 distance (cm)](#v10) | 0~120 cm | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | [`18~1F`](#v18) | [sensor 1~8 distance (mm)](#v18) | 0~1200 mm | — | — | ✓ | ✓ | — | ✓ |
 
@@ -126,12 +126,7 @@ Block returns nearest distance (cm)（0~120 cm）。Host sends `[01]` → reply 
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 9 u8. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 9：nearest distance (cm)
-int nearCm = bigU8(9);
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -240,12 +235,7 @@ Block returns nearest direction（-8~+8）。Host sends `[02]` → reply `[lo][h
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 8 u8 (+8). A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 8：nearest direction + 8（原始方位 0~16）
-int nearDir = bigU8(8) - 8;
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -351,12 +341,7 @@ Block returns farthest distance (cm)（0~120 cm）。Host sends `[03]` → reply
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 11 u8. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 11：farthest distance (cm)
-int farCm = bigU8(11);
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -462,12 +447,7 @@ Block returns farthest direction（-7~+7）。Host sends `[04]` → reply `[lo][
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 10 u8 (+8). A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 10：farthest direction + 8（原始方位 1~15）
-int farDir = bigU8(10) - 8;
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -494,7 +474,7 @@ let farDir = MBC.readValue(0x29, 0x04)   // farthest direction：-7~+7
 
 | Item | Detail |
 | :--- | :--- |
-| Meaning | average of sensors 4 and 5 (both facing forward), 0~120 cm; EV3 mode 3, SPIKE mode 6 and big-channel [16..17] carry the same thing in mm; 0x22 'C' is min(4, 5), not the average (see 10) |
+| Meaning | average of sensors 4 and 5 (both facing forward), 0~120 cm; EV3 mode 3 and SPIKE mode 6 carry the same thing in mm; 0x22 'C' is min(4, 5), not the average (see 10) |
 | Range | `0~120` cm |
 | I2C / mBlock id | `05` |
 
@@ -552,7 +532,7 @@ Block returns front distance (cm)（0~120 cm）。Host sends `[05]` → reply `[
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available over MATRIX 0x22 or the big channel.
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -656,12 +636,7 @@ Block returns nearest distance (mm)（0~1200 mm）。Host sends `[06]` → reply
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 14~15 u16. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 14~15：nearest distance (mm)（#67 追加（[14..15] 小端））
-int nearMm = bigU16(14);
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -752,12 +727,7 @@ Block returns init bitmap（0~255 bit）。Host sends `[07]` → reply `[lo][hi]
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 12 u8. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 12：init bitmap（#67 補填（註解有寫、原本沒填））
-int initOk = bigU8(12);
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -848,12 +818,7 @@ Block returns fault bitmap（0~255 bit）。Host sends `[08]` → reply `[lo][hi
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 13 u8. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 13：fault bitmap（#67 補填）
-int fault = bigU8(13);
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -957,12 +922,7 @@ Block returns front distance (mm)（0~1200 mm）。Host sends `[09]` → reply `
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 16~17 u16. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 16~17：front distance (mm)（#67 追加（MATRIX 定案 §4：[16..17] 正前方 mm 小端））
-int frontMm = bigU16(16);
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1077,19 +1037,11 @@ Block returns sensor 1~8 distance (cm)（0~120 cm）。Host sends `[10]` → rep
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 R~K; big byte 0~7 u8. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
+0x22 R~K.
 
 ```cpp
 // A. stock 0x22 blocks：R~K = sensor 1~8 distance (cm)（#67 改（使用者最終定案）：R、G、B = 第 1、2、3 顆；C = min(第 4, 第 5 顆)（正前方取較近）；M、Y、K = 第 6、7、8 顆；全部 cm 0~120；11、12 = 0）
 int raw = MiniR4.I2C1.MXColor.getColor(R);   // group 1
-```
-
-**B. big channel (LauMo library)**
-
-```cpp
-// B. big channel byte 0~7：sensor 1~8 distance (cm)
-int distCm[8];
-for (uint8_t i = 0; i < 8; i++) distCm[i] = bigU8(0 + i);
 ```
 
 </details>
@@ -1163,7 +1115,7 @@ Block returns sensor 1~8 distance (mm)（0~1200 mm）。Host sends `[18]` → re
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available over MATRIX 0x22 or the big channel.
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1186,7 +1138,7 @@ let distMm = MBC.readValues(0x29, 0x18, 8)   // sensor 1~8 distance (mm)
 
 ## Status flags F3
 
-One status per bit of `F3`; read directly over I2C, mBlock, micro:bit; MATRIX big-channel byte 24.
+One status per bit of `F3`; read directly over I2C, mBlock, micro:bit.
 
 | bit | Name | Meaning |
 | :--- | :--- | :--- |
@@ -1252,12 +1204,7 @@ The extension splits status flags F3 into boolean blocks (ready, calibrating, �
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-```cpp
-uint8_t st = MiniR4.I2C1.MXColor.getColorID();   // big channel byte 24 = F3 status flags
-bool ready = st & 1;
-uint8_t id  = MiniR4.I2C1.MXColor.getColor(Y);    // byte 27 device ID 0x29
-uint8_t hw0 = MiniR4.I2C1.MXColor.getColor(K);    // byte 28 hw[0] = 8
-```
+The status flags are not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1284,7 +1231,7 @@ Identical on every product, documented once in the [universal I2C protocol](/en/
 | [`F0`](/en/i2c-protocol.md#rf0) | device ID | low byte = factory I2C address (unchanged after re-addressing), high byte = hw[0] (channels / sensors / variant) |
 | [`F1`](/en/i2c-protocol.md#rf1) | protocol version | 2 for this release (same number reported in SPIKE mode 8 v[1]) |
 | [`F2`](/en/i2c-protocol.md#rf2) | firmware version | major×100 + minor (e.g. 102 = 1.2) |
-| [`F3`](/en/i2c-protocol.md#rf3) | status flags | b0 = ready; other bits per product (see flags); same byte as MATRIX big-channel byte 24 |
+| [`F3`](/en/i2c-protocol.md#rf3) | status flags | b0 = ready; other bits per product (see flags) |
 | [`F4`](/en/i2c-protocol.md#rf4) | update counter | +1 every 10 ms snapshot, wraps 0~255 (2.56 s per cycle, not usable for reboot detection; frozen = module busy) |
 | [`F5`](/en/i2c-protocol.md#rf5) | uptime seconds | seconds since boot, saturates at 32767 (~9 h); a drop means the module rebooted |
 | [`F8`](/en/i2c-protocol.md#rf8) | change I2C address | [F8][new 0x08~0x77][~new], saved to EEPROM, takes effect after reboot; [F8][0x00][0xFF] = back to factory address |
@@ -1294,11 +1241,9 @@ Identical on every product, documented once in the [universal I2C protocol](/en/
 
 Generated by `_build/gen-reference.mjs` from `_build/protocol/tof8.json` (single source of truth, transcribed from the 2026-10-21 protocol decisions).
 
-- 正前方 mm（EV3 模式 3、SPIKE 模式 6 v[1]、大通道 [16..17]）在定案 §5 沒有獨立 I2C 編號 → 掛在 05 正前方 cm 底下，用 scale:mm 標示，不自己加編號。
-- 0x22（使用者 2026-10-21 最終定案）：只用一個位址，R~K 由左到右 7 個 cm：第 1、2、3 顆、min(第 4, 第 5)、第 6、7、8 顆；11、12 不放資料；最近距離／方向由主機自己比較。此排法只用在 0x22，EV3／SPIKE／大通道不動。
-- 大通道 [0..11] 不動（8 顆 cm、最近方向 0~16、最近 cm、最空曠方向、最空曠 cm）；補填 [12] 初始化、[13] 故障（原本註解有寫沒填）；追加 [14..15] 最近 mm、[16..17] 正前方 mm；尾段 [24] = F3、[27] = 0x29、[28] = 8（原本 [24] 沒填）。
-- EV3：模式 0、1、2、4 鎖住（照盤點）；模式 3 改正前方 mm（原本 = 第 1 顆 0~100）、模式 5 改 [最近 mm, 最近方向 −8~+8]（原本 = 前 4 顆兩兩合併）。方向在 EV3／I2C／mBlock 一律 −8~+8 的 int8／int16，SPIKE 模式 1/3/4/9 與大通道維持原始 0~16（offset 8）。
+- 正前方 mm（EV3 模式 3、SPIKE 模式 6 v[1]）在定案 §5 沒有獨立 I2C 編號 → 掛在 05 正前方 cm 底下，用 scale:mm 標示，不自己加編號。
+- 0x22（使用者 2026-10-21 最終定案）：只用一個位址，R~K 由左到右 7 個 cm：第 1、2、3 顆、min(第 4, 第 5)、第 6、7、8 顆；11、12 不放資料；最近距離／方向由主機自己比較。此排法只用在 0x22，EV3／SPIKE不動。
 - SPIKE：0/5/7/9 鎖住，1、2、3、4、8 維持不動；模式 6 改 [最近 mm, 正前方 mm, 最近方向 −8~+8]（原本 = 第 2~7 顆兩兩合併）；模式 8 v[0] 改 ID|hw[0]<<8。
 - 最空曠方向 04 範圍 −7~+7（maxDirection 永遠不會是 0／16，盤點 INO:1086-1088）；最近方向 02 ±8 = 沒目標、沿用上次偏向側，開機預設 −8。
 - 沒有寫入命令；F8 換位址／EF 重開機用共用的。
-- 主對話 2026-10-21：補 09 正前方 mm（定案 §5 只有 05 正前方 cm，但 EV3 模式 3、SPIKE 模式 6、大通道 [16..17] 都送 mm，I2C／mBlock 應有同一個值）。
+- 主對話 2026-10-21：補 09 正前方 mm（定案 §5 只有 05 正前方 cm，但 EV3 模式 3、SPIKE 模式 6 都送 mm，I2C／mBlock 應有同一個值）。

@@ -145,6 +145,7 @@
       }
     },
     {
+      "hideWhen": "hideMatrixBigChannel",
       "out": "downloads/MiniR4ColorSensorExt_LauMo_v2.zip",
       "src": "${MBC}/80_上位機研究/MatrixMiniR4/MiniR4ColorSensorExt大通道版",
       "include": [

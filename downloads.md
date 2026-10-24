@@ -21,7 +21,6 @@ MBC 全系列的函式庫、積木擴充、範例程式與型錄，集中在這�
 | [MBC_Servo6_Official_App_Lib.zip](/downloads/MBC_Servo6_Official_App_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | SPIKE 6 路舵機擴充器 Servo6：官方 SPIKE App 函式庫 — 搭配 2026-10 以前韌體 | 1.0 | Servo6 | 5.3 KB | 2026-10-21 |
 | [line8_pybricks_spike_v4.0.0.zip](/examples/line8/line8_pybricks_spike_v4.0.0.zip) | 循行者 8 路：SPIKE Pybricks 函式庫與範例（`MBC_line8_obj_Lib_v400.py`＋積木／Python 各 2 支） | 4.0.0 | Pybricks 4.0.0 | 15 KB | 2026-10-24 |
 | [MBC_TOF8_Pybricks_Lib.zip](/downloads/MBC_TOF8_Pybricks_Lib.zip) | 測距者 8 路 TOF8：SPIKE Pybricks 函式庫（`MBC_laser8_Lib.py`、`MBC_laser8_obj_Lib.py`） | 1.0 | Pybricks | 10 KB | 2026-10-24 |
-| [MiniR4ColorSensorExt_LauMo_v2.zip](/downloads/MiniR4ColorSensorExt_LauMo_v2.zip) | MATRIX Mini R4：LauMo 大通道函式庫（`MiniR4ColorSensorExt.cpp`／`.h`，取代原廠兩個檔） | 2.0 | MATRIX 大通道 | 4.1 KB | 2026-10-21 |
 | [MBC_Pro_Sensors_mBlock5_v1.0.0.mext](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | mBlock 5 擴展 v1.0.0（舊版，15 顆積木）— 搭配 2026-10 以前韌體 | 1.0.0 | mBlock v1（2026-10 前） | 1.9 MB | 2026-10-21 |
 <!-- /gen -->
 
@@ -44,11 +43,16 @@ MBC 全系列的函式庫、積木擴充、範例程式與型錄，集中在這�
 
 ## 🟢 MATRIX Mini R4
 
+<!-- hide:hideMatrixBigChannel -->
 | 檔案 | 說明 |
 | :--- | :--- |
 | [MiniR4ColorSensorExt_LauMo_v2.zip](/downloads/MiniR4ColorSensorExt_LauMo_v2.zip) | LauMo 大通道函式庫 v2（`begin()` 等待改 5 ms，支援 ESP32 產品）。解壓後覆蓋 MATRIXblock 安裝目錄的 `arduino\libraries\MatrixMiniR4\src\Modules\Sensors\MiniR4ColorSensorExt.cpp` 與 `.h`；要回原廠 0x22 用法就把原檔放回去 |
 
 用法 A（原廠 0x22 積木）不用下載任何東西。兩種用法的對照表與每個產品的 byte 表：[MATRIX 總覽](/matrix.md)。
+<!-- /hide -->
+<!-- show:hideMatrixBigChannel -->
+MATRIX 用原廠顏色感應器積木（0x22）讀，不用下載任何東西。每個產品的對照表：[MATRIX 總覽](/matrix.md)。
+<!-- /show -->
 
 ## ∿ Arduino 範例（.zip，每款 5~6 支 .ino）
 

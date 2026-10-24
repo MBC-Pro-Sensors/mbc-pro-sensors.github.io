@@ -165,7 +165,7 @@ let threshold = MBC.readValue(0x16, 0x07)   // threshold：1~99
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~255` 次 | number of calibrations completed since power-on (button calibrations included); not in the MATRIX big channel (tail bytes locked at 0 for the 16-ch) |
+| `0~255` 次 | number of calibrations completed since power-on (button calibrations included) |
 
 No dedicated block (use the generic `MBC.readValue(address, id)` block).
 

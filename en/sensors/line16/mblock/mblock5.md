@@ -137,7 +137,7 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Pathfinder" 
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~255` 次 | number of calibrations completed since power-on (button calibrations included); not in the MATRIX big channel (tail bytes locked at 0 for the 16-ch) |
+| `0~255` 次 | number of calibrations completed since power-on (button calibrations included) |
 
 <pre class="blocks">(Pathfinder port [1 v] calibration count :: sensing)</pre>
 

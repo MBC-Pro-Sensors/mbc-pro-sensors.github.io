@@ -129,7 +129,7 @@
         "line8_python_native_v400.py",
         "line8_python_with_lib_v400.py"
       ],
-      "size": 15313
+      "size": 15427
     },
     {
       "out": "/downloads/MBC_TOF8_Pybricks_Lib.zip",
@@ -144,22 +144,7 @@
         "MBC_laser8_Lib.py",
         "MBC_laser8_obj_Lib.py"
       ],
-      "size": 10287
-    },
-    {
-      "out": "/downloads/MiniR4ColorSensorExt_LauMo_v2.zip",
-      "label": {
-        "zh": "MATRIX Mini R4：LauMo 大通道函式庫（取代原廠 MiniR4ColorSensorExt 兩個檔）",
-        "en": "MATRIX Mini R4: LauMo big-channel library (replaces the stock MiniR4ColorSensorExt files)"
-      },
-      "version": "2.0",
-      "firmware": "MATRIX 大通道",
-      "legacy": false,
-      "files": [
-        "MiniR4ColorSensorExt.cpp",
-        "MiniR4ColorSensorExt.h"
-      ],
-      "size": 4198
+      "size": 10252
     },
     {
       "out": "/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext",

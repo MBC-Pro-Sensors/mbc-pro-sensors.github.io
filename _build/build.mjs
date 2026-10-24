@@ -14,6 +14,7 @@ import path from 'node:path';
 import { execSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { stripHidden } from './site-flags.mjs';
 
 const require = createRequire(import.meta.url);
 const marked = require('marked'); // v1.2.9 — same version Docsify 4.13 bundles
@@ -289,7 +290,7 @@ function renderSidebar(lang, currentUrl, g = null) {
     const active = mapped === currentUrl ? ' class="active"' : '';
     return `<a href="${mapped}"${active} title="${escAttr(stripTags(text))}">${text}</a>`;
   };
-  let html = marked(sidebarTree(fs.readFileSync(path.join(ROOT, file), 'utf8'), lang, g), { renderer, gfm: true });
+  let html = marked(sidebarTree(stripHidden(fs.readFileSync(path.join(ROOT, file), 'utf8')), lang, g), { renderer, gfm: true });
   html = html.replace(/<li>((?:(?!<li>)[\s\S])*?class="active")/, '<li class="active">$1');
   html = html.replace(/<img(?![^>]*\balt=)/g, '<img alt=""'); // decorative hub icons
   return html;
@@ -517,7 +518,7 @@ function movedLabel(target) {
 }
 
 // ------------------------------------------------- 「安裝與設定」include 與「範例」抽取（gen-guides.mjs 產的頁面裡的指令，建站時展開）
-const readSrc = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8').replace(/^﻿/, '');
+const readSrc = (rel) => stripHidden(fs.readFileSync(path.join(ROOT, rel), 'utf8').replace(/^﻿/, ''));
 // 標題整體往下移，最高一層變成 minLevel（include 進來的內容放在 ## 段落底下）
 function demote(lines, fence, minLevel) {
   let top = 7;
@@ -855,7 +856,7 @@ const sitemap = [];
 for (const file of pages) {
   const lang = file.startsWith('en/') ? 'en' : 'zh';
   const url = urlFor(file);
-  let src = fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/^﻿/, '');
+  let src = stripHidden(fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/^﻿/, ''));
   // 三層導覽：<!-- guide: 產品/主機(/軟體) -->；「安裝與設定」include 與「範例」抽取在這裡展開
   const gm = src.match(/^<!-- guide: ([^/\s]+)\/([^/\s]+)(?:\/([^/\s]+))? -->/m);
   const guide = gm ? { key: gm[1], host: gm[2], sw: gm[3] || null } : null;

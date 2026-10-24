@@ -5,6 +5,12 @@
 
 這一頁只講 **MATRIXblock 原廠顏色感應器積木（0x22）**：在 MATRIX Mini R4 上用它讀測距者 8 路 (TOF8)的安裝步驟、每個值怎麼讀、能用的命令與範例。要換產品、主機或軟體，用上方的切換列。
 
+## 要買哪個版本、怎麼接
+
+買 **MATRIX 版**，用 MATRIX 原廠 4 pin 感應器線接 Mini R4 的 I2C1 或 I2C2（位址 `0x22`），積木裡選對應的孔。
+
+<figure class="ref-fig"><img src="/images/figures/tof8/wiring-matrix.svg" alt="測距者 8 路 (TOF8) × MATRIX Mini R4" loading="lazy"></figure>
+
 ## 安裝與設定
 
 <!-- setup: _build/guides/software/matrix-matrixblock.zh.md + _build/guides/product/tof8/matrix-matrixblock.zh.md {"product":"測距者 8 路 (TOF8)","edition":"MATRIX 版","port":"I2C1","lib":"","libUrl":"","addr":"0x29"} -->
@@ -35,7 +41,7 @@ int raw = MiniR4.I2C1.MXColor.getColor(R);   // 第 1 組
 
 </section>
 
-<p class="ref-missing"><b>這個軟體讀不到</b>：最近距離 cm、最近方向、最空曠距離 cm、最空曠方向、正前方 cm、最近距離 mm、初始化位元圖、故障位元圖、正前方距離 mm、第 1~8 顆距離 mm。要用這些值請改用 <a href="/sensors/tof8/matrix/bigchannel.md">大通道函式庫</a>。</p>
+<p class="ref-missing"><b>這個軟體讀不到</b>：最近距離 cm、最近方向、最空曠距離 cm、最空曠方向、正前方 cm、最近距離 mm、初始化位元圖、故障位元圖、正前方距離 mm、第 1~8 顆距離 mm。要用這些值請改用 <a href="/sensors/tof8/arduino/ide.md">Arduino</a>／<a href="/sensors/tof8/mblock/mblock5.md">mBlock</a>／<a href="/sensors/tof8/microbit/makecode.md">micro:bit</a>。</p>
 
 ## 範例
 
@@ -43,7 +49,7 @@ int raw = MiniR4.I2C1.MXColor.getColor(R);   // 第 1 組
 
 ## 其他問題
 
-- **原廠積木和大通道可以一起用嗎？** 不行：兩種要裝不同的函式庫檔，一個程式只能選一種。
+
 
 還有問題？到 [聯絡我們](/contact.md) 附上你用的軟體和程式截圖。
 

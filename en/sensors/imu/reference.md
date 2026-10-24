@@ -14,7 +14,7 @@ Every value and command the IMU Gyro Sensor reports to each host: what it means,
 | Item | Detail |
 | :--- | :--- |
 | Factory I2C address | `0x6A` |
-| hw[0] | `1`（F0 high byte; ID high byte in SPIKE mode 8 / EV3 mode 5; big-channel byte 28） |
+| hw[0] | `1`（F0 high byte; ID high byte in SPIKE mode 8 / EV3 mode 5） |
 | Model | `IMU` |
 | Protocol version | `2` |
 | Hosts | EV3, Arduino I2C, mBlock, MATRIX, micro:bit |
@@ -26,10 +26,10 @@ Every value and command the IMU Gyro Sensor reports to each host: what it means,
 | [`01`](#v01) | [gyro 3D heading](#v01) | -32768~32767 ° | ✓ | ✓ | ✓ | ✓ | ✓ |
 | [`02`](#v02) | [fused heading](#v02) | -32768~32767 ° | ✓ | ✓ | ✓ | ✓ | ✓ |
 | [`03`](#v03) | [gyro 1D heading](#v03) | -32768~32767 ° | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`04`](#v04) | [magnetic heading](#v04) | -32768~32767 ° | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`05`](#v05) | [yaw rate](#v05) | -32768~32767 0.1 dps | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`06`](#v06) | [pitch angle](#v06) | -90~+90 ° | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`07`](#v07) | [pitch rate](#v07) | -32768~32767 0.1 dps | ✓ | ✓ | ✓ | ✓ | ✓ |
+| [`04`](#v04) | [magnetic heading](#v04) | -32768~32767 ° | ✓ | ✓ | ✓ | — | ✓ |
+| [`05`](#v05) | [yaw rate](#v05) | -32768~32767 0.1 dps | ✓ | ✓ | ✓ | — | ✓ |
+| [`06`](#v06) | [pitch angle](#v06) | -90~+90 ° | ✓ | ✓ | ✓ | — | ✓ |
+| [`07`](#v07) | [pitch rate](#v07) | -32768~32767 0.1 dps | ✓ | ✓ | ✓ | — | ✓ |
 | [`08`](#v08) | [magnetometer trust](#v08) | 0~255 | — | ✓ | ✓ | — | ✓ |
 | [`09`](#v09) | [magnetic disturbance](#v09) | 0~255 0.01° | — | ✓ | ✓ | — | ✓ |
 | [`0A`](#v0a) | [face up](#v0a) | 0~5 | — | ✓ | ✓ | — | ✓ |
@@ -99,18 +99,11 @@ Block returns gyro 3D heading（-32768~32767 °）。Host sends `[01]` → reply
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 R~G (+32768); big byte 0~1 i16. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
+0x22 R~G (+32768).
 
 ```cpp
-// A. stock 0x22 blocks：R~G = gyro 3D heading（R = (航向+32768) 低 byte、G = 高 byte（R4 大通道版：低在前）；主機 hi×256+lo−32768）
+// A. stock 0x22 blocks：R~G = gyro 3D heading（R = (航向+32768) 低 byte、G = 高 byte（R4 版：低在前）；主機 hi×256+lo−32768）
 int raw = MiniR4.I2C1.MXColor.getColor(R);   // group 1
-```
-
-**B. big channel (LauMo library)**
-
-```cpp
-// B. big channel byte 0~1：gyro 3D heading（鎖住（R4 大通道版已流出））
-int headingGyro3D = bigI16(0);
 ```
 
 </details>
@@ -188,18 +181,11 @@ Block returns fused heading（-32768~32767 °）。Host sends `[02]` → reply `
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 B~C (+32768); big byte 2~3 i16. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
+0x22 B~C (+32768).
 
 ```cpp
 // A. stock 0x22 blocks：B~C = fused heading（B = 低 byte、C = 高 byte）
 int raw = MiniR4.I2C1.MXColor.getColor(B);   // group 1
-```
-
-**B. big channel (LauMo library)**
-
-```cpp
-// B. big channel byte 2~3：fused heading（鎖住）
-int headingFused = bigI16(2);
 ```
 
 </details>
@@ -277,18 +263,11 @@ Block returns gyro 1D heading（-32768~32767 °）。Host sends `[03]` → reply
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 M~Y (+32768); big byte 4~5 i16. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
+0x22 M~Y (+32768).
 
 ```cpp
 // A. stock 0x22 blocks：M~Y = gyro 1D heading（M = 低 byte、Y = 高 byte；K（10）= 0）
 int raw = MiniR4.I2C1.MXColor.getColor(M);   // group 1
-```
-
-**B. big channel (LauMo library)**
-
-```cpp
-// B. big channel byte 4~5：gyro 1D heading（鎖住）
-int headingGyro1D = bigI16(4);
 ```
 
 </details>
@@ -366,12 +345,7 @@ Block returns magnetic heading（-32768~32767 °）。Host sends `[04]` → repl
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 6~7 i16. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 6~7：magnetic heading（鎖住）
-int headingMag = bigI16(6);
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -449,12 +423,7 @@ Block returns yaw rate（-32768~32767 0.1 dps）。Host sends `[05]` → reply `
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 8~9 i16. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 8~9：yaw rate（#67 追加（Hue 積木））
-int yawRate = bigI16(8);
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -532,12 +501,7 @@ Block returns pitch angle（-90~+90 °）。Host sends `[06]` → reply `[lo][hi
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 10~11 i16. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 10~11：pitch angle（#67 追加）
-int pitch = bigI16(10);
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -615,12 +579,7 @@ Block returns pitch rate（-32768~32767 0.1 dps）。Host sends `[07]` → reply
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-no 0x22; big byte 12~13 i16. A and B need different library files and cannot be mixed; `bigU8()` helpers are on this product's MATRIX page.
-
-```cpp
-// B. big channel byte 12~13：pitch rate（#67 追加）
-int pitchRate = bigI16(12);
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -683,7 +642,7 @@ Block returns magnetometer trust（0~255）。Host sends `[08]` → reply `[lo][
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available over MATRIX 0x22 or the big channel.
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -746,7 +705,7 @@ Block returns magnetic disturbance（0~255 0.01°）。Host sends `[09]` → rep
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available over MATRIX 0x22 or the big channel.
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -809,7 +768,7 @@ Block returns face up（0~5）。Host sends `[0A]` → reply `[lo][hi][0A ^ lo ^
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available over MATRIX 0x22 or the big channel.
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -875,7 +834,7 @@ Block returns gyro axis 1~3（-32768~32767 0.1 dps）。Host sends `[10]` → re
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available over MATRIX 0x22 or the big channel.
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -941,7 +900,7 @@ Block returns accel axis 1~3（-32768~32767 mg）。Host sends `[13]` → reply 
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available over MATRIX 0x22 or the big channel.
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1007,7 +966,7 @@ Block returns mag axis 1~3（-32768~32767 mG）。Host sends `[16]` → reply `[
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available over MATRIX 0x22 or the big channel.
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1028,7 +987,7 @@ let mag = MBC.readValues(0x6A, 0x16, 3)   // mag axis 1~3
 
 ## Write commands
 
-Only Arduino I2C, mBlock, micro:bit (and MATRIX big-channel F1 / F2) can send commands; the SPIKE / EV3 ports are read-only.
+Only Arduino I2C, mBlock and micro:bit can send commands; the SPIKE / EV3 ports are read-only.
 
 <section id="ce0" class="ref-item ref-cmd">
 
@@ -1070,11 +1029,7 @@ Host sends `[E0]` → reply `[00][00][E0]` (ack), then it runs.
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Big-channel library only; the stock 0x22 library has no actions.
-
-```cpp
-MiniR4.I2C1.MXColor.getColor(C);   // big channel F1~F4（any of them works, here F1 = Cyan）= zero heading, returns the completion counter from the previous packet
-```
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1132,7 +1087,7 @@ Host sends `[E1]` → reply `[00][00][E1]` (ack), then it runs; F3 bit4 = 1 whil
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available on MATRIX (the big channel only carries the F1 / F2 actions).
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1189,7 +1144,7 @@ Host sends `[E2]` → reply `[00][00][E2]` (ack), then it runs.
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available on MATRIX (the big channel only carries the F1 / F2 actions).
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1247,7 +1202,7 @@ Host sends `[E3]` → reply `[00][00][E3]` (ack), then it runs; F3 bit5 = 1 whil
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available on MATRIX (the big channel only carries the F1 / F2 actions).
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1304,7 +1259,7 @@ Host sends `[E4]` → reply `[00][00][E4]` (ack), then it runs.
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-Not available on MATRIX (the big channel only carries the F1 / F2 actions).
+Not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1325,7 +1280,7 @@ MBC.writeCmd(0x6A, 0xE4)   // end magnetometer calibration
 
 ## Status flags F3
 
-One status per bit of `F3`; read directly over I2C, mBlock, micro:bit; MATRIX big-channel byte 24.
+One status per bit of `F3`; read directly over I2C, mBlock, micro:bit.
 
 | bit | Name | Meaning |
 | :--- | :--- | :--- |
@@ -1385,11 +1340,7 @@ The extension splits status flags F3 into boolean blocks (ready, calibrating, �
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-The shipped big-channel layout is locked; the status byte stays 0.
-
-```cpp
-uint8_t st = MiniR4.I2C1.MXColor.getColorID();   // shipped product: byte 24 stays 0
-```
+The status flags are not available with the stock MATRIX 0x22 blocks.
 
 </details>
 
@@ -1416,7 +1367,7 @@ Identical on every product, documented once in the [universal I2C protocol](/en/
 | [`F0`](/en/i2c-protocol.md#rf0) | device ID | low byte = factory I2C address (unchanged after re-addressing), high byte = hw[0] (channels / sensors / variant) |
 | [`F1`](/en/i2c-protocol.md#rf1) | protocol version | 2 for this release (same number reported in SPIKE mode 8 v[1]) |
 | [`F2`](/en/i2c-protocol.md#rf2) | firmware version | major×100 + minor (e.g. 102 = 1.2) |
-| [`F3`](/en/i2c-protocol.md#rf3) | status flags | b0 = ready; other bits per product (see flags); same byte as MATRIX big-channel byte 24 |
+| [`F3`](/en/i2c-protocol.md#rf3) | status flags | b0 = ready; other bits per product (see flags) |
 | [`F4`](/en/i2c-protocol.md#rf4) | update counter | +1 every 10 ms snapshot, wraps 0~255 (2.56 s per cycle, not usable for reboot detection; frozen = module busy) |
 | [`F5`](/en/i2c-protocol.md#rf5) | uptime seconds | seconds since boot, saturates at 32767 (~9 h); a drop means the module rebooted |
 | [`F8`](/en/i2c-protocol.md#rf8) | change I2C address | [F8][new 0x08~0x77][~new], saved to EEPROM, takes effect after reboot; [F8][0x00][0xFF] = back to factory address |
@@ -1428,8 +1379,7 @@ Generated by `_build/gen-reference.mjs` from `_build/protocol/imu.json` (single 
 
 - hw0 = 1（共識 #6）；EV3 模式 4 = [0x6A | 1<<8, 韌體主×100+次, 0, 0]（格式 B 再補 2 個 0），模式 5 改送俯仰角速度（取代 #65 放的 ID）。
 - EV3 鎖住模式 0／1／3 照盤點程式碼：0 = 陀螺 3D、1 = 融合航向、3 = [陀螺 1D, 磁力航向]（INO:213 註解寫反，以程式為準）。
-- 0x22 照 R4 大通道版（出貨版）鎖住：命令 4~9 = 三個航向 +32768 的「低 byte 在前、高 byte 在後」；盤點檔分析的是主韌體（高在前），主韌體 #67 改成跟 R4 版逐 byte 相同。命令 10~12 = 0；0x01、0x0A、0x0F、F1~F4 都觸發航向歸零（刻意，不動）。
-- 大通道 [0..7] 四個航向 int16 鎖住；[8..9] 轉向軸角速度、[10..11] 俯仰角、[12..13] 俯仰角速度為 #67 追加；[14..23] 與尾段 24~28 維持 0（教練程式可能讀 ColorID／Cyan 回傳值，不放 F3／ID）。
+- 0x22 照 R4 版（出貨版）鎖住：命令 4~9 = 三個航向 +32768 的「低 byte 在前、高 byte 在後」；盤點檔分析的是主韌體（高在前），主韌體 #67 改成跟 R4 版逐 byte 相同。命令 10~12 = 0；0x01、0x0A、0x0F、F1~F4 都觸發航向歸零（刻意，不動）。
 - SPIKE 不做（hosts.spike = false，使用者先前決定），所有值 spike = []。
 - B-13：E1~E4 加速度計／磁力計校準開始／結束補回（v1 的 0x20 = 01/02/03/04），I2C 定案 §3 只列 E0。busyFlag：E1 → b4、E3 → b5。
 - 俯仰角範圍定案沒寫（韌體尚無現成值，#67 用 atan2 新算），range 先填「°」不給 min/max，韌體做好後再補。

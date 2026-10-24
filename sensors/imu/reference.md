@@ -14,7 +14,7 @@
 | 項目 | 內容 |
 | :--- | :--- |
 | I2C 出廠位址 | `0x6A` |
-| hw[0] | `1`（F0 高 byte、SPIKE 模式 8／EV3 模式 5 ID 高 byte、大通道 byte 28） |
+| hw[0] | `1`（F0 高 byte、SPIKE 模式 8／EV3 模式 5 ID 高 byte） |
 | 型號 | `IMU` |
 | 協議版本 | `2` |
 | 支援平台 | EV3、Arduino I2C、mBlock、MATRIX、micro:bit |
@@ -26,10 +26,10 @@
 | [`01`](#v01) | [陀螺 3D 航向](#v01) | -32768~32767 ° | ✓ | ✓ | ✓ | ✓ | ✓ |
 | [`02`](#v02) | [融合航向](#v02) | -32768~32767 ° | ✓ | ✓ | ✓ | ✓ | ✓ |
 | [`03`](#v03) | [陀螺 1D 航向](#v03) | -32768~32767 ° | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`04`](#v04) | [磁力航向](#v04) | -32768~32767 ° | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`05`](#v05) | [轉向軸角速度](#v05) | -32768~32767 0.1 dps | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`06`](#v06) | [俯仰角](#v06) | -90~+90 ° | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`07`](#v07) | [俯仰角速度](#v07) | -32768~32767 0.1 dps | ✓ | ✓ | ✓ | ✓ | ✓ |
+| [`04`](#v04) | [磁力航向](#v04) | -32768~32767 ° | ✓ | ✓ | ✓ | — | ✓ |
+| [`05`](#v05) | [轉向軸角速度](#v05) | -32768~32767 0.1 dps | ✓ | ✓ | ✓ | — | ✓ |
+| [`06`](#v06) | [俯仰角](#v06) | -90~+90 ° | ✓ | ✓ | ✓ | — | ✓ |
+| [`07`](#v07) | [俯仰角速度](#v07) | -32768~32767 0.1 dps | ✓ | ✓ | ✓ | — | ✓ |
 | [`08`](#v08) | [磁力信任度](#v08) | 0~255 | — | ✓ | ✓ | — | ✓ |
 | [`09`](#v09) | [磁場干擾度](#v09) | 0~255 0.01° | — | ✓ | ✓ | — | ✓ |
 | [`0A`](#v0a) | [朝上的面](#v0a) | 0~5 | — | ✓ | ✓ | — | ✓ |
@@ -99,18 +99,11 @@ int16_t headingGyro3D = mbcRead(0x6A, 0x01);   // 陀螺 3D 航向：-32768~3276
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 R~G (+32768)；大通道 byte 0~1 i16。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
+0x22 R~G (+32768)。
 
 ```cpp
-// A. 原廠 0x22 積木：R~G = 陀螺 3D 航向（R = (航向+32768) 低 byte、G = 高 byte（R4 大通道版：低在前）；主機 hi×256+lo−32768）
+// A. 原廠 0x22 積木：R~G = 陀螺 3D 航向（R = (航向+32768) 低 byte、G = 高 byte（R4 版：低在前）；主機 hi×256+lo−32768）
 int raw = MiniR4.I2C1.MXColor.getColor(R);   // 第 1 組
-```
-
-**B. 大通道（LauMo 函式庫）**
-
-```cpp
-// B. 大通道 byte 0~1：陀螺 3D 航向（鎖住（R4 大通道版已流出））
-int headingGyro3D = bigI16(0);
 ```
 
 </details>
@@ -188,18 +181,11 @@ int16_t headingFused = mbcRead(0x6A, 0x02);   // 融合航向：-32768~32767 °
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 B~C (+32768)；大通道 byte 2~3 i16。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
+0x22 B~C (+32768)。
 
 ```cpp
 // A. 原廠 0x22 積木：B~C = 融合航向（B = 低 byte、C = 高 byte）
 int raw = MiniR4.I2C1.MXColor.getColor(B);   // 第 1 組
-```
-
-**B. 大通道（LauMo 函式庫）**
-
-```cpp
-// B. 大通道 byte 2~3：融合航向（鎖住）
-int headingFused = bigI16(2);
 ```
 
 </details>
@@ -277,18 +263,11 @@ int16_t headingGyro1D = mbcRead(0x6A, 0x03);   // 陀螺 1D 航向：-32768~3276
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 M~Y (+32768)；大通道 byte 4~5 i16。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
+0x22 M~Y (+32768)。
 
 ```cpp
 // A. 原廠 0x22 積木：M~Y = 陀螺 1D 航向（M = 低 byte、Y = 高 byte；K（10）= 0）
 int raw = MiniR4.I2C1.MXColor.getColor(M);   // 第 1 組
-```
-
-**B. 大通道（LauMo 函式庫）**
-
-```cpp
-// B. 大通道 byte 4~5：陀螺 1D 航向（鎖住）
-int headingGyro1D = bigI16(4);
 ```
 
 </details>
@@ -366,12 +345,7 @@ int16_t headingMag = mbcRead(0x6A, 0x04);   // 磁力航向：-32768~32767 °
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 6~7 i16。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 6~7：磁力航向（鎖住）
-int headingMag = bigI16(6);
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -449,12 +423,7 @@ int16_t yawRate = mbcRead(0x6A, 0x05);   // 轉向軸角速度：-32768~32767 0.
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 8~9 i16。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 8~9：轉向軸角速度（#67 追加（Hue 積木））
-int yawRate = bigI16(8);
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -532,12 +501,7 @@ int16_t pitch = mbcRead(0x6A, 0x06);   // 俯仰角：-90~+90 °
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 10~11 i16。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 10~11：俯仰角（#67 追加）
-int pitch = bigI16(10);
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -615,12 +579,7 @@ int16_t pitchRate = mbcRead(0x6A, 0x07);   // 俯仰角速度：-32768~32767 0.1
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 12~13 i16。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 12~13：俯仰角速度（#67 追加）
-int pitchRate = bigI16(12);
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -683,7 +642,7 @@ int16_t magTrust = mbcRead(0x6A, 0x08);   // 磁力信任度：0~255
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 0x22 與大通道都沒有這個值。
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -746,7 +705,7 @@ int16_t magDisturb = mbcRead(0x6A, 0x09);   // 磁場干擾度：0~255 0.01°
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 0x22 與大通道都沒有這個值。
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -809,7 +768,7 @@ int16_t upFace = mbcRead(0x6A, 0x0A);   // 朝上的面：0~5
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 0x22 與大通道都沒有這個值。
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -875,7 +834,7 @@ Serial.println();
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 0x22 與大通道都沒有這個值。
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -941,7 +900,7 @@ Serial.println();
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 0x22 與大通道都沒有這個值。
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -1007,7 +966,7 @@ Serial.println();
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 0x22 與大通道都沒有這個值。
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -1028,7 +987,7 @@ let mag = MBC.readValues(0x6A, 0x16, 3)   // 磁力 1~3 軸
 
 ## 寫入命令
 
-只有 Arduino I2C、mBlock、micro:bit（與 MATRIX 大通道的 F1／F2）能送命令；SPIKE／EV3 接頭是唯讀的。
+只有 Arduino I2C、mBlock、micro:bit 能送命令；SPIKE／EV3 接頭是唯讀的。
 
 <section id="ce0" class="ref-item ref-cmd">
 
@@ -1070,11 +1029,7 @@ mbcWrite(0x6A, 0xE0);   // 航向歸零
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-只有大通道函式庫有這個動作；0x22 原廠函式庫沒有。
-
-```cpp
-MiniR4.I2C1.MXColor.getColor(C);   // 大通道 F1~F4（任一個都可以，這裡用 F1 = Cyan）= 航向歸零，回傳上一包的完成次數
-```
+MATRIX 原廠 0x22 積木沒有這個命令。
 
 </details>
 
@@ -1132,7 +1087,7 @@ while (mbcRead(0x6A, 0xF3) & (1 << 4)) delay(10);   // 等 F3 bit4 歸零 = 做�
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 沒有這個命令（大通道只有 F1／F2 兩個動作）。
+MATRIX 原廠 0x22 積木沒有這個命令。
 
 </details>
 
@@ -1189,7 +1144,7 @@ mbcWrite(0x6A, 0xE2);   // 加速度計校準結束
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 沒有這個命令（大通道只有 F1／F2 兩個動作）。
+MATRIX 原廠 0x22 積木沒有這個命令。
 
 </details>
 
@@ -1247,7 +1202,7 @@ while (mbcRead(0x6A, 0xF3) & (1 << 5)) delay(10);   // 等 F3 bit5 歸零 = 做�
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 沒有這個命令（大通道只有 F1／F2 兩個動作）。
+MATRIX 原廠 0x22 積木沒有這個命令。
 
 </details>
 
@@ -1304,7 +1259,7 @@ mbcWrite(0x6A, 0xE4);   // 磁力計校準結束
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 沒有這個命令（大通道只有 F1／F2 兩個動作）。
+MATRIX 原廠 0x22 積木沒有這個命令。
 
 </details>
 
@@ -1325,7 +1280,7 @@ MBC.writeCmd(0x6A, 0xE4)   // 磁力計校準結束
 
 ## 狀態旗標 F3
 
-`F3` 每個 bit 一個狀態；I2C、mBlock、micro:bit 直接讀，MATRIX 大通道是 byte 24。
+`F3` 每個 bit 一個狀態；I2C、mBlock、micro:bit 直接讀。
 
 | bit | 名稱 | 說明 |
 | :--- | :--- | :--- |
@@ -1385,11 +1340,7 @@ bool magAutoCalDone = st & (1 << 7);   // 磁力自動校準已收斂
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-已流出的大通道格式鎖住，狀態 byte 維持 0。
-
-```cpp
-uint8_t st = MiniR4.I2C1.MXColor.getColorID();   // 這款已流出：byte 24 維持 0
-```
+MATRIX 原廠 0x22 積木讀不到狀態旗標。
 
 </details>
 
@@ -1416,7 +1367,7 @@ let ready = (st & 1) != 0
 | [`F0`](/i2c-protocol.md#rf0) | 裝置 ID | 低 byte = 出廠 I2C 位址（換位址後不變），高 byte = hw[0]（通道數／顆數／類別） |
 | [`F1`](/i2c-protocol.md#rf1) | 協議版本 | 本版 = 2（SPIKE 模式 8 v[1]、EV3 ID 封包同一個數字） |
 | [`F2`](/i2c-protocol.md#rf2) | 韌體版本 | 主版×100 + 次版（例 102 = 1.2） |
-| [`F3`](/i2c-protocol.md#rf3) | 狀態旗標 | b0 就緒，其餘各產品定義（見各產品 flags）；MATRIX 大通道 byte 24 同一個 byte |
+| [`F3`](/i2c-protocol.md#rf3) | 狀態旗標 | b0 就緒，其餘各產品定義（見各產品 flags） |
 | [`F4`](/i2c-protocol.md#rf4) | 更新序號 | 每 10 ms 快照 +1，0~255 循環（2.56 秒一圈，不能拿來偵測重開機；不動 = 模組忙） |
 | [`F5`](/i2c-protocol.md#rf5) | 開機秒數 | 開機後秒數，到 32767 停住（約 9 小時）；數字變小 = 重開機過 |
 | [`F8`](/i2c-protocol.md#rf8) | 換 I2C 位址 | [F8][新位址 0x08~0x77][新位址取反]，存 EEPROM，重開機後生效；[F8][0x00][0xFF] = 回出廠位址（共識 B-5） |
@@ -1428,8 +1379,7 @@ let ready = (st & 1) != 0
 
 - hw0 = 1（共識 #6）；EV3 模式 4 = [0x6A | 1<<8, 韌體主×100+次, 0, 0]（格式 B 再補 2 個 0），模式 5 改送俯仰角速度（取代 #65 放的 ID）。
 - EV3 鎖住模式 0／1／3 照盤點程式碼：0 = 陀螺 3D、1 = 融合航向、3 = [陀螺 1D, 磁力航向]（INO:213 註解寫反，以程式為準）。
-- 0x22 照 R4 大通道版（出貨版）鎖住：命令 4~9 = 三個航向 +32768 的「低 byte 在前、高 byte 在後」；盤點檔分析的是主韌體（高在前），主韌體 #67 改成跟 R4 版逐 byte 相同。命令 10~12 = 0；0x01、0x0A、0x0F、F1~F4 都觸發航向歸零（刻意，不動）。
-- 大通道 [0..7] 四個航向 int16 鎖住；[8..9] 轉向軸角速度、[10..11] 俯仰角、[12..13] 俯仰角速度為 #67 追加；[14..23] 與尾段 24~28 維持 0（教練程式可能讀 ColorID／Cyan 回傳值，不放 F3／ID）。
+- 0x22 照 R4 版（出貨版）鎖住：命令 4~9 = 三個航向 +32768 的「低 byte 在前、高 byte 在後」；盤點檔分析的是主韌體（高在前），主韌體 #67 改成跟 R4 版逐 byte 相同。命令 10~12 = 0；0x01、0x0A、0x0F、F1~F4 都觸發航向歸零（刻意，不動）。
 - SPIKE 不做（hosts.spike = false，使用者先前決定），所有值 spike = []。
 - B-13：E1~E4 加速度計／磁力計校準開始／結束補回（v1 的 0x20 = 01/02/03/04），I2C 定案 §3 只列 E0。busyFlag：E1 → b4、E3 → b5。
 - 俯仰角範圍定案沒寫（韌體尚無現成值，#67 用 atan2 新算），range 先填「°」不給 min/max，韌體做好後再補。

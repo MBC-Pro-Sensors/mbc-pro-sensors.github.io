@@ -14,7 +14,7 @@
 | 項目 | 內容 |
 | :--- | :--- |
 | I2C 出廠位址 | `0x42` |
-| hw[0] | `2`（F0 高 byte、SPIKE 模式 8／EV3 模式 5 ID 高 byte、大通道 byte 28） |
+| hw[0] | `2`（F0 高 byte、SPIKE 模式 8／EV3 模式 5 ID 高 byte） |
 | 型號 | `PS4` |
 | 協議版本 | `2` |
 | 支援平台 | SPIKE、EV3、Arduino I2C、mBlock、MATRIX、micro:bit |
@@ -23,13 +23,13 @@
 
 | 編號 | 值 | 範圍 | SPIKE | EV3 | Arduino I2C | mBlock | MATRIX | micro:bit |
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| [`01`](#v01) | [十六鍵](#v01) | 0~65535 bit | ✓ | — | ✓ | ✓ | ✓ | ✓ |
+| [`01`](#v01) | [十六鍵](#v01) | 0~65535 bit | ✓ | — | ✓ | ✓ | — | ✓ |
 | [`02`](#v02) | [方向鍵](#v02) | 0~15 bit | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`03`](#v03) | [形狀鍵](#v03) | 0~15 bit | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| [`03`](#v03) | [形狀鍵](#v03) | 0~15 bit | ✓ | ✓ | ✓ | ✓ | — | ✓ |
 | [`04`](#v04) | [肩鍵](#v04) | 0~15 bit | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`05`](#v05) | [功能鍵](#v05) | 0~15 bit | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| [`05`](#v05) | [功能鍵](#v05) | 0~15 bit | ✓ | ✓ | ✓ | ✓ | — | ✓ |
 | [`06`](#v06) | [已連線](#v06) | 0~1 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| [`07`](#v07) | [電量](#v07) | 0~100 % | ✓ | — | ✓ | ✓ | ✓ | ✓ |
+| [`07`](#v07) | [電量](#v07) | 0~100 % | ✓ | — | ✓ | ✓ | — | ✓ |
 | [`08`](#v08) | [L2 類比](#v08) | 0~255 | — | — | ✓ | ✓ | — | ✓ |
 | [`09`](#v09) | [R2 類比](#v09) | 0~255 | — | — | ✓ | ✓ | — | ✓ |
 | [`0A`](#v0a) | [系統鍵](#v0a) | 0~3 bit | — | — | ✓ | ✓ | — | ✓ |
@@ -112,12 +112,7 @@ int16_t buttons16 = mbcRead(0x42, 0x01);   // 十六鍵：0~65535 bit
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 8~9 u16。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 8~9：十六鍵（PSX 排列（Saturation 積木讀 2 byte））
-int buttons16 = bigU16(8);
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -233,18 +228,11 @@ int16_t dpad = mbcRead(0x42, 0x02);   // 方向鍵：0~15 bit
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 R；大通道 byte 0 u8。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
+0x22 R。
 
 ```cpp
 // A. 原廠 0x22 積木：R = 方向鍵（R = 方向鍵 | 形狀鍵<<4（上 1 右 2 下 4 左 8、▲16 ●32 ✕64 ■128））
 int dpad = MiniR4.I2C1.MXColor.getColor(R);
-```
-
-**B. 大通道（LauMo 函式庫）**
-
-```cpp
-// B. 大通道 byte 0：方向鍵
-int dpad = bigU8(0);
 ```
 
 </details>
@@ -358,12 +346,7 @@ int16_t shapeKeys = mbcRead(0x42, 0x03);   // 形狀鍵：0~15 bit
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 1 u8。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 1：形狀鍵
-int shapeKeys = bigU8(1);
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -470,18 +453,11 @@ int16_t shoulderKeys = mbcRead(0x42, 0x04);   // 肩鍵：0~15 bit
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 G；大通道 byte 2 u8。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
+0x22 G。
 
 ```cpp
 // A. 原廠 0x22 積木：G = 肩鍵（G = 肩鍵 | 功能鍵<<4（L2 1 R2 2 L1 4 R1 8、SELECT 16 L3 32 R3 64 START 128））
 int shoulderKeys = MiniR4.I2C1.MXColor.getColor(G);
-```
-
-**B. 大通道（LauMo 函式庫）**
-
-```cpp
-// B. 大通道 byte 2：肩鍵
-int shoulderKeys = bigU8(2);
 ```
 
 </details>
@@ -589,12 +565,7 @@ int16_t funcKeys = mbcRead(0x42, 0x05);   // 功能鍵：0~15 bit
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 3 u8。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 3：功能鍵
-int funcKeys = bigU8(3);
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -697,18 +668,11 @@ int16_t connected = mbcRead(0x42, 0x06);   // 已連線：0~1
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 K；大通道 byte 10 u8。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
+0x22 K。
 
 ```cpp
 // A. 原廠 0x22 積木：K = 已連線（K = 1／0）
 int connected = MiniR4.I2C1.MXColor.getColor(K);
-```
-
-**B. 大通道（LauMo 函式庫）**
-
-```cpp
-// B. 大通道 byte 10：已連線
-int connected = bigU8(10);
 ```
 
 </details>
@@ -799,12 +763,7 @@ int16_t battery = mbcRead(0x42, 0x07);   // 電量：0~100 %
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 沒有；大通道 byte 11 u8。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
-
-```cpp
-// B. 大通道 byte 11：電量
-int battery = bigU8(11);
-```
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -874,7 +833,7 @@ int16_t l2Analog = mbcRead(0x42, 0x08);   // L2 類比：0~255
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 0x22 與大通道都沒有這個值。
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -944,7 +903,7 @@ int16_t r2Analog = mbcRead(0x42, 0x09);   // R2 類比：0~255
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 0x22 與大通道都沒有這個值。
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -1014,7 +973,7 @@ int16_t sysKeys = mbcRead(0x42, 0x0A);   // 系統鍵：0~3 bit
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 0x22 與大通道都沒有這個值。
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -1082,7 +1041,7 @@ int16_t padType = mbcRead(0x42, 0x0B);   // 手把類型：0~4
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 0x22 與大通道都沒有這個值。
+MATRIX 原廠 0x22 積木沒有這個值。
 
 </details>
 
@@ -1201,19 +1160,11 @@ Serial.println();
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-0x22 B~Y；大通道 byte 4~7 u8。A、B 要裝不同函式庫檔，不能同時用；`bigU8()` 等小幫手見本產品的 MATRIX 頁。
+0x22 B~Y。
 
 ```cpp
 // A. 原廠 0x22 積木：B~Y = 搖桿 1~4 軸（B C M Y = LX LY RX RY，0~99，50 = 中間）
 int raw = MiniR4.I2C1.MXColor.getColor(B);   // 第 1 組
-```
-
-**B. 大通道（LauMo 函式庫）**
-
-```cpp
-// B. 大通道 byte 4~7：搖桿 1~4 軸
-int stick[4];
-for (uint8_t i = 0; i < 4; i++) stick[i] = bigU8(4 + i);
 ```
 
 </details>
@@ -1235,7 +1186,7 @@ let stick = MBC.readValues(0x42, 0x10, 4)   // 搖桿 1~4 軸
 
 ## 寫入命令
 
-只有 Arduino I2C、mBlock、micro:bit（與 MATRIX 大通道的 F1／F2）能送命令；SPIKE／EV3 接頭是唯讀的。
+只有 Arduino I2C、mBlock、micro:bit 能送命令；SPIKE／EV3 接頭是唯讀的。
 
 <section id="ce5" class="ref-item ref-cmd">
 
@@ -1284,7 +1235,7 @@ mbcWrite(0x42, 0xE5, 128);   // 震動（強度 0~255）
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 沒有這個命令（大通道只有 F1／F2 兩個動作）。
+MATRIX 原廠 0x22 積木沒有這個命令。
 
 </details>
 
@@ -1348,7 +1299,7 @@ mbcWrite(0x42, 0xE6, 128, 128, 128);   // 燈條顏色（紅 0~255、綠 0~255�
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-MATRIX 沒有這個命令（大通道只有 F1／F2 兩個動作）。
+MATRIX 原廠 0x22 積木沒有這個命令。
 
 </details>
 
@@ -1369,7 +1320,7 @@ MBC.writeCmd(0x42, 0xE6, [50, 50, 50])   // 燈條顏色
 
 ## 狀態旗標 F3
 
-`F3` 每個 bit 一個狀態；I2C、mBlock、micro:bit 直接讀，MATRIX 大通道是 byte 24。
+`F3` 每個 bit 一個狀態；I2C、mBlock、micro:bit 直接讀。
 
 | bit | 名稱 | 說明 |
 | :--- | :--- | :--- |
@@ -1435,12 +1386,7 @@ bool connected = st & (1 << 1);   // 手把已連線
 <details class="plat plat-matrix" data-host="matrix">
 <summary><span class="plat-dot"></span>MATRIX</summary>
 
-```cpp
-uint8_t st = MiniR4.I2C1.MXColor.getColorID();   // 大通道 byte 24 = F3 狀態旗標
-bool ready = st & 1;
-uint8_t id  = MiniR4.I2C1.MXColor.getColor(Y);    // byte 27 裝置 ID 0x42
-uint8_t hw0 = MiniR4.I2C1.MXColor.getColor(K);    // byte 28 hw[0] = 2
-```
+MATRIX 原廠 0x22 積木讀不到狀態旗標。
 
 </details>
 
@@ -1467,7 +1413,7 @@ let ready = (st & 1) != 0
 | [`F0`](/i2c-protocol.md#rf0) | 裝置 ID | 低 byte = 出廠 I2C 位址（換位址後不變），高 byte = hw[0]（通道數／顆數／類別） |
 | [`F1`](/i2c-protocol.md#rf1) | 協議版本 | 本版 = 2（SPIKE 模式 8 v[1]、EV3 ID 封包同一個數字） |
 | [`F2`](/i2c-protocol.md#rf2) | 韌體版本 | 主版×100 + 次版（例 102 = 1.2） |
-| [`F3`](/i2c-protocol.md#rf3) | 狀態旗標 | b0 就緒，其餘各產品定義（見各產品 flags）；MATRIX 大通道 byte 24 同一個 byte |
+| [`F3`](/i2c-protocol.md#rf3) | 狀態旗標 | b0 就緒，其餘各產品定義（見各產品 flags） |
 | [`F4`](/i2c-protocol.md#rf4) | 更新序號 | 每 10 ms 快照 +1，0~255 循環（2.56 秒一圈，不能拿來偵測重開機；不動 = 模組忙） |
 | [`F5`](/i2c-protocol.md#rf5) | 開機秒數 | 開機後秒數，到 32767 停住（約 9 小時）；數字變小 = 重開機過 |
 | [`F8`](/i2c-protocol.md#rf8) | 換 I2C 位址 | [F8][新位址 0x08~0x77][新位址取反]，存 EEPROM，重開機後生效；[F8][0x00][0xFF] = 回出廠位址（共識 B-5） |
@@ -1480,9 +1426,8 @@ let ready = (st & 1) != 0
 - 值表、命令、旗標與 PS2 完全相同（mBlock 定案「兩款相同」＋I2C 定案 §3／§4）；只有 hw0 = 2、model = PS4、E5／E6 有作用。
 - D3：SPIKE 模式 0 教育版 byte 6~7、模式 6 v[2]、模式 9 v[6] 的 button16 都是 PSX 排列（#65 已把 PS4 改成 PSX，盤點檔寫的 Bluepad32 排列已過時）。
 - 0x22 命令 4 同時裝方向鍵（低 nibble）與形狀鍵（高 nibble）、命令 5 裝肩鍵（低）與功能鍵（高）；JSON 只能把一個命令掛在一個值上，所以掛在 02／04，03／05 的 ch22 = null（內容寫在 02／04 的 note）。SPIKE 模式 0／1／2／9 的 nibble 也用同樣方式在 note 說明。
-- 搖桿：I2C／mBlock 送 ±100；EV3／0x22／大通道送 0~99（50 = 中間）、SPIKE 送 1~9（5 = 中間），不是線性 offset，主機端各自換算（網站範例已是這樣）。
+- 搖桿：I2C／mBlock 送 ±100；EV3／0x22送 0~99（50 = 中間）、SPIKE 送 1~9（5 = 中間），不是線性 offset，主機端各自換算（網站範例已是這樣）。
 - EV3 模式 3 = 方向鍵 | 形狀鍵<<4 | 已連線<<8（#67 新增 bit8）；模式 4 內容不變（[方向鍵, LX, 形狀鍵, LY]）；模式 5 改送裝置 ID 格式 B [0x42 | 2<<8, 韌體版]。
 - SPIKE 模式 3 改 [已連線, 電量, 0]（3×int8）、模式 8 改 [0x42 | 2<<8, 協議版 2, 韌體版, 更新序號]；其餘空模式 1、2、4、6 維持現狀。
-- 大通道尾段：byte 24 = F3、25~26 = 0（無 F1／F2 動作）、27 = 0x42、28 = 2；F1~F4 收到不做任何動作。
-- ESP32 從機不能時脈延展：I2C v2 在 onReceive 就預載從該編號起 32 B；0x22／大通道照 MATRIX 定案 §5 #2 預載最新一包，待上機。
+- ESP32 從機不能時脈延展：I2C v2 在 onReceive 就預載從該編號起 32 B；0x22照 MATRIX 定案 §5 #2 預載最新一包，待上機。
 - I2C 0A 系統鍵 b1 = 擷取鍵（v1 0x15 放在 b3，v2 改 b1，照 I2C 定案 §4）。

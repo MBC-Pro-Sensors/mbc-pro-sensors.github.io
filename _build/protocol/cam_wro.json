@@ -3,26 +3,177 @@
   "addr": "0x4C",
   "hw0": 2,
   "model": "HUE12",
-  "name": {"zh": "神攝手 WRO 版（HUE12）", "en": "Vision Sensor (WRO Edition, HUE12)"},
-  "hosts": {"ev3": true, "spike": true, "i2c": true, "mblock": true, "matrix": false, "mvision": true, "microbit": true},
-  "lego": {"ev3Type": 95, "spikeType": 95, "ev3Locked": [0], "ev3IdMode": null, "spikeLocked": [0], "spikeIdMode": null, "descDynamic": true, "modeName": "HUE12"},
+  "name": {
+    "zh": "神攝手 WRO 版（HUE12）",
+    "en": "Vision Sensor (WRO Edition, HUE12)"
+  },
+  "hosts": {
+    "ev3": true,
+    "spike": true,
+    "i2c": true,
+    "mblock": true,
+    "matrix": false,
+    "mvision": true,
+    "microbit": true
+  },
+  "lego": {
+    "ev3Type": 95,
+    "spikeType": 95,
+    "ev3Locked": [
+      0
+    ],
+    "ev3IdMode": null,
+    "spikeLocked": [
+      0
+    ],
+    "spikeIdMode": null,
+    "descDynamic": true,
+    "modeName": "HUE12"
+  },
   "values": [
-    {"id": "10", "key": "spotColor", "count": 12, "name": {"zh": "色點 N 顏色碼", "en": "spot N colour code"}, "desc": {"zh": "10~1B = S1~S12 顏色碼：0~239 彩色（色相 0~255 等比縮成 0~239）、240~245 白（飽和度 < 30，越低越大）、246~250 黑（明度 < 30，越暗越大）、255 = 色點沒開", "en": "10~1B = colour code of spots S1~S12: 0~239 colour (hue 0~255 scaled to 0~239), 240~245 white (saturation < 30, lower = larger), 246~250 black (value < 30, darker = larger), 255 = spot not enabled"}, "unit": "", "range": "0~255", "min": 0, "max": 255, "figure": {"tpl": "wro-spots", "params": {"n": 12, "show": "color"}}, "i2c": true, "mblock": {"block": {"zh": "色點 [N] 顏色碼", "en": "spot [N] colour code"}},
-     "ev3": [{"mode": 0, "index": 0, "count": 12, "format": "int32×8", "note": "HUE12 8×int32 LE（32 B）：24 byte = [色相, 鮮豔度]×12，每 3 byte 塞一個 int32（byte3 = 0）；格 n 色相 = byte 2(n−1) → int32 k = idx/3、byte = idx%3；鎖住"}],
-     "spike": [{"mode": 0, "hub": "edu", "byte": 0, "count": 12, "format": "int32×8", "note": "同 EV3：Pybricks read(0) 得 8 個 int32，每個拆 3 byte（積木網站 MBC_HUE12 設定檔）；玩具版不送；鎖住"}],
-     "matrix": null,
-     "mvision": {"idx": 0, "count": 6, "note": "不動：byte 0~11 = S1~S12 顏色碼各 1 byte（idx 0 = S1 低 byte／S2 高 byte … idx 5 = S11／S12）；照 HUE12_AS_mVisionSensor_v1.0.8.mbr4 解碼"},
-     "microbit": {"block": {"zh": "色點 [N] 顏色碼", "en": "spot [N] colour code"}}, "examples": [], "locked": true},
-    {"id": "20", "key": "spotVivid", "count": 12, "name": {"zh": "色點 N 鮮豔度", "en": "spot N vividness"}, "desc": {"zh": "20~2B = S1~S12 鮮豔度（飽和度）0~255：黑 = 1、白／彩色 = 實際飽和度；色點沒開 = 0", "en": "20~2B = vividness (saturation) of spots S1~S12, 0~255: black = 1, white/colour = actual saturation; 0 when the spot is not enabled"}, "unit": "", "range": "0~255", "min": 0, "max": 255, "figure": {"tpl": "wro-spots", "params": {"n": 12, "show": "vivid"}}, "i2c": true, "mblock": {"block": {"zh": "色點 [N] 鮮豔度", "en": "spot [N] vividness"}},
-     "ev3": [{"mode": 0, "index": 0, "count": 12, "format": "int32×8", "note": "同 10~1B：格 n 鮮豔度 = byte 2(n−1)+1；鎖住"}],
-     "spike": [{"mode": 0, "hub": "edu", "byte": 1, "count": 12, "format": "int32×8", "note": "同 EV3；鎖住"}],
-     "matrix": null,
-     "mvision": {"idx": 6, "count": 3, "note": "不動：byte 12~17 = 12 格各 4 bit（S>>4，1~15；黑 = 1；沒抓到 = 0），byte 12+2j = S(4j+1) | S(4j+2)<<4、byte 13+2j = S(4j+3) | S(4j+4)<<4"},
-     "microbit": {"block": {"zh": "色點 [N] 鮮豔度", "en": "spot [N] vividness"}}, "examples": [], "locked": true}
+    {
+      "id": "10",
+      "key": "spotColor",
+      "count": 12,
+      "name": {
+        "zh": "色點 N 顏色碼",
+        "en": "spot N colour code"
+      },
+      "desc": {
+        "zh": "10~1B = S1~S12 顏色碼：0~239 彩色（色相 0~255 等比縮成 0~239）、240~245 白（飽和度 < 30，越低越大）、246~250 黑（明度 < 30，越暗越大）、255 = 色點沒開",
+        "en": "10~1B = colour code of spots S1~S12: 0~239 colour (hue 0~255 scaled to 0~239), 240~245 white (saturation < 30, lower = larger), 246~250 black (value < 30, darker = larger), 255 = spot not enabled"
+      },
+      "unit": "",
+      "range": "0~255",
+      "min": 0,
+      "max": 255,
+      "figure": {
+        "tpl": "wro-spots",
+        "params": {
+          "n": 12,
+          "show": "color"
+        }
+      },
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "色點 [N] 顏色碼",
+          "en": "spot [N] colour code"
+        }
+      },
+      "ev3": [
+        {
+          "mode": 0,
+          "index": 0,
+          "count": 12,
+          "format": "int32×8",
+          "note": "HUE12 8×int32 LE（32 B）：24 byte = [色相, 鮮豔度]×12，每 3 byte 塞一個 int32（byte3 = 0）；格 n 色相 = byte 2(n−1) → int32 k = idx/3、byte = idx%3；鎖住"
+        }
+      ],
+      "spike": [
+        {
+          "mode": 0,
+          "hub": "edu",
+          "byte": 0,
+          "count": 12,
+          "format": "int32×8",
+          "note": "同 EV3：Pybricks read(0) 得 8 個 int32，每個拆 3 byte（積木網站 MBC_HUE12 設定檔）；玩具版不送；鎖住"
+        }
+      ],
+      "matrix": null,
+      "mvision": {
+        "idx": 0,
+        "count": 6,
+        "note": "不動：byte 0~11 = S1~S12 顏色碼各 1 byte（idx 0 = S1 低 byte／S2 高 byte … idx 5 = S11／S12）；照 HUE12_AS_mVisionSensor_v1.0.8.mbr4 解碼"
+      },
+      "microbit": {
+        "block": {
+          "zh": "色點 [N] 顏色碼",
+          "en": "spot [N] colour code"
+        }
+      },
+      "examples": [],
+      "locked": true
+    },
+    {
+      "id": "20",
+      "key": "spotVivid",
+      "count": 12,
+      "name": {
+        "zh": "色點 N 鮮豔度",
+        "en": "spot N vividness"
+      },
+      "desc": {
+        "zh": "20~2B = S1~S12 鮮豔度（飽和度）0~255：黑 = 1、白／彩色 = 實際飽和度；色點沒開 = 0",
+        "en": "20~2B = vividness (saturation) of spots S1~S12, 0~255: black = 1, white/colour = actual saturation; 0 when the spot is not enabled"
+      },
+      "unit": "",
+      "range": "0~255",
+      "min": 0,
+      "max": 255,
+      "figure": {
+        "tpl": "wro-spots",
+        "params": {
+          "n": 12,
+          "show": "vivid"
+        }
+      },
+      "i2c": true,
+      "mblock": {
+        "block": {
+          "zh": "色點 [N] 鮮豔度",
+          "en": "spot [N] vividness"
+        }
+      },
+      "ev3": [
+        {
+          "mode": 0,
+          "index": 0,
+          "count": 12,
+          "format": "int32×8",
+          "note": "同 10~1B：格 n 鮮豔度 = byte 2(n−1)+1；鎖住"
+        }
+      ],
+      "spike": [
+        {
+          "mode": 0,
+          "hub": "edu",
+          "byte": 1,
+          "count": 12,
+          "format": "int32×8",
+          "note": "同 EV3；鎖住"
+        }
+      ],
+      "matrix": null,
+      "mvision": {
+        "idx": 6,
+        "count": 3,
+        "note": "不動：byte 12~17 = 12 格各 4 bit（S>>4，1~15；黑 = 1；沒抓到 = 0），byte 12+2j = S(4j+1) | S(4j+2)<<4、byte 13+2j = S(4j+3) | S(4j+4)<<4"
+      },
+      "microbit": {
+        "block": {
+          "zh": "色點 [N] 鮮豔度",
+          "en": "spot [N] vividness"
+        }
+      },
+      "examples": [],
+      "locked": true
+    }
   ],
   "commands": [],
   "flags": [
-    {"bit": 0, "key": "ready", "name": {"zh": "就緒", "en": "ready"}, "desc": {"zh": "恆 1；b1 = 0（WRO 版沒有「有找到色塊」）", "en": "always 1; b1 = 0 (the WRO edition has no 'blob found')"}}
+    {
+      "bit": 0,
+      "key": "ready",
+      "name": {
+        "zh": "就緒",
+        "en": "ready"
+      },
+      "desc": {
+        "zh": "恆 1；b1 = 0（WRO 版沒有「有找到色塊」）",
+        "en": "always 1; b1 = 0 (the WRO edition has no 'blob found')"
+      }
+    }
   ],
   "assumptions": [
     "hw0 = 2（共識 #6：神攝手 2 = WRO 版）；model = HUE12（樂高模式名）。",
@@ -32,6 +183,6 @@
     "mVision 鎖住照盤點 §4：[0xAA][9][18 B][xor]，byte 0~11 顏色碼、12~17 鮮豔度 4 bit；WRO 隊伍的 HUE12_AS_mVisionSensor_v1.0.8.mbr4 在用，不動；B-6：不節流（每圈 loop 送）。",
     "mVision 的鮮豔度是 S>>4（0~15），值表 20~2B 是完整 0~255；兩者不同是既有設計，不改。",
     "顏色碼 255 只代表「色點沒開」，不代表「沒找到」（沒抓到時仍回種子點顏色，盤點 §0-1）。",
-    "不做 0x22／大通道（hosts.matrix = false）；沒有寫入命令；F3 只有 b0。"
+    "不做 0x22（hosts.matrix = false）；沒有寫入命令；F3 只有 b0。"
   ]
 }

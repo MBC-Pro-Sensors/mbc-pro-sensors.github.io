@@ -107,7 +107,7 @@ farDir = Sensor.ReadRawValue(1, 2)
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~120` cm | average of sensors 4 and 5 (both facing forward), 0~120 cm; EV3 mode 3, SPIKE mode 6 and big-channel [16..17] carry the same thing in mm; 0x22 'C' is min(4, 5), not the average (see 10) |
+| `0~120` cm | average of sensors 4 and 5 (both facing forward), 0~120 cm; EV3 mode 3 and SPIKE mode 6 carry the same thing in mm; 0x22 'C' is min(4, 5), not the average (see 10) |
 
 ```basic
 ' clev3r (BASIC)

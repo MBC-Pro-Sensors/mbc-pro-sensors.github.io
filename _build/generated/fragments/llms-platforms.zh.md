@@ -1,6 +1,6 @@
 - [產品 × 平台指令參考索引](https://mbc-pro-sensors.github.io/reference.html): 每款產品每個值在六個平台（SPIKE、EV3、Arduino I2C、mBlock、MATRIX、micro:bit）各怎麼讀。
 - [MBC 通用 I2C 協議 v2](https://mbc-pro-sensors.github.io/i2c-protocol.html): 寫編號讀 int16 小端；共用 F0~F5 版本／狀態、F8 換位址、EF 重開機。
 - [mBlock 5 擴展 v2](https://mbc-pro-sensors.github.io/makeblock.html): UART 38400，3 byte 回應帶檢查碼，整包 FD。
-- [MATRIX Mini R4](https://mbc-pro-sensors.github.io/matrix.html): 原廠 0x22 R~K 對照與 LauMo 大通道 30 byte。
+- [MATRIX Mini R4](https://mbc-pro-sensors.github.io/matrix.html): 原廠 0x22 R~K 對照與神攝手 mVision。
 - [micro:bit MakeCode](https://mbc-pro-sensors.github.io/microbit.html): pxt-mbc-sensors 擴充 v2。
 - [協定純文字版](https://mbc-pro-sensors.github.io/llms-protocol.txt): 每款產品的值表、命令、狀態旗標。
