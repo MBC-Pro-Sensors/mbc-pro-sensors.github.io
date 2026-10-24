@@ -37,3 +37,7 @@ export function command(product, c, lang) {
 export function status(product, lang) {
   return { html: blocks(`<MBC ${T(lang, '裝置就緒', 'device ready')} :: #E8711E>`), code: `let st = MBC.status(${product.addr})   // F3\nlet ready = (st & 1) != 0`, codeLang: TS, note: '' };
 }
+
+// ---------------------------------------------------------------- 依軟體（gen-guides.mjs 軟體頁用；這個平台只有 makecode）
+export function bySoftware(sw, product, v, lang) { return sw === 'makecode' ? value(product, v, lang) : null; }
+export function commandBySoftware(sw, product, c, lang) { return sw === 'makecode' ? command(product, c, lang) : null; }

@@ -1,4 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
+<!-- moved: /sensors/servo6/spike/official.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/servo6/spike/official.md">SPIKE 6 路舵機擴充器 › SPIKE › 樂高官方 App</a></p>
+
 # 官方 SPIKE App 專區 (Servo6)
 
 [🔙 回到 Servo6 首頁](/sensors/servo6/index.md)

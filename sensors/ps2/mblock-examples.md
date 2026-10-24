@@ -1,5 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 95_產品網站\mBlock範例產生器（node build.js）產生：改內容請改產生器的 sets/<產品>.js 再重建，不要手改本檔 -->
+<!-- moved: /sensors/ps2/mblock/mblock5.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/ps2/mblock/mblock5.md">掌控者 PS2 › mBlock › mBlock 5</a></p>
+
 # 🧱 mBlock 新手範例：掌控者 PS2
 
 [🔙 回到掌控者 PS2產品頁](/sensors/ps2/index.md)

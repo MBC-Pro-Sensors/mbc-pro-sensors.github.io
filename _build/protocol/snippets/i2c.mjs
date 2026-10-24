@@ -109,3 +109,7 @@ export function commonCommand(common, cc, lang) {
   if (cc.id === 'EF') return { code: `mbcWrite(ADDR, 0xEF, 0xA5);   // ${T(lang, '重新開機', 'reboot')}`, codeLang: CODE, note: '' };
   return { code: `mbcWrite(ADDR, ${hex(cc.id)});`, codeLang: CODE, note: '' };
 }
+
+// ---------------------------------------------------------------- 依軟體（gen-guides.mjs 軟體頁用；這個平台只有 ide）
+export function bySoftware(sw, product, v, lang) { return sw === 'ide' ? value(product, v, lang) : null; }
+export function commandBySoftware(sw, product, c, lang) { return sw === 'ide' ? command(product, c, lang) : null; }

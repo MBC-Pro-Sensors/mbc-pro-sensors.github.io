@@ -3,6 +3,8 @@
 
 <!-- product-hero -->
 
+<!-- platform-grid -->
+
 ---
 
 > **Say goodbye to ultrasonic ghosts: 180-degree zero blind spots. An 8-point laser ranging array for sumo battles and high-speed obstacle avoidance.**
@@ -61,11 +63,6 @@ The 8 laser ranging units are distributed at fixed angles, covering a complete 1
 > [!IMPORTANT]
 > Each platform is a **different factory edition** (different connector and firmware). Please order the edition that matches your controller, or [contact us](/en/contact.md) if unsure.
 
-## 🎮 Select Your Hub
-
-Pick your controller first, then the software you use — each tile links to the start page, the command reference and the library for that host:
-
-<!-- platform-grid -->
 
 ## 📥 Example Downloads
 

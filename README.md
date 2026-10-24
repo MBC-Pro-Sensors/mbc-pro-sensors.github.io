@@ -18,7 +18,7 @@
 
 <div class="lp-platforms"><span>LEGO SPIKE Prime</span><span>Robot Inventor</span><span>MINDSTORMS EV3</span><span>Pybricks</span><span>Arduino / ESP32</span><span>MATRIX Mini R4</span><span>MakeBlock</span></div>
 
-<h2 id="finder">已經有產品了？選產品、選主機，直接找程式</h2>
+<h2 id="finder">已經有產品了？選產品、選主機、選軟體，直接找程式</h2>
 <!-- finder -->
 
 <div class="lp-promo"><p><b>準備下一個賽季？</b>學校、社團整班採購可提供報價單與採購資料，工作日 24 小時內回覆。</p><a class="lp-btn line" href="https://line.me/R/oaMessage/%40692vcvuk/?%E6%82%A8%E5%A5%BD%EF%BC%8C%E6%88%91%E6%83%B3%E7%B4%A2%E5%8F%96%E5%AD%B8%E6%A0%A1%EF%BC%8F%E7%A4%BE%E5%9C%98%E6%8E%A1%E8%B3%BC%E5%A0%B1%E5%83%B9%EF%BC%9A" target="_blank" rel="noopener">💬 索取採購報價</a></div>

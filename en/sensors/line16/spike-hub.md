@@ -1,4 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
+<!-- moved: /en/sensors/line16/spike/index.md -->
+<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/line16/spike/index.md">Pathfinder 16-Way › SPIKE</a></p>
+
 # 🧱 SPIKE Series Hubs (16-Way Line Follower)
 
 [🔙 Back to 16-Way Line Follower Home](/en/sensors/line16/index.md)

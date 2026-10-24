@@ -7,8 +7,8 @@ const PY = 'python';
 
 // 各產品 Pybricks 函式庫：模組名、類別名、值 key → 方法（沒有的值就只給原生讀法）
 export const LIB = {
-  line8: { module: 'MBC_line8_obj_Lib_v400', cls: 'MBC_LINE8', obj: 'line', methods: { linePos: 'pos8()', linePosFine: 'pos100()', lineWidth: 'width()', groupCount: 'junction()', bitmap: 'bin_raw()', light: 'ir_calibration()' }, file: '/examples/line8/pybricks/For%20firmware%204.0.0/MBC_line8_obj_Lib_v400.py' },
-  line16: { module: 'MBC_line16_obj_Lib_v400', cls: 'MBC_LINE16', obj: 'line', methods: { linePos: 'pos16()', linePosFine: 'pos100()', lineWidth: 'width()', groupCount: 'junction()', bitmap: 'bin_raw()', light: 'ir_calibration()' }, file: '/examples/line16/pybricks/For%20firmware%204.0.0/MBC_line16_obj_Lib_v400.py' },
+  line8: { module: 'MBC_line8_obj_Lib', cls: 'MBC_LINE8', obj: 'line', methods: { linePos: 'pos8()', linePosFine: 'pos100()', lineWidth: 'width()', groupCount: 'junction()', bitmap: 'bin_raw()', light: 'ir_calibration()' }, file: '/examples/line8/pybricks/For%20firmware%204.0.0/MBC_line8_obj_Lib_v400.py' },
+  line16: { module: 'MBC_line16_obj_Lib', cls: 'MBC_LINE16', obj: 'line', methods: { linePos: 'pos16()', linePosFine: 'pos100()', lineWidth: 'width()', groupCount: 'junction()', bitmap: 'bin_raw()', light: 'ir_calibration()' }, file: '/examples/line16/pybricks/For%20firmware%204.0.0/MBC_line16_obj_Lib_v400.py' },
   // 2026-10-22 H7 定稿（函式庫 v2 新方法：模式 3／6／8）
   tof2: { module: 'MBC_laser2_obj_Lib', cls: 'MBC_LASER2', obj: 'laser', methods: { leftCm: 'left()', rightCm: 'right()', nearCm: 'min_distance()', leftMm: 'left_mm()', rightMm: 'right_mm()', avgMm: 'average_mm()', initOk: 'is_ok(1)', fault: 'is_ok(1)' }, file: '/examples/tof2/pybricks/For%20firmware%204.0.0/MBC_laser2_obj_Lib.py' },
   tof8: { module: 'MBC_laser8_obj_Lib', cls: 'MBC_LASER8', obj: 'laser', methods: { nearCm: 'min_distance()', nearDir: 'min_direction()', farCm: 'max_distance()', farDir: 'max_direction()', nearMm: 'nearest_mm()', frontMm: 'front_mm()', frontCm: 'front_mm() // 10', distCm: 'distances()', initOk: 'is_ok(1)', fault: 'is_ok(1)' }, file: '/examples/tof8/pybricks/For%20firmware%204.0.0/MBC_laser8_obj_Lib.py' },
@@ -64,3 +64,63 @@ export function command(product, c, lang) {
 export function status(product, lang) {
   return { code: `${head(lang)}\n\nid_word, proto, fw, seq = dev.read(8)   # ${T(lang, '模式 8：[ID | hw0<<8, 協議版 2, 主版×100+次版, 更新序號]', 'mode 8: [ID | hw0<<8, protocol 2, major×100+minor, counter]')}\naddr = id_word & 0xFF   # ${product.addr}\nhw0 = id_word >> 8      # ${product.hw0}`, codeLang: PY, note: T(lang, 'SPIKE 沒有 F3 旗標；模式 8 回裝置 ID／版本。官方 App 讀不到模式 8。', 'SPIKE has no F3 flags; mode 8 returns ID / version. The official app cannot read mode 8.') };
 }
+
+// ---------------------------------------------------------------- 依軟體（gen-guides.mjs 軟體頁用）
+// sw = official（樂高官方 App：模式 0 教育版／玩具版 byte → 顏色感應器積木）｜ mbcblocks（MBC 積木網站：模式 9）｜ pybricks
+// 讀不到回 null（軟體頁會把它列進「這個軟體讀不到」一行）
+const RGB = [{ zh: '原始紅', en: 'raw red' }, { zh: '原始綠', en: 'raw green' }, { zh: '原始藍', en: 'raw blue' }];
+// 教育版：byte0 = 顏色、byte1 = 反射光；玩具版（Robot Inventor）兩個對調（循行者 RI 頁：顏色 = 線寬、反射光 = 位置）
+function officialBlock(hub, b, lang) {
+  if (b === 0) return hub === 'toy' ? T(lang, '反射光', 'reflected light') : T(lang, '顏色', 'color');
+  if (b === 1) return hub === 'toy' ? T(lang, '顏色', 'color') : T(lang, '反射光', 'reflected light');
+  if (b >= 2 && b <= 7) return L(RGB[(b - 2) >> 1], lang);
+  return null;
+}
+function officialRows(e, v, lang) {
+  const f = e.format || 'u8';
+  const wide = /16/.test(f) && !/查表/.test(f);
+  const step = e.count && wide ? 2 : 1;
+  const n = e.count || 1;
+  const rows = [];
+  for (let i = 0; i < n; i++) {
+    const b = e.byte + i * step;
+    const blk = officialBlock(e.hub, b, lang);
+    if (!blk) return null; // byte 8 以後官方 App 讀不到
+    let how;
+    if (b <= 1 || (wide && b % 2 === 0)) how = T(lang, '讀到的數', 'the number it returns');
+    else if (/nibble/.test(f)) how = T(lang, '讀到的數：每個數字含 4 路、每路 4 bit', 'each number packs 4 channels of 4 bits');
+    else if (b % 2 === 0) how = T(lang, '讀到的數 ÷ 256 取餘數', 'the number mod 256');
+    else how = T(lang, '讀到的數 ÷ 256 取整數（無條件捨去）', 'floor(the number ÷ 256)');
+    if (e.offset) how += T(lang, `，再減 ${e.offset}`, `, minus ${e.offset}`);
+    if (/查表/.test(f)) how += T(lang, '（玩具版查表編碼，解法見上方安裝與設定）', ' (Robot Inventor look-up encoding, see setup above)');
+    const label = n > 1 ? T(lang, `第 ${i + 1} 組`, `group ${i + 1}`) : valueName(v, lang);
+    rows.push([e.hub === 'toy' ? T(lang, 'Robot Inventor（玩具版）', 'Robot Inventor') : T(lang, 'SPIKE Prime（教育版）', 'SPIKE Prime'), label, `「${blk}」`, how]);
+  }
+  return rows;
+}
+export function bySoftware(sw, product, v, lang) {
+  const list = v.spike || [];
+  if (!list.length) return null;
+  if (sw === 'pybricks') return value(product, v, lang);
+  if (sw === 'official') {
+    const rows = [];
+    for (const e of list.filter((x) => x.mode === 0 && x.hub)) {
+      const r = officialRows(e, v, lang);
+      if (r) rows.push(...r);
+    }
+    if (!rows.length) return null;
+    const head = `| ${T(lang, '主機', 'Hub')} | ${T(lang, '值', 'Value')} | ${T(lang, '積木（更多感應器 → 顏色感應器）', 'Block (More Sensors → Color Sensor)')} | ${T(lang, '換算', 'Decode')} |\n| :--- | :--- | :--- | :--- |\n`;
+    const notes = list.filter((x) => x.mode === 0 && x.note).map((x) => x.note);
+    return { html: head + rows.map((r) => `| ${r.join(' | ')} |`).join('\n'), note: notes.length ? T(lang, '韌體備註：', 'Firmware note: ') + notes.join(T(lang, '；', '; ')) : '' };
+  }
+  if (sw === 'mbcblocks') {
+    const e = list.find((x) => x.mode === 9);
+    if (!e) return null;
+    return {
+      text: T(lang, `在 MBC 積木網站加入這款感應器的積木，用「${valueName(v, lang)}」積木讀；積木在主機上執行的是下面這段 Pybricks 程式（模式 9）：`, `Add this sensor's blocks on the MBC Blocks website and use the "${valueName(v, lang)}" block; on the hub it runs this Pybricks code (mode 9):`),
+      code: `${head(lang)}\n\n${nativeLine(v, e, lang)}`, codeLang: PY,
+    };
+  }
+  return null;
+}
+export function commandBySoftware() { return null; } // SPIKE 接頭沒有寫入命令

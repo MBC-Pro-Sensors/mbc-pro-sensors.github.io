@@ -3,6 +3,8 @@
 
 <!-- product-hero -->
 
+<!-- platform-grid -->
+
 ---
 
 > [!NOTE]

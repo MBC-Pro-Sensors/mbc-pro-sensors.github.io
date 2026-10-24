@@ -1,0 +1,245 @@
+<!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
+<!-- 本頁由 _build/gen-guides.mjs 產生（tof2 × arduino × ide），請勿手改；改內容請改 _build/guides.json、_build/guides/**、_build/protocol/*.json 後重跑 node _build/gen-guides.mjs -->
+<!-- guide: tof2/arduino/ide -->
+# 測距者 2 路 (TOF2) × Arduino × Arduino IDE
+
+這一頁只講 **Arduino IDE（C++）**：在 Arduino／ESP32／UNO R4（I2C） 上用它讀測距者 2 路 (TOF2)的安裝步驟、每個值怎麼讀、能用的命令與範例。要換產品、主機或軟體，用上方的切換列。
+
+## 要買哪個版本、怎麼接
+
+買 **通用 I2C 版**（4 pin：5V、GND、SDA、SCL），出廠 I2C 位址 `0x29`。UNO／Nano 接 A4（SDA）、A5（SCL）；UNO R4、ESP32 接板子上標 SDA／SCL 的腳。
+
+<figure class="ref-fig"><img src="/images/figures/tof2/wiring-uno.svg" alt="測距者 2 路 (TOF2) × Arduino／ESP32／UNO R4（I2C）" loading="lazy"></figure>
+
+## 安裝與設定
+
+<!-- setup: _build/guides/software/arduino-ide.zh.md + _build/guides/product/tof2/arduino-ide.zh.md {"product":"測距者 2 路 (TOF2)","edition":"通用 I2C 版","port":"I2C","lib":"","libUrl":"","addr":"0x29"} -->
+<!-- include-fallback -->
+> [!NOTE]
+> 這個軟體的安裝步驟正在搬到這一頁。先看原本的說明：[測距者 2 路 (TOF2)：Arduino IDE（C++） 說明](/sensors/tof2/arduino-i2c.md)。
+<!-- /include-fallback -->
+
+## 讀值
+
+下面的寫法都用到 `mbcRead()` 小幫手（展開「小幫手程式」貼在程式最下面），位址 `0x29`。
+
+<details class="helper">
+<summary>小幫手程式（貼在程式最下面）</summary>
+
+```cpp
+#include <Wire.h>
+
+const int16_t MBC_NONE = -32768;   // 讀不到／空號
+
+// 從編號 id 起連續讀 k 個值（k ≤ 16），int16 小端
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                                        // 一律等 2 ms（ESP32 產品不能時脈延展）
+  if (Wire.requestFrom(addr, (uint8_t)(k * 2)) != (uint8_t)(k * 2)) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint8_t lo = Wire.read(), hi = Wire.read();
+    out[i] = (int16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// 讀 1 個值；讀不到回 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 寫入命令（0~3 個參數）
+void mbcWrite(uint8_t addr, uint8_t id, const uint8_t *args, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(args[i]);
+  Wire.endTransmission();
+}
+void mbcWrite(uint8_t addr, uint8_t id) { mbcWrite(addr, id, nullptr, 0); }
+void mbcWrite(uint8_t addr, uint8_t id, uint8_t a) { mbcWrite(addr, id, &a, 1); }
+void mbcWrite(uint8_t addr, uint8_t id, uint8_t a, uint8_t b) { uint8_t p[2] = {a, b}; mbcWrite(addr, id, p, 2); }
+void mbcWrite(uint8_t addr, uint8_t id, uint8_t a, uint8_t b, uint8_t c) { uint8_t p[3] = {a, b, c}; mbcWrite(addr, id, p, 3); }
+
+// 等模組就緒（F3 bit0 = 1），最多 ms 毫秒
+bool mbcWaitReady(uint8_t addr, unsigned long ms) {
+  unsigned long t0 = millis();
+  while (millis() - t0 < ms) {
+    int16_t st = mbcRead(addr, 0xF3);
+    if (st != MBC_NONE && (st & 1)) return true;
+    delay(20);
+  }
+  return false;
+}
+```
+
+</details>
+
+<section id="v01" class="ref-item">
+
+### 左距離 cm <small>leftCm</small>
+
+<figure class="ref-fig"><img src="/images/figures/tof2/value-leftCm.svg" alt="左距離 cm" loading="lazy"></figure>
+
+| 範圍 | 意思 |
+| :--- | :--- |
+| `0~120` cm | 左邊那顆的距離 0~120 cm（站在車後往前看，左 = 第 0 顆），120 = 前面沒東西／那顆失效 |
+
+```cpp
+int16_t leftCm = mbcRead(0x29, 0x01);   // 左距離 cm：0~120 cm
+```
+
+<p class="ref-note">讀不到（沒接、位址錯）時回 <code>MBC_NONE</code>（−32768）。</p>
+
+</section>
+
+<section id="v02" class="ref-item">
+
+### 右距離 cm <small>rightCm</small>
+
+<figure class="ref-fig"><img src="/images/figures/tof2/value-rightCm.svg" alt="右距離 cm" loading="lazy"></figure>
+
+| 範圍 | 意思 |
+| :--- | :--- |
+| `0~120` cm | 右邊那顆的距離 0~120 cm（右 = 第 1 顆），120 = 前面沒東西／那顆失效 |
+
+```cpp
+int16_t rightCm = mbcRead(0x29, 0x02);   // 右距離 cm：0~120 cm
+```
+
+<p class="ref-note">讀不到（沒接、位址錯）時回 <code>MBC_NONE</code>（−32768）。</p>
+
+</section>
+
+<section id="v03" class="ref-item">
+
+### 較近距離 cm <small>nearCm</small>
+
+<figure class="ref-fig"><img src="/images/figures/tof2/value-nearCm.svg" alt="較近距離 cm" loading="lazy"></figure>
+
+| 範圍 | 意思 |
+| :--- | :--- |
+| `0~120` cm | 左右兩顆取較近的 0~120 cm |
+
+```cpp
+int16_t nearCm = mbcRead(0x29, 0x03);   // 較近距離 cm：0~120 cm
+```
+
+<p class="ref-note">讀不到（沒接、位址錯）時回 <code>MBC_NONE</code>（−32768）。</p>
+
+</section>
+
+<section id="v04" class="ref-item">
+
+### 左距離 mm <small>leftMm</small>
+
+<figure class="ref-fig"><img src="/images/figures/tof2/value-leftMm.svg" alt="左距離 mm" loading="lazy"></figure>
+
+| 範圍 | 意思 |
+| :--- | :--- |
+| `0~1200` mm | 左邊那顆的距離 0~1200 mm，1200 = 前面沒東西／那顆失效 |
+
+```cpp
+int16_t leftMm = mbcRead(0x29, 0x04);   // 左距離 mm：0~1200 mm
+```
+
+<p class="ref-note">讀不到（沒接、位址錯）時回 <code>MBC_NONE</code>（−32768）。</p>
+
+</section>
+
+<section id="v05" class="ref-item">
+
+### 右距離 mm <small>rightMm</small>
+
+<figure class="ref-fig"><img src="/images/figures/tof2/value-rightMm.svg" alt="右距離 mm" loading="lazy"></figure>
+
+| 範圍 | 意思 |
+| :--- | :--- |
+| `0~1200` mm | 右邊那顆的距離 0~1200 mm，1200 = 前面沒東西／那顆失效 |
+
+```cpp
+int16_t rightMm = mbcRead(0x29, 0x05);   // 右距離 mm：0~1200 mm
+```
+
+<p class="ref-note">讀不到（沒接、位址錯）時回 <code>MBC_NONE</code>（−32768）。</p>
+
+</section>
+
+<section id="v06" class="ref-item">
+
+### 初始化位元圖 <small>initOk</small>
+
+<figure class="ref-fig"><img src="/images/figures/tof2/value-initOk.svg" alt="初始化位元圖" loading="lazy"></figure>
+
+| 範圍 | 意思 |
+| :--- | :--- |
+| `0~3` bit | bit0 = 左、bit1 = 右，1 = 那顆開機初始化成功（失敗不重試）；3 = 兩顆都好 |
+
+```cpp
+int16_t initOk = mbcRead(0x29, 0x06);   // 初始化位元圖：0~3 bit
+```
+
+<p class="ref-note">讀不到（沒接、位址錯）時回 <code>MBC_NONE</code>（−32768）。</p>
+
+</section>
+
+<section id="v07" class="ref-item">
+
+### 故障位元圖 <small>fault</small>
+
+<figure class="ref-fig"><img src="/images/figures/tof2/value-fault.svg" alt="故障位元圖" loading="lazy"></figure>
+
+| 範圍 | 意思 |
+| :--- | :--- |
+| `0~3` bit | bit0 = 左、bit1 = 右，1 = 那顆目前失效（I2C 讀失敗或 200 ms 沒更新）；失效那顆距離回 120／1200 |
+
+```cpp
+int16_t fault = mbcRead(0x29, 0x07);   // 故障位元圖：0~3 bit
+```
+
+<p class="ref-note">讀不到（沒接、位址錯）時回 <code>MBC_NONE</code>（−32768）。</p>
+
+</section>
+
+<section id="v08" class="ref-item">
+
+### 左右平均 mm <small>avgMm</small>
+
+<figure class="ref-fig"><img src="/images/figures/tof2/value-avgMm.svg" alt="左右平均 mm" loading="lazy"></figure>
+
+| 範圍 | 意思 |
+| :--- | :--- |
+| `0~1200` mm | (左 mm + 右 mm) / 2，0~1200；跟 EV3 模式 3、SPIKE 模式 6 第 3 個值一致（共識 #8 補上） |
+
+```cpp
+int16_t avgMm = mbcRead(0x29, 0x08);   // 左右平均 mm：0~1200 mm
+```
+
+<p class="ref-note">讀不到（沒接、位址錯）時回 <code>MBC_NONE</code>（−32768）。</p>
+
+</section>
+
+## 範例
+
+<!-- examples: sensors/tof2/arduino-examples.md host=arduino sw=ide whole -->
+
+## 其他問題
+
+- **一直讀到 -32768？** 代表模組沒回應：檢查 SDA／SCL 有沒有接反、位址對不對、5V／GND 有沒有接好。
+- **可以接很多顆嗎？** 可以，每顆位址要不同；同型號用命令 F8 換位址（見通用 I2C 協議）。
+
+還有問題？到 [聯絡我們](/contact.md) 附上你用的軟體和程式截圖。
+
+## 下載
+
+- [全部範例 tof2_arduino_examples.zip](/examples/tof2/arduino/tof2_arduino_examples.zip)
+- [下載中心（全部產品的函式庫、韌體、型錄）](/downloads.md)
+
+## 本頁依據
+
+- 主機與軟體清單：`_build/guides.json`
+- 值與命令：`_build/protocol/tof2.json`（單一真相來源）
+- 安裝與設定：`_build/guides/software/arduino-ide.zh.md`、`_build/guides/product/tof2/arduino-ide.zh.md`
+- 範例：`sensors/tof2/arduino-examples.md`

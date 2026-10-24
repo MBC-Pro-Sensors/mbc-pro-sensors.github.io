@@ -3,6 +3,8 @@
 
 <!-- product-hero -->
 
+<!-- platform-grid -->
+
 ---
 
 > **Lightweight and agile: say goodbye to bulky ultrasonics. A micro-laser that accurately captures which way an object leaves.**
@@ -48,11 +50,6 @@ The Ranger 2-Way uses **laser time-of-flight (ToF)**: it measures at the speed o
 > [!IMPORTANT]
 > Each platform is a **different factory edition**; please order the one that matches your controller.
 
-## 🎮 Select Your Hub
-
-Pick your controller first, then the software you use — each tile links to the start page, the command reference and the library for that host:
-
-<!-- platform-grid -->
 
 ## 📥 Example Downloads
 

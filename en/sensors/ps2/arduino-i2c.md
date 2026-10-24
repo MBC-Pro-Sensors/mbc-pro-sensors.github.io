@@ -1,5 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 _build/gen-reference.mjs 從 _build/protocol/ps2.json 產生（arduino-i2c），請勿手改；改內容請改 JSON 後重跑 node _build/gen-reference.mjs -->
+<!-- moved: /en/sensors/ps2/arduino/ide.md -->
+<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/ps2/arduino/ide.md">Controller 2.4G › Arduino › Arduino IDE</a></p>
+
 # PS2 Gamepad Receiver × Arduino I2C (universal I2C edition)
 
 [🔙 Back to PS2 Gamepad Receiver](/en/sensors/ps2/index.md)

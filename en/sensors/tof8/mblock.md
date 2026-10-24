@@ -1,5 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 _build/gen-reference.mjs 從 _build/protocol/tof8.json 產生（mblock），請勿手改；改內容請改 JSON 後重跑 node _build/gen-reference.mjs -->
+<!-- moved: /en/sensors/tof8/mblock/mblock5.md -->
+<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/tof8/mblock/mblock5.md">Ranger 8-Way › mBlock › mBlock 5</a></p>
+
 # Laser Ranger 8-ch × mBlock 5 (Makeblock edition)
 
 [🔙 Back to Laser Ranger 8-ch](/en/sensors/tof8/index.md)

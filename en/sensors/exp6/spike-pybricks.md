@@ -1,4 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
+<!-- moved: /en/sensors/exp6/spike/pybricks.md -->
+<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/exp6/spike/pybricks.md">SPIKE 6-Way Expander › SPIKE › Pybricks</a></p>
+
 # Pybricks Pro Environment (EXP6)
 
 [🔙 Back to EXP6 Home](/sensors/exp6/index.md)

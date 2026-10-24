@@ -3,6 +3,8 @@
 
 <!-- product-hero -->
 
+<!-- platform-grid -->
+
 > [!NOTE]
 > **📦 Editions: choose the one that matches your controller**
 > Each edition's connector and protocol are optimized for its controller, so **editions are not interchangeable**:
@@ -54,13 +56,6 @@ Watch the demonstration video below for the most intuitive guide:
 
 ---
 
-## 🎮 Select Your Hub
-
-Pick your hub first, then the software: every tile links to beginner examples, the command reference and the library / blocks.
-
-<!-- platform-grid -->
-
----
 
 ## 🧠 Core Data Features & Algorithms
 

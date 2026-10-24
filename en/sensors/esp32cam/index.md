@@ -3,6 +3,8 @@
 
 <!-- product-hero -->
 
+<!-- platform-grid -->
+
 ---
 
 > **Give your LEGO robot real vision: pick the color to track right on the sensor's screen — no image-processing code needed.**
@@ -73,11 +75,6 @@ EV3 beginner examples: [school / creative edition](/en/sensors/esp32cam/ev3-exam
 > [!IMPORTANT]
 > Each platform is a **different factory edition**; please order the one that matches your controller.
 
-## 🎮 Select Your Hub
-
-Pick your controller first, then the software you use — each tile links to the start page, the command reference and the library for that host:
-
-<!-- platform-grid -->
 
 ## 🔌 Hardware Wiring
 

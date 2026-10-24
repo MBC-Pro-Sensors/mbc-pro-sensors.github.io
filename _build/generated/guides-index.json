@@ -1,0 +1,1115 @@
+{
+ "_說明": "由 _build/gen-guides.mjs 產生，請勿手改",
+ "hosts": [
+  {
+   "id": "spike",
+   "name": {
+    "zh": "SPIKE",
+    "en": "SPIKE"
+   },
+   "fullName": {
+    "zh": "SPIKE Prime／Robot Inventor",
+    "en": "SPIKE Prime / Robot Inventor"
+   },
+   "tagline": {
+    "zh": "樂高 SPIKE Prime（黃色主機）與 Robot Inventor（藍綠色主機）",
+    "en": "LEGO SPIKE Prime (yellow hub) and Robot Inventor (teal hub)"
+   },
+   "icon": "/images/hubs/spike-hub.webp",
+   "illust": "/images/illust/host-spike.svg",
+   "colorToken": "--spike",
+   "software": [
+    {
+     "id": "official",
+     "name": {
+      "zh": "樂高官方 App",
+      "en": "Official LEGO App"
+     },
+     "longName": {
+      "zh": "樂高官方 App（SPIKE 3、Robot Inventor）",
+      "en": "Official LEGO App (SPIKE 3, Robot Inventor)"
+     },
+     "tagline": {
+      "zh": "學校最常用；不用換韌體，用顏色感應器積木讀",
+      "en": "What most schools use; no firmware change, read with the colour-sensor blocks"
+     },
+     "icon": "/images/hubs/spike-education-app.webp",
+     "summaryMatch": {
+      "zh": "樂高官方 App",
+      "en": "official LEGO app"
+     },
+     "colMatch": {
+      "zh": "樂高官方 App|官方 App",
+      "en": "official LEGO app|official app"
+     }
+    },
+    {
+     "id": "mbcblocks",
+     "name": {
+      "zh": "MBC 積木網站",
+      "en": "MBC Blocks website"
+     },
+     "longName": {
+      "zh": "MBC SPIKE 積木網站",
+      "en": "MBC SPIKE Blocks website"
+     },
+     "tagline": {
+      "zh": "中文積木、讀得到全部數值；主機換 Pybricks 韌體",
+      "en": "Block coding with every value available; hub runs Pybricks firmware"
+     },
+     "icon": "blocks",
+     "summaryMatch": {
+      "zh": "MBC 積木網站",
+      "en": "MBC Blocks website"
+     },
+     "colMatch": {
+      "zh": "MBC 積木網站",
+      "en": "MBC Blocks website|MBC Blocks"
+     }
+    },
+    {
+     "id": "pybricks",
+     "name": {
+      "zh": "Pybricks",
+      "en": "Pybricks"
+     },
+     "longName": {
+      "zh": "Pybricks（Python）",
+      "en": "Pybricks (Python)"
+     },
+     "tagline": {
+      "zh": "打字寫 Python，最快、最完整；比賽隊伍首選",
+      "en": "Type Python: fastest and most complete; the pick of competition teams"
+     },
+     "icon": "/images/hubs/spike-pybricks-logo.webp",
+     "summaryMatch": {
+      "zh": "Pybricks",
+      "en": "Pybricks"
+     },
+     "colMatch": {
+      "zh": "Pybricks",
+      "en": "Pybricks"
+     }
+    }
+   ]
+  },
+  {
+   "id": "ev3",
+   "name": {
+    "zh": "EV3",
+    "en": "EV3"
+   },
+   "fullName": {
+    "zh": "MINDSTORMS EV3",
+    "en": "MINDSTORMS EV3"
+   },
+   "tagline": {
+    "zh": "樂高 MINDSTORMS EV3 主機（RJ12 接頭）",
+    "en": "LEGO MINDSTORMS EV3 brick (RJ12 plug)"
+   },
+   "icon": "/images/hubs/ev3-hub.webp",
+   "illust": "/images/illust/host-ev3.svg",
+   "colorToken": "--ev3",
+   "software": [
+    {
+     "id": "ev3g",
+     "name": {
+      "zh": "EV3-G 官方軟體",
+      "en": "EV3-G"
+     },
+     "longName": {
+      "zh": "EV3-G 官方軟體（EV3 Lab）",
+      "en": "EV3-G official software (EV3 Lab)"
+     },
+     "tagline": {
+      "zh": "學校電腦教室、WRO 隊伍最常見",
+      "en": "Common in school labs and WRO teams"
+     },
+     "icon": "/images/hubs/ev3-official-app.webp",
+     "summaryMatch": {
+      "zh": "EV3-G",
+      "en": "EV3-G"
+     },
+     "colMatch": {
+      "zh": "EV3-G",
+      "en": "EV3-G"
+     }
+    },
+    {
+     "id": "classroom",
+     "name": {
+      "zh": "EV3 Classroom",
+      "en": "EV3 Classroom"
+     },
+     "longName": {
+      "zh": "EV3 Classroom（Scratch 積木）",
+      "en": "EV3 Classroom (Scratch blocks)"
+     },
+     "tagline": {
+      "zh": "跟 SPIKE 一樣的積木，第一次用 EV3 也好上手",
+      "en": "Same blocks as SPIKE; easy for first-time EV3 users"
+     },
+     "icon": "/images/hubs/ev3-classroom-app.webp",
+     "summaryMatch": {
+      "zh": "Classroom",
+      "en": "Classroom"
+     },
+     "colMatch": {
+      "zh": "Classroom",
+      "en": "Classroom"
+     }
+    },
+    {
+     "id": "pybricks",
+     "name": {
+      "zh": "Pybricks",
+      "en": "Pybricks"
+     },
+     "longName": {
+      "zh": "Pybricks v4／EV3 MicroPython v2",
+      "en": "Pybricks v4 / EV3 MicroPython v2"
+     },
+     "tagline": {
+      "zh": "Python 文字程式，讀得到所有模式",
+      "en": "Python code with access to every mode"
+     },
+     "icon": "/images/hubs/ev3-pybricks-logo.webp",
+     "summaryMatch": {
+      "zh": "Pybricks v4|MicroPython",
+      "en": "Pybricks v4|MicroPython"
+     },
+     "colMatch": {
+      "zh": "Pybricks|MicroPython",
+      "en": "Pybricks|MicroPython"
+     }
+    },
+    {
+     "id": "clev3r",
+     "name": {
+      "zh": "clev3r",
+      "en": "clev3r"
+     },
+     "longName": {
+      "zh": "clev3r（EV3 BASIC）",
+      "en": "clev3r (EV3 BASIC)"
+     },
+     "tagline": {
+      "zh": "BASIC 文字程式，已經在用 clev3r 的人",
+      "en": "BASIC text code for existing clev3r users"
+     },
+     "icon": "/images/hubs/ev3-clev3r-app.webp",
+     "summaryMatch": {
+      "zh": "clev3r",
+      "en": "clev3r"
+     },
+     "colMatch": {
+      "zh": "clev3r",
+      "en": "clev3r"
+     }
+    }
+   ]
+  },
+  {
+   "id": "arduino",
+   "name": {
+    "zh": "Arduino",
+    "en": "Arduino"
+   },
+   "fullName": {
+    "zh": "Arduino／ESP32／UNO R4（I2C）",
+    "en": "Arduino / ESP32 / UNO R4 (I2C)"
+   },
+   "tagline": {
+    "zh": "Arduino UNO、Nano、UNO R4、ESP32，用 I2C 接",
+    "en": "Arduino UNO, Nano, UNO R4, ESP32 over I2C"
+   },
+   "icon": "plug",
+   "illust": "/images/illust/host-arduino.svg",
+   "colorToken": "--arduino",
+   "software": [
+    {
+     "id": "ide",
+     "name": {
+      "zh": "Arduino IDE",
+      "en": "Arduino IDE"
+     },
+     "longName": {
+      "zh": "Arduino IDE（C++）",
+      "en": "Arduino IDE (C++)"
+     },
+     "tagline": {
+      "zh": "複製範例、上傳就能用；每一行都有中文說明",
+      "en": "Copy an example and upload; every line is commented"
+     },
+     "icon": "code",
+     "summaryMatch": null,
+     "colMatch": null
+    }
+   ]
+  },
+  {
+   "id": "mblock",
+   "name": {
+    "zh": "mBlock",
+    "en": "mBlock"
+   },
+   "fullName": {
+    "zh": "MakeBlock（mBot）＋ mBlock 5",
+    "en": "Makeblock (mBot) + mBlock 5"
+   },
+   "tagline": {
+    "zh": "mBot、Ranger、Orion、MegaPi，用 mBlock 5 積木",
+    "en": "mBot, Ranger, Orion, MegaPi with mBlock 5 blocks"
+   },
+   "icon": "bot",
+   "illust": "/images/illust/host-mblock.svg",
+   "colorToken": "--mblock",
+   "software": [
+    {
+     "id": "mblock5",
+     "name": {
+      "zh": "mBlock 5",
+      "en": "mBlock 5"
+     },
+     "longName": {
+      "zh": "mBlock 5（MBC Pro Sensors 擴展）",
+      "en": "mBlock 5 (MBC Pro Sensors extension)"
+     },
+     "tagline": {
+      "zh": "裝 MBC 擴展後用中文積木讀值",
+      "en": "Add the MBC extension and read values with blocks"
+     },
+     "icon": "blocks",
+     "summaryMatch": null,
+     "colMatch": null
+    }
+   ]
+  },
+  {
+   "id": "matrix",
+   "name": {
+    "zh": "MATRIX",
+    "en": "MATRIX"
+   },
+   "fullName": {
+    "zh": "MATRIX Mini R4",
+    "en": "MATRIX Mini R4"
+   },
+   "tagline": {
+    "zh": "MATRIX Mini R4 主機，用 MATRIXblock 積木",
+    "en": "MATRIX Mini R4 controller with MATRIXblock"
+   },
+   "icon": "blocks",
+   "illust": "/images/illust/host-matrix.svg",
+   "colorToken": "--matrix",
+   "software": [
+    {
+     "id": "matrixblock",
+     "name": {
+      "zh": "MATRIXblock 原廠積木",
+      "en": "MATRIXblock stock blocks"
+     },
+     "longName": {
+      "zh": "MATRIXblock 原廠顏色感應器積木（0x22）",
+      "en": "MATRIXblock stock colour-sensor blocks (0x22)"
+     },
+     "tagline": {
+      "zh": "不用換函式庫，R~K 七個數就夠用",
+      "en": "No library change; seven numbers R~K"
+     },
+     "icon": "blocks",
+     "summaryMatch": null,
+     "colMatch": null
+    },
+    {
+     "id": "bigchannel",
+     "name": {
+      "zh": "大通道函式庫",
+      "en": "Big-channel library"
+     },
+     "longName": {
+      "zh": "LauMo 大通道函式庫（MATRIXblock／Arduino）",
+      "en": "LauMo big-channel library (MATRIXblock / Arduino)"
+     },
+     "tagline": {
+      "zh": "換函式庫，一包 30 byte 什麼都讀得到",
+      "en": "Swap the library and read everything in one 30-byte packet"
+     },
+     "icon": "sliders-horizontal",
+     "summaryMatch": null,
+     "colMatch": null
+    },
+    {
+     "id": "mvision",
+     "name": {
+      "zh": "mVision 積木",
+      "en": "mVision blocks"
+     },
+     "longName": {
+      "zh": "MATRIXblock mVision 串口積木",
+      "en": "MATRIXblock mVision serial blocks"
+     },
+     "tagline": {
+      "zh": "神攝手走串口，用內建攝影機積木讀",
+      "en": "The camera talks serial; read it with the built-in camera blocks"
+     },
+     "icon": "camera",
+     "summaryMatch": null,
+     "colMatch": null
+    }
+   ]
+  },
+  {
+   "id": "microbit",
+   "name": {
+    "zh": "micro:bit",
+    "en": "micro:bit"
+   },
+   "fullName": {
+    "zh": "BBC micro:bit V1／V2",
+    "en": "BBC micro:bit V1 / V2"
+   },
+   "tagline": {
+    "zh": "micro:bit V1／V2，用 MakeCode 積木",
+    "en": "micro:bit V1 / V2 with MakeCode blocks"
+   },
+   "icon": "blocks",
+   "illust": "/images/illust/host-microbit.svg",
+   "colorToken": "--microbit",
+   "software": [
+    {
+     "id": "makecode",
+     "name": {
+      "zh": "MakeCode",
+      "en": "MakeCode"
+     },
+     "longName": {
+      "zh": "MakeCode（積木／JavaScript）",
+      "en": "MakeCode (blocks / JavaScript)"
+     },
+     "tagline": {
+      "zh": "加入 pxt-mbc-sensors 擴充，積木或 JavaScript 都可以",
+      "en": "Add the pxt-mbc-sensors extension; blocks or JavaScript"
+     },
+     "icon": "blocks",
+     "summaryMatch": null,
+     "colMatch": null
+    }
+   ]
+  }
+ ],
+ "products": {
+  "line8": {
+   "name": {
+    "zh": "循行者 8 路 (Line8)",
+    "en": "Pathfinder 8-Way (Line8)"
+   },
+   "short": {
+    "zh": "循行者 8 路",
+    "en": "Pathfinder 8-Way"
+   },
+   "image": "/images/sensors/line8/line8-product-spike.webp",
+   "color": "#ff4500",
+   "hosts": [
+    {
+     "id": "spike",
+     "sws": [
+      "official",
+      "mbcblocks",
+      "pybricks"
+     ]
+    },
+    {
+     "id": "ev3",
+     "sws": [
+      "ev3g",
+      "classroom",
+      "pybricks",
+      "clev3r"
+     ]
+    },
+    {
+     "id": "arduino",
+     "sws": [
+      "ide"
+     ]
+    },
+    {
+     "id": "mblock",
+     "sws": [
+      "mblock5"
+     ]
+    },
+    {
+     "id": "matrix",
+     "sws": [
+      "matrixblock",
+      "bigchannel"
+     ]
+    },
+    {
+     "id": "microbit",
+     "sws": [
+      "makecode"
+     ]
+    }
+   ]
+  },
+  "line16": {
+   "name": {
+    "zh": "循行者 16 路 (Line16)",
+    "en": "Pathfinder 16-Way (Line16)"
+   },
+   "short": {
+    "zh": "循行者 16 路",
+    "en": "Pathfinder 16-Way"
+   },
+   "image": "/images/sensors/line16/line16-product-spike.webp",
+   "color": "#ff6b35",
+   "hosts": [
+    {
+     "id": "spike",
+     "sws": [
+      "official",
+      "mbcblocks",
+      "pybricks"
+     ]
+    },
+    {
+     "id": "ev3",
+     "sws": [
+      "ev3g",
+      "classroom",
+      "pybricks",
+      "clev3r"
+     ]
+    },
+    {
+     "id": "arduino",
+     "sws": [
+      "ide"
+     ]
+    },
+    {
+     "id": "mblock",
+     "sws": [
+      "mblock5"
+     ]
+    },
+    {
+     "id": "matrix",
+     "sws": [
+      "matrixblock",
+      "bigchannel"
+     ]
+    },
+    {
+     "id": "microbit",
+     "sws": [
+      "makecode"
+     ]
+    }
+   ]
+  },
+  "tof2": {
+   "name": {
+    "zh": "測距者 2 路 (TOF2)",
+    "en": "Ranger 2-Way (TOF2)"
+   },
+   "short": {
+    "zh": "測距者 2 路",
+    "en": "Ranger 2-Way"
+   },
+   "image": "/images/sensors/tof2/tof2-product.webp",
+   "color": "#0ABAB5",
+   "hosts": [
+    {
+     "id": "spike",
+     "sws": [
+      "official",
+      "mbcblocks",
+      "pybricks"
+     ]
+    },
+    {
+     "id": "ev3",
+     "sws": [
+      "ev3g",
+      "classroom",
+      "pybricks",
+      "clev3r"
+     ]
+    },
+    {
+     "id": "arduino",
+     "sws": [
+      "ide"
+     ]
+    },
+    {
+     "id": "mblock",
+     "sws": [
+      "mblock5"
+     ]
+    },
+    {
+     "id": "matrix",
+     "sws": [
+      "matrixblock",
+      "bigchannel"
+     ]
+    },
+    {
+     "id": "microbit",
+     "sws": [
+      "makecode"
+     ]
+    }
+   ]
+  },
+  "tof8": {
+   "name": {
+    "zh": "測距者 8 路 (TOF8)",
+    "en": "Ranger 8-Way (TOF8)"
+   },
+   "short": {
+    "zh": "測距者 8 路",
+    "en": "Ranger 8-Way"
+   },
+   "image": "/images/sensors/tof8/tof8-product.webp",
+   "color": "#0ABAB5",
+   "hosts": [
+    {
+     "id": "spike",
+     "sws": [
+      "official",
+      "mbcblocks",
+      "pybricks"
+     ]
+    },
+    {
+     "id": "ev3",
+     "sws": [
+      "ev3g",
+      "classroom",
+      "pybricks",
+      "clev3r"
+     ]
+    },
+    {
+     "id": "arduino",
+     "sws": [
+      "ide"
+     ]
+    },
+    {
+     "id": "mblock",
+     "sws": [
+      "mblock5"
+     ]
+    },
+    {
+     "id": "matrix",
+     "sws": [
+      "matrixblock",
+      "bigchannel"
+     ]
+    },
+    {
+     "id": "microbit",
+     "sws": [
+      "makecode"
+     ]
+    }
+   ]
+  },
+  "ps2": {
+   "name": {
+    "zh": "掌控者 PS2 (PS2)",
+    "en": "Controller 2.4G (PS2)"
+   },
+   "short": {
+    "zh": "掌控者 PS2",
+    "en": "Controller 2.4G"
+   },
+   "image": "/images/sensors/ps2/ps2-product.webp",
+   "color": "#F2C200",
+   "hosts": [
+    {
+     "id": "spike",
+     "sws": [
+      "official",
+      "mbcblocks",
+      "pybricks"
+     ]
+    },
+    {
+     "id": "ev3",
+     "sws": [
+      "ev3g",
+      "classroom",
+      "pybricks",
+      "clev3r"
+     ]
+    },
+    {
+     "id": "arduino",
+     "sws": [
+      "ide"
+     ]
+    },
+    {
+     "id": "mblock",
+     "sws": [
+      "mblock5"
+     ]
+    },
+    {
+     "id": "matrix",
+     "sws": [
+      "matrixblock",
+      "bigchannel"
+     ]
+    },
+    {
+     "id": "microbit",
+     "sws": [
+      "makecode"
+     ]
+    }
+   ]
+  },
+  "ps4": {
+   "name": {
+    "zh": "掌控者 PS4/PS5",
+    "en": "Controller PS4/PS5"
+   },
+   "short": {
+    "zh": "掌控者 PS4/PS5",
+    "en": "Controller PS4/PS5"
+   },
+   "image": "/images/sensors/ps4/ps4-product.webp",
+   "color": "#F2C200",
+   "hosts": [
+    {
+     "id": "spike",
+     "sws": [
+      "official",
+      "mbcblocks",
+      "pybricks"
+     ]
+    },
+    {
+     "id": "ev3",
+     "sws": [
+      "ev3g",
+      "classroom",
+      "pybricks",
+      "clev3r"
+     ]
+    },
+    {
+     "id": "arduino",
+     "sws": [
+      "ide"
+     ]
+    },
+    {
+     "id": "mblock",
+     "sws": [
+      "mblock5"
+     ]
+    },
+    {
+     "id": "matrix",
+     "sws": [
+      "matrixblock",
+      "bigchannel"
+     ]
+    },
+    {
+     "id": "microbit",
+     "sws": [
+      "makecode"
+     ]
+    }
+   ]
+  },
+  "esp32cam": {
+   "name": {
+    "zh": "神攝手 ESP32CAM",
+    "en": "Sharpshooter Vision (ESP32CAM)"
+   },
+   "short": {
+    "zh": "神攝手 ESP32CAM",
+    "en": "Sharpshooter Vision"
+   },
+   "image": "/images/sensors/esp32cam/esp32cam-product.webp",
+   "color": "#00d2ff",
+   "hosts": [
+    {
+     "id": "spike",
+     "sws": [
+      "official",
+      "mbcblocks",
+      "pybricks"
+     ]
+    },
+    {
+     "id": "ev3",
+     "sws": [
+      "ev3g",
+      "classroom",
+      "pybricks",
+      "clev3r"
+     ]
+    },
+    {
+     "id": "arduino",
+     "sws": [
+      "ide"
+     ]
+    },
+    {
+     "id": "mblock",
+     "sws": [
+      "mblock5"
+     ]
+    },
+    {
+     "id": "matrix",
+     "sws": [
+      "mvision"
+     ]
+    },
+    {
+     "id": "microbit",
+     "sws": [
+      "makecode"
+     ]
+    }
+   ]
+  },
+  "exp6": {
+   "name": {
+    "zh": "SPIKE 6 路擴充器 (EXP6)",
+    "en": "SPIKE 6-Way Expander (EXP6)"
+   },
+   "short": {
+    "zh": "SPIKE 6 路擴充器",
+    "en": "SPIKE 6-Way Expander"
+   },
+   "image": "/images/sensors/exp6/exp6-product.webp",
+   "color": "#00d2ff",
+   "hosts": [
+    {
+     "id": "spike",
+     "sws": [
+      "official",
+      "mbcblocks",
+      "pybricks"
+     ]
+    },
+    {
+     "id": "arduino",
+     "sws": [
+      "ide"
+     ]
+    }
+   ]
+  },
+  "imu": {
+   "name": {
+    "zh": "陀螺儀 IMU 九軸",
+    "en": "IMU 9-Axis Gyro"
+   },
+   "short": {
+    "zh": "陀螺儀 IMU 九軸",
+    "en": "IMU 9-Axis Gyro"
+   },
+   "image": null,
+   "color": "#a371f7",
+   "hosts": [
+    {
+     "id": "ev3",
+     "sws": [
+      "ev3g",
+      "classroom",
+      "pybricks",
+      "clev3r"
+     ]
+    },
+    {
+     "id": "arduino",
+     "sws": [
+      "ide"
+     ]
+    },
+    {
+     "id": "mblock",
+     "sws": [
+      "mblock5"
+     ]
+    },
+    {
+     "id": "matrix",
+     "sws": [
+      "matrixblock",
+      "bigchannel"
+     ]
+    },
+    {
+     "id": "microbit",
+     "sws": [
+      "makecode"
+     ]
+    }
+   ]
+  },
+  "servo6": {
+   "name": {
+    "zh": "SPIKE 6 路舵機擴充器 (Servo6)",
+    "en": "SPIKE 6-Port Servo Expander (Servo6)"
+   },
+   "short": {
+    "zh": "SPIKE 6 路舵機擴充器",
+    "en": "SPIKE 6-Port Servo Expander"
+   },
+   "image": null,
+   "color": "#ff9f43",
+   "hosts": [
+    {
+     "id": "spike",
+     "sws": [
+      "official",
+      "pybricks"
+     ]
+    }
+   ]
+  }
+ },
+ "moved": {
+  "sensors/esp32cam/arduino-examples.md": "/sensors/esp32cam/arduino/ide.md",
+  "sensors/esp32cam/arduino-i2c-wro.md": "/sensors/esp32cam/arduino/ide.md",
+  "sensors/esp32cam/arduino-i2c.md": "/sensors/esp32cam/arduino/ide.md",
+  "sensors/esp32cam/ev3-examples-wro.md": "/sensors/esp32cam/ev3/index.md",
+  "sensors/esp32cam/ev3-examples.md": "/sensors/esp32cam/ev3/index.md",
+  "sensors/esp32cam/matrix-wro.md": "/sensors/esp32cam/matrix/mvision.md",
+  "sensors/esp32cam/matrix.md": "/sensors/esp32cam/matrix/mvision.md",
+  "sensors/esp32cam/mblock-examples.md": "/sensors/esp32cam/mblock/mblock5.md",
+  "sensors/esp32cam/mblock-wro.md": "/sensors/esp32cam/mblock/mblock5.md",
+  "sensors/esp32cam/mblock.md": "/sensors/esp32cam/mblock/mblock5.md",
+  "sensors/esp32cam/microbit-examples.md": "/sensors/esp32cam/microbit/makecode.md",
+  "sensors/esp32cam/microbit-wro.md": "/sensors/esp32cam/microbit/makecode.md",
+  "sensors/esp32cam/microbit.md": "/sensors/esp32cam/microbit/makecode.md",
+  "sensors/esp32cam/reference-wro.md": "/sensors/esp32cam/index.md",
+  "sensors/esp32cam/reference.md": "/sensors/esp32cam/index.md",
+  "sensors/esp32cam/spike-examples-wro.md": "/sensors/esp32cam/spike/index.md",
+  "sensors/esp32cam/spike-examples.md": "/sensors/esp32cam/spike/index.md",
+  "sensors/exp6/arduino-examples.md": "/sensors/exp6/arduino/ide.md",
+  "sensors/exp6/arduino-i2c.md": "/sensors/exp6/arduino/ide.md",
+  "sensors/exp6/spike-examples.md": "/sensors/exp6/spike/index.md",
+  "sensors/exp6/spike-official.md": "/sensors/exp6/spike/official.md",
+  "sensors/exp6/spike-pybricks.md": "/sensors/exp6/spike/pybricks.md",
+  "sensors/imu/arduino-examples.md": "/sensors/imu/arduino/ide.md",
+  "sensors/imu/arduino-i2c.md": "/sensors/imu/arduino/ide.md",
+  "sensors/imu/ev3-examples.md": "/sensors/imu/ev3/index.md",
+  "sensors/imu/matrix.md": "/sensors/imu/matrix/index.md",
+  "sensors/imu/mblock-examples.md": "/sensors/imu/mblock/mblock5.md",
+  "sensors/imu/mblock.md": "/sensors/imu/mblock/mblock5.md",
+  "sensors/imu/microbit-examples.md": "/sensors/imu/microbit/makecode.md",
+  "sensors/imu/microbit.md": "/sensors/imu/microbit/makecode.md",
+  "sensors/imu/reference.md": "/sensors/imu/index.md",
+  "sensors/line16/arduino-examples.md": "/sensors/line16/arduino/ide.md",
+  "sensors/line16/arduino-i2c.md": "/sensors/line16/arduino/ide.md",
+  "sensors/line16/ev3-classroom.md": "/sensors/line16/ev3/classroom.md",
+  "sensors/line16/ev3-clev3r.md": "/sensors/line16/ev3/clev3r.md",
+  "sensors/line16/ev3-examples.md": "/sensors/line16/ev3/index.md",
+  "sensors/line16/ev3-hub.md": "/sensors/line16/ev3/index.md",
+  "sensors/line16/ev3-official.md": "/sensors/line16/ev3/ev3g.md",
+  "sensors/line16/ev3-pybricks.md": "/sensors/line16/ev3/pybricks.md",
+  "sensors/line16/matrix.md": "/sensors/line16/matrix/index.md",
+  "sensors/line16/mblock-examples.md": "/sensors/line16/mblock/mblock5.md",
+  "sensors/line16/mblock.md": "/sensors/line16/mblock/mblock5.md",
+  "sensors/line16/microbit-examples.md": "/sensors/line16/microbit/makecode.md",
+  "sensors/line16/microbit.md": "/sensors/line16/microbit/makecode.md",
+  "sensors/line16/reference.md": "/sensors/line16/index.md",
+  "sensors/line16/spike-education.md": "/sensors/line16/spike/official.md",
+  "sensors/line16/spike-examples.md": "/sensors/line16/spike/index.md",
+  "sensors/line16/spike-hub.md": "/sensors/line16/spike/index.md",
+  "sensors/line16/spike-pybricks.md": "/sensors/line16/spike/pybricks.md",
+  "sensors/line16/spike-ri.md": "/sensors/line16/spike/official.md",
+  "sensors/line8/arduino-examples.md": "/sensors/line8/arduino/ide.md",
+  "sensors/line8/arduino-i2c.md": "/sensors/line8/arduino/ide.md",
+  "sensors/line8/ev3-classroom.md": "/sensors/line8/ev3/classroom.md",
+  "sensors/line8/ev3-clev3r.md": "/sensors/line8/ev3/clev3r.md",
+  "sensors/line8/ev3-examples.md": "/sensors/line8/ev3/index.md",
+  "sensors/line8/ev3-hub.md": "/sensors/line8/ev3/index.md",
+  "sensors/line8/ev3-official.md": "/sensors/line8/ev3/ev3g.md",
+  "sensors/line8/ev3-pybricks.md": "/sensors/line8/ev3/pybricks.md",
+  "sensors/line8/matrix.md": "/sensors/line8/matrix/index.md",
+  "sensors/line8/mblock-examples.md": "/sensors/line8/mblock/mblock5.md",
+  "sensors/line8/mblock.md": "/sensors/line8/mblock/mblock5.md",
+  "sensors/line8/microbit-examples.md": "/sensors/line8/microbit/makecode.md",
+  "sensors/line8/microbit.md": "/sensors/line8/microbit/makecode.md",
+  "sensors/line8/reference.md": "/sensors/line8/index.md",
+  "sensors/line8/spike-education.md": "/sensors/line8/spike/official.md",
+  "sensors/line8/spike-examples.md": "/sensors/line8/spike/index.md",
+  "sensors/line8/spike-hub.md": "/sensors/line8/spike/index.md",
+  "sensors/line8/spike-pybricks.md": "/sensors/line8/spike/pybricks.md",
+  "sensors/line8/spike-ri.md": "/sensors/line8/spike/official.md",
+  "sensors/ps2/arduino-examples.md": "/sensors/ps2/arduino/ide.md",
+  "sensors/ps2/arduino-i2c.md": "/sensors/ps2/arduino/ide.md",
+  "sensors/ps2/ev3-examples.md": "/sensors/ps2/ev3/index.md",
+  "sensors/ps2/matrix.md": "/sensors/ps2/matrix/index.md",
+  "sensors/ps2/mblock-examples.md": "/sensors/ps2/mblock/mblock5.md",
+  "sensors/ps2/mblock.md": "/sensors/ps2/mblock/mblock5.md",
+  "sensors/ps2/microbit-examples.md": "/sensors/ps2/microbit/makecode.md",
+  "sensors/ps2/microbit.md": "/sensors/ps2/microbit/makecode.md",
+  "sensors/ps2/reference.md": "/sensors/ps2/index.md",
+  "sensors/ps2/spike-examples.md": "/sensors/ps2/spike/index.md",
+  "sensors/ps4/arduino-examples.md": "/sensors/ps4/arduino/ide.md",
+  "sensors/ps4/arduino-i2c.md": "/sensors/ps4/arduino/ide.md",
+  "sensors/ps4/ev3-examples.md": "/sensors/ps4/ev3/index.md",
+  "sensors/ps4/matrix.md": "/sensors/ps4/matrix/index.md",
+  "sensors/ps4/mblock-examples.md": "/sensors/ps4/mblock/mblock5.md",
+  "sensors/ps4/mblock.md": "/sensors/ps4/mblock/mblock5.md",
+  "sensors/ps4/microbit-examples.md": "/sensors/ps4/microbit/makecode.md",
+  "sensors/ps4/microbit.md": "/sensors/ps4/microbit/makecode.md",
+  "sensors/ps4/reference.md": "/sensors/ps4/index.md",
+  "sensors/ps4/spike-examples.md": "/sensors/ps4/spike/index.md",
+  "sensors/servo6/spike-official.md": "/sensors/servo6/spike/official.md",
+  "sensors/servo6/spike-pybricks.md": "/sensors/servo6/spike/pybricks.md",
+  "sensors/tof2/arduino-examples.md": "/sensors/tof2/arduino/ide.md",
+  "sensors/tof2/arduino-i2c.md": "/sensors/tof2/arduino/ide.md",
+  "sensors/tof2/ev3-examples.md": "/sensors/tof2/ev3/index.md",
+  "sensors/tof2/matrix.md": "/sensors/tof2/matrix/index.md",
+  "sensors/tof2/mblock-examples.md": "/sensors/tof2/mblock/mblock5.md",
+  "sensors/tof2/mblock.md": "/sensors/tof2/mblock/mblock5.md",
+  "sensors/tof2/microbit-examples.md": "/sensors/tof2/microbit/makecode.md",
+  "sensors/tof2/microbit.md": "/sensors/tof2/microbit/makecode.md",
+  "sensors/tof2/reference.md": "/sensors/tof2/index.md",
+  "sensors/tof2/spike-examples.md": "/sensors/tof2/spike/index.md",
+  "sensors/tof8/arduino-examples.md": "/sensors/tof8/arduino/ide.md",
+  "sensors/tof8/arduino-i2c.md": "/sensors/tof8/arduino/ide.md",
+  "sensors/tof8/ev3-examples.md": "/sensors/tof8/ev3/index.md",
+  "sensors/tof8/matrix.md": "/sensors/tof8/matrix/index.md",
+  "sensors/tof8/mblock-examples.md": "/sensors/tof8/mblock/mblock5.md",
+  "sensors/tof8/mblock.md": "/sensors/tof8/mblock/mblock5.md",
+  "sensors/tof8/microbit-examples.md": "/sensors/tof8/microbit/makecode.md",
+  "sensors/tof8/microbit.md": "/sensors/tof8/microbit/makecode.md",
+  "sensors/tof8/reference.md": "/sensors/tof8/index.md",
+  "sensors/tof8/spike-examples.md": "/sensors/tof8/spike/index.md",
+  "en/sensors/esp32cam/arduino-examples.md": "/en/sensors/esp32cam/arduino/ide.md",
+  "en/sensors/esp32cam/arduino-i2c-wro.md": "/en/sensors/esp32cam/arduino/ide.md",
+  "en/sensors/esp32cam/arduino-i2c.md": "/en/sensors/esp32cam/arduino/ide.md",
+  "en/sensors/esp32cam/ev3-examples-wro.md": "/en/sensors/esp32cam/ev3/index.md",
+  "en/sensors/esp32cam/ev3-examples.md": "/en/sensors/esp32cam/ev3/index.md",
+  "en/sensors/esp32cam/matrix-wro.md": "/en/sensors/esp32cam/matrix/mvision.md",
+  "en/sensors/esp32cam/matrix.md": "/en/sensors/esp32cam/matrix/mvision.md",
+  "en/sensors/esp32cam/mblock-examples.md": "/en/sensors/esp32cam/mblock/mblock5.md",
+  "en/sensors/esp32cam/mblock-wro.md": "/en/sensors/esp32cam/mblock/mblock5.md",
+  "en/sensors/esp32cam/mblock.md": "/en/sensors/esp32cam/mblock/mblock5.md",
+  "en/sensors/esp32cam/microbit-examples.md": "/en/sensors/esp32cam/microbit/makecode.md",
+  "en/sensors/esp32cam/microbit-wro.md": "/en/sensors/esp32cam/microbit/makecode.md",
+  "en/sensors/esp32cam/microbit.md": "/en/sensors/esp32cam/microbit/makecode.md",
+  "en/sensors/esp32cam/reference-wro.md": "/en/sensors/esp32cam/index.md",
+  "en/sensors/esp32cam/reference.md": "/en/sensors/esp32cam/index.md",
+  "en/sensors/esp32cam/spike-examples-wro.md": "/en/sensors/esp32cam/spike/index.md",
+  "en/sensors/esp32cam/spike-examples.md": "/en/sensors/esp32cam/spike/index.md",
+  "en/sensors/exp6/arduino-examples.md": "/en/sensors/exp6/arduino/ide.md",
+  "en/sensors/exp6/arduino-i2c.md": "/en/sensors/exp6/arduino/ide.md",
+  "en/sensors/exp6/spike-examples.md": "/en/sensors/exp6/spike/index.md",
+  "en/sensors/exp6/spike-official.md": "/en/sensors/exp6/spike/official.md",
+  "en/sensors/exp6/spike-pybricks.md": "/en/sensors/exp6/spike/pybricks.md",
+  "en/sensors/imu/arduino-examples.md": "/en/sensors/imu/arduino/ide.md",
+  "en/sensors/imu/arduino-i2c.md": "/en/sensors/imu/arduino/ide.md",
+  "en/sensors/imu/ev3-examples.md": "/en/sensors/imu/ev3/index.md",
+  "en/sensors/imu/matrix.md": "/en/sensors/imu/matrix/index.md",
+  "en/sensors/imu/mblock-examples.md": "/en/sensors/imu/mblock/mblock5.md",
+  "en/sensors/imu/mblock.md": "/en/sensors/imu/mblock/mblock5.md",
+  "en/sensors/imu/microbit-examples.md": "/en/sensors/imu/microbit/makecode.md",
+  "en/sensors/imu/microbit.md": "/en/sensors/imu/microbit/makecode.md",
+  "en/sensors/imu/reference.md": "/en/sensors/imu/index.md",
+  "en/sensors/line16/arduino-examples.md": "/en/sensors/line16/arduino/ide.md",
+  "en/sensors/line16/arduino-i2c.md": "/en/sensors/line16/arduino/ide.md",
+  "en/sensors/line16/ev3-classroom.md": "/en/sensors/line16/ev3/classroom.md",
+  "en/sensors/line16/ev3-clev3r.md": "/en/sensors/line16/ev3/clev3r.md",
+  "en/sensors/line16/ev3-examples.md": "/en/sensors/line16/ev3/index.md",
+  "en/sensors/line16/ev3-hub.md": "/en/sensors/line16/ev3/index.md",
+  "en/sensors/line16/ev3-official.md": "/en/sensors/line16/ev3/ev3g.md",
+  "en/sensors/line16/ev3-pybricks.md": "/en/sensors/line16/ev3/pybricks.md",
+  "en/sensors/line16/matrix.md": "/en/sensors/line16/matrix/index.md",
+  "en/sensors/line16/mblock-examples.md": "/en/sensors/line16/mblock/mblock5.md",
+  "en/sensors/line16/mblock.md": "/en/sensors/line16/mblock/mblock5.md",
+  "en/sensors/line16/microbit-examples.md": "/en/sensors/line16/microbit/makecode.md",
+  "en/sensors/line16/microbit.md": "/en/sensors/line16/microbit/makecode.md",
+  "en/sensors/line16/reference.md": "/en/sensors/line16/index.md",
+  "en/sensors/line16/spike-education.md": "/en/sensors/line16/spike/official.md",
+  "en/sensors/line16/spike-examples.md": "/en/sensors/line16/spike/index.md",
+  "en/sensors/line16/spike-hub.md": "/en/sensors/line16/spike/index.md",
+  "en/sensors/line16/spike-pybricks.md": "/en/sensors/line16/spike/pybricks.md",
+  "en/sensors/line16/spike-ri.md": "/en/sensors/line16/spike/official.md",
+  "en/sensors/line8/arduino-examples.md": "/en/sensors/line8/arduino/ide.md",
+  "en/sensors/line8/arduino-i2c.md": "/en/sensors/line8/arduino/ide.md",
+  "en/sensors/line8/ev3-classroom.md": "/en/sensors/line8/ev3/classroom.md",
+  "en/sensors/line8/ev3-clev3r.md": "/en/sensors/line8/ev3/clev3r.md",
+  "en/sensors/line8/ev3-examples.md": "/en/sensors/line8/ev3/index.md",
+  "en/sensors/line8/ev3-hub.md": "/en/sensors/line8/ev3/index.md",
+  "en/sensors/line8/ev3-official.md": "/en/sensors/line8/ev3/ev3g.md",
+  "en/sensors/line8/ev3-pybricks.md": "/en/sensors/line8/ev3/pybricks.md",
+  "en/sensors/line8/matrix.md": "/en/sensors/line8/matrix/index.md",
+  "en/sensors/line8/mblock-examples.md": "/en/sensors/line8/mblock/mblock5.md",
+  "en/sensors/line8/mblock.md": "/en/sensors/line8/mblock/mblock5.md",
+  "en/sensors/line8/microbit-examples.md": "/en/sensors/line8/microbit/makecode.md",
+  "en/sensors/line8/microbit.md": "/en/sensors/line8/microbit/makecode.md",
+  "en/sensors/line8/reference.md": "/en/sensors/line8/index.md",
+  "en/sensors/line8/spike-education.md": "/en/sensors/line8/spike/official.md",
+  "en/sensors/line8/spike-examples.md": "/en/sensors/line8/spike/index.md",
+  "en/sensors/line8/spike-hub.md": "/en/sensors/line8/spike/index.md",
+  "en/sensors/line8/spike-pybricks.md": "/en/sensors/line8/spike/pybricks.md",
+  "en/sensors/line8/spike-ri.md": "/en/sensors/line8/spike/official.md",
+  "en/sensors/ps2/arduino-examples.md": "/en/sensors/ps2/arduino/ide.md",
+  "en/sensors/ps2/arduino-i2c.md": "/en/sensors/ps2/arduino/ide.md",
+  "en/sensors/ps2/ev3-examples.md": "/en/sensors/ps2/ev3/index.md",
+  "en/sensors/ps2/matrix.md": "/en/sensors/ps2/matrix/index.md",
+  "en/sensors/ps2/mblock-examples.md": "/en/sensors/ps2/mblock/mblock5.md",
+  "en/sensors/ps2/mblock.md": "/en/sensors/ps2/mblock/mblock5.md",
+  "en/sensors/ps2/microbit-examples.md": "/en/sensors/ps2/microbit/makecode.md",
+  "en/sensors/ps2/microbit.md": "/en/sensors/ps2/microbit/makecode.md",
+  "en/sensors/ps2/reference.md": "/en/sensors/ps2/index.md",
+  "en/sensors/ps2/spike-examples.md": "/en/sensors/ps2/spike/index.md",
+  "en/sensors/ps4/arduino-examples.md": "/en/sensors/ps4/arduino/ide.md",
+  "en/sensors/ps4/arduino-i2c.md": "/en/sensors/ps4/arduino/ide.md",
+  "en/sensors/ps4/ev3-examples.md": "/en/sensors/ps4/ev3/index.md",
+  "en/sensors/ps4/matrix.md": "/en/sensors/ps4/matrix/index.md",
+  "en/sensors/ps4/mblock-examples.md": "/en/sensors/ps4/mblock/mblock5.md",
+  "en/sensors/ps4/mblock.md": "/en/sensors/ps4/mblock/mblock5.md",
+  "en/sensors/ps4/microbit-examples.md": "/en/sensors/ps4/microbit/makecode.md",
+  "en/sensors/ps4/microbit.md": "/en/sensors/ps4/microbit/makecode.md",
+  "en/sensors/ps4/reference.md": "/en/sensors/ps4/index.md",
+  "en/sensors/ps4/spike-examples.md": "/en/sensors/ps4/spike/index.md",
+  "en/sensors/servo6/spike-official.md": "/en/sensors/servo6/spike/official.md",
+  "en/sensors/servo6/spike-pybricks.md": "/en/sensors/servo6/spike/pybricks.md",
+  "en/sensors/tof2/arduino-examples.md": "/en/sensors/tof2/arduino/ide.md",
+  "en/sensors/tof2/arduino-i2c.md": "/en/sensors/tof2/arduino/ide.md",
+  "en/sensors/tof2/ev3-examples.md": "/en/sensors/tof2/ev3/index.md",
+  "en/sensors/tof2/matrix.md": "/en/sensors/tof2/matrix/index.md",
+  "en/sensors/tof2/mblock-examples.md": "/en/sensors/tof2/mblock/mblock5.md",
+  "en/sensors/tof2/mblock.md": "/en/sensors/tof2/mblock/mblock5.md",
+  "en/sensors/tof2/microbit-examples.md": "/en/sensors/tof2/microbit/makecode.md",
+  "en/sensors/tof2/microbit.md": "/en/sensors/tof2/microbit/makecode.md",
+  "en/sensors/tof2/reference.md": "/en/sensors/tof2/index.md",
+  "en/sensors/tof2/spike-examples.md": "/en/sensors/tof2/spike/index.md",
+  "en/sensors/tof8/arduino-examples.md": "/en/sensors/tof8/arduino/ide.md",
+  "en/sensors/tof8/arduino-i2c.md": "/en/sensors/tof8/arduino/ide.md",
+  "en/sensors/tof8/ev3-examples.md": "/en/sensors/tof8/ev3/index.md",
+  "en/sensors/tof8/matrix.md": "/en/sensors/tof8/matrix/index.md",
+  "en/sensors/tof8/mblock-examples.md": "/en/sensors/tof8/mblock/mblock5.md",
+  "en/sensors/tof8/mblock.md": "/en/sensors/tof8/mblock/mblock5.md",
+  "en/sensors/tof8/microbit-examples.md": "/en/sensors/tof8/microbit/makecode.md",
+  "en/sensors/tof8/microbit.md": "/en/sensors/tof8/microbit/makecode.md",
+  "en/sensors/tof8/reference.md": "/en/sensors/tof8/index.md",
+  "en/sensors/tof8/spike-examples.md": "/en/sensors/tof8/spike/index.md"
+ }
+}

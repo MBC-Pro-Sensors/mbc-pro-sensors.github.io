@@ -1,5 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 W4 micro:bit 範例產生器產生（scratchpad w4/gen_pages.mjs＋spec/esp32cam.mjs）；程式碼區塊來自 examples/esp32cam/microbit/*.ts，改程式請改 .ts 後重跑產生器 -->
+<!-- moved: /sensors/esp32cam/microbit/makecode.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/esp32cam/microbit/makecode.md">神攝手 ESP32CAM › micro:bit › MakeCode</a></p>
+
 # 🟧 micro:bit 範例：神攝手 ESP32CAM
 
 [🔙 回到神攝手 ESP32CAM micro:bit 頁](/sensors/esp32cam/microbit.md)　｜　[📖 產品頁](/sensors/esp32cam/index.md)　｜　[📋 指令參考](/sensors/esp32cam/reference.md)

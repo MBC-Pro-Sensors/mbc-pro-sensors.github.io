@@ -1,4 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
+<!-- moved: /sensors/line8/arduino/ide.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/line8/arduino/ide.md">循行者 8 路 › Arduino › Arduino IDE</a></p>
+
 # 🧪 循行者 8 路 × Arduino 範例
 
 [🔙 回到 8 路循線器首頁](/sensors/line8/index.md)　｜　[📡 I2C 暫存器說明（進階）](/sensors/line8/arduino-i2c.md)

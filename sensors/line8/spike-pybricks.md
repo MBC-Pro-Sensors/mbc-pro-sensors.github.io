@@ -1,4 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
+<!-- moved: /sensors/line8/spike/pybricks.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/line8/spike/pybricks.md">循行者 8 路 › SPIKE › Pybricks</a></p>
+
 # pyBricks for SPIKE Prime / Robot Inventor
 
 [🔙 回到 SPIKE 主機選單](/sensors/line8/spike-hub.md)

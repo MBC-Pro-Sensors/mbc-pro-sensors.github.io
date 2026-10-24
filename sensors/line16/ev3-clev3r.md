@@ -1,4 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
+<!-- moved: /sensors/line16/ev3/clev3r.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/line16/ev3/clev3r.md">循行者 16 路 › EV3 › clev3r</a></p>
+
 # EV3 clev3r (BASIC)
 
 [🔙 回到 EV3 主機選單](/sensors/line16/ev3-hub.md)

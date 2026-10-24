@@ -1,4 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
+<!-- moved: /en/sensors/line16/ev3/clev3r.md -->
+<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/line16/ev3/clev3r.md">Pathfinder 16-Way › EV3 › clev3r</a></p>
+
 # EV3 clev3r (BASIC)
 
 [🔙 Back to EV3 Hubs](/en/sensors/line16/ev3-hub.md)

@@ -1,4 +1,7 @@
 <!-- 這頁由 95_產品網站\EV3新手範例產生器 自動產生，請改產生器再重產，不要直接改這個檔。 -->
+<!-- moved: /sensors/esp32cam/ev3/index.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/esp32cam/ev3/index.md">神攝手 ESP32CAM › EV3</a></p>
+
 # 🧱 EV3 新手範例：神攝手（WRO 版）
 
 [🔙 回到 神攝手（WRO 版）產品頁](/sensors/esp32cam/index.md)

@@ -1,4 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
+<!-- moved: /sensors/ps4/arduino/ide.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/ps4/arduino/ide.md">掌控者 PS4/PS5 › Arduino › Arduino IDE</a></p>
+
 # 🧪 掌控者 PS4/PS5 × Arduino 範例
 
 [🔙 回到 PS4/PS5 遙控接收器首頁](/sensors/ps4/index.md)　｜　[∿ MBC 通用 I2C 協議 v2（進階）](/i2c-protocol.md)

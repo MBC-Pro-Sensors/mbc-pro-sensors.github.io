@@ -72,3 +72,39 @@ export function status(product, lang) {
   if (tail0) return { code: `uint8_t st = ${OBJ}.getColorID();   // ${T(lang, '這款已流出：byte 24 維持 0', 'shipped product: byte 24 stays 0')}`, codeLang: CPP, note: T(lang, '已流出的大通道格式鎖住，狀態 byte 維持 0。', 'The shipped big-channel layout is locked; the status byte stays 0.') };
   return { code: `uint8_t st = ${OBJ}.getColorID();   // ${T(lang, '大通道 byte 24 = F3 狀態旗標', 'big channel byte 24 = F3 status flags')}\nbool ready = st & 1;\nuint8_t id  = ${OBJ}.getColor(Y);    // byte 27 ${T(lang, '裝置 ID', 'device ID')} ${product.addr}\nuint8_t hw0 = ${OBJ}.getColor(K);    // byte 28 hw[0] = ${product.hw0}`, codeLang: CPP, note: '' };
 }
+
+// ---------------------------------------------------------------- 依軟體（gen-guides.mjs 軟體頁用）
+// sw = matrixblock（原廠 0x22）｜ bigchannel（LauMo 大通道）｜ mvision（神攝手串口）；讀不到回 null
+export function bySoftware(sw, product, v, lang) {
+  const m = v.matrix || {};
+  const name = valueName(v, lang);
+  if (sw === 'matrixblock') {
+    const c = m.ch22;
+    if (!c) return null;
+    if (c.count) return { text: T(lang, `積木「顏色感應器 → ${CH[c.cmd]}~${CH[c.cmd + c.count - 1]}」${c.note ? `：${c.note}` : ''}`, `Blocks "colour sensor → ${CH[c.cmd]}~${CH[c.cmd + c.count - 1]}"${c.note ? `: ${c.note}` : ''}`), code: `int raw = ${OBJ}.getColor(${CH[c.cmd]});   // ${T(lang, '第 1 組', 'group 1')}`, codeLang: CPP };
+    return { text: T(lang, `積木「顏色感應器 → ${CH[c.cmd]}」${c.offset ? `，讀到的數減 ${c.offset}` : ''}`, `Block "colour sensor → ${CH[c.cmd]}"${c.offset ? `, subtract ${c.offset}` : ''}`), code: `int ${v.key} = ${OBJ}.getColor(${CH[c.cmd]})${c.offset ? ` - ${c.offset}` : ''};   // ${name}`, codeLang: CPP };
+  }
+  if (sw === 'bigchannel') {
+    const b = m.big;
+    if (!b) return null;
+    const fn = b.type === 'u16' ? 'bigU16' : b.type === 'i16' ? 'bigI16' : 'bigU8';
+    const cast = b.type === 'i8' ? '(int8_t)' : '';
+    const two = b.type.endsWith('16');
+    const code = b.count
+      ? `int ${v.key}[${b.count}];\nfor (uint8_t i = 0; i < ${b.count}; i++) ${v.key}[i] = ${cast}${fn}(${b.byte} + i${two ? ' * 2' : ''});   // ${name}`
+      : `int ${v.key} = ${cast}${fn}(${b.byte})${b.offset ? ` - ${b.offset}` : ''};   // ${name}`;
+    const span = b.count ? `${b.byte}~${b.byte + b.count * (two ? 2 : 1) - 1}` : two ? `${b.byte}~${b.byte + 1}` : `${b.byte}`;
+    return { code, codeLang: CPP, note: `${T(lang, '大通道', 'Big channel')} byte ${span}（${b.type}）${b.note ? T(lang, '；', '; ') + b.note : ''}` };
+  }
+  if (sw === 'mvision') {
+    const mv = v.mvision;
+    if (!mv) return null;
+    const slot = mv.count ? `${mv.idx}~${mv.idx + mv.count - 1}` : `${mv.idx}`;
+    return { text: T(lang, `MATRIXblock 的 mVision 積木讀第 ${slot} 格資料${mv.note ? `：${mv.note}` : ''}。`, `The MATRIXblock mVision block reads data slot ${slot}${mv.note ? `: ${mv.note}` : ''}.`) };
+  }
+  return null;
+}
+export function commandBySoftware(sw, product, c, lang) {
+  if (sw !== 'bigchannel' || !c.matrix || !c.matrix.f) return null;
+  return command(product, c, lang);
+}

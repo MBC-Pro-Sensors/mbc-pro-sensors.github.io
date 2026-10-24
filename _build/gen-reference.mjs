@@ -1,7 +1,7 @@
 // 指令參考產生器：由 _build/protocol/*.json（單一真相來源）＋ products.json 產出
 //   sensors/<p>/reference.md、arduino-i2c.md、mblock.md、matrix.md、microbit.md（中英同出，英文到 en/）
 //   reference.md、en/reference.md（全站索引）、llms-protocol.txt
-//   標記式局部覆寫：i2c-protocol.md、makeblock.md、guide.md、_sidebar.md、en/_sidebar.md、llms.txt
+//   標記式局部覆寫：i2c-protocol.md、makeblock.md、guide.md、llms.txt
 //     （頁面裡要有 <!-- gen:名稱 -->…<!-- /gen -->；沒有標記時只寫到 _build/generated/fragments/ 供手動貼上）
 //
 // 用法：node _build/gen-reference.mjs                產生全部產品
@@ -16,6 +16,7 @@ import * as mblockPage from './protocol/pages/mblock.mjs';
 import * as matrixPage from './protocol/pages/matrix.mjs';
 import * as microbitPage from './protocol/pages/microbit.mjs';
 import * as frag from './protocol/pages/fragments.mjs';
+import { availability, legacyTarget, withMoved, targetLabel } from './gen-guides.mjs';
 
 const argv = process.argv.slice(2);
 const CHECK = argv.includes('--check');
@@ -27,7 +28,17 @@ const products = loadProducts(ONLY);
 const siteProducts = loadSiteProducts();
 if (!products.length) { console.error('沒有產品 JSON（先跑 node _build/sync-protocol.mjs）'); process.exit(2); }
 
-const w = makeWriter({ check: CHECK, label: 'gen-reference' });
+const w0 = makeWriter({ check: CHECK, label: 'gen-reference' });
+// 各產品的 reference／arduino-i2c／mblock／matrix／microbit 已整合到三層說明頁（gen-guides.mjs）：
+// 頁首加 <!-- moved: 新頁 --> 標記（與 gen-guides 補的一致，兩支先後跑都不會互改）
+const avail = availability(siteProducts, loadProducts(null));
+const w = {
+  ...w0,
+  write(rel, content) {
+    const target = legacyTarget(rel, avail);
+    return w0.write(rel, target ? withMoved(content, target, targetLabel(target, siteProducts), rel.startsWith('en/') ? 'en' : 'zh') : content);
+  },
+};
 const ctx = {
   hasFile: (rel) => fs.existsSync(path.join(ROOT, rel)),
   routes: (key) => (siteProducts[key] && siteProducts[key].routes) || {},
@@ -68,9 +79,9 @@ for (const lang of LANGS) {
   fragment(`${pre}i2c-protocol.md`, 'i2c-common', lang, frag.i2cCommon(common, lang));
   fragment(`${pre}makeblock.md`, 'mblock-blocks', lang, frag.mblockBlocks(all, lang));
   fragment(`${pre}makeblock.md`, 'mblock-products', lang, frag.mblockProducts(all, lang));
-  fragment(`${pre}guide.md`, 'guide-start', lang, frag.guideStart(siteProducts, lang));
+  fragment(`${pre}guide.md`, 'guide-start', lang, frag.guideStart(siteProducts, lang, avail));
   fragment(`${pre}llms.txt`, 'llms-platforms', lang, frag.llmsPlatforms(lang));
-  for (const p of all) if (!p.id.endsWith('_wro')) fragment(`${pre}_sidebar.md`, `sidebar-${siteKey(p)}`, lang, frag.sidebarTree(p, ctx.routes(siteKey(p)), ctx, lang));
+  // 側欄每款產品只一行（2026-10-22 三層導覽）：產品底下的平台／軟體小樹由 build.mjs 依目前頁面展開，這裡不再產側欄片段
 }
 if (missing.length && !CHECK) {
   console.log(`以下頁面還沒放標記，片段只寫到 _build/generated/fragments/（${missing.length}）：`);

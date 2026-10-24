@@ -1,7 +1,8 @@
-// 標記式片段（<!-- gen:name -->…<!-- /gen -->）與全站索引：i2c-protocol、makeblock、guide#start、側欄子樹、llms、reference.md、llms-protocol.txt
+// 標記式片段（<!-- gen:name -->…<!-- /gen -->）與全站索引：i2c-protocol、makeblock、guide#start、llms、reference.md、llms-protocol.txt
 import { PLATFORMS, L, T, hex, table, pageHref, siteKey, pageFile, valueName, valueIdRange } from '../../gen-lib.mjs';
 import { AI_NOTE } from './common.mjs';
 import * as mb from '../snippets/mblock.mjs';
+import { HOST_BY_ID, swMd } from '../../gen-guides.mjs';
 
 // ---- i2c-protocol.md
 export function i2cAddrTable(products, lang) {
@@ -36,49 +37,18 @@ export function mblockProducts(products, lang) {
       p.hosts.mblock.legacy ? T(lang, 'v1.0.0 可用（2026-10 前韌體）', 'v1.0.0 works (pre-2026-10 firmware)') : '—']));
 }
 
-// ---- guide.md#start
-const cellLabel = (lang, p) => /hub/.test(p) ? T(lang, 'App・Pybricks', 'App · Pybricks') : /examples/.test(p) ? T(lang, '範例', 'Examples') : /index/.test(p) ? T(lang, '產品頁', 'Product page') : /mblock|microbit|makeblock/.test(p) ? T(lang, '積木', 'Blocks') : /matrix/.test(p) ? T(lang, '函式庫', 'Library') : T(lang, '說明', 'Guide');
-export function guideStart(siteProducts, lang) {
+// ---- guide.md#start：每格連到第 3 層軟體頁（平台只有一種軟體）或列出該平台的每個軟體（2026-10-22 三層導覽）
+export function guideStart(siteProducts, lang, avail) {
   const rows = Object.entries(siteProducts).map(([k, sp]) => {
-    const r = sp.routes || {};
-    return [`[${sp.name ? L(sp.name, lang) : k}](${pageHref(lang, `/sensors/${k}/index.md`)})`, ...PLATFORMS.map((p) => (r[p.id] && r[p.id].start) ? `[${cellLabel(lang, r[p.id].start)}](${pageHref(lang, r[p.id].start)})` : '—')];
+    const a = (avail && avail[k]) || { hosts: [] };
+    return [`[${sp.name ? L(sp.name, lang) : k}](${pageHref(lang, `/sensors/${k}/index.md`)})`, ...PLATFORMS.map((p) => {
+      const ah = a.hosts.find((x) => x.id === p.id);
+      if (!ah) return '—';
+      const H = HOST_BY_ID[p.id];
+      return ah.sws.map((sw) => `[${L(H.software.find((s) => s.id === sw).name, lang)}](${swMd(lang, k, p.id, sw)})`).join('・');
+    })];
   });
   return table([T(lang, '產品', 'Product'), ...PLATFORMS.map((p) => p.name[lang])], rows, [':---', ...PLATFORMS.map(() => ':---:')]);
-}
-
-// ---- 側欄子樹（4 空格縮排，放在產品名稱底下）
-const ICON = {
-  spike: '<img src="/images/hubs/spike-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(242,194,0,0.5));">',
-  ev3: '<img src="/images/hubs/ev3-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(10,186,181,0.5));">',
-  arduino: '<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#0abab5;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>',
-  mblock: '🤖 ', matrix: '🟩 ', microbit: '🟧 ',
-};
-const CHILD = {
-  spike: [['spike-education', { zh: '教育版 (SPIKE 3)', en: 'Education (SPIKE 3)' }], ['spike-ri', { zh: '家用版 (Robot Inventor)', en: 'Home (Robot Inventor)' }], ['spike-pybricks', { zh: 'pyBricks', en: 'pyBricks' }], ['spike-examples', { zh: '🧪 SPIKE 新手範例', en: '🧪 SPIKE beginner examples' }]],
-  ev3: [['ev3-official', { zh: 'EV3 官方軟體', en: 'EV3 Official Software' }], ['ev3-classroom', { zh: 'EV3 Classroom', en: 'EV3 Classroom' }], ['ev3-clev3r', { zh: 'clev3r (BASIC)', en: 'clev3r (BASIC)' }], ['ev3-pybricks', { zh: 'pyBricks', en: 'pyBricks' }], ['ev3-examples', { zh: '🧪 EV3 新手範例', en: '🧪 EV3 beginner examples' }]],
-  arduino: [['arduino-examples', { zh: '🧪 Arduino 範例', en: '🧪 Arduino examples' }]],
-  mblock: [['mblock-examples', { zh: '🧪 mBlock 範例', en: '🧪 mBlock examples' }]],
-  matrix: [['matrix-examples', { zh: '🧪 MATRIX 範例', en: '🧪 MATRIX examples' }]],
-  microbit: [['microbit-examples', { zh: '🧪 micro:bit 範例', en: '🧪 micro:bit examples' }]],
-};
-const LABEL = {
-  spike: { zh: 'SPIKE 主機', en: 'SPIKE Hub' }, ev3: { zh: 'EV3 主機', en: 'EV3 Hub' }, arduino: { zh: '通用 I2C（Arduino）', en: 'Universal I2C (Arduino)' },
-  mblock: { zh: 'mBlock（MakeBlock）', en: 'mBlock (Makeblock)' }, matrix: { zh: 'MATRIX Mini R4', en: 'MATRIX Mini R4' }, microbit: { zh: 'micro:bit', en: 'micro:bit' },
-};
-export function sidebarTree(product, routes, ctx, lang) {
-  const k = siteKey(product);
-  const pre = lang === 'en' ? '/en' : '';
-  const has = (page) => ctx.hasFile(`${lang === 'en' ? 'en/' : ''}sensors/${k}/${page}.md`);
-  const lines = [`    - [📖 ${T(lang, '產品介紹', 'Product overview')}](${pre}/sensors/${k}/index.md)`, `    - [📋 ${T(lang, '指令參考', 'Value reference')}](${pre}/sensors/${k}/reference.md)`];
-  for (const p of PLATFORMS) {
-    if (!(product.hosts && product.hosts[p.hostKey])) continue;
-    const r = routes && routes[p.id];
-    const top = r && (r.start || r.ref);
-    if (!top) continue;
-    lines.push(`    - [${ICON[p.id]}${LABEL[p.id][lang]}](${pageHref(lang, top)})`);
-    for (const [page, label] of CHILD[p.id]) if (has(page) && !top.endsWith(`/${page}.md`)) lines.push(`      - [${label[lang]}](${pre}/sensors/${k}/${page}.md)`);
-  }
-  return lines.join('\n');
 }
 
 // ---- llms.txt 支援平台節

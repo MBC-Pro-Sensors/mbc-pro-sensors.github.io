@@ -1,4 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
+<!-- moved: /en/sensors/esp32cam/arduino/ide.md -->
+<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/esp32cam/arduino/ide.md">Sharpshooter Vision › Arduino › Arduino IDE</a></p>
+
 # 🧪 Sharpshooter ESP32CAM × Arduino Examples
 
 [🔙 Back to Sharpshooter Home](/en/sensors/esp32cam/index.md)　|　[📡 MBC Universal I2C Protocol v2 (advanced)](/en/i2c-protocol.md)

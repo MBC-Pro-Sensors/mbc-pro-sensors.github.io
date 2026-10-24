@@ -1,5 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 _build/gen-reference.mjs 從 _build/protocol/tof2.json 產生（mblock），請勿手改；改內容請改 JSON 後重跑 node _build/gen-reference.mjs -->
+<!-- moved: /en/sensors/tof2/mblock/mblock5.md -->
+<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/tof2/mblock/mblock5.md">Ranger 2-Way › mBlock › mBlock 5</a></p>
+
 # Laser Ranger 2-ch × mBlock 5 (Makeblock edition)
 
 [🔙 Back to Laser Ranger 2-ch](/en/sensors/tof2/index.md)

@@ -1,5 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 scratchpad/products/esp32cam 產生；程式碼區塊來自 examples/esp32cam/spike_beginner/pybricks/*.py，改程式請改產生器再重建 -->
+<!-- moved: /sensors/esp32cam/spike/index.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/esp32cam/spike/index.md">神攝手 ESP32CAM › SPIKE</a></p>
+
 # 🧱 SPIKE 新手範例：神攝手 ESP32CAM（學校老師創意賽版）
 
 [🔙 回到神攝手產品頁](/sensors/esp32cam/index.md)　｜　手上是 **WRO 版（HUE12）**？請看 [WRO 版新手範例](/sensors/esp32cam/spike-examples-wro.md)

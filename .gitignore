@@ -21,3 +21,7 @@ _build/node_modules/
 __pycache__/
 *.pyc
 
+
+# Gemini 原圖（網站用 .webp）
+images/illust/*.png
+

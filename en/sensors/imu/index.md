@@ -3,13 +3,8 @@
 
 <!-- product-hero -->
 
-## 🎮 Select Your Hub
-
-Pick your hub first, then the software: every tile links to beginner examples, the command reference and the library / blocks.
-
 <!-- platform-grid -->
 
----
 
 > [!NOTE]
 > This product is in development; final specifications may change at launch. [Contact us](/en/contact.md) for early access or launch timing.

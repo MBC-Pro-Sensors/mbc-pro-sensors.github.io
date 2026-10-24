@@ -3,13 +3,8 @@
 
 <!-- product-hero -->
 
-## 🎮 Select Your Hub
-
-Pick your hub first, then the software: every tile links to beginner examples, the command reference and the library / blocks.
-
 <!-- platform-grid -->
 
----
 
 > **Drive LEGO robots with a PS4 or PS5 gamepad: it only listens to your gamepad and stops the moment the signal drops — even with dozens of teams in the room.**
 

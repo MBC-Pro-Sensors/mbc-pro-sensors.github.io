@@ -1,5 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 _build/gen-reference.mjs 從 _build/protocol/cam_wro.json 產生（arduino-i2c），請勿手改；改內容請改 JSON 後重跑 node _build/gen-reference.mjs -->
+<!-- moved: /sensors/esp32cam/arduino/ide.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/esp32cam/arduino/ide.md">神攝手 ESP32CAM › Arduino › Arduino IDE</a></p>
+
 # 神攝手 WRO 版（HUE12） × Arduino I2C（通用 I2C 版）
 
 [🔙 回到神攝手 WRO 版（HUE12）產品頁](/sensors/esp32cam/index.md)

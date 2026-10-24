@@ -236,16 +236,14 @@ function lastmod(file) {
   catch { return new Date().toISOString().slice(0, 10); }
 }
 
-// Product names from the sidebars: "- **循行者 8 路 (Line8)**" followed by its index link
+// Product names from the sidebars: "- [循行者 8 路 (Line8)](/sensors/line8/index.md)" (one line per product)
 function productNames(sidebarFile) {
   const names = {};
   const lines = fs.readFileSync(path.join(ROOT, sidebarFile), 'utf8').split('\n');
-  lines.forEach((line, i) => {
-    const m = line.match(/^\s+- \*\*(.+?)\*\*\s*$/);
-    if (!m) return;
-    const next = lines.slice(i + 1, i + 3).join('\n').match(/\/sensors\/([^/]+)\/index\.md/);
-    if (next) names[next[1]] = m[1];
-  });
+  for (const line of lines) {
+    const m = line.match(/^\s+- \[(?:\*\*)?(.+?)(?:\*\*)?\]\((?:\/en)?\/sensors\/([^/]+)\/index\.md\)\s*$/);
+    if (m) names[m[2]] = m[1];
+  }
   return names;
 }
 const PRODUCTS = { zh: productNames('_sidebar.md'), en: productNames('en/_sidebar.md') };
@@ -256,7 +254,22 @@ function ogImageFor(product) {
 }
 
 // ------------------------------------------------------------------ sidebar
-function renderSidebar(lang, currentUrl) {
+// 產品頁與第 2、3 層頁面：在目前產品那一行底下展開這款的主機（目前主機再展開各軟體）
+function sidebarTree(src, lang, g) {
+  const gp = g && GI.products[g.key];
+  if (!gp) return src;
+  const pre = lang === 'en' ? '/en' : '';
+  const kids = [];
+  for (const ah of gp.hosts) {
+    const h = GHOST[ah.id];
+    const one = ah.sws.length === 1;
+    kids.push(`    - [${h.name[lang]}](${one ? `${pre}/sensors/${g.key}/${ah.id}/${ah.sws[0]}.md` : `${pre}/sensors/${g.key}/${ah.id}/index.md`})`);
+    if (!one && ah.id === g.host) for (const sw of ah.sws) kids.push(`      - [${L_(gSw(ah.id, sw).name, lang)}](${pre}/sensors/${g.key}/${ah.id}/${sw}.md)`);
+  }
+  const re = new RegExp(`^(\\s+- \\[[^\\]]+\\]\\(${pre}/sensors/${g.key}/index\\.md\\))[ \\t]*$`, 'm');
+  return src.replace(re, (a) => `${a}\n${kids.join('\n')}`);
+}
+function renderSidebar(lang, currentUrl, g = null) {
   const file = lang === 'en' ? 'en/_sidebar.md' : '_sidebar.md';
   const renderer = new marked.Renderer();
   renderer.link = (href, title, text) => {
@@ -264,7 +277,7 @@ function renderSidebar(lang, currentUrl) {
     const active = mapped === currentUrl ? ' class="active"' : '';
     return `<a href="${mapped}"${active} title="${escAttr(stripTags(text))}">${text}</a>`;
   };
-  let html = marked(fs.readFileSync(path.join(ROOT, file), 'utf8'), { renderer, gfm: true });
+  let html = marked(sidebarTree(fs.readFileSync(path.join(ROOT, file), 'utf8'), lang, g), { renderer, gfm: true });
   html = html.replace(/<li>((?:(?!<li>)[\s\S])*?class="active")/, '<li class="active">$1');
   html = html.replace(/<img(?![^>]*\balt=)/g, '<img alt=""'); // decorative hub icons
   return html;
@@ -365,70 +378,282 @@ function productHero(key, lang, file, name) {
     `</div>`;
 }
 
-// ------------------------------------------------- 六平台（D8：固定順序、固定顏色）
-const PLATFORMS = [
-  { id: 'spike', name: { zh: 'SPIKE', en: 'SPIKE' } },
-  { id: 'ev3', name: { zh: 'EV3', en: 'EV3' } },
-  { id: 'arduino', name: { zh: 'Arduino I2C', en: 'Arduino I2C' } },
-  { id: 'mblock', name: { zh: 'mBlock', en: 'mBlock' } },
-  { id: 'matrix', name: { zh: 'MATRIX', en: 'MATRIX' } },
-  { id: 'microbit', name: { zh: 'micro:bit', en: 'micro:bit' } },
-];
-const ROUTE_LABEL = {
-  zh: { start: '開始', ref: '指令參考', lib: '函式庫', none: '不支援', step1: '選產品', step2: '選主機', result: '選好產品和主機後，這裡會出現入口', table: '所有產品 × 主機對照表', title: '找到你的程式' },
-  en: { start: 'Start', ref: 'Reference', lib: 'Library', none: 'Not supported', step1: 'Pick a product', step2: 'Pick a host', result: 'Pick a product and a host to see the links', table: 'All products × hosts', title: 'Find your program' },
+// ------------------------------------------------- 三層導覽：產品 → 主機 → 軟體（2026-10-22；設計見 _build/guides/DESIGN.md）
+// 資料：_build/generated/guides-index.json（node _build/gen-guides.mjs 產生）
+const GI = JSON.parse(fs.readFileSync(path.join(BUILD, 'generated', 'guides-index.json'), 'utf8'));
+const GHOST = Object.fromEntries(GI.hosts.map((h) => [h.id, h]));
+const gpre = (lang) => (lang === 'en' ? '/en' : '');
+const gProductUrl = (lang, k) => `${gpre(lang)}/sensors/${k}/`;
+const gHostUrl = (lang, k, h) => `${gpre(lang)}/sensors/${k}/${h}/`;
+const gSwUrl = (lang, k, h, s) => `${gpre(lang)}/sensors/${k}/${h}/${s}.html`;
+const gSw = (h, s) => GHOST[h].software.find((x) => x.id === s);
+const gHostOf = (k, h) => ((GI.products[k] && GI.products[k].hosts) || []).find((x) => x.id === h);
+// 進某個主機的網址：想保留的軟體這裡也有 → 那個軟體頁；只有一種軟體 → 軟體頁；其他 → 平台頁
+function gEnter(lang, k, h, keepSw) {
+  const ah = gHostOf(k, h);
+  if (!ah) return null;
+  if (keepSw && ah.sws.includes(keepSw)) return gSwUrl(lang, k, h, keepSw);
+  if (ah.sws.length === 1) return gSwUrl(lang, k, h, ah.sws[0]);
+  return gHostUrl(lang, k, h);
+}
+const GL = {
+  zh: { product: '產品', host: '主機', sw: '軟體', pickSw: '選軟體', overview: '平台總覽：版本與接線', switcher: '切換產品、主機、軟體', none: (h) => `沒有 ${h} 版`,
+    pickHost: '① 選你的主機', pickHostSub: '只列出這款產品能用的主機；選好主機再選軟體，之後整頁都只講你的軟體。', pickSwTitle: '選你用的軟體', cont: '繼續用', step1: '選產品', step2: '選主機', step3: '選軟體', go: '前往', result: '選好產品、主機和軟體，這裡就會出現入口', table: '所有產品 × 主機對照表', noHost: '這款沒有這個主機', moved: '這頁內容已整合到新的說明頁：', title: '找到你的程式' },
+  en: { product: 'Product', host: 'Host', sw: 'Software', pickSw: 'Pick software', overview: 'Host overview: edition and wiring', switcher: 'Switch product, host or software', none: (h) => `no ${h} edition`,
+    pickHost: '① Pick your host', pickHostSub: 'Only hosts this product supports are listed; pick one, then your software, and the page covers just that software.', pickSwTitle: 'Pick your software', cont: 'Continue with', step1: 'Pick a product', step2: 'Pick a host', step3: 'Pick software', go: 'Go to', result: 'Pick a product, a host and software to get the link', table: 'All products × hosts', noHost: 'Not available for this product', moved: 'This page has moved into the new guide: ', title: 'Find your program' },
 };
-// products.json routes 裡的路徑（中文 .md）→ 該語言的靜態網址；英文頁不存在就退回中文頁；目標頁還沒有就回 null（不出斷鏈）
-let pageSet = new Set();
-function routeHref(p, lang) {
-  if (!p) return null;
-  if (/^https?:/.test(p)) return p;
-  const md = p.replace(/^\//, '');
-  if (lang === 'en' && pageSet.has('en/' + md)) return urlFor('en/' + md);
-  if (pageSet.has(md)) return urlFor(md);
-  return null;
+const fileOk = (p) => p && p.startsWith('/') && fs.existsSync(path.join(ROOT, decodeURI(p)));
+// 主機圖：images/illust/host-*.svg（插畫）優先，沒有就用 hubs 照片或 Lucide 圖示
+function gHostImg(h) {
+  const webp = h.illust && h.illust.replace(/.svg$/, ".webp");
+  if (fileOk(webp)) return `<img src="${webp}" alt="" loading="lazy">`;
+  if (fileOk(h.illust)) return `<img src="${h.illust}" alt="" loading="lazy">`;
+  if (fileOk(h.icon)) return `<img src="${h.icon}" alt="" loading="lazy">`;
+  return ICONS[h.icon] ? icon(h.icon, 'i gi') : '';
 }
-// <!-- platform-grid -->（產品 index 頁）：六平台磁磚，每格 開始／指令參考／函式庫；沒有的平台灰掉
-function platformGrid(key, lang) {
-  const p = PRODUCT_DATA[key];
-  if (!p || !p.routes) return '';
-  const L = ROUTE_LABEL[lang];
-  const tiles = PLATFORMS.map((pl) => {
-    const r = p.routes[pl.id];
-    const links = r ? ['start', 'ref', 'lib'].map((k) => [k, routeHref(r[k], lang)]).filter(([, h]) => h) : [];
-    // 同一個網址只留一個按鈕（例如 ref 與 lib 都指 arduino-i2c）
-    const seen = new Set();
-    const uniq = links.filter(([, h]) => !seen.has(h) && seen.add(h));
-    if (!uniq.length) return `<div class="pg-tile pg-${pl.id} off"><b>${pl.name[lang]}</b><span>${L.none}</span></div>`;
-    return `<div class="pg-tile pg-${pl.id}"><b>${pl.name[lang]}</b>${uniq.map(([k, h]) => `<a href="${h}"${/^https?:/.test(h) ? ' target="_blank" rel="noopener"' : ''}>${L[k]}</a>`).join('')}</div>`;
+function gSwImg(s) {
+  if (fileOk(s.icon)) return `<img src="${s.icon}" alt="" loading="lazy">`;
+  return ICONS[s.icon] ? icon(s.icon, 'i gi') : '';
+}
+const swNames = (lang, h, sws) => sws.map((s) => L_(gSw(h, s).name, lang)).join(lang === 'en' ? ' · ' : '・');
+function L_(o, lang) { return (o && (o[lang] || o.zh)) || ''; }
+
+// 第 2、3 層頁面頂端的切換列：產品 ▾ › 主機 ▾ › 軟體 ▾（<details> 下拉：不用 JS 也能用、鍵盤可操作；連結在建站時算好）
+function switcherHtml(lang, g) {
+  const T_ = GL[lang];
+  const cur = GI.products[g.key];
+  const curHost = gHostOf(g.key, g.host);
+  const seg = (cls, k, v, items) => `<details class="gsw-seg ${cls}"><summary><span class="gsw-k">${k}</span><span class="gsw-v">${v}</span></summary><ul class="gsw-menu">${items.map(([href, text, on, sub]) =>
+    `<li><a href="${href}"${on ? ' aria-current="page"' : ''}>${text}${sub ? `<small>${sub}</small>` : ''}</a></li>`).join('')}</ul></details>`;
+  const prodItems = Object.entries(GI.products).map(([k, p]) => {
+    const has = gHostOf(k, g.host);
+    const href = !has ? gProductUrl(lang, k) : g.sw ? gEnter(lang, k, g.host, g.sw) : gHostUrl(lang, k, g.host);
+    return [href, escAttr(L_(p.short, lang)), k === g.key, has ? '' : T_.none(GHOST[g.host].name[lang])];
   });
-  return `<div class="platform-grid">${tiles.join('')}</div>`;
+  const hostItems = cur.hosts.map((ah) => [gEnter(lang, g.key, ah.id, g.sw), GHOST[ah.id].name[lang], ah.id === g.host, '']);
+  const swItems = curHost.sws.map((s) => [gSwUrl(lang, g.key, g.host, s), L_(gSw(g.host, s).name, lang), s === g.sw, ''])
+    .concat([[gHostUrl(lang, g.key, g.host), T_.overview, !g.sw, '']]);
+  return `<nav class="gsw gsw-${g.host}" aria-label="${T_.switcher}" data-p="${g.key}" data-h="${g.host}"${g.sw ? ` data-s="${g.sw}"` : ''}><div class="gsw-in">` +
+    seg('gsw-p', T_.product, escAttr(L_(cur.short, lang)), prodItems) + '<span class="gsw-sep" aria-hidden="true">›</span>' +
+    seg(`gsw-h pg-${g.host}`, T_.host, GHOST[g.host].name[lang], hostItems) + '<span class="gsw-sep" aria-hidden="true">›</span>' +
+    seg('gsw-s', T_.sw, g.sw ? L_(gSw(g.host, g.sw).name, lang) : T_.pickSw, swItems) +
+    `</div></nav>`;
 }
-// <!-- finder -->（首頁）：兩步選擇器（產品磁磚列＋主機磁磚列）＋無 JS 時的對照表
-function finderHtml(lang) {
-  const L = ROUTE_LABEL[lang];
-  const prods = Object.entries(PRODUCT_DATA).filter(([, p]) => p.routes && p.name);
+
+// 平台頁 <!-- sw-grid -->：② 選你用的軟體（大格子）
+function swGridHtml(lang, key, host) {
+  const ah = gHostOf(key, host);
+  if (!ah) return '';
+  return `<div class="pick-grid pick-sw pg-${host}">${ah.sws.map((s) => {
+    const d = gSw(host, s);
+    return `<a class="pick-tile" href="${gSwUrl(lang, key, host, s)}" data-sw="${s}"><span class="pt-img">${gSwImg(d)}</span><span class="pt-name">${L_(d.name, lang)}</span><span class="pt-tag">${L_(d.tagline, lang)}</span></a>`;
+  }).join('')}</div>`;
+}
+
+// 產品頁 <!-- platform-grid -->：① 選你的主機（只列可用主機；只有一種軟體的主機直接連軟體頁）＋「繼續用 X › Y →」（site.js 讀 localStorage）
+function platformGrid(key, lang) {
+  const gp = GI.products[key];
+  if (!gp) return '';
+  const T_ = GL[lang];
   const data = {};
-  for (const [key, p] of prods) {
-    data[key] = { name: p.name[lang], index: urlFor(`${lang === 'en' ? 'en/' : ''}sensors/${key}/index.md`), hosts: {} };
-    for (const pl of PLATFORMS) {
-      const r = p.routes[pl.id];
-      const links = r ? Object.fromEntries(['start', 'ref', 'lib'].map((k) => [k, routeHref(r[k], lang)]).filter(([, h]) => h)) : {};
-      data[key].hosts[pl.id] = Object.keys(links).length ? links : null;
-    }
-  }
-  const prodTiles = prods.map(([key, p]) => `<button type="button" role="radio" aria-checked="false" data-key="${key}" style="--pc:${p.color}">${p.image ? `<img src="${p.image}" alt="" loading="lazy">` : '<span class="ft-noimg"></span>'}<span>${escAttr(p.name[lang])}</span></button>`).join('');
-  const hostTiles = PLATFORMS.map((pl) => `<button type="button" role="radio" aria-checked="false" data-host="${pl.id}" class="ft-${pl.id}"><span>${pl.name[lang]}</span></button>`).join('');
-  const rows = prods.map(([key, p]) => `<tr><td><a href="${data[key].index}">${escAttr(p.name[lang])}</a></td>${PLATFORMS.map((pl) => { const h = data[key].hosts[pl.id]; return `<td>${h ? `<a href="${h.start || h.ref}">${L.start}</a>` : '—'}</td>`; }).join('')}</tr>`).join('');
-  return `<div class="finder" id="finder">` +
+  const tiles = gp.hosts.map((ah) => {
+    const h = GHOST[ah.id];
+    data[ah.id] = { name: h.name[lang], url: gEnter(lang, key, ah.id), sws: Object.fromEntries(ah.sws.map((s) => [s, { name: L_(gSw(ah.id, s).name, lang), url: gSwUrl(lang, key, ah.id, s) }])) };
+    return `<a class="pick-tile pg-${ah.id}" href="${gEnter(lang, key, ah.id)}" data-host="${ah.id}"><span class="pt-img">${gHostImg(h)}</span><span class="pt-name">${h.name[lang]}</span><span class="pt-tag">${L_(h.tagline, lang)}</span><span class="pt-sw">${swNames(lang, ah.id, ah.sws)}</span></a>`;
+  });
+  // 產品頁頂圖：images/illust/ref-<產品>.webp（G3 產的 16:9 插畫；沒有就用 svg，都沒有就不放）
+  const ref = [`/images/illust/ref-${key}.webp`, `/images/illust/ref-${key}.svg`].find(fileOk);
+  return `<div class="pick" id="pick-host">${ref ? `<img class="pick-banner" src="${ref}" alt="" loading="lazy">` : ""}<h2 class="pick-title">${T_.pickHost}</h2><p class="pick-sub">${T_.pickHostSub}</p>` +
+    `<p class="pick-continue" hidden></p>` +
+    `<div class="pick-grid pick-hosts">${tiles.join('')}</div>` +
+    `<script type="application/json" class="pick-data">${JSON.stringify({ cont: T_.cont, hosts: data }).replace(/</g, '\\u003c')}</script></div>`;
+}
+
+// 首頁 <!-- finder -->：三步（產品 → 主機 → 軟體）直接到軟體頁；沒有 JS 時是對照表
+function finderHtml(lang) {
+  const T_ = GL[lang];
+  const prods = Object.entries(GI.products);
+  const data = { labels: { go: T_.go, result: T_.result, noHost: T_.noHost }, hosts: {}, products: {} };
+  for (const h of GI.hosts) data.hosts[h.id] = { name: h.name[lang], sws: Object.fromEntries(h.software.map((s) => [s.id, { name: L_(s.name, lang), tag: L_(s.tagline, lang) }])) };
+  for (const [k, p] of prods) data.products[k] = { name: L_(p.short, lang), hosts: Object.fromEntries(p.hosts.map((ah) => [ah.id, { url: gEnter(lang, k, ah.id), sws: Object.fromEntries(ah.sws.map((s) => [s, gSwUrl(lang, k, ah.id, s)])) }])) };
+  const prodTiles = prods.map(([k, p]) => `<button type="button" role="radio" aria-checked="false" data-key="${k}" style="--pc:${p.color}">${p.image ? `<img src="${p.image}" alt="" loading="lazy">` : '<span class="ft-noimg"></span>'}<span>${escAttr(L_(p.short, lang))}</span></button>`).join('');
+  const hostTiles = GI.hosts.map((h) => `<button type="button" role="radio" aria-checked="false" data-host="${h.id}" class="ft-${h.id}" disabled><span>${h.name[lang]}</span></button>`).join('');
+  const rows = prods.map(([k, p]) => `<tr><td><a href="${gProductUrl(lang, k)}">${escAttr(L_(p.short, lang))}</a></td>${GI.hosts.map((h) => {
+    const ah = gHostOf(k, h.id);
+    return `<td>${ah ? ah.sws.map((s) => `<a href="${gSwUrl(lang, k, h.id, s)}">${L_(gSw(h.id, s).name, lang)}</a>`).join('<br>') : '—'}</td>`;
+  }).join('')}</tr>`).join('');
+  return `<div class="finder" id="finder-box">` +
     `<div class="finder-pick">` +
-    `<p class="finder-step"><b>1</b>${L.step1}</p><div class="finder-tiles finder-prods" role="radiogroup" aria-label="${L.step1}">${prodTiles}</div>` +
-    `<p class="finder-step"><b>2</b>${L.step2}</p><div class="finder-tiles finder-hosts" role="radiogroup" aria-label="${L.step2}">${hostTiles}</div>` +
-    `<div class="finder-result" aria-live="polite"><p>${L.result}</p></div>` +
+    `<p class="finder-step"><b>1</b>${T_.step1}</p><div class="finder-tiles finder-prods" role="radiogroup" aria-label="${T_.step1}">${prodTiles}</div>` +
+    `<p class="finder-step"><b>2</b>${T_.step2}</p><div class="finder-tiles finder-hosts" role="radiogroup" aria-label="${T_.step2}">${hostTiles}</div>` +
+    `<p class="finder-step"><b>3</b>${T_.step3}</p><div class="finder-tiles finder-sws" role="radiogroup" aria-label="${T_.step3}"></div>` +
+    `<div class="finder-result" aria-live="polite"><p>${T_.result}</p></div>` +
     `</div>` +
-    `<details class="finder-table" open><summary>${L.table}</summary><table><thead><tr><th>${lang === 'en' ? 'Product' : '產品'}</th>${PLATFORMS.map((pl) => `<th>${pl.name[lang]}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></details>` +
-    `<script type="application/json" id="finder-data">${JSON.stringify({ labels: L, products: data }).replace(/</g, '\\u003c')}</script>` +
+    `<details class="finder-table" open><summary>${T_.table}</summary><table><thead><tr><th>${T_.product}</th>${GI.hosts.map((h) => `<th>${h.name[lang]}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></details>` +
+    `<script type="application/json" id="finder-data">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>` +
     `</div>`;
+}
+
+// 舊頁（<!-- moved: --> 或 guides-index 的 moved 對照）頁首提示條的文字
+function movedLabel(target) {
+  const m = target.match(/^\/(en\/)?sensors\/([^/]+)\/(?:([^/]+)\/)?([^/]+)\.md$/);
+  if (!m || !GI.products[m[2]]) return target;
+  const lang = m[1] ? 'en' : 'zh';
+  const parts = [L_(GI.products[m[2]].short, lang)];
+  if (m[3]) { parts.push(GHOST[m[3]].name[lang]); if (m[4] !== 'index') parts.push(L_(gSw(m[3], m[4]).name, lang)); }
+  return parts.join(' › ');
+}
+
+// ------------------------------------------------- 「安裝與設定」include 與「範例」抽取（gen-guides.mjs 產的頁面裡的指令，建站時展開）
+const readSrc = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8').replace(/^﻿/, '');
+// 標題整體往下移，最高一層變成 minLevel（include 進來的內容放在 ## 段落底下）
+function demote(lines, fence, minLevel) {
+  let top = 7;
+  lines.forEach((l, i) => { const m = !fence[i] && l.match(/^(#{1,6})\s/); if (m) top = Math.min(top, m[1].length); });
+  const shift = top > 6 ? 0 : Math.max(0, minLevel - top);
+  return lines.map((l, i) => (!fence[i] && /^#{1,6}\s/.test(l) ? '#'.repeat(Math.min(6, l.match(/^#+/)[0].length + shift)) + l.replace(/^#+/, '') : l));
+}
+function fenceMap(lines) {
+  let inF = false;
+  return lines.map((l) => { const f = /^\s*(```|~~~)/.test(l); const r = inF || f; if (f) inF = !inF; return r; });
+}
+// 相對 .md 連結改成以來源檔為準的絕對路徑
+const absLinks = (text, srcRel) => text
+  .replace(/\]\((?!https?:|\/|#|mailto:)([^)\s]+\.md(?:[#?][^)\s]*)?)\)/g, (a, h) => `](/${path.posix.join(path.posix.dirname(srcRel), h)})`)
+  .replace(/href="(?!https?:|\/|#|mailto:)([^"]+\.md(?:[#?][^"]*)?)"/g, (a, h) => `href="/${path.posix.join(path.posix.dirname(srcRel), h)}"`);
+const stripMoved = (t) => t.replace(/^<!-- moved: .* -->\r?\n(?:<p class="moved-note">.*<\/p>\r?\n)?/m, '');
+
+function expandIncludes(src) {
+  let resolved = 0;
+  const fillVars = (text, v) => text.replace(/\{\{(\w+)\}\}/g, (a, k) => (v[k] != null && typeof v[k] !== 'boolean' ? v[k] : a));
+  const prep = (rel, v) => {
+    const lines = fillVars(readSrc(rel), v).split(/\r?\n/);
+    return absLinks(demote(lines, fenceMap(lines), 3).join('\n'), rel);
+  };
+  // <!-- setup: 通用.md + 產品.md {vars} -->：產品專屬內文插在通用內文「### 接線」之後、「### 第一次測試」之前；skipWiring 拿掉通用的「接線」節
+  src = src.replace(/^<!-- setup: (\S+) \+ (\S+)(?: (\{.*\}))? -->[ \t]*$/gm, (all, swRel, pRel, vars) => {
+    const v = vars ? JSON.parse(vars) : {};
+    const hasSw = fs.existsSync(path.join(ROOT, swRel));
+    const hasP = fs.existsSync(path.join(ROOT, pRel));
+    if (!hasSw && !hasP) return '';
+    resolved++;
+    const prod = hasP ? prep(pRel, v) : '';
+    if (!hasSw) return prod + '\n';
+    let lines = prep(swRel, v).split('\n');
+    const isH = (l, re) => /^###\s/.test(l) && re.test(l);
+    if (v.skipWiring) {
+      const a = lines.findIndex((l) => isH(l, /接線|Wiring/i));
+      if (a > -1) { let b = a + 1; while (b < lines.length && !/^###\s/.test(lines[b])) b++; lines.splice(a, b - a); }
+    }
+    if (prod) {
+      let at = lines.findIndex((l) => isH(l, /第一次測試|First test/i));
+      if (at < 0) at = lines.findIndex((l) => isH(l, /常見問題|FAQ/i));
+      if (at < 0) at = lines.length;
+      lines.splice(at, 0, prod, '');
+    }
+    return lines.join('\n') + '\n';
+  });
+  src = src.replace(/^<!-- include: (\S+)(?: (\{.*\}))? -->[ \t]*$/gm, (all, rel, vars) => {
+    if (!fs.existsSync(path.join(ROOT, rel))) return '';
+    resolved++;
+    return prep(rel, vars ? JSON.parse(vars) : {}) + '\n';
+  });
+  return src.replace(/<!-- include-fallback -->\r?\n([\s\S]*?)<!-- \/include-fallback -->/g, (all, body) => (resolved ? '' : body));
+}
+
+// 範例頁 → 只留這個軟體：每個「## 範例 N」段保留共同段落，<details> 只留 summary 符合本軟體的（加 open），下載表／下載連結只留本軟體那欄
+const EX_LABEL = { zh: { only: '下面這些範例沒有這個軟體的版本：', }, en: { only: 'These examples have no version for this software: ' } };
+function extractExamples(srcRel, host, sw, whole, lang) {
+  const text = stripMoved(readSrc(srcRel));
+  let lines = text.split(/\r?\n/);
+  if (whole) {
+    const h1 = lines.findIndex((l) => /^# /.test(l));
+    lines = lines.slice(h1 + 1).filter((l) => !/^\[🔙/.test(l));
+    return absLinks(demote(lines, fenceMap(lines), 3).join('\n'), srcRel);
+  }
+  const H = GHOST[host];
+  const reOf = (s, k) => (s[k] && s[k][lang] ? new RegExp(s[k][lang], 'i') : null);
+  const mine = H.software.find((s) => s.id === sw);
+  const sumRe = reOf(mine, 'summaryMatch');
+  const colRes = H.software.map((s) => [s.id, reOf(s, 'colMatch')]).filter(([, r]) => r);
+  const fence = fenceMap(lines);
+  // 切成 ## 段
+  const secs = [];
+  lines.forEach((l, i) => { if (!fence[i] && /^## /.test(l)) secs.push({ start: i, lines: [] }); if (secs.length) secs[secs.length - 1].lines.push(i); });
+  const out = [];
+  const skipped = [];
+  for (const s of secs) {
+    const head = lines[s.start];
+    if (!/^##\s.*?(範例|Example)\s*\d+/i.test(head)) continue;
+    const idx = s.lines;
+    const keep = [];
+    let had = 0, kept = 0;
+    for (let j = 0; j < idx.length; j++) {
+      const i = idx[j];
+      const l = lines[i];
+      if (!fence[i] && /^<details\b/.test(l)) {
+        // 找對應的 </details>（巢狀計數，程式框內不算）
+        let depth = 0, k = j;
+        for (; k < idx.length; k++) {
+          const t = lines[idx[k]];
+          if (fence[idx[k]] && k !== j) continue;
+          depth += (t.match(/<details\b/g) || []).length - (t.match(/<\/details>/g) || []).length;
+          if (depth <= 0) break;
+        }
+        const block = idx.slice(j, k + 1).map((x) => lines[x]);
+        const sum = (block.join('\n').match(/<summary>([\s\S]*?)<\/summary>/) || [])[1] || '';
+        had++;
+        if (sumRe && sumRe.test(sum)) { kept++; block[0] = block[0].replace(/^<details(?![^>]*\bopen\b)/, '<details open'); keep.push(...block); }
+        j = k;
+        continue;
+      }
+      keep.push(fence[i] ? l : l);
+    }
+    if (had && !kept) { skipped.push(head.replace(/^##\s+/, '')); continue; }
+    out.push(...filterDownloads(keep, colRes, sw));
+  }
+  const ofence = fenceMap(out);
+  let res = demote(out, ofence, 3).join('\n');
+  if (skipped.length) res += `\n\n> [!NOTE]\n> ${EX_LABEL[lang].only}${skipped.join(lang === 'en' ? '; ' : '；')}\n`;
+  return absLinks(res, srcRel);
+}
+// 下載表（表頭有 2 個以上軟體欄）只留本軟體那欄；「[⬇ A] ｜ [⬇ B]」連結列只留本軟體
+function filterDownloads(lines, colRes, sw) {
+  const fence = fenceMap(lines);
+  const which = (t) => colRes.filter(([, r]) => r.test(t)).map(([id]) => id);
+  const cells = (l) => l.trim().replace(/^\|/, '').replace(/\|$/, '').split(/(?<!\\)\|/);
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    const l = lines[i];
+    if (!fence[i] && /^\|.*\|\s*$/.test(l) && i + 1 < lines.length && /^\|\s*:?-{3,}/.test(lines[i + 1])) {
+      const hc = cells(l);
+      const tags = hc.map(which);
+      if (tags.filter((t) => t.length).length >= 2 || (tags.some((t) => t.length) && !tags.some((t) => t.includes(sw)))) {
+        const keepCol = tags.map((t) => !t.length || t.includes(sw));
+        let j = i;
+        const rows = [];
+        while (j < lines.length && /^\|.*\|\s*$/.test(lines[j])) { rows.push(lines[j]); j++; }
+        if (keepCol.some((k, c) => k && tags[c].length)) for (const r of rows) out.push('| ' + cells(r).filter((c, n) => keepCol[n]).map((c) => c.trim()).join(' | ') + ' |');
+        i = j - 1;
+        continue;
+      }
+    }
+    if (!fence[i] && /^\[[^\]]+\]\([^)]+\)(\s*｜\s*\[[^\]]+\]\([^)]+\))+\s*$/.test(l)) {
+      const segs = l.split(/\s*｜\s*/);
+      const tags = segs.map((s) => which((s.match(/^\[([^\]]+)\]/) || [])[1] || ''));
+      if (tags.filter((t) => t.length).length >= 2) {
+        const kept = segs.filter((s, n) => !tags[n].length || tags[n].includes(sw));
+        if (kept.length) out.push(kept.join(' ｜ '));
+        continue;
+      }
+    }
+    out.push(l);
+  }
+  return out;
+}
+function expandExamples(src, lang) {
+  return src.replace(/^<!-- examples: (\S+) host=(\S+) sw=(\S+)( whole)? -->[ \t]*$/gm, (all, rel, host, sw, whole) =>
+    (fs.existsSync(path.join(ROOT, rel)) ? extractExamples(rel, host, sw, !!whole, lang) : ''));
 }
 
 // ------------------------------------------------- 右側目錄（h2／h3；≥1200px 固定在右，小螢幕變 <details>）
@@ -446,9 +671,9 @@ function tocHtml(html, lang) {
 // Product pages: every <h2> section below the sales block becomes a collapsible <details> (first one open),
 // so the page stays short; the text is still in the HTML for search engines and find-in-page.
 function collapseSections(html, file) {
-  const start = html.search(/<h2[\s>]/);
+  const start = html.search(/<h2 id=/);
   if (start < 0) return html;
-  const sections = html.slice(start).split(/(?=<h2[\s>])/);
+  const sections = html.slice(start).split(/(?=<h2 id=)/);
   const count = (s, re) => (s.match(re) || []).length;
   const unbalanced = sections.find((s) => ['div', 'section', 'details', 'table'].some((t) =>
     count(s, new RegExp(`<${t}[\\s>]`, 'g')) !== count(s, new RegExp(`</${t}>`, 'g'))));
@@ -515,7 +740,7 @@ function topNav(lang, langHref, docs = false) {
     `${quoteLink(lang, 'tn-line', u.line)}</nav></header>`;
 }
 
-function page({ lang, url, title, description, ogImage, alternates, jsonLd, extraHead = '', sidebar, body, langHref, layout = 'docs', noindex = false, toc = '' }) {
+function page({ lang, url, title, description, ogImage, alternates, jsonLd, extraHead = '', sidebar, body, langHref, layout = 'docs', noindex = false, toc = '', canonical = null }) {
   const htmlLang = lang === 'en' ? 'en' : 'zh-TW';
   const abs = SITE + url;
   const alt = alternates.map((a) => `<link rel="alternate" hreflang="${a.hreflang}" href="${SITE + a.url}">`).join('\n  ');
@@ -528,7 +753,7 @@ function page({ lang, url, title, description, ogImage, alternates, jsonLd, extr
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <meta name="description" content="${escAttr(description)}">
   <meta name="robots" content="${noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}">
-  <link rel="canonical" href="${abs}">
+  <link rel="canonical" href="${canonical ? SITE + canonical : abs}">
   ${alt}
   <link rel="icon" href="/favicon.ico" sizes="48x48">
   <link rel="apple-touch-icon" href="/images/brand/apple-touch-icon.png">
@@ -598,7 +823,7 @@ fs.cpSync(path.join(BUILD, 'assets'), path.join(OUT, 'assets'), { recursive: tru
 fs.writeFileSync(path.join(OUT, '.nojekyll'), '');
 
 // 2. render pages
-pageSet = new Set(pages);
+const pageSet = new Set(pages);
 const homeHead = JSON.parse(fs.readFileSync(path.join(BUILD, 'home.json'), 'utf8'));
 const searchIndex = { zh: [], en: [] };
 const sitemap = [];
@@ -606,8 +831,19 @@ const sitemap = [];
 for (const file of pages) {
   const lang = file.startsWith('en/') ? 'en' : 'zh';
   const url = urlFor(file);
-  const src = fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/^﻿/, '');
+  let src = fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/^﻿/, '');
+  // 三層導覽：<!-- guide: 產品/主機(/軟體) -->；「安裝與設定」include 與「範例」抽取在這裡展開
+  const gm = src.match(/^<!-- guide: ([^/\s]+)\/([^/\s]+)(?:\/([^/\s]+))? -->/m);
+  const guide = gm ? { key: gm[1], host: gm[2], sw: gm[3] || null } : null;
+  if (guide) src = expandExamples(expandIncludes(src), lang);
+  // 舊頁：<!-- moved: 新頁 -->（gen-guides 補的標記；標記被別的產生器蓋掉時用 guides-index 的對照）
+  const movedMd = (src.match(/^<!-- moved: (\S+) -->/m) || [])[1] || GI.moved[file] || null;
+  const movedUrl = movedMd ? mapHref(movedMd, file) : null;
   let html = renderMarkdown(src, file, lang);
+  if (movedUrl) {
+    html = html.replace(/<p class="moved-note">[\s\S]*?<\/p>\s*/, '');
+    html = `<div class="moved-bar" role="note">${icon('arrow-right')}<span>${GL[lang].moved}<a href="${movedUrl}">${escAttr(movedLabel(movedMd))}</a></span></div>` + html;
+  }
   for (const tag of ['div', 'section']) {
     const open = (html.match(new RegExp(`<${tag}[\\s>]`, 'g')) || []).length;
     const close = (html.match(new RegExp(`</${tag}>`, 'g')) || []).length;
@@ -634,7 +870,8 @@ for (const file of pages) {
 
   // title / description
   const home = homeHead[url];
-  let title = home ? home.title : `${h1Text}${productName && !isProductIndex ? ' – ' + productName : ''} | MBC-Pro Sensors`;
+  // 第 2、3 層頁面的 H1 已經含產品名，不再重複
+  let title = home ? home.title : `${h1Text}${productName && !isProductIndex && !h1Text.includes(productName) ? ' – ' + productName : ''} | MBC-Pro Sensors`;
   const pitch = isProductIndex && PRODUCT_DATA[product] && PRODUCT_DATA[product][lang].pitch;
   let description = home ? home.description : pitch || describe(html) || homeHead[lang === 'en' ? '/en/' : '/'].description;
   // product sub-pages (setup guides) share opening text across products: lead with the product name so each is unique
@@ -647,6 +884,7 @@ for (const file of pages) {
   const crumbs = [{ name: UI[lang].home, url: lang === 'en' ? '/en/' : '/' }];
   if (isArticle) crumbs.push({ name: lang === 'en' ? 'Articles' : '教學文章', url: lang === 'en' ? '/en/articles/' : '/articles/' });
   if (product && !isProductIndex && productName) crumbs.push({ name: productName, url: urlFor(`${lang === 'en' ? 'en/' : ''}sensors/${product}/index.md`) });
+  if (guide && guide.sw) crumbs.push({ name: GHOST[guide.host].name[lang], url: gHostUrl(lang, guide.key, guide.host) });
   if (!home) crumbs.push({ name: h1Text, url });
   if (crumbs.length > 2) {
     const trail = crumbs.slice(0, -1).map((c) => `<a href="${c.url}">${escAttr(c.name)}</a>`).join('<span>›</span>');
@@ -659,10 +897,15 @@ for (const file of pages) {
     html += ctaHtml(lang);
   }
   if (html.includes('<!-- finder -->')) html = html.replace('<!-- finder -->', finderHtml(lang));
+  if (guide) {
+    html = html.replace('<!-- sw-grid -->', swGridHtml(lang, guide.key, guide.host));
+    html = switcherHtml(lang, guide) + html;
+  }
   const layout = src.includes('<!-- layout: landing -->') ? 'landing' : 'docs';
   // edition chooser pages (SPIKE / EV3 hub) are navigation only: keep them out of the index and the sitemap;
   // micro:bit 範例頁在擴充上機驗證前也先不收錄
-  const noindex = /(spike|ev3)-hub\.md$/.test(file) || /microbit-examples\.md$/.test(file);
+  // 只有一種軟體的平台頁（產品頁直接連軟體頁）標 <!-- noindex -->
+  const noindex = /(spike|ev3)-hub\.md$/.test(file) || /microbit-examples\.md$/.test(file) || src.includes('<!-- noindex -->');
   // 右側目錄：文件頁（非產品 index，產品 index 的 h2 已摺成 details）
   const toc = layout === 'docs' && !isProductIndex ? tocHtml(html, lang) : '';
 
@@ -694,14 +937,16 @@ for (const file of pages) {
   const out = page({
     lang, url, title, description, ogImage: ogImageFor(product), alternates, jsonLd,
     extraHead: home && home.keywords ? `<meta name="keywords" content="${escAttr(home.keywords)}">` : '',
-    sidebar: renderSidebar(lang, url), body: html, langHref, layout, noindex, toc,
+    sidebar: renderSidebar(lang, url, guide || (isProductIndex ? { key: product, host: null } : null)), body: html, langHref, layout, noindex, toc,
+    canonical: movedUrl ? movedUrl.replace(/#.*$/, '') : null,
   });
   const outFile = path.join(OUT, url.endsWith('/') ? url + 'index.html' : url);
   fs.mkdirSync(path.dirname(outFile), { recursive: true });
   fs.writeFileSync(outFile, finishPage(out));
 
-  searchIndex[lang].push({ t: h1Text + (productName && !isProductIndex ? ` – ${productName}` : ''), u: url, x: stripEmoji(stripTags(html.replace(/<h1[\s\S]*?<\/h1>/, ''))).slice(0, 4000) });
-  if (!noindex) sitemap.push({ url, lastmod: lastmod(file), alternates, priority: home ? '1.0' : isProductIndex ? '0.9' : '0.7' });
+  // 舊頁（已整合到新頁）不進站內搜尋與 sitemap
+  if (!movedUrl) searchIndex[lang].push({ t: h1Text + (productName && !isProductIndex ? ` – ${productName}` : ''), u: url, x: stripEmoji(stripTags(html.replace(/<h1[\s\S]*?<\/h1>/, ''))).slice(0, 4000) });
+  if (!noindex && !movedUrl) sitemap.push({ url, lastmod: lastmod(file), alternates, priority: home ? '1.0' : isProductIndex ? '0.9' : '0.7' });
 }
 
 fs.writeFileSync(path.join(OUT, 'search-index-zh.json'), JSON.stringify(searchIndex.zh));

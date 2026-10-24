@@ -1,5 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 W4 micro:bit 範例產生器產生（scratchpad w4/gen_pages.mjs＋spec/imu.mjs）；程式碼區塊來自 examples/imu/microbit/*.ts，改程式請改 .ts 後重跑產生器 -->
+<!-- moved: /sensors/imu/microbit/makecode.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/imu/microbit/makecode.md">陀螺儀 IMU 九軸 › micro:bit › MakeCode</a></p>
+
 # 🟧 micro:bit 範例：陀螺儀 IMU
 
 [🔙 回到陀螺儀 IMU micro:bit 頁](/sensors/imu/microbit.md)　｜　[📖 產品頁](/sensors/imu/index.md)　｜　[📋 指令參考](/sensors/imu/reference.md)

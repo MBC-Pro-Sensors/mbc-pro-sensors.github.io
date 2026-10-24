@@ -15,142 +15,27 @@
   - [⬇️ 下載中心](/downloads.md)
 
 - **🛤️ 循線感應器**
-  - **循行者 8 路 (Line8)**
-    <!-- gen:sidebar-line8 -->
-    - [📖 產品介紹](/sensors/line8/index.md)
-    - [📋 指令參考](/sensors/line8/reference.md)
-    - [<img src="/images/hubs/spike-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(242,194,0,0.5));">SPIKE 主機](/sensors/line8/spike-hub.md)
-      - [教育版 (SPIKE 3)](/sensors/line8/spike-education.md)
-      - [家用版 (Robot Inventor)](/sensors/line8/spike-ri.md)
-      - [pyBricks](/sensors/line8/spike-pybricks.md)
-      - [🧪 SPIKE 新手範例](/sensors/line8/spike-examples.md)
-    - [<img src="/images/hubs/ev3-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(10,186,181,0.5));">EV3 主機](/sensors/line8/ev3-hub.md)
-      - [EV3 官方軟體](/sensors/line8/ev3-official.md)
-      - [EV3 Classroom](/sensors/line8/ev3-classroom.md)
-      - [clev3r (BASIC)](/sensors/line8/ev3-clev3r.md)
-      - [pyBricks](/sensors/line8/ev3-pybricks.md)
-      - [🧪 EV3 新手範例](/sensors/line8/ev3-examples.md)
-    - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#0abab5;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>通用 I2C（Arduino）](/sensors/line8/arduino-examples.md)
-    - [🤖 mBlock（MakeBlock）](/sensors/line8/mblock-examples.md)
-    - [🟩 MATRIX Mini R4](/sensors/line8/matrix.md)
-    - [🟧 micro:bit](/sensors/line8/microbit-examples.md)
-    <!-- /gen -->
-  - **循行者 16 路 (Line16)**
-    <!-- gen:sidebar-line16 -->
-    - [📖 產品介紹](/sensors/line16/index.md)
-    - [📋 指令參考](/sensors/line16/reference.md)
-    - [<img src="/images/hubs/spike-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(242,194,0,0.5));">SPIKE 主機](/sensors/line16/spike-hub.md)
-      - [教育版 (SPIKE 3)](/sensors/line16/spike-education.md)
-      - [家用版 (Robot Inventor)](/sensors/line16/spike-ri.md)
-      - [pyBricks](/sensors/line16/spike-pybricks.md)
-      - [🧪 SPIKE 新手範例](/sensors/line16/spike-examples.md)
-    - [<img src="/images/hubs/ev3-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(10,186,181,0.5));">EV3 主機](/sensors/line16/ev3-hub.md)
-      - [EV3 官方軟體](/sensors/line16/ev3-official.md)
-      - [EV3 Classroom](/sensors/line16/ev3-classroom.md)
-      - [clev3r (BASIC)](/sensors/line16/ev3-clev3r.md)
-      - [pyBricks](/sensors/line16/ev3-pybricks.md)
-      - [🧪 EV3 新手範例](/sensors/line16/ev3-examples.md)
-    - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#0abab5;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>通用 I2C（Arduino）](/sensors/line16/arduino-examples.md)
-    - [🤖 mBlock（MakeBlock）](/sensors/line16/mblock-examples.md)
-    - [🟩 MATRIX Mini R4](/sensors/line16/matrix.md)
-    - [🟧 micro:bit](/sensors/line16/microbit-examples.md)
-    <!-- /gen -->
+  - [循行者 8 路 (Line8)](/sensors/line8/index.md)
+  - [循行者 16 路 (Line16)](/sensors/line16/index.md)
 
 - **📡 雷射測距**
-  - **測距者 2 路 (TOF2)**
-    <!-- gen:sidebar-tof2 -->
-    - [📖 產品介紹](/sensors/tof2/index.md)
-    - [📋 指令參考](/sensors/tof2/reference.md)
-    - [<img src="/images/hubs/spike-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(242,194,0,0.5));">SPIKE 主機](/sensors/tof2/index.md)
-      - [🧪 SPIKE 新手範例](/sensors/tof2/spike-examples.md)
-    - [<img src="/images/hubs/ev3-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(10,186,181,0.5));">EV3 主機](/sensors/tof2/index.md)
-      - [🧪 EV3 新手範例](/sensors/tof2/ev3-examples.md)
-    - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#0abab5;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>通用 I2C（Arduino）](/sensors/tof2/arduino-examples.md)
-    - [🤖 mBlock（MakeBlock）](/sensors/tof2/mblock-examples.md)
-    - [🟩 MATRIX Mini R4](/sensors/tof2/matrix.md)
-    - [🟧 micro:bit](/sensors/tof2/microbit-examples.md)
-    <!-- /gen -->
-  - **測距者 8 路 (TOF8)**
-    <!-- gen:sidebar-tof8 -->
-    - [📖 產品介紹](/sensors/tof8/index.md)
-    - [📋 指令參考](/sensors/tof8/reference.md)
-    - [<img src="/images/hubs/spike-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(242,194,0,0.5));">SPIKE 主機](/sensors/tof8/index.md)
-      - [🧪 SPIKE 新手範例](/sensors/tof8/spike-examples.md)
-    - [<img src="/images/hubs/ev3-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(10,186,181,0.5));">EV3 主機](/sensors/tof8/index.md)
-      - [🧪 EV3 新手範例](/sensors/tof8/ev3-examples.md)
-    - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#0abab5;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>通用 I2C（Arduino）](/sensors/tof8/arduino-examples.md)
-    - [🤖 mBlock（MakeBlock）](/sensors/tof8/mblock-examples.md)
-    - [🟩 MATRIX Mini R4](/sensors/tof8/matrix.md)
-    - [🟧 micro:bit](/sensors/tof8/microbit-examples.md)
-    <!-- /gen -->
+  - [測距者 2 路 (TOF2)](/sensors/tof2/index.md)
+  - [測距者 8 路 (TOF8)](/sensors/tof8/index.md)
 
 - **🎮 遙控接收器**
-  - **掌控者 PS2 (PS2)**
-    <!-- gen:sidebar-ps2 -->
-    - [📖 產品介紹](/sensors/ps2/index.md)
-    - [📋 指令參考](/sensors/ps2/reference.md)
-    - [<img src="/images/hubs/spike-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(242,194,0,0.5));">SPIKE 主機](/sensors/ps2/index.md)
-      - [🧪 SPIKE 新手範例](/sensors/ps2/spike-examples.md)
-    - [<img src="/images/hubs/ev3-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(10,186,181,0.5));">EV3 主機](/sensors/ps2/index.md)
-      - [🧪 EV3 新手範例](/sensors/ps2/ev3-examples.md)
-    - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#0abab5;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>通用 I2C（Arduino）](/sensors/ps2/arduino-examples.md)
-    - [🤖 mBlock（MakeBlock）](/sensors/ps2/mblock-examples.md)
-    - [🟩 MATRIX Mini R4](/sensors/ps2/matrix.md)
-    - [🟧 micro:bit](/sensors/ps2/microbit-examples.md)
-    <!-- /gen -->
-  - **掌控者 PS4/PS5**
-    <!-- gen:sidebar-ps4 -->
-    - [📖 產品介紹](/sensors/ps4/index.md)
-    - [📋 指令參考](/sensors/ps4/reference.md)
-    - [<img src="/images/hubs/spike-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(242,194,0,0.5));">SPIKE 主機](/sensors/ps4/index.md)
-      - [🧪 SPIKE 新手範例](/sensors/ps4/spike-examples.md)
-    - [<img src="/images/hubs/ev3-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(10,186,181,0.5));">EV3 主機](/sensors/ps4/index.md)
-      - [🧪 EV3 新手範例](/sensors/ps4/ev3-examples.md)
-    - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#0abab5;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>通用 I2C（Arduino）](/sensors/ps4/arduino-examples.md)
-    - [🤖 mBlock（MakeBlock）](/sensors/ps4/mblock-examples.md)
-    - [🟩 MATRIX Mini R4](/sensors/ps4/matrix.md)
-    - [🟧 micro:bit](/sensors/ps4/microbit-examples.md)
-    <!-- /gen -->
+  - [掌控者 PS2 (PS2)](/sensors/ps2/index.md)
+  - [掌控者 PS4/PS5](/sensors/ps4/index.md)
 
 - **👁️ 機器人視覺**
-  - **神攝手 ESP32CAM (ESP32CAM)**
-    <!-- gen:sidebar-esp32cam -->
-    - [📖 產品介紹](/sensors/esp32cam/index.md)
-    - [📋 指令參考](/sensors/esp32cam/reference.md)
-    - [<img src="/images/hubs/spike-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(242,194,0,0.5));">SPIKE 主機](/sensors/esp32cam/index.md)
-      - [🧪 SPIKE 新手範例](/sensors/esp32cam/spike-examples.md)
-    - [<img src="/images/hubs/ev3-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(10,186,181,0.5));">EV3 主機](/sensors/esp32cam/index.md)
-      - [🧪 EV3 新手範例](/sensors/esp32cam/ev3-examples.md)
-    - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#0abab5;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>通用 I2C（Arduino）](/sensors/esp32cam/arduino-examples.md)
-    - [🤖 mBlock（MakeBlock）](/sensors/esp32cam/mblock-examples.md)
-    - [🟧 micro:bit](/sensors/esp32cam/microbit-examples.md)
-    <!-- /gen -->
-  - **遠距離顏色感應器 OV3660（開發中）**
-    - [📖 產品預告](/sensors/ov3660/index.md)
+  - [神攝手 ESP32CAM (ESP32CAM)](/sensors/esp32cam/index.md)
+  - [遠距離顏色感應器 OV3660（開發中）](/sensors/ov3660/index.md)
 
 - **🧭 姿態感測**
-  - **陀螺儀 IMU（即將推出）**
-    <!-- gen:sidebar-imu -->
-    - [📖 產品介紹](/sensors/imu/index.md)
-    - [📋 指令參考](/sensors/imu/reference.md)
-    - [<img src="/images/hubs/ev3-hub.webp" style="height:15px;vertical-align:middle;margin-right:3px;filter:drop-shadow(0 0 2px rgba(10,186,181,0.5));">EV3 主機](/sensors/imu/index.md)
-      - [🧪 EV3 新手範例](/sensors/imu/ev3-examples.md)
-    - [<svg viewBox="0 0 24 24" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;display:inline-block;fill:none;stroke:#0abab5;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;"><path d="M 2,12 H 6 V 6 H 10 V 18 H 14 V 6 H 18 V 18 H 22" /></svg>通用 I2C（Arduino）](/sensors/imu/arduino-examples.md)
-    - [🤖 mBlock（MakeBlock）](/sensors/imu/mblock-examples.md)
-    - [🟩 MATRIX Mini R4](/sensors/imu/matrix.md)
-    - [🟧 micro:bit](/sensors/imu/microbit-examples.md)
-    <!-- /gen -->
+  - [陀螺儀 IMU（即將推出）](/sensors/imu/index.md)
 
 - **🔌 擴充模組**
-  - **SPIKE 6 路擴充器 (EXP6)**
-    - [📖 產品介紹](/sensors/exp6/index.md)
-    - [🐍 官方 SPIKE App](/sensors/exp6/spike-official.md)
-    - [🚀 Pybricks 環境](/sensors/exp6/spike-pybricks.md)
-    - [🧪 Arduino 範例（序列埠）](/sensors/exp6/arduino-examples.md)
-  - **SPIKE 6 路舵機擴充器（即將推出）**
-    - [📖 產品介紹](/sensors/servo6/index.md)
-    - [🐍 官方 SPIKE App](/sensors/servo6/spike-official.md)
-    - [🚀 Pybricks 環境](/sensors/servo6/spike-pybricks.md)
+  - [SPIKE 6 路擴充器 (EXP6)](/sensors/exp6/index.md)
+  - [SPIKE 6 路舵機擴充器（即將推出）](/sensors/servo6/index.md)
 
 - **📝 教學文章**
   - [全部文章](/articles/index.md)

@@ -1,5 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 W4 micro:bit 範例產生器產生（scratchpad w4/gen_pages.mjs＋spec/ps4.mjs）；程式碼區塊來自 examples/ps4/microbit/*.ts，改程式請改 .ts 後重跑產生器 -->
+<!-- moved: /sensors/ps4/microbit/makecode.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/ps4/microbit/makecode.md">掌控者 PS4/PS5 › micro:bit › MakeCode</a></p>
+
 # 🟧 micro:bit 範例：掌控者 PS4/PS5
 
 [🔙 回到掌控者 PS4/PS5 micro:bit 頁](/sensors/ps4/microbit.md)　｜　[📖 產品頁](/sensors/ps4/index.md)　｜　[📋 指令參考](/sensors/ps4/reference.md)

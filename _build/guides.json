@@ -1,0 +1,316 @@
+{
+  "_說明": "說明頁三層導覽（產品 → 主機平台 → 軟體）的單一來源。gen-guides.mjs 讀這份產生 sensors/<p>/<host>/index.md 與 <sw>.md，build.mjs 讀 _build/generated/guides-index.json 做切換列、格子、側欄、首頁選擇器。設計見 _build/guides/DESIGN.md。summaryMatch／colMatch 是 JavaScript regex（不分大小寫），用來從範例頁挑出這個軟體的 <details>、下載表的欄、下載連結。readWith = protocol/snippets/<模組>.mjs 的 bySoftware(sw) 讀法。legacy = 舊頁檔名 → 新頁（'' = 平台頁）；舊頁頁首會加 <!-- moved: --> 標記。",
+  "hosts": [
+    {
+      "id": "spike",
+      "name": { "zh": "SPIKE", "en": "SPIKE" },
+      "fullName": { "zh": "SPIKE Prime／Robot Inventor", "en": "SPIKE Prime / Robot Inventor" },
+      "tagline": { "zh": "樂高 SPIKE Prime（黃色主機）與 Robot Inventor（藍綠色主機）", "en": "LEGO SPIKE Prime (yellow hub) and Robot Inventor (teal hub)" },
+      "icon": "/images/hubs/spike-hub.webp",
+      "illust": "/images/illust/host-spike.svg",
+      "colorToken": "--spike",
+      "protocolHost": "spike",
+      "wiring": "spike",
+      "port": "A",
+      "edition": {
+        "zh": "買 **SPIKE 版**（樂高 LPF2 接頭），直接插主機 A~F 任一孔，不用電池。SPIKE Prime 教育版（黃色主機）和 Robot Inventor 家用版（藍綠色主機）都能用。",
+        "en": "Get the **SPIKE edition** (LEGO LPF2 plug) and plug it into any hub port A~F; no battery needed. Works with SPIKE Prime (yellow hub) and Robot Inventor (teal hub)."
+      },
+      "faq": [
+        { "q": { "zh": "主機認不到感應器？", "en": "The hub does not detect the sensor?" }, "a": { "zh": "拔掉重插一次，等 2 秒；換一個孔試試。官方 App 會把它顯示成「顏色感應器」，這是正常的。", "en": "Unplug and replug, wait 2 s, try another port. The official app shows it as a colour sensor — that is expected." } },
+        { "q": { "zh": "可以同時用官方 App 和 Pybricks 嗎？", "en": "Can I use the official app and Pybricks on the same hub?" }, "a": { "zh": "一次只能裝一種韌體：Pybricks 與 MBC 積木網站用 Pybricks 韌體，官方 App 用樂高原廠韌體；隨時可以用 SPIKE App 換回原廠韌體。", "en": "One firmware at a time: Pybricks and the MBC Blocks website need Pybricks firmware, the official app needs LEGO firmware; you can switch back any time with the SPIKE app." } }
+      ],
+      "legacy": { "spike-hub": "", "spike-examples": "", "spike-education": "official", "spike-ri": "official", "spike-official": "official", "spike-pybricks": "pybricks" },
+      "software": [
+        {
+          "id": "official",
+          "name": { "zh": "樂高官方 App", "en": "Official LEGO App" },
+          "longName": { "zh": "樂高官方 App（SPIKE 3、Robot Inventor）", "en": "Official LEGO App (SPIKE 3, Robot Inventor)" },
+          "tagline": { "zh": "學校最常用；不用換韌體，用顏色感應器積木讀", "en": "What most schools use; no firmware change, read with the colour-sensor blocks" },
+          "icon": "/images/hubs/spike-education-app.webp",
+          "examplesFrom": "spike-examples",
+          "summaryMatch": { "zh": "樂高官方 App", "en": "official LEGO app" },
+          "colMatch": { "zh": "樂高官方 App|官方 App", "en": "official LEGO app|official app" },
+          "readWith": "spike.official",
+          "legacyPages": ["spike-education", "spike-official", "spike-examples"]
+        },
+        {
+          "id": "mbcblocks",
+          "name": { "zh": "MBC 積木網站", "en": "MBC Blocks website" },
+          "longName": { "zh": "MBC SPIKE 積木網站", "en": "MBC SPIKE Blocks website" },
+          "tagline": { "zh": "中文積木、讀得到全部數值；主機換 Pybricks 韌體", "en": "Block coding with every value available; hub runs Pybricks firmware" },
+          "icon": "blocks",
+          "url": "https://mbc-spike-blocks.mbcrobot.workers.dev",
+          "examplesFrom": "spike-examples",
+          "summaryMatch": { "zh": "MBC 積木網站", "en": "MBC Blocks website" },
+          "colMatch": { "zh": "MBC 積木網站", "en": "MBC Blocks website|MBC Blocks" },
+          "readWith": "spike.mbcblocks",
+          "legacyPages": ["spike-examples"]
+        },
+        {
+          "id": "pybricks",
+          "name": { "zh": "Pybricks", "en": "Pybricks" },
+          "longName": { "zh": "Pybricks（Python）", "en": "Pybricks (Python)" },
+          "tagline": { "zh": "打字寫 Python，最快、最完整；比賽隊伍首選", "en": "Type Python: fastest and most complete; the pick of competition teams" },
+          "icon": "/images/hubs/spike-pybricks-logo.webp",
+          "examplesFrom": "spike-examples",
+          "summaryMatch": { "zh": "Pybricks", "en": "Pybricks" },
+          "colMatch": { "zh": "Pybricks", "en": "Pybricks" },
+          "readWith": "spike.pybricks",
+          "legacyPages": ["spike-pybricks", "spike-examples"]
+        }
+      ]
+    },
+    {
+      "id": "ev3",
+      "name": { "zh": "EV3", "en": "EV3" },
+      "fullName": { "zh": "MINDSTORMS EV3", "en": "MINDSTORMS EV3" },
+      "tagline": { "zh": "樂高 MINDSTORMS EV3 主機（RJ12 接頭）", "en": "LEGO MINDSTORMS EV3 brick (RJ12 plug)" },
+      "icon": "/images/hubs/ev3-hub.webp",
+      "illust": "/images/illust/host-ev3.svg",
+      "colorToken": "--ev3",
+      "protocolHost": "ev3",
+      "wiring": "ev3",
+      "port": "1",
+      "edition": {
+        "zh": "買 **EV3 版**（RJ12 接頭），插 EV3 的 1~4 號感應器孔。**EV3 先開機再插感應器**；數字不動時拔掉重插一次。",
+        "en": "Get the **EV3 edition** (RJ12 plug) and plug it into sensor port 1~4. **Power the EV3 on first, then plug the sensor in**; replug if the numbers freeze."
+      },
+      "faq": [
+        { "q": { "zh": "EV3 顯示成紅外線感應器？", "en": "The EV3 shows an infrared sensor?" }, "a": { "zh": "正常：感應器模擬成樂高原廠感應器，用原廠積木就能讀。", "en": "Expected: the sensor emulates a LEGO sensor so the stock blocks can read it." } },
+        { "q": { "zh": "切換模式時卡一下？", "en": "A short freeze when switching modes?" }, "a": { "zh": "EV3 每次換模式要等約 0.5 秒。整趟任務盡量只用同一個模式的積木。", "en": "The EV3 needs about 0.5 s per mode change. Stick to one mode during a run." } }
+      ],
+      "legacy": { "ev3-hub": "", "ev3-examples": "", "ev3-official": "ev3g", "ev3-classroom": "classroom", "ev3-clev3r": "clev3r", "ev3-pybricks": "pybricks" },
+      "software": [
+        {
+          "id": "ev3g",
+          "name": { "zh": "EV3-G 官方軟體", "en": "EV3-G" },
+          "longName": { "zh": "EV3-G 官方軟體（EV3 Lab）", "en": "EV3-G official software (EV3 Lab)" },
+          "tagline": { "zh": "學校電腦教室、WRO 隊伍最常見", "en": "Common in school labs and WRO teams" },
+          "icon": "/images/hubs/ev3-official-app.webp",
+          "examplesFrom": "ev3-examples",
+          "summaryMatch": { "zh": "EV3-G", "en": "EV3-G" },
+          "colMatch": { "zh": "EV3-G", "en": "EV3-G" },
+          "readWith": "ev3.ev3g",
+          "legacyPages": ["ev3-official", "ev3-examples"]
+        },
+        {
+          "id": "classroom",
+          "name": { "zh": "EV3 Classroom", "en": "EV3 Classroom" },
+          "longName": { "zh": "EV3 Classroom（Scratch 積木）", "en": "EV3 Classroom (Scratch blocks)" },
+          "tagline": { "zh": "跟 SPIKE 一樣的積木，第一次用 EV3 也好上手", "en": "Same blocks as SPIKE; easy for first-time EV3 users" },
+          "icon": "/images/hubs/ev3-classroom-app.webp",
+          "examplesFrom": "ev3-examples",
+          "summaryMatch": { "zh": "Classroom", "en": "Classroom" },
+          "colMatch": { "zh": "Classroom", "en": "Classroom" },
+          "readWith": "ev3.classroom",
+          "legacyPages": ["ev3-classroom", "ev3-examples"]
+        },
+        {
+          "id": "pybricks",
+          "name": { "zh": "Pybricks", "en": "Pybricks" },
+          "longName": { "zh": "Pybricks v4／EV3 MicroPython v2", "en": "Pybricks v4 / EV3 MicroPython v2" },
+          "tagline": { "zh": "Python 文字程式，讀得到所有模式", "en": "Python code with access to every mode" },
+          "icon": "/images/hubs/ev3-pybricks-logo.webp",
+          "examplesFrom": "ev3-examples",
+          "summaryMatch": { "zh": "Pybricks v4|MicroPython", "en": "Pybricks v4|MicroPython" },
+          "colMatch": { "zh": "Pybricks|MicroPython", "en": "Pybricks|MicroPython" },
+          "readWith": "ev3.pybricks",
+          "legacyPages": ["ev3-pybricks", "ev3-examples"]
+        },
+        {
+          "id": "clev3r",
+          "name": { "zh": "clev3r", "en": "clev3r" },
+          "longName": { "zh": "clev3r（EV3 BASIC）", "en": "clev3r (EV3 BASIC)" },
+          "tagline": { "zh": "BASIC 文字程式，已經在用 clev3r 的人", "en": "BASIC text code for existing clev3r users" },
+          "icon": "/images/hubs/ev3-clev3r-app.webp",
+          "examplesFrom": "ev3-examples",
+          "summaryMatch": { "zh": "clev3r", "en": "clev3r" },
+          "colMatch": { "zh": "clev3r", "en": "clev3r" },
+          "readWith": "ev3.clev3r",
+          "legacyPages": ["ev3-clev3r", "ev3-examples"]
+        }
+      ]
+    },
+    {
+      "id": "arduino",
+      "name": { "zh": "Arduino", "en": "Arduino" },
+      "fullName": { "zh": "Arduino／ESP32／UNO R4（I2C）", "en": "Arduino / ESP32 / UNO R4 (I2C)" },
+      "tagline": { "zh": "Arduino UNO、Nano、UNO R4、ESP32，用 I2C 接", "en": "Arduino UNO, Nano, UNO R4, ESP32 over I2C" },
+      "icon": "plug",
+      "illust": "/images/illust/host-arduino.svg",
+      "colorToken": "--arduino",
+      "protocolHost": "i2c",
+      "wiring": "uno",
+      "port": "I2C",
+      "edition": {
+        "zh": "買 **通用 I2C 版**（4 pin：5V、GND、SDA、SCL），出廠 I2C 位址 `{{addr}}`。UNO／Nano 接 A4（SDA）、A5（SCL）；UNO R4、ESP32 接板子上標 SDA／SCL 的腳。",
+        "en": "Get the **Universal I2C edition** (4 pins: 5V, GND, SDA, SCL), factory I2C address `{{addr}}`. UNO / Nano: A4 (SDA), A5 (SCL); UNO R4 and ESP32: the pins marked SDA / SCL."
+      },
+      "faq": [
+        { "q": { "zh": "一直讀到 -32768？", "en": "Always reading -32768?" }, "a": { "zh": "代表模組沒回應：檢查 SDA／SCL 有沒有接反、位址對不對、5V／GND 有沒有接好。", "en": "The module is not answering: check SDA / SCL are not swapped, the address is right and 5V / GND are connected." } },
+        { "q": { "zh": "可以接很多顆嗎？", "en": "Can I connect several sensors?" }, "a": { "zh": "可以，每顆位址要不同；同型號用命令 F8 換位址（見通用 I2C 協議）。", "en": "Yes, each needs its own address; re-address identical sensors with command F8 (see the universal I2C protocol)." } }
+      ],
+      "legacy": { "arduino-i2c": "ide", "arduino-examples": "ide" },
+      "software": [
+        {
+          "id": "ide",
+          "name": { "zh": "Arduino IDE", "en": "Arduino IDE" },
+          "longName": { "zh": "Arduino IDE（C++）", "en": "Arduino IDE (C++)" },
+          "tagline": { "zh": "複製範例、上傳就能用；每一行都有中文說明", "en": "Copy an example and upload; every line is commented" },
+          "icon": "code",
+          "examplesFrom": "arduino-examples",
+          "examplesWhole": true,
+          "readWith": "i2c.ide",
+          "legacyPages": ["arduino-i2c", "arduino-examples"]
+        }
+      ]
+    },
+    {
+      "id": "mblock",
+      "name": { "zh": "mBlock", "en": "mBlock" },
+      "fullName": { "zh": "MakeBlock（mBot）＋ mBlock 5", "en": "Makeblock (mBot) + mBlock 5" },
+      "tagline": { "zh": "mBot、Ranger、Orion、MegaPi，用 mBlock 5 積木", "en": "mBot, Ranger, Orion, MegaPi with mBlock 5 blocks" },
+      "icon": "bot",
+      "illust": "/images/illust/host-mblock.svg",
+      "colorToken": "--mblock",
+      "protocolHost": "mblock",
+      "wiring": "mbot",
+      "port": "1",
+      "edition": {
+        "zh": "買 **MakeBlock 版**（RJ25 接頭），插 mBot／Ranger／Orion／MegaPi 的 RJ25 連接埠；各主板可用哪幾個埠見 [MakeBlock 積木擴展](/makeblock.md)。",
+        "en": "Get the **MakeBlock edition** (RJ25 plug) and plug it into an RJ25 port of mBot / Ranger / Orion / MegaPi; usable ports per board are listed in [MakeBlock extension](/en/makeblock.md)."
+      },
+      "faq": [
+        { "q": { "zh": "積木一直回 0？", "en": "Blocks keep returning 0?" }, "a": { "zh": "確認積木選的連接埠跟實際插的一樣，並且已經用「上傳」模式把程式燒進主板。", "en": "Check the port in the block matches the real port and that the program was uploaded to the board." } },
+        { "q": { "zh": "舊的擴展還能用嗎？", "en": "Does the old extension still work?" }, "a": { "zh": "2026-10 以前出貨的感應器用舊版擴展 v1.0.0；新舊積木不相容，依韌體版本選。", "en": "Sensors shipped before 2026-10 use the legacy v1.0.0 extension; old and new blocks are not compatible." } }
+      ],
+      "legacy": { "mblock": "mblock5", "mblock-examples": "mblock5" },
+      "software": [
+        {
+          "id": "mblock5",
+          "name": { "zh": "mBlock 5", "en": "mBlock 5" },
+          "longName": { "zh": "mBlock 5（MBC Pro Sensors 擴展）", "en": "mBlock 5 (MBC Pro Sensors extension)" },
+          "tagline": { "zh": "裝 MBC 擴展後用中文積木讀值", "en": "Add the MBC extension and read values with blocks" },
+          "icon": "blocks",
+          "examplesFrom": "mblock-examples",
+          "examplesWhole": true,
+          "readWith": "mblock.mblock5",
+          "legacyPages": ["mblock", "mblock-examples"]
+        }
+      ]
+    },
+    {
+      "id": "matrix",
+      "name": { "zh": "MATRIX", "en": "MATRIX" },
+      "fullName": { "zh": "MATRIX Mini R4", "en": "MATRIX Mini R4" },
+      "tagline": { "zh": "MATRIX Mini R4 主機，用 MATRIXblock 積木", "en": "MATRIX Mini R4 controller with MATRIXblock" },
+      "icon": "blocks",
+      "illust": "/images/illust/host-matrix.svg",
+      "colorToken": "--matrix",
+      "protocolHost": "matrix",
+      "wiring": "matrix",
+      "port": "I2C1",
+      "edition": {
+        "zh": "買 **MATRIX 版**，用 MATRIX 原廠 4 pin 感應器線接 Mini R4 的 I2C1 或 I2C2（位址 `0x22`），積木裡選對應的孔。",
+        "en": "Get the **MATRIX edition** and connect it with the stock MATRIX 4-pin cable to I2C1 or I2C2 of the Mini R4 (address `0x22`); pick that port in the block."
+      },
+      "faq": [
+        { "q": { "zh": "原廠積木和大通道可以一起用嗎？", "en": "Can I mix stock blocks and the big channel?" }, "a": { "zh": "不行：兩種要裝不同的函式庫檔，一個程式只能選一種。", "en": "No: they need different library files; pick one per program." } }
+      ],
+      "legacy": { "matrix": "" },
+      "software": [
+        {
+          "id": "matrixblock",
+          "name": { "zh": "MATRIXblock 原廠積木", "en": "MATRIXblock stock blocks" },
+          "longName": { "zh": "MATRIXblock 原廠顏色感應器積木（0x22）", "en": "MATRIXblock stock colour-sensor blocks (0x22)" },
+          "tagline": { "zh": "不用換函式庫，R~K 七個數就夠用", "en": "No library change; seven numbers R~K" },
+          "icon": "blocks",
+          "requires": "matrix.ch22",
+          "examplesFrom": null,
+          "readWith": "matrix.matrixblock",
+          "legacyPages": ["matrix"]
+        },
+        {
+          "id": "bigchannel",
+          "name": { "zh": "大通道函式庫", "en": "Big-channel library" },
+          "longName": { "zh": "LauMo 大通道函式庫（MATRIXblock／Arduino）", "en": "LauMo big-channel library (MATRIXblock / Arduino)" },
+          "tagline": { "zh": "換函式庫，一包 30 byte 什麼都讀得到", "en": "Swap the library and read everything in one 30-byte packet" },
+          "icon": "sliders-horizontal",
+          "requires": "matrix.big",
+          "examplesFrom": null,
+          "readWith": "matrix.bigchannel",
+          "legacyPages": ["matrix"]
+        },
+        {
+          "id": "mvision",
+          "name": { "zh": "mVision 積木", "en": "mVision blocks" },
+          "longName": { "zh": "MATRIXblock mVision 串口積木", "en": "MATRIXblock mVision serial blocks" },
+          "tagline": { "zh": "神攝手走串口，用內建攝影機積木讀", "en": "The camera talks serial; read it with the built-in camera blocks" },
+          "icon": "camera",
+          "requires": "mvision",
+          "examplesFrom": null,
+          "readWith": "matrix.mvision",
+          "legacyPages": ["matrix"]
+        }
+      ]
+    },
+    {
+      "id": "microbit",
+      "name": { "zh": "micro:bit", "en": "micro:bit" },
+      "fullName": { "zh": "BBC micro:bit V1／V2", "en": "BBC micro:bit V1 / V2" },
+      "tagline": { "zh": "micro:bit V1／V2，用 MakeCode 積木", "en": "micro:bit V1 / V2 with MakeCode blocks" },
+      "icon": "blocks",
+      "illust": "/images/illust/host-microbit.svg",
+      "colorToken": "--microbit",
+      "protocolHost": "microbit",
+      "wiring": "microbit",
+      "port": "I2C",
+      "edition": {
+        "zh": "買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `{{addr}}`。感應器要 5 V 供電，micro:bit 本身只有 3.3 V，請用有 5 V 輸出的擴充板。",
+        "en": "Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `{{addr}}`. The sensor needs 5 V; use a breakout board with a 5 V output."
+      },
+      "faq": [
+        { "q": { "zh": "找不到 MBC 積木？", "en": "Cannot find the MBC blocks?" }, "a": { "zh": "MakeCode「擴充功能」貼上 https://github.com/contactmbcrobot/pxt-mbc-sensors 加入。", "en": "In MakeCode Extensions, paste https://github.com/contactmbcrobot/pxt-mbc-sensors." } }
+      ],
+      "legacy": { "microbit": "makecode", "microbit-examples": "makecode" },
+      "software": [
+        {
+          "id": "makecode",
+          "name": { "zh": "MakeCode", "en": "MakeCode" },
+          "longName": { "zh": "MakeCode（積木／JavaScript）", "en": "MakeCode (blocks / JavaScript)" },
+          "tagline": { "zh": "加入 pxt-mbc-sensors 擴充，積木或 JavaScript 都可以", "en": "Add the pxt-mbc-sensors extension; blocks or JavaScript" },
+          "icon": "blocks",
+          "url": "https://makecode.microbit.org",
+          "examplesFrom": "microbit-examples",
+          "examplesWhole": true,
+          "readWith": "microbit.makecode",
+          "legacyPages": ["microbit", "microbit-examples"]
+        }
+      ]
+    }
+  ],
+  "legacyProduct": ["reference"],
+  "overrides": {
+    "exp6": {
+      "spike": ["official", "mbcblocks", "pybricks"],
+      "arduino": ["ide"],
+      "edition": {
+        "spike": { "zh": "EXP6 的「Host 通訊線」插 SPIKE Prime 主機任一孔（只支援 SPIKE Prime，不支援 Robot Inventor 與 EV3），另外要接獨立電源給馬達。", "en": "Plug the EXP6 host cable into any SPIKE Prime port (SPIKE Prime only, not Robot Inventor or EV3) and connect a separate power supply for the motors." },
+        "arduino": { "zh": "EXP6 **不能用 I2C** 接 Arduino（主機接頭的隔離晶片只能單向傳送）；改用 **序列埠（UART）**，建議 Arduino UNO R4、Mega 或 ESP32。", "en": "The EXP6 **cannot use I2C** with Arduino (the host-port isolator is one-way); use **serial (UART)** instead, ideally with an Arduino UNO R4, Mega or ESP32." }
+      },
+      "noWiringFigure": true
+    },
+    "servo6": {
+      "spike": ["official", "pybricks"],
+      "edition": {
+        "spike": { "zh": "Servo6 插 SPIKE Prime 主機任一孔，舵機接擴充器的 1~6 號孔，另外要接獨立電源給舵機。", "en": "Plug the Servo6 into any SPIKE Prime port, connect servos to its ports 1~6 and give it a separate power supply." }
+      },
+      "noWiringFigure": true
+    }
+  },
+  "editions": {
+    "camWro": { "zh": "WRO 版", "en": "WRO edition" },
+    "camSchool": { "zh": "學校版", "en": "School edition" }
+  }
+}

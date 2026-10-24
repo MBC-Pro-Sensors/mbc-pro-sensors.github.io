@@ -1,5 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 scratchpad/products/exp6 產生；Pybricks 程式碼來自 examples/exp6/spike_beginner/pybricks/*.py，官方 App 程式碼必須跟 official/*.official.py 一樣（build.py 會檢查），改程式請改產生器再重建 -->
+<!-- moved: /sensors/exp6/spike/index.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/exp6/spike/index.md">SPIKE 6 路擴充器 › SPIKE</a></p>
+
 # 🧱 SPIKE 新手範例：6 路擴充器 (EXP6)
 
 [🔙 回到 EXP6 產品頁](/sensors/exp6/index.md)

@@ -1,4 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
+<!-- moved: /sensors/esp32cam/arduino/ide.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/esp32cam/arduino/ide.md">神攝手 ESP32CAM › Arduino › Arduino IDE</a></p>
+
 # 🧪 神攝手 ESP32CAM × Arduino 範例
 
 [🔙 回到神攝手首頁](/sensors/esp32cam/index.md)　｜　[📡 MBC 通用 I2C 協議 v2（進階）](/i2c-protocol.md)

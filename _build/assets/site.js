@@ -164,49 +164,110 @@
     d.addEventListener('toggle', function () { if (d.open) { try { localStorage.setItem('mbc-host', d.dataset.host); } catch (e) {} } });
   });
 
-  // --- 首頁兩步選擇器：產品 × 主機 → 入口連結（照 ph-pick 的 radio 行為） ---
-  var finder = document.getElementById('finder');
+  // --- 首頁三步選擇器：產品 → 主機 → 軟體 → 直接到軟體頁（記住 mbc.product／mbc.host／mbc.sw） ---
+  var finder = document.getElementById('finder-box');
   var dataEl = document.getElementById('finder-data');
   if (finder && dataEl) {
     var data = JSON.parse(dataEl.textContent);
-    var picked = { key: null, host: null };
-    try { picked.key = localStorage.getItem('mbc-finder-key'); picked.host = localStorage.getItem('mbc-host'); } catch (e) {}
+    var picked = { key: null, host: null, sw: null };
+    try { picked.key = localStorage.getItem('mbc.product'); picked.host = localStorage.getItem('mbc.host'); picked.sw = localStorage.getItem('mbc.sw'); } catch (e) {}
     var result = finder.querySelector('.finder-result');
+    var swBox = finder.querySelector('.finder-sws');
     var table = finder.querySelector('.finder-table');
     if (table) table.removeAttribute('open');
-    function pick(group, attr, value) {
+    var save = function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} };
+    var mark = function (group, attr, value) {
       finder.querySelectorAll(group + ' button').forEach(function (b) { b.setAttribute('aria-checked', b.dataset[attr] === value ? 'true' : 'false'); });
-    }
+    };
     function render() {
-      var L = data.labels;
-      if (!picked.key || !picked.host || !data.products[picked.key]) { result.innerHTML = '<p>' + L.result + '</p>'; return; }
       var p = data.products[picked.key];
-      var h = p.hosts[picked.host];
-      var hostName = finder.querySelector('.finder-hosts button[data-host="' + picked.host + '"] span').textContent;
-      var html = '<h3>' + p.name + ' × ' + hostName + '</h3>';
-      if (!h) html += '<p>' + L.none + '</p><div class="fr-links"><a class="ghost" href="' + p.index + '">' + p.name + '</a></div>';
-      else {
-        html += '<div class="fr-links">';
-        var seen = {};
-        ['start', 'ref', 'lib'].forEach(function (k, i) {
-          if (!h[k] || seen[h[k]]) return;
-          seen[h[k]] = 1;
-          html += '<a class="' + (i ? 'ghost' : '') + '" href="' + h[k] + '"' + (/^https?:/.test(h[k]) ? ' target="_blank" rel="noopener"' : '') + '>' + L[k] + '</a>';
+      // 第 2 步：只開這款有的主機
+      finder.querySelectorAll('.finder-hosts button').forEach(function (b) {
+        var ok = !!(p && p.hosts[b.dataset.host]);
+        b.disabled = !ok;
+        b.title = ok || !p ? '' : data.labels.noHost;
+      });
+      if (!p || !p.hosts[picked.host]) picked.host = null;
+      mark('.finder-hosts', 'host', picked.host);
+      // 第 3 步：這個主機的軟體；只有一種就直接選
+      var h = p && picked.host ? p.hosts[picked.host] : null;
+      swBox.innerHTML = '';
+      if (h) {
+        var ids = Object.keys(h.sws);
+        if (ids.indexOf(picked.sw) < 0) picked.sw = ids.length === 1 ? ids[0] : null;
+        ids.forEach(function (id) {
+          var s = data.hosts[picked.host].sws[id];
+          var b = document.createElement('button');
+          b.type = 'button'; b.setAttribute('role', 'radio'); b.dataset.sw = id;
+          b.className = 'ft-' + picked.host;
+          b.setAttribute('aria-checked', id === picked.sw ? 'true' : 'false');
+          b.innerHTML = '<span></span><small></small>';
+          b.firstChild.textContent = s.name; b.lastChild.textContent = s.tag;
+          b.addEventListener('click', function () { picked.sw = id; save('mbc.sw', id); render(); });
+          swBox.appendChild(b);
         });
-        html += '</div>';
-      }
-      result.innerHTML = html;
+      } else picked.sw = null;
+      if (p && h && picked.sw) {
+        var hostName = data.hosts[picked.host].name, swName = data.hosts[picked.host].sws[picked.sw].name;
+        result.innerHTML = '<div class="fr-links"><a></a></div>';
+        var a = result.querySelector('a');
+        a.href = h.sws[picked.sw];
+        a.textContent = data.labels.go + ' ' + p.name + ' › ' + hostName + ' › ' + swName + ' →';
+      } else result.innerHTML = '<p>' + data.labels.result + '</p>';
     }
     finder.querySelectorAll('.finder-prods button').forEach(function (b) {
-      b.addEventListener('click', function () { picked.key = b.dataset.key; pick('.finder-prods', 'key', picked.key); try { localStorage.setItem('mbc-finder-key', picked.key); } catch (e) {} render(); });
+      b.addEventListener('click', function () { picked.key = b.dataset.key; mark('.finder-prods', 'key', picked.key); save('mbc.product', picked.key); render(); });
     });
     finder.querySelectorAll('.finder-hosts button').forEach(function (b) {
-      b.addEventListener('click', function () { picked.host = b.dataset.host; pick('.finder-hosts', 'host', picked.host); try { localStorage.setItem('mbc-host', picked.host); } catch (e) {} render(); });
+      b.addEventListener('click', function () { if (b.disabled) return; picked.host = b.dataset.host; save('mbc.host', picked.host); render(); });
     });
-    if (picked.key && data.products[picked.key]) pick('.finder-prods', 'key', picked.key); else picked.key = null;
-    if (picked.host && HOSTS.indexOf(picked.host) > -1) pick('.finder-hosts', 'host', picked.host); else picked.host = null;
+    if (!data.products[picked.key]) picked.key = null;
+    mark('.finder-prods', 'key', picked.key);
     render();
   }
+
+  // --- 切換列（第 2、3 層頁面）：一次只開一個下拉；Esc 關閉；點外面關閉；記住目前的產品／主機／軟體 ---
+  var gsw = document.querySelector('.gsw');
+  if (gsw) {
+    var segs = gsw.querySelectorAll('details.gsw-seg');
+    segs.forEach(function (d) {
+      d.addEventListener('toggle', function () {
+        if (!d.open) return;
+        segs.forEach(function (o) { if (o !== d) o.open = false; });
+        var cur = d.querySelector('a[aria-current="page"]') || d.querySelector('a');
+        if (cur && d.matches(':focus-within')) cur.focus();
+      });
+      d.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && d.open) { d.open = false; d.querySelector('summary').focus(); }
+      });
+    });
+    document.addEventListener('click', function (e) { if (!gsw.contains(e.target)) segs.forEach(function (o) { o.open = false; }); });
+    try {
+      localStorage.setItem('mbc.product', gsw.dataset.p);
+      localStorage.setItem('mbc.host', gsw.dataset.h);
+      if (gsw.dataset.s) localStorage.setItem('mbc.sw', gsw.dataset.s);
+    } catch (e) {}
+  }
+
+  // --- 產品頁「① 選你的主機」：上次選過的主機／軟體這款也有 → 顯示「繼續用 X › Y →」 ---
+  document.querySelectorAll('.pick').forEach(function (box) {
+    var el = box.querySelector('.pick-data');
+    var cont = box.querySelector('.pick-continue');
+    if (!el || !cont) return;
+    var d = JSON.parse(el.textContent);
+    var h = null, s = null;
+    try { h = localStorage.getItem('mbc.host'); s = localStorage.getItem('mbc.sw'); } catch (e) {}
+    var host = h && d.hosts[h];
+    if (!host) return;
+    var sw = s && host.sws[s];
+    var a = document.createElement('a');
+    a.href = sw ? sw.url : host.url;
+    a.textContent = d.cont + ' ' + host.name + (sw ? ' › ' + sw.name : '') + ' →';
+    cont.appendChild(a);
+    cont.hidden = false;
+    var tile = box.querySelector('.pick-tile[data-host="' + h + '"]');
+    if (tile) tile.classList.add('last');
+  });
 
   // --- 右側目錄：小螢幕收起；捲動時標示目前段落（IntersectionObserver）；reduced-motion 不平滑捲 ---
   var toc = document.querySelector('.toc');
@@ -240,4 +301,18 @@
       Object.keys(map).forEach(function (id) { io.observe(document.getElementById(id)); });
     }
   }
+})();
+
+// 2026-10-22 手機版：有切換列（產品 › 主機 › 軟體）的頁面，目錄放在切換列下方，不要壓在它上面；桌機（≥1200px）放回右側欄
+(function () {
+  var sw = document.querySelector('nav.gsw'), toc = document.querySelector('.doc-wrap > .toc, .gsw ~ .toc, nav.toc');
+  if (!sw || !toc) return;
+  var home = toc.parentElement, next = toc.nextSibling;
+  var mq = window.matchMedia('(min-width: 1200px)');
+  function place() {
+    if (mq.matches) { if (toc.parentElement !== home) home.insertBefore(toc, next && next.parentElement === home ? next : null); }
+    else if (toc.previousElementSibling !== sw) sw.insertAdjacentElement('afterend', toc);
+  }
+  place();
+  if (mq.addEventListener) mq.addEventListener('change', place); else if (mq.addListener) mq.addListener(place);
 })();

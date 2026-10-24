@@ -1,5 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 scratchpad/products/line16 產生；程式碼區塊來自 examples/line16/spike_beginner/pybricks/*.py，改程式請改產生器再重建 -->
+<!-- moved: /sensors/line16/spike/index.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/line16/spike/index.md">循行者 16 路 › SPIKE</a></p>
+
 # 🧱 SPIKE 新手範例：循行者 16 路 (Line16)
 
 [🔙 回到循行者 16 路產品頁](/sensors/line16/index.md)

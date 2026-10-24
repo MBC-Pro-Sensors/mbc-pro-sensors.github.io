@@ -3,13 +3,8 @@
 
 <!-- product-hero -->
 
-## 🎮 Select Your Hub
-
-Pick your hub first, then the software: every tile links to beginner examples, the command reference and the library / blocks.
-
 <!-- platform-grid -->
 
----
 
 > **Cost-effective entry-level choice: Easily expand your control buttons. The perfect wireless tool for teaching and small projects.**
 

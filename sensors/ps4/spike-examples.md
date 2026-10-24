@@ -1,5 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 scratchpad/products/ps4 產生（跟 ps2 共用 build.py）；程式碼區塊來自 examples/ps4/spike_beginner/pybricks/*.py，改程式請改產生器再重建 -->
+<!-- moved: /sensors/ps4/spike/index.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/ps4/spike/index.md">掌控者 PS4/PS5 › SPIKE</a></p>
+
 # 🧱 SPIKE 新手範例：掌控者 PS4/PS5 藍牙遙控接收器
 
 [🔙 回到掌控者 PS4/PS5 產品頁](/sensors/ps4/index.md)

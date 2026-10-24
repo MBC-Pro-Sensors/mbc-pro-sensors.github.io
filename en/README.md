@@ -18,7 +18,7 @@
 
 <div class="lp-platforms"><span>LEGO SPIKE Prime</span><span>Robot Inventor</span><span>MINDSTORMS EV3</span><span>Pybricks</span><span>Arduino / ESP32</span><span>MATRIX Mini R4</span><span>MakeBlock</span></div>
 
-<h2 id="finder">Already have a product? Pick it, pick your hub, go straight to the code</h2>
+<h2 id="finder">Already have a product? Pick it, your host and your software, and go straight to the code</h2>
 <!-- finder -->
 
 <div class="lp-promo"><p><b>Getting ready for next season?</b> Schools, clubs and teams: ask for a bulk quote. We reply within 24 hours on weekdays.</p><a class="lp-btn line" href="mailto:contactmbcrobot@gmail.com?subject=Bulk%20quote%20request&body=Hello%2C%0A%0AWe%20would%20like%20a%20bulk%20quote.%0ASchool%20%2F%20club%3A%0AProducts%20and%20quantities%3A%0ACountry%3A%0A">✉️ Get a bulk quote</a></div>

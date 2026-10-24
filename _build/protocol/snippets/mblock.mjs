@@ -71,3 +71,7 @@ export function packAll(product, lang) {
     `送 \`[FD]\` → 回 \`[AA][${n.toString(16).toUpperCase().padStart(2, '0')}][${n} 個 int16 小端][xor]\`，xor = AA ^ N ^ 所有資料 byte；內容 = 本頁值表由小到大排（不含共用編號與命令）。擴展用它一次抓全部、10 ms 內的積木直接讀快取。`,
     `Send \`[FD]\` → reply \`[AA][${n.toString(16).toUpperCase().padStart(2, '0')}][${n} × int16 LE][xor]\`, xor = AA ^ N ^ all data bytes; content = this value table in ascending id order (shared ids and commands excluded). The extension fetches it once and serves blocks from a 10 ms cache.`);
 }
+
+// ---------------------------------------------------------------- 依軟體（gen-guides.mjs 軟體頁用；這個平台只有 mblock5）
+export function bySoftware(sw, product, v, lang) { return sw === 'mblock5' ? value(product, v, lang) : null; }
+export function commandBySoftware(sw, product, c, lang) { return sw === 'mblock5' ? command(product, c, lang) : null; }

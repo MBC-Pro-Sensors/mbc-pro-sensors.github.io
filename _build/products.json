@@ -39,15 +39,15 @@
       "editions": [
         [
           "SPIKE 版",
-          "/sensors/line8/spike-hub.md"
+          "/sensors/line8/spike/index.md"
         ],
         [
           "EV3 版",
-          "/sensors/line8/ev3-hub.md"
+          "/sensors/line8/ev3/index.md"
         ],
         [
           "通用 I2C 版",
-          "/sensors/line8/arduino-i2c.md"
+          "/sensors/line8/arduino/ide.md"
         ]
       ]
     },
@@ -71,15 +71,15 @@
       "editions": [
         [
           "SPIKE",
-          "/en/sensors/line8/spike-hub.md"
+          "/en/sensors/line8/spike/index.md"
         ],
         [
           "EV3",
-          "/en/sensors/line8/ev3-hub.md"
+          "/en/sensors/line8/ev3/index.md"
         ],
         [
           "Universal I2C",
-          "/en/sensors/line8/arduino-i2c.md"
+          "/en/sensors/line8/arduino/ide.md"
         ]
       ]
     },
@@ -160,15 +160,15 @@
       "editions": [
         [
           "SPIKE 版",
-          "/sensors/line16/spike-hub.md"
+          "/sensors/line16/spike/index.md"
         ],
         [
           "EV3 版",
-          "/sensors/line16/ev3-hub.md"
+          "/sensors/line16/ev3/index.md"
         ],
         [
           "通用 I2C 版",
-          "/sensors/line16/arduino-i2c.md"
+          "/sensors/line16/arduino/ide.md"
         ]
       ]
     },
@@ -192,15 +192,15 @@
       "editions": [
         [
           "SPIKE",
-          "/en/sensors/line16/spike-hub.md"
+          "/en/sensors/line16/spike/index.md"
         ],
         [
           "EV3",
-          "/en/sensors/line16/ev3-hub.md"
+          "/en/sensors/line16/ev3/index.md"
         ],
         [
           "Universal I2C",
-          "/en/sensors/line16/arduino-i2c.md"
+          "/en/sensors/line16/arduino/ide.md"
         ]
       ]
     },
@@ -292,15 +292,15 @@
       "editions": [
         [
           "SPIKE 版",
-          "#🧩-支援平台"
+          "/sensors/tof2/spike/index.md"
         ],
         [
           "EV3 版",
-          "#🧩-支援平台"
+          "/sensors/tof2/ev3/index.md"
         ],
         [
           "MakeBlock 版",
-          "#🧩-支援平台"
+          "/sensors/tof2/mblock/mblock5.md"
         ]
       ]
     },
@@ -324,15 +324,15 @@
       "editions": [
         [
           "SPIKE",
-          "#🧩-supported-platforms"
+          "/en/sensors/tof2/spike/index.md"
         ],
         [
           "EV3",
-          "#🧩-supported-platforms"
+          "/en/sensors/tof2/ev3/index.md"
         ],
         [
           "MakeBlock",
-          "#🧩-supported-platforms"
+          "/en/sensors/tof2/mblock/mblock5.md"
         ]
       ]
     },
@@ -424,15 +424,15 @@
       "editions": [
         [
           "SPIKE 版",
-          "#🧩-支援平台"
+          "/sensors/tof8/spike/index.md"
         ],
         [
           "EV3 版",
-          "#🧩-支援平台"
+          "/sensors/tof8/ev3/index.md"
         ],
         [
           "通用 I2C 版",
-          "#∿-通用-i2c-暫存器（位址-0x29）"
+          "/sensors/tof8/arduino/ide.md"
         ]
       ]
     },
@@ -456,15 +456,15 @@
       "editions": [
         [
           "SPIKE",
-          "#🧩-supported-platforms"
+          "/en/sensors/tof8/spike/index.md"
         ],
         [
           "EV3",
-          "#🧩-supported-platforms"
+          "/en/sensors/tof8/ev3/index.md"
         ],
         [
           "Universal I2C",
-          "#∿-universal-i2c-registers-address-0x29"
+          "/en/sensors/tof8/arduino/ide.md"
         ]
       ]
     },
@@ -563,15 +563,15 @@
       "editions": [
         [
           "SPIKE 版",
-          "#🧩-支援平台"
+          "/sensors/ps2/spike/index.md"
         ],
         [
           "EV3 版",
-          "#🧩-支援平台"
+          "/sensors/ps2/ev3/index.md"
         ],
         [
           "通用 I2C 版",
-          "#∿-通用-i2c-暫存器（位址-0x42）"
+          "/sensors/ps2/arduino/ide.md"
         ]
       ]
     },
@@ -595,15 +595,15 @@
       "editions": [
         [
           "SPIKE",
-          "#🧩-supported-platforms"
+          "/en/sensors/ps2/spike/index.md"
         ],
         [
           "EV3",
-          "#🧩-supported-platforms"
+          "/en/sensors/ps2/ev3/index.md"
         ],
         [
           "Universal I2C",
-          "#∿-universal-i2c-registers-address-0x42"
+          "/en/sensors/ps2/arduino/ide.md"
         ]
       ]
     },
@@ -695,15 +695,15 @@
       "editions": [
         [
           "SPIKE 版",
-          "#🧩-支援平台"
+          "/sensors/ps4/spike/index.md"
         ],
         [
           "EV3 版",
-          "#🧩-支援平台"
+          "/sensors/ps4/ev3/index.md"
         ],
         [
           "通用 I2C 版",
-          "#∿-通用-i2c-暫存器（位址-0x42）"
+          "/sensors/ps4/arduino/ide.md"
         ]
       ]
     },
@@ -727,15 +727,15 @@
       "editions": [
         [
           "SPIKE",
-          "#🧩-supported-platforms"
+          "/en/sensors/ps4/spike/index.md"
         ],
         [
           "EV3",
-          "#🧩-supported-platforms"
+          "/en/sensors/ps4/ev3/index.md"
         ],
         [
           "Universal I2C",
-          "#∿-universal-i2c-registers-address-0x42"
+          "/en/sensors/ps4/arduino/ide.md"
         ]
       ]
     },
@@ -828,15 +828,15 @@
       "editions": [
         [
           "SPIKE 版",
-          "#🧩-支援平台"
+          "/sensors/esp32cam/spike/index.md"
         ],
         [
           "EV3 版",
-          "#🧩-支援平台"
+          "/sensors/esp32cam/ev3/index.md"
         ],
         [
           "MATRIX 版",
-          "#🧩-支援平台"
+          "/sensors/esp32cam/matrix/mvision.md"
         ]
       ]
     },
@@ -860,15 +860,15 @@
       "editions": [
         [
           "SPIKE",
-          "#🧩-supported-platforms"
+          "/en/sensors/esp32cam/spike/index.md"
         ],
         [
           "EV3",
-          "#🧩-supported-platforms"
+          "/en/sensors/esp32cam/ev3/index.md"
         ],
         [
           "MATRIX",
-          "#🧩-supported-platforms"
+          "/en/sensors/esp32cam/matrix/mvision.md"
         ]
       ]
     },
@@ -960,15 +960,15 @@
       "editions": [
         [
           "官方 SPIKE App",
-          "/sensors/exp6/spike-official.md"
+          "/sensors/exp6/spike/official.md"
         ],
         [
           "Pybricks",
-          "/sensors/exp6/spike-pybricks.md"
+          "/sensors/exp6/spike/pybricks.md"
         ],
         [
           "通用 I2C 版",
-          "/sensors/exp6/arduino-i2c.md"
+          "/sensors/exp6/arduino/ide.md"
         ]
       ]
     },
@@ -992,15 +992,15 @@
       "editions": [
         [
           "Official SPIKE App",
-          "/en/sensors/exp6/spike-official.md"
+          "/en/sensors/exp6/spike/official.md"
         ],
         [
           "Pybricks",
-          "/en/sensors/exp6/spike-pybricks.md"
+          "/en/sensors/exp6/spike/pybricks.md"
         ],
         [
           "Universal I2C",
-          "/en/sensors/exp6/arduino-i2c.md"
+          "/en/sensors/exp6/arduino/ide.md"
         ]
       ]
     },
@@ -1063,7 +1063,7 @@
       "editions": [
         [
           "EV3 版",
-          "#🧩-支援平台"
+          "/sensors/imu/ev3/index.md"
         ],
         [
           "SPIKE 版",
@@ -1071,7 +1071,7 @@
         ],
         [
           "通用 I2C 版",
-          "#∿-通用-i2c-暫存器（位址-0x6a）"
+          "/sensors/imu/arduino/ide.md"
         ]
       ]
     },
@@ -1095,7 +1095,7 @@
       "editions": [
         [
           "EV3",
-          "#🧩-supported-platforms"
+          "/en/sensors/imu/ev3/index.md"
         ],
         [
           "SPIKE",
@@ -1103,7 +1103,7 @@
         ],
         [
           "Universal I2C",
-          "#∿-universal-i2c-registers-address-0x6a"
+          "/en/sensors/imu/arduino/ide.md"
         ]
       ]
     },
@@ -1186,11 +1186,11 @@
       "editions": [
         [
           "官方 SPIKE App",
-          "/sensors/servo6/spike-official.md"
+          "/sensors/servo6/spike/official.md"
         ],
         [
           "Pybricks",
-          "/sensors/servo6/spike-pybricks.md"
+          "/sensors/servo6/spike/pybricks.md"
         ]
       ]
     },
@@ -1214,11 +1214,11 @@
       "editions": [
         [
           "Official SPIKE App",
-          "/en/sensors/servo6/spike-official.md"
+          "/en/sensors/servo6/spike/official.md"
         ],
         [
           "Pybricks",
-          "/en/sensors/servo6/spike-pybricks.md"
+          "/en/sensors/servo6/spike/pybricks.md"
         ]
       ]
     },

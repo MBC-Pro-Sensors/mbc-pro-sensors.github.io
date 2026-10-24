@@ -1,5 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 _build/gen-reference.mjs 從 _build/protocol/tof8.json 產生（reference），請勿手改；改內容請改 JSON 後重跑 node _build/gen-reference.mjs -->
+<!-- moved: /sensors/tof8/index.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/tof8/index.md">測距者 8 路</a></p>
+
 # 測距者 8 路 指令參考
 
 [🔙 回到測距者 8 路產品頁](/sensors/tof8/index.md)

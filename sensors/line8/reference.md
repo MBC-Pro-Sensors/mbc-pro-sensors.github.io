@@ -1,5 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 _build/gen-reference.mjs 從 _build/protocol/line8.json 產生（reference），請勿手改；改內容請改 JSON 後重跑 node _build/gen-reference.mjs -->
+<!-- moved: /sensors/line8/index.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/line8/index.md">循行者 8 路</a></p>
+
 # 循行者 8 路 指令參考
 
 [🔙 回到循行者 8 路產品頁](/sensors/line8/index.md)
@@ -68,7 +71,7 @@ linePos = (w & 0xFF) - 8   # 線位置（低 byte）
 
 ```python
 from pybricks.parameters import Port
-from MBC_line8_obj_Lib_v400 import MBC_LINE8
+from MBC_line8_obj_Lib import MBC_LINE8
 
 line = MBC_LINE8(Port.A)
 linePos = line.pos8()
@@ -188,7 +191,7 @@ linePosFine = (w & 0xFF) - 100   # 細位置（低 byte）
 
 ```python
 from pybricks.parameters import Port
-from MBC_line8_obj_Lib_v400 import MBC_LINE8
+from MBC_line8_obj_Lib import MBC_LINE8
 
 line = MBC_LINE8(Port.A)
 linePosFine = line.pos100()
@@ -308,7 +311,7 @@ lineWidth = ((w >> 8) & 0xFF)   # 線寬（高 byte）
 
 ```python
 from pybricks.parameters import Port
-from MBC_line8_obj_Lib_v400 import MBC_LINE8
+from MBC_line8_obj_Lib import MBC_LINE8
 
 line = MBC_LINE8(Port.A)
 lineWidth = line.width()
@@ -427,7 +430,7 @@ groupCount = ((w >> 8) & 0xFF)   # 線段數（高 byte）
 
 ```python
 from pybricks.parameters import Port
-from MBC_line8_obj_Lib_v400 import MBC_LINE8
+from MBC_line8_obj_Lib import MBC_LINE8
 
 line = MBC_LINE8(Port.A)
 groupCount = line.junction()
@@ -524,7 +527,7 @@ bitmap = (w & 0xFF)   # 壓線位元圖（低 byte）
 
 ```python
 from pybricks.parameters import Port
-from MBC_line8_obj_Lib_v400 import MBC_LINE8
+from MBC_line8_obj_Lib import MBC_LINE8
 
 line = MBC_LINE8(Port.A)
 bitmap = line.bin_raw()
@@ -849,7 +852,7 @@ for w in words:
 
 ```python
 from pybricks.parameters import Port
-from MBC_line8_obj_Lib_v400 import MBC_LINE8
+from MBC_line8_obj_Lib import MBC_LINE8
 
 line = MBC_LINE8(Port.A)
 light = line.ir_calibration()   # list，第 1 路 = [0]
