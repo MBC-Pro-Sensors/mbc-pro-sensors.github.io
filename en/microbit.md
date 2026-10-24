@@ -4,7 +4,7 @@
 The universal I2C editions of the Pathfinder, Ranger, Controller, IMU gyro and Sharpshooter all work with BBC micro:bit V1 / V2: add one MakeCode extension, **pxt-mbc-sensors v2**, and an "MBC Sensors" category appears with one block per value. Under the hood it speaks the [MBC universal I2C protocol v2](/en/i2c-protocol.md).
 
 > [!IMPORTANT]
-> **Bench test pending**: extension v2.0.2 compiles in MakeCode for V1 and V2, but the blocks have not yet been checked against real sensors one by one. Block names follow the GitHub release: <https://github.com/contactmbcrobot/pxt-mbc-sensors>. This page will be updated after testing.
+> **Bench test pending**: extension v2.0.3 compiles in MakeCode for V1 and V2, but the blocks have not yet been checked against real sensors one by one. Block names follow the GitHub release: <https://github.com/contactmbcrobot/pxt-mbc-sensors>. This page will be updated after testing.
 
 ---
 
@@ -17,7 +17,7 @@ The universal I2C editions of the Pathfinder, Ranger, Controller, IMU gyro and S
 5. Traditional Chinese block names are included: switch the editor language to 繁體中文 if you prefer.
 
 > [!TIP]
-> No approval, no download: teachers just hand the URL to students. To pin a version, paste `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.2`.
+> No approval, no download: teachers just hand the URL to students. To pin a version, paste `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.3`.
 
 ## 🔌 Wiring
 
@@ -211,5 +211,5 @@ Advanced: `mbc.readValue(address, id)` reads any I2C v2 value (int16 little-endi
 
 ## 📦 Download and source
 
-- Extension repo (MIT): <https://github.com/contactmbcrobot/pxt-mbc-sensors> (v2.0.2, 2026-10)
+- Extension repo (MIT): <https://github.com/contactmbcrobot/pxt-mbc-sensors> (v2.0.3, 2026-10)
 - Libraries and examples for the other platforms: [Downloads](/en/downloads.md)

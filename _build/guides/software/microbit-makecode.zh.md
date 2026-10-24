@@ -6,7 +6,7 @@
 - **擴充**：**pxt-mbc-sensors v2**（MIT，免下載，貼網址就能加）。
 
 > [!IMPORTANT]
-> **上機待測**：擴充 v2.0.2 已在 MakeCode 編譯通過（V1＋V2），還沒有接實機逐顆積木核對數值。積木名稱以 [GitHub 發布版](https://github.com/contactmbcrobot/pxt-mbc-sensors) 為準。
+> **上機待測**：擴充 v2.0.3 已在 MakeCode 編譯通過（V1＋V2），還沒有接實機逐顆積木核對數值。積木名稱以 [GitHub 發布版](https://github.com/contactmbcrobot/pxt-mbc-sensors) 為準。
 
 ### 安裝軟體
 
@@ -21,7 +21,7 @@
 4. 用範例：右上切到 **JavaScript** → 貼上範例 → 下載 `.hex` 拖進 **MICROBIT** 磁碟。
 
 > [!TIP]
-> 不需要送審、不需要下載檔案：老師把網址給學生貼就能用。要固定版本可貼 `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.2`。
+> 不需要送審、不需要下載檔案：老師把網址給學生貼就能用。要固定版本可貼 `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.3`。
 
 ### 接線
 
