@@ -40,7 +40,7 @@ MBC 全系列的函式庫、積木擴充、範例程式與型錄，集中在這�
 
 ## 🟠 micro:bit（MakeCode 擴充）
 
-不用下載檔案：MakeCode → 擴充 → 貼 `https://github.com/contactmbcrobot/pxt-mbc-sensors`（v2.0.3，83 顆積木，MIT）。接線、硬體關卡與積木清單：[micro:bit 總覽](/microbit.md)。
+不用下載檔案：MakeCode → 擴充 → 貼 `https://github.com/contactmbcrobot/pxt-mbc-sensors`（v2.0.4，83 顆積木，MIT）。接線、硬體關卡與積木清單：[micro:bit 總覽](/microbit.md)。
 
 ## 🟢 MATRIX Mini R4
 

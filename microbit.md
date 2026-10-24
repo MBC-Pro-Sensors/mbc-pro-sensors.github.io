@@ -4,7 +4,7 @@
 MBC 通用 I2C 版的循行者、測距者、掌控者、IMU 陀螺儀與神攝手，都能接 BBC micro:bit V1／V2：在 MakeCode 加一個擴充 **pxt-mbc-sensors v2**，積木區就多出「MBC 感應器」分類，每個數值一顆積木，內部走 [MBC 通用 I2C 協議 v2](/i2c-protocol.md)。
 
 > [!IMPORTANT]
-> **上機待測**：擴充 v2.0.3 已在 MakeCode 編譯通過（V1＋V2），但還沒有接實機逐顆積木核對數值。積木名稱以 GitHub 發布版為準：<https://github.com/contactmbcrobot/pxt-mbc-sensors>。實測後本頁會更新。
+> **上機待測**：擴充 v2.0.4 已在 MakeCode 編譯通過（V1＋V2），但還沒有接實機逐顆積木核對數值。積木名稱以 GitHub 發布版為準：<https://github.com/contactmbcrobot/pxt-mbc-sensors>。實測後本頁會更新。
 
 ---
 
@@ -17,7 +17,7 @@ MBC 通用 I2C 版的循行者、測距者、掌控者、IMU 陀螺儀與神攝�
 5. 編輯器語言切到 **繁體中文**（右上齒輪 → Language），積木就會顯示中文。
 
 > [!TIP]
-> 不需要送審、不需要下載檔案：老師把上面這個網址給學生貼就能用。要固定版本可貼 `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.3`。
+> 不需要送審、不需要下載檔案：老師把上面這個網址給學生貼就能用。要固定版本可貼 `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.4`。
 
 ## 🔌 接線
 
@@ -211,5 +211,5 @@ basic.forever(function () {
 
 ## 📦 下載與原始碼
 
-- 擴充 repo（MIT）：<https://github.com/contactmbcrobot/pxt-mbc-sensors>（v2.0.3，2026-10）
+- 擴充 repo（MIT）：<https://github.com/contactmbcrobot/pxt-mbc-sensors>（v2.0.4，2026-10）
 - 其他平台的函式庫與範例：[下載專區](/downloads.md)
