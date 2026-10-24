@@ -196,10 +196,22 @@ const sizeImages = (html) => html.replace(/<img\b[^>]*>/g, (tag) => {
   const s = src && imageSize(src);
   return s ? tag.replace('<img', `<img width="${s[0]}" height="${s[1]}"`) : tag;
 });
+// YouTube embeds -> click-to-load facade: self-hosted thumbnail (images/yt/<ID>.webp, from _build/tools/yt_thumbs.py),
+// nothing is fetched from YouTube until the visitor clicks; without JS the link opens the video on YouTube.
+const ytMissing = new Set();
+const ytLite = (html, en) => html.replace(/<iframe\b([^>]*?)\bsrc="https:\/\/www\.youtube(?:-nocookie)?\.com\/embed\/([A-Za-z0-9_-]{11})[^"]*"([^>]*)>\s*<\/iframe>/g, (all, a1, id, a2) => {
+  const attrs = a1 + a2;
+  const title = (attrs.match(/\btitle="([^"]*)"/) || [])[1] || '';
+  const style = (attrs.match(/\bstyle="([^"]*)"/) || [])[1];
+  if (!fs.existsSync(path.join(ROOT, 'images', 'yt', id + '.webp'))) ytMissing.add(id);
+  const label = (en ? 'Play video' : '播放影片') + (title && !/^YouTube video player$/i.test(title) ? (en ? ': ' : '：') + title : '');
+  return `<a class="yt-lite" href="https://www.youtube.com/watch?v=${id}" data-yt="${id}" data-title="${escAttr(title || label)}" target="_blank" rel="noopener" aria-label="${escAttr(label)}"${style ? ` style="${style}"` : ''}>` +
+    `<img src="/images/yt/${id}.webp" alt="" loading="lazy" decoding="async"><span class="yt-play" aria-hidden="true"></span></a>`;
+});
 // Page-level post-processing of everything inside <body>
 const finishPage = (doc) => {
   const i = doc.indexOf('<body');
-  return doc.slice(0, i) + sizeImages(iconize(doc.slice(i)));
+  return doc.slice(0, i) + sizeImages(iconize(ytLite(doc.slice(i), /<html lang="en/.test(doc))));
 };
 
 // ------------------------------------------------------------------- helpers
@@ -986,4 +998,5 @@ const notFound = page({
 });
 fs.writeFileSync(path.join(OUT, '404.html'), finishPage(notFound));
 
+if (ytMissing.size) console.warn(`WARN YouTube 縮圖缺 ${[...ytMissing].join(' ')}：跑 py -3 _build/tools/yt_thumbs.py ${[...ytMissing].join(' ')}`);
 console.log(`Built ${pages.length} pages -> ${path.relative(ROOT, OUT)}/`);

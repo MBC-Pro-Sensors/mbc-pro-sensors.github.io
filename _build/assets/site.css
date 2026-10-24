@@ -964,3 +964,13 @@ body.docs .markdown-section .code-badge.async { color: #d8b4fe; }
 .markdown-section a:is([style*="linear-gradient(135deg, #00d2ff"], [style*="linear-gradient(135deg, #0abab5"]):is([style*="color: white"], [style*="color: #fff"], [style*="color:#fff"]) { background: linear-gradient(135deg, #007a8a, #005e5a) !important; }
 /* 警告（黃）標題混黑 60% 仍只有 4.2:1，直接用深黃 */
 body.docs .markdown-section blockquote.callout-warning .callout-title { color: #6b5400; }
+
+/* YouTube 點了才載入（build.mjs ytLite）：縮圖放自己網站，點之前不連 YouTube */
+.yt-lite { position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; background: #000; overflow: hidden; cursor: pointer; text-decoration: none; }
+.yt-lite img { width: 100%; height: 100%; object-fit: contain; display: block; margin: 0; border: 0; border-radius: 0; box-shadow: none; transition: opacity .2s; }
+.yt-lite .yt-play { position: absolute; left: 50%; top: 50%; width: 68px; height: 48px; transform: translate(-50%, -50%); border-radius: 14px; background: rgba(23,23,23,.82); transition: background .2s; }
+.yt-lite .yt-play::before { content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-35%, -50%); border-style: solid; border-width: 11px 0 11px 19px; border-color: transparent transparent transparent #fff; }
+.yt-lite:hover .yt-play, .yt-lite:focus-visible .yt-play { background: #f00; }
+.yt-lite:hover img { opacity: .9; }
+.yt-lite:focus-visible { outline: 3px solid #fff; outline-offset: -3px; box-shadow: inset 0 0 0 6px #0a7c78; }
+iframe.yt-on { display: block; width: 100%; aspect-ratio: 16 / 9; height: auto; border: 0; }

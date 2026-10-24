@@ -319,3 +319,19 @@
   place();
   if (mq.addEventListener) mq.addEventListener('change', place); else if (mq.addListener) mq.addListener(place);
 })();
+
+// YouTube：點縮圖才換成影片（youtube-nocookie、自動播放）；按 Ctrl／Shift／中鍵照常開新分頁
+document.addEventListener('click', function (e) {
+  var a = e.target.closest && e.target.closest('a.yt-lite');
+  if (!a || e.ctrlKey || e.metaKey || e.shiftKey || e.button) return;
+  e.preventDefault();
+  var f = document.createElement('iframe');
+  f.src = 'https://www.youtube-nocookie.com/embed/' + a.getAttribute('data-yt') + '?autoplay=1&rel=0';
+  f.title = a.getAttribute('data-title') || 'YouTube';
+  f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+  f.allowFullscreen = true;
+  f.className = 'yt-on';
+  if (a.getAttribute('style')) f.setAttribute('style', a.getAttribute('style'));
+  a.replaceWith(f);
+  f.focus();
+});
