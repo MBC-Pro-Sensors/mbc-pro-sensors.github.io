@@ -13,14 +13,14 @@ MBC 全系列的函式庫、積木擴充、範例程式與型錄，集中在這�
 <!-- gen:downloads-table -->
 | 檔案 | 內容 | 版本 | 搭配韌體 | 大小 | 日期 |
 | :--- | :--- | :---: | :--- | :---: | :---: |
-| [MBC_EXP6_Pybricks_Lib_v2.zip](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip) | SPIKE 6 路擴充器 EXP6：Pybricks 函式庫 v2＋範例（`MBC_exp6_obj_Lib_v2.py`、`Exp6_objMode_Demo.py`、指令說明書 PDF、`examples/` 11 支） | 2.0 | EXP6 v2 | 1.5 MB | 2026-10-21 |
+| [MBC_EXP6_Pybricks_Lib_v2.zip](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip) | SPIKE 6 路擴充器 EXP6：Pybricks 函式庫 v2＋範例（`MBC_exp6_obj_Lib_v2.py`、`Exp6_objMode_Demo.py`、指令說明書 PDF、`examples/` 11 支） | 2.0 | EXP6 v2 | 1.5 MB | 2026-10-25 |
 | [MBC_EXP6_Official_App_Lib_v2.zip](/downloads/MBC_EXP6_Official_App_Lib_v2.zip) | SPIKE 6 路擴充器 EXP6：官方 SPIKE App 函式庫 v2＋範例（`MBC_exp6_SPIKE_App_Lib.py`、`SPIKE_Education/`、`Robot_Inventor/` 安裝／解除安裝腳本、`examples/` 9 支） | 2.0 | EXP6 v2 | 1.2 MB | 2026-10-21 |
 | [MBC_EXP6_Pybricks_Lib.zip](/downloads/MBC_EXP6_Pybricks_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | EXP6 Pybricks 函式庫（舊版，v1 韌體）— 搭配 2026-10 以前韌體 | 1.x | EXP6 v1 | 1.5 MB | 2026-10-07 |
 | [MBC_EXP6_Official_App_Lib.zip](/downloads/MBC_EXP6_Official_App_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | EXP6 官方 SPIKE App 函式庫（舊版，v1 韌體）— 搭配 2026-10 以前韌體 | 1.x | EXP6 v1 | 1.1 MB | 2026-10-21 |
 | [MBC_Servo6_Pybricks_Lib.zip](/downloads/MBC_Servo6_Pybricks_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | SPIKE 6 路舵機擴充器 Servo6：Pybricks 函式庫 — 搭配 2026-10 以前韌體 | 1.0 | Servo6 | 8.7 KB | 2026-10-21 |
 | [MBC_Servo6_Official_App_Lib.zip](/downloads/MBC_Servo6_Official_App_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | SPIKE 6 路舵機擴充器 Servo6：官方 SPIKE App 函式庫 — 搭配 2026-10 以前韌體 | 1.0 | Servo6 | 5.3 KB | 2026-10-21 |
-| [line8_pybricks_spike_v4.0.0.zip](/examples/line8/line8_pybricks_spike_v4.0.0.zip) | 循行者 8 路：SPIKE Pybricks 函式庫與範例（`MBC_line8_obj_Lib_v400.py`＋積木／Python 各 2 支） | 4.0.0 | Pybricks 4.0.0 | 15 KB | 2026-10-24 |
-| [MBC_TOF8_Pybricks_Lib.zip](/downloads/MBC_TOF8_Pybricks_Lib.zip) | 測距者 8 路 TOF8：SPIKE Pybricks 函式庫（`MBC_laser8_Lib.py`、`MBC_laser8_obj_Lib.py`） | 1.0 | Pybricks | 10 KB | 2026-10-24 |
+| [line8_pybricks_spike_v4.x.zip](/examples/line8/line8_pybricks_spike_v4.x.zip) | 循行者 8 路：SPIKE Pybricks 函式庫與範例（`MBC_sensors.py`、`MBC_line8_obj_Lib.py`＋積木／Python 各 2 支） | 4.x | Pybricks 4.1 | 31 KB | 2026-10-25 |
+| [MBC_TOF8_Pybricks_Lib.zip](/downloads/MBC_TOF8_Pybricks_Lib.zip) | 測距者 8 路 TOF8：SPIKE Pybricks 函式庫（`MBC_sensors.py`、`MBC_laser8_obj_Lib.py`） | 1.0 | Pybricks 4.1 | 21 KB | 2026-10-25 |
 | [MBC_Pro_Sensors_mBlock5_v1.0.0.mext](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | mBlock 5 擴展 v1.0.0（舊版，15 顆積木）— 搭配 2026-10 以前韌體 | 1.0.0 | mBlock v1（2026-10 前） | 1.9 MB | 2026-10-21 |
 <!-- /gen -->
 
@@ -73,14 +73,33 @@ MATRIX 用原廠顏色感應器積木（0x22）讀，不用下載任何東西。
 
 ## 🧱 SPIKE／EV3 Pybricks 範例（.zip）
 
-| 產品 | SPIKE Pybricks 4.0.0 | SPIKE Pybricks 3.6.1 | EV3 Pybricks |
-| :--- | :--- | :--- | :--- |
-| 循行者 8 路 | [line8_pybricks_spike_v4.0.0.zip](/examples/line8/line8_pybricks_spike_v4.0.0.zip) | [line8_pybricks_spike_v3.6.1.zip](/examples/line8/line8_pybricks_spike_v3.6.1.zip) | [line8_pybricks_ev3.zip](/examples/line8/line8_pybricks_ev3.zip) |
-| 循行者 16 路 | [line16_pybricks_spike_v4.0.0.zip](/examples/line16/line16_pybricks_spike_v4.0.0.zip) | [line16_pybricks_spike_v3.6.1.zip](/examples/line16/line16_pybricks_spike_v3.6.1.zip) | [line16_pybricks_ev3.zip](/examples/line16/line16_pybricks_ev3.zip) |
-| 測距者 2 路 | [tof2_pybricks_spike_v4.0.0.zip](/examples/tof2/tof2_pybricks_spike_v4.0.0.zip) | — | — |
-| 測距者 8 路 | [tof8_pybricks_spike_v4.0.0.zip](/examples/tof8/tof8_pybricks_spike_v4.0.0.zip) | [tof8_pybricks_spike_v3.6.1.zip](/examples/tof8/tof8_pybricks_spike_v3.6.1.zip) | — |
-| 掌控者 PS2 | — | [ps2_pybricks_spike_v3.6.1.zip](/examples/ps2/ps2_pybricks_spike_v3.6.1.zip) | — |
-| 掌控者 PS4／PS5 | — | [ps4_pybricks_spike_v3.6.1.zip](/examples/ps4/ps4_pybricks_spike_v3.6.1.zip) | — |
+目前版本是 **Pybricks 4.1**（code.pybricks.com 正式版 v4.1.1；MBC SPIKE 積木網站燒的 v4.1.0 也可以）。每一包都附 `MBC_sensors.py`：**一個檔適用全部 MBC 感應器**（SPIKE、EV3 共用），新專案只要匯入它，寫 `from MBC_sensors import MBC_LINE8`（類別：`MBC_LINE8`、`MBC_LINE16`、`MBC_LASER2`、`MBC_LASER8`、`MBC_GAMEPAD`、`MBC_CAM_SCHOOL`、`MBC_HUE12`）。
+
+> [!IMPORTANT]
+> 包裡的舊檔名函式庫（例如 `MBC_line8_obj_Lib.py`）是給**舊專案直接換檔**用的：舊專案只換掉原本那一個檔，程式不用改。舊檔名每個都是整份共用檔，一個程式匯入 3 個以上會超過 SPIKE 程式槽約 51 KB 的上限；要混用多款感應器，請改成只匯入 `MBC_sensors.py`。
+
+| 產品 | SPIKE Pybricks 4.1 | EV3 Pybricks |
+| :--- | :--- | :--- |
+| 循行者 8 路 | [line8_pybricks_spike_v4.x.zip](/examples/line8/line8_pybricks_spike_v4.x.zip) | [line8_pybricks_ev3.zip](/examples/line8/line8_pybricks_ev3.zip) |
+| 循行者 16 路 | [line16_pybricks_spike_v4.x.zip](/examples/line16/line16_pybricks_spike_v4.x.zip) | [line16_pybricks_ev3.zip](/examples/line16/line16_pybricks_ev3.zip) |
+| 測距者 2 路 | [tof2_pybricks_spike_v4.x.zip](/examples/tof2/tof2_pybricks_spike_v4.x.zip) | — |
+| 測距者 8 路 | [tof8_pybricks_spike_v4.x.zip](/examples/tof8/tof8_pybricks_spike_v4.x.zip) | — |
+| 掌控者 PS2 | [ps2_pybricks_spike_v4.x.zip](/examples/ps2/ps2_pybricks_spike_v4.x.zip) | — |
+| 掌控者 PS4／PS5 | [ps4_pybricks_spike_v4.x.zip](/examples/ps4/ps4_pybricks_spike_v4.x.zip) | — |
+
+### 舊版（不再更新）
+
+Pybricks **3.6.1** 版的函式庫與範例：給還沒升級到 Pybricks 4 的主機；2026 新款 SPIKE 不能用。這些檔案不會再更新，能升級的話請改用上面的 4.1 版。
+
+| 產品 | SPIKE Pybricks 3.6.1 |
+| :--- | :--- |
+| 循行者 8 路 | [line8_pybricks_spike_v3.6.1.zip](/examples/line8/line8_pybricks_spike_v3.6.1.zip) |
+| 循行者 16 路 | [line16_pybricks_spike_v3.6.1.zip](/examples/line16/line16_pybricks_spike_v3.6.1.zip) |
+| 測距者 8 路 | [tof8_pybricks_spike_v3.6.1.zip](/examples/tof8/tof8_pybricks_spike_v3.6.1.zip) |
+| 掌控者 PS2 | [ps2_pybricks_spike_v3.6.1.zip](/examples/ps2/ps2_pybricks_spike_v3.6.1.zip) |
+| 掌控者 PS4／PS5 | [ps4_pybricks_spike_v3.6.1.zip](/examples/ps4/ps4_pybricks_spike_v3.6.1.zip) |
+
+### 新手範例（不另外打包）
 
 SPIKE 官方 App（.llsp3）、MBC 積木網站（.abp）與 EV3 官方軟體（.ev3／.lmsp／clev3r .bp）的新手範例**不另外打包**，每個範例在頁面上逐一下載並附截圖：
 

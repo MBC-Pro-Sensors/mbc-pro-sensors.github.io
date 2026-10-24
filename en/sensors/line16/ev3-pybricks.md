@@ -20,9 +20,9 @@
 
 Applicable to users who have installed the pyBricks third-party firmware on the **LEGO® MINDSTORMS® EV3** hub. In the high-level Pybricks MicroPython environment, players can completely bypass official communication and mode limits, and communicate with the 16-Way Line Follower at high speed in the most concise and efficient way!
 
-> [!WARNING]
-> **🧪 Beta Version Notice**
-> The version of the pyBricks software we tested is **v4.0.0b10 (Pybricks Beta v3.0.0-beta.7)**. Please be especially careful and note: currently, only the **Beta version** provides firmware for EV3 installation!
+> [!NOTE]
+> **🧪 Firmware version**
+> The stable code.pybricks.com now includes EV3 firmware (**v4.1.1** as of 2026-10). The examples on this page were first bench-tested on v4.0.0b10; v4.1.1 uses the same code.
 
 > [!IMPORTANT]
 > **⚠️ Mode Switching Delay Warning**

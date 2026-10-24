@@ -48,7 +48,8 @@ LEGO 原廠提供的紅外線遙控器按鈕少得可憐，而使用兩台 EV3 �
 
 | 主機 | 檔案 |
 | :--- | :--- |
-| SPIKE（Pybricks 3.6.1） | [全部下載（.zip）](/examples/ps2/ps2_pybricks_spike_v3.6.1.zip)・[完整按鍵版（mode 9）](/examples/ps2/pybricks/For%20firmware%203.6.1/ps2_python_mode9_v361.py)・[積木版](/examples/ps2/pybricks/For%20firmware%203.6.1/ps2_block_native_v361.py)・[Python 版](/examples/ps2/pybricks/For%20firmware%203.6.1/ps2_python_native_v361.py) |
+| SPIKE（Pybricks 4.1） | [全部下載（.zip）](/examples/ps2/ps2_pybricks_spike_v4.x.zip)・[函式庫 MBC_gamepad_Lib.py](/examples/ps2/pybricks/MBC_gamepad_Lib.py)・[共用函式庫 MBC_sensors.py（新專案用）](/examples/ps2/pybricks/MBC_sensors.py)・[新手範例](/sensors/ps2/spike-examples.md) |
+| SPIKE（Pybricks 3.6.1，不再更新） | 舊版檔案在[下載專區](/downloads.md)的「舊版（不再更新）」 |
 | EV3／SPIKE App／Pybricks 積木用法 | [指令說明（PDF）](/examples/ps2/PS2_Controller_Command_Guide_ZH.pdf) |
 | mBot 等（MakeBlock） | [積木擴展與手把遙控範例](/makeblock.md) |
 

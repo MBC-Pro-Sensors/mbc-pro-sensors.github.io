@@ -153,6 +153,7 @@ EV3 接頭是唯讀的，這個軟體不能送命令：校準用感應器上的�
 
 - [line8_pybricks_ev3.zip](/examples/line8/line8_pybricks_ev3.zip)
 - [MBC_line8_EV3_Lib.py](/examples/line8/ev3/MBC_line8_EV3_Lib.py)
+- [MBC_sensors.py](/examples/line8/ev3/MBC_sensors.py)
 - [line8_ev3_block_with_lib.py](/examples/line8/ev3/line8_ev3_block_with_lib.py)
 - [line8_ev3_python_with_lib.py](/examples/line8/ev3/line8_ev3_python_with_lib.py)
 - [下載中心（全部產品的函式庫、韌體、型錄）](/downloads.md)

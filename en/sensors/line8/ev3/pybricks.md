@@ -153,6 +153,7 @@ Still stuck? [Contact us](/en/contact.md) with your software and a screenshot of
 
 - [line8_pybricks_ev3.zip](/examples/line8/line8_pybricks_ev3.zip)
 - [MBC_line8_EV3_Lib.py](/examples/line8/ev3/MBC_line8_EV3_Lib.py)
+- [MBC_sensors.py](/examples/line8/ev3/MBC_sensors.py)
 - [line8_ev3_block_with_lib.py](/examples/line8/ev3/line8_ev3_block_with_lib.py)
 - [line8_ev3_python_with_lib.py](/examples/line8/ev3/line8_ev3_python_with_lib.py)
 - [Download centre (libraries, firmware, catalogue for every product)](/en/downloads.md)

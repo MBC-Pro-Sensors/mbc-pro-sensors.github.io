@@ -339,9 +339,9 @@ Still stuck? [Contact us](/en/contact.md) with your software and a screenshot of
 
 ## Downloads
 
-- [Pybricks library MBC_laser8_obj_Lib.py](/examples/tof8/pybricks/For%20firmware%204.0.0/MBC_laser8_obj_Lib.py)
-- [tof8_pybricks_spike_v3.6.1.zip](/examples/tof8/tof8_pybricks_spike_v3.6.1.zip)
-- [tof8_pybricks_spike_v4.0.0.zip](/examples/tof8/tof8_pybricks_spike_v4.0.0.zip)
+- [Pybricks library MBC_laser8_obj_Lib.py](/examples/tof8/pybricks/For%20firmware%204.x/MBC_laser8_obj_Lib.py)
+- [Shared library (for new projects, one file for every MBC sensor) MBC_sensors.py](/examples/tof8/pybricks/For%20firmware%204.x/MBC_sensors.py)
+- [tof8_pybricks_spike_v4.x.zip](/examples/tof8/tof8_pybricks_spike_v4.x.zip)
 - [MBC_TOF8_Pybricks_Lib.zip](/downloads/MBC_TOF8_Pybricks_Lib.zip)
 - [Download centre (libraries, firmware, catalogue for every product)](/en/downloads.md)
 

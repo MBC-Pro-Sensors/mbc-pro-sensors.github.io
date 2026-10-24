@@ -8,4 +8,4 @@
 
 ### WRO 版（HUE12）
 
-主機要換成 Pybricks 韌體 **v4.0.0b5 以上**。MBC 積木網站上方選單「SPIKE 主機 → 安裝／更新 Pybricks 韌體」燒的是 v4.1.0，可以直接用。
+主機要換成 Pybricks 韌體 **v4.1**（code.pybricks.com 正式版是 v4.1.1；MBC 積木網站上方選單「SPIKE 主機 → 安裝／更新 Pybricks 韌體」燒的 v4.1.0 也可以直接用）。

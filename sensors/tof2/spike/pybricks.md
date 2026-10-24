@@ -267,8 +267,9 @@ avgMm = laser.average_mm()
 
 ## 下載
 
-- [Pybricks 函式庫 MBC_laser2_obj_Lib.py](/examples/tof2/pybricks/For%20firmware%204.0.0/MBC_laser2_obj_Lib.py)
-- [tof2_pybricks_spike_v4.0.0.zip](/examples/tof2/tof2_pybricks_spike_v4.0.0.zip)
+- [Pybricks 函式庫 MBC_laser2_obj_Lib.py](/examples/tof2/pybricks/For%20firmware%204.x/MBC_laser2_obj_Lib.py)
+- [共用函式庫（新專案用，一個檔適用全部 MBC 感應器） MBC_sensors.py](/examples/tof2/pybricks/For%20firmware%204.x/MBC_sensors.py)
+- [tof2_pybricks_spike_v4.x.zip](/examples/tof2/tof2_pybricks_spike_v4.x.zip)
 - [下載中心（全部產品的函式庫、韌體、型錄）](/downloads.md)
 
 ## 本頁依據

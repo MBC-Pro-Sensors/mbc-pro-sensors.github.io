@@ -64,7 +64,8 @@ The Controller PS4/PS5 Bluetooth Receiver lets SPIKE, EV3 or Arduino read every 
 | :--- | :--- |
 | SPIKE App | [ps4_demo_spike_prime_v3.4.3.llsp3](/examples/ps4/spike/ps4_demo_spike_prime_v3.4.3.llsp3) |
 | Robot Inventor | [ps4_demo_robot_inventor_v10.5.0.lms](/examples/ps4/spike/ps4_demo_robot_inventor_v10.5.0.lms) |
-| SPIKE (Pybricks 3.6.1) | [Download all (.zip)](/examples/ps4/ps4_pybricks_spike_v3.6.1.zip) · [All buttons (mode 9)](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_python_mode9_v361.py) · [Blocks](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_block_native_v361.py) · [Python](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_python_native_v361.py) |
+| SPIKE (Pybricks 4.1) | [Download all (.zip)](/examples/ps4/ps4_pybricks_spike_v4.x.zip) · [Library MBC_gamepad_Lib.py](/examples/ps4/pybricks/MBC_gamepad_Lib.py) · [Shared library MBC_sensors.py (for new projects)](/examples/ps4/pybricks/MBC_sensors.py) · [Beginner examples](/en/sensors/ps4/spike-examples.md) |
+| SPIKE (Pybricks 3.6.1, no longer updated) | Old files are under "Legacy (no longer updated)" on the [Downloads page](/en/downloads.md) |
 | mBot etc. (MakeBlock) | [Block extension and controller example](/en/makeblock.md) |
 
 ## 📤 Output Data

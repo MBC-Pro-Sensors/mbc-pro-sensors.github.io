@@ -9,8 +9,8 @@
 
 ### 匯入 EXP6 函式庫
 
-1. 下載 [📥 Pybricks 函式庫 v2＋範例（.zip）](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip)（2026-10 以前出貨的 v1 韌體用 [舊版 zip](/downloads/MBC_EXP6_Pybricks_Lib.zip)）。說明文件針對 **Pybricks 4.0.0 以上**。
-2. 把函式庫放進 Pybricks 專案。範例寫的是 `from MBC_exp6_obj_Lib import MBC_EXP6`，所以檔名要是 `MBC_exp6_obj_Lib.py`（v2 包裡的 `MBC_exp6_obj_Lib_v2.py` 要改名）。
+1. 下載 [📥 Pybricks 函式庫 v2＋範例（.zip）](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip)（2026-10 以前出貨的 v1 韌體用 [舊版 zip](/downloads/MBC_EXP6_Pybricks_Lib.zip)）。主機用 **Pybricks 韌體 v4.1**（指令說明書寫的「4.0.0 以上」v4.1 一樣適用）。
+2. 把函式庫放進 Pybricks 專案。v2 包裡的函式庫是 `MBC_exp6_obj_Lib_v2.py`，包裡的範例寫的就是 `from MBC_exp6_obj_Lib_v2 import MBC_EXP6`，檔名不用改。
 
 ![EXP6 Pybricks 範例](/images/sensors/exp6/exp6_pybricks_example.webp)
 
@@ -20,7 +20,7 @@
 
 ```python
 # 一般模式：一行一行執行
-from MBC_exp6_obj_Lib import MBC_EXP6
+from MBC_exp6_obj_Lib_v2 import MBC_EXP6
 exp6 = MBC_EXP6(3, False)
 exp6.motor_power(6, 100)
 exp6.keep_alive_wait(5000)
@@ -29,7 +29,7 @@ exp6.keep_alive_wait(5000)
 ```python
 # 多工模式：每個指令前加 await，要用函式庫的 run_task
 from pybricks.tools import multitask, run_task, wait
-from MBC_exp6_obj_Lib import MBC_EXP6, run_task
+from MBC_exp6_obj_Lib_v2 import MBC_EXP6, run_task
 exp6 = MBC_EXP6(3, True)
 
 async def main():

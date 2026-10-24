@@ -315,7 +315,8 @@ SPIKE 接頭是唯讀的，這個軟體不能送命令：校準用感應器上�
 ## 下載
 
 - [Pybricks 函式庫 MBC_gamepad_Lib.py](/examples/ps4/pybricks/MBC_gamepad_Lib.py)
-- [ps4_pybricks_spike_v3.6.1.zip](/examples/ps4/ps4_pybricks_spike_v3.6.1.zip)
+- [共用函式庫（新專案用，一個檔適用全部 MBC 感應器） MBC_sensors.py](/examples/ps4/pybricks/MBC_sensors.py)
+- [ps4_pybricks_spike_v4.x.zip](/examples/ps4/ps4_pybricks_spike_v4.x.zip)
 - [下載中心（全部產品的函式庫、韌體、型錄）](/downloads.md)
 
 ## 本頁依據

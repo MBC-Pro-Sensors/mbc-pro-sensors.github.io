@@ -242,9 +242,9 @@ SPIKE 接頭是唯讀的，這個軟體不能送命令：校準用感應器上�
 
 ## 下載
 
-- [Pybricks 函式庫 MBC_line16_obj_Lib_v400.py](/examples/line16/pybricks/For%20firmware%204.0.0/MBC_line16_obj_Lib_v400.py)
-- [line16_pybricks_spike_v3.6.1.zip](/examples/line16/line16_pybricks_spike_v3.6.1.zip)
-- [line16_pybricks_spike_v4.0.0.zip](/examples/line16/line16_pybricks_spike_v4.0.0.zip)
+- [Pybricks 函式庫 MBC_line16_obj_Lib.py](/examples/line16/pybricks/For%20firmware%204.x/MBC_line16_obj_Lib.py)
+- [共用函式庫（新專案用，一個檔適用全部 MBC 感應器） MBC_sensors.py](/examples/line16/pybricks/For%20firmware%204.x/MBC_sensors.py)
+- [line16_pybricks_spike_v4.x.zip](/examples/line16/line16_pybricks_spike_v4.x.zip)
 - [下載中心（全部產品的函式庫、韌體、型錄）](/downloads.md)
 
 ## 本頁依據

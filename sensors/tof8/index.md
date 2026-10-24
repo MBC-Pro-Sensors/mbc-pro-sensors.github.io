@@ -66,8 +66,8 @@
 
 | 主機 | 檔案 |
 | :--- | :--- |
-| SPIKE（Pybricks 4.0.0） | [全部下載（.zip）](/examples/tof8/tof8_pybricks_spike_v4.0.0.zip)・[不用函式庫（積木）](/examples/tof8/pybricks/For%20firmware%204.0.0/tof8_block_native_v400.py)・[函式庫範例（積木）](/examples/tof8/pybricks/For%20firmware%204.0.0/tof8_block_with_lib_v400.py)・[函式庫 MBC_laser8_obj_Lib.py](/examples/tof8/pybricks/For%20firmware%204.0.0/MBC_laser8_obj_Lib.py) |
-| SPIKE（Pybricks 3.6.1） | [全部下載（.zip）](/examples/tof8/tof8_pybricks_spike_v3.6.1.zip)・[不用函式庫（積木）](/examples/tof8/pybricks/For%20firmware%203.6.1/tof8_block_native_v361.py)・[函式庫範例（積木）](/examples/tof8/pybricks/For%20firmware%203.6.1/tof8_block_with_lib_v361.py)・[函式庫 MBC_laser8_Lib.py](/examples/tof8/pybricks/For%20firmware%203.6.1/MBC_laser8_Lib.py) |
+| SPIKE（Pybricks 4.1） | [全部下載（.zip）](/examples/tof8/tof8_pybricks_spike_v4.x.zip)・[不用函式庫（積木）](/examples/tof8/pybricks/For%20firmware%204.x/tof8_block_native.py)・[函式庫範例（積木）](/examples/tof8/pybricks/For%20firmware%204.x/tof8_block_with_lib.py)・[函式庫 MBC_laser8_obj_Lib.py](/examples/tof8/pybricks/For%20firmware%204.x/MBC_laser8_obj_Lib.py)・[共用函式庫 MBC_sensors.py（新專案用）](/examples/tof8/pybricks/For%20firmware%204.x/MBC_sensors.py) |
+| SPIKE（Pybricks 3.6.1，不再更新） | 舊版檔案在[下載專區](/downloads.md)的「舊版（不再更新）」 |
 | Arduino（通用 I2C 版） | [新手範例 6 個（含逐步說明）](/sensors/tof8/arduino-examples.md)・[全部範例（.zip）](/examples/tof8/arduino/tof8_arduino_examples.zip) |
 | mBot 等（MakeBlock） | [積木擴展與避障範例](/makeblock.md) |
 

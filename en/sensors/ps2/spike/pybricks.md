@@ -309,7 +309,8 @@ Still stuck? [Contact us](/en/contact.md) with your software and a screenshot of
 ## Downloads
 
 - [Pybricks library MBC_gamepad_Lib.py](/examples/ps2/pybricks/MBC_gamepad_Lib.py)
-- [ps2_pybricks_spike_v3.6.1.zip](/examples/ps2/ps2_pybricks_spike_v3.6.1.zip)
+- [Shared library (for new projects, one file for every MBC sensor) MBC_sensors.py](/examples/ps2/pybricks/MBC_sensors.py)
+- [ps2_pybricks_spike_v4.x.zip](/examples/ps2/ps2_pybricks_spike_v4.x.zip)
 - [Download centre (libraries, firmware, catalogue for every product)](/en/downloads.md)
 
 ## Sources

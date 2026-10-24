@@ -14,15 +14,17 @@
 
 ### 函式庫與範例下載
 
-依主機的 Pybricks 韌體版本選一包（zip 裡有函式庫＋4 支範例）：
+主機要是 **Pybricks 韌體 v4.1**。zip 裡有 `MBC_sensors.py`、`MBC_line8_obj_Lib.py` 和 4 支範例：
 
-- [📥 打包下載（韌體 4.0.0 版）](/examples/line8/line8_pybricks_spike_v4.0.0.zip)
-- [📥 打包下載（韌體 3.6.1 版）](/examples/line8/line8_pybricks_spike_v3.6.1.zip)
+- [📥 打包下載（Pybricks 4.1）](/examples/line8/line8_pybricks_spike_v4.x.zip)
 
-單獨下載函式庫：[4.0.0 版 MBC_line8_obj_Lib_v400.py](/examples/line8/pybricks/For%20firmware%204.0.0/MBC_line8_obj_Lib_v400.py)・[3.6.1 版 MBC_line8_Lib_v361.py](/examples/line8/pybricks/For%20firmware%203.6.1/MBC_line8_Lib_v361.py)
+單獨下載函式庫：[MBC_sensors.py](/examples/line8/pybricks/For%20firmware%204.x/MBC_sensors.py)（新專案用這個，一個檔適用全部 MBC 感應器）・[MBC_line8_obj_Lib.py](/examples/line8/pybricks/For%20firmware%204.x/MBC_line8_obj_Lib.py)（本頁範例與舊程式用）
 
 > [!IMPORTANT]
-> **檔名一定要改**：範例程式寫的是 `import MBC_line8_obj_Lib`（3.6.1 版是 `MBC_line8_Lib`），下載後要把檔名改成 `MBC_line8_obj_Lib.py`（去掉 `_v400`）或 `MBC_line8_Lib.py`（去掉 `_v361`），否則會出現 `ImportError`。函式庫要跟主程式放在**同一個專案列表**裡。
+> 範例程式寫的是 `from MBC_line8_obj_Lib import MBC_LINE8`，所以要匯入 `MBC_line8_obj_Lib.py`（檔名不用改）。自己寫新程式改成 `from MBC_sensors import MBC_LINE8`，只匯入 `MBC_sensors.py`。函式庫要跟主程式放在**同一個專案列表**裡。
+
+> [!NOTE]
+> Pybricks 3.6.1 版已不再更新，舊檔放在[下載專區](/downloads.md)的「舊版（不再更新）」。
 
 ![把函式庫匯入 Pybricks 專案](/images/sensors/line8/pybricks-upload-lib.webp)
 
@@ -40,7 +42,7 @@
 > [!TIP]
 > 位置和線寬要用**同一組**：`getLinePos8()` 配 `getLineWidth8()`，`getLinePos100()` 配 `getLineWidth100()`，讀到的才是同一刻的資料。
 
-範例：積木版 [4.0.0](/examples/line8/pybricks/For%20firmware%204.0.0/line8_block_native_v400.py)・[3.6.1](/examples/line8/pybricks/For%20firmware%203.6.1/line8_block_native_v361.py)；Python 版 [4.0.0](/examples/line8/pybricks/For%20firmware%204.0.0/line8_python_native_v400.py)・[3.6.1](/examples/line8/pybricks/For%20firmware%203.6.1/line8_python_native_v361.py)
+範例：積木版 [line8_block_native.py](/examples/line8/pybricks/For%20firmware%204.x/line8_block_native.py)；Python 版 [line8_python_native.py](/examples/line8/pybricks/For%20firmware%204.x/line8_python_native.py)
 
 ### 方式二：匯入專屬函式庫
 
@@ -58,7 +60,7 @@
 | `line_on_sensors()` | `list[int]` | 偵測到線的通道編號，例如 `[4, 5]` |
 | `line_read_all()` | `dict` | 一次讀全部：`ir_calibration`、`line_pos8`、`line_pos100`、`line_width`、`bin_raw`、`on_sensors`、`junction`、`junction_name` |
 
-範例：積木版 [4.0.0](/examples/line8/pybricks/For%20firmware%204.0.0/line8_block_with_lib_v400.py)・[3.6.1](/examples/line8/pybricks/For%20firmware%203.6.1/line8_block_with_lib_v361.py)；Python 版 [4.0.0](/examples/line8/pybricks/For%20firmware%204.0.0/line8_python_with_lib_v400.py)・[3.6.1](/examples/line8/pybricks/For%20firmware%203.6.1/line8_python_with_lib_v361.py)
+範例：積木版 [line8_block_with_lib.py](/examples/line8/pybricks/For%20firmware%204.x/line8_block_with_lib.py)；Python 版 [line8_python_with_lib.py](/examples/line8/pybricks/For%20firmware%204.x/line8_python_with_lib.py)
 
 ### 想學更厲害的循線方法？
 

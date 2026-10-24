@@ -415,6 +415,7 @@ spotVivid = cam.get_slot(1)[2]   # list，第 1 路 = [0]
 
 - [Pybricks 函式庫 MBC_cam_school_Lib.py](/examples/esp32cam/pybricks/MBC_cam_school_Lib.py)
 - [Pybricks 函式庫 MBC_hue12_Lib.py](/examples/esp32cam/pybricks/MBC_hue12_Lib.py)
+- [共用函式庫（新專案用，一個檔適用全部 MBC 感應器） MBC_sensors.py](/examples/esp32cam/pybricks/MBC_sensors.py)
 - [下載中心（全部產品的函式庫、韌體、型錄）](/downloads.md)
 
 ## 本頁依據

@@ -14,7 +14,10 @@
 > [!TIP]
 > 比賽現場請在自己的位置完成配對，避免 30 秒內有別隊手把也在配對模式。綁錯手把就再按一次 Reset 重新配對。
 
-### 範例下載（Pybricks 3.6.1）
+### 函式庫與範例下載（Pybricks 4.1）
 
-- [📥 全部下載（.zip）](/examples/ps4/ps4_pybricks_spike_v3.6.1.zip)
-- [完整按鍵版（mode 9）](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_python_mode9_v361.py)・[積木版](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_block_native_v361.py)・[Python 版](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_python_native_v361.py)
+- [📥 全部下載（.zip）](/examples/ps4/ps4_pybricks_spike_v4.x.zip)：`MBC_sensors.py`、`MBC_gamepad_Lib.py` 和 6 個新手範例
+- 單獨下載函式庫：[MBC_sensors.py](/examples/ps4/pybricks/MBC_sensors.py)（新專案用這個，一個檔適用全部 MBC 感應器，寫 `from MBC_sensors import MBC_GAMEPAD`）・[MBC_gamepad_Lib.py](/examples/ps4/pybricks/MBC_gamepad_Lib.py)（本頁範例與舊程式用）
+
+> [!NOTE]
+> Pybricks 3.6.1 版範例已不再更新，舊檔放在[下載專區](/downloads.md)的「舊版（不再更新）」。

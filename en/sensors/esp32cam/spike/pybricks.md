@@ -415,6 +415,7 @@ Still stuck? [Contact us](/en/contact.md) with your software and a screenshot of
 
 - [Pybricks library MBC_cam_school_Lib.py](/examples/esp32cam/pybricks/MBC_cam_school_Lib.py)
 - [Pybricks library MBC_hue12_Lib.py](/examples/esp32cam/pybricks/MBC_hue12_Lib.py)
+- [Shared library (for new projects, one file for every MBC sensor) MBC_sensors.py](/examples/esp32cam/pybricks/MBC_sensors.py)
 - [Download centre (libraries, firmware, catalogue for every product)](/en/downloads.md)
 
 ## Sources

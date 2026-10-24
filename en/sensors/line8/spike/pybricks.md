@@ -243,9 +243,9 @@ Still stuck? [Contact us](/en/contact.md) with your software and a screenshot of
 
 ## Downloads
 
-- [Pybricks library MBC_line8_obj_Lib_v400.py](/examples/line8/pybricks/For%20firmware%204.0.0/MBC_line8_obj_Lib_v400.py)
-- [line8_pybricks_spike_v3.6.1.zip](/examples/line8/line8_pybricks_spike_v3.6.1.zip)
-- [line8_pybricks_spike_v4.0.0.zip](/examples/line8/line8_pybricks_spike_v4.0.0.zip)
+- [Pybricks library MBC_line8_obj_Lib.py](/examples/line8/pybricks/For%20firmware%204.x/MBC_line8_obj_Lib.py)
+- [Shared library (for new projects, one file for every MBC sensor) MBC_sensors.py](/examples/line8/pybricks/For%20firmware%204.x/MBC_sensors.py)
+- [line8_pybricks_spike_v4.x.zip](/examples/line8/line8_pybricks_spike_v4.x.zip)
 - [Download centre (libraries, firmware, catalogue for every product)](/en/downloads.md)
 
 ## Sources

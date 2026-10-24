@@ -55,8 +55,8 @@ The Ranger 2-Way uses **laser time-of-flight (ToF)**: it measures at the speed o
 
 | Hub | Files |
 | :--- | :--- |
-| SPIKE (Pybricks 4.0.0) | [Download all (.zip)](/examples/tof2/tof2_pybricks_spike_v4.0.0.zip) · [No library (blocks)](/examples/tof2/pybricks/For%20firmware%204.0.0/tof2_block_native_v400.py) · [Library example (blocks)](/examples/tof2/pybricks/For%20firmware%204.0.0/tof2_block_with_lib_v400.py) · [Library MBC_laser2_obj_Lib.py](/examples/tof2/pybricks/For%20firmware%204.0.0/MBC_laser2_obj_Lib.py) |
-| SPIKE (Pybricks 3.6.1) | [No library (Python)](/examples/tof2/pybricks/For%20firmware%203.6.1/tof2_python_native_v361.py) |
+| SPIKE (Pybricks 4.1) | [Download all (.zip)](/examples/tof2/tof2_pybricks_spike_v4.x.zip) · [No library (blocks)](/examples/tof2/pybricks/For%20firmware%204.x/tof2_block_native.py) · [Library example (blocks)](/examples/tof2/pybricks/For%20firmware%204.x/tof2_block_with_lib.py) · [Library MBC_laser2_obj_Lib.py](/examples/tof2/pybricks/For%20firmware%204.x/MBC_laser2_obj_Lib.py) · [Shared library MBC_sensors.py (for new projects)](/examples/tof2/pybricks/For%20firmware%204.x/MBC_sensors.py) |
+| SPIKE (Pybricks 3.6.1, no longer updated) | Old files are under "Legacy (no longer updated)" on the [Downloads page](/en/downloads.md) |
 | EV3 | [EV3 beginner examples](/en/sensors/tof2/ev3-examples.md) |
 | Arduino (Universal I2C edition) | [Arduino Examples](/en/sensors/tof2/arduino-examples.md) |
 | mBot etc. (MakeBlock) | [Block extension and examples](/en/makeblock.md) |

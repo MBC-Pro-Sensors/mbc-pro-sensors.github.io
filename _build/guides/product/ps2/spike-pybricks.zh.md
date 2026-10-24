@@ -10,10 +10,13 @@ PS2 的 2.4G 手把和它的接收頭是**原廠成對**的，不用按任何配
 > [!CAUTION]
 > 2.4GHz 是公共頻段，跟 Wi-Fi、微波爐共用。同一場地有 **12 套以上**同時使用時可能互相干擾，這種場合建議改用藍牙版（PS4／PS5）。
 
-### 範例下載（Pybricks 3.6.1）
+### 函式庫與範例下載（Pybricks 4.1）
 
-- [📥 全部下載（.zip）](/examples/ps2/ps2_pybricks_spike_v3.6.1.zip)
-- [完整按鍵版（mode 9）](/examples/ps2/pybricks/For%20firmware%203.6.1/ps2_python_mode9_v361.py)・[積木版](/examples/ps2/pybricks/For%20firmware%203.6.1/ps2_block_native_v361.py)・[Python 版](/examples/ps2/pybricks/For%20firmware%203.6.1/ps2_python_native_v361.py)
+- [📥 全部下載（.zip）](/examples/ps2/ps2_pybricks_spike_v4.x.zip)：`MBC_sensors.py`、`MBC_gamepad_Lib.py` 和 6 個新手範例
+- 單獨下載函式庫：[MBC_sensors.py](/examples/ps2/pybricks/MBC_sensors.py)（新專案用這個，一個檔適用全部 MBC 感應器，寫 `from MBC_sensors import MBC_GAMEPAD`）・[MBC_gamepad_Lib.py](/examples/ps2/pybricks/MBC_gamepad_Lib.py)（本頁範例與舊程式用）
+
+> [!NOTE]
+> Pybricks 3.6.1 版範例已不再更新，舊檔放在[下載專區](/downloads.md)的「舊版（不再更新）」。
 
 > [!TIP]
 > 掌控者 PS2 的 EV3／SPIKE App／Pybricks 積木用法也整理在 [指令說明（PDF）](/examples/ps2/PS2_Controller_Command_Guide_ZH.pdf)。

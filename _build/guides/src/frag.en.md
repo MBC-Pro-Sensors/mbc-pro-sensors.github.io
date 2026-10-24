@@ -114,15 +114,17 @@ These coaches have plenty of competition and teaching experience: [Coach LegoLau
 @@@ line-spike-pybricks
 ### Library and example downloads
 
-Pick the pack that matches the hub's Pybricks firmware (each zip has the library + 4 examples):
+The hub needs **Pybricks firmware v4.1**. The zip has `MBC_sensors.py`, `MBC_%%P%%_obj_Lib.py` and 4 examples:
 
-- [📥 Download pack (firmware 4.0.0)](/examples/%%P%%/%%P%%_pybricks_spike_v4.0.0.zip)
-- [📥 Download pack (firmware 3.6.1)](/examples/%%P%%/%%P%%_pybricks_spike_v3.6.1.zip)
+- [📥 Download pack (Pybricks 4.1)](/examples/%%P%%/%%P%%_pybricks_spike_v4.x.zip)
 
-Library only: [4.0.0 MBC_%%P%%_obj_Lib_v400.py](/examples/%%P%%/pybricks/For%20firmware%204.0.0/MBC_%%P%%_obj_Lib_v400.py) · [3.6.1 MBC_%%P%%_Lib_v361.py](/examples/%%P%%/pybricks/For%20firmware%203.6.1/MBC_%%P%%_Lib_v361.py)
+Library only: [MBC_sensors.py](/examples/%%P%%/pybricks/For%20firmware%204.x/MBC_sensors.py) (use this for new projects: one file for every MBC sensor) · [MBC_%%P%%_obj_Lib.py](/examples/%%P%%/pybricks/For%20firmware%204.x/MBC_%%P%%_obj_Lib.py) (for the examples on this page and older programs)
 
 > [!IMPORTANT]
-> **Rename the file**: the examples say `import MBC_%%P%%_obj_Lib` (3.6.1: `MBC_%%P%%_Lib`), so rename the download to `MBC_%%P%%_obj_Lib.py` (drop `_v400`) or `MBC_%%P%%_Lib.py` (drop `_v361`), or you will get an `ImportError`. The library must be in the **same project list** as the main program.
+> The examples say `from MBC_%%P%%_obj_Lib import MBC_LINE%%N%%`, so import `MBC_%%P%%_obj_Lib.py` (no renaming needed). For a new program of your own, write `from MBC_sensors import MBC_LINE%%N%%` and import only `MBC_sensors.py`. The library must be in the **same project list** as the main program.
+
+> [!NOTE]
+> Pybricks 3.6.1 is no longer updated; the old files are under "Legacy (no longer updated)" on the [Downloads page](/en/downloads.md).
 
 ![Importing the library into a Pybricks project](/images/sensors/%%P%%/pybricks-upload-lib.webp)
 
@@ -140,7 +142,7 @@ Read with Pybricks' built-in `ColorSensor` commands, no extra file. These values
 > [!TIP]
 > Use position and width from **the same set**: `getLinePos%%N%%()` with `getLineWidth%%N%%()`, `getLinePos100()` with `getLineWidth100()`, so both come from the same moment.
 
-Examples: blocks [4.0.0](/examples/%%P%%/pybricks/For%20firmware%204.0.0/%%P%%_block_native_v400.py) · [3.6.1](/examples/%%P%%/pybricks/For%20firmware%203.6.1/%%P%%_block_native_v361.py); Python [4.0.0](/examples/%%P%%/pybricks/For%20firmware%204.0.0/%%P%%_python_native_v400.py) · [3.6.1](/examples/%%P%%/pybricks/For%20firmware%203.6.1/%%P%%_python_native_v361.py)
+Examples: blocks [%%P%%_block_native.py](/examples/%%P%%/pybricks/For%20firmware%204.x/%%P%%_block_native.py); Python [%%P%%_python_native.py](/examples/%%P%%/pybricks/For%20firmware%204.x/%%P%%_python_native.py)
 
 ### Method 2: import the library
 
@@ -158,7 +160,7 @@ Examples: blocks [4.0.0](/examples/%%P%%/pybricks/For%20firmware%204.0.0/%%P%%_b
 | `line_on_sensors()` | `list[int]` | Channels seeing the line, e.g. `%%EXON%%` |
 | `line_read_all()` | `dict` | Everything at once: `ir_calibration`, `line_pos%%N%%`, `line_pos100`, `line_width`, `bin_raw`, `on_sensors`, `junction`, `junction_name` |
 
-Examples: blocks [4.0.0](/examples/%%P%%/pybricks/For%20firmware%204.0.0/%%P%%_block_with_lib_v400.py) · [3.6.1](/examples/%%P%%/pybricks/For%20firmware%203.6.1/%%P%%_block_with_lib_v361.py); Python [4.0.0](/examples/%%P%%/pybricks/For%20firmware%204.0.0/%%P%%_python_with_lib_v400.py) · [3.6.1](/examples/%%P%%/pybricks/For%20firmware%203.6.1/%%P%%_python_with_lib_v361.py)
+Examples: blocks [%%P%%_block_with_lib.py](/examples/%%P%%/pybricks/For%20firmware%204.x/%%P%%_block_with_lib.py); Python [%%P%%_python_with_lib.py](/examples/%%P%%/pybricks/For%20firmware%204.x/%%P%%_python_with_lib.py)
 
 @@@ ev3-prox
 ### Proximity mode: line position
@@ -351,10 +353,13 @@ The PS2 2.4G gamepad and its receiver are **paired at the factory**; no pairing 
 > The beginner examples on this page use the Education edition (SPIKE 3). The home edition (Robot Inventor) reads the "Color" block differently, so the beginner examples do not apply; see the [command guide (PDF)](/examples/ps2/PS2_Controller_Command_Guide_EN_Taiwan_only.pdf).
 
 @@@ pad-spike-pybricks
-### Example downloads (Pybricks 3.6.1)
+### Library and example downloads (Pybricks 4.1)
 
-- [📥 Download all (.zip)](/examples/%%P%%/%%P%%_pybricks_spike_v3.6.1.zip)
-- [Full-button version (mode 9)](/examples/%%P%%/pybricks/For%20firmware%203.6.1/%%P%%_python_mode9_v361.py) · [blocks](/examples/%%P%%/pybricks/For%20firmware%203.6.1/%%P%%_block_native_v361.py) · [Python](/examples/%%P%%/pybricks/For%20firmware%203.6.1/%%P%%_python_native_v361.py)
+- [📥 Download all (.zip)](/examples/%%P%%/%%P%%_pybricks_spike_v4.x.zip): `MBC_sensors.py`, `MBC_gamepad_Lib.py` and the 6 beginner examples
+- Library only: [MBC_sensors.py](/examples/%%P%%/pybricks/MBC_sensors.py) (use this for new projects: one file for every MBC sensor, `from MBC_sensors import MBC_GAMEPAD`) · [MBC_gamepad_Lib.py](/examples/%%P%%/pybricks/MBC_gamepad_Lib.py) (for the examples on this page and older programs)
+
+> [!NOTE]
+> The Pybricks 3.6.1 examples are no longer updated; the old files are under "Legacy (no longer updated)" on the [Downloads page](/en/downloads.md).
 
 @@@ ps2-pdf
 > [!TIP]
@@ -418,7 +423,7 @@ The official LEGO App **has no blocks for HUE12** (HUE12 is not a LEGO sensor), 
 @@@ cam-spike-pyb
 ### WRO edition (HUE12)
 
-The hub needs Pybricks firmware **v4.0.0b5 or later**. The MBC Blocks website's "SPIKE Hub → Install/Update Pybricks firmware" flashes v4.1.0, which works.%%EXTRA%%
+The hub needs Pybricks firmware **v4.1** (the stable code.pybricks.com is v4.1.1; v4.1.0 from the MBC Blocks website's "SPIKE Hub → Install/Update Pybricks firmware" works too).%%EXTRA%%
 
 @@@ cam-ev3-two
 ### Two EV3 firmwares
@@ -503,8 +508,8 @@ exp6.stop_all(1)          # always stop all motors before the program ends (1 = 
 @@@ exp6-pybricks
 ### Import the EXP6 library
 
-1. Download [📥 Pybricks library v2 + examples (.zip)](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip) (v1 firmware shipped before 2026-10: [legacy zip](/downloads/MBC_EXP6_Pybricks_Lib.zip)). The manual is for **Pybricks 4.0.0 and later**.
-2. Put the library in your Pybricks project. The examples say `from MBC_exp6_obj_Lib import MBC_EXP6`, so the file must be named `MBC_exp6_obj_Lib.py` (rename `MBC_exp6_obj_Lib_v2.py` from the v2 pack).
+1. Download [📥 Pybricks library v2 + examples (.zip)](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip) (v1 firmware shipped before 2026-10: [legacy zip](/downloads/MBC_EXP6_Pybricks_Lib.zip)). Use **Pybricks firmware v4.1** (the command manual says "4.0.0 and later"; v4.1 works the same).
+2. Put the library in your Pybricks project. The v2 pack's library is `MBC_exp6_obj_Lib_v2.py` and its examples say `from MBC_exp6_obj_Lib_v2 import MBC_EXP6`, so no renaming is needed.
 
 ![EXP6 Pybricks example](/images/sensors/exp6/exp6_pybricks_example.webp)
 
@@ -514,7 +519,7 @@ Assuming the expander is on hub **port C (3)**:
 
 ```python
 # Normal mode: one line after another
-from MBC_exp6_obj_Lib import MBC_EXP6
+from MBC_exp6_obj_Lib_v2 import MBC_EXP6
 exp6 = MBC_EXP6(3, False)
 exp6.motor_power(6, 100)
 exp6.keep_alive_wait(5000)
@@ -523,7 +528,7 @@ exp6.keep_alive_wait(5000)
 ```python
 # Multitask mode: await in front of every command, use the library's run_task
 from pybricks.tools import multitask, run_task, wait
-from MBC_exp6_obj_Lib import MBC_EXP6, run_task
+from MBC_exp6_obj_Lib_v2 import MBC_EXP6, run_task
 exp6 = MBC_EXP6(3, True)
 
 async def main():

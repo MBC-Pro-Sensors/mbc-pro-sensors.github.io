@@ -39,8 +39,11 @@ In the Pybricks development environment, this line follower provides two flexibl
 
 <div style="display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap;">
   <a href="/examples/line8/line8_pybricks_spike_v3.6.1.zip" target="_blank" data-ignore="true" download class="btn-download" style="flex: 1; min-width: 200px; text-align: center; background: linear-gradient(135deg, #00d2ff, #007a75); color: #fff; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 1rem; box-shadow: 0 4px 15px rgba(0,210,255,0.25); transition: transform 0.2s ease;">📥 Packaged Download (Firmware v3.6.1)</a>
-  <a href="/examples/line8/line8_pybricks_spike_v4.0.0.zip" target="_blank" data-ignore="true" download class="btn-download" style="flex: 1; min-width: 200px; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 1rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 Packaged Download (Firmware v4.0.0)</a>
+  <a href="/examples/line8/line8_pybricks_spike_v4.x.zip" target="_blank" data-ignore="true" download class="btn-download" style="flex: 1; min-width: 200px; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 1rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 Packaged Download (Firmware v4.1)</a>
 </div>
+
+> [!NOTE]
+> Pybricks 3.6.1 is no longer updated; please use Pybricks 4.1 (the 4.x zip also includes `MBC_sensors.py`, one file for every MBC sensor).
 
 We have provided four core example programs and exclusive library functions. Please choose the download according to your development mode:
 
@@ -120,7 +123,7 @@ We have provided four core example programs and exclusive library functions. Ple
       </div>
       <div class="download-btn-group">
         <a href="/examples/line8/pybricks/For%20firmware%203.6.1/line8_block_native_v361.py" target="_blank" download="line8_block_native_v361.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #00d2ff, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(0,210,255,0.25); transition: transform 0.2s ease;">📥 v3.6.1</a>
-        <a href="/examples/line8/pybricks/For%20firmware%204.0.0/line8_block_native_v400.py" target="_blank" download="line8_block_native_v400.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 v4.0.0</a>
+        <a href="/examples/line8/pybricks/For%20firmware%204.x/line8_block_native.py" target="_blank" download="line8_block_native.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 v4.1</a>
       </div>
     </div>
     <!-- Card 2: Python Native -->
@@ -134,7 +137,7 @@ We have provided four core example programs and exclusive library functions. Ple
       </div>
       <div class="download-btn-group">
         <a href="/examples/line8/pybricks/For%20firmware%203.6.1/line8_python_native_v361.py" target="_blank" download="line8_python_native_v361.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #00d2ff, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(0,210,255,0.25); transition: transform 0.2s ease;">📥 v3.6.1</a>
-        <a href="/examples/line8/pybricks/For%20firmware%204.0.0/line8_python_native_v400.py" target="_blank" download="line8_python_native_v400.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 v4.0.0</a>
+        <a href="/examples/line8/pybricks/For%20firmware%204.x/line8_python_native.py" target="_blank" download="line8_python_native.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 v4.1</a>
       </div>
     </div>
   </div>
@@ -279,7 +282,7 @@ We have provided four core example programs and exclusive library functions. Ple
       </div>
       <div class="download-btn-group">
         <a href="/examples/line8/pybricks/For%20firmware%203.6.1/line8_block_with_lib_v361.py" target="_blank" download="line8_block_with_lib_v361.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 v3.6.1</a>
-        <a href="/examples/line8/pybricks/For%20firmware%204.0.0/line8_block_with_lib_v400.py" target="_blank" download="line8_block_with_lib_v400.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 v4.0.0</a>
+        <a href="/examples/line8/pybricks/For%20firmware%204.x/line8_block_with_lib.py" target="_blank" download="line8_block_with_lib.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 v4.1</a>
       </div>
     </div>
     <!-- Card 4: Python with Lib -->
@@ -293,7 +296,7 @@ We have provided four core example programs and exclusive library functions. Ple
       </div>
       <div class="download-btn-group">
         <a href="/examples/line8/pybricks/For%20firmware%203.6.1/line8_python_with_lib_v361.py" target="_blank" download="line8_python_with_lib_v361.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 v3.6.1</a>
-        <a href="/examples/line8/pybricks/For%20firmware%204.0.0/line8_python_with_lib_v400.py" target="_blank" download="line8_python_with_lib_v400.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 v4.0.0</a>
+        <a href="/examples/line8/pybricks/For%20firmware%204.x/line8_python_with_lib.py" target="_blank" download="line8_python_with_lib.py" data-ignore="true" class="btn-download" style="flex: 1; text-align: center; background: linear-gradient(135deg, #0abab5, #007a75); color: #fff; padding: 8px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(10,186,181,0.25); transition: transform 0.2s ease;">📥 v4.1</a>
       </div>
     </div>
   </div>
@@ -314,7 +317,7 @@ We have provided four core example programs and exclusive library functions. Ple
         </div>
         <div class="download-btn-group">
           <a href="/examples/line8/pybricks/For%20firmware%203.6.1/MBC_line8_Lib_v361.py" target="_blank" download="MBC_line8_Lib.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 v3.6.1 Library</a>
-          <a href="/examples/line8/pybricks/For%20firmware%204.0.0/MBC_line8_obj_Lib_v400.py" target="_blank" download="MBC_line8_obj_Lib.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 v4.0.0 Library</a>
+          <a href="/examples/line8/pybricks/For%20firmware%204.x/MBC_line8_obj_Lib.py" target="_blank" download="MBC_line8_obj_Lib.py" data-ignore="true" class="btn-download-lib" style="flex: 1; text-align: center; padding: 10px 15px; background: linear-gradient(135deg, #0abab5, #00d2ff); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; box-shadow: 0 6px 20px rgba(10,186,181,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;">📥 v4.1 Library</a>
         </div>
       </div>
       <!-- Right: Important tips and screenshots -->
@@ -325,7 +328,7 @@ We have provided four core example programs and exclusive library functions. Ple
             You <strong>must place this library file (<code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line8_Lib.py</code>) in the same project directory as your main program</strong>. Otherwise, the program will report a file not found error when executing!
           </p>
           <p style="margin: 0 0 15px 0; font-size: 0.85rem; color: #ddd; line-height: 1.6;">
-            <strong>⚠️ Rename the file:</strong> the examples use <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">import MBC_line8_obj_Lib</code> (v3.6.1: <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line8_Lib</code>). After downloading, rename the file to <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line8_obj_Lib.py</code> (remove <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">_v400</code>) or <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line8_Lib.py</code> (remove <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">_v361</code>), otherwise you will get an ImportError. The easiest way is to use the "Packaged Download" zip above — the file names inside are already correct.
+            <strong>⚠️ Rename the file:</strong> the examples use <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">import MBC_line8_obj_Lib</code> (v3.6.1: <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line8_Lib</code>). After downloading, rename the file to <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line8_obj_Lib.py</code> (the 4.x download already has this name) or <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">MBC_line8_Lib.py</code> (remove <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">_v361</code>), otherwise you will get an ImportError. The easiest way is to use the "Packaged Download" zip above — the file names inside are already correct.
           </p>
           <div style="border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,107,53,0.3); background: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 50%; margin: 0 auto;">
             <img src="/images/sensors/line8/pybricks-upload-lib.webp" alt="File Placement" style="width: 100%; display: block; opacity: 0.9;" />

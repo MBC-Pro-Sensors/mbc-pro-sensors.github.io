@@ -14,7 +14,10 @@
 > [!TIP]
 > At a competition, pair at your own table so no other team's gamepad is in pairing mode during the 30 seconds. Paired the wrong one? Press Reset and pair again.
 
-### Example downloads (Pybricks 3.6.1)
+### Library and example downloads (Pybricks 4.1)
 
-- [📥 Download all (.zip)](/examples/ps4/ps4_pybricks_spike_v3.6.1.zip)
-- [Full-button version (mode 9)](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_python_mode9_v361.py) · [blocks](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_block_native_v361.py) · [Python](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_python_native_v361.py)
+- [📥 Download all (.zip)](/examples/ps4/ps4_pybricks_spike_v4.x.zip): `MBC_sensors.py`, `MBC_gamepad_Lib.py` and the 6 beginner examples
+- Library only: [MBC_sensors.py](/examples/ps4/pybricks/MBC_sensors.py) (use this for new projects: one file for every MBC sensor, `from MBC_sensors import MBC_GAMEPAD`) · [MBC_gamepad_Lib.py](/examples/ps4/pybricks/MBC_gamepad_Lib.py) (for the examples on this page and older programs)
+
+> [!NOTE]
+> The Pybricks 3.6.1 examples are no longer updated; the old files are under "Legacy (no longer updated)" on the [Downloads page](/en/downloads.md).

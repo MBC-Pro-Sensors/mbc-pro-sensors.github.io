@@ -64,7 +64,8 @@
 | :--- | :--- |
 | SPIKE App（教育版） | [ps4_demo_spike_prime_v3.4.3.llsp3](/examples/ps4/spike/ps4_demo_spike_prime_v3.4.3.llsp3) |
 | Robot Inventor | [ps4_demo_robot_inventor_v10.5.0.lms](/examples/ps4/spike/ps4_demo_robot_inventor_v10.5.0.lms) |
-| SPIKE（Pybricks 3.6.1） | [全部下載（.zip）](/examples/ps4/ps4_pybricks_spike_v3.6.1.zip)・[完整按鍵版（mode 9）](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_python_mode9_v361.py)・[積木版](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_block_native_v361.py)・[Python 版](/examples/ps4/pybricks/For%20firmware%203.6.1/ps4_python_native_v361.py) |
+| SPIKE（Pybricks 4.1） | [全部下載（.zip）](/examples/ps4/ps4_pybricks_spike_v4.x.zip)・[函式庫 MBC_gamepad_Lib.py](/examples/ps4/pybricks/MBC_gamepad_Lib.py)・[共用函式庫 MBC_sensors.py（新專案用）](/examples/ps4/pybricks/MBC_sensors.py)・[新手範例](/sensors/ps4/spike-examples.md) |
+| SPIKE（Pybricks 3.6.1，不再更新） | 舊版檔案在[下載專區](/downloads.md)的「舊版（不再更新）」 |
 | mBot 等（MakeBlock） | [積木擴展與手把遙控範例](/makeblock.md) |
 
 ## 📤 輸出資料

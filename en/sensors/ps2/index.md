@@ -48,7 +48,8 @@ The Controller 2.4G Receiver provides a **high cost-performance solution**: It a
 
 | Hub | Files |
 | :--- | :--- |
-| SPIKE (Pybricks 3.6.1) | [Download all (.zip)](/examples/ps2/ps2_pybricks_spike_v3.6.1.zip) · [All buttons (mode 9)](/examples/ps2/pybricks/For%20firmware%203.6.1/ps2_python_mode9_v361.py) · [Blocks](/examples/ps2/pybricks/For%20firmware%203.6.1/ps2_block_native_v361.py) · [Python](/examples/ps2/pybricks/For%20firmware%203.6.1/ps2_python_native_v361.py) |
+| SPIKE (Pybricks 4.1) | [Download all (.zip)](/examples/ps2/ps2_pybricks_spike_v4.x.zip) · [Library MBC_gamepad_Lib.py](/examples/ps2/pybricks/MBC_gamepad_Lib.py) · [Shared library MBC_sensors.py (for new projects)](/examples/ps2/pybricks/MBC_sensors.py) · [Beginner examples](/en/sensors/ps2/spike-examples.md) |
+| SPIKE (Pybricks 3.6.1, no longer updated) | Old files are under "Legacy (no longer updated)" on the [Downloads page](/en/downloads.md) |
 | EV3 / SPIKE App / Pybricks blocks | [Command guide (PDF)](/examples/ps2/PS2_Controller_Command_Guide_EN_Taiwan_only.pdf) |
 | mBot etc. (MakeBlock) | [Block extension and controller example](/en/makeblock.md) |
 

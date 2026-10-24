@@ -114,15 +114,17 @@
 @@@ line-spike-pybricks
 ### 函式庫與範例下載
 
-依主機的 Pybricks 韌體版本選一包（zip 裡有函式庫＋4 支範例）：
+主機要是 **Pybricks 韌體 v4.1**。zip 裡有 `MBC_sensors.py`、`MBC_%%P%%_obj_Lib.py` 和 4 支範例：
 
-- [📥 打包下載（韌體 4.0.0 版）](/examples/%%P%%/%%P%%_pybricks_spike_v4.0.0.zip)
-- [📥 打包下載（韌體 3.6.1 版）](/examples/%%P%%/%%P%%_pybricks_spike_v3.6.1.zip)
+- [📥 打包下載（Pybricks 4.1）](/examples/%%P%%/%%P%%_pybricks_spike_v4.x.zip)
 
-單獨下載函式庫：[4.0.0 版 MBC_%%P%%_obj_Lib_v400.py](/examples/%%P%%/pybricks/For%20firmware%204.0.0/MBC_%%P%%_obj_Lib_v400.py)・[3.6.1 版 MBC_%%P%%_Lib_v361.py](/examples/%%P%%/pybricks/For%20firmware%203.6.1/MBC_%%P%%_Lib_v361.py)
+單獨下載函式庫：[MBC_sensors.py](/examples/%%P%%/pybricks/For%20firmware%204.x/MBC_sensors.py)（新專案用這個，一個檔適用全部 MBC 感應器）・[MBC_%%P%%_obj_Lib.py](/examples/%%P%%/pybricks/For%20firmware%204.x/MBC_%%P%%_obj_Lib.py)（本頁範例與舊程式用）
 
 > [!IMPORTANT]
-> **檔名一定要改**：範例程式寫的是 `import MBC_%%P%%_obj_Lib`（3.6.1 版是 `MBC_%%P%%_Lib`），下載後要把檔名改成 `MBC_%%P%%_obj_Lib.py`（去掉 `_v400`）或 `MBC_%%P%%_Lib.py`（去掉 `_v361`），否則會出現 `ImportError`。函式庫要跟主程式放在**同一個專案列表**裡。
+> 範例程式寫的是 `from MBC_%%P%%_obj_Lib import MBC_LINE%%N%%`，所以要匯入 `MBC_%%P%%_obj_Lib.py`（檔名不用改）。自己寫新程式改成 `from MBC_sensors import MBC_LINE%%N%%`，只匯入 `MBC_sensors.py`。函式庫要跟主程式放在**同一個專案列表**裡。
+
+> [!NOTE]
+> Pybricks 3.6.1 版已不再更新，舊檔放在[下載專區](/downloads.md)的「舊版（不再更新）」。
 
 ![把函式庫匯入 Pybricks 專案](/images/sensors/%%P%%/pybricks-upload-lib.webp)
 
@@ -140,7 +142,7 @@
 > [!TIP]
 > 位置和線寬要用**同一組**：`getLinePos%%N%%()` 配 `getLineWidth%%N%%()`，`getLinePos100()` 配 `getLineWidth100()`，讀到的才是同一刻的資料。
 
-範例：積木版 [4.0.0](/examples/%%P%%/pybricks/For%20firmware%204.0.0/%%P%%_block_native_v400.py)・[3.6.1](/examples/%%P%%/pybricks/For%20firmware%203.6.1/%%P%%_block_native_v361.py)；Python 版 [4.0.0](/examples/%%P%%/pybricks/For%20firmware%204.0.0/%%P%%_python_native_v400.py)・[3.6.1](/examples/%%P%%/pybricks/For%20firmware%203.6.1/%%P%%_python_native_v361.py)
+範例：積木版 [%%P%%_block_native.py](/examples/%%P%%/pybricks/For%20firmware%204.x/%%P%%_block_native.py)；Python 版 [%%P%%_python_native.py](/examples/%%P%%/pybricks/For%20firmware%204.x/%%P%%_python_native.py)
 
 ### 方式二：匯入專屬函式庫
 
@@ -158,7 +160,7 @@
 | `line_on_sensors()` | `list[int]` | 偵測到線的通道編號，例如 `%%EXON%%` |
 | `line_read_all()` | `dict` | 一次讀全部：`ir_calibration`、`line_pos%%N%%`、`line_pos100`、`line_width`、`bin_raw`、`on_sensors`、`junction`、`junction_name` |
 
-範例：積木版 [4.0.0](/examples/%%P%%/pybricks/For%20firmware%204.0.0/%%P%%_block_with_lib_v400.py)・[3.6.1](/examples/%%P%%/pybricks/For%20firmware%203.6.1/%%P%%_block_with_lib_v361.py)；Python 版 [4.0.0](/examples/%%P%%/pybricks/For%20firmware%204.0.0/%%P%%_python_with_lib_v400.py)・[3.6.1](/examples/%%P%%/pybricks/For%20firmware%203.6.1/%%P%%_python_with_lib_v361.py)
+範例：積木版 [%%P%%_block_with_lib.py](/examples/%%P%%/pybricks/For%20firmware%204.x/%%P%%_block_with_lib.py)；Python 版 [%%P%%_python_with_lib.py](/examples/%%P%%/pybricks/For%20firmware%204.x/%%P%%_python_with_lib.py)
 
 @@@ ev3-prox
 ### Proximity 模式：線位置
@@ -351,10 +353,13 @@ PS2 的 2.4G 手把和它的接收頭是**原廠成對**的，不用按任何配
 > 本頁的新手範例用的是教育版（SPIKE 3）。家用版（Robot Inventor）的「顏色」積木讀法不一樣，新手範例不適用，請看 [指令說明（PDF）](/examples/ps2/PS2_Controller_Command_Guide_ZH.pdf)。
 
 @@@ pad-spike-pybricks
-### 範例下載（Pybricks 3.6.1）
+### 函式庫與範例下載（Pybricks 4.1）
 
-- [📥 全部下載（.zip）](/examples/%%P%%/%%P%%_pybricks_spike_v3.6.1.zip)
-- [完整按鍵版（mode 9）](/examples/%%P%%/pybricks/For%20firmware%203.6.1/%%P%%_python_mode9_v361.py)・[積木版](/examples/%%P%%/pybricks/For%20firmware%203.6.1/%%P%%_block_native_v361.py)・[Python 版](/examples/%%P%%/pybricks/For%20firmware%203.6.1/%%P%%_python_native_v361.py)
+- [📥 全部下載（.zip）](/examples/%%P%%/%%P%%_pybricks_spike_v4.x.zip)：`MBC_sensors.py`、`MBC_gamepad_Lib.py` 和 6 個新手範例
+- 單獨下載函式庫：[MBC_sensors.py](/examples/%%P%%/pybricks/MBC_sensors.py)（新專案用這個，一個檔適用全部 MBC 感應器，寫 `from MBC_sensors import MBC_GAMEPAD`）・[MBC_gamepad_Lib.py](/examples/%%P%%/pybricks/MBC_gamepad_Lib.py)（本頁範例與舊程式用）
+
+> [!NOTE]
+> Pybricks 3.6.1 版範例已不再更新，舊檔放在[下載專區](/downloads.md)的「舊版（不再更新）」。
 
 @@@ ps2-pdf
 > [!TIP]
@@ -418,7 +423,7 @@ PS2 的 2.4G 手把和它的接收頭是**原廠成對**的，不用按任何配
 @@@ cam-spike-pyb
 ### WRO 版（HUE12）
 
-主機要換成 Pybricks 韌體 **v4.0.0b5 以上**。MBC 積木網站上方選單「SPIKE 主機 → 安裝／更新 Pybricks 韌體」燒的是 v4.1.0，可以直接用。%%EXTRA%%
+主機要換成 Pybricks 韌體 **v4.1**（code.pybricks.com 正式版是 v4.1.1；MBC 積木網站上方選單「SPIKE 主機 → 安裝／更新 Pybricks 韌體」燒的 v4.1.0 也可以直接用）。%%EXTRA%%
 
 @@@ cam-ev3-two
 ### 兩種 EV3 韌體
@@ -503,8 +508,8 @@ exp6.stop_all(1)          # 程式結束前一定要讓所有馬達停止（1 = 
 @@@ exp6-pybricks
 ### 匯入 EXP6 函式庫
 
-1. 下載 [📥 Pybricks 函式庫 v2＋範例（.zip）](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip)（2026-10 以前出貨的 v1 韌體用 [舊版 zip](/downloads/MBC_EXP6_Pybricks_Lib.zip)）。說明文件針對 **Pybricks 4.0.0 以上**。
-2. 把函式庫放進 Pybricks 專案。範例寫的是 `from MBC_exp6_obj_Lib import MBC_EXP6`，所以檔名要是 `MBC_exp6_obj_Lib.py`（v2 包裡的 `MBC_exp6_obj_Lib_v2.py` 要改名）。
+1. 下載 [📥 Pybricks 函式庫 v2＋範例（.zip）](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip)（2026-10 以前出貨的 v1 韌體用 [舊版 zip](/downloads/MBC_EXP6_Pybricks_Lib.zip)）。主機用 **Pybricks 韌體 v4.1**（指令說明書寫的「4.0.0 以上」v4.1 一樣適用）。
+2. 把函式庫放進 Pybricks 專案。v2 包裡的函式庫是 `MBC_exp6_obj_Lib_v2.py`，包裡的範例寫的就是 `from MBC_exp6_obj_Lib_v2 import MBC_EXP6`，檔名不用改。
 
 ![EXP6 Pybricks 範例](/images/sensors/exp6/exp6_pybricks_example.webp)
 
@@ -514,7 +519,7 @@ exp6.stop_all(1)          # 程式結束前一定要讓所有馬達停止（1 = 
 
 ```python
 # 一般模式：一行一行執行
-from MBC_exp6_obj_Lib import MBC_EXP6
+from MBC_exp6_obj_Lib_v2 import MBC_EXP6
 exp6 = MBC_EXP6(3, False)
 exp6.motor_power(6, 100)
 exp6.keep_alive_wait(5000)
@@ -523,7 +528,7 @@ exp6.keep_alive_wait(5000)
 ```python
 # 多工模式：每個指令前加 await，要用函式庫的 run_task
 from pybricks.tools import multitask, run_task, wait
-from MBC_exp6_obj_Lib import MBC_EXP6, run_task
+from MBC_exp6_obj_Lib_v2 import MBC_EXP6, run_task
 exp6 = MBC_EXP6(3, True)
 
 async def main():

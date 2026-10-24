@@ -68,8 +68,8 @@ The 8 laser ranging units are distributed at fixed angles, covering a complete 1
 
 | Hub | Files |
 | :--- | :--- |
-| SPIKE (Pybricks 4.0.0) | [Download all (.zip)](/examples/tof8/tof8_pybricks_spike_v4.0.0.zip) · [No library (blocks)](/examples/tof8/pybricks/For%20firmware%204.0.0/tof8_block_native_v400.py) · [Library example (blocks)](/examples/tof8/pybricks/For%20firmware%204.0.0/tof8_block_with_lib_v400.py) · [Library MBC_laser8_obj_Lib.py](/examples/tof8/pybricks/For%20firmware%204.0.0/MBC_laser8_obj_Lib.py) |
-| SPIKE (Pybricks 3.6.1) | [Download all (.zip)](/examples/tof8/tof8_pybricks_spike_v3.6.1.zip) · [No library (blocks)](/examples/tof8/pybricks/For%20firmware%203.6.1/tof8_block_native_v361.py) · [Library example (blocks)](/examples/tof8/pybricks/For%20firmware%203.6.1/tof8_block_with_lib_v361.py) · [Library MBC_laser8_Lib.py](/examples/tof8/pybricks/For%20firmware%203.6.1/MBC_laser8_Lib.py) |
+| SPIKE (Pybricks 4.1) | [Download all (.zip)](/examples/tof8/tof8_pybricks_spike_v4.x.zip) · [No library (blocks)](/examples/tof8/pybricks/For%20firmware%204.x/tof8_block_native.py) · [Library example (blocks)](/examples/tof8/pybricks/For%20firmware%204.x/tof8_block_with_lib.py) · [Library MBC_laser8_obj_Lib.py](/examples/tof8/pybricks/For%20firmware%204.x/MBC_laser8_obj_Lib.py) · [Shared library MBC_sensors.py (for new projects)](/examples/tof8/pybricks/For%20firmware%204.x/MBC_sensors.py) |
+| SPIKE (Pybricks 3.6.1, no longer updated) | Old files are under "Legacy (no longer updated)" on the [Downloads page](/en/downloads.md) |
 | EV3 | [EV3 beginner examples](/en/sensors/tof8/ev3-examples.md) |
 | Arduino (Universal I2C edition) | [6 beginner examples (step by step)](/en/sensors/tof8/arduino-examples.md) · [All examples (.zip)](/examples/tof8/arduino-en/tof8_arduino_examples_en.zip) |
 | mBot etc. (MakeBlock) | [Block extension and avoidance example](/en/makeblock.md) |

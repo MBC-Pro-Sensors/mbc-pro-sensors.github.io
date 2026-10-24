@@ -8,4 +8,4 @@ All Sharpshooter settings are made on the **colour screen and buttons on the bac
 
 ### WRO edition (HUE12)
 
-The hub needs Pybricks firmware **v4.0.0b5 or later**. The MBC Blocks website's "SPIKE Hub → Install/Update Pybricks firmware" flashes v4.1.0, which works. With Pybricks, import `MBC_hue12_Lib.py` (school edition: `MBC_cam_school_Lib.py`).
+The hub needs Pybricks firmware **v4.1** (the stable code.pybricks.com is v4.1.1; v4.1.0 from the MBC Blocks website's "SPIKE Hub → Install/Update Pybricks firmware" works too). With Pybricks, import `MBC_hue12_Lib.py` (school edition: `MBC_cam_school_Lib.py`); for a new program of your own, import just `MBC_sensors.py` (classes `MBC_HUE12` / `MBC_CAM_SCHOOL`).

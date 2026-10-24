@@ -14,15 +14,17 @@ The Pathfinder has to "learn" the black and white of your mat before its numbers
 
 ### Library and example downloads
 
-Pick the pack that matches the hub's Pybricks firmware (each zip has the library + 4 examples):
+The hub needs **Pybricks firmware v4.1**. The zip has `MBC_sensors.py`, `MBC_line8_obj_Lib.py` and 4 examples:
 
-- [📥 Download pack (firmware 4.0.0)](/examples/line8/line8_pybricks_spike_v4.0.0.zip)
-- [📥 Download pack (firmware 3.6.1)](/examples/line8/line8_pybricks_spike_v3.6.1.zip)
+- [📥 Download pack (Pybricks 4.1)](/examples/line8/line8_pybricks_spike_v4.x.zip)
 
-Library only: [4.0.0 MBC_line8_obj_Lib_v400.py](/examples/line8/pybricks/For%20firmware%204.0.0/MBC_line8_obj_Lib_v400.py) · [3.6.1 MBC_line8_Lib_v361.py](/examples/line8/pybricks/For%20firmware%203.6.1/MBC_line8_Lib_v361.py)
+Library only: [MBC_sensors.py](/examples/line8/pybricks/For%20firmware%204.x/MBC_sensors.py) (use this for new projects: one file for every MBC sensor) · [MBC_line8_obj_Lib.py](/examples/line8/pybricks/For%20firmware%204.x/MBC_line8_obj_Lib.py) (for the examples on this page and older programs)
 
 > [!IMPORTANT]
-> **Rename the file**: the examples say `import MBC_line8_obj_Lib` (3.6.1: `MBC_line8_Lib`), so rename the download to `MBC_line8_obj_Lib.py` (drop `_v400`) or `MBC_line8_Lib.py` (drop `_v361`), or you will get an `ImportError`. The library must be in the **same project list** as the main program.
+> The examples say `from MBC_line8_obj_Lib import MBC_LINE8`, so import `MBC_line8_obj_Lib.py` (no renaming needed). For a new program of your own, write `from MBC_sensors import MBC_LINE8` and import only `MBC_sensors.py`. The library must be in the **same project list** as the main program.
+
+> [!NOTE]
+> Pybricks 3.6.1 is no longer updated; the old files are under "Legacy (no longer updated)" on the [Downloads page](/en/downloads.md).
 
 ![Importing the library into a Pybricks project](/images/sensors/line8/pybricks-upload-lib.webp)
 
@@ -40,7 +42,7 @@ Read with Pybricks' built-in `ColorSensor` commands, no extra file. These values
 > [!TIP]
 > Use position and width from **the same set**: `getLinePos8()` with `getLineWidth8()`, `getLinePos100()` with `getLineWidth100()`, so both come from the same moment.
 
-Examples: blocks [4.0.0](/examples/line8/pybricks/For%20firmware%204.0.0/line8_block_native_v400.py) · [3.6.1](/examples/line8/pybricks/For%20firmware%203.6.1/line8_block_native_v361.py); Python [4.0.0](/examples/line8/pybricks/For%20firmware%204.0.0/line8_python_native_v400.py) · [3.6.1](/examples/line8/pybricks/For%20firmware%203.6.1/line8_python_native_v361.py)
+Examples: blocks [line8_block_native.py](/examples/line8/pybricks/For%20firmware%204.x/line8_block_native.py); Python [line8_python_native.py](/examples/line8/pybricks/For%20firmware%204.x/line8_python_native.py)
 
 ### Method 2: import the library
 
@@ -58,7 +60,7 @@ Examples: blocks [4.0.0](/examples/line8/pybricks/For%20firmware%204.0.0/line8_b
 | `line_on_sensors()` | `list[int]` | Channels seeing the line, e.g. `[4, 5]` |
 | `line_read_all()` | `dict` | Everything at once: `ir_calibration`, `line_pos8`, `line_pos100`, `line_width`, `bin_raw`, `on_sensors`, `junction`, `junction_name` |
 
-Examples: blocks [4.0.0](/examples/line8/pybricks/For%20firmware%204.0.0/line8_block_with_lib_v400.py) · [3.6.1](/examples/line8/pybricks/For%20firmware%203.6.1/line8_block_with_lib_v361.py); Python [4.0.0](/examples/line8/pybricks/For%20firmware%204.0.0/line8_python_with_lib_v400.py) · [3.6.1](/examples/line8/pybricks/For%20firmware%203.6.1/line8_python_with_lib_v361.py)
+Examples: blocks [line8_block_with_lib.py](/examples/line8/pybricks/For%20firmware%204.x/line8_block_with_lib.py); Python [line8_python_with_lib.py](/examples/line8/pybricks/For%20firmware%204.x/line8_python_with_lib.py)
 
 ### Want to learn more advanced line following?
 

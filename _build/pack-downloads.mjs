@@ -14,7 +14,7 @@ const CHECK = process.argv.includes('--check');
 const MBC = 'D:\\AI_Agent_AI助理\\02_MBC產品開發';
 // Git Bash 的 GNU tar 不會依副檔名出 zip；固定用 Windows 內建的 bsdtar
 const TAR = process.platform === 'win32' && fs.existsSync('C:\\Windows\\System32\\tar.exe') ? 'C:\\Windows\\System32\\tar.exe' : 'tar';
-const EXCLUDE = /(\.bak|__pycache__|\.pyc$|~$|\.DS_Store)/;
+const EXCLUDE = /(\.bak|\.before_|__pycache__|\.pyc$|~$|\.DS_Store)/;   // .before_* = 改正本前的備份檔
 
 const spec = JSON.parse(fs.readFileSync(path.join(BUILD, 'downloads.json'), 'utf8'));
 const resolveSrc = (s) => s && s.replace('${MBC}', MBC).replace(/\//g, path.sep);

@@ -26,7 +26,7 @@
         "examples/10_Multitask_KeepAlive.py",
         "examples/11_MBC_Sensors_v2.py"
       ],
-      "size": 1589451
+      "size": 1589498
     },
     {
       "out": "/downloads/MBC_EXP6_Official_App_Lib_v2.zip",
@@ -114,22 +114,23 @@
       "size": 5424
     },
     {
-      "out": "/examples/line8/line8_pybricks_spike_v4.0.0.zip",
+      "out": "/examples/line8/line8_pybricks_spike_v4.x.zip",
       "label": {
-        "zh": "循行者 8 路：SPIKE Pybricks 函式庫與範例（韌體 4.0.0）",
-        "en": "Line Follower 8-ch: SPIKE Pybricks library + examples (firmware 4.0.0)"
+        "zh": "循行者 8 路：SPIKE Pybricks 函式庫與範例（韌體 4.1）",
+        "en": "Line Follower 8-ch: SPIKE Pybricks library + examples (firmware 4.1)"
       },
-      "version": "4.0.0",
-      "firmware": "Pybricks 4.0.0",
+      "version": "4.x",
+      "firmware": "Pybricks 4.1",
       "legacy": false,
       "files": [
-        "MBC_line8_obj_Lib_v400.py",
-        "line8_block_native_v400.py",
-        "line8_block_with_lib_v400.py",
-        "line8_python_native_v400.py",
-        "line8_python_with_lib_v400.py"
+        "MBC_line8_obj_Lib.py",
+        "MBC_sensors.py",
+        "line8_block_native.py",
+        "line8_block_with_lib.py",
+        "line8_python_native.py",
+        "line8_python_with_lib.py"
       ],
-      "size": 15427
+      "size": 31645
     },
     {
       "out": "/downloads/MBC_TOF8_Pybricks_Lib.zip",
@@ -138,13 +139,13 @@
         "en": "Ranger 8-ch TOF8: SPIKE Pybricks library"
       },
       "version": "1.0",
-      "firmware": "Pybricks",
+      "firmware": "Pybricks 4.1",
       "legacy": false,
       "files": [
-        "MBC_laser8_Lib.py",
-        "MBC_laser8_obj_Lib.py"
+        "MBC_laser8_obj_Lib.py",
+        "MBC_sensors.py"
       ],
-      "size": 10252
+      "size": 21762
     },
     {
       "out": "/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext",

@@ -96,21 +96,22 @@
       }
     },
     {
-      "out": "examples/line8/line8_pybricks_spike_v4.0.0.zip",
-      "src": "${MBC}/01_循線感應器/循行者8路/02_上位機函式庫與範例/pyBricks函式庫/For firmware 4.0.0",
+      "out": "examples/line8/line8_pybricks_spike_v4.x.zip",
+      "src": "${MBC}/95_產品網站/mbc-pro-sensors.github.io/examples/line8/pybricks/For firmware 4.x",
       "include": [
-        "MBC_line8_obj_Lib_v400.py",
-        "line8_block_native_v400.py",
-        "line8_block_with_lib_v400.py",
-        "line8_python_native_v400.py",
-        "line8_python_with_lib_v400.py"
+        "MBC_sensors.py",
+        "MBC_line8_obj_Lib.py",
+        "line8_block_native.py",
+        "line8_block_with_lib.py",
+        "line8_python_native.py",
+        "line8_python_with_lib.py"
       ],
-      "version": "4.0.0",
-      "firmware": "Pybricks 4.0.0",
+      "version": "4.x",
+      "firmware": "Pybricks 4.1",
       "legacy": false,
       "label": {
-        "zh": "循行者 8 路：SPIKE Pybricks 函式庫與範例（韌體 4.0.0）",
-        "en": "Line Follower 8-ch: SPIKE Pybricks library + examples (firmware 4.0.0)"
+        "zh": "循行者 8 路：SPIKE Pybricks 函式庫與範例（韌體 4.1）",
+        "en": "Line Follower 8-ch: SPIKE Pybricks library + examples (firmware 4.1)"
       },
       "rename": {
         "教育版": "SPIKE_Education",
@@ -123,13 +124,13 @@
     },
     {
       "out": "downloads/MBC_TOF8_Pybricks_Lib.zip",
-      "src": "${MBC}/04_雷射測距/02_八方位雷射/02_上位機函式庫與範例/pyBricks函式庫",
+      "src": "${MBC}/95_產品網站/mbc-pro-sensors.github.io/examples/tof8/pybricks/For firmware 4.x",
       "include": [
-        "MBC_laser8_Lib.py",
+        "MBC_sensors.py",
         "MBC_laser8_obj_Lib.py"
       ],
       "version": "1.0",
-      "firmware": "Pybricks",
+      "firmware": "Pybricks 4.1",
       "legacy": false,
       "label": {
         "zh": "測距者 8 路 TOF8：SPIKE Pybricks 函式庫",

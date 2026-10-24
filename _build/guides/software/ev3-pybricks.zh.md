@@ -3,7 +3,7 @@
 - **感應器**：{{product}}（{{edition}}，RJ12 接頭）。
 - **主機**：LEGO MINDSTORMS EV3。
 - **軟體**（二選一）：
-  - **Pybricks v4**：用 Chrome 打開 [code.pybricks.com](https://code.pybricks.com)，EV3 要先裝 Pybricks 韌體（目前只有 **Beta 版**有 EV3 韌體）。
+  - **Pybricks v4**：用 Chrome 打開 [code.pybricks.com](https://code.pybricks.com)，EV3 要先裝 Pybricks 韌體（正式版已內建 EV3 韌體，2026-10 是 **v4.1.1**）。
   - **EV3 MicroPython v2.0**：樂高官方「EV3 MicroPython」microSD 開機卡＋VS Code 的「LEGO MINDSTORMS EV3 MicroPython」擴充套件。已經在用的人選這個。
 
 ### 安裝軟體
@@ -11,7 +11,7 @@
 **Pybricks v4**
 
 1. 用 Chrome 打開 [code.pybricks.com](https://code.pybricks.com)。
-2. 照網站說明把 EV3 換成 Pybricks 韌體。EV3 韌體目前只在 **Beta 測試版**提供，本站測試的版本是 **v4.0.0b10（Pybricks Beta v3.0.0-beta.7）**。
+2. 照網站說明把 EV3 換成 Pybricks 韌體。code.pybricks.com 正式版已內建 EV3 韌體（2026-10 是 **v4.1.1**）。本站範例最早在 v4.0.0b10 上機測過，v4.1.1 寫法相同。
 3. 打開範例：把 `.py` 檔拖進編輯區，按執行。
 
 **EV3 MicroPython v2.0**
@@ -44,7 +44,7 @@
 
 ### 常見問題
 
-- **找不到 EV3 的 Pybricks 韌體？** EV3 韌體目前只在 Beta 版提供，正式版還沒有。
+- **找不到 EV3 的 Pybricks 韌體？** 確認用的是 code.pybricks.com 正式版（2026-10 起內建 EV3 v4.1.1）；舊的 ev3dev 版 Pybricks（microSD 卡）是另一套，本頁不適用。
 - **數字一直不變？** 拔掉感應器重插一次（EV3 要先開機再插）。
 - **程式反應忽快忽慢？** 主迴圈裡交叉讀了不同模式，每次切換都要等，改成只用一種模式。
 - **匯入函式庫時出錯？** 函式庫檔要匯入到同一個 Pybricks 專案，檔名必須跟 `import` 的名字完全一致。

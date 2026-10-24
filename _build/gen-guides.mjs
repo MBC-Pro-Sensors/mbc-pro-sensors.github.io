@@ -157,7 +157,11 @@ function downloads(key, host, sw, lang, protos) {
   const base = (h) => decodeURIComponent(h.split('/').pop());
   if (host === 'spike' && sw === 'pybricks') {
     for (const p of protos) { const lib = spike.LIB[p.id]; if (lib && exists(decodeURIComponent(lib.file))) add(lib.file, `${T(lang, 'Pybricks 函式庫', 'Pybricks library')} ${base(lib.file)}`); }
-    for (const f of listDir(`examples/${key}`, /pybricks_spike.*\.zip$/i)) add(f, base(f));
+    // 共用函式庫 MBC_sensors.py（2026-10-25 起跟各產品函式庫放同一個資料夾）
+    for (const p of protos) { const lib = spike.LIB[p.id]; const f = lib && lib.file.replace(/[^/]+$/, 'MBC_sensors.py'); if (f && exists(decodeURIComponent(f))) add(f, `${T(lang, '共用函式庫（新專案用，一個檔適用全部 MBC 感應器）', 'Shared library (for new projects, one file for every MBC sensor)')} MBC_sensors.py`); }
+    // 3.6.1 已不再更新（2026-10-25）：說明頁只列 4.x，3.6.1 zip 只放在下載專區的「舊版」區
+    // v4.0.0 檔名的 zip 只是舊連結相容用的複本（內容＝v4.x），不列出
+    for (const f of listDir(`examples/${key}`, /pybricks_spike.*\.zip$/i)) if (!/v3\.6\.1|v4\.0\.0/.test(f)) add(f, base(f));
     for (const f of listDir('downloads', new RegExp(`^MBC_${K}_Pybricks_Lib.*\\.zip$`, 'i'))) add(f, base(f));
   }
   if (host === 'spike' && sw === 'official') {

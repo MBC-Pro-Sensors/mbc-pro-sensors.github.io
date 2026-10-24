@@ -13,14 +13,14 @@ Every MBC library, block extension, example pack and catalog on one page. Check 
 <!-- gen:downloads-table -->
 | File | Contents | Version | Firmware | Size | Date |
 | :--- | :--- | :---: | :--- | :---: | :---: |
-| [MBC_EXP6_Pybricks_Lib_v2.zip](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip) | EXP6 expander: Pybricks library v2 + examples (`MBC_exp6_obj_Lib_v2.py`, `Exp6_objMode_Demo.py`, command manual PDF, 11 programs in `examples/`) | 2.0 | EXP6 v2 | 1.5 MB | 2026-10-21 |
+| [MBC_EXP6_Pybricks_Lib_v2.zip](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip) | EXP6 expander: Pybricks library v2 + examples (`MBC_exp6_obj_Lib_v2.py`, `Exp6_objMode_Demo.py`, command manual PDF, 11 programs in `examples/`) | 2.0 | EXP6 v2 | 1.5 MB | 2026-10-25 |
 | [MBC_EXP6_Official_App_Lib_v2.zip](/downloads/MBC_EXP6_Official_App_Lib_v2.zip) | EXP6 expander: official SPIKE App library v2 + examples (`MBC_exp6_SPIKE_App_Lib.py`, install / uninstall scripts for `SPIKE_Education/` and `Robot_Inventor/`, 9 programs in `examples/`) | 2.0 | EXP6 v2 | 1.2 MB | 2026-10-21 |
 | [MBC_EXP6_Pybricks_Lib.zip](/downloads/MBC_EXP6_Pybricks_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | EXP6 Pybricks library (legacy, v1 firmware) — for firmware shipped before 2026-10 | 1.x | EXP6 v1 | 1.5 MB | 2026-10-07 |
 | [MBC_EXP6_Official_App_Lib.zip](/downloads/MBC_EXP6_Official_App_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | EXP6 official SPIKE App library (legacy, v1 firmware) — for firmware shipped before 2026-10 | 1.x | EXP6 v1 | 1.1 MB | 2026-10-21 |
 | [MBC_Servo6_Pybricks_Lib.zip](/downloads/MBC_Servo6_Pybricks_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | Servo6 expander: Pybricks library — for firmware shipped before 2026-10 | 1.0 | Servo6 | 8.7 KB | 2026-10-21 |
 | [MBC_Servo6_Official_App_Lib.zip](/downloads/MBC_Servo6_Official_App_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | Servo6 expander: official SPIKE App library — for firmware shipped before 2026-10 | 1.0 | Servo6 | 5.3 KB | 2026-10-21 |
-| [line8_pybricks_spike_v4.0.0.zip](/examples/line8/line8_pybricks_spike_v4.0.0.zip) | Line Follower 8-ch: SPIKE Pybricks library + examples (`MBC_line8_obj_Lib_v400.py` plus 2 block-style and 2 Python examples) | 4.0.0 | Pybricks 4.0.0 | 15 KB | 2026-10-24 |
-| [MBC_TOF8_Pybricks_Lib.zip](/downloads/MBC_TOF8_Pybricks_Lib.zip) | Ranger 8-ch TOF8: SPIKE Pybricks library (`MBC_laser8_Lib.py`, `MBC_laser8_obj_Lib.py`) | 1.0 | Pybricks | 10 KB | 2026-10-24 |
+| [line8_pybricks_spike_v4.x.zip](/examples/line8/line8_pybricks_spike_v4.x.zip) | Line Follower 8-ch: SPIKE Pybricks library + examples (`MBC_sensors.py`, `MBC_line8_obj_Lib.py` plus 2 block-style and 2 Python examples) | 4.x | Pybricks 4.1 | 31 KB | 2026-10-25 |
+| [MBC_TOF8_Pybricks_Lib.zip](/downloads/MBC_TOF8_Pybricks_Lib.zip) | Ranger 8-ch TOF8: SPIKE Pybricks library (`MBC_sensors.py`, `MBC_laser8_obj_Lib.py`) | 1.0 | Pybricks 4.1 | 21 KB | 2026-10-25 |
 | [MBC_Pro_Sensors_mBlock5_v1.0.0.mext](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | mBlock 5 extension v1.0.0 (legacy, 15 blocks) — for firmware shipped before 2026-10 | 1.0.0 | mBlock v1 (before 2026-10) | 1.9 MB | 2026-10-21 |
 <!-- /gen -->
 
@@ -73,14 +73,33 @@ Line-by-line explanations are on each product's "Arduino Examples" page; start a
 
 ## 🧱 SPIKE / EV3 Pybricks examples (.zip)
 
-| Product | SPIKE Pybricks 4.0.0 | SPIKE Pybricks 3.6.1 | EV3 Pybricks |
-| :--- | :--- | :--- | :--- |
-| Pathfinder 8-Way | [line8_pybricks_spike_v4.0.0.zip](/examples/line8/line8_pybricks_spike_v4.0.0.zip) | [line8_pybricks_spike_v3.6.1.zip](/examples/line8/line8_pybricks_spike_v3.6.1.zip) | [line8_pybricks_ev3.zip](/examples/line8/line8_pybricks_ev3.zip) |
-| Pathfinder 16-Way | [line16_pybricks_spike_v4.0.0.zip](/examples/line16/line16_pybricks_spike_v4.0.0.zip) | [line16_pybricks_spike_v3.6.1.zip](/examples/line16/line16_pybricks_spike_v3.6.1.zip) | [line16_pybricks_ev3.zip](/examples/line16/line16_pybricks_ev3.zip) |
-| Ranger 2-Way | [tof2_pybricks_spike_v4.0.0.zip](/examples/tof2/tof2_pybricks_spike_v4.0.0.zip) | — | — |
-| Ranger 8-Way | [tof8_pybricks_spike_v4.0.0.zip](/examples/tof8/tof8_pybricks_spike_v4.0.0.zip) | [tof8_pybricks_spike_v3.6.1.zip](/examples/tof8/tof8_pybricks_spike_v3.6.1.zip) | — |
-| Controller PS2 | — | [ps2_pybricks_spike_v3.6.1.zip](/examples/ps2/ps2_pybricks_spike_v3.6.1.zip) | — |
-| Controller PS4 / PS5 | — | [ps4_pybricks_spike_v3.6.1.zip](/examples/ps4/ps4_pybricks_spike_v3.6.1.zip) | — |
+The current version is **Pybricks 4.1** (the stable code.pybricks.com is v4.1.1; v4.1.0 from the MBC SPIKE Blocks website works too). Every pack includes `MBC_sensors.py`: **one file for every MBC sensor** (shared by SPIKE and EV3). New projects only need to import it: `from MBC_sensors import MBC_LINE8` (classes: `MBC_LINE8`, `MBC_LINE16`, `MBC_LASER2`, `MBC_LASER8`, `MBC_GAMEPAD`, `MBC_CAM_SCHOOL`, `MBC_HUE12`).
+
+> [!IMPORTANT]
+> The old-name libraries in the packs (such as `MBC_line8_obj_Lib.py`) are for **swapping into existing projects**: an old project just replaces the one file it already uses, with no code changes. Every old-name file is the whole shared library, so importing 3 or more in one program goes over the SPIKE program slot limit of about 51 KB; to mix several sensors, import only `MBC_sensors.py`.
+
+| Product | SPIKE Pybricks 4.1 | EV3 Pybricks |
+| :--- | :--- | :--- |
+| Pathfinder 8-Way | [line8_pybricks_spike_v4.x.zip](/examples/line8/line8_pybricks_spike_v4.x.zip) | [line8_pybricks_ev3.zip](/examples/line8/line8_pybricks_ev3.zip) |
+| Pathfinder 16-Way | [line16_pybricks_spike_v4.x.zip](/examples/line16/line16_pybricks_spike_v4.x.zip) | [line16_pybricks_ev3.zip](/examples/line16/line16_pybricks_ev3.zip) |
+| Ranger 2-Way | [tof2_pybricks_spike_v4.x.zip](/examples/tof2/tof2_pybricks_spike_v4.x.zip) | — |
+| Ranger 8-Way | [tof8_pybricks_spike_v4.x.zip](/examples/tof8/tof8_pybricks_spike_v4.x.zip) | — |
+| Controller PS2 | [ps2_pybricks_spike_v4.x.zip](/examples/ps2/ps2_pybricks_spike_v4.x.zip) | — |
+| Controller PS4 / PS5 | [ps4_pybricks_spike_v4.x.zip](/examples/ps4/ps4_pybricks_spike_v4.x.zip) | — |
+
+### Legacy (no longer updated)
+
+The Pybricks **3.6.1** libraries and examples: for hubs that have not been upgraded to Pybricks 4; the 2026 SPIKE hubs cannot use them. These files will not be updated again; please move to the 4.1 packs above if you can.
+
+| Product | SPIKE Pybricks 3.6.1 |
+| :--- | :--- |
+| Pathfinder 8-Way | [line8_pybricks_spike_v3.6.1.zip](/examples/line8/line8_pybricks_spike_v3.6.1.zip) |
+| Pathfinder 16-Way | [line16_pybricks_spike_v3.6.1.zip](/examples/line16/line16_pybricks_spike_v3.6.1.zip) |
+| Ranger 8-Way | [tof8_pybricks_spike_v3.6.1.zip](/examples/tof8/tof8_pybricks_spike_v3.6.1.zip) |
+| Controller PS2 | [ps2_pybricks_spike_v3.6.1.zip](/examples/ps2/ps2_pybricks_spike_v3.6.1.zip) |
+| Controller PS4 / PS5 | [ps4_pybricks_spike_v3.6.1.zip](/examples/ps4/ps4_pybricks_spike_v3.6.1.zip) |
+
+### Beginner examples (not packed)
 
 The beginner examples for the official SPIKE App (.llsp3), the MBC blocks site (.abp) and the EV3 software (.ev3 / .lmsp / clev3r .bp) are **not packed**: each one is downloaded from its page, with a screenshot (SPIKE example pages are in Chinese; EV3 pages are in English):
 

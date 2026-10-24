@@ -3,7 +3,7 @@
 - **Sensor**: {{product}} ({{edition}}, RJ12 plug).
 - **Brick**: LEGO MINDSTORMS EV3.
 - **Software** (pick one):
-  - **Pybricks v4**: open [code.pybricks.com](https://code.pybricks.com) in Chrome; the EV3 needs the Pybricks firmware first (EV3 firmware is currently only in the **Beta**).
+  - **Pybricks v4**: open [code.pybricks.com](https://code.pybricks.com) in Chrome; the EV3 needs the Pybricks firmware first (the stable release now includes EV3 firmware, **v4.1.1** as of 2026-10).
   - **EV3 MicroPython v2.0**: the official LEGO "EV3 MicroPython" microSD boot card + the "LEGO MINDSTORMS EV3 MicroPython" extension for VS Code. Pick this if you already use it.
 
 ### Install the software
@@ -11,7 +11,7 @@
 **Pybricks v4**
 
 1. Open [code.pybricks.com](https://code.pybricks.com) in Chrome.
-2. Follow the website to switch the EV3 to Pybricks firmware. EV3 firmware is currently only offered in the **Beta**; the version tested for this site is **v4.0.0b10 (Pybricks Beta v3.0.0-beta.7)**.
+2. Follow the website to switch the EV3 to Pybricks firmware. The stable code.pybricks.com now includes EV3 firmware (**v4.1.1** as of 2026-10). The examples on this site were first bench-tested on v4.0.0b10; v4.1.1 uses the same code.
 3. To open an example: drag the `.py` file into the editor and press Run.
 
 **EV3 MicroPython v2.0**
@@ -44,7 +44,7 @@ The beginner examples **need no library**; they read the sensor data directly:
 
 ### FAQ
 
-- **Cannot find Pybricks firmware for the EV3?** EV3 firmware is only in the Beta for now; there is no stable release yet.
+- **Cannot find Pybricks firmware for the EV3?** Use the stable code.pybricks.com (EV3 v4.1.1 built in since 2026-10); the old ev3dev-based Pybricks (microSD card) is a different system and does not apply here.
 - **The number never changes?** Unplug the sensor and plug it back in (the EV3 must be on first).
 - **The program reacts unevenly?** The main loop reads different modes in turn and waits at every switch. Use one mode only.
 - **Error when importing a library?** The library file must be imported into the same Pybricks project, and its file name must match the `import` name exactly.
