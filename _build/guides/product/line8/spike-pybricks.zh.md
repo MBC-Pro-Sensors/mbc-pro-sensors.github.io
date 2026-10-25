@@ -1,3 +1,6 @@
+> [!TIP]
+> **🧩 第一次用？跟著互動教學一步一步做：**[MicroPython 版](/learn/line8/micropython.html)・[Pybricks 積木版](/learn/line8/pybricks-blocks.html)。左邊點選、右邊程式跟著長出來，每個功能都有範例，還有模擬感應器可以拖線看數值。
+
 ### 先校準（只要做一次）
 
 循行者要先「認識」你場地上的黑色和白色，數值才會準。校準完會記在感應器裡，重新開機也還在（除非換場地）。
@@ -18,7 +21,7 @@
 
 - [📥 打包下載（Pybricks 4.1）](/examples/line8/line8_pybricks_spike_v4.x.zip)
 
-單獨下載函式庫：[MBC_sensors.py](/examples/line8/pybricks/For%20firmware%204.x/MBC_sensors.py)（新專案用這個，一個檔適用全部 MBC 感應器）・[MBC_line8_obj_Lib.py](/examples/line8/pybricks/For%20firmware%204.x/MBC_line8_obj_Lib.py)（本頁範例與舊程式用）
+單獨下載函式庫：[MBC_sensors.py](/examples/line8/pybricks/For%20firmware%204.x/MBC_sensors.py)（新專案用這個，一個檔適用全部 MBC 感應器）・[MBC_line8.py](/examples/line8/pybricks/For%20firmware%204.x/MBC_line8.py)（只接循行者 8 路時用，檔案小、上傳快：`from MBC_line8 import MBC_LINE8`）・[MBC_line8_obj_Lib.py](/examples/line8/pybricks/For%20firmware%204.x/MBC_line8_obj_Lib.py)（本頁範例與舊程式用）
 
 > [!IMPORTANT]
 > 範例程式寫的是 `from MBC_line8_obj_Lib import MBC_LINE8`，所以要匯入 `MBC_line8_obj_Lib.py`（檔名不用改）。自己寫新程式改成 `from MBC_sensors import MBC_LINE8`，只匯入 `MBC_sensors.py`。函式庫要跟主程式放在**同一個專案列表**裡。
