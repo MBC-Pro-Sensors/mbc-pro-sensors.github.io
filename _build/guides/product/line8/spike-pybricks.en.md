@@ -1,6 +1,3 @@
-> [!TIP]
-> **🧩 New to the Pathfinder 8-Way? Follow the step-by-step interactive tutorial:** [MicroPython](/en/learn/line8/micropython.html) · [Pybricks blocks](/en/learn/line8/pybricks-blocks.html). Pick options on the left and watch the code build up on the right; every function has an example, and a simulated sensor lets you try the values.
-
 ### Calibrate first (only once)
 
 The Pathfinder has to "learn" the black and white of your mat before its numbers are right. Calibration is stored in the sensor and survives power-off (until you change mats).

@@ -1,6 +1,3 @@
-> [!TIP]
-> **🧩 New to the Pathfinder 8-Way? Follow the step-by-step interactive tutorial:** [MBC Blocks website](/en/learn/line8/mbc-blocks.html). Pick options on the left and watch the blocks build up on the right; every function has an example, and a simulated sensor lets you try the values.
-
 ### Calibrate first (only once)
 
 The Pathfinder has to "learn" the black and white of your mat before its numbers are right. Calibration is stored in the sensor and survives power-off (until you change mats).

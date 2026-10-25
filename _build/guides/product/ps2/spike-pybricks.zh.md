@@ -1,6 +1,3 @@
-> [!TIP]
-> **🧩 掌控者 第一次用？跟著互動教學一步一步做：**[MicroPython 版](/learn/gamepad/micropython.html)・[Pybricks 積木版](/learn/gamepad/pybricks-blocks.html)。左邊點選、右邊程式跟著長出來，每個功能都有範例，還有模擬感應器可以操作看數值。
-
 ### 讓手把連上接收器
 
 PS2 的 2.4G 手把和它的接收頭是**原廠成對**的，不用按任何配對鍵。

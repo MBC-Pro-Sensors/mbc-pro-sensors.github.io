@@ -40,7 +40,7 @@ const git = (args) => execSync(`git ${args}`, { cwd: ROOT, encoding: 'utf8' });
 const tracked = git('-c core.quotepath=off ls-files --cached --others --exclude-standard').split('\n').filter(Boolean);
 
 // ---------------------------------------------------------------- URL mapping
-const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol|makeblock|guide|privacy|wro-rules|competitions|faq|where-to-buy|distributors|reference|matrix|microbit|downloads)\.md$/.test(f) || /^(en\/)?(sensors|articles)\//.test(f));
+const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol|makeblock|guide|privacy|wro-rules|competitions|faq|where-to-buy|distributors|reference|matrix|microbit|downloads)\.md$/.test(f) || /^(en\/)?(sensors|articles)\//.test(f) || /^(en\/)?learn\/index\.md$/.test(f));
 const pages = tracked.filter(isPage);
 
 function urlFor(mdPath) {
@@ -307,9 +307,9 @@ const quoteLink = (lang, cls, label) => lang === 'en'
   : `<a class="${cls}" href="${LINE_URL}" target="_blank" rel="noopener">💬 ${label}</a>`;
 const UI = {
   zh: { search: '搜尋文件', toc: '目錄', lang: 'EN', home: '首頁', line: 'LINE 詢價', guide: '選購指南', guideHref: '/guide.html', choose: '選擇版本：', guides: '各版本教學：',
-    nav: [['產品', '/#products'], ['比賽對照', '/competitions.html'], ['教學文章', '/articles/'], ['選購指南', '/guide.html'], ['購買管道', '/where-to-buy.html'], ['聯絡我們', '/contact.html']], cta: { h: '想購買或詢價？', p: '個人購買、學校 / 社團大量採購、代理洽談都歡迎，工程師工作日 24 小時內回覆。', line: 'LINE 立即詢價', mail: 'Email 詢價', more: '更多聯絡方式', contact: '/contact.html' } },
+    nav: [['產品', '/#products'], ['互動教學', '/learn/'], ['比賽對照', '/competitions.html'], ['教學文章', '/articles/'], ['選購指南', '/guide.html'], ['購買管道', '/where-to-buy.html'], ['聯絡我們', '/contact.html']], cta: { h: '想購買或詢價？', p: '個人購買、學校 / 社團大量採購、代理洽談都歡迎，工程師工作日 24 小時內回覆。', line: 'LINE 立即詢價', mail: 'Email 詢價', more: '更多聯絡方式', contact: '/contact.html' } },
   en: { search: 'Search docs', toc: 'Contents', lang: '中文', home: 'Home', line: 'Email for a quote', guide: 'Buying Guide', guideHref: '/en/guide.html', choose: 'Choose edition:', guides: 'Setup guides:',
-    nav: [['Products', '/en/#products'], ['Competitions', '/en/competitions.html'], ['Videos', '/en/#videos'], ['Buying Guide', '/en/guide.html'], ['Where to Buy', '/en/where-to-buy.html'], ['Contact', '/en/contact.html']], cta: { h: 'Interested in this sensor?', p: 'Ask us for pricing, bulk / school orders or distributor info. Our engineers reply within 24 hours on weekdays.', line: 'Chat on LINE', mail: 'Email us', more: 'All contact options', contact: '/en/contact.html' } },
+    nav: [['Products', '/en/#products'], ['Tutorials', '/en/learn/'], ['Competitions', '/en/competitions.html'], ['Videos', '/en/#videos'], ['Buying Guide', '/en/guide.html'], ['Where to Buy', '/en/where-to-buy.html'], ['Contact', '/en/contact.html']], cta: { h: 'Interested in this sensor?', p: 'Ask us for pricing, bulk / school orders or distributor info. Our engineers reply within 24 hours on weekdays.', line: 'Chat on LINE', mail: 'Email us', more: 'All contact options', contact: '/en/contact.html' } },
 };
 
 // Site-wide footer: company name + trademark disclaimer (LEGO Fair Play guidelines)
@@ -411,9 +411,9 @@ function gEnter(lang, k, h, keepSw) {
 }
 const GL = {
   zh: { product: '產品', host: '主機', sw: '軟體', pickSw: '選軟體', overview: '平台總覽：版本與接線', switcher: '切換產品、主機、軟體', none: (h) => `沒有 ${h} 版`,
-    pickHost: '① 選你的主機', pickHostSub: '只列出這款產品能用的主機；選好主機再選軟體，之後整頁都只講你的軟體。', pickSwTitle: '選你用的軟體', cont: '繼續用', step1: '選產品', step2: '選主機', step3: '選軟體', go: '前往', result: '選好產品、主機和軟體，這裡就會出現入口', table: '所有產品 × 主機對照表', noHost: '這款沒有這個主機', moved: '這頁內容已整合到新的說明頁：', title: '找到你的程式' },
+    learn: '用 SPIKE 主機？不用接線，先在網頁上玩互動教學。', pickHost: '① 選你的主機', pickHostSub: '只列出這款產品能用的主機；選好主機再選軟體，之後整頁都只講你的軟體。', pickSwTitle: '選你用的軟體', cont: '繼續用', step1: '選產品', step2: '選主機', step3: '選軟體', go: '前往', result: '選好產品、主機和軟體，這裡就會出現入口', table: '所有產品 × 主機對照表', noHost: '這款沒有這個主機', moved: '這頁內容已整合到新的說明頁：', title: '找到你的程式' },
   en: { product: 'Product', host: 'Host', sw: 'Software', pickSw: 'Pick software', overview: 'Host overview: edition and wiring', switcher: 'Switch product, host or software', none: (h) => `no ${h} edition`,
-    pickHost: '① Pick your host', pickHostSub: 'Only hosts this product supports are listed; pick one, then your software, and the page covers just that software.', pickSwTitle: 'Pick your software', cont: 'Continue with', step1: 'Pick a product', step2: 'Pick a host', step3: 'Pick software', go: 'Go to', result: 'Pick a product, a host and software to get the link', table: 'All products × hosts', noHost: 'Not available for this product', moved: 'This page has moved into the new guide: ', title: 'Find your program' },
+    learn: 'Using a SPIKE hub? Try the interactive tutorial in your browser first, no wiring needed.', pickHost: '① Pick your host', pickHostSub: 'Only hosts this product supports are listed; pick one, then your software, and the page covers just that software.', pickSwTitle: 'Pick your software', cont: 'Continue with', step1: 'Pick a product', step2: 'Pick a host', step3: 'Pick software', go: 'Go to', result: 'Pick a product, a host and software to get the link', table: 'All products × hosts', noHost: 'Not available for this product', moved: 'This page has moved into the new guide: ', title: 'Find your program' },
 };
 const fileOk = (p) => p && p.startsWith('/') && fs.existsSync(path.join(ROOT, decodeURI(p)));
 // 主機圖：images/illust/host-*.svg（插畫）優先，沒有就用 hubs 照片或 Lucide 圖示
@@ -430,6 +430,58 @@ function gSwImg(s) {
 }
 const swNames = (lang, h, sws) => sws.map((s) => L_(gSw(h, s).name, lang)).join(lang === 'en' ? ' · ' : '・');
 function L_(o, lang) { return (o && (o[lang] || o.zh)) || ''; }
+
+// 互動教學（learn/<教學>/<種類>.html，英文在 en/learn/；由互動教學技能的 wrap_learn.js 產生）
+// 網站產品 → 教學（神攝手分學校版、WRO 版；PS2／PS4 共用一套）；SPIKE 軟體 → 教學種類。只列實際有檔的頁。
+const LEARN = { line8: ['line8'], line16: ['line16'], tof2: ['laser2'], tof8: ['laser8'], ps2: ['gamepad'], ps4: ['gamepad'], esp32cam: ['cam_school', 'hue12'], exp6: ['exp6'], servo6: ['servo6'] };
+const LEARN_SW = { pybricks: ['micropython', 'pybricks-blocks'], mbcblocks: ['mbc-blocks'], official: ['spike-app'] };
+const LK = {
+  zh: { title: '互動教學', tag: 'SPIKE', sub: '不用接主機，先在網頁上點點看：左邊選功能，右邊的程式或積木跟著長出來，還能拖拉模擬感應器看數值。',
+    swSub: '第一次用？先跟著互動教學在網頁上做一遍，再照下面的步驟接主機。', all: '全部產品的互動教學', guide: 'SPIKE 說明',
+    kinds: { micropython: 'MicroPython（Pybricks）', 'pybricks-blocks': 'Pybricks 積木', 'mbc-blocks': 'MBC 積木網站', 'spike-app': '樂高官方 SPIKE App' },
+    eds: { cam_school: '學校版', hue12: 'WRO 版' }, gamepad: '掌控者 PS2／PS4' },
+  en: { title: 'Interactive tutorial', tag: 'SPIKE', sub: 'No hub needed: click through it in your browser. Pick a function on the left, watch the code or blocks build up on the right, and drag the simulated sensor to see the values.',
+    swSub: 'First time? Try the interactive tutorial in your browser first, then follow the steps below with your hub.', all: 'Interactive tutorials for all products', guide: 'SPIKE guide',
+    kinds: { micropython: 'MicroPython (Pybricks)', 'pybricks-blocks': 'Pybricks blocks', 'mbc-blocks': 'MBC Blocks website', 'spike-app': 'LEGO SPIKE App' },
+    eds: { cam_school: 'School edition', hue12: 'WRO edition' }, gamepad: 'Controller PS2 / PS4' },
+};
+const learnHub = (lang) => `${gpre(lang)}/learn/`;
+// [{ t: 教學, items: [{ kind, url }] }]；sws 不給 = 全部軟體
+function learnOf(lang, key, sws) {
+  const kinds = (sws || Object.keys(LEARN_SW)).flatMap((s) => LEARN_SW[s] || []);
+  return (LEARN[key] || []).map((t) => ({ t, items: kinds.map((kind) => ({ kind, url: `${learnHub(lang)}${t}/${kind}.html` })).filter((x) => fileOk(x.url)) }))
+    .filter((g) => g.items.length);
+}
+function learnLinks(lang, groups) {
+  const K = LK[lang];
+  return groups.map((g) => `<p class="lb-links">${K.eds[g.t] ? `<span class="lb-ed">${K.eds[g.t]}</span>` : ''}${g.items.map((x) => `<a href="${x.url}">${K.kinds[x.kind]}</a>`).join('')}</p>`).join('');
+}
+// 產品頁（主機格子下面）、SPIKE 平台頁（軟體格子下面）、SPIKE 軟體頁（最上面）共用的入口框
+function learnBox(lang, key, sws, mode) {
+  const groups = learnOf(lang, key, sws);
+  if (!groups.length) return '';
+  const K = LK[lang];
+  return `<div class="learn-box${mode === 'sw' ? ' lb-sw' : ''}"><p class="lb-title">${icon('puzzle')}<b>${K.title}</b><span class="lb-tag">${K.tag}</span></p>` +
+    `<p class="lb-sub">${mode === 'sw' ? K.swSub : K.sub}</p>${learnLinks(lang, groups)}` +
+    (mode === 'sw' ? '' : `<p class="lb-all"><a href="${learnHub(lang)}">${K.all} →</a></p>`) + `</div>`;
+}
+// learn/index.md 的 <!-- learn-hub -->：每款產品一張卡（PS2／PS4 合一張）
+function learnHubHtml(lang) {
+  const K = LK[lang], seen = new Set(), cards = [];
+  for (const [k, p] of Object.entries(GI.products)) {
+    for (const t of LEARN[k] || []) {
+      if (seen.has(t)) continue;
+      seen.add(t);
+      const groups = learnOf(lang, k, null).filter((g) => g.t === t);
+      if (!groups.length) continue;
+      const name = t === 'gamepad' ? K.gamepad : escAttr(L_(p.short, lang)) + (K.eds[t] ? ` ${K.eds[t]}` : '');
+      cards.push(`<div class="learn-card" id="${t}" style="--pc:${p.color}">${p.image ? `<img src="${p.image}" alt="" loading="lazy">` : '<span class="ft-noimg"></span>'}` +
+        `<div><h3>${name}</h3>${groups[0].items.map((x) => `<a href="${x.url}">${K.kinds[x.kind]}</a>`).join('')}` +
+        `<a class="lc-guide" href="${gHostUrl(lang, k, 'spike')}">${K.guide} →</a></div></div>`);
+    }
+  }
+  return `<div class="learn-hub">${cards.join('')}</div>`;
+}
 
 // 第 2、3 層頁面頂端的切換列：產品 ▾ › 主機 ▾ › 軟體 ▾（<details> 下拉：不用 JS 也能用、鍵盤可操作；連結在建站時算好）
 function switcherHtml(lang, g) {
@@ -478,7 +530,7 @@ function platformGrid(key, lang) {
   const ref = [`/images/illust/ref-${key}.webp`, `/images/illust/ref-${key}.svg`].find(fileOk);
   return `<div class="pick" id="pick-host">${ref ? `<img class="pick-banner" src="${ref}" alt="" loading="lazy">` : ""}<h2 class="pick-title">${T_.pickHost}</h2><p class="pick-sub">${T_.pickHostSub}</p>` +
     `<p class="pick-continue" hidden></p>` +
-    `<div class="pick-grid pick-hosts">${tiles.join('')}</div>` +
+    `<div class="pick-grid pick-hosts">${tiles.join('')}</div>` + learnBox(lang, key, null, 'product') +
     `<script type="application/json" class="pick-data">${JSON.stringify({ cont: T_.cont, hosts: data }).replace(/</g, '\\u003c')}</script></div>`;
 }
 
@@ -503,6 +555,7 @@ function finderHtml(lang) {
     `<div class="finder-result" aria-live="polite"><p>${T_.result}</p></div>` +
     `</div>` +
     `<details class="finder-table" open><summary>${T_.table}</summary><table><thead><tr><th>${T_.product}</th>${GI.hosts.map((h) => `<th>${h.name[lang]}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></details>` +
+    `<p class="finder-learn">${icon('puzzle')}<span>${T_.learn}</span><a href="${learnHub(lang)}">${LK[lang].all} →</a></p>` +
     `<script type="application/json" id="finder-data">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>` +
     `</div>`;
 }
@@ -921,9 +974,15 @@ for (const file of pages) {
     html = collapseSections(html, file);
     html += ctaHtml(lang);
   }
+  if (html.includes('<!-- learn-hub -->')) html = html.replace('<!-- learn-hub -->', learnHubHtml(lang));
   if (html.includes('<!-- finder -->')) html = html.replace('<!-- finder -->', finderHtml(lang));
   if (guide) {
-    html = html.replace('<!-- sw-grid -->', swGridHtml(lang, guide.key, guide.host));
+    html = html.replace('<!-- sw-grid -->', swGridHtml(lang, guide.key, guide.host) + (guide.host === 'spike' ? learnBox(lang, guide.key, null, 'host') : ''));
+    // SPIKE 軟體頁：互動教學入口放最上面（標題、麵包屑之後）
+    if (guide.sw && guide.host === 'spike') {
+      const box = learnBox(lang, guide.key, [guide.sw], 'sw');
+      if (box) html = html.replace(/<\/h1>(?:<nav class="breadcrumbs"[\s\S]*?<\/nav>)?/, (m) => m + box);
+    }
     html = switcherHtml(lang, guide) + html;
   }
   const layout = src.includes('<!-- layout: landing -->') ? 'landing' : 'docs';

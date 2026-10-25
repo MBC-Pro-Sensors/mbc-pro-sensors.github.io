@@ -1,6 +1,3 @@
-> [!TIP]
-> **🧩 Servo6 多路舵機擴充器 第一次用？跟著互動教學一步一步做：**[MicroPython 版](/learn/servo6/micropython.html)・[Pybricks 積木版](/learn/servo6/pybricks-blocks.html)。左邊點選、右邊程式跟著長出來，每個功能都有範例，還有模擬感應器可以操作看數值。
-
 > [!NOTE]
 > Servo6 **即將推出**：已完成電路與韌體，正在做最後的主機實測，規格以正式上市版本為準。只支援 **SPIKE Prime**（不支援 Robot Inventor 與 EV3）。
 

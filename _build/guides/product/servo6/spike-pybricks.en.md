@@ -1,6 +1,3 @@
-> [!TIP]
-> **🧩 New to the Servo6? Follow the step-by-step interactive tutorial:** [MicroPython](/en/learn/servo6/micropython.html) · [Pybricks blocks](/en/learn/servo6/pybricks-blocks.html). Pick options on the left and watch the code build up on the right; every function has an example, and a simulated sensor lets you try the values.
-
 > [!NOTE]
 > Servo6 is **coming soon**: circuit and firmware are done and final hub testing is under way; specifications follow the release version. **SPIKE Prime only** (not Robot Inventor or EV3).
 

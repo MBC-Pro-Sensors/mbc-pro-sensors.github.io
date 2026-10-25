@@ -1,6 +1,3 @@
-> [!TIP]
-> **🧩 New to the EXP6? Follow the step-by-step interactive tutorial:** [LEGO SPIKE App](/en/learn/exp6/spike-app.html). Pick options on the left and watch the blocks build up on the right; every function has an example, and a simulated sensor lets you try the values.
-
 ### Wiring and power
 
 1. **Host cable**: plug the expander's **Host cable** into any SPIKE hub port (A~F).

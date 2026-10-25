@@ -1,6 +1,3 @@
-> [!TIP]
-> **🧩 New to the Controller? Follow the step-by-step interactive tutorial:** [MicroPython](/en/learn/gamepad/micropython.html) · [Pybricks blocks](/en/learn/gamepad/pybricks-blocks.html). Pick options on the left and watch the code build up on the right; every function has an example, and a simulated sensor lets you try the values.
-
 ### Connect the gamepad to the receiver
 
 The PS2 2.4G gamepad and its receiver are **paired at the factory**; no pairing button needed.

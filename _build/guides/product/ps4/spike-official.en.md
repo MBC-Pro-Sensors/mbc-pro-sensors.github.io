@@ -1,6 +1,3 @@
-> [!TIP]
-> **🧩 New to the Controller? Follow the step-by-step interactive tutorial:** [LEGO SPIKE App](/en/learn/gamepad/spike-app.html). Pick options on the left and watch the blocks build up on the right; every function has an example, and a simulated sensor lets you try the values.
-
 ### Pair the gamepad (first use or new gamepad)
 
 1. Connect the receiver and turn the controller on. **Do not hold the receiver's button while plugging it in** (that enters flashing mode and the receiver does nothing; release the button, unplug and replug).

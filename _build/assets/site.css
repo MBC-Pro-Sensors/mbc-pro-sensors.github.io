@@ -974,3 +974,29 @@ body.docs .markdown-section blockquote.callout-warning .callout-title { color: #
 .yt-lite:hover img { opacity: .9; }
 .yt-lite:focus-visible { outline: 3px solid #fff; outline-offset: -3px; box-shadow: inset 0 0 0 6px #0a7c78; }
 iframe.yt-on { display: block; width: 100%; aspect-ratio: 16 / 9; height: auto; border: 0; }
+
+/* 互動教學入口（產品頁、SPIKE 平台頁、SPIKE 軟體頁、首頁 finder、learn/ 總覽） */
+.markdown-section .learn-box { margin: 18px 0 8px; padding: 16px 18px; border: 1px solid #f2d36b; border-left: 5px solid #f5b800; border-radius: 14px; background: #fffbea; }
+.markdown-section .learn-box.lb-sw { margin: 4px 0 20px; }
+.markdown-section .learn-box p { margin: 0; }
+.markdown-section .learn-box .lb-title { display: flex; align-items: center; gap: 8px; font-size: 1.08rem; color: #10212b; }
+.markdown-section .learn-box .lb-title .i { width: 22px; height: 22px; color: #b07d00; flex: none; }
+.markdown-section .learn-box .lb-tag { font-size: 0.75rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: #f5b800; color: #10212b; }
+.markdown-section .learn-box .lb-sub { margin: 6px 0 10px; color: var(--ink-mute); }
+.markdown-section .learn-box .lb-links, .markdown-section .learn-card div { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.markdown-section .learn-box .lb-links + .lb-links { margin-top: 8px; }
+.markdown-section .learn-box .lb-ed { min-width: 4.5em; font-weight: 700; color: var(--ink-2); }
+.markdown-section .learn-box .lb-links a, .markdown-section .learn-card div a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 22px; background: #10212b; color: #fff; font-weight: 700; text-decoration: none; }
+.markdown-section .learn-box .lb-links a:hover, .markdown-section .learn-card div a:hover { background: #24404f; text-decoration: none; }
+.markdown-section .learn-box .lb-all { margin-top: 10px; }
+.markdown-section .learn-box .lb-all a { font-weight: 700; }
+.markdown-section .finder-learn { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 14px 0 0; padding: 12px 16px; border-radius: 12px; background: #fffbea; border: 1px solid #f2d36b; }
+.markdown-section .finder-learn .i { width: 20px; height: 20px; color: #b07d00; }
+.markdown-section .finder-learn a { font-weight: 700; }
+.markdown-section .learn-hub { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; margin: 16px 0; }
+.markdown-section .learn-card { display: grid; grid-template-columns: 84px 1fr; gap: 14px; align-items: start; padding: 14px; border: 1px solid var(--rule); border-top: 4px solid var(--pc, var(--brand)); border-radius: 14px; background: #fff; scroll-margin-top: 80px; }
+.markdown-section .learn-card > img, .markdown-section .learn-card > .ft-noimg { width: 84px; height: 84px; object-fit: contain; }
+.markdown-section .learn-card h3 { flex-basis: 100%; margin: 0 0 2px; font-size: 1.08rem; }
+.markdown-section .learn-card div a { min-height: 40px; padding: 0 14px; font-size: 0.92rem; }
+.markdown-section .learn-card div a.lc-guide { background: #fff; color: var(--ink-2); border: 1px solid #cfd8de; }
+@media (max-width: 480px) { .markdown-section .learn-card { grid-template-columns: 56px 1fr; } .markdown-section .learn-card > img, .markdown-section .learn-card > .ft-noimg { width: 56px; height: 56px; } }

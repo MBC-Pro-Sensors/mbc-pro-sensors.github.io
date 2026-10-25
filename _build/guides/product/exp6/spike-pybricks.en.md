@@ -1,6 +1,3 @@
-> [!TIP]
-> **🧩 New to the EXP6? Follow the step-by-step interactive tutorial:** [MicroPython](/en/learn/exp6/micropython.html) · [Pybricks blocks](/en/learn/exp6/pybricks-blocks.html). Pick options on the left and watch the code build up on the right; every function has an example, and a simulated sensor lets you try the values.
-
 ### Wiring and power
 
 1. **Host cable**: plug the expander's **Host cable** into any SPIKE hub port (A~F).

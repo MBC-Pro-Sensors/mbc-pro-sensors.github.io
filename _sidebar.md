@@ -3,6 +3,7 @@
   - [首頁](/README.md)
   - [🧭 選購指南](/guide.md)
   - [🚀 已經買好？找程式](/guide.md#start)
+  - [🧩 互動教學（SPIKE）](/learn/index.md)
   - [🏆 WRO 規則對照](/wro-rules.md)
   - [🏁 比賽對照](/competitions.md)
   - [❓ 常見問題](/faq.md)
