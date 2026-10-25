@@ -1,3 +1,6 @@
+> [!TIP]
+> **🧩 神攝手（學校版） 第一次用？跟著互動教學一步一步做：**[MicroPython 版](/learn/cam_school/micropython.html)・[Pybricks 積木版](/learn/cam_school/pybricks-blocks.html)。左邊點選、右邊程式跟著長出來，每個功能都有範例，還有模擬感應器可以操作看數值。
+
 ### 先在感應器上設定顏色
 
 神攝手的設定都在**感應器背面的彩色螢幕與按鍵**上完成，不用電腦：
