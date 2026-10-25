@@ -47,6 +47,7 @@
 #
 #  換模式會多花時間（SPIKE 幾十 ms、EV3 約 0.5 秒）：
 #    device_id()、firmware_version()、毫米距離這類「別的模式」放在迴圈外，或偶爾呼叫就好。
+
 # ════════════════════════════════════════════════════════════════
 
 from pybricks.iodevices import PUPDevice
@@ -227,6 +228,9 @@ class _MBC:
 
     def sensor_ok(self):
         """最近一次有沒有讀到感應器：True／False（拔線、沒接上 = False）"""
+        if self._d is None:
+            # 還沒讀過值（同步寫法第一次用到才建立裝置）：先試著建立，不然一開始會回 False
+            self._open()
         return self._r(self._d is not None and not self._bad)
 
     def device_id(self):
@@ -425,6 +429,11 @@ def _lr(m, p):
     }
 
 
+def _ch(n, ch):
+    if ch < 1 or ch > n:
+        raise ValueError('ch must be 1~{}, got {}'.format(n, ch))
+
+
 #  測距者 2 路
 #  SPIKE 模式 9：v0 = 左 cm（低）、右 cm（高）；v1 = 初始化 OK（低）、故障（高）（bit0 = 左、bit1 = 右）
 #        模式 6：[左 mm, 右 mm, 平均 mm]
@@ -460,11 +469,6 @@ def _laser2():
         'average_mm': (5, lambda v: (int(v[0]) + int(v[1])) >> 1),
     })
     return s, e
-
-
-def _ch(n, ch):
-    if ch < 1 or ch > n:
-        raise ValueError('ch must be 1~{}, got {}'.format(n, ch))
 
 
 class MBC_LASER2(_MBC):

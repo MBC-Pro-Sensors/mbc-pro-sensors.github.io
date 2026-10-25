@@ -51,6 +51,7 @@
 #
 #  換模式會多花時間（SPIKE 幾十 ms、EV3 約 0.5 秒）：
 #    device_id()、firmware_version()、毫米距離這類「別的模式」放在迴圈外，或偶爾呼叫就好。
+
 # ════════════════════════════════════════════════════════════════
 
 from pybricks.iodevices import PUPDevice
@@ -231,6 +232,9 @@ class _MBC:
 
     def sensor_ok(self):
         """最近一次有沒有讀到感應器：True／False（拔線、沒接上 = False）"""
+        if self._d is None:
+            # 還沒讀過值（同步寫法第一次用到才建立裝置）：先試著建立，不然一開始會回 False
+            self._open()
         return self._r(self._d is not None and not self._bad)
 
     def device_id(self):
@@ -385,6 +389,7 @@ class _LINE(_MBC):
         return self._q('read_all')
 
 
+
 class MBC_LINE8(_LINE):
     """循行者 8 路：line8 = MBC_LINE8(port, multitask=False)"""
     _S, _E = _line(8)
@@ -392,6 +397,7 @@ class MBC_LINE8(_LINE):
     def pos8(self):
         """粗位置 -8~+8（0 = 中間，負 = 線在左）"""
         return self._q('pos')
+
 
 
 class MBC_LINE16(_LINE):
@@ -402,6 +408,7 @@ class MBC_LINE16(_LINE):
     def pos16(self):
         """粗位置 -16~+16（0 = 中間，負 = 線在左）"""
         return self._q('pos')
+
 
 
 # ════════════════════════════════════════════════════════════════
@@ -427,6 +434,12 @@ def _lr(m, p):
         'min_side': (m, lambda v: _side(*p(v))),
         'diff': (m, lambda v: p(v)[0] - p(v)[1]),
     }
+
+
+def _ch(n, ch):
+    if ch < 1 or ch > n:
+        raise ValueError('ch must be 1~{}, got {}'.format(n, ch))
+
 
 
 #  測距者 2 路
@@ -464,11 +477,6 @@ def _laser2():
         'average_mm': (5, lambda v: (int(v[0]) + int(v[1])) >> 1),
     })
     return s, e
-
-
-def _ch(n, ch):
-    if ch < 1 or ch > n:
-        raise ValueError('ch must be 1~{}, got {}'.format(n, ch))
 
 
 class MBC_LASER2(_MBC):
@@ -534,6 +542,7 @@ class MBC_LASER2(_MBC):
     def average_mm(self):
         """左右平均距離 0~1200 mm"""
         return self._q('average_mm')
+
 
 
 #  測距者 8 路（方向 -8~+8：0 = 正前方，負 = CH1 側，正 = CH8 側；±8 = 沒有目標）
@@ -645,6 +654,7 @@ class MBC_LASER8(_MBC):
     def nearest_dir(self):
         """最近目標的方向 -8~+8"""
         return self._q('nearest_dir')
+
 
 
 # ════════════════════════════════════════════════════════════════
@@ -772,6 +782,7 @@ class MBC_GAMEPAD(_MBC):
         return self._q('kind')
 
 
+
 # ════════════════════════════════════════════════════════════════
 #  神攝手（學校老師創意賽版）
 #  SPIKE 模式 9：8 個數字 [色相, 飽和度, 明度, 動態值, 色塊X, 色塊Y, 色塊寬, 色塊高]，
@@ -864,6 +875,7 @@ class MBC_CAM_SCHOOL(_MBC):
         return self._q('blob_xya')
 
 
+
 # ════════════════════════════════════════════════════════════════
 #  神攝手 WRO 版（HUE12）：12 格顏色，SPIKE 和 EV3 都是模式 0 的 8 個 int32
 #    cam.update()                     讀一次最新資料（成功 True、失敗 False）
@@ -935,6 +947,7 @@ class MBC_HUE12(_MBC):
         else:
             r = ("Err", 0, 0)
         return self._r(r)
+
 
 
 # ════════════════════════════════════════════════════════════════
