@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A Pybricks program always goes in this order: first import the library, then create an object and give the sensor a name, and only then use that name to call a ">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/laser8/micropython.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/laser8/micropython.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/laser8/micropython.html">
+<title>Ranger 8-Way (TOF8) Pybricks Tutorial | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: step-by-step lessons on the left, "your program + simulated sensor" fixed on the right; one example card per function below */
+:root {
+  --bg: #f3f6f5;          /* light mat colour */
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;      /* MBC teal */
+  --accent-soft: #dff1ef;
+  --tape: #121212;        /* black tape line */
+  --ir: #e04a3b;          /* sensor IR light */
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* Header */
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+/* Main area: lessons left, program right */
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+/* Right: program + simulation */
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+/* The fixed right column holds only the program and output, no taller than one screen, so it stays visible while scrolling */
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+/* "Code for this step" inside each step card: refreshes and flashes when a setting changes */
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+/* Function example cards */
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+/* Full examples and tips */
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/sensors/tof8/spike/">← Ranger 8-Way SPIKE guide</a><a class="lang" href="/learn/laser8/micropython.html" hreflang="zh-Hant">中文</a><div class="tabs"><a href="/en/learn/laser8/micropython.html" aria-current="page">MicroPython (Pybricks)</a><a href="/en/learn/laser8/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/laser8/mbc-blocks.html">MBC Blocks website</a><a href="/en/learn/laser8/spike-app.html">LEGO SPIKE App</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC Ranger 8-Way (TOF8) × Pybricks</span>
+    <h1>Read the Ranger 8-Way in MicroPython in three steps</h1>
+    <p class="lead">A Pybricks program always goes in this order: first <b>import the library</b>, then <b>create an object and give the sensor a name</b>, and only then use that name to <b>call a function</b>. Follow the steps on the left and the program on the right grows with you. Drag the obstacle's direction and distance under the simulated sensor to see what the program prints.</p>
+    <div class="hostbar">
+      <span class="small">Your hub:</span>
+      <div class="seg" role="group" aria-label="Hub">
+        <button type="button" id="host-spike" aria-pressed="true">SPIKE Prime</button>
+        <button type="button" id="host-ev3" aria-pressed="false">EV3</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="main" aria-label="Lesson">
+    <div class="steps">
+      <!-- Step 1 -->
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>Import the library</h2></div>
+        <div class="step-body">
+          <p class="why">The <b>first thing</b> in the program tells Pybricks "I want to use the Ranger 8-Way library". Without this line the hub does not know what <code>MBC_LASER8</code> means, and you get a <code>NameError</code>.</p>
+          <p class="small">Pick one library (both work the same way; only the import line is different):</p>
+          <div class="choice" role="group" aria-label="Library">
+            <button type="button" class="opt" id="lib-single" aria-pressed="true"><b>Single library MBC_laser8.py</b><small>Use it when the Ranger 8-Way is your only MBC sensor. Small file (about 4 KB), so the program uploads faster.</small></button>
+            <button type="button" class="opt" id="lib-all" aria-pressed="false"><b>Shared library MBC_sensors.py</b><small>Use it when the same robot also has other MBC sensors (about 12 KB, covers all 7 products).</small></button>
+          </div>
+          <ol class="howto">
+            <li>Download the library (save the file and keep its name): <a href="/examples/tof8/pybricks/For%20firmware%204.x/MBC_laser8.py" download>MBC_laser8.py</a> (only this sensor) or <a href="/examples/tof8/pybricks/For%20firmware%204.x/MBC_sensors.py" download>MBC_sensors.py</a> (the all-in-one library). You picked <code id="libfile">MBC_laser8.py</code>.</li>
+            <li>In Pybricks Code, click "Import a file" in the file area on the left and import it into the <b>same project</b>.</li>
+            <li><b>Do not rename the file</b>, and do not put it in a sub-folder.</li>
+            <li>Go back to your main program and type these lines at the very top (marked ① on the right).</li>
+          </ol>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">Done, next step</button>
+        </div>
+      </article>
+
+      <!-- Step 2 -->
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>Create an object: give the sensor a name</h2></div>
+        <div class="step-body">
+          <p class="why">A robot can have several sensors, so you "create an object": tell the program which port the sensor is plugged into and give it a name. Every time you want a reading, you use this name.</p>
+          <div class="row">
+            <span class="small">Which port is the sensor plugged into?</span>
+            <div class="ports" id="ports" role="group" aria-label="Port"></div>
+          </div>
+          <label class="f" for="varname">Give it a name (start with a letter; you can use numbers and underscores)
+            <input type="text" id="varname" value="laser8" autocomplete="off" spellcheck="false">
+          </label>
+          <p class="err" id="nameerr" hidden></p>
+          <p class="small">Turn on multitasking?</p>
+          <div class="choice" role="group" aria-label="Multitasking">
+            <button type="button" class="opt" id="mt-off" aria-pressed="true"><b>Off (normal way)</b><small>The program runs from top to bottom, one line at a time. Start with this one.</small></button>
+            <button type="button" class="opt" id="mt-on" aria-pressed="false"><b>Turn on multitasking</b><small>Use it to do several things at once (for example, drive and watch for obstacles). Write True as the 2nd argument, then put await in front of every function.</small></button>
+          </div>
+          <p class="small">The <code id="portnum">3</code> in the program is the port number: <span id="portmap">SPIKE 1~6 = A~F</span>. You can also write <code id="portalt">Port.C</code>, but then you also need <code>from pybricks.parameters import Port</code>.</p>
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2" disabled>Created, next step</button>
+        </div>
+      </article>
+
+      <!-- Step 3 -->
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>Use a function</h2></div>
+        <div class="step-body">
+          <p class="why">You always write "<code><span id="nm1">laser8</span>.function_name()</code>": the name + a dot + the function. Click a function and the program and output change to its example.</p>
+          <div id="picker" class="ref"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+          <div class="sim-box">
+        <div class="sim-title">Simulated sensor (seen from above, robot facing up): drag the obstacle and watch the output on the right</div>
+        <div class="sim">
+          <svg id="field" viewBox="0 0 460 250" role="img" aria-label="8 lasers and an obstacle"></svg>
+          <div class="ctrl">
+            <label class="f" for="dir">Obstacle direction: <b class="mono" id="dirv">-3</b> (-8 ~ 8, drag left = left side, 0 = straight ahead)
+              <input type="range" id="dir" min="-8" max="8" step="1" value="-3">
+            </label>
+            <label class="f" for="dist">Obstacle distance: <b class="mono" id="distv">40</b> cm (drag to 120 = nothing around)
+              <input type="range" id="dist" min="0" max="120" step="1" value="40">
+            </label>
+            <div class="toggles">
+              <label><input type="checkbox" id="bad3"> Sensor 3 faulty (always reads 120)</label>
+              <label><input type="checkbox" id="unplug"> Unplug the sensor</label>
+            </div>
+          </div>
+          <p class="note">The simulation is only a sketch: direction and distance come from a simple position-based estimate, so a real sensor may differ by a step or two. Red sector = that sensor sees something; grey sector = it reads 120 (nothing that way). Sensors 4 and 5 both face straight ahead.</p>
+        </div>
+          </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">An example for every function</h2>
+        <p class="ref-intro">16 functions, each with a short example you can put straight into a loop. Click "Try it" to jump to step 3; the program and output on the right change to that example.</p>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="Your program and output">
+      <div class="panel">
+        <div class="panel-head"><span>Your program</span><button type="button" class="copy" id="copymain">Copy program</button></div>
+        <pre class="code" id="maincode" aria-live="polite"></pre>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>Output on the computer (printed every 0.6 s)</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+
+  <section class="ref" aria-labelledby="fullh">
+    <h2 id="fullh">Full examples</h2>
+    <div class="full">
+      <div class="panel">
+        <div class="panel-head"><span>Simple obstacle avoiding (SPIKE, left motor A, right motor B)</span><button type="button" class="copy" data-copy="follow">Copy</button></div>
+        <pre class="code" id="ex-follow"></pre>
+        <p class="bubble"><i>!</i><span>Only change the "settings to change" at the top. It hits things before stopping: make <code>STOP_CM</code> bigger or <code>SPEED</code> smaller. It turns too much or too little: change the number in <code>wait(400)</code>. The robot drives backwards: move <code>Direction.COUNTERCLOCKWISE</code> to the other motor.</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>Multitasking (advanced)</span><button type="button" class="copy" data-copy="multi">Copy</button></div>
+        <pre class="code" id="ex-multi"></pre>
+        <p class="bubble"><i>!</i><span>Write <code>True</code> as the 2nd argument when you create the object, and create the object outside <code>run_task()</code>. Put <code>await</code> in front of every function.</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>Use it with other MBC sensors</span><button type="button" class="copy" data-copy="mix">Copy</button></div>
+        <pre class="code" id="ex-mix"></pre>
+        <p class="bubble"><i>!</i><span>Switch to the shared library: change only the import line and import <code>MBC_sensors.py</code>. Do not import both libraries at the same time.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">Good to know</h2>
+    <ol>
+      <li><b>Unplugging does not stop the program.</b> If it cannot read the sensor, it returns the last value it read (or <code>None</code> if it never read one) and prints one warning line on the computer. Plug it back in and it carries on by itself. Use <code>sensor_ok()</code> to check the connection. Tick "Unplug the sensor" on the right to see this. Careful: if the cable comes out while avoiding obstacles, the robot keeps driving on the last distance.</li>
+      <li><b>A reading of 120 can mean 4 things:</b> nothing that way, the object is more than 120 cm away, the sensor has just been switched on (wait 2–4 s after power-on), or that sensor is faulty. Use <code>is_ok()</code> to spot a faulty one. Black, shiny or see-through objects are harder to measure, so keep distance checks within 60 cm.</li>
+      <li><b>Direction:</b> stand behind the robot and look forward: left is negative, right is positive. Sensor 1 points straight left, sensors 4 and 5 point straight ahead, sensor 8 points straight right. When something is seen, the direction is −7 ~ +7 (−7 straight left, −5 front-left 60°, −3 front-left 30°, −1 ~ +1 straight ahead). <b>±8 = nothing around</b> (it keeps the side where it last saw something; −8 after power-on). So check "is anything there?" with <code>min_distance() &gt;= 120</code>, and "is it straight ahead?" with <code>abs(direction) &lt;= 1</code>.</li>
+      <li><b>Try to use one group in the same loop:</b> on SPIKE, <code>distances()</code>, <code>ch()</code>, <code>min_direction()</code>, <code>min_distance()</code>, <code>max_direction()</code>, <code>max_distance()</code>, <code>is_ok()</code>, <code>init_status()</code>, <code>fault_status()</code>, <code>read_all()</code> are one group (the most used one); <code>nearest_mm()</code>, <code>front_mm()</code>, <code>nearest_dir()</code> are another group; put <code>device_id()</code> and <code>firmware_version()</code> outside the loop. Switching group costs a few tens of milliseconds. On EV3, <code>distances()</code> and <code>ch()</code> are one group; <code>min_direction()</code>, <code>min_distance()</code>, <code>max_direction()</code>, <code>max_distance()</code> are one group; <code>nearest_mm()</code> and <code>nearest_dir()</code> are one group; <code>front_mm()</code> is on its own. Switching group takes about 0.5 s.</li>
+      <li><b>The millimetre functions need new firmware:</b> <code>nearest_mm()</code>, <code>front_mm()</code>, <code>nearest_dir()</code>, <code>device_id()</code> and <code>firmware_version()</code> need sensor firmware from 2026-10 or later; older firmware gives other numbers. The distances themselves update about every 0.1 s, so <code>wait(20)</code> ~ <code>wait(50)</code> in the loop is enough.</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  // ───── State ─────
+  var S = { host: 'spike', lib: 'single', port: 3, name: 'laser8', step: 1, fn: 'min_distance', multi: false, lastNew: [] };
+
+  // ───── 16 functions ─────
+  // body: code inside the loop ({n} becomes the object name); once: outside the loop, runs once; out(st): simulated output
+  var FNS = [
+    { id: 'min_distance', zh: 'Nearest distance', grp: 'Nearest object', ret: 'whole number 0 ~ 120 (cm)', what: 'The smallest of the 8 distances. 120 = nothing around (or everything is more than 120 cm away). Obstacle avoiding and following your hand both start here.',
+      body: ['cm = {n}.min_distance()', 'if cm >= 120:', '    print("nothing around")', 'else:', '    print("nearest object:", cm, "cm")'],
+      out: function (s) { return s.minD >= 120 ? 'nothing around' : 'nearest object: ' + s.minD + ' cm'; } },
+    { id: 'min_direction', zh: 'Direction of the nearest object', grp: 'Nearest object', ret: 'whole number -8 ~ +8', what: 'Where the nearest object is: negative = left, 0 = straight ahead, positive = right (−7 straight left, +7 straight right). When two sensors see it, it takes the average, so even numbers can appear too. With nothing around it is −8 or +8 (the side where it last saw something). Drag the distance to 120 below to try it.',
+      body: ['print("nearest object at direction:", {n}.min_direction())'], out: function (s) { return 'nearest object at direction: ' + s.minDir; } },
+    { id: 'max_direction', zh: 'Most open direction', grp: 'Most open direction', ret: 'whole number -7 ~ +7', what: 'Which way is the most open (farthest). Turn this way to avoid obstacles. Negative = more space on the left, positive = more space on the right. With nothing around it is 0. Note: a faulty sensor always reads 120 and looks "most open". Tick "Sensor 3 faulty" below to try it.',
+      body: ['side = {n}.max_direction()', 'if side < 0:', '    print("more space on the left", side)', 'elif side > 0:', '    print("more space on the right", side)', 'else:', '    print("most space straight ahead", side)'],
+      out: function (s) { return (s.maxDir < 0 ? 'more space on the left ' : s.maxDir > 0 ? 'more space on the right ' : 'most space straight ahead ') + s.maxDir; } },
+    { id: 'max_distance', zh: 'Distance in the most open direction', grp: 'Most open direction', ret: 'whole number 0 ~ 120 (cm)', what: 'How far it is in the most open direction. 120 = nothing that way.',
+      body: ['print("most open direction is", {n}.max_distance(), "cm")'], out: function (s) { return 'most open direction is ' + s.maxD + ' cm'; } },
+    { id: 'distances', zh: 'All 8 distances', grp: 'Distance of each sensor', ret: '8 numbers 0 ~ 120 (list)', what: 'Get all 8 distances (cm) at once, from sensor 1 (straight left) to sensor 8 (straight right).',
+      body: ['print({n}.distances())'], out: function (s) { return pyList(s.d); } },
+    { id: 'ch', zh: 'Distance of one sensor', grp: 'Distance of each sensor', ret: 'whole number 0 ~ 120 (cm)', what: 'Read the distance of one sensor. Put 1 ~ 8 in the brackets: 1 = straight left, 4 and 5 = straight ahead, 8 = straight right. The example reads sensor 4 (straight ahead).',
+      body: ['print("sensor 4:", {n}.ch(4), "cm")'], out: function (s) { return 'sensor 4: ' + s.d[3] + ' cm'; } },
+    { id: 'read_all', zh: 'Read everything at once', grp: 'Distance of each sensor', ret: 'a dictionary (dict)', what: 'Reads the 8 distances, the nearest, the most open and the state of every sensor in one go. Take out the one you want by its name. SPIKE only.', spikeOnly: true,
+      body: ['data = {n}.read_all()', 'print(data["min_distance"], data["min_direction"])'], out: function (s) { return s.minD + ' ' + s.minDir; } },
+    { id: 'nearest_mm', zh: 'Nearest distance (mm)', grp: 'Millimetres (finer)', ret: 'whole number 0 ~ 1200 (mm)', what: 'Same as the nearest distance, but in millimetres, 10 times finer than centimetres. 1200 = nothing around. Needs sensor firmware from 2026-10 or later.',
+      body: ['mm = {n}.nearest_mm()', 'print("nearest object:", mm, "mm")'], out: function (s) { return 'nearest object: ' + s.mm + ' mm'; } },
+    { id: 'front_mm', zh: 'Distance straight ahead (mm)', grp: 'Millimetres (finer)', ret: 'whole number 0 ~ 1200 (mm)', what: 'How many millimetres straight ahead (average of sensors 4 and 5), for programs that only look forward. Example: 300 mm = something within 30 cm.',
+      body: ['if {n}.front_mm() < 300:', '    print("something within 30 cm ahead")', 'else:', '    print("clear ahead")'],
+      out: function (s) { return s.frontMm < 300 ? 'something within 30 cm ahead' : 'clear ahead'; } },
+    { id: 'nearest_dir', zh: 'Nearest direction (millimetre group)', grp: 'Millimetres (finer)', ret: 'whole number -8 ~ +8', what: 'Same as min_direction(): the direction of the nearest object. It is faster to read together with nearest_mm() (same group of data). ±8 = nothing around.',
+      body: ['print("nearest object at direction:", {n}.nearest_dir())'], out: function (s) { return 'nearest object at direction: ' + s.minDir; } },
+    { id: 'is_ok', zh: 'Is one sensor OK', grp: 'Sensor info', ret: 'True or False', what: 'True when that sensor started up fine and is not faulty right now. Put 1 ~ 8 in the brackets. The example checks sensor 3; tick "Sensor 3 faulty" below to try it. SPIKE only.', spikeOnly: true,
+      body: ['if {n}.is_ok(3):', '    print("sensor 3 OK")', 'else:', '    print("sensor 3 faulty!")'],
+      out: function (s) { return !s.fault[2] ? 'sensor 3 OK' : 'sensor 3 faulty!'; } },
+    { id: 'init_status', zh: 'Did each sensor start up', grp: 'Sensor info', ret: '8 × True/False (list)', what: 'Whether each of the 8 sensors started up fine, from sensor 1 to sensor 8. If one failed, switch the power off and on again. SPIKE only.', spikeOnly: true,
+      body: ['print({n}.init_status())'], out: function (s) { return pyBools(s.init); } },
+    { id: 'fault_status', zh: 'Is each sensor faulty', grp: 'Sensor info', ret: '8 × True/False (list)', what: 'Whether each of the 8 sensors is faulty right now (True = faulty, always reads 120). SPIKE only.', spikeOnly: true,
+      body: ['print({n}.fault_status())'], out: function (s) { return pyBools(s.fault); } },
+    { id: 'device_id', zh: 'Sensor ID', grp: 'Sensor info', ret: '(address, model, firmware word)', what: 'Check which product is plugged in: address 41 (0x29), model 8 = 8-way. Read it once outside the loop. SPIKE only.', once: true, spikeOnly: true,
+      body: ['print({n}.device_id())'], out: function () { return '(41, 8, 100)'; } },
+    { id: 'firmware_version', zh: 'Firmware version', grp: 'Sensor info', ret: '(major, minor)', what: 'The version of the sensor firmware, for example (1, 0) = 1.0. Read it once outside the loop. SPIKE only.', once: true, spikeOnly: true,
+      body: ['print({n}.firmware_version())'], out: function () { return '(1, 0)'; } },
+    { id: 'sensor_ok', zh: 'Is it connected', grp: 'Sensor info', ret: 'True or False', what: 'Whether the last reading worked. Unplugged or loose = False. Tick "Unplug the sensor" on the right to try it.',
+      body: ['if not {n}.sensor_ok():', '    print("sensor not connected!")', 'else:', '    print("sensor connected")'],
+      out: function (s) { return s.ok ? 'sensor connected' : 'sensor not connected!'; } }
+  ];
+  var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; });
+
+  // ───── Helpers ─────
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function pyList(a) { return '[' + a.join(', ') + ']'; }
+  function pyBools(a) { return pyList(a.map(function (b) { return b ? 'True' : 'False'; })); }
+  var KW = /\b(from|import|while|True|False|None|if|else|elif|not|and|or|async|def|await|for|in|return)\b/;
+  function hiPy(line) {
+    // very simple Python colouring: comments, strings, keywords, numbers, function names
+    var out = '', i = 0;
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest[0] === '#') { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if ((m = rest.match(/^("[^"]*"|'[^']*')/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (KW.test(w) && new RegExp('^' + KW.source + '$').test(w)) out += '<span class="tk-kw">' + w + '</span>';
+        else if (after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^\d+/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  function render(el, lines, opts) {
+    // lines: [{t: text, tag: step number or '', hl: bool, isNew: bool}]
+    opts = opts || {};
+    el.innerHTML = lines.map(function (l, k) {
+      var cls = 'ln' + (l.hl ? ' hl' : '') + (l.isNew ? ' new' : '');
+      var tag = opts.noTag ? '' : '<span class="tag">' + (l.tag ? '<i>' + l.tag + '</i>' : '') + '</span>';
+      return '<span class="' + cls + '"><span class="no">' + (l.no || k + 1) + '</span>' + tag + '<span>' + (l.t ? hiPy(l.t) : ' ') + '</span></span>';
+    }).join('');
+  }
+  function plain(lines) { return lines.map(function (l) { return l.t; }).join('\n') + '\n'; }
+  function copyText(text, btn) {
+    var done = function () { var o = btn.textContent; btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = o; }, 1400); };
+    try {
+      navigator.clipboard.writeText(text).then(done, function () { fallback(text); });
+    } catch (e) { fallback(text); }
+    function fallback(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e2) { btn.textContent = 'Select and copy by hand'; }
+      document.body.removeChild(ta);
+    }
+  }
+  var LETTERS = { spike: ['A', 'B', 'C', 'D', 'E', 'F'], ev3: ['S1', 'S2', 'S3', 'S4'] };
+  function modName() { return S.lib === 'single' ? 'MBC_laser8' : 'MBC_sensors'; }
+  function portLetter() { return LETTERS[S.host][S.port - 1]; }
+
+  // ───── Build the main program ─────
+  function programLines() {
+    var n = S.name, f = BY[S.fn], L = [];
+    var s1 = S.step === 1, s2 = S.step === 2, s3 = S.step === 3;
+    L.push({ t: S.multi ? 'from pybricks.tools import wait, run_task' : 'from pybricks.tools import wait', tag: 1, hl: s1 });
+    L.push({ t: 'from ' + modName() + ' import MBC_LASER8', tag: 1, hl: s1, key: 'import' });
+    if (S.step >= 2) {
+      L.push({ t: '' });
+      L.push({ t: n + ' = MBC_LASER8(' + S.port + (S.multi ? ', True' : '') + ')    # ' + S.port + ' = port ' + portLetter() + (S.multi ? ', True = multitasking on' : ''), tag: 2, hl: s2, key: 'obj' });
+    }
+    if (S.step >= 3) {
+      L.push({ t: '' });
+      // multitasking: await in front of every function, code inside async def main(), then run_task(main())
+      var body = f.body.map(function (b) { return b.replace(/\{n\}\./g, (S.multi ? 'await ' : '') + n + '.'); });
+      var pad = S.multi ? '    ' : '';
+      if (S.multi) L.push({ t: 'async def main():', tag: 3, hl: s3 });
+      if (f.once) {
+        body.forEach(function (b) { L.push({ t: pad + b, tag: 3, hl: s3 }); });
+      } else {
+        L.push({ t: pad + 'while True:', tag: 3, hl: s3 });
+        body.forEach(function (b) { L.push({ t: pad + '    ' + b, tag: 3, hl: s3 }); });
+        L.push({ t: pad + '    ' + (S.multi ? 'await ' : '') + 'wait(100)', tag: 3, hl: s3 });
+      }
+      if (S.multi) {
+        L.push({ t: '' });
+        L.push({ t: 'run_task(main())', tag: 3, hl: s3 });
+      }
+    }
+    return L;
+  }
+  var lastKeys = '';
+  function drawMain() {
+    var L = programLines();
+    var keys = L.map(function (l) { return l.t; });
+    var prev = lastKeys ? lastKeys.split('\n') : [];
+    L.forEach(function (l) { if (l.t && prev.indexOf(l.t) < 0 && lastKeys) l.isNew = true; });
+    lastKeys = keys.join('\n');
+    render($('maincode'), L);
+    var tips = {
+      1: 'Step 1: import at the very top of the program. Line 1 is the wait (pause) built into Pybricks; line 2 is the MBC library.',
+      2: 'Step 2: create the object. ' + S.name + ' on the left of the = sign is the name you chose; the right side tells the program the sensor is on port ' + portLetter() + '.' +
+         (S.multi ? ' The 2nd argument True turns multitasking on, so line 1 also imports run_task.' : ''),
+      3: S.multi
+        ? 'Step 3 (multitasking): the code goes inside async def main(). Put await in front of every function and wait, and the last line run_task(main()) starts it.'
+        : 'Step 3: read values with "' + S.name + '.function()". ' + (BY[S.fn].once ? 'Read this one once, outside the loop.' : 'while True repeats forever, and wait(100) makes it read every 0.1 s.')
+    };
+    var b = $('bubble'); b.querySelector('i').textContent = S.step; b.querySelector('span').textContent = tips[S.step];
+    drawMinis();
+  }
+
+  // "Code for this step" in each step card: real line numbers from the full program, flashes when it changes
+  var miniPrev = {};
+  function drawMinis() {
+    var keep = S.step; S.step = 3; var full = programLines(); S.step = keep;
+    [1, 2, 3].forEach(function (k) {
+      var el = $('mini' + k); if (!el) return;
+      var lines = [];
+      full.forEach(function (l, i) { if (l.tag === k) lines.push({ t: l.t, no: i + 1 }); });
+      if (!lines.length) { el.innerHTML = ''; return; }
+      var txt = lines.map(function (l) { return l.no + l.t; }).join('\n');
+      var a = lines[0].no, z = lines[lines.length - 1].no;
+      el.innerHTML = '<span>Code for this step (line' + (z !== a ? 's ' + a + '–' + z : ' ' + a) + ')</span><pre class="code"></pre>';
+      render(el.querySelector('pre'), lines, { noTag: true });
+      if (miniPrev[k] !== undefined && miniPrev[k] !== txt) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      miniPrev[k] = txt;
+    });
+  }
+
+  // ───── Steps ─────
+  function setStep(n) {
+    S.step = Math.max(S.step, n);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    S.viewStep = n;
+    var keep = S.step; S.step = n; drawMain(); S.step = keep;
+    if (n === 2) $('next2').disabled = !validName();
+  }
+  // drawing: the step being viewed decides how far the program grows
+  var _draw = drawMain;
+  drawMain = function () { var keep = S.step; S.step = S.viewStep || S.step; _draw(); S.step = keep; };
+
+  function validName() {
+    var v = $('varname').value.trim(), bad = '';
+    if (!v) bad = 'The name cannot be empty.';
+    else if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(v)) bad = 'Use only letters, numbers and underscores, and do not start with a number.';
+    else if (KW.test(v) && new RegExp('^' + KW.source + '$').test(v)) bad = '"' + v + '" is a Python keyword. Pick another name.';
+    else if (['MBC_LASER8', 'wait', 'cm', 'mm', 'side', 'data', 'print'].indexOf(v) >= 0) bad = 'This name is already used. Pick another one.';
+    $('nameerr').hidden = !bad; $('nameerr').textContent = bad;
+    if (!bad) S.name = v;
+    return !bad;
+  }
+
+  // ───── Hub, library, port ─────
+  function drawPorts() {
+    var box = $('ports'); box.innerHTML = '';
+    LETTERS[S.host].forEach(function (l, i) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = l;
+      b.setAttribute('aria-pressed', String(S.port === i + 1)); b.setAttribute('aria-label', 'Port ' + l);
+      b.addEventListener('click', function () { S.port = i + 1; drawPorts(); drawMain(); syncPortText(); });
+      box.appendChild(b);
+    });
+    syncPortText();
+  }
+  function syncPortText() {
+    $('portnum').textContent = S.port;
+    $('portalt').textContent = 'Port.' + portLetter();
+    $('portmap').textContent = S.host === 'spike' ? 'SPIKE 1~6 = A~F' : 'EV3 1~4 = S1~S4';
+  }
+  function setHost(h) {
+    S.host = h;
+    $('host-spike').setAttribute('aria-pressed', String(h === 'spike'));
+    $('host-ev3').setAttribute('aria-pressed', String(h === 'ev3'));
+    if (S.port > LETTERS[h].length) S.port = 1;
+    drawPorts(); drawPicker(); drawCards(); drawMain(); tick(true);
+  }
+  function setLib(l) {
+    S.lib = l;
+    $('lib-single').setAttribute('aria-pressed', String(l === 'single'));
+    $('lib-all').setAttribute('aria-pressed', String(l === 'all'));
+    $('libfile').textContent = l === 'single' ? 'MBC_laser8.py' : 'MBC_sensors.py';
+    drawMain(); drawExamples();
+  }
+
+  // ───── Function picker (step 3) and example cards ─────
+  function groups() {
+    var g = {}; FNS.forEach(function (f) { (g[f.grp] = g[f.grp] || []).push(f); }); return g;
+  }
+  function drawPicker() {
+    var box = $('picker'), g = groups(); box.innerHTML = '';
+    Object.keys(g).forEach(function (k) {
+      var wrap = document.createElement('div'); wrap.className = 'fgroup';
+      wrap.innerHTML = '<span>' + k + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      g[k].forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (f.spikeOnly && S.host === 'ev3' ? ' no-ev3' : '');
+        b.textContent = f.id + '()'; b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.title = f.zh;
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      wrap.appendChild(chips); box.appendChild(wrap);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + f.id + '()　' + f.zh + '</b><span>' + f.what + '</span><span class="small">Returns: ' + f.ret +
+      (f.spikeOnly ? '　|　SPIKE only' : '') + '</span>' +
+      (f.spikeOnly && S.host === 'ev3' ? '<span class="err">EV3 cannot read this value. Running it gives a ValueError.</span>' : '');
+    $('nm1').textContent = S.name;
+  }
+  function pick(id) {
+    S.fn = id;
+    if (S.step < 3) { S.step = 3; }
+    setStep(3);
+    drawPicker(); tick(true);
+  }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    FNS.forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      var body = f.body.map(function (b) { return b.replace(/\{n\}/g, 'laser8'); });
+      var lines = f.once ? body : ['while True:'].concat(body.map(function (b) { return '    ' + b; }), ['    wait(100)']);
+      c.innerHTML =
+        '<div class="card-head"><h3>' + f.id + '()<span class="zh">' + f.zh + '</span></h3>' +
+        '<span class="badges"><span class="badge yes">SPIKE</span><span class="badge ' + (f.spikeOnly ? 'no' : 'yes') + '">EV3</span></span></div>' +
+        '<p>' + f.what + '</p>' +
+        '<dl class="meta"><dt>Returns</dt><dd>' + f.ret + '</dd><dt>Example</dt><dd>' + (f.once ? 'outside the loop, read once' : 'inside a while True loop') + '</dd></dl>' +
+        '<pre class="code"></pre>' +
+        '<p class="out">The simulation prints: <code></code></p>' +
+        '<button type="button" class="try">Try it</button>';
+      render(c.querySelector('pre'), lines.map(function (t) { return { t: t }; }), { noTag: true });
+      c.querySelector('.try').addEventListener('click', function () {
+        pick(f.id);
+        var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      });
+      box.appendChild(c);
+    });
+    updateCardOutputs();
+  }
+  function updateCardOutputs() {
+    var st = state();
+    FNS.forEach(function (f) {
+      var el = document.querySelector('#fn-' + f.id + ' .out code');
+      if (el) el.textContent = runOut(f, st);
+    });
+  }
+
+  // ───── Full examples ─────
+  var EX = {};
+  function drawExamples() {
+    EX.follow = [
+      'from pybricks.pupdevices import Motor',
+      'from pybricks.parameters import Port, Direction',
+      'from pybricks.tools import wait',
+      'from ' + modName() + ' import MBC_LASER8',
+      '',
+      '# ===== Settings to change =====',
+      'SENSOR_PORT = 3      # port the Ranger is plugged into (3 = C)',
+      'SPEED = 300          # driving speed (degrees/second)',
+      'STOP_CM = 30         # turn when something is this close ahead (cm)',
+      '# ===============================',
+      '',
+      'laser8 = MBC_LASER8(SENSOR_PORT)',
+      'left = Motor(Port.A, Direction.COUNTERCLOCKWISE)',
+      'right = Motor(Port.B)',
+      '',
+      'while True:',
+      '    front = min(laser8.ch(4), laser8.ch(5))    # sensors 4 and 5 both face straight ahead',
+      '    if front < STOP_CM:',
+      '        side = laser8.max_direction()    # negative = more space on the left',
+      '        if side < 0:',
+      '            left.run(-SPEED)    # spin left',
+      '            right.run(SPEED)',
+      '        else:',
+      '            left.run(SPEED)     # spin right',
+      '            right.run(-SPEED)',
+      '        wait(400)',
+      '    else:',
+      '        left.run(SPEED)',
+      '        right.run(SPEED)',
+      '    wait(20)'
+    ];
+    EX.multi = [
+      'from pybricks.tools import wait, run_task',
+      'from ' + modName() + ' import MBC_LASER8',
+      '',
+      'laser8 = MBC_LASER8(3, True)    # True = multitasking',
+      '',
+      'async def main():',
+      '    while True:',
+      '        print(await laser8.min_distance())    # await in front of every function',
+      '        await wait(100)',
+      '',
+      'run_task(main())'
+    ];
+    EX.mix = [
+      'from pybricks.tools import wait',
+      'from MBC_sensors import MBC_LASER8, MBC_LINE8',
+      '',
+      'laser8 = MBC_LASER8(3)    # Ranger 8-Way on port C',
+      'line8 = MBC_LINE8(4)      # Pathfinder 8-Way on port D',
+      '',
+      'while True:',
+      '    print(laser8.min_distance(), line8.pos100())',
+      '    wait(100)'
+    ];
+    ['follow', 'multi', 'mix'].forEach(function (k) {
+      render($('ex-' + k), EX[k].map(function (t) { return { t: t }; }), { noTag: true });
+    });
+  }
+
+  // ───── Simulated sensor ─────
+  // Sketch only: where the 8 sensors point (degrees, 0 = straight ahead, negative = left); sensors 4 and 5 both point ahead. Position-based estimate, not the sensor's own algorithm
+  var ANG = [-90, -60, -30, 0, 0, 30, 60, 90];
+  var frozen = null, warned = false, lastSide = -1;
+  function dirOf(k) { return k * 2 - 9; }      // sensor k → direction (sensor 1 −7 … sensor 8 +7)
+  function avgDir(list) { var t = 0; list.forEach(function (k) { t += dirOf(k); }); return Math.round(t / list.length); }
+  function rawState() {
+    var dir = Number($('dir').value), cm = Number($('dist').value), bad3 = $('bad3').checked;
+    var a = dir * 90 / 7, d = [];
+    for (var i = 0; i < 8; i++) {
+      var v = (cm < 120 && Math.abs(a - ANG[i]) <= 20) ? cm : 120;   // the obstacle is near this sensor's sector, so it is measured
+      if (bad3 && i === 2) v = 120;                                   // a faulty sensor always reads 120
+      d.push(v);
+    }
+    var minD = Math.min.apply(null, d), maxD = Math.max.apply(null, d), minDir;
+    if (minD < 120) {
+      var near = []; d.forEach(function (v, i) { if (v === minD) near.push(i + 1); });
+      minDir = avgDir(near);
+      if (minDir < 0) lastSide = -1; else if (minDir > 0) lastSide = 1;
+    } else minDir = lastSide * 8;                                     // nothing around: keep the last side (−8 after power-on)
+    // most open: the farthest, longest run of neighbouring sensors (ties go left), averaged
+    var best = [], cur = [];
+    for (var j = 0; j <= 8; j++) {
+      if (j < 8 && d[j] === maxD) cur.push(j + 1);
+      else { if (cur.length > best.length) best = cur; cur = []; }
+    }
+    return { dir: dir, cm: cm, a: a, d: d, minD: minD, minDir: minDir, maxD: maxD, maxDir: avgDir(best),
+      mm: minD * 10, frontMm: Math.floor((d[3] + d[4]) / 2) * 10,
+      init: [true, true, true, true, true, true, true, true], fault: [false, false, bad3, false, false, false, false, false], ok: true };
+  }
+  function state() {
+    var unplug = $('unplug').checked;
+    if (!unplug) { frozen = rawState(); warned = false; return frozen; }
+    var s = frozen ? JSON.parse(JSON.stringify(frozen)) : null;
+    if (!s) return { none: true, ok: false };
+    s.ok = false; return s;
+  }
+  function runOut(f, st) {
+    // the library's real error text is in Chinese; the English meaning follows in brackets
+    if (f.spikeOnly && S.host === 'ev3') return 'ValueError: ' + f.id + '(): EV3 讀不到這個值  (EV3 cannot read this value)';
+    if (st.none && f.id !== 'sensor_ok') return f.id === 'read_all' ? 'TypeError (read_all() returned None)' : (f.out.length ? 'None' : f.out(st));
+    return f.out(st);
+  }
+  function drawField(st) {
+    var svg = $('field'), W = 460, H = 250, cx = 230, cy = 186, R = 160;
+    var tok = getComputedStyle(document.documentElement);
+    var ir = tok.getPropertyValue('--ir').trim(), rule = tok.getPropertyValue('--rule').trim();
+    var live = rawState(), rad = Math.PI / 180;
+    function pt(ox, ang, r) { return [ox + Math.sin(ang * rad) * r, cy - Math.cos(ang * rad) * r]; }
+    function f1(n) { return n.toFixed(1); }
+    var h = '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#f7f7f2" stroke="' + rule + '"/>';
+    // dashed rings at 60 cm and 120 cm
+    [60, 120].forEach(function (c) {
+      var r = c / 120 * R;
+      h += '<path d="M' + f1(cx - r) + ',' + cy + ' A' + f1(r) + ',' + f1(r) + ' 0 0 1 ' + f1(cx + r) + ',' + cy + '" fill="none" stroke="#c9d3d0" stroke-dasharray="4 4"/>';
+      h += '<text x="' + f1(cx + r + 3) + '" y="' + (cy + 14) + '" font-size="11" fill="#5b6b67">' + c + '</text>';
+    });
+    // the 8 laser sectors: length = the distance read
+    for (var i = 0; i < 8; i++) {
+      var ox = cx + (i === 3 ? -9 : i === 4 ? 9 : 0);
+      var v = st.none ? null : st.d[i], hit = v != null && v < 120, r = Math.max(6, (v == null ? 120 : v) / 120 * R);
+      var p0 = pt(ox, ANG[i] - 12, r), p1 = pt(ox, ANG[i] + 12, r);
+      h += '<path d="M' + ox + ',' + cy + ' L' + f1(p0[0]) + ',' + f1(p0[1]) + ' A' + f1(r) + ',' + f1(r) + ' 0 0 1 ' + f1(p1[0]) + ',' + f1(p1[1]) + ' Z" fill="' + (hit ? ir : '#9fb3ae') + '" fill-opacity="' + (hit ? 0.4 : 0.16) + '" stroke="' + (hit ? ir : '#9fb3ae') + '" stroke-width="1"/>';
+      var lp = pt(ox + (i === 3 ? -8 : i === 4 ? 8 : 0), ANG[i], (hit ? r : R) + 12);
+      h += '<text x="' + f1(lp[0]) + '" y="' + f1(lp[1] + 4) + '" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600" fill="' + (hit ? '#9c2f24' : '#5b6b67') + '">' + (v == null ? '?' : v) + '</text>';
+      var np = pt(ox, ANG[i], 30);
+      h += '<text x="' + f1(np[0]) + '" y="' + f1(np[1] + 4) + '" text-anchor="middle" font-size="11" fill="#3d4a47">' + (i + 1) + '</text>';
+    }
+    // the obstacle you drag
+    if (live.cm < 120) {
+      var q = pt(cx, live.a, Math.max(10, live.cm / 120 * R));
+      h += '<rect x="' + f1(q[0] - 12) + '" y="' + f1(q[1] - 12) + '" width="24" height="24" rx="4" fill="#1d4ed8" stroke="#fff" stroke-width="2"/>';
+    } else {
+      h += '<text x="' + cx + '" y="42" text-anchor="middle" font-size="13" fill="#3d4a47">Nothing around (distance 120)</text>';
+    }
+    // the robot
+    h += '<rect x="' + (cx - 44) + '" y="' + (cy - 8) + '" width="88" height="56" rx="10" fill="#1b2422"/>';
+    h += '<text x="' + cx + '" y="' + (cy + 28) + '" text-anchor="middle" font-size="12" fill="#e3ece9">Front ↑</text>';
+    h += '<text x="14" y="22" font-size="13" fill="#3d4a47">← Left (−)</text><text x="' + (W - 14) + '" y="22" text-anchor="end" font-size="13" fill="#3d4a47">Right (+) →</text>';
+    h += '<text x="' + cx + '" y="18" text-anchor="middle" font-size="12" fill="#3d4a47">Straight ahead (0)</text>';
+    if ($('unplug').checked) h += '<text x="' + cx + '" y="70" text-anchor="middle" font-size="15" font-weight="700" fill="' + ir + '">Sensor unplugged: values stay at the last reading</text>';
+    svg.innerHTML = h;
+    $('dirv').textContent = live.dir; $('distv').textContent = live.cm;
+  }
+  var log = [];
+  function tick(reset) {
+    var st = state(), f = BY[S.fn];
+    drawField(st);
+    updateCardOutputs();
+    if (reset) log = [];
+    if ($('unplug').checked && !warned) {
+      // the library prints this warning in Chinese; the English meaning follows in brackets
+      log.push({ c: 'warnline', t: 'MBC: Port ' + portLetter() + ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV  (cannot read the sensor, returning the last value)' }); warned = true;
+    }
+    if (S.step < 3) {
+      log = [{ c: '', t: '(Finish step 3 "Use a function" and what the program prints shows up here)' }];
+    } else {
+      var line = runOut(f, st);
+      var cls = /Error/.test(line) ? 'errline' : '';
+      if (f.once) log = [{ c: cls, t: line }];
+      else log.push({ c: cls, t: line });
+    }
+    while (log.length > 7) log.shift();
+    $('console').innerHTML = log.map(function (l) { return '<span class="' + l.c + '">' + esc(l.t) + '</span>'; }).join('\n');
+  }
+
+  // ───── Events ─────
+  $('host-spike').addEventListener('click', function () { setHost('spike'); });
+  $('host-ev3').addEventListener('click', function () { setHost('ev3'); });
+  $('lib-single').addEventListener('click', function () { setLib('single'); });
+  $('lib-all').addEventListener('click', function () { setLib('all'); });
+  function setMulti(on) {
+    S.multi = on;
+    $('mt-off').setAttribute('aria-pressed', String(!on));
+    $('mt-on').setAttribute('aria-pressed', String(on));
+    drawMain();
+  }
+  $('mt-off').addEventListener('click', function () { setMulti(false); });
+  $('mt-on').addEventListener('click', function () { setMulti(true); });
+  $('next1').addEventListener('click', function () { setStep(2); $('varname').focus(); });
+  $('next2').addEventListener('click', function () { if (validName()) { setStep(3); drawPicker(); tick(true); } });
+  $('varname').addEventListener('input', function () { var ok = validName(); $('next2').disabled = !ok; if (ok) { drawMain(); drawPicker(); } });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) {
+    $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } });
+  });
+  ['dir', 'dist', 'bad3', 'unplug'].forEach(function (id) { $(id).addEventListener('input', function () { tick(id === 'unplug'); }); });
+  $('copymain').addEventListener('click', function (e) { copyText(plain(programLines()), e.currentTarget); });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { copyText(EX[b.getAttribute('data-copy')].join('\n') + '\n', b); });
+  });
+
+  // ───── Start ─────
+  S.viewStep = 1;
+  drawPorts(); drawPicker(); drawCards(); drawExamples(); drawMain(); tick(true);
+  setInterval(function () { if (S.step >= 3 && !BY[S.fn].once) tick(false); }, 600);
+})();
+</script>
+</body>
+</html>
