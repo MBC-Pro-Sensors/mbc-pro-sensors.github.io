@@ -208,6 +208,9 @@ class _MBC:
 
     def sensor_ok(self):
         """最近一次有沒有讀到感應器：True／False（拔線、沒接上 = False）"""
+        if self._d is None:
+            # 還沒讀過值（同步寫法第一次用到才建立裝置）：先試著建立，不然一開始會回 False
+            self._open()
         return self._r(self._d is not None and not self._bad)
 
     def device_id(self):

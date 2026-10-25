@@ -1,0 +1,847 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="寫 Pybricks 程式一定照這個順序：先匯入函式庫，再建立物件、幫感應器取名字，最後才用這個名字去呼叫功能。左邊一步一步做，右邊的程式會跟著長出來；拖動模擬感應器下面的黑線，就能看到程式會印出什麼。">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/line16/micropython.html">
+<title>循行者 16 路 Pybricks 教學 | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* 版面：左邊是照順序走的教學步驟，右邊固定「你的程式＋模擬感應器」；下面是 16 個功能的範例卡 */
+:root {
+  --bg: #f3f6f5;          /* 場地墊的淺色 */
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;      /* MBC 青綠 */
+  --accent-soft: #dff1ef;
+  --tape: #121212;        /* 黑膠帶線 */
+  --ir: #e04a3b;          /* 感應器紅外燈 */
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* 頁首 */
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+/* 主區：左教學、右程式 */
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+/* 右邊：程式＋模擬 */
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+/* 右邊固定區只放程式和輸出，高度不超過一個畫面，往下捲時一直看得到 */
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+/* 每一步卡片裡的「這一步寫的程式」：設定一改就更新並閃一下 */
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+/* 功能範例卡 */
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+/* 完整範例與注意事項 */
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/sensors/line16/spike/">← 循行者 16 路 SPIKE 說明</a><div class="tabs"><a href="/learn/line16/micropython.html" aria-current="page">MicroPython（Pybricks）</a><a href="/learn/line16/pybricks-blocks.html">Pybricks 積木</a><a href="/learn/line16/mbc-blocks.html">MBC 積木網站</a><a href="/learn/line16/spike-app.html">樂高官方 SPIKE App</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC 循行者 16 路 × Pybricks</span>
+    <h1>三個步驟用 MicroPython 讀循行者 16 路</h1>
+    <p class="lead">寫 Pybricks 程式一定照這個順序：先<b>匯入函式庫</b>，再<b>建立物件、幫感應器取名字</b>，最後才用這個名字去<b>呼叫功能</b>。左邊一步一步做，右邊的程式會跟著長出來；拖動模擬感應器下面的黑線，就能看到程式會印出什麼。</p>
+    <div class="hostbar">
+      <span class="small">你的主機：</span>
+      <div class="seg" role="group" aria-label="主機">
+        <button type="button" id="host-spike" aria-pressed="true">SPIKE Prime</button>
+        <button type="button" id="host-ev3" aria-pressed="false">EV3</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="main" aria-label="教學">
+    <div class="steps">
+      <!-- 步驟 1 -->
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>匯入函式庫</h2></div>
+        <div class="step-body">
+          <p class="why">程式的<b>第一件事</b>是告訴 Pybricks「我要用循行者 16 路的函式庫」。沒有這行，後面寫的 <code>MBC_LINE16</code> 主機看不懂，會出現 <code>NameError</code>。</p>
+          <p class="small">選一種函式庫（兩種寫法完全一樣，只差 import 那一行）：</p>
+          <div class="choice" role="group" aria-label="函式庫">
+            <button type="button" class="opt" id="lib-single" aria-pressed="true"><b>個別函式庫 MBC_line16.py</b><small>只接循行者 16 路時用。檔案小（約 4 KB），按執行上傳比較快。</small></button>
+            <button type="button" class="opt" id="lib-all" aria-pressed="false"><b>統一函式庫 MBC_sensors.py</b><small>同一台車還接了其他 MBC 感應器時用（約 12 KB，7 款全包）。</small></button>
+          </div>
+          <ol class="howto">
+            <li>下載函式庫（存成檔案，檔名不要改）：<a href="/examples/line16/pybricks/For%20firmware%204.x/MBC_line16.py" download>MBC_line16.py</a>（只接循行者 16 路）或 <a href="/examples/line16/pybricks/For%20firmware%204.x/MBC_sensors.py" download>MBC_sensors.py</a>（統一函式庫）；你選的是 <code id="libfile">MBC_line16.py</code>。</li>
+            <li>在 Pybricks Code 左邊檔案區按「Import a file」，把它匯入<b>同一個專案</b>。</li>
+            <li><b>檔名不要改</b>，也不要放進子資料夾。</li>
+            <li>回到主程式，在最上面寫下面這幾行（右邊程式標 ① 的地方）。</li>
+          </ol>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">寫好了，下一步</button>
+        </div>
+      </article>
+
+      <!-- 步驟 2 -->
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>建立物件：幫感應器取名字</h2></div>
+        <div class="step-body">
+          <p class="why">一台車可能接好幾個感應器，所以要「建立一個物件」：告訴程式感應器接在哪個孔，並幫它取個名字。之後每次要讀值，都是叫這個名字。</p>
+          <div class="row">
+            <span class="small">感應器接在哪個孔？</span>
+            <div class="ports" id="ports" role="group" aria-label="孔位"></div>
+          </div>
+          <label class="f" for="varname">幫它取名字（英文字母開頭，可以用數字和底線）
+            <input type="text" id="varname" value="line16" autocomplete="off" spellcheck="false">
+          </label>
+          <p class="err" id="nameerr" hidden></p>
+          <p class="small">要不要開啟多工？</p>
+          <div class="choice" role="group" aria-label="多工">
+            <button type="button" class="opt" id="mt-off" aria-pressed="true"><b>不開（一般寫法）</b><small>程式從上往下一行一行跑。初學者先用這個。</small></button>
+            <button type="button" class="opt" id="mt-on" aria-pressed="false"><b>開啟多工</b><small>要同時做好幾件事時用（例如邊循線邊等按鈕）。第 2 個參數寫 True，之後每個功能前面都要加 await。</small></button>
+          </div>
+          <p class="small">程式裡的 <code id="portnum">3</code> 就是孔位編號：<span id="portmap">SPIKE 1~6 = A~F</span>。也可以寫成 <code id="portalt">Port.C</code>，但要多匯入 <code>from pybricks.parameters import Port</code>。</p>
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2" disabled>建立好了，下一步</button>
+        </div>
+      </article>
+
+      <!-- 步驟 3 -->
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>使用功能</h2></div>
+        <div class="step-body">
+          <p class="why">寫法都是「<code><span id="nm1">line16</span>.功能名稱()</code>」：名字＋小數點＋功能。點一個功能，程式和輸出會換成它的範例。</p>
+          <div id="picker" class="ref"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+          <div class="sim-box">
+        <div class="sim-title">模擬感應器（從車子後面往前看）：拖動黑線，看右邊的輸出怎麼變</div>
+        <div class="sim">
+          <svg id="field" viewBox="0 0 460 190" role="img" aria-label="場地與感應器示意"></svg>
+          <div class="ctrl">
+            <label class="f" for="pos">黑線的位置（往左拖 = 線在左邊）
+              <input type="range" id="pos" min="-100" max="100" value="-30">
+            </label>
+            <div class="toggles">
+              <label><input type="radio" name="thick" id="t1" value="1.5"> 細線</label>
+              <label><input type="radio" name="thick" id="t2" value="3" checked> 一般</label>
+              <label><input type="radio" name="thick" id="t3" value="5"> 粗線</label>
+              <label><input type="checkbox" id="fork"> 岔路（看到兩段線）</label>
+              <label><input type="checkbox" id="cross"> 十字路口（整排都踩到）</label>
+              <label><input type="checkbox" id="noline"> 沒有線（全白）</label>
+              <label><input type="checkbox" id="unplug"> 拔掉感應器</label>
+            </div>
+          </div>
+          <p class="note" id="simnote">模擬畫面是示意：數值算法簡化過，實際感應器可能差一兩格。圓圈裡是那一路的光值（SPIKE：0 = 黑、15 = 白）；紅框 = 那一路判斷在線上。</p>
+        </div>
+          </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">每個功能的範例</h2>
+        <p class="ref-intro">16 個功能，每個都有一段可以直接放進迴圈的範例。按「試試看」會切到第 3 步，右邊的程式和輸出會換成這個範例。</p>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="你的程式與輸出">
+      <div class="panel">
+        <div class="panel-head"><span>你的程式</span><button type="button" class="copy" id="copymain">複製程式</button></div>
+        <pre class="code" id="maincode" aria-live="polite"></pre>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>電腦上看到的輸出（每 0.6 秒印一次）</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+
+  <section class="ref" aria-labelledby="fullh">
+    <h2 id="fullh">完整範例</h2>
+    <div class="full">
+      <div class="panel">
+        <div class="panel-head"><span>簡單循線＋十字路口停車（SPIKE，左馬達 A、右馬達 B）</span><button type="button" class="copy" data-copy="follow">複製</button></div>
+        <pre class="code" id="ex-follow"></pre>
+        <p class="bubble"><i>!</i><span>只改最上面「要改的地方」就好。車子左右甩：把 <code>KP</code> 調小；轉不過彎：調大。到了十字路口沒停：把 <code>CROSS</code> 改小一點（例如 10）；在 T 字岔路就停了：改大一點（最大 16）。車子往後退：把 <code>Direction.COUNTERCLOCKWISE</code> 移到另一顆馬達。</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>多工寫法（進階）</span><button type="button" class="copy" data-copy="multi">複製</button></div>
+        <pre class="code" id="ex-multi"></pre>
+        <p class="bubble"><i>!</i><span>建立物件時第 2 個參數寫 <code>True</code>，物件要放在 <code>run_task()</code> 外面；每個功能前面都要加 <code>await</code>。</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>跟其他 MBC 感應器一起用</span><button type="button" class="copy" data-copy="mix">複製</button></div>
+        <pre class="code" id="ex-mix"></pre>
+        <p class="bubble"><i>!</i><span>改用統一函式庫：只改 import 那一行，匯入 <code>MBC_sensors.py</code>。兩種函式庫不要同時匯入。</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">使用注意</h2>
+    <ol>
+      <li><b>拔線不會讓程式停。</b>讀不到時回傳上一次讀到的值，從來沒讀到過就回傳 <code>None</code>，電腦畫面印一行提醒；插回去自動恢復。要知道有沒有接好就用 <code>sensor_ok()</code>。在右邊勾「拔掉感應器」可以看到這個情形。循線時拔線，車子會照最後的位置繼續開。</li>
+      <li><b>10 ms 內重複讀不會變慢。</b>同一組資料 10 ms 內只向感應器讀一次（感應器本來就每 10 ms 更新），一次呼叫好幾個功能沒關係。</li>
+      <li><b>光值的範圍要看主機。</b>SPIKE 上每一路的光值是 <b>0 ~ 15</b>（16 路的光值要一次傳完，每路只用 4 個位元）；EV3 上 <code>ir_ch()</code>、<code>ir_calibration()</code> 是 <b>1 ~ 9</b>，<code>edge_l()</code>、<code>edge_r()</code> 是 <b>0 ~ 100</b>。判斷黑白的門檻要跟著改（SPIKE 低於 8、EV3 的 edge 低於 50 算黑）。</li>
+      <li><b>EV3 換一組資料要約 0.5 秒。</b>同一個迴圈裡盡量用同一組：<code>pos100()</code>、<code>width()</code>、<code>edge_l()</code>、<code>edge_r()</code> 一組（循線最常用）；<code>bin_raw()</code>、<code>bitmap()</code>、<code>on_sensors()</code>、<code>junction()</code>、<code>junction_name()</code> 一組；<code>pos16()</code> 單獨一組；<code>ir_ch()</code>、<code>ir_calibration()</code> 一組；<code>device_id()</code>、<code>firmware_version()</code> 放在迴圈外面。SPIKE 沒有這個問題。</li>
+      <li><b>方向：</b>站在車後面往前看，線在左邊是負數、右邊是正數；第 1 路在最左邊、第 16 路在最右邊。</li>
+      <li><b>丟線與十字路口：</b>線完全離開感應器時，<code>pos16()</code> 回傳 −16 或 +16、<code>pos100()</code> 回傳 −100 或 +100（看線最後從左邊還是右邊離開），車子會自己往那一側轉回去；要判斷「真的看不到線」用 <code>width() == 0</code>。十字路口整排都黑，是<b>一整段</b>線，<code>junction()</code> 還是 1，要用 <code>width() &gt;= 11</code> 判斷。</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  // ───── 狀態 ─────
+  var S = { host: 'spike', lib: 'single', port: 3, name: 'line16', step: 1, fn: 'pos16', multi: false, lastNew: [] };
+  var N = 16;           // 感應點數
+
+  // ───── 16 個功能 ─────
+  // body：放在迴圈裡的程式（{n} 換成物件名稱）；ev3body：EV3 主機時換用的程式；once：放在迴圈外只跑一次；out(st)：模擬輸出
+  var FNS = [
+    { id: 'pos16', zh: '粗位置', grp: '線在哪裡', ret: '-16 ~ +16 的整數', what: '線在第幾路附近。0 = 正中間，負數 = 線在左邊，正數 = 線在右邊。16 路排得比較密，線稍微偏一點數字就會動。看不到線時，回傳線最後離開的那一側：從左邊離開是 −16、從右邊離開是 +16。到下面把黑線拖到最左或最右試試看。',
+      body: ['pos = {n}.pos16()', 'print("線的位置:", pos)'], out: function (s) { return '線的位置: ' + s.pos16; } },
+    { id: 'pos100', zh: '細位置', grp: '線在哪裡', ret: '-100 ~ +100 的整數', what: '跟粗位置一樣是「線在哪裡」，但分得更細。循線（P／PID 控制）用這個，車子會走得比較順。看不到線時，回傳線最後離開的那一側：−100（左）或 +100（右），車子就會往那一側用力轉回去找線。',
+      body: ['error = {n}.pos100()', 'print("偏了多少:", error)'], out: function (s) { return '偏了多少: ' + s.pos100; } },
+    { id: 'width', zh: '線寬', grp: '壓到線的狀態', ret: '0 ~ 16 的整數', what: '有幾路踩在線上。0 = 一路都沒踩到，也就是「看不到線」。一般黑線只踩到幾路；碰到十字路口整排都踩到，會到 11 以上。到下面勾「十字路口」試試看。',
+      body: ['if {n}.width() == 0:', '    print("看不到線！")', 'elif {n}.width() >= 11:', '    print("十字路口！")', 'else:', '    print("踩到", {n}.width(), "路")'],
+      out: function (s) { return s.width === 0 ? '看不到線！' : s.width >= 11 ? '十字路口！' : '踩到 ' + s.width + ' 路'; } },
+    { id: 'on_sensors', zh: '踩到哪幾路', grp: '壓到線的狀態', ret: '一串數字（list），例如 [7, 8, 9]', what: '列出踩在線上的是第幾路，從 1（最左）到 16（最右）。',
+      body: ['print("踩到第", {n}.on_sensors(), "路")'], out: function (s) { return '踩到第 ' + pyList(s.on) + ' 路'; } },
+    { id: 'junction', zh: '線段數', grp: '壓到線的狀態', ret: '0、1、2…', what: '看到幾段分開的線：0 = 沒線、1 = 一條線、2 以上 = 看到分開的兩段（例如 Y 字岔路）。注意：十字路口整排都黑，是「一整段」，線段數還是 1；十字路口要看線寬。',
+      body: ['if {n}.junction() >= 2:', '    print("前面有岔路")', 'else:', '    print("線段數:", {n}.junction())'],
+      out: function (s) { return s.junction >= 2 ? '前面有岔路' : '線段數: ' + s.junction; } },
+    { id: 'junction_name', zh: '線段數的名稱', grp: '壓到線的狀態', ret: "'none'、'line' 或 'junction'", what: "跟線段數一樣，但直接給名字：none = 沒線、line = 一條線、junction = 兩段以上（岔路）。",
+      body: ['print({n}.junction_name())'], out: function (s) { return s.jname; } },
+    { id: 'bin_raw', zh: '位元圖', grp: '壓到線的狀態', ret: '0 ~ 65535 的整數', what: '16 路的「踩到／沒踩到」合成一個數字：第 1 路是最小的位元（1），第 16 路是 32768。適合會二進位的進階同學。',
+      body: ['b = {n}.bin_raw()', 'print(b, "=", bin(b))'], out: function (s) { return s.bits + ' = ' + pyBin(s.bits); } },
+    { id: 'bitmap', zh: '位元圖（另一個名字）', grp: '壓到線的狀態', ret: '0 ~ 65535 的整數', what: '跟 bin_raw() 完全一樣，只是名字不同（EV3 舊函式庫用這個名字）。',
+      body: ['print({n}.bitmap())'], out: function (s) { return String(s.bits); } },
+    { id: 'ir_ch', zh: '第幾路的光值', grp: '光值', ret: 'SPIKE 0 ~ 15（0 = 黑、15 = 白）；EV3 1 ~ 9', what: '讀某一路的光值。括號裡填 1 ~ 16（第 1 路在最左邊）。SPIKE 上每路只有 0 ~ 15，不是 0 ~ 100。',
+      body: ['print("第 3 路光值:", {n}.ir_ch(3))'], out: function (s) { return '第 3 路光值: ' + chLight(s)[2]; } },
+    { id: 'ir_calibration', zh: '16 路光值', grp: '光值', ret: '16 個數字（list）：SPIKE 0 ~ 15、EV3 1 ~ 9', what: '一次拿到 16 路的光值，從第 1 路（左）排到第 16 路（右）。',
+      body: ['print({n}.ir_calibration())'], out: function (s) { return pyList(chLight(s)); } },
+    { id: 'edge_l', zh: '最左邊那一路', grp: '光值', ret: 'SPIKE 0 ~ 15；EV3 0 ~ 100', what: '第 1 路（最左邊）的光值，常用來偵測車子左邊壓到線或出界。SPIKE 上低於 8 算黑；EV3 上這個值是 0 ~ 100，切到 EV3 時範例改成低於 50。',
+      body: ['if {n}.edge_l() < 8:', '    print("左邊踩到黑線")', 'else:', '    print("左邊是白的")'],
+      ev3body: ['if {n}.edge_l() < 50:', '    print("左邊踩到黑線")', 'else:', '    print("左邊是白的")'],
+      out: function (s) { return isBlack(s, 0) ? '左邊踩到黑線' : '左邊是白的'; } },
+    { id: 'edge_r', zh: '最右邊那一路', grp: '光值', ret: 'SPIKE 0 ~ 15；EV3 0 ~ 100', what: '第 16 路（最右邊）的光值，常用來偵測車子右邊壓到線或出界。SPIKE 上低於 8 算黑；EV3 上切到 EV3 時範例改成低於 50。',
+      body: ['if {n}.edge_r() < 8:', '    print("右邊踩到黑線")', 'else:', '    print("右邊是白的")'],
+      ev3body: ['if {n}.edge_r() < 50:', '    print("右邊踩到黑線")', 'else:', '    print("右邊是白的")'],
+      out: function (s) { return isBlack(s, N - 1) ? '右邊踩到黑線' : '右邊是白的'; } },
+    { id: 'read_all', zh: '全部一次讀', grp: '光值', ret: '一個字典（dict）', what: '上面的值全部一次讀回來，用名字取出要的那一個（粗位置的名字是 line_pos16）。只有 SPIKE 有。', spikeOnly: true,
+      body: ['data = {n}.read_all()', 'print(data["line_pos100"], data["line_width"])'], out: function (s) { return s.pos100 + ' ' + s.width; } },
+    { id: 'device_id', zh: '感應器身分', grp: '感應器資訊', ret: '(位址, 型號, 韌體版本字)', what: '確認接的是哪一款感應器：位址 22（0x16）、型號 16 = 16 路（8 路的型號是 8）。放在迴圈外面讀一次就好。', once: true,
+      body: ['print({n}.device_id())'], out: function () { return '(22, 16, 100)'; } },
+    { id: 'firmware_version', zh: '韌體版本', grp: '感應器資訊', ret: '(主版, 次版)', what: '感應器韌體的版本，例如 (1, 0) = 1.0。放在迴圈外面讀一次就好。', once: true,
+      body: ['print({n}.firmware_version())'], out: function () { return '(1, 0)'; } },
+    { id: 'sensor_ok', zh: '有沒有接好', grp: '感應器資訊', ret: 'True 或 False', what: '最近一次有沒有讀到感應器。拔線、沒接好就是 False。到右邊勾「拔掉感應器」試試看。',
+      body: ['if not {n}.sensor_ok():', '    print("感應器沒接好！")', 'else:', '    print("感應器正常")'],
+      out: function (s) { return s.ok ? '感應器正常' : '感應器沒接好！'; } }
+  ];
+  var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; });
+
+  // ───── 小工具 ─────
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function pyList(a) { return '[' + a.join(', ') + ']'; }
+  function pyBin(n) { return n === 0 ? '0b0' : '0b' + n.toString(2); }
+  function fbody(f) { return S.host === 'ev3' && f.ev3body ? f.ev3body : f.body; }
+  // 每一路光值：SPIKE 0~15、EV3 1~9（ir_ch／ir_calibration）
+  function chLight(s) { return S.host === 'ev3' ? s.light9 : s.light16; }
+  // edge_l／edge_r：SPIKE 0~15 低於 8 算黑；EV3 0~100 低於 50 算黑
+  function isBlack(s, i) { return S.host === 'ev3' ? s.light100[i] < 50 : s.light16[i] < 8; }
+  var KW = /\b(from|import|while|True|False|None|if|else|elif|not|and|or|async|def|await|for|in|return)\b/;
+  function hiPy(line) {
+    // 很簡單的 Python 上色：註解、字串、關鍵字、數字、函式名稱
+    var out = '', i = 0;
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest[0] === '#') { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if ((m = rest.match(/^("[^"]*"|'[^']*')/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (KW.test(w) && new RegExp('^' + KW.source + '$').test(w)) out += '<span class="tk-kw">' + w + '</span>';
+        else if (after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^\d+/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  function render(el, lines, opts) {
+    // lines：[{t: 文字, tag: 步驟編號或 '', hl: bool, isNew: bool}]
+    opts = opts || {};
+    el.innerHTML = lines.map(function (l, k) {
+      var cls = 'ln' + (l.hl ? ' hl' : '') + (l.isNew ? ' new' : '');
+      var tag = opts.noTag ? '' : '<span class="tag">' + (l.tag ? '<i>' + l.tag + '</i>' : '') + '</span>';
+      return '<span class="' + cls + '"><span class="no">' + (l.no || k + 1) + '</span>' + tag + '<span>' + (l.t ? hiPy(l.t) : ' ') + '</span></span>';
+    }).join('');
+  }
+  function plain(lines) { return lines.map(function (l) { return l.t; }).join('\n') + '\n'; }
+  function copyText(text, btn) {
+    var done = function () { var o = btn.textContent; btn.textContent = '已複製'; setTimeout(function () { btn.textContent = o; }, 1400); };
+    try {
+      navigator.clipboard.writeText(text).then(done, function () { fallback(text); });
+    } catch (e) { fallback(text); }
+    function fallback(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e2) { btn.textContent = '請手動選取複製'; }
+      document.body.removeChild(ta);
+    }
+  }
+  var LETTERS = { spike: ['A', 'B', 'C', 'D', 'E', 'F'], ev3: ['S1', 'S2', 'S3', 'S4'] };
+  function modName() { return S.lib === 'single' ? 'MBC_line16' : 'MBC_sensors'; }
+  function portLetter() { return LETTERS[S.host][S.port - 1]; }
+
+  // ───── 主程式組裝 ─────
+  function programLines() {
+    var n = S.name, f = BY[S.fn], L = [];
+    var s1 = S.step === 1, s2 = S.step === 2, s3 = S.step === 3;
+    L.push({ t: S.multi ? 'from pybricks.tools import wait, run_task' : 'from pybricks.tools import wait', tag: 1, hl: s1 });
+    L.push({ t: 'from ' + modName() + ' import MBC_LINE16', tag: 1, hl: s1, key: 'import' });
+    if (S.step >= 2) {
+      L.push({ t: '' });
+      L.push({ t: n + ' = MBC_LINE16(' + S.port + (S.multi ? ', True' : '') + ')    # ' + S.port + ' = ' + portLetter() + ' 埠' + (S.multi ? '，True = 開啟多工' : ''), tag: 2, hl: s2, key: 'obj' });
+    }
+    if (S.step >= 3) {
+      L.push({ t: '' });
+      // 多工：每個功能前面加 await，程式包在 async def main() 裡，最後 run_task(main())
+      var body = fbody(f).map(function (b) { return b.replace(/\{n\}\./g, (S.multi ? 'await ' : '') + n + '.'); });
+      var pad = S.multi ? '    ' : '';
+      if (S.multi) L.push({ t: 'async def main():', tag: 3, hl: s3 });
+      if (f.once) {
+        body.forEach(function (b) { L.push({ t: pad + b, tag: 3, hl: s3 }); });
+      } else {
+        L.push({ t: pad + 'while True:', tag: 3, hl: s3 });
+        body.forEach(function (b) { L.push({ t: pad + '    ' + b, tag: 3, hl: s3 }); });
+        L.push({ t: pad + '    ' + (S.multi ? 'await ' : '') + 'wait(100)', tag: 3, hl: s3 });
+      }
+      if (S.multi) {
+        L.push({ t: '' });
+        L.push({ t: 'run_task(main())', tag: 3, hl: s3 });
+      }
+    }
+    return L;
+  }
+  var lastKeys = '';
+  function drawMain() {
+    var L = programLines();
+    var keys = L.map(function (l) { return l.t; });
+    var prev = lastKeys ? lastKeys.split('\n') : [];
+    L.forEach(function (l) { if (l.t && prev.indexOf(l.t) < 0 && lastKeys) l.isNew = true; });
+    lastKeys = keys.join('\n');
+    render($('maincode'), L);
+    var tips = {
+      1: '第 1 步：程式最上面先匯入。第 1 行是 Pybricks 內建的 wait（等待），第 2 行才是 MBC 的函式庫。',
+      2: '第 2 步：建立物件。等號左邊的 ' + S.name + ' 是你取的名字，右邊告訴程式感應器接在 ' + portLetter() + ' 埠。' +
+         (S.multi ? '第 2 個參數 True 代表開啟多工，所以第 1 行也多匯入了 run_task。' : ''),
+      3: S.multi
+        ? '第 3 步（多工）：程式放在 async def main() 裡，每個功能和 wait 前面都要加 await，最後一行 run_task(main()) 讓它開始跑。'
+        : '第 3 步：用「' + S.name + '.功能()」讀值。' + (BY[S.fn].once ? '這個功能放在迴圈外面讀一次就好。' : 'while True 會一直重複，wait(100) 讓它每 0.1 秒讀一次。')
+    };
+    var b = $('bubble'); b.querySelector('i').textContent = S.step; b.querySelector('span').textContent = tips[S.step];
+    drawMinis();
+  }
+
+  // 每一步卡片裡的「這一步寫的程式」：用完整程式的真實行號，內容一變就閃一下
+  var miniPrev = {};
+  function drawMinis() {
+    var keep = S.step; S.step = 3; var full = programLines(); S.step = keep;
+    [1, 2, 3].forEach(function (k) {
+      var el = $('mini' + k); if (!el) return;
+      var lines = [];
+      full.forEach(function (l, i) { if (l.tag === k) lines.push({ t: l.t, no: i + 1 }); });
+      if (!lines.length) { el.innerHTML = ''; return; }
+      var txt = lines.map(function (l) { return l.no + l.t; }).join('\n');
+      var a = lines[0].no, z = lines[lines.length - 1].no;
+      el.innerHTML = '<span>這一步寫的程式（第 ' + a + (z !== a ? '～' + z : '') + ' 行）</span><pre class="code"></pre>';
+      render(el.querySelector('pre'), lines, { noTag: true });
+      if (miniPrev[k] !== undefined && miniPrev[k] !== txt) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      miniPrev[k] = txt;
+    });
+  }
+
+  // ───── 步驟 ─────
+  function setStep(n) {
+    S.step = Math.max(S.step, n);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    S.viewStep = n;
+    var keep = S.step; S.step = n; drawMain(); S.step = keep;
+    if (n === 2) $('next2').disabled = !validName();
+  }
+  // 顯示用：畫程式時用「目前看的步驟」決定長到哪一步
+  var _draw = drawMain;
+  drawMain = function () { var keep = S.step; S.step = S.viewStep || S.step; _draw(); S.step = keep; };
+
+  function validName() {
+    var v = $('varname').value.trim(), bad = '';
+    if (!v) bad = '名字不能空白。';
+    else if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(v)) bad = '只能用英文字母、數字、底線，而且第一個字不能是數字。';
+    else if (KW.test(v) && new RegExp('^' + KW.source + '$').test(v)) bad = '「' + v + '」是 Python 的保留字，換一個名字。';
+    else if (v === 'MBC_LINE16' || v === 'wait') bad = '這個名字已經被用掉了，換一個。';
+    $('nameerr').hidden = !bad; $('nameerr').textContent = bad;
+    if (!bad) S.name = v;
+    return !bad;
+  }
+
+  // ───── 主機、函式庫、孔位 ─────
+  function drawPorts() {
+    var box = $('ports'); box.innerHTML = '';
+    LETTERS[S.host].forEach(function (l, i) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = l;
+      b.setAttribute('aria-pressed', String(S.port === i + 1)); b.setAttribute('aria-label', l + ' 埠');
+      b.addEventListener('click', function () { S.port = i + 1; drawPorts(); drawMain(); syncPortText(); });
+      box.appendChild(b);
+    });
+    syncPortText();
+  }
+  function syncPortText() {
+    $('portnum').textContent = S.port;
+    $('portalt').textContent = 'Port.' + portLetter();
+    $('portmap').textContent = S.host === 'spike' ? 'SPIKE 1~6 = A~F' : 'EV3 1~4 = S1~S4';
+  }
+  function setHost(h) {
+    S.host = h;
+    $('host-spike').setAttribute('aria-pressed', String(h === 'spike'));
+    $('host-ev3').setAttribute('aria-pressed', String(h === 'ev3'));
+    if (S.port > LETTERS[h].length) S.port = 1;
+    $('simnote').textContent = '模擬畫面是示意：數值算法簡化過，實際感應器可能差一兩格。圓圈裡是那一路的光值（' +
+      (h === 'ev3' ? 'EV3：1 = 黑、9 = 白' : 'SPIKE：0 = 黑、15 = 白') + '）；紅框 = 那一路判斷在線上。';
+    drawPorts(); drawPicker(); drawCards(); drawMain(); tick(true);
+  }
+  function setLib(l) {
+    S.lib = l;
+    $('lib-single').setAttribute('aria-pressed', String(l === 'single'));
+    $('lib-all').setAttribute('aria-pressed', String(l === 'all'));
+    $('libfile').textContent = l === 'single' ? 'MBC_line16.py' : 'MBC_sensors.py';
+    drawMain(); drawExamples();
+  }
+
+  // ───── 功能選擇器（第 3 步）與範例卡 ─────
+  function groups() {
+    var g = {}; FNS.forEach(function (f) { (g[f.grp] = g[f.grp] || []).push(f); }); return g;
+  }
+  function drawPicker() {
+    var box = $('picker'), g = groups(); box.innerHTML = '';
+    Object.keys(g).forEach(function (k) {
+      var wrap = document.createElement('div'); wrap.className = 'fgroup';
+      wrap.innerHTML = '<span>' + k + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      g[k].forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (f.spikeOnly && S.host === 'ev3' ? ' no-ev3' : '');
+        b.textContent = f.id + '()'; b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.title = f.zh;
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      wrap.appendChild(chips); box.appendChild(wrap);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + f.id + '()　' + f.zh + '</b><span>' + f.what + '</span><span class="small">回傳：' + f.ret +
+      (f.spikeOnly ? '　｜　只有 SPIKE' : '') + '</span>' +
+      (f.spikeOnly && S.host === 'ev3' ? '<span class="err">EV3 讀不到這個值，執行時會出現 ValueError。</span>' : '');
+    $('nm1').textContent = S.name;
+  }
+  function pick(id) {
+    S.fn = id;
+    if (S.step < 3) { S.step = 3; }
+    setStep(3);
+    drawPicker(); tick(true);
+  }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    FNS.forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      var body = fbody(f).map(function (b) { return b.replace(/\{n\}/g, 'line16'); });
+      var lines = f.once ? body : ['while True:'].concat(body.map(function (b) { return '    ' + b; }), ['    wait(100)']);
+      c.innerHTML =
+        '<div class="card-head"><h3>' + f.id + '()<span class="zh">' + f.zh + '</span></h3>' +
+        '<span class="badges"><span class="badge yes">SPIKE</span><span class="badge ' + (f.spikeOnly ? 'no' : 'yes') + '">EV3</span></span></div>' +
+        '<p>' + f.what + '</p>' +
+        '<dl class="meta"><dt>回傳</dt><dd>' + f.ret + '</dd><dt>範例</dt><dd>' + (f.once ? '放在迴圈外，讀一次' : '放在 while True 迴圈裡') + '</dd></dl>' +
+        '<pre class="code"></pre>' +
+        '<p class="out">模擬畫面上會印出：<code></code></p>' +
+        '<button type="button" class="try">試試看</button>';
+      render(c.querySelector('pre'), lines.map(function (t) { return { t: t }; }), { noTag: true });
+      c.querySelector('.try').addEventListener('click', function () {
+        pick(f.id);
+        var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      });
+      box.appendChild(c);
+    });
+    updateCardOutputs();
+  }
+  function updateCardOutputs() {
+    var st = state();
+    FNS.forEach(function (f) {
+      var el = document.querySelector('#fn-' + f.id + ' .out code');
+      if (el) el.textContent = runOut(f, st);
+    });
+  }
+
+  // ───── 完整範例 ─────
+  var EX = {};
+  function drawExamples() {
+    EX.follow = [
+      'from pybricks.pupdevices import Motor',
+      'from pybricks.parameters import Port, Direction',
+      'from pybricks.tools import wait',
+      'from ' + modName() + ' import MBC_LINE16',
+      '',
+      '# ===== 要改的地方 =====',
+      'SENSOR_PORT = 3      # 循行者接哪個孔（3 = C）',
+      'SPEED = 300          # 直走速度（度/秒）',
+      'KP = 3               # 轉彎靈敏度',
+      'CROSS = 11           # 線寬到幾路算十字路口',
+      '# =====================',
+      '',
+      'line16 = MBC_LINE16(SENSOR_PORT)',
+      'left = Motor(Port.A, Direction.COUNTERCLOCKWISE)',
+      'right = Motor(Port.B)',
+      '',
+      'while True:',
+      '    if line16.width() >= CROSS:    # 整排都踩到 = 十字路口',
+      '        break',
+      '    error = line16.pos100()    # 線在左 = 負數 → 左輪變慢 → 往左轉',
+      '    left.run(SPEED + KP * error)',
+      '    right.run(SPEED - KP * error)',
+      '    wait(10)',
+      '',
+      'left.stop()',
+      'right.stop()'
+    ];
+    EX.multi = [
+      'from pybricks.tools import wait, run_task',
+      'from ' + modName() + ' import MBC_LINE16',
+      '',
+      'line16 = MBC_LINE16(3, True)    # True = 多工',
+      '',
+      'async def main():',
+      '    while True:',
+      '        print(await line16.pos16())    # 每個功能前面加 await',
+      '        await wait(100)',
+      '',
+      'run_task(main())'
+    ];
+    EX.mix = [
+      'from pybricks.tools import wait',
+      'from MBC_sensors import MBC_LINE16, MBC_LASER8',
+      '',
+      'line16 = MBC_LINE16(3)    # 循行者 16 路接 C 埠',
+      'laser8 = MBC_LASER8(4)    # 測距者 8 路接 D 埠',
+      '',
+      'while True:',
+      '    print(line16.pos100(), laser8.min_distance())',
+      '    wait(100)'
+    ];
+    ['follow', 'multi', 'mix'].forEach(function (k) {
+      render($('ex-' + k), EX[k].map(function (t) { return { t: t }; }), { noTag: true });
+    });
+  }
+
+  // ───── 模擬感應器 ─────
+  // 示意：16 個感應點排成一排，位置單位是「一路的間距」，第 1 路在 -7.5、第 16 路在 +7.5
+  var frozen = null, warned = false, everRead = false, lastSide = 0;
+  function rawState() {
+    var cross = $('cross').checked, noline = $('noline').checked;
+    var c = Number($('pos').value) / 100 * 9;
+    var w = Number(document.querySelector('input[name="thick"]:checked').value);
+    var lines = noline ? [] : [c];
+    if ($('fork').checked && !noline && !cross) lines.push(c <= 0 ? c + 5.5 : c - 5.5);
+    var light100 = [], light16 = [], light9 = [], on = [], bits = 0;
+    for (var i = 0; i < N; i++) {
+      var x = i - 7.5, best = 100;
+      lines.forEach(function (lc) {
+        var d = Math.abs(x - lc) - w / 2;               // 離線邊多遠（單位：一路的間距）
+        var v = Math.round(Math.max(0, Math.min(1, d + 0.3)) * 100);   // 細線落在兩路中間時，兩邊也都讀得到黑
+        if (v < best) best = v;
+      });
+      best = Math.max(3, Math.min(98, best));          // 實際感應器很少剛好 0 或 100
+      if (cross && lines.length) best = 3;             // 十字路口：橫線蓋過整排，每一路都是黑
+      light100.push(best);
+      light16.push(Math.round(best * 15 / 100));        // 示意：SPIKE 每路 0~15
+      light9.push(Math.max(1, Math.min(9, Math.round(best * 9 / 100))));  // 示意：EV3 每路 1~9
+      if (best < 50) { on.push(i + 1); bits |= (1 << i); }
+    }
+    var width = on.length, pos16 = 0, pos100 = 0;
+    if (width) {
+      // 示意：直接用模擬畫面上黑線的位置換算（越靠邊數字越大），不是感應器內部的算法
+      var cc = cross ? 0 : lines[0];                   // 整排都黑時，黑色的中心在正中間
+      pos16 = Math.max(-15, Math.min(15, Math.round(cc * 2)));
+      pos100 = Math.max(-100, Math.min(100, Math.round(cc / 8 * 100)));
+    }
+    // 丟線：記住線最後從哪一側離開，粗位置回傳 ±16、細位置回傳 ±100（跟感應器一樣）
+    if (width) { if (pos100 > 0 || pos16 > 0) lastSide = 1; else if (pos100 < 0 || pos16 < 0) lastSide = -1; }
+    else { pos16 = lastSide * 16; pos100 = lastSide * 100; }
+    var groups = 0, prev = 0;
+    for (var g = 0; g < N; g++) { var b = (bits >> g) & 1; if (b && !prev) groups++; prev = b; }
+    var jname = groups === 0 ? 'none' : groups === 1 ? 'line' : 'junction';
+    return { lines: lines, w: w, cross: cross, light100: light100, light16: light16, light9: light9, on: on, bits: bits, width: width, pos16: pos16, pos100: pos100, junction: groups, jname: jname, ok: true };
+  }
+  function state() {
+    var unplug = $('unplug').checked;
+    if (!unplug) { frozen = rawState(); everRead = true; warned = false; return frozen; }
+    var s = frozen ? JSON.parse(JSON.stringify(frozen)) : null;
+    if (!s) return { none: true, ok: false };
+    s.ok = false; return s;
+  }
+  function runOut(f, st) {
+    if (f.spikeOnly && S.host === 'ev3') return 'ValueError: ' + f.id + '(): EV3 讀不到這個值';
+    if (st.none && f.id !== 'sensor_ok') return f.id === 'read_all' ? 'TypeError（read_all() 回傳 None）' : (f.out.length ? 'None' : f.out(st));
+    return f.out(st);
+  }
+  function drawField(st) {
+    var svg = $('field'), W = 460, H = 190, ox = 42, gap = 25, sy = 128;
+    var tok = getComputedStyle(document.documentElement);
+    var tape = tok.getPropertyValue('--tape').trim(), ir = tok.getPropertyValue('--ir').trim(), rule = tok.getPropertyValue('--rule').trim();
+    var h = '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#f7f7f2" stroke="' + rule + '"/>';
+    var s = rawState();
+    s.lines.forEach(function (lc, k) {
+      var cx = ox + (lc + 7.5) * gap, half = s.w / 2 * gap;
+      if (k === 0) h += '<rect x="' + (cx - half) + '" y="0" width="' + (half * 2) + '" height="' + H + '" fill="' + tape + '"/>';
+      else {
+        var x0 = ox + (s.lines[0] + 7.5) * gap;
+        h += '<polygon points="' + (x0 - half) + ',' + H + ' ' + (x0 + half) + ',' + H + ' ' + (cx + half) + ',0 ' + (cx - half) + ',0" fill="' + tape + '"/>';
+      }
+    });
+    // 十字路口：直走的線＋橫過整排的線（示意）
+    if (s.cross && s.lines.length) h += '<rect x="0" y="' + (sy - 52) + '" width="' + W + '" height="34" fill="' + tape + '"/>';
+    h += '<rect x="' + (ox - 20) + '" y="' + (sy - 24) + '" width="' + (gap * 15 + 40) + '" height="48" rx="10" fill="#1b2422" opacity="0.9"/>';
+    h += '<rect x="0" y="' + (sy + 26) + '" width="' + W + '" height="' + (H - sy - 26) + '" fill="#f7f7f2" opacity="0.92"/>';
+    var vals = st.none ? null : chLight(st), max = S.host === 'ev3' ? 9 : 15;
+    for (var i = 0; i < N; i++) {
+      var x = ox + i * gap, v = vals ? vals[i] : null;
+      var g = v == null ? 128 : Math.round(255 * v / max);
+      var onl = !st.none && st.on && st.on.indexOf(i + 1) >= 0;
+      h += '<circle cx="' + x + '" cy="' + sy + '" r="10.5" fill="rgb(' + g + ',' + g + ',' + g + ')" stroke="' + (onl ? ir : '#55605d') + '" stroke-width="' + (onl ? 3.5 : 1.5) + '"/>';
+      h += '<text x="' + x + '" y="' + (sy + 4) + '" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="' + (g > 120 ? '#111' : '#fff') + '">' + (v == null ? '?' : v) + '</text>';
+      h += '<text x="' + x + '" y="' + (sy + 40) + '" text-anchor="middle" font-size="10" fill="#3d4a47">' + (i + 1) + '</text>';
+    }
+    h += '<text x="14" y="22" font-size="13" fill="#3d4a47">← 左（負）</text><text x="' + (W - 14) + '" y="22" text-anchor="end" font-size="13" fill="#3d4a47">右（正）→</text>';
+    if ($('unplug').checked) h += '<text x="' + (W / 2) + '" y="70" text-anchor="middle" font-size="15" font-weight="700" fill="' + ir + '">感應器拔掉了：數值停在上一次</text>';
+    svg.innerHTML = h;
+  }
+  var log = [];
+  function tick(reset) {
+    var st = state(), f = BY[S.fn];
+    drawField(st);
+    updateCardOutputs();
+    if (reset) log = [];
+    if ($('unplug').checked && !warned) {
+      log.push({ c: 'warnline', t: 'MBC: Port ' + portLetter() + ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV' }); warned = true;
+    }
+    if (S.step < 3) {
+      log = [{ c: '', t: '（做完第 3 步「使用功能」，這裡會出現程式印出的內容）' }];
+    } else {
+      var line = runOut(f, st);
+      var cls = /Error/.test(line) ? 'errline' : '';
+      if (f.once) log = [{ c: cls, t: line }];
+      else log.push({ c: cls, t: line });
+    }
+    while (log.length > 7) log.shift();
+    $('console').innerHTML = log.map(function (l) { return '<span class="' + l.c + '">' + esc(l.t) + '</span>'; }).join('\n');
+  }
+
+  // ───── 事件 ─────
+  $('host-spike').addEventListener('click', function () { setHost('spike'); });
+  $('host-ev3').addEventListener('click', function () { setHost('ev3'); });
+  $('lib-single').addEventListener('click', function () { setLib('single'); });
+  $('lib-all').addEventListener('click', function () { setLib('all'); });
+  function setMulti(on) {
+    S.multi = on;
+    $('mt-off').setAttribute('aria-pressed', String(!on));
+    $('mt-on').setAttribute('aria-pressed', String(on));
+    drawMain();
+  }
+  $('mt-off').addEventListener('click', function () { setMulti(false); });
+  $('mt-on').addEventListener('click', function () { setMulti(true); });
+  $('next1').addEventListener('click', function () { setStep(2); $('varname').focus(); });
+  $('next2').addEventListener('click', function () { if (validName()) { setStep(3); drawPicker(); tick(true); } });
+  $('varname').addEventListener('input', function () { var ok = validName(); $('next2').disabled = !ok; if (ok) { drawMain(); drawPicker(); } });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) {
+    $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } });
+  });
+  ['pos', 'fork', 'cross', 'noline', 'unplug', 't1', 't2', 't3'].forEach(function (id) { $(id).addEventListener('input', function () { tick(id === 'unplug'); }); });
+  $('copymain').addEventListener('click', function (e) { copyText(plain(programLines()), e.currentTarget); });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { copyText(EX[b.getAttribute('data-copy')].join('\n') + '\n', b); });
+  });
+
+  // ───── 開始 ─────
+  S.viewStep = 1;
+  drawPorts(); drawPicker(); drawCards(); drawExamples(); drawMain(); tick(true);
+  setInterval(function () { if (S.step >= 3 && !BY[S.fn].once) tick(false); }, 600);
+})();
+</script>
+</body>
+</html>
