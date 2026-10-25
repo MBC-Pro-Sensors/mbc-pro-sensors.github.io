@@ -65,6 +65,7 @@ _CACHE_MS          = 10     # 讀取快取有效時間（= 串流週期）
 _STALE_MS          = 50     # 超過這麼久沒讀，UART 緩衝裡可能堆著舊封包 → 清掉只收新的
 _FRESH_TIMEOUT_MS  = 40     # 等新封包的上限（板子每 10ms 送一包）
 _CMD_SETTLE_MS     = 15     # 下指令後等板子處理完、送出反映新狀態的封包
+_RELINK_WAIT_MS    = 60     # 下指令時發現斷線：送完策反包後最多等這麼久看板子有沒有回來
 _STOP_REPEAT       = 3      # 結束時全部放鬆指令重送次數
 
 # 上行狀態位元 / status bits in R1~R6
@@ -248,11 +249,57 @@ class MBC_SERVO6:
     def _check_disconnect(self):
         # 只在「剛 drain 過」之後呼叫：串流中的板子會更新 _cache_time。
         if self.connected and (_watch.time() - self._cache_time) > _DISCONNECT_MS:
-            self.connected = False
-            self._cache = None   # 清掉舊快取，否則重連判斷會被這包舊資料騙過
-            self._reconnect_last_ms = -_RECONNECT_KICK_MS
-            self._err_last_ms = _watch.time()
-            print(self._disc_msg)
+            self._mark_disconnected()
+
+    def _mark_disconnected(self):
+        self.connected = False
+        self._cache = None   # 清掉舊快取，否則重連判斷會被這包舊資料騙過
+        self._reconnect_last_ms = -_RECONNECT_KICK_MS
+        self._err_last_ms = _watch.time()
+        print(self._disc_msg)
+
+    # 只下指令、從不讀值的程式也要發現斷線：板子插回去會重開、停在樂高模式等策反包，
+    # 設定也回到預設。所以下指令前，若一陣子沒收到串流，就確認一次板子還在送；
+    # 沒在送 → 判定斷線、馬上送策反包重連，連上後 _try_reconnect_* 會重送校正／堵轉設定。
+    def _link_sync(self):
+        if self.connected and _watch.time() - self._cache_time > _STALE_MS:
+            seq = self._flush_rx()
+            t0 = _watch.time()
+            while self._pkt_seq == seq and _watch.time() - t0 < _FRESH_TIMEOUT_MS:
+                wait(2)
+                self._drain_and_parse()
+            if self._pkt_seq == seq:
+                self._mark_disconnected()
+        if self.connected:
+            return True
+        kicked = _watch.time() - self._reconnect_last_ms >= _RECONNECT_KICK_MS
+        t0 = _watch.time()
+        while True:
+            if self._try_reconnect_sync():
+                return True
+            if not kicked or _watch.time() - t0 >= _RELINK_WAIT_MS:
+                return False
+            wait(5)
+
+    async def _link_async(self):
+        if self.connected and _watch.time() - self._cache_time > _STALE_MS:
+            seq = self._flush_rx()
+            t0 = _watch.time()
+            while self._pkt_seq == seq and _watch.time() - t0 < _FRESH_TIMEOUT_MS:
+                await wait(2)
+                self._drain_and_parse()
+            if self._pkt_seq == seq:
+                self._mark_disconnected()
+        if self.connected:
+            return True
+        kicked = _watch.time() - self._reconnect_last_ms >= _RECONNECT_KICK_MS
+        t0 = _watch.time()
+        while True:
+            if await self._try_reconnect_async():
+                return True
+            if not kicked or _watch.time() - t0 >= _RELINK_WAIT_MS:
+                return False
+            await wait(5)
 
     # ── 內部：raw UART 收發 ────────────────────────────────────
     async def _uart_write_async(self, data):
@@ -365,7 +412,7 @@ class MBC_SERVO6:
     def _cmd(self, pkts):
         if self._async_mode:
             return self._cmd_async(pkts)
-        if not self.connected and not self._try_reconnect_sync():
+        if not self._link_sync():
             self._warn_no_board()
             return None
         for pkt in pkts:
@@ -373,7 +420,7 @@ class MBC_SERVO6:
         return None
 
     async def _cmd_async(self, pkts):
-        if not self.connected and not await self._try_reconnect_async():
+        if not await self._link_async():
             self._warn_no_board()
             return
         for pkt in pkts:
@@ -422,6 +469,7 @@ class MBC_SERVO6:
                 self._warn_no_board()
                 return
             self._drain_and_parse()
+            self._check_disconnect()   # 拔線時約 0.4 秒就返回，不會等滿 timeout
             if self._pkt_seq != seq and not (self._reg(port - 1) & _BIT_MOVING):
                 return
             wait(10)
@@ -435,6 +483,7 @@ class MBC_SERVO6:
                 self._warn_no_board()
                 return
             self._drain_and_parse()
+            self._check_disconnect()   # 拔線時約 0.4 秒就返回，不會等滿 timeout
             if self._pkt_seq != seq and not (self._reg(port - 1) & _BIT_MOVING):
                 return
             await wait(10)

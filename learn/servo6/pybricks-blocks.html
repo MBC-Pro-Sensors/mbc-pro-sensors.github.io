@@ -325,7 +325,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
       <li><b>函式庫檔要先匯入專案。</b>沒有匯入 <code>MBC_servo6_Lib.py</code>，紅色積木裡選不到 <code>MBC_SERVO6</code>。</li>
       <li><b>await 和 call 要跟多工一致：</b>多工 true 就選 await，多工 false 就選 call。混著用，程式會在主機上出錯。</li>
       <li><b>積木背後就是 MicroPython。</b>Pybricks Code 右邊的程式窗格就是積木產生的程式，跟這頁「對應的 MicroPython」一樣（多工版會多一行 <code>await wait(0)</code>，是 Pybricks 自動加的）。</li>
-      <li><b>拔線不會讓程式停：</b>擴充板讀不到時，讀值的功能回傳 0 或 False，轉舵機的指令會被略過，電腦畫面會印 <code>[SERVO6] … 連線中斷</code>、「未偵測到擴充板」；插回去自動重新連線。程式如果只送指令、不讀值，函式庫發現不了斷線，<code>servo_wait</code> 會等滿 10 秒才往下。</li>
+      <li><b>拔線不會讓程式停：</b>擴充板讀不到時，讀值的功能回傳 0 或 False，轉舵機的指令會被略過，電腦畫面會印 <code>[SERVO6] … 連線中斷</code>、「未偵測到擴充板」；插回去自動重新連線。只送指令、不讀值的程式也會自動重新連線並重送設定；拔線時 <code>servo_wait</code> 約 0.4 秒就往下，不會卡住。</li>
       <li><b>舵機卡住、被自動放鬆之後</b>，迴圈一直送同一個角度不會重新出力（擴充板會略過跟上一包一模一樣的指令）：要送一個不同的角度，或先 <code>servo_release</code> 再送。<b>程式停下來時</b>，積木版不會自動放鬆舵機（擴充板沒有看門狗，舵機停在最後的角度），要放鬆就在程式最後放一塊 <code>stop_all</code>。</li>
     </ol>
   </section>
@@ -583,7 +583,12 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
     Object.keys(H.stall).forEach(function (p) { send(pktStall(+p, H.stall[p])); });
     return true;
   }
-  function cmd(pkts) { if (!H.connected && !reconnect()) { warnNoBoard(); return; } pkts.forEach(send); }
+  // 下指令前：一陣子沒收到串流就確認一次擴充板還在（只下指令的程式也能發現斷線、插回去重送設定）
+  function cmd(pkts) {
+    if (H.connected && T - H.cacheT > 50) { if (plugged()) { H.cache = snap(); H.cacheT = T; } else { H.connected = false; H.cache = null; H.errLast = T; say(msg('disc'), 'warnline'); } }
+    if (!H.connected && !reconnect()) { warnNoBoard(); return; }
+    pkts.forEach(send);
+  }
   function get(fn) {
     if (!H.connected && !reconnect()) { warnNoBoard(); return fn(null); }
     if (plugged()) { if (!H.cache || T - H.cacheT >= 10) { H.cache = snap(); H.cacheT = T; } }   // 10 ms 內重複讀：用剛剛那一包（剛下的指令可能還沒反映）
@@ -630,6 +635,7 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
     if (T < w.from) return false;
     if (!H.connected && !reconnect()) { warnNoBoard(); return true; }
     if (plugged()) { H.cache = snap(); H.cacheT = T; if (!chMoving(B.ch[w.ch - 1])) return true; }
+    else if (T - H.cacheT > 400) { H.connected = false; H.cache = null; H.errLast = T; say(msg('disc'), 'warnline'); return true; }   // 拔線約 0.4 秒就往下
     return T >= w.to;
   }
   function runStep() {

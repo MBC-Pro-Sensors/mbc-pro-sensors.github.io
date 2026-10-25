@@ -332,7 +332,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
   <section class="tips" aria-labelledby="tiph">
     <h2 id="tiph">使用注意</h2>
     <ol>
-      <li><b>拔線不會讓程式停。</b>擴充板讀不到時，讀值的功能回傳 <code>0</code> 或 <code>False</code>（拔掉不到 0.4 秒還是上一次的值），轉舵機的指令會被略過；電腦畫面先印 <code>[SERVO6] Port C（孔3）連線中斷 / Servo board disconnected</code>，之後每秒最多印一次「未偵測到擴充板」。插回去會自動重新連線（印「已重新連線」），並重送 <code>servo_calibrate()</code>、<code>servo_stall_config()</code> 的設定。要知道有沒有連上，看 <code>servo6.connected</code>（True／False，後面不加括號，多工也不加 await）。注意：程式如果只送指令、從來不讀值，函式庫發現不了斷線，<code>servo_wait()</code> 會等滿 10 秒才往下。在右邊勾「拔掉擴充板」可以看到這些情形。</li>
+      <li><b>拔線不會讓程式停。</b>擴充板讀不到時，讀值的功能回傳 <code>0</code> 或 <code>False</code>（拔掉不到 0.4 秒還是上一次的值），轉舵機的指令會被略過；電腦畫面先印 <code>[SERVO6] Port C（孔3）連線中斷 / Servo board disconnected</code>，之後每秒最多印一次「未偵測到擴充板」。插回去會自動重新連線（印「已重新連線」），並重送 <code>servo_calibrate()</code>、<code>servo_stall_config()</code> 的設定。要知道有沒有連上，看 <code>servo6.connected</code>（True／False，後面不加括號，多工也不加 await）。只送指令、不讀值的程式也一樣：下指令前函式庫會確認擴充板還在，插回去會自動重新連線並重送設定；拔線時 <code>servo_wait()</code> 約 0.4 秒就往下，不會卡住。在右邊勾「拔掉擴充板」可以看到這些情形。</li>
       <li><b>程式結束前要放鬆舵機。</b>擴充板沒有看門狗，程式結束後舵機會停在最後的角度。一般寫法在程式最後呼叫 <code>stop_all()</code>；多工寫法改成 <code>from MBC_servo6_Lib import MBC_SERVO6, run_task</code>（寫在 <code>pybricks.tools</code> 那行下面），結束、出錯、按停止鍵都會自動放鬆。</li>
       <li><b>一模一樣的指令只算一次。</b>擴充板會略過跟上一包完全相同的指令，所以迴圈裡一直送同一個角度不會怎樣。但舵機卡住、被自動放鬆之後，迴圈一直送同一個角度<b>不會</b>重新出力：要送一個不同的角度，或先 <code>servo_release()</code> 再送。</li>
       <li><b>速度 1 ~ 99 才會「慢慢轉」。</b>速度 = 每秒轉「速度 × 6」度；不寫或寫 100 就用舵機最快的速度直接轉過去。剛開始、或這個孔放鬆過之後的第一個角度指令，一律直接轉過去（擴充板不知道舵臂原本停在哪）。<code>is_moving()</code>、<code>servo_wait()</code> 看的是擴充板自己算的進度，舵機沒有位置感應器，被擋住了也不會知道。</li>
@@ -806,7 +806,12 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     Object.keys(H.stall).forEach(function (p) { send(pktStall(+p, H.stall[p])); });
     return true;
   }
-  function cmd(pkts) { if (!H.connected && !reconnect()) { warnNoBoard(); return; } pkts.forEach(send); }
+  // 下指令前：一陣子沒收到串流就確認一次擴充板還在（只下指令的程式也能發現斷線、插回去重送設定）
+  function cmd(pkts) {
+    if (H.connected && T - H.cacheT > 50) { if (plugged()) { H.cache = snap(); H.cacheT = T; } else { H.connected = false; H.cache = null; H.errLast = T; say(msg('disc'), 'warnline'); } }
+    if (!H.connected && !reconnect()) { warnNoBoard(); return; }
+    pkts.forEach(send);
+  }
   function get(fn) {
     if (!H.connected && !reconnect()) { warnNoBoard(); return fn(null); }
     if (plugged()) { if (!H.cache || T - H.cacheT >= 10) { H.cache = snap(); H.cacheT = T; } }   // 10 ms 內重複讀：用剛剛那一包（剛下的指令可能還沒反映）
@@ -853,6 +858,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     if (T < w.from) return false;
     if (!H.connected && !reconnect()) { warnNoBoard(); return true; }
     if (plugged()) { H.cache = snap(); H.cacheT = T; if (!chMoving(B.ch[w.ch - 1])) return true; }
+    else if (T - H.cacheT > 400) { H.connected = false; H.cache = null; H.errLast = T; say(msg('disc'), 'warnline'); return true; }   // 拔線約 0.4 秒就往下
     return T >= w.to;
   }
   function runStep() {

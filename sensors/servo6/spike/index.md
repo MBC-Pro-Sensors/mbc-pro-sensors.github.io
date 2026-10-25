@@ -9,7 +9,7 @@ SPIKE 6 路舵機擴充器 (Servo6)用在 SPIKE Prime／Robot Inventor：先確�
 
 ## 要買哪個版本
 
-Servo6 插 SPIKE Prime 主機任一孔，舵機接擴充器的 1~6 號孔，另外要接獨立電源給舵機。
+Servo6 插 SPIKE Prime 主機任一孔，舵機接擴充器的 1~6 號孔。舵機的電由主機經擴充器供給，不用另外接電池。
 
 ## ② 選你用的軟體
 

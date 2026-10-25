@@ -9,7 +9,7 @@ Using the SPIKE 6-Port Servo Expander (Servo6) with SPIKE Prime / Robot Inventor
 
 ## Which edition
 
-Plug the Servo6 into any SPIKE Prime port, connect servos to its ports 1~6 and give it a separate power supply.
+Plug the Servo6 into any SPIKE Prime port and connect servos to its ports 1~6. The servos are powered by the hub through the Servo6; no separate battery is needed.
 
 ## ② Pick your software
 

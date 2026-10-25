@@ -19,7 +19,7 @@ This page covers **Official LEGO App (SPIKE 3, Robot Inventor)** only: how to se
 
 ## More questions
 
-- **The hub does not detect the sensor?** Unplug and replug, wait 2 s, try another port. The official app shows it as a colour sensor — that is expected.
+- **The hub does not detect the sensor?** Unplug and replug, wait 2 s, try another port. The official app shows it as a distance (ultrasonic) sensor — that is expected.
 - **Can I use the official app and Pybricks on the same hub?** One firmware at a time: Pybricks and the MBC Blocks website need Pybricks firmware, the official app needs LEGO firmware; you can switch back any time with the SPIKE app.
 
 Still stuck? [Contact us](/en/contact.md) with your software and a screenshot of the program.

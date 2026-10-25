@@ -305,7 +305,10 @@
     "servo6": {
       "spike": ["official", "pybricks"],
       "edition": {
-        "spike": { "zh": "Servo6 插 SPIKE Prime 主機任一孔，舵機接擴充器的 1~6 號孔，另外要接獨立電源給舵機。", "en": "Plug the Servo6 into any SPIKE Prime port, connect servos to its ports 1~6 and give it a separate power supply." }
+        "spike": { "zh": "Servo6 插 SPIKE Prime 主機任一孔，舵機接擴充器的 1~6 號孔。舵機的電由主機經擴充器供給，不用另外接電池。", "en": "Plug the Servo6 into any SPIKE Prime port and connect servos to its ports 1~6. The servos are powered by the hub through the Servo6; no separate battery is needed." }
+      },
+      "faqAnswer": {
+        "主機認不到感應器？": { "zh": "拔掉重插一次，等 2 秒；換一個孔試試。官方 App 會把它顯示成「距離感應器（超音波）」，這是正常的。", "en": "Unplug and replug, wait 2 s, try another port. The official app shows it as a distance (ultrasonic) sensor — that is expected." }
       },
       "noWiringFigure": true
     }

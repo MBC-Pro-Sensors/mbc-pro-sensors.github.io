@@ -362,7 +362,9 @@ function swPage(key, host, sw, lang, sp, protos, avail) {
   } else out.push(...ex);
   // 常見問題
   out.push(`## ${T(lang, '其他問題', 'More questions')}`, '');
-  out.push((h.faq || []).filter((f) => !(f.hideWhen && FLAGS[f.hideWhen])).map((f) => `- **${L(f.q, lang)}** ${L(f.a, lang)}`).join('\n'), '');
+  // overrides.<產品>.faqAnswer：{ "問題中文": {zh, en} } 換掉這個產品的答案（例如 Servo6 在官方 App 顯示成超音波感應器）
+  const faqAns = ((GUIDES.overrides || {})[key] || {}).faqAnswer || {};
+  out.push((h.faq || []).filter((f) => !(f.hideWhen && FLAGS[f.hideWhen])).map((f) => `- **${L(f.q, lang)}** ${L(faqAns[f.q.zh] || f.a, lang)}`).join('\n'), '');
   out.push(T(lang, `還有問題？到 [聯絡我們](/contact.md) 附上你用的軟體和程式截圖。`, `Still stuck? [Contact us](/en/contact.md) with your software and a screenshot of the program.`), '');
   // 下載
   out.push(`## ${T(lang, '下載', 'Downloads')}`, '', downloads(key, host, sw, lang, protos), '');
