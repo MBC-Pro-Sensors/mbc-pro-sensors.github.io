@@ -1,0 +1,1027 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A Pybricks program always goes in this order: first import the library, then create an object and give the expander a name, and only then use that name to call ">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/servo6/micropython.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/servo6/micropython.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/servo6/micropython.html">
+<title>SPIKE 6-Port Servo Expander (Servo6) Pybricks Tutorial | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* 版面：左邊是照順序走的教學步驟，右邊固定「你的程式＋模擬感應器」；下面是 16 個功能的範例卡 */
+:root {
+  --bg: #f3f6f5;          /* 場地墊的淺色 */
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;      /* MBC 青綠 */
+  --accent-soft: #dff1ef;
+  --tape: #121212;        /* 黑膠帶線 */
+  --ir: #e04a3b;          /* 感應器紅外燈 */
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* 頁首 */
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+/* 主區：左教學、右程式 */
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+/* 右邊：程式＋模擬 */
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+/* 右邊固定區只放程式和輸出，高度不超過一個畫面，往下捲時一直看得到 */
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+/* 每一步卡片裡的「這一步寫的程式」：設定一改就更新並閃一下 */
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+/* 功能範例卡 */
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+/* 完整範例與注意事項 */
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/sensors/servo6/spike/">← Servo6 SPIKE guide</a><a class="lang" href="/learn/servo6/micropython.html" hreflang="zh-Hant">中文</a><div class="tabs"><a href="/en/learn/servo6/micropython.html" aria-current="page">MicroPython (Pybricks)</a><a href="/en/learn/servo6/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/servo6/spike-app.html">LEGO SPIKE App</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC SPIKE 6-Port Servo Expander (Servo6) × Pybricks</span>
+    <h1>Control 6 servos with MicroPython in three steps</h1>
+    <p class="lead">A Pybricks program always goes in this order: first <b>import the library</b>, then <b>create an object and give the expander a name</b>, and only then use that name to <b>call functions</b>. Work through the steps on the left, and the program on the right grows with you. The servo arms on the simulated expander turn as the program says. You can also drag an arm with the mouse and see what the program prints.</p>
+    <div class="hostbar">
+      <span class="small">Your hub:</span>
+      <div class="seg" role="group" aria-label="Hub">
+        <button type="button" id="host-spike" aria-pressed="true">SPIKE Prime</button>
+      </div>
+      <span class="small">This expander only works with SPIKE Prime (Pybricks firmware v4.0 or later). EV3 cannot use it.</span>
+    </div>
+  </header>
+
+  <section class="main" aria-label="Tutorial">
+    <div class="steps">
+      <!-- Step 1 -->
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>Import the library</h2></div>
+        <div class="step-body">
+          <p class="why">The <b>first thing</b> in the program tells Pybricks: "I want to use the Servo6 library." Without this line, the hub does not understand <code>MBC_SERVO6</code> later on, and you get a <code>NameError</code>.</p>
+          <ol class="howto">
+            <li>Download the library (save the file and keep its name): <a href="/examples/servo6/pybricks/MBC_servo6_Lib.py" download>MBC_servo6_Lib.py</a>. The file name is <code id="libfile">MBC_servo6_Lib.py</code>.</li>
+            <li>In Pybricks Code, click "Import a file" in the file area on the left. Add it to the <b>same project</b>.</li>
+            <li><b>Do not rename the file</b>, and do not put it in a subfolder.</li>
+            <li>Go back to the main program. Write these lines at the very top (marked ① in the program on the right).</li>
+          </ol>
+          <p class="small">The hub needs Pybricks firmware <b>v4.0 or later</b>. Older firmware cannot power the servos. The library file is about 25 KB, so uploading takes a little longer when you press run.</p>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">Done, next step</button>
+        </div>
+      </article>
+
+      <!-- Step 2 -->
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>Create an object: name the expander</h2></div>
+        <div class="step-body">
+          <p class="why">A robot may have several expanders and sensors, so you "create an object". It tells the program which hub port the expander is plugged into, and gives it a name. From then on, every time you turn a servo or read the current, you use that name.</p>
+          <div class="row">
+            <span class="small">Which hub port is the expander plugged into?</span>
+            <div class="ports" id="ports" role="group" aria-label="Hub port"></div>
+          </div>
+          <label class="f" for="varname">Give it a name (start with an English letter; numbers and underscores are OK)
+            <input type="text" id="varname" value="servo6" autocomplete="off" spellcheck="false">
+          </label>
+          <p class="err" id="nameerr" hidden></p>
+          <p class="small">Turn on multitasking?</p>
+          <div class="choice" role="group" aria-label="Multitask">
+            <button type="button" class="opt" id="mt-off" aria-pressed="true"><b>Off (normal style)</b><small>The program runs line by line, from top to bottom. Start with this one.</small></button>
+            <button type="button" class="opt" id="mt-on" aria-pressed="false"><b>Multitask on</b><small>Use it to do several things at once (for example, drive and grab at the same time). Write True as the second value, and put await in front of every function after that.</small></button>
+          </div>
+          <p class="small">The <code id="portnum">3</code> in the program is the hub port. On SPIKE, 1 to 6 = A to F, so <code id="portnum2">3</code> means Port <span id="portletter">C</span>. Only a number works here. Do not write <code>Port.C</code>.</p>
+          <p class="small"><b>The first time you run it</b>, the computer asks <code>Custom electronics may damage your LEGO hub ... Press Y to proceed.</code> Press <b>Y</b> (only once; the hub remembers). This lets the hub power the servos through the port. If you press N, the servos get no power.</p>
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2" disabled>Created, next step</button>
+        </div>
+      </article>
+
+      <!-- Step 3 -->
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>Use the functions</h2></div>
+        <div class="step-body">
+          <p class="why">Every function is written as "<code><span id="nm1">servo6</span>.function_name(servo, …)</code>": the name, a dot, then the function. The first number in the brackets is the <b>servo port 1 to 6</b> on the expander (printed CN1 to CN6 on the board). It is not the same as the hub port. Click a function, and the program and output switch to its example.</p>
+          <div id="picker" class="ref"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+          <div class="sim-box">
+        <div class="sim-title">Simulated expander (one servo on each of the 6 servo ports): watch the program turn the arms, or drag an arm with the mouse</div>
+        <div class="sim">
+          <svg id="field" viewBox="0 0 460 200" role="group" aria-label="Servo6 expander diagram: 6 servos; drag an arm with the mouse" style="touch-action: none"></svg>
+          <div class="ctrl">
+            <div class="toggles">
+              <label><input type="checkbox" id="hold1"> Push servo 1's arm aside and hold it</label>
+              <label><input type="checkbox" id="fault"> Power overload (for example, a shorted servo cable)</label>
+              <label><input type="checkbox" id="unplug"> Unplug the expander</label>
+              <button type="button" class="copy" id="rerun">Run the program again</button>
+            </div>
+          </div>
+          <p class="note">The simulator is only a sketch: turning speed and current are simplified, and real numbers depend on the servo model. Servos 1 and 3 to 6 are standard 180-degree servos. Servo 2 is a 360-degree continuous rotation servo (this one needs 1520 µs to stop). Orange arm = active (pushing), grey = released, red = stalled. Drag an active arm and the servo pushes back, so the current goes up; let go and it turns back. A released arm stays wherever you drag it.</p>
+        </div>
+          </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">Examples for every function</h2>
+        <p class="ref-intro">15 functions, each with an example you can put straight into your program. Press "Try it" to jump to step 3. The program and output on the right switch to that example, and the simulated expander runs it too.</p>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="Your program and output">
+      <div class="panel">
+        <div class="panel-head"><span>Your program</span><button type="button" class="copy" id="copymain">Copy program</button></div>
+        <pre class="code" id="maincode" aria-live="polite"></pre>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>Output on the computer</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+
+  <section class="ref" aria-labelledby="fullh">
+    <h2 id="fullh">Full examples</h2>
+    <div class="full">
+      <div class="panel">
+        <div class="panel-head"><span>Grip 3 times (servo 1 as a gripper)</span><button type="button" class="copy" data-copy="grip">Copy</button></div>
+        <pre class="code" id="ex-grip"></pre>
+        <p class="bubble"><i>!</i><span>Only change the "Change these" part at the top. Not gripping tight enough? Make <code>CLOSE</code> bigger. Big current and a hot servo when it grips? Make it a little smaller. A normal program must always end with <code>stop_all()</code>.</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>Multitask version (advanced)</span><button type="button" class="copy" data-copy="multi">Copy</button></div>
+        <pre class="code" id="ex-multi"></pre>
+        <p class="bubble"><i>!</i><span>When you create the object, write <code>True</code> as the second value. Create the object outside <code>run_task()</code>, and put <code>await</code> in front of every function. Import the library's <code>run_task</code> on the line under <code>pybricks.tools</code>. Then all 6 servos release by themselves when the program ends, hits an error, or you press the stop button.</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>Move 6 servos one by one</span><button type="button" class="copy" data-copy="six">Copy</button></div>
+        <pre class="code" id="ex-six"></pre>
+        <p class="bubble"><i>!</i><span>Moving them one at a time keeps the total current from jumping too high (the expander's power protection limits the current at about 750 mA). Do not plug a 360-degree servo into the ports this example uses: an angle command makes it spin forever.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">Good to know</h2>
+    <ol>
+      <li><b>Unplugging does not stop the program.</b> When the expander cannot be read, the reading functions return <code>0</code> or <code>False</code> (for the first 0.4 seconds after unplugging, they still give the last value). Servo commands are skipped. The console first prints <code>[SERVO6] Port C … / Servo board disconnected</code>, then "No servo board detected" at most once a second (the library prints each message in Chinese and English). Plug it back in and it reconnects by itself (it prints "Servo board reconnected"). It also sends your <code>servo_calibrate()</code> and <code>servo_stall_config()</code> settings again. To check the connection, read <code>servo6.connected</code> (True or False; no brackets after it, and no await in multitask). Programs that only send commands and never read values work the same way: before each command, the library checks that the expander is still there, so it reconnects and resends the settings when you plug it back in. While unplugged, <code>servo_wait()</code> moves on after about 0.4 seconds instead of getting stuck. Tick "Unplug the expander" on the right to see all this.</li>
+      <li><b>Release the servos before the program ends.</b> The expander has no watchdog, so after the program ends, the servos stay at their last angle. In a normal program, call <code>stop_all()</code> at the end. In a multitask program, write <code>from MBC_servo6_Lib import MBC_SERVO6, run_task</code> instead (on the line under <code>pybricks.tools</code>). Then the servos release when the program ends, hits an error, or you press the stop button.</li>
+      <li><b>The exact same command only counts once.</b> The expander skips a command that is exactly the same as the one before, so sending the same angle again and again in a loop is fine. But after a servo stalls and is released automatically, sending the same angle in the loop does <b>not</b> make it push again. Send a different angle, or call <code>servo_release()</code> first and then send it.</li>
+      <li><b>Only speed 1 to 99 turns slowly.</b> The servo turns "speed × 6" degrees per second. No speed, or 100, turns there at the servo's top speed. The first angle command at the start, or after this port was released, always jumps straight there (the expander does not know where the arm was). <code>is_moving()</code> and <code>servo_wait()</code> use the expander's own count of the progress. The servo has no position sensor, so it cannot tell if it is blocked.</li>
+      <li><b>Power:</b> the servos get their power from the hub, through the expander. All 6 together are limited at about 750 mA. When many servos move at once, or one is stalled, check <code>get_total_current()</code> and <code>is_power_fault()</code>. Servo port 1 is on the far left of the expander (on the simulator too).</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  // ───── State ─────
+  var S = { port: 3, name: 'servo6', step: 1, fn: 'servo_angle', multi: false };
+
+  // ───── How each example runs in the simulator (step by step, matching the program on the right) ─────
+  // C: call a command function   W: wait some ms   SW: servo_wait   P: print (f gets readings with r('read function', servo))
+  function C(m) { return { k: 'cmd', m: m, a: [].slice.call(arguments, 1) }; }
+  function W(ms) { return { k: 'wait', ms: ms }; }
+  function SW(ch) { return { k: 'swait', ch: ch, to: 10000 }; }
+  function P(f) { return { k: 'print', f: typeof f === 'string' ? function () { return f; } : f }; }
+  function py(v) { return v === true ? 'True' : v === false ? 'False' : v == null ? 'None' : String(v); }
+
+  // ───── 15 functions (every public method of MBC_SERVO6 in MBC_servo6_Lib.py) ─────
+  // pre: runs once before while True; body: goes inside the loop (for once, the whole part runs once)
+  // {n} becomes the object name (with await in multitask), {w} becomes await in multitask; run: what the simulator runs; sample: example output on the card
+  var FNS = [
+    { id: 'servo_angle', zh: 'Turn to an angle', grp: 'Position mode (standard servos)', ret: 'Nothing',
+      what: 'Turns the servo on one port to an angle: servo_angle(servo, angle, speed). servo is the servo port, 1 to 6. For a standard servo, the angle is 0 to 180. You can leave out the speed: no speed or 100 = turn there at the servo\'s top speed. 1 to 99 = turn "speed × 6" degrees per second, so 30 = 180 degrees per second. When it gets there, the servo keeps pushing to hold that angle. Drag servo 1\'s arm on the right: let go, and it turns back by itself.',
+      body: ['{n}.servo_angle(1, 30, 30)    # servo 1 to 30 degrees (180 degrees per second)', '{n}.servo_wait(1)    # wait until it gets there', '{n}.servo_angle(1, 150, 30)    # then to 150 degrees', '{n}.servo_wait(1)', 'print("Servo 1 swung back and forth")'],
+      run: { loop: [C('servo_angle', 1, 30, 30), SW(1), C('servo_angle', 1, 150, 30), SW(1), P('Servo 1 swung back and forth')] },
+      sample: 'Servo 1 swung back and forth' },
+    { id: 'servo_wait', zh: 'Wait until it gets there', grp: 'Position mode (standard servos)', ret: 'Nothing (moves on when the turn is done)', once: true,
+      what: 'Waits until a slow turn on one port is done, then goes on to the next line. You only need it when the speed is 1 to 99. At speed 100, the servo goes straight there, so there is nothing to wait for. The second number is the longest wait in milliseconds. Leave it out and it is 10000 (10 seconds); after that, the program moves on anyway.',
+      body: ['{n}.servo_angle(1, 0)    # first go straight to 0 degrees', '{n}.servo_angle(1, 180, 10)    # then turn slowly to 180 degrees, 60 degrees per second', 'print("Turning slowly, waiting…")', '{n}.servo_wait(1)    # go on only when servo 1 is done', 'print("Reached 180 degrees!")'],
+      run: { pre: [C('servo_angle', 1, 0), C('servo_angle', 1, 180, 10), P('Turning slowly, waiting…'), SW(1), P('Reached 180 degrees!')] },
+      sample: 'Turning slowly, waiting…\nReached 180 degrees!' },
+    { id: 'servo_calibrate', zh: 'Calibrate the angle range', grp: 'Position mode (standard servos)', ret: 'Nothing',
+      what: 'Tells the expander which pulse widths this servo uses and how big its angle range is: servo_calibrate(servo, min pulse, max pulse, angle range). The default is 500 to 2500 µs for 0 to 180 degrees. Does the servo buzz and push at the end of its travel? Make the pulse range smaller. A 270-degree servo? Set the angle range to 270. The example narrows servo 1 to 1000 to 2000 µs, so "180 degrees" only reaches about 135 degrees on the simulator. The library remembers the settings. If the expander is unplugged and plugged back in, the library sends them again by itself.',
+      pre: ['{n}.servo_calibrate(1, 1000, 2000, 180)    # servo 1 only uses 1000 to 2000 µs'],
+      body: ['{n}.servo_angle(1, 180)', 'print("180 degrees after calibration")'],
+      run: { pre: [C('servo_calibrate', 1, 1000, 2000, 180)], loop: [C('servo_angle', 1, 180), P('180 degrees after calibration')] },
+      sample: '180 degrees after calibration' },
+    { id: 'servo_run', zh: 'Keep spinning', grp: 'Speed mode (360-degree servos)', ret: 'Nothing',
+      what: 'Use this for a 360-degree (continuous rotation) servo: servo_run(servo, speed). The speed is −100 to 100. Positive spins one way, negative spins the other way, and 0 = stop. Which way counts as positive depends on the servo. Servo 2 on the simulator is a 360-degree servo. Do not use this on a standard 180-degree servo: it just turns to the end and pushes there.',
+      body: ['{n}.servo_run(2, 50)    # servo 2 (360-degree servo) at half speed', 'print("Servo 2: speed 50")'],
+      run: { loop: [C('servo_run', 2, 50), P('Servo 2: speed 50')] },
+      sample: 'Servo 2: speed 50' },
+    { id: 'servo_speed_config', zh: 'Set the stop point', grp: 'Speed mode (360-degree servos)', ret: 'Nothing',
+      what: 'Use this when a 360-degree servo does not stop where it should: servo_speed_config(servo, stop pulse, full-speed offset). The default is stop at 1500 µs, and full speed at ±1000 µs. If servo_run(2, 0) still turns slowly, make the stop pulse a little bigger or smaller. This setting is kept in the library on the hub; it is not sent to the expander. The example first runs servo 2 with the default for 3 seconds (it creeps slowly). After you set 1520, it stops.',
+      pre: ['{n}.servo_run(2, 0)    # not set yet: sends 1500 µs', 'print("Not set yet: servo 2 creeps slowly")', '{w}wait(3000)', '{n}.servo_speed_config(2, 1520, 1000)    # this servo needs 1520 µs to stop'],
+      body: ['{n}.servo_run(2, 0)', 'print("Set up: servo 2 has stopped")'],
+      run: { pre: [C('servo_run', 2, 0), P('Not set yet: servo 2 creeps slowly'), W(3000), C('servo_speed_config', 2, 1520, 1000)], loop: [C('servo_run', 2, 0), P('Set up: servo 2 has stopped')] },
+      sample: 'Not set yet: servo 2 creeps slowly\nSet up: servo 2 has stopped' },
+    { id: 'servo_pulse', zh: 'Send a pulse width', grp: 'Direct control and release', ret: 'Nothing',
+      what: 'Sends a pulse width straight to the servo: servo_pulse(servo, pulse), 500 to 2500 µs (µs = one millionth of a second). Numbers outside that range are cut to fit. On a standard servo, 1500 µs is about the middle. Use it to find the two ends of a servo, or to drive special servos. For everyday use, servo_angle() is easier.',
+      body: ['{n}.servo_pulse(1, 1500)    # send 1500 µs to servo 1 (about the middle)', 'print("Servo 1: 1500 µs")'],
+      run: { loop: [C('servo_pulse', 1, 1500), P('Servo 1: 1500 µs')] },
+      sample: 'Servo 1: 1500 µs' },
+    { id: 'servo_release', zh: 'Release one servo', grp: 'Direct control and release', ret: 'Nothing',
+      what: 'Releases the servo on one port: it stops pushing, and you can turn it by hand. It also clears the "stalled" flag of that port. Try dragging servo 1\'s arm on the right: when it is released, it stays wherever you leave it.',
+      body: ['{n}.servo_release(1)    # release servo 1', 'print("Is servo 1 active?", {n}.is_active(1))'],
+      run: { loop: [C('servo_release', 1), P(function (r) { return 'Is servo 1 active? ' + py(r('is_active', 1)); })] },
+      sample: 'Is servo 1 active? False' },
+    { id: 'stop_all', zh: 'Release all', grp: 'Direct control and release', ret: 'Nothing', once: true,
+      what: 'Releases all 6 ports (the calibration and stall protection settings are kept). The expander has no watchdog, so after the program ends, the servos stay at their last angle. In a normal program, remember to call this once at the end. In a multitask program, use the library\'s run_task instead: it does this for you when the program ends.',
+      body: ['{n}.servo_angle(1, 45)', '{n}.servo_angle(3, 135)', '{w}wait(2000)    # wait 2 seconds to see the arms move', '{n}.stop_all()    # release all 6 ports', 'print("All released")'],
+      run: { pre: [C('servo_angle', 1, 45), C('servo_angle', 3, 135), W(2000), C('stop_all'), P('All released')] },
+      sample: 'All released' },
+    { id: 'servo_stall_config', zh: 'Stall protection settings', grp: 'Stall protection', ret: 'Nothing',
+      what: 'When a servo is blocked and cannot turn, it keeps pushing and uses a lot of current. After a while, it can burn out. This function sets how much current, for how long, counts as "stalled": servo_stall_config(servo, current mA, time ms, auto release). The default is 400 mA, 300 ms, auto release True. Current 0 = detection off. Auto release False = only mark it, do not release it. Tick "Push servo 1\'s arm aside and hold it" on the right: after 0.5 seconds, servo 1 lets go.',
+      pre: ['{n}.servo_stall_config(1, 300, 500)    # over 300 mA for 0.5 s = stalled, release automatically'],
+      body: ['{n}.servo_angle(1, 90)', 'print("Servo 1 current:", {n}.get_current(1), "mA  stalled:", {n}.is_stalled(1))'],
+      run: { pre: [C('servo_stall_config', 1, 300, 500)], loop: [C('servo_angle', 1, 90), P(function (r) { return 'Servo 1 current: ' + py(r('get_current', 1)) + ' mA  stalled: ' + py(r('is_stalled', 1)); })] },
+      sample: 'Servo 1 current: 12 mA  stalled: False' },
+    { id: 'is_stalled', zh: 'Is it stalled?', grp: 'Stall protection', ret: 'True or False',
+      what: 'Tells you if a port has been marked "stalled". Once stalled, it stays True (even after an automatic release) until that port gets a different command, or servo_release(). Tick "Push servo 1\'s arm aside and hold it" on the right and wait 0.3 seconds. It stays stalled after you let go: press "Run the program again" to reset it.',
+      body: ['{n}.servo_angle(1, 90)', 'if {n}.is_stalled(1):', '    print("Servo 1 is stalled!")', 'else:', '    print("Servo 1 is OK")'],
+      run: { loop: [C('servo_angle', 1, 90), P(function (r) { return r('is_stalled', 1) ? 'Servo 1 is stalled!' : 'Servo 1 is OK'; })] },
+      sample: 'Servo 1 is OK' },
+    { id: 'get_current', zh: 'Current of one servo', grp: 'Read the status', ret: 'Whole number 0 to 4095 (mA)',
+      what: 'How much current the servo on one port uses right now, in mA (milliamps). It is 0 when released, small when holding still, bigger while turning, and very big when blocked. Drag servo 1\'s arm on the right, or tick "Push servo 1\'s arm aside and hold it", and watch the number change.',
+      body: ['{n}.servo_angle(1, 90)', 'print("Servo 1 current:", {n}.get_current(1), "mA")'],
+      run: { loop: [C('servo_angle', 1, 90), P(function (r) { return 'Servo 1 current: ' + py(r('get_current', 1)) + ' mA'; })] },
+      sample: 'Servo 1 current: 12 mA' },
+    { id: 'is_moving', zh: 'Still turning slowly?', grp: 'Read the status', ret: 'True or False',
+      what: 'Is the servo on this port still in a slow turn (speed 1 to 99)? The expander works this out from its own progress count. It does not measure where the arm really is. At speed 100, the servo goes straight there, so this is always False. The example turns from 0 to 180 degrees at 60 degrees per second. After about 3 seconds, it becomes False.',
+      pre: ['{n}.servo_angle(1, 0)    # first go straight to 0 degrees', '{w}wait(500)', '{n}.servo_angle(1, 180, 10)    # then turn slowly to 180 degrees, 60 degrees per second', '{w}wait(100)    # give the expander time to get the command'],
+      body: ['print("Still moving?", {n}.is_moving(1))'],
+      run: { pre: [C('servo_angle', 1, 0), W(500), C('servo_angle', 1, 180, 10), W(100)], loop: [P(function (r) { return 'Still moving? ' + py(r('is_moving', 1)); })] },
+      sample: 'Still moving? True' },
+    { id: 'is_active', zh: 'Is it active?', grp: 'Read the status', ret: 'True or False',
+      what: 'Is the port sending a signal to its servo right now (pushing)? It is False at the start, after a release, and after a stalled servo is released automatically.',
+      body: ['{n}.servo_angle(1, 90)', 'print("Is servo 1 active?", {n}.is_active(1))'],
+      run: { loop: [C('servo_angle', 1, 90), P(function (r) { return 'Is servo 1 active? ' + py(r('is_active', 1)); })] },
+      sample: 'Is servo 1 active? True' },
+    { id: 'get_total_current', zh: 'Total current', grp: 'Read the status', ret: 'Whole number (mA)',
+      what: 'The current of all 6 ports added together (mA). The expander\'s power protection limits the current at about 750 mA. When many servos move at once, use this to check that you are not too close.',
+      body: ['{n}.servo_angle(1, 90)', '{n}.servo_run(2, 50)', 'print("Total current:", {n}.get_total_current(), "mA")'],
+      run: { loop: [C('servo_angle', 1, 90), C('servo_run', 2, 50), P(function (r) { return 'Total current: ' + py(r('get_total_current')) + ' mA'; })] },
+      sample: 'Total current: 158 mA' },
+    { id: 'is_power_fault', zh: 'Is there a power problem?', grp: 'Read the status', ret: 'True or False',
+      what: 'Is there a problem with the servo power (too much current or too hot, so the power protection cut the power)? During a fault, no servo has any power. The protection keeps trying again by itself, and the power comes back once the problem is gone. Tick "Power overload" on the right to try it.',
+      body: ['{n}.servo_angle(1, 90)', 'if {n}.is_power_fault():', '    print("Servo power overload!")', 'else:', '    print("Power OK")'],
+      run: { loop: [C('servo_angle', 1, 90), P(function (r) { return r('is_power_fault') ? 'Servo power overload!' : 'Power OK'; })] },
+      sample: 'Power OK' }
+  ];
+  var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; f.out = function () { return f.sample; }; });
+
+  // ───── Helpers ─────
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  var KW = /\b(from|import|while|True|False|None|if|else|elif|not|and|or|async|def|await|for|in|return)\b/;
+  function hiPy(line) {
+    // Very simple Python colouring: comments, strings, keywords, numbers, function names
+    var out = '', i = 0;
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest[0] === '#') { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if ((m = rest.match(/^("[^"]*"|'[^']*')/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (KW.test(w) && new RegExp('^' + KW.source + '$').test(w)) out += '<span class="tk-kw">' + w + '</span>';
+        else if (after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^\d+/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  function render(el, lines, opts) {
+    // lines: [{t: text, tag: step number or '', hl: bool, isNew: bool}]
+    opts = opts || {};
+    el.innerHTML = lines.map(function (l, k) {
+      var cls = 'ln' + (l.hl ? ' hl' : '') + (l.isNew ? ' new' : '');
+      var tag = opts.noTag ? '' : '<span class="tag">' + (l.tag ? '<i>' + l.tag + '</i>' : '') + '</span>';
+      return '<span class="' + cls + '"><span class="no">' + (l.no || k + 1) + '</span>' + tag + '<span>' + (l.t ? hiPy(l.t) : ' ') + '</span></span>';
+    }).join('');
+  }
+  function plain(lines) { return lines.map(function (l) { return l.t; }).join('\n') + '\n'; }
+  function copyText(text, btn) {
+    var done = function () { var o = btn.textContent; btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = o; }, 1400); };
+    try {
+      navigator.clipboard.writeText(text).then(done, function () { fallback(text); });
+    } catch (e) { fallback(text); }
+    function fallback(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e2) { btn.textContent = 'Select and copy by hand'; }
+      document.body.removeChild(ta);
+    }
+  }
+  function portLetter() { return ['A', 'B', 'C', 'D', 'E', 'F'][S.port - 1]; }
+  // Turn {n} and {w} in the examples into real code
+  function fix(b, n, multi) { return b.replace(/\{n\}\./g, (multi ? 'await ' : '') + n + '.').replace(/\{w\}/g, multi ? 'await ' : ''); }
+
+  // ───── Build the main program ─────
+  function programLines() {
+    var n = S.name, f = BY[S.fn], L = [];
+    var s1 = S.step === 1, s2 = S.step === 2, s3 = S.step === 3;
+    L.push({ t: S.multi ? 'from pybricks.tools import wait, run_task' : 'from pybricks.tools import wait', tag: 1, hl: s1 });
+    L.push({ t: S.multi ? 'from MBC_servo6_Lib import MBC_SERVO6, run_task    # use the library run_task instead' : 'from MBC_servo6_Lib import MBC_SERVO6', tag: 1, hl: s1, key: 'import' });
+    if (S.step >= 2) {
+      L.push({ t: '' });
+      L.push({ t: n + ' = MBC_SERVO6(' + S.port + (S.multi ? ', True' : '') + ')    # ' + S.port + ' = Port ' + portLetter() + (S.multi ? ', True = multitask on' : ''), tag: 2, hl: s2, key: 'obj' });
+    }
+    if (S.step >= 3) {
+      L.push({ t: '' });
+      // Multitask: await in front of every function, program inside async def main(), then run_task(main())
+      var pad = S.multi ? '    ' : '';
+      var pre = (f.pre || []).map(function (b) { return fix(b, n, S.multi); });
+      var body = f.body.map(function (b) { return fix(b, n, S.multi); });
+      if (S.multi) L.push({ t: 'async def main():', tag: 3, hl: s3 });
+      pre.forEach(function (b) { L.push({ t: pad + b, tag: 3, hl: s3 }); });
+      if (f.once) {
+        body.forEach(function (b) { L.push({ t: pad + b, tag: 3, hl: s3 }); });
+      } else {
+        L.push({ t: pad + 'while True:', tag: 3, hl: s3 });
+        body.forEach(function (b) { L.push({ t: pad + '    ' + b, tag: 3, hl: s3 }); });
+        L.push({ t: pad + '    ' + (S.multi ? 'await ' : '') + 'wait(100)', tag: 3, hl: s3 });
+      }
+      if (S.multi) {
+        L.push({ t: '' });
+        L.push({ t: 'run_task(main())', tag: 3, hl: s3 });
+      }
+    }
+    return L;
+  }
+  var lastKeys = '';
+  function drawMain() {
+    var L = programLines();
+    var keys = L.map(function (l) { return l.t; });
+    var prev = lastKeys ? lastKeys.split('\n') : [];
+    L.forEach(function (l) { if (l.t && prev.indexOf(l.t) < 0 && lastKeys) l.isNew = true; });
+    lastKeys = keys.join('\n');
+    render($('maincode'), L);
+    var tips = {
+      1: S.multi
+        ? 'Step 1: import at the very top. Line 1 is the built-in Pybricks wait and run_task. Line 2 is the MBC library. It also swaps in the library run_task, which releases the servos when the program ends.'
+        : 'Step 1: import at the very top. Line 1 is the built-in Pybricks wait. Line 2 is the MBC library.',
+      2: 'Step 2: create the object. ' + S.name + ', on the left of the = sign, is the name you picked. The right side tells the program that the expander is on hub Port ' + portLetter() + '. ' +
+         (S.multi ? 'The second value, True, turns on multitasking, so line 1 also imports run_task. ' : '') + 'Creating it takes up to 1 second while it looks for the expander.',
+      3: S.multi
+        ? 'Step 3 (multitask): the program goes inside async def main(). Put await in front of every function and every wait. The last line, run_task(main()), starts it.'
+        : 'Step 3: use "' + S.name + '.function(servo, …)" to move a servo or read a value. ' + (BY[S.fn].once ? 'This part runs once from top to bottom, then ends.' : 'while True repeats forever. wait(100) pauses 0.1 seconds between rounds.')
+    };
+    var b = $('bubble'); b.querySelector('i').textContent = S.step; b.querySelector('span').textContent = tips[S.step];
+    drawMinis();
+  }
+
+  // "Code for this step" in each step card: uses the real line numbers of the full program, flashes when it changes
+  var miniPrev = {};
+  function drawMinis() {
+    var keep = S.step; S.step = 3; var full = programLines(); S.step = keep;
+    [1, 2, 3].forEach(function (k) {
+      var el = $('mini' + k); if (!el) return;
+      var lines = [];
+      full.forEach(function (l, i) { if (l.tag === k) lines.push({ t: l.t, no: i + 1 }); });
+      if (!lines.length) { el.innerHTML = ''; return; }
+      var txt = lines.map(function (l) { return l.no + l.t; }).join('\n');
+      var a = lines[0].no, z = lines[lines.length - 1].no;
+      el.innerHTML = '<span>Code for this step (' + (z !== a ? 'lines ' + a + '–' + z : 'line ' + a) + ')</span><pre class="code"></pre>';
+      render(el.querySelector('pre'), lines, { noTag: true });
+      if (miniPrev[k] !== undefined && miniPrev[k] !== txt) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      miniPrev[k] = txt;
+    });
+  }
+
+  // ───── Steps ─────
+  function setStep(n) {
+    S.step = Math.max(S.step, n);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    S.viewStep = n;
+    var keep = S.step; S.step = n; drawMain(); S.step = keep;
+    if (n === 2) $('next2').disabled = !validName();
+  }
+  // For display: the step being viewed decides how far the program grows
+  var _draw = drawMain;
+  drawMain = function () { var keep = S.step; S.step = S.viewStep || S.step; _draw(); S.step = keep; };
+
+  function validName() {
+    var v = $('varname').value.trim(), bad = '';
+    if (!v) bad = 'The name cannot be empty.';
+    else if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(v)) bad = 'Use only English letters, numbers and underscores, and do not start with a number.';
+    else if (KW.test(v) && new RegExp('^' + KW.source + '$').test(v)) bad = '"' + v + '" is a Python keyword. Pick another name.';
+    else if (v === 'MBC_SERVO6' || v === 'wait' || v === 'run_task' || v === 'print') bad = 'That name is already taken. Pick another one.';
+    $('nameerr').hidden = !bad; $('nameerr').textContent = bad;
+    if (!bad) S.name = v;
+    return !bad;
+  }
+
+  // ───── Hub ports ─────
+  function drawPorts() {
+    var box = $('ports'); box.innerHTML = '';
+    ['A', 'B', 'C', 'D', 'E', 'F'].forEach(function (l, i) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = l;
+      b.setAttribute('aria-pressed', String(S.port === i + 1)); b.setAttribute('aria-label', 'Port ' + l);
+      b.addEventListener('click', function () { S.port = i + 1; drawPorts(); drawMain(); syncPortText(); if (S.step >= 3) tick(true); else drawField(); });
+      box.appendChild(b);
+    });
+    syncPortText();
+  }
+  function syncPortText() {
+    $('portnum').textContent = S.port;
+    $('portnum2').textContent = S.port;
+    $('portletter').textContent = portLetter();
+  }
+
+  // ───── Function picker (step 3) and example cards ─────
+  function groups() {
+    var g = {}; FNS.forEach(function (f) { (g[f.grp] = g[f.grp] || []).push(f); }); return g;
+  }
+  function drawPicker() {
+    var box = $('picker'), g = groups(); box.innerHTML = '';
+    Object.keys(g).forEach(function (k) {
+      var wrap = document.createElement('div'); wrap.className = 'fgroup';
+      wrap.innerHTML = '<span>' + k + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      g[k].forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip';
+        b.textContent = f.id + '()'; b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.title = f.zh;
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      wrap.appendChild(chips); box.appendChild(wrap);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + f.id + '() — ' + f.zh + '</b><span>' + esc(f.what) + '</span><span class="small">Returns: ' + f.ret + '</span>';
+    $('nm1').textContent = S.name;
+  }
+  function pick(id) {
+    S.fn = id;
+    if (S.step < 3) { S.step = 3; }
+    setStep(3);
+    drawPicker(); tick(true);
+  }
+  function cardLines(f) {
+    var pre = (f.pre || []).map(function (b) { return fix(b, 'servo6', false); });
+    var body = f.body.map(function (b) { return fix(b, 'servo6', false); });
+    return f.once ? body : pre.concat(['while True:'], body.map(function (b) { return '    ' + b; }), ['    wait(100)']);
+  }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    FNS.forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      c.innerHTML =
+        '<div class="card-head"><h3>' + f.id + '()<span class="zh">' + f.zh + '</span></h3>' +
+        '<span class="badges"><span class="badge yes">SPIKE</span><span class="badge no">EV3</span></span></div>' +
+        '<p>' + esc(f.what) + '</p>' +
+        '<dl class="meta"><dt>Returns</dt><dd>' + f.ret + '</dd><dt>Example</dt><dd>' + (f.once ? 'Runs once, from top to bottom' : (f.pre ? 'Set up once, then put inside a while True loop' : 'Put inside a while True loop')) + '</dd></dl>' +
+        '<pre class="code"></pre>' +
+        '<p class="out">The simulator prints: <code></code></p>' +
+        '<button type="button" class="try">Try it</button>';
+      render(c.querySelector('pre'), cardLines(f).map(function (t) { return { t: t }; }), { noTag: true });
+      c.querySelector('.out code').textContent = f.out();
+      c.querySelector('.try').addEventListener('click', function () {
+        pick(f.id);
+        var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      });
+      box.appendChild(c);
+    });
+  }
+
+  // ───── Full examples ─────
+  var EX = {};
+  function drawExamples() {
+    EX.grip = [
+      'from pybricks.tools import wait',
+      'from MBC_servo6_Lib import MBC_SERVO6',
+      '',
+      '# ===== Change these =====',
+      'BOARD_PORT = 3      # hub port of the expander (3 = C)',
+      'OPEN = 30           # gripper open angle',
+      'CLOSE = 110         # gripper closed angle',
+      '# =========================',
+      '',
+      'servo6 = MBC_SERVO6(BOARD_PORT)',
+      '',
+      'for i in range(3):                     # grip 3 times',
+      '    servo6.servo_angle(1, OPEN, 30)    # open slowly (180 degrees per second)',
+      '    servo6.servo_wait(1)',
+      '    wait(500)',
+      '    servo6.servo_angle(1, CLOSE, 30)   # close slowly',
+      '    servo6.servo_wait(1)',
+      '    print("Grip", i + 1, "current:", servo6.get_current(1), "mA")',
+      '    wait(500)',
+      '',
+      'servo6.stop_all()                      # release all before the program ends'
+    ];
+    EX.multi = [
+      'from pybricks.tools import wait, multitask, run_task',
+      'from MBC_servo6_Lib import MBC_SERVO6, run_task    # use the library run_task instead',
+      '',
+      'servo6 = MBC_SERVO6(3, True)    # True = multitask',
+      '',
+      'async def swing():              # job 1: keep swinging servo 1',
+      '    while True:',
+      '        await servo6.servo_angle(1, 30, 30)',
+      '        await servo6.servo_wait(1)',
+      '        await servo6.servo_angle(1, 150, 30)',
+      '        await servo6.servo_wait(1)',
+      '',
+      'async def watch():              # job 2: print the current every 0.5 s',
+      '    while True:',
+      '        print("Servo 1 current:", await servo6.get_current(1), "mA")',
+      '        await wait(500)',
+      '',
+      'async def main():',
+      '    await multitask(swing(), watch())',
+      '',
+      'run_task(main())                # ends or you press stop: all 6 servos release'
+    ];
+    EX.six = [
+      'from pybricks.tools import wait',
+      'from MBC_servo6_Lib import MBC_SERVO6',
+      '',
+      'servo6 = MBC_SERVO6(3)',
+      '',
+      'for ch in range(1, 7):              # servos 1 to 6 go to 0 degrees, one by one',
+      '    servo6.servo_angle(ch, 0)',
+      '    wait(300)',
+      '',
+      'for ch in range(1, 7):              # then turn slowly to 180 degrees, one at a time',
+      '    servo6.servo_angle(ch, 180, 30)',
+      '    servo6.servo_wait(ch)',
+      '',
+      'print("Total current:", servo6.get_total_current(), "mA")',
+      'wait(1000)',
+      'servo6.stop_all()                   # release all before the program ends'
+    ];
+    ['grip', 'multi', 'six'].forEach(function (k) {
+      render($('ex-' + k), EX[k].map(function (t) { return { t: t }; }), { noTag: true });
+    });
+  }
+
+  // ───── Simulated expander ─────
+  // Three layers: PH = how the 6 servos really are (kept when unplugging or rerunning); B = the expander (unplugged = null); H = the library on the hub.
+  // Only a sketch of what the screen shows (angles and currents are example values), not the expander firmware.
+  var HUB = ['A', 'B', 'C', 'D', 'E', 'F'];
+  var NEUTRAL = 1520;              // the simulated 360-degree servo 2 needs 1520 µs to stop (example value)
+  var CX0 = 42, GAP = 75, CY = 92;  // position of servo 1 on the screen, and the spacing
+  var T = 0, B = null, H = null, RUN = null, log = [], logDirty = true, DRAG = -1, HOLD = null;
+  var PH = [{ a: 90, t: 180 }, { a: 0, t: 360 }, { a: 60, t: 180 }, { a: 120, t: 180 }, { a: 90, t: 180 }, { a: 150, t: 180 }];
+  PH.forEach(function (p) { p.cur = 0; p.rate = 0; });
+  function hubLetter() { return HUB[S.port - 1]; }
+  function plugged() { return !$('unplug').checked; }
+  function faulted() { return $('fault').checked; }
+  function say(t, c) { log.push({ c: c || '', t: t }); while (log.length > 7) log.shift(); logDirty = true; }
+  function msg(kind) {
+    // The library prints these messages in Chinese and English, exactly like this
+    var head = '[SERVO6] Port ' + hubLetter() + '（孔' + S.port + '）';
+    return head + (kind === 'err' ? '未偵測到擴充板 / No servo board detected' : kind === 'disc' ? '連線中斷 / Servo board disconnected' : '已重新連線 / Servo board reconnected');
+  }
+
+  // ── Expander ──
+  function boardCh() { return { on: false, fresh: true, mode: '', set: 90, ramp: 90, rate: 0, us: 1500, stall: false, over: 0, cal: [500, 2500, 180], st: [400, 300, true] }; }
+  function boardReset() { B = { ch: [], last: '' }; for (var i = 0; i < 6; i++) B.ch.push(boardCh()); }
+  function boardApply(k) {
+    if (!B) return;
+    var key = k.join(',');
+    if (key === B.last) return;            // exactly the same as the last packet: the expander skips it
+    B.last = key;
+    if (k[0] === 0) { for (var i = 0; i < 6; i++) B.ch[i] = boardCh(); return; }   // release all, settings back to default
+    var p = Math.floor(k[0] / 10), f = k[0] % 10, c = B.ch[p - 1];
+    if (!c || f > 4) return;
+    c.stall = false; c.over = 0;          // this port got a new command: clear the stalled flag
+    if (f === 0) {
+      if (!k[1]) return;
+      var a = Math.min(k[2] * 100 + k[3], c.cal[2]);
+      if (c.fresh || k[1] >= 100 || c.mode !== 'pos') { c.ramp = a; c.rate = 0; } else c.rate = k[1] * 6;   // first command, or speed 100: go straight there
+      c.set = a; c.mode = 'pos'; c.on = true; c.fresh = false;
+    } else if (f === 1) { c.us = Math.max(500, Math.min(2500, k[2] * 100 + k[3])); c.mode = 'us'; c.on = true; c.fresh = true; }
+    else if (f === 2) { c.on = false; c.mode = ''; c.fresh = true; }
+    else if (f === 3) c.cal = [k[1] * 10, 1500 + k[2] * 10, k[3] * 10];
+    else c.st = [k[1] * 10, k[2] * 50, k[3] === 1];
+  }
+  function usOut(c) {
+    if (!c || !c.on) return null;
+    if (c.mode === 'us') return c.us;
+    return c.cal[0] + c.ramp / Math.max(10, c.cal[2]) * (c.cal[1] - c.cal[0]);
+  }
+  function chMoving(c) { return c.mode === 'pos' && c.ramp !== c.set; }
+  function snap() {
+    var s = { ch: [], total: 0, fault: faulted() };
+    for (var i = 0; i < 6; i++) {
+      var c = B.ch[i], cur = s.fault ? 0 : Math.min(4095, Math.round(PH[i].cur));
+      s.ch.push({ cur: cur, stall: c.stall, moving: chMoving(c), active: c.on });
+      s.total += cur;
+    }
+    return s;
+  }
+
+  // ── The library on the hub (behaves like MBC_servo6_Lib.py) ──
+  function newHost() {
+    H = { connected: false, cache: null, cacheT: 0, errLast: -1000, calib: {}, stall: {}, spd: {} };
+    for (var p = 1; p <= 6; p++) H.spd[p] = [1500, 1000];
+    if (plugged()) { H.connected = true; H.cache = snap(); H.cacheT = T; send([0, 0, 0, 0]); }
+    else warnNoBoard();
+  }
+  function warnNoBoard() { if (T - H.errLast >= 1000) { say(msg('err'), 'warnline'); H.errLast = T; } }
+  function send(k) { if (plugged()) boardApply(k); }   // when unplugged, nobody gets what is sent
+  function reconnect() {
+    if (!plugged()) return false;
+    H.cache = snap(); H.cacheT = T; H.connected = true; say(msg('re'), 'warnline');
+    Object.keys(H.calib).forEach(function (p) { send(pktCal(+p, H.calib[p])); });
+    Object.keys(H.stall).forEach(function (p) { send(pktStall(+p, H.stall[p])); });
+    return true;
+  }
+  // Before a command: if no stream came in for a while, check once that the expander is still there (so command-only programs also notice unplugging and resend settings)
+  function cmd(pkts) {
+    if (H.connected && T - H.cacheT > 50) { if (plugged()) { H.cache = snap(); H.cacheT = T; } else { H.connected = false; H.cache = null; H.errLast = T; say(msg('disc'), 'warnline'); } }
+    if (!H.connected && !reconnect()) { warnNoBoard(); return; }
+    pkts.forEach(send);
+  }
+  function get(fn) {
+    if (!H.connected && !reconnect()) { warnNoBoard(); return fn(null); }
+    if (plugged()) { if (!H.cache || T - H.cacheT >= 10) { H.cache = snap(); H.cacheT = T; } }   // reading again within 10 ms: reuse the same packet (a command just sent may not show yet)
+    else if (T - H.cacheT > 400) { H.connected = false; H.cache = null; H.errLast = T; say(msg('disc'), 'warnline'); }
+    return fn(H.cache);   // less than 0.4 s after unplugging: still the last value; after that: 0 / False
+  }
+  function clamp(v, lo, hi) { v = Math.round(v); return v < lo ? lo : v > hi ? hi : v; }
+  function fdiv(a, b) { return Math.floor(a / b); }
+  function pktAngle(p, a, s) { a = clamp(a, 0, 399); return [p * 10, clamp(s == null ? 100 : s, 1, 100), fdiv(a, 100), a % 100]; }
+  function pktPulse(p, us) { us = clamp(us, 500, 2500); return [p * 10 + 1, 0, fdiv(us, 100), us % 100]; }
+  function pktCal(p, c) { return [p * 10 + 3, fdiv(clamp(c[0], 0, 1000), 10), fdiv(clamp(c[1], 1500, 2500) - 1500, 10), fdiv(clamp(c[2], 10, 1000), 10)]; }
+  function pktStall(p, s) { return [p * 10 + 4, fdiv(clamp(s[0], 0, 1000), 10), Math.max(1, fdiv(clamp(s[1], 50, 5000), 50)), s[2] ? 1 : 0]; }
+  function dflt(v, d) { return v == null ? d : v; }
+  var API = {
+    servo_angle: function (p, a, s) { cmd([pktAngle(p, a, s)]); },
+    servo_calibrate: function (p, lo, hi, rg) { var c = [dflt(lo, 500), dflt(hi, 2500), dflt(rg, 180)]; H.calib[p] = c; cmd([pktCal(p, c)]); },
+    servo_run: function (p, sp) { var c = H.spd[p]; cmd([pktPulse(p, c[0] + fdiv(clamp(sp, -100, 100) * c[1], 100))]); },
+    servo_speed_config: function (p, st, sp) { H.spd[p] = [clamp(dflt(st, 1500), 500, 2500), clamp(dflt(sp, 1000), 0, 1000)]; if (S.multi) cmd([]); },
+    servo_pulse: function (p, us) { cmd([pktPulse(p, us)]); },
+    servo_release: function (p) { cmd([[p * 10 + 2, 0, 0, 0]]); },
+    stop_all: function () { cmd([1, 2, 3, 4, 5, 6].map(function (p) { return [p * 10 + 2, 0, 0, 0]; })); },
+    servo_stall_config: function (p, cur, ms, auto) { var s = [dflt(cur, 400), dflt(ms, 300), dflt(auto, true)]; H.stall[p] = s; cmd([pktStall(p, s)]); }
+  };
+  var READ = {
+    get_current: function (p) { return get(function (c) { return c ? c.ch[p - 1].cur : 0; }); },
+    is_stalled: function (p) { return get(function (c) { return c ? c.ch[p - 1].stall : false; }); },
+    is_moving: function (p) { return get(function (c) { return c ? c.ch[p - 1].moving : false; }); },
+    is_active: function (p) { return get(function (c) { return c ? c.ch[p - 1].active : false; }); },
+    get_total_current: function () { return get(function (c) { return c ? c.total : 0; }); },
+    is_power_fault: function () { return get(function (c) { return c ? c.fault : false; }); }
+  };
+  function r(m, p) { return READ[m](p); }
+
+  // ── Run the example program ──
+  function startProgram() {
+    log = []; logDirty = true; RUN = null;
+    if (S.step < 3) return;
+    newHost();
+    var g = BY[S.fn].run;
+    RUN = { pre: g.pre || [], loop: g.loop ? g.loop.concat([W(100)]) : null, i: 0, inLoop: false, until: 0, sw: null, done: false };
+  }
+  function swDone(w) {
+    // servo_wait: wait 15 ms first, then move on when the expander says "done"; if the expander does not answer, wait until the time is up
+    if (T < w.from) return false;
+    if (!H.connected && !reconnect()) { warnNoBoard(); return true; }
+    if (plugged()) { H.cache = snap(); H.cacheT = T; if (!chMoving(B.ch[w.ch - 1])) return true; }
+    else if (T - H.cacheT > 400) { H.connected = false; H.cache = null; H.errLast = T; say(msg('disc'), 'warnline'); return true; }   // unplugged: moves on after about 0.4 s
+    return T >= w.to;
+  }
+  function runStep() {
+    if (!RUN || RUN.done) return;
+    for (var guard = 0; guard < 60; guard++) {
+      if (RUN.until > T) return;
+      if (RUN.sw) { if (!swDone(RUN.sw)) return; RUN.sw = null; }
+      var list = RUN.inLoop ? RUN.loop : RUN.pre;
+      if (RUN.i >= list.length) {
+        if (!RUN.loop) { RUN.done = true; return; }
+        RUN.inLoop = true; RUN.i = 0; list = RUN.loop;
+      }
+      var s = list[RUN.i++];
+      if (s.k === 'cmd') API[s.m].apply(null, s.a);
+      else if (s.k === 'wait') RUN.until = T + s.ms;
+      else if (s.k === 'swait') RUN.sw = { ch: s.ch, from: T + 15, to: T + 15 + s.to };
+      else if (s.k === 'print') say(s.f(r));
+    }
+  }
+
+  // ── How the servos move (sketch) ──
+  function physics(dt) {
+    var fault = faulted();
+    for (var i = 0; i < 6; i++) {
+      var p = PH[i], c = B ? B.ch[i] : null;
+      if (c && chMoving(c)) { var d = c.set - c.ramp, stp = c.rate * dt / 1000; c.ramp = Math.abs(d) <= stp ? c.set : c.ramp + (d > 0 ? stp : -stp); }
+      var us = usOut(c), power = us != null && !fault;
+      if (i === 0 && HOLD != null && DRAG !== 0) p.a = HOLD;
+      var held = DRAG === i || (i === 0 && HOLD != null), cur = 0;
+      if (p.t === 180) {
+        var goal = us == null ? null : Math.max(0, Math.min(180, (us - 500) / 2000 * 180));
+        if (!power) cur = 0;
+        else if (held) cur = Math.abs(goal - p.a) > 3 ? 520 : 12;    // held by hand: the servo keeps pushing
+        else {
+          var dd = goal - p.a, mv = 500 * dt / 1000;
+          if (Math.abs(dd) <= mv) { p.a = goal; cur = Math.abs(dd) > 0.5 ? 180 : 12; } else { p.a += dd > 0 ? mv : -mv; cur = 180; }
+        }
+        p.rate = 0;
+      } else {
+        var rate = 0;
+        if (power) { var off = us - NEUTRAL; rate = Math.abs(off) < 3 ? 0 : off / 1000 * 360; }
+        if (!power) cur = 0;
+        else if (held) cur = rate ? 520 : 8;
+        else { p.a = ((p.a + rate * dt / 1000) % 360 + 360) % 360; cur = rate ? 60 + Math.abs(rate) * 0.5 : 8; }
+        p.rate = held || !power ? 0 : rate;
+      }
+      p.cur = cur;
+      // Stall protection: active, current over the limit, and for longer than the set time
+      if (c && c.on && c.st[0] > 0 && cur > c.st[0]) {
+        c.over += dt;
+        if (c.over >= c.st[1] && !c.stall) { c.stall = true; if (c.st[2]) { c.on = false; c.mode = ''; c.fresh = true; } }
+      } else if (c) c.over = 0;
+    }
+  }
+
+  // ── Drawing ──
+  function drawField() {
+    var svg = $('field'); if (!svg) return;
+    var ir = getComputedStyle(document.documentElement).getPropertyValue('--ir').trim() || '#e04a3b';
+    var fault = faulted(), un = !plugged(), total = 0;
+    PH.forEach(function (p) { total += fault || un ? 0 : Math.round(p.cur); });
+    var h = '<rect x="0" y="0" width="460" height="200" fill="#f7f7f2"/>';
+    h += '<rect x="8" y="8" width="444" height="26" rx="6" fill="#1b2422"/>';
+    h += '<text x="18" y="25" font-size="13" fill="#e3ece9">Servo6 on hub Port ' + hubLetter() + '</text>';
+    h += '<text x="442" y="25" text-anchor="end" font-size="13" fill="' + (un || fault ? '#ff8f6b' : '#9ad98a') + '">' + (un ? 'Unplugged' : fault ? 'Overload: servos have no power' : 'Total current ' + total + ' mA') + '</text>';
+    for (var i = 0; i < 6; i++) {
+      var p = PH[i], c = B ? B.ch[i] : null, cx = CX0 + i * GAP, on = !!(c && c.on), st = !!(c && c.stall);
+      var col = st ? ir : on && !fault && !un ? '#e08a2c' : '#9aa5a2';
+      if (p.t === 180) h += '<path d="M' + (cx - 32) + ' ' + CY + ' A32 32 0 0 1 ' + (cx + 32) + ' ' + CY + '" fill="none" stroke="#c9d2cf" stroke-width="2" stroke-dasharray="3 4"/>';
+      else h += '<circle cx="' + cx + '" cy="' + CY + '" r="32" fill="none" stroke="#c9d2cf" stroke-width="2" stroke-dasharray="3 4"/>';
+      h += '<rect x="' + (cx - 20) + '" y="' + (CY - 10) + '" width="40" height="36" rx="5" fill="#1b2422"/>';
+      var th = (180 - p.a) * Math.PI / 180, ex = cx + 28 * Math.cos(th), ey = CY - 28 * Math.sin(th);
+      var bx = p.t === 360 ? cx - 18 * Math.cos(th) : cx, by = p.t === 360 ? CY + 18 * Math.sin(th) : CY;
+      h += '<line x1="' + bx.toFixed(1) + '" y1="' + by.toFixed(1) + '" x2="' + ex.toFixed(1) + '" y2="' + ey.toFixed(1) + '" stroke="' + col + '" stroke-width="8" stroke-linecap="round"/>';
+      h += '<circle cx="' + cx + '" cy="' + CY + '" r="5" fill="#f7f7f2" stroke="' + col + '" stroke-width="3"/>';
+      if (DRAG === i || (i === 0 && HOLD != null)) h += '<circle cx="' + ex.toFixed(1) + '" cy="' + ey.toFixed(1) + '" r="9" fill="none" stroke="' + ir + '" stroke-width="2" stroke-dasharray="3 2"/>';
+      var cur = fault || un ? 0 : Math.round(p.cur);
+      var state = st ? 'Stalled' : !on ? 'Released' : fault || un ? 'No power' : chMoving(c) ? 'Moving' : 'Holding';
+      h += '<text x="' + cx + '" y="140" text-anchor="middle" font-size="12" font-weight="700" fill="#3d4a47">#' + (i + 1) + (p.t === 360 ? ' (360°)' : '') + '</text>';
+      h += '<text x="' + cx + '" y="156" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#3d4a47">' + (p.t === 180 ? Math.round(p.a) + '°' : p.rate ? 'Spinning' : 'Stopped') + '</text>';
+      h += '<text x="' + cx + '" y="172" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#3d4a47">' + cur + ' mA</text>';
+      h += '<text x="' + cx + '" y="188" text-anchor="middle" font-size="11" fill="' + (st ? ir : '#3d4a47') + '">' + state + '</text>';
+    }
+    if (un) h += '<text x="230" y="58" text-anchor="middle" font-size="15" font-weight="700" fill="' + ir + '">Expander unplugged: the servos have no power</text>';
+    svg.innerHTML = h;
+  }
+  function drawConsole() {
+    var el = $('console');
+    if (S.step < 3) { el.innerHTML = esc('(Finish step 3, "Use the functions", and what the program prints shows up here)'); return; }
+    el.innerHTML = log.map(function (l) { return '<span class="' + l.c + '">' + esc(l.t) + '</span>'; }).join('\n');
+  }
+  function tick(reset) {
+    if (reset) startProgram();
+    drawField(); drawConsole(); logDirty = false;
+  }
+  function simStep() {
+    T += 50; physics(50); runStep(); drawField();
+    if (logDirty) { drawConsole(); logDirty = false; }
+  }
+
+  // ── Dragging arms, tick boxes ──
+  function svgXY(e) {
+    var rc = $('field').getBoundingClientRect();
+    if (!rc.width || !rc.height) return null;
+    return { x: (e.clientX - rc.left) / rc.width * 460, y: (e.clientY - rc.top) / rc.height * 200 };
+  }
+  function angleAt(i, q) {
+    var cx = CX0 + i * GAP, th = Math.atan2(CY - q.y, q.x - cx) * 180 / Math.PI;
+    if (PH[i].t === 360) return ((180 - th) % 360 + 360) % 360;
+    if (th < 0) th = q.x > cx ? 0 : 180;
+    return Math.max(0, Math.min(180, 180 - th));
+  }
+  function setupSim() {
+    boardReset();
+    var f = $('field');
+    f.addEventListener('pointerdown', function (e) {
+      var q = svgXY(e); if (!q) return;
+      var i = Math.round((q.x - CX0) / GAP);
+      if (i < 0 || i > 5 || Math.abs(q.y - CY) > 48) return;
+      DRAG = i; PH[i].a = angleAt(i, q);
+      try { f.setPointerCapture(e.pointerId); } catch (x) { /* fine if an old browser does not have it */ }
+      e.preventDefault();
+    });
+    f.addEventListener('pointermove', function (e) { if (DRAG < 0) return; var q = svgXY(e); if (q) PH[DRAG].a = angleAt(DRAG, q); });
+    var end = function () { if (DRAG === 0 && HOLD != null) HOLD = PH[0].a; DRAG = -1; };
+    f.addEventListener('pointerup', end); f.addEventListener('pointercancel', end);
+    $('hold1').addEventListener('input', function () { HOLD = $('hold1').checked ? (PH[0].a > 90 ? PH[0].a - 50 : PH[0].a + 50) : null; });
+    $('unplug').addEventListener('input', function () { if (plugged()) boardReset(); else B = null; drawField(); });
+    $('fault').addEventListener('input', function () { drawField(); });
+    $('rerun').addEventListener('click', function () { tick(true); });
+  }
+
+  // ───── Events ─────
+  function setMulti(on) {
+    S.multi = on;
+    $('mt-off').setAttribute('aria-pressed', String(!on));
+    $('mt-on').setAttribute('aria-pressed', String(on));
+    drawMain();
+    if (S.step >= 3) tick(true);
+  }
+  $('mt-off').addEventListener('click', function () { setMulti(false); });
+  $('mt-on').addEventListener('click', function () { setMulti(true); });
+  $('next1').addEventListener('click', function () { setStep(2); $('varname').focus(); });
+  $('next2').addEventListener('click', function () { if (validName()) { setStep(3); drawPicker(); tick(true); } });
+  $('varname').addEventListener('input', function () { var ok = validName(); $('next2').disabled = !ok; if (ok) { drawMain(); drawPicker(); } });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) {
+    $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(false); } });
+  });
+  $('copymain').addEventListener('click', function (e) { copyText(plain(programLines()), e.currentTarget); });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { copyText(EX[b.getAttribute('data-copy')].join('\n') + '\n', b); });
+  });
+
+  // ───── Start ─────
+  S.viewStep = 1;
+  setupSim();
+  drawPorts(); drawPicker(); drawCards(); drawExamples(); drawMain(); tick(true);
+  setInterval(simStep, 50);
+})();
+</script>
+</body>
+</html>
