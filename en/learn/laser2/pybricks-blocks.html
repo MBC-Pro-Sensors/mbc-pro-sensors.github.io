@@ -243,8 +243,8 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
           <p class="why">The <b>first thing</b> in a block program is a red "from … import …" block under the yellow "set up" block. It tells Pybricks to use the Ranger library.</p>
           <p class="small">Pick one library (the blocks are exactly the same; only the name after "from" is different):</p>
           <div class="choice" role="group" aria-label="Library">
-            <button type="button" class="opt" id="lib-single" aria-pressed="true"><b>Single library MBC_laser2.py</b><small>Use it when the Ranger 2-Way is your only MBC sensor. The file is smaller (about 12 KB), so it uploads faster when you press Run.</small></button>
-            <button type="button" class="opt" id="lib-all" aria-pressed="false"><b>All-in-one library MBC_sensors.py</b><small>Use it when the same robot also has other MBC sensors (about 36 KB, covers all 7 products).</small></button>
+            <button type="button" class="opt" id="lib-single" aria-pressed="true"><b>Single library MBC_laser2.py</b><small>Use it when the Ranger 2-Way is your only MBC sensor. The file is smaller (about 4 KB), so it uploads faster when you press Run.</small></button>
+            <button type="button" class="opt" id="lib-all" aria-pressed="false"><b>All-in-one library MBC_sensors.py</b><small>Use it when the same robot also has other MBC sensors (about 12 KB, covers all 7 products).</small></button>
           </div>
           <ol class="howto">
             <li>Download the library (save the file and keep its name): <a href="/examples/tof2/pybricks/For%20firmware%204.x/MBC_laser2.py" download>MBC_laser2.py</a> (only this sensor) or <a href="/examples/tof2/pybricks/For%20firmware%204.x/MBC_sensors.py" download>MBC_sensors.py</a> (the all-in-one library). You picked <code id="libfile">MBC_laser2.py</code>.</li>
@@ -291,14 +291,14 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
               <svg id="field" viewBox="0 0 460 190" role="img" aria-label="Robot, two lasers and obstacles"></svg>
               <div class="ctrl">
                 <label class="f" for="dl">Distance to the left obstacle: <b id="dlv">30</b> cm (drag to 120 = nothing in front)
-                  <input type="range" id="dl" min="0" max="120" step="0.5" value="30">
+                  <input autocomplete="off" type="range" id="dl" min="0" max="120" step="0.5" value="30">
                 </label>
                 <label class="f" for="dr">Distance to the right obstacle: <b id="drv">120</b> cm
-                  <input type="range" id="dr" min="0" max="120" step="0.5" value="120">
+                  <input autocomplete="off" type="range" id="dr" min="0" max="120" step="0.5" value="120">
                 </label>
                 <div class="toggles">
-                  <label><input type="checkbox" id="fault"> Left laser broken (always reads 120)</label>
-                  <label><input type="checkbox" id="unplug"> Unplug the sensor</label>
+                  <label><input autocomplete="off" type="checkbox" id="fault"> Left laser broken (always reads 120)</label>
+                  <label><input autocomplete="off" type="checkbox" id="unplug"> Unplug the sensor</label>
                 </div>
               </div>
               <p class="note">The simulator is only a picture: the distance comes straight from where the obstacle is on the screen. A real laser can be off by 1 to 2 cm and only updates about every 0.1 seconds. 120 = nothing in front (or farther than 120 cm).</p>

@@ -1,4 +1,7 @@
 > [!TIP]
+> **🧩 New to the Sharpshooter Vision (school edition)? Follow the step-by-step interactive tutorial:** [MBC Blocks website](/en/learn/cam_school/mbc-blocks.html). Pick options on the left and watch the blocks build up on the right; every function has an example, and a simulated sensor lets you try the values.
+
+> [!TIP]
 > **🧩 New to the Sharpshooter Vision WRO edition (HUE12)? Follow the step-by-step interactive tutorial:** [MBC Blocks website](/en/learn/hue12/mbc-blocks.html). Pick options on the left and watch the blocks build up on the right; every function has an example, and a simulated sensor lets you try the values.
 
 ### Set the colour on the sensor first

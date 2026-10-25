@@ -1,4 +1,7 @@
 > [!TIP]
+> **🧩 New to the Sharpshooter Vision (school edition)? Follow the step-by-step interactive tutorial:** [MicroPython](/en/learn/cam_school/micropython.html) · [Pybricks blocks](/en/learn/cam_school/pybricks-blocks.html). Pick options on the left and watch the code build up on the right; every function has an example, and a simulated sensor lets you try the values.
+
+> [!TIP]
 > **🧩 New to the Sharpshooter Vision WRO edition (HUE12)? Follow the step-by-step interactive tutorial:** [MicroPython](/en/learn/hue12/micropython.html) · [Pybricks blocks](/en/learn/hue12/pybricks-blocks.html). Pick options on the left and watch the code build up on the right; every function has an example, and a simulated sensor lets you try the values.
 
 ### Set the colour on the sensor first

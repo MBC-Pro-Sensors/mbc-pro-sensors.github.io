@@ -3,9 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="積木跟 MicroPython 一樣照這個順序：先在「set up」下面匯入函式庫，再建立物件、幫 EXP6 取名字，最後在「program」下面用這個名字呼叫功能（轉馬達、讀感應器）。左邊一步一步做，右邊的積木會跟著長出來；這些積木圖是直接從 Pybricks Code 拼好匯出的，跟你在畫面上看">
+<meta name="description" content="積木跟 MicroPython 一樣照這個順序：先在「set up」下面匯入函式庫，再建立物件、幫 EXP6 取名字，最後在「program」下面用這個名字呼叫功能（轉馬達、讀感應器）。左邊一步一步做，右邊的積木會跟著長出來；這些積木圖是直接從 Pybricks Code 拼好匯出的，跟你在畫面上看到的一樣。">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/exp6/pybricks-blocks.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/exp6/pybricks-blocks.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/exp6/pybricks-blocks.html">
 <title>EXP6 六路馬達擴充器 Pybricks 積木教學 | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -219,11 +221,12 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
 .learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
 .learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
 .learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
 @media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/sensors/exp6/spike/">← EXP6 SPIKE 說明</a><div class="tabs"><a href="/learn/exp6/micropython.html">MicroPython（Pybricks）</a><a href="/learn/exp6/pybricks-blocks.html" aria-current="page">Pybricks 積木</a><a href="/learn/exp6/mbc-blocks.html">MBC 積木網站</a><a href="/learn/exp6/spike-app.html">樂高官方 SPIKE App</a></div></div></nav>
+<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/sensors/exp6/spike/">← EXP6 SPIKE 說明</a><a class="lang" href="/en/learn/exp6/pybricks-blocks.html" hreflang="en">EN</a><div class="tabs"><a href="/learn/exp6/micropython.html">MicroPython（Pybricks）</a><a href="/learn/exp6/pybricks-blocks.html" aria-current="page">Pybricks 積木</a><a href="/learn/exp6/mbc-blocks.html">MBC 積木網站</a><a href="/learn/exp6/spike-app.html">樂高官方 SPIKE App</a></div></div></nav>
 <div class="wrap">
   <header class="top">
     <span class="eyebrow">MBC EXP6 六路馬達擴充器 × Pybricks 積木</span>
@@ -287,17 +290,17 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
                   <select id="colorobj" style="font:inherit"></select>
                 </label>
                 <label class="f" for="dist">超音波前面的東西多遠（mm）
-                  <input type="range" id="dist" min="40" max="1990" step="10" value="300">
+                  <input autocomplete="off" type="range" id="dist" min="40" max="1990" step="10" value="300">
                 </label>
                 <label class="f" for="force">力量感應器壓多大力（0 ~ 100）
-                  <input type="range" id="force" min="0" max="100" value="0">
+                  <input autocomplete="off" type="range" id="force" min="0" max="100" value="0">
                 </label>
                 <label class="f" for="volt">EXP6 電池電壓（6.00 ~ 8.40 V）
-                  <input type="range" id="volt" min="600" max="840" value="786">
+                  <input autocomplete="off" type="range" id="volt" min="600" max="840" value="786">
                 </label>
                 <div class="toggles">
-                  <label><input type="checkbox" id="far"> 超音波前面沒有東西</label>
-                  <label><input type="checkbox" id="unplug"> 拔掉擴充板</label>
+                  <label><input autocomplete="off" type="checkbox" id="far"> 超音波前面沒有東西</label>
+                  <label><input autocomplete="off" type="checkbox" id="unplug"> 拔掉擴充板</label>
                   <button type="button" class="copy" id="rerun">程式從頭再跑一次</button>
                 </div>
               </div>

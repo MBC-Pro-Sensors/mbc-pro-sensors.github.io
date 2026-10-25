@@ -3,9 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="在樂高官方 SPIKE App 裡，掌控者接收器會被當成顏色感應器，所以不用匯入函式庫，直接用顏色感應器的積木讀，再換算成按鍵和搖桿。左邊一步一步做，右邊的積木會跟著長出來；這些積木圖是直接從官方網頁版 App（spike.legoeducation.com）拼好匯出的，跟你在 App 裡看到的一樣">
+<meta name="description" content="在樂高官方 SPIKE App 裡，掌控者接收器會被當成顏色感應器，所以不用匯入函式庫，直接用顏色感應器的積木讀，再換算成按鍵和搖桿。左邊一步一步做，右邊的積木會跟著長出來；這些積木圖是直接從官方網頁版 App（spike.legoeducation.com）拼好匯出的，跟你在 App 裡看到的一樣。">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/gamepad/spike-app.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/gamepad/spike-app.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/gamepad/spike-app.html">
 <title>掌控者 PS2／PS4 遙控接收器官方 SPIKE App 教學 | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -216,11 +218,12 @@ svg.lego .blocklyDropdownText { fill: #fff !important; }
 .learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
 .learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
 .learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
 @media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/sensors/ps2/spike/">← 掌控者 SPIKE 說明</a><a class="back" href="/sensors/ps4/spike/">PS4</a><div class="tabs"><a href="/learn/gamepad/micropython.html">MicroPython（Pybricks）</a><a href="/learn/gamepad/pybricks-blocks.html">Pybricks 積木</a><a href="/learn/gamepad/mbc-blocks.html">MBC 積木網站</a><a href="/learn/gamepad/spike-app.html" aria-current="page">樂高官方 SPIKE App</a></div></div></nav>
+<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/sensors/ps2/spike/">← 掌控者 SPIKE 說明</a><a class="back" href="/sensors/ps4/spike/">PS4</a><a class="lang" href="/en/learn/gamepad/spike-app.html" hreflang="en">EN</a><div class="tabs"><a href="/learn/gamepad/micropython.html">MicroPython（Pybricks）</a><a href="/learn/gamepad/pybricks-blocks.html">Pybricks 積木</a><a href="/learn/gamepad/mbc-blocks.html">MBC 積木網站</a><a href="/learn/gamepad/spike-app.html" aria-current="page">樂高官方 SPIKE App</a></div></div></nav>
 <div class="wrap">
   <header class="top">
     <span class="eyebrow">MBC 掌控者 PS2／PS4 × 樂高官方 SPIKE App</span>
@@ -278,9 +281,9 @@ svg.lego .blocklyDropdownText { fill: #fff !important; }
               <svg id="field" viewBox="0 0 460 250" role="group" aria-label="模擬手把：按鍵可以點，搖桿可以拖或用方向鍵移動"></svg>
               <div class="ctrl">
                 <div class="toggles">
-                  <label><input type="radio" name="kind" id="k2" value="PS2" checked> PS2 接收器</label>
-                  <label><input type="radio" name="kind" id="k4" value="PS4"> PS4 接收器</label>
-                  <label><input type="checkbox" id="nopad"> 手把沒連線</label>
+                  <label><input autocomplete="off" type="radio" name="kind" id="k2" value="PS2" checked> PS2 接收器</label>
+                  <label><input autocomplete="off" type="radio" name="kind" id="k4" value="PS4"> PS4 接收器</label>
+                  <label><input autocomplete="off" type="checkbox" id="nopad"> 手把沒連線</label>
                   <button type="button" class="copy" id="release">全部放開</button>
                 </div>
               </div>

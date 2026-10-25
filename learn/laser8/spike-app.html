@@ -282,10 +282,10 @@ svg.lego .blocklyDropdownText { fill: #fff !important; }
               <svg id="field" viewBox="0 0 460 250" role="img" aria-label="8 路雷射與障礙物示意"></svg>
               <div class="ctrl">
                 <label class="f" for="dir">障礙物的方向：<b class="mono" id="dirv">-3</b>（-8 ~ 8，往左拖 = 左邊，0 = 正前方）
-                  <input type="range" id="dir" min="-8" max="8" step="1" value="-3">
+                  <input autocomplete="off" type="range" id="dir" min="-8" max="8" step="1" value="-3">
                 </label>
                 <label class="f" for="dist">障礙物的距離：<b class="mono" id="distv">40</b> 公分（拖到 120 = 四周沒有東西）
-                  <input type="range" id="dist" min="0" max="120" step="1" value="40">
+                  <input autocomplete="off" type="range" id="dist" min="0" max="120" step="1" value="40">
                 </label>
               </div>
               <p class="note">模擬畫面是示意：方向和距離用畫面上的位置簡單換算，實際感應器可能差一兩格。紅色扇形 = 那一路量到東西；灰色扇形 = 讀到 120（那個方向沒有東西）。第 4、5 路都朝正前方。</p>

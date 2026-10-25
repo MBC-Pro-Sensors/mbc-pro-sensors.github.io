@@ -281,7 +281,7 @@ svg.blk .blocklyIconSymbol { fill: #fff; }
                 <span class="small">要塗的顏色（先選顏色，再點上面的格子）：</span>
                 <div class="toggles" id="palette" role="radiogroup" aria-label="要塗的顏色"></div>
                 <div class="toggles">
-                  <label><input type="checkbox" id="unplug"> 拔掉感應器</label>
+                  <label><input autocomplete="off" type="checkbox" id="unplug"> 拔掉感應器</label>
                   <button type="button" class="copy" id="fill-default">回到預設排列</button>
                   <button type="button" class="copy" id="fill-none">全部清成沒有顏色</button>
                 </div>
@@ -494,7 +494,7 @@ var BLK = {"img":["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAKCAQAAAA
     var box = $('palette'); box.innerHTML = '';
     PALETTE.forEach(function (p) {
       var l = document.createElement('label');
-      l.innerHTML = '<input type="radio" name="paint" value="' + p.k + '"' + (p.k === paint ? ' checked' : '') + '> ' + p.zh;
+      l.innerHTML = '<input autocomplete="off" type="radio" name="paint" value="' + p.k + '"' + (p.k === paint ? ' checked' : '') + '> ' + p.zh;
       l.querySelector('input').addEventListener('change', function () { paint = p.k; });
       box.appendChild(l);
     });

@@ -281,14 +281,14 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
           <svg id="field" viewBox="0 0 460 190" role="img" aria-label="車子、兩顆雷射與障礙物示意"></svg>
           <div class="ctrl">
             <label class="f" for="dl">左邊障礙物的距離：<b id="dlv">30</b> 公分（拖到 120 = 前面沒東西）
-              <input type="range" id="dl" min="0" max="120" step="0.5" value="30">
+              <input autocomplete="off" type="range" id="dl" min="0" max="120" step="0.5" value="30">
             </label>
             <label class="f" for="dr">右邊障礙物的距離：<b id="drv">120</b> 公分
-              <input type="range" id="dr" min="0" max="120" step="0.5" value="120">
+              <input autocomplete="off" type="range" id="dr" min="0" max="120" step="0.5" value="120">
             </label>
             <div class="toggles">
-              <label><input type="checkbox" id="fault"> 左雷射故障（一直讀 120）</label>
-              <label><input type="checkbox" id="unplug"> 拔掉感應器</label>
+              <label><input autocomplete="off" type="checkbox" id="fault"> 左雷射故障（一直讀 120）</label>
+              <label><input autocomplete="off" type="checkbox" id="unplug"> 拔掉感應器</label>
             </div>
           </div>
           <p class="note">模擬畫面是示意：距離直接用畫面上障礙物的位置換算，實際雷射會有 1～2 公分的誤差，大約每 0.1 秒才更新一次。120 = 前面沒東西（或超過 120 公分）。</p>

@@ -280,10 +280,10 @@ svg.lego .blocklyDropdownText { fill: #fff !important; }
               <svg id="field" viewBox="0 0 460 190" role="img" aria-label="Robot, two lasers and obstacles"></svg>
               <div class="ctrl">
                 <label class="f" for="dl">Distance to the left obstacle: <b id="dlv">30</b> cm (drag to 120 = nothing in front)
-                  <input type="range" id="dl" min="0" max="120" step="0.5" value="30">
+                  <input autocomplete="off" type="range" id="dl" min="0" max="120" step="0.5" value="30">
                 </label>
                 <label class="f" for="dr">Distance to the right obstacle: <b id="drv">120</b> cm
-                  <input type="range" id="dr" min="0" max="120" step="0.5" value="120">
+                  <input autocomplete="off" type="range" id="dr" min="0" max="120" step="0.5" value="120">
                 </label>
               </div>
               <p class="note">The simulator is only a picture: the distance comes straight from where the obstacle is on the screen. A real laser can be off by 1 to 2 cm and only updates about every 0.1 seconds. 120 = nothing in front (or farther than 120 cm).</p>

@@ -294,7 +294,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
                 <span class="small">Colour to paint (pick a colour, then click a box above):</span>
                 <div class="toggles" id="palette" role="radiogroup" aria-label="Colour to paint"></div>
                 <div class="toggles">
-                  <label><input type="checkbox" id="unplug"> Unplug the sensor</label>
+                  <label><input autocomplete="off" type="checkbox" id="unplug"> Unplug the sensor</label>
                   <button type="button" class="copy" id="fill-default">Back to the default colours</button>
                   <button type="button" class="copy" id="fill-none">Clear all to no colour</button>
                 </div>
@@ -527,7 +527,7 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
     var box = $('palette'); box.innerHTML = '';
     PALETTE.forEach(function (p) {
       var l = document.createElement('label');
-      l.innerHTML = '<input type="radio" name="paint" value="' + p.k + '"' + (p.k === paint ? ' checked' : '') + '> ' + p.zh;
+      l.innerHTML = '<input autocomplete="off" type="radio" name="paint" value="' + p.k + '"' + (p.k === paint ? ' checked' : '') + '> ' + p.zh;
       l.querySelector('input').addEventListener('change', function () { paint = p.k; });
       box.appendChild(l);
     });
