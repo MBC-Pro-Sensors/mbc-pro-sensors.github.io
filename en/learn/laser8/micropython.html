@@ -765,8 +765,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     s.ok = false; return s;
   }
   function runOut(f, st) {
-    // the library's real error text is in Chinese; the English meaning follows in brackets
-    if (f.spikeOnly && S.host === 'ev3') return 'ValueError: ' + f.id + '(): EV3 讀不到這個值  (EV3 cannot read this value)';
+    // the library's error text is in Chinese and English
+    if (f.spikeOnly && S.host === 'ev3') return 'ValueError: ' + f.id + '(): EV3 讀不到這個值 / cannot read this value';
     if (st.none && f.id !== 'sensor_ok') return f.id === 'read_all' ? 'TypeError (read_all() returned None)' : (f.out.length ? 'None' : f.out(st));
     return f.out(st);
   }
@@ -818,8 +818,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     updateCardOutputs();
     if (reset) log = [];
     if ($('unplug').checked && !warned) {
-      // the library prints this warning in Chinese; the English meaning follows in brackets
-      log.push({ c: 'warnline', t: 'MBC: Port ' + portLetter() + ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV  (cannot read the sensor, returning the last value)' }); warned = true;
+      // the library prints this warning in Chinese and English
+      log.push({ c: 'warnline', t: 'MBC: Port ' + portLetter() + ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV' }); warned = true;
     }
     if (S.step < 3) {
       log = [{ c: '', t: '(Finish step 3 "Use a function" and what the program prints shows up here)' }];

@@ -358,7 +358,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
       <li><b>Import the library file into the project first.</b> Without <code>MBC_hue12.py</code> in the project, you cannot pick <code>MBC_HUE12</code> in the red blocks.</li>
       <li><b>await and call must match multitasking:</b> multitasking true = pick await; multitasking false = pick call. If you mix them, the program fails on the hub.</li>
       <li><b>Always update first:</b> get_slot does not read the sensor by itself. It only gives you what update saved. Without an update block first, all 12 points stay at <code>('NONE', 255, 0)</code>. One update block per loop is enough.</li>
-      <li><b>Unplugging does not stop the program:</b> when the sensor cannot be read, update returns False and get_slot returns the last reading. The computer screen prints one warning line that starts with <code>MBC: Port</code> (the library prints this line in Chinese; it means "cannot read the sensor, returning the last value"). Use the <code>sensor_ok</code> function to check the connection. <code>device_id</code> and <code>firmware_version</code> are not available on this sensor (they give a ValueError). To check that the WRO edition is connected, look for <code>Connected to ID: 95</code> at the start.</li>
+      <li><b>Unplugging does not stop the program:</b> when the sensor cannot be read, update returns False and get_slot returns the last reading. The computer screen prints one warning line that starts with <code>MBC: Port</code> (in Chinese and English). Use the <code>sensor_ok</code> function to check the connection. <code>device_id</code> and <code>firmware_version</code> are not available on this sensor (they give a ValueError). To check that the WRO edition is connected, look for <code>Connected to ID: 95</code> at the start.</li>
       <li><b>Behind the blocks is MicroPython.</b> The code pane on the right of Pybricks Code is the program the blocks make. It is the same as "Matching MicroPython" on this page (the multitasking version has one extra line <code>await wait(0)</code>, which Pybricks adds by itself). Hue 0 to 239 = a colour, 240 to 245 = white, 246 to 250 = black, 255 = this point is not set.</li>
     </ol>
   </section>
@@ -379,9 +379,9 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
   }
   function mk() { return S.multi ? 'a' : 's'; }
 
-  // The library prints this message in Chinese; the simulation shows it exactly as the hub does
-  var LIB_NOREAD = ' 讀不到這個值';
-  var LIB_WARN = ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV';
+  // The library prints this message in Chinese and English; the simulation shows it exactly as the hub does
+  var LIB_NOREAD = ' 讀不到這個值 / cannot read this value';
+  var LIB_WARN = ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV';
 
   // ───── 5 functions ─────
   var FNS = [

@@ -42,7 +42,7 @@ _instances = []
 
 def _default_instance():
     if not _instances:
-        raise RuntimeError("請先建立擴充板物件 (例: sv = MBC_SERVO6(port.A))")
+        raise RuntimeError("請先建立擴充板物件 (例: sv = MBC_SERVO6(port.A)) / Create the board first, e.g. sv = MBC_SERVO6(port.A)")
     return _instances[-1]
 
 

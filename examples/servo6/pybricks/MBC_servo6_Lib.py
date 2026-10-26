@@ -147,7 +147,7 @@ class MBC_SERVO6:
 
     def __init__(self, port, multitask=False):
         if port not in _PORT_MAP:
-            raise ValueError("port 必須為 1~6（對應 Port.A~F），收到：{}".format(port))
+            raise ValueError("port 必須為 1~6（對應 Port.A~F），收到：{} / port must be 1~6 (Port.A~F)".format(port))
         self._port = port
         self._async_mode = bool(multitask)
         self._rx = bytearray()

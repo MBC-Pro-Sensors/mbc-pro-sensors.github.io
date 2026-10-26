@@ -362,7 +362,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
       <li><b>Behind the blocks is MicroPython.</b> The code pane on the right of Pybricks Code is the program the blocks make. It is the same as "Matching MicroPython" on this page (the multitasking version has one extra line, <code>await wait(0)</code>, which Pybricks adds by itself).</li>
       <li><b>Unplugging the cable does not stop the program:</b> if the sensor cannot be read, you get the last value it read. Use the <code>sensor_ok</code> function to check whether it is connected. <b>A reading of 120</b> can mean nothing in front, too far away, not ready yet right after power-on, or that laser is broken; use <code>is_ok</code> to tell them apart. Do not mix centimetres (<code>left</code> and so on) and millimetres (<code>left_mm</code> and so on) in the same loop; each time you switch, it takes a few dozen milliseconds more.</li>
       <li><b>Direction:</b> stand behind the robot and look forward. Laser 1 is on the left and laser 2 is on the right. <code>diff</code> = left minus right, so a negative number means the left side is closer.</li>
-      <li><b>The library's own messages are in Chinese.</b> <code>讀不到感應器，先回傳上一次的值</code> means "cannot read the sensor, returning the last value".</li>
+      <li><b>The library's own messages are in Chinese and English</b>, for example <code>MBC: Port C 讀不到感應器，先回傳上一次的值 / no sensor, using the last value</code>.</li>
     </ol>
   </section>
 </div>
@@ -576,7 +576,7 @@ var PYB = {"img":["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAKCAQAAAA
     drawField(st);
     FNS.forEach(function (g) { var el = document.querySelector('#fn-' + g.id + ' .out code'); if (el) el.textContent = g.out(st); });
     if (reset) log = [];
-    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + HOST_LET[S.port - 1] + ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV' }); warned = true; }
+    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + HOST_LET[S.port - 1] + ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV' }); warned = true; }
     if (S.step < 3) log = [{ c: '', t: '(Finish step 3 "Use the functions" and what the program prints shows up here)' }];
     else if (f.once) log = [{ c: '', t: f.out(st) }];
     else log.push({ c: '', t: f.out(st) });

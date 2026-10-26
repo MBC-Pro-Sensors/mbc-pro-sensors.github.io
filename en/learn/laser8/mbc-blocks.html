@@ -347,7 +347,7 @@ svg.blk .blocklyIconSymbol { fill: #fff; }
     <ol>
       <li><b>One setup block is enough, and there is no library to download.</b> Each port can be set up only once. The port in a reading block must match the setup block; if you pick the wrong port, the website warns you before downloading. When the website downloads your program, it sends the 8-direction laser reading code to the hub as well.</li>
       <li><b>Same functions as the Pybricks library:</b> everything in MBC_laser8.py has a block here (ch = "第 N 路距離" (distance of sensor N), is_ok = "第 N 路正常" (sensor N OK), distances = "8 路距離（清單）" (all 8 distances, list)), and the values are the same. Read "感應器身分" (sensor ID) and "感應器韌體版本" (sensor firmware version) once, under "run once at start". The millimetre group (nearest distance in mm, distance straight ahead in mm, nearest direction from the millimetre group), the sensor ID and the firmware version need sensor firmware from 2026-10 or later.</li>
-      <li><b>Unplugging does not stop the program:</b> if it cannot read the sensor, it returns the last value and prints one warning line <code>MBC: Port C 讀不到感應器…</code> (cannot read the sensor) in the terminal. Plug it back in and it carries on by itself. Use "感應器有接好" (sensor connected) to check the connection. Careful: if the cable comes out while avoiding obstacles, the robot keeps driving on the last distance.</li>
+      <li><b>Unplugging does not stop the program:</b> if it cannot read the sensor, it returns the last value and prints one warning line <code>MBC: Port C 讀不到感應器… / no sensor…</code> in the terminal. Plug it back in and it carries on by itself. Use "感應器有接好" (sensor connected) to check the connection. Careful: if the cable comes out while avoiding obstacles, the robot keeps driving on the last distance.</li>
       <li><b>A reading of 120 can mean 4 things:</b> nothing that way, more than 120 cm away, just switched on (wait 2–4 s) or that sensor is faulty. Use "第 N 路正常" (sensor N OK) to spot a faulty one. A faulty sensor always reads 120, so it looks like the "most open direction".</li>
       <li><b>Direction:</b> stand behind the robot and look forward: left is negative, right is positive. Sensor 1 points straight left, sensors 4 and 5 point straight ahead, sensor 8 points straight right. The nearest direction is −7 ~ +7, and <b>±8 = nothing around</b> (it keeps the side where it last saw something), so check "is anything there?" with "nearest distance ≥ 120".</li>
     </ol>
@@ -569,8 +569,8 @@ var BLK = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
     drawField(st);
     FNS.forEach(function (g) { var el = document.querySelector('#fn-' + g.id + ' .out code'); if (el) el.textContent = g.out(st); });
     if (reset) log = [];
-    // the website prints this warning in Chinese; the English meaning follows in brackets
-    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + S.port + ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV  (cannot read the sensor, returning the last value)' }); warned = true; }
+    // the website prints this warning in Chinese and English
+    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + S.port + ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV' }); warned = true; }
     if (S.step < 3) log = [{ c: '', t: '(Finish step 3 and what the program prints shows up here)' }];
     else if (f.once) log = [{ c: '', t: f.out(st) }];
     else log.push({ c: '', t: f.out(st) });

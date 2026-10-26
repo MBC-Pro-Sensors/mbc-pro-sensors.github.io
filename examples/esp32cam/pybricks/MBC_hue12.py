@@ -52,7 +52,7 @@ def _port(p):
     if isinstance(p, int):
         n = ('S1', 'S2', 'S3', 'S4') if _EV3 else ('A', 'B', 'C', 'D', 'E', 'F')
         if p < 1 or p > len(n):
-            raise ValueError('port 要填 1~%d' % len(n))
+            raise ValueError('port 要填 1~%d / port must be 1~%d' % (len(n), len(n)))
         return getattr(Port, n[p - 1]), n[p - 1]
     return p, str(p).split('.')[-1]
 
@@ -148,7 +148,7 @@ class _MBC:
 
     def _warn(self, e):
         if not self._bad:
-            print('MBC: Port', self._n, '讀不到感應器，先回傳上一次的值:', e)
+            print('MBC: Port', self._n, '讀不到感應器，先回傳上一次的值 / no sensor, using the last value:', e)
         self._bad = 1
 
     def _old(self, m, k):
@@ -200,7 +200,7 @@ class _MBC:
     def _q(self, name, *a):
         x = self._t.get(name)
         if x is None:
-            raise ValueError(name + '(): ' + ('EV3' if _EV3 else 'SPIKE') + ' 讀不到這個值')
+            raise ValueError(name + '(): ' + ('EV3' if _EV3 else 'SPIKE') + ' 讀不到這個值 / cannot read this value')
         return self._g(x[0], x[1], a, x[2] if len(x) > 2 else 0)
 
     def _r(self, x):

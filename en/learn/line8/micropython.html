@@ -800,7 +800,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     updateCardOutputs();
     if (reset) log = [];
     if ($('unplug').checked && !warned) {
-      log.push({ c: 'warnline', t: 'MBC: Port ' + portLetter() + ' cannot read the sensor, returning the last value: [Errno 19] ENODEV' }); warned = true;
+      log.push({ c: 'warnline', t: 'MBC: Port ' + portLetter() + ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV' }); warned = true;
     }
     if (S.step < 3) {
       log = [{ c: '', t: '(Finish step 3 "Use a function", and what the program prints shows up here)' }];

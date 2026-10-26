@@ -26,7 +26,7 @@
         "examples/10_Multitask_KeepAlive.py",
         "examples/11_MBC_Sensors_v2.py"
       ],
-      "size": 1589498
+      "size": 1589609
     },
     {
       "out": "/downloads/MBC_EXP6_Official_App_Lib_v2.zip",
@@ -63,7 +63,7 @@
         "examples/08_Stop_Modes.py",
         "examples/09_MBC_Sensors_v2.py"
       ],
-      "size": 1250472
+      "size": 1251845
     },
     {
       "out": "/downloads/MBC_EXP6_Pybricks_Lib.zip",
@@ -75,7 +75,7 @@
       "firmware": "EXP6 v1",
       "legacy": true,
       "files": null,
-      "size": 1593848
+      "size": 1593950
     },
     {
       "out": "/downloads/MBC_EXP6_Official_App_Lib.zip",
@@ -87,7 +87,7 @@
       "firmware": "EXP6 v1",
       "legacy": true,
       "files": null,
-      "size": 1187008
+      "size": 1187397
     },
     {
       "out": "/downloads/MBC_Servo6_Pybricks_Lib.zip",
@@ -99,7 +99,7 @@
       "firmware": "Servo6",
       "legacy": true,
       "files": null,
-      "size": 8921
+      "size": 9356
     },
     {
       "out": "/downloads/MBC_Servo6_Official_App_Lib.zip",
@@ -111,7 +111,7 @@
       "firmware": "Servo6",
       "legacy": true,
       "files": null,
-      "size": 5424
+      "size": 5445
     },
     {
       "out": "/examples/line8/line8_pybricks_spike_v4.x.zip",
@@ -130,7 +130,7 @@
         "line8_python_native.py",
         "line8_python_with_lib.py"
       ],
-      "size": 31645
+      "size": 31865
     },
     {
       "out": "/downloads/MBC_TOF8_Pybricks_Lib.zip",
@@ -145,7 +145,7 @@
         "MBC_laser8_obj_Lib.py",
         "MBC_sensors.py"
       ],
-      "size": 21762
+      "size": 21985
     },
     {
       "out": "/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext",

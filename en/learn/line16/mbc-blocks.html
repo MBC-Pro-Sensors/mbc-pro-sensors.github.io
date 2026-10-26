@@ -350,7 +350,7 @@ svg.blk .blocklyIconSymbol { fill: #fff; }
     <ol>
       <li><b>Use only one setup block.</b> Each port can be set up only once. The port on the reading blocks must match the setup block. If you pick the wrong port, the website warns you before downloading.</li>
       <li><b>No library to download.</b> When the website downloads your program, it sends the Pathfinder 16-Way reading code to the hub too.</li>
-      <li><b>Same functions as the Pybricks library:</b> everything in <code>MBC_line16.py</code> has a block here (bin_raw / bitmap = "16 路黑白值" (16-channel black/white value), ir_ch = "第 N 路光值" (light value of channel N)), and the values are the same. Unplugging does not stop the program: if the sensor cannot be read, you get the last value. The terminal shows one warning line in Chinese (<code>MBC: Port C 讀不到感應器，先回傳上一次的值</code> means "cannot read the sensor on port C, returning the last value"). Use "感應器有接好" (sensor connected) to check if it is connected. Each channel's light value is <b>0 to 15</b>, not 0 to 100.</li>
+      <li><b>Same functions as the Pybricks library:</b> everything in <code>MBC_line16.py</code> has a block here (bin_raw / bitmap = "16 路黑白值" (16-channel black/white value), ir_ch = "第 N 路光值" (light value of channel N)), and the values are the same. Unplugging does not stop the program: if the sensor cannot be read, you get the last value. The terminal shows one warning line in Chinese and English (<code>MBC: Port C 讀不到感應器，先回傳上一次的值 / no sensor, using the last value</code>). Use "感應器有接好" (sensor connected) to check if it is connected. Each channel's light value is <b>0 to 15</b>, not 0 to 100.</li>
       <li><b>Lost line, junctions and direction:</b> when the line leaves completely, line position gives the side where it left (−16 / +16, −100 / +100). To check "really no line", use "有偵測到線" (line found) or line width equals 0. "遇到路口" (at a junction) is "yes" only when the sensor sees two separate pieces of line (a fork). <b>At a crossroads the whole row is black. That is one piece, so the block gives "no"</b>. For a crossroads, use "line width ≥ 11". Stand behind the robot and look forward: a line on the left is negative, a line on the right is positive. Channel 1 is on the far left.</li>
     </ol>
   </section>
@@ -558,8 +558,8 @@ var BLK = {"img":["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAKCAQAAAA
     drawField(st);
     FNS.forEach(function (g) { var el = document.querySelector('#fn-' + g.id + ' .out code'); if (el) el.textContent = g.out(st); });
     if (reset) log = [];
-    // this warning is printed by the website's code, in Chinese ("cannot read the sensor, returning the last value")
-    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + S.port + ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV' }); warned = true; }
+    // this warning is printed by the website's code, in Chinese and English
+    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + S.port + ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV' }); warned = true; }
     if (S.step < 3) log = [{ c: '', t: '(Finish step 3 and what the program prints will appear here)' }];
     else if (f.once) log = [{ c: '', t: f.out(st) }];
     else log.push({ c: '', t: f.out(st) });

@@ -345,7 +345,7 @@ svg.blk .blocklyIconSymbol { fill: #fff; }
     <ol>
       <li><b>Use only one setup block.</b> Each port can be set up only once. The port on the reading blocks must match the setup block; if you pick the wrong port, the website warns you before it downloads.</li>
       <li><b>No library to download, and no "read once".</b> When the website downloads your program, it sends the camera's reading code to the hub too. Each reading block reads the sensor by itself (repeated reads within 10 ms use the same data, so reading all 12 points does not slow down).</li>
-      <li><b>Works the same as the Pybricks library:</b> every function in <code>MBC_hue12.py</code> has a block here (<code>get_slot()</code> = 「第 N 格（名稱, 色相, 飽和度）」 (point N (name, hue, saturation)), or 「第 N 格顏色名稱」 (point N colour name) for just the name; <code>sensor_ok()</code> = 「感應器有接好」 (sensor is connected)), and the values are the same. The website does not need the library's <code>update()</code>. Unplugging does not stop the program: when the sensor cannot be read, the blocks give the last reading and the terminal prints one warning line that starts with <code>MBC: Port</code> (this line is in Chinese; it means "cannot read the sensor, returning the last value"). Use 「感應器有接好」 (sensor is connected) to check the connection. Plug it back in and it works again by itself. Tick "Unplug the sensor" on the right to see this.</li>
+      <li><b>Works the same as the Pybricks library:</b> every function in <code>MBC_hue12.py</code> has a block here (<code>get_slot()</code> = 「第 N 格（名稱, 色相, 飽和度）」 (point N (name, hue, saturation)), or 「第 N 格顏色名稱」 (point N colour name) for just the name; <code>sensor_ok()</code> = 「感應器有接好」 (sensor is connected)), and the values are the same. The website does not need the library's <code>update()</code>. Unplugging does not stop the program: when the sensor cannot be read, the blocks give the last reading and the terminal prints one warning line that starts with <code>MBC: Port</code> (in Chinese and English). Use 「感應器有接好」 (sensor is connected) to check the connection. Plug it back in and it works again by itself. Tick "Unplug the sensor" on the right to see this.</li>
       <li><b>No ID data:</b> this sensor does not send an ID or firmware version, so there are no blocks for them.</li>
       <li><b>How to read the hue:</b> 0 to 239 = a colour (red is at both ends: 0 to 9 and 230 to 239, so a red check is "hue &lt; 10 or hue ≥ 230 and &lt; 240"); 240 to 245 = white; 246 to 250 = black; 255 = this point is not set (while the sensor is in its menu, all 12 points are 255 too). 「第 N 格有顏色」 (point N has a colour) just means the hue is not 255, so white and black count as "yes" too. Colour names: <code>Red</code> red, <code>Org</code> orange, <code>Yel</code> yellow, <code>Lim</code> lime, <code>Grn</code> green, <code>Mnt</code> mint, <code>Cyn</code> cyan, <code>Azr</code> azure, <code>Blu</code> blue, <code>Prp</code> purple, <code>Mag</code> magenta, <code>Pnk</code> pink, <code>Wht</code> white, <code>Blk</code> black, <code>NONE</code> not set.</li>
     </ol>
@@ -558,8 +558,8 @@ var BLK = {"img":["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAKCAQAAAA
     if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); paintSlot(Number(g.getAttribute('data-slot'))); }
   });
   var log = [];
-  // The website prints this warning in Chinese; the simulation shows it exactly as the terminal does
-  var SITE_WARN = ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV';
+  // The website prints this warning in Chinese and English; the simulation shows it exactly as the terminal does
+  var SITE_WARN = ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV';
   function warnText() { return 'MBC: Port ' + S.port + SITE_WARN; }
   function tick(reset) {
     var st = state(), f = BY[S.fn], unplug = $('unplug').checked;

@@ -629,7 +629,7 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
     paintPad(st);
     FNS.forEach(function (g) { var el = document.querySelector('#fn-' + g.id + ' .out code'); if (el) el.textContent = outOf(g, st); });
     if (reset) log = [];
-    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + HOST_LET[S.port - 1] + ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV' }); warned = true; }
+    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + HOST_LET[S.port - 1] + ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV' }); warned = true; }
     if (S.step < 3) log = [{ c: '', t: '（做完第 3 步「使用功能」，這裡會出現程式印出的內容）' }];
     else if (f.once) log = [{ c: '', t: outOf(f, st) }];
     else log.push({ c: '', t: outOf(f, st) });

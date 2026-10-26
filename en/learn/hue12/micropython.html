@@ -370,7 +370,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     <h2 id="tiph">Good to know</h2>
     <ol>
       <li><b>Always call <code>update()</code> first.</b> <code>get_slot()</code> does not read the sensor by itself. It only gives you what <code>update()</code> saved. Without <code>update()</code>, all 12 points stay at <code>('NONE', 255, 0)</code>. Call it once per loop; reading many points after that does not slow down.</li>
-      <li><b>Unplugging does not stop the program.</b> When the sensor cannot be read, <code>update()</code> returns <code>False</code> and <code>get_slot()</code> returns the last reading (<code>('NONE', 255, 0)</code> if it never got one). The computer screen prints one warning line that starts with <code>MBC: Port</code> (the library prints this line in Chinese; it means "cannot read the sensor, returning the last value"). Plug it back in and it works again by itself. Use <code>sensor_ok()</code> to check the connection. Tick "Unplug the sensor" on the right to see this.</li>
+      <li><b>Unplugging does not stop the program.</b> When the sensor cannot be read, <code>update()</code> returns <code>False</code> and <code>get_slot()</code> returns the last reading (<code>('NONE', 255, 0)</code> if it never got one). The computer screen prints one warning line that starts with <code>MBC: Port</code> (in Chinese and English). Plug it back in and it works again by itself. Use <code>sensor_ok()</code> to check the connection. Tick "Unplug the sensor" on the right to see this.</li>
       <li><b>How to read the hue:</b> 0 to 239 = a colour (red is at both ends: 0 to 9 and 230 to 239); 240 to 245 = white; 246 to 250 = black; 255 = this point is not set (while the sensor is in its menu, all 12 points are 255 too). Colour names: <code>Red</code> red, <code>Org</code> orange, <code>Yel</code> yellow, <code>Lim</code> lime, <code>Grn</code> green, <code>Mnt</code> mint, <code>Cyn</code> cyan, <code>Azr</code> azure, <code>Blu</code> blue, <code>Prp</code> purple, <code>Mag</code> magenta, <code>Pnk</code> pink, <code>Wht</code> white, <code>Blk</code> black, <code>NONE</code> not set.</li>
       <li><b>No ID data:</b> this sensor cannot give <code>device_id()</code> or <code>firmware_version()</code>. Both SPIKE and EV3 show a <code>ValueError</code>. To check that the WRO edition is connected, look for <code>Connected to ID: 95</code> when the object is created. If it is not 95, it is the wrong sensor, or the hub's Pybricks firmware is too old.</li>
       <li><b>Advanced: all 12 points at once.</b> <code>hue12.slots</code> is a list of the 12 points (call <code>update()</code> first here too). Each point is <code>(hue, saturation, name)</code>. The order is different from <code>get_slot()</code>, and you do not put await in front of it. SPIKE and EV3 read the same data, so you use it the same way on both.</li>
@@ -759,9 +759,9 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     var s = frozen ? JSON.parse(JSON.stringify(frozen)) : { cells: DEFAULT.map(function () { return { k: 'none', hue: 255, sat: 0, name: 'NONE' }; }) };
     s.ok = false; return s;
   }
-  // The library prints these two messages in Chinese; the simulation shows them exactly as the hub does
-  var LIB_WARN = ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV';
-  var LIB_NOREAD = ' 讀不到這個值';
+  // The library prints these two messages in Chinese and English; the simulation shows them exactly as the hub does
+  var LIB_WARN = ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV';
+  var LIB_NOREAD = ' 讀不到這個值 / cannot read this value';
   function runOut(f, st) {
     if (f.noRead) return 'ValueError: ' + f.id + '(): ' + (S.host === 'ev3' ? 'EV3' : 'SPIKE') + LIB_NOREAD;
     if (f.spikeOnly && S.host === 'ev3') return 'ValueError: ' + f.id + '(): EV3' + LIB_NOREAD;

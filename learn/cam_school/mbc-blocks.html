@@ -570,7 +570,7 @@ var BLK = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
     updateCardOutputs(st);
     if (reset) log = [];
     // 拔線：網站跟函式庫一樣只印一次提醒，程式繼續跑
-    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + S.port + ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV' }); warned = true; }
+    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + S.port + ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV' }); warned = true; }
     if (S.step < 3) log = [{ c: '', t: '（做完第 3 步，這裡會出現程式印出的內容）' }];
     else {
       var line = f.out(st), cls = /Error/.test(line) ? 'errline' : '';

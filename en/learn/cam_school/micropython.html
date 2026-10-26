@@ -369,7 +369,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
   <section class="tips" aria-labelledby="tiph">
     <h2 id="tiph">Good to know</h2>
     <ol>
-      <li><b>Unplugging does not stop the program.</b> If the sensor cannot be read, you get the last value it read. If it was never read, you get <code>None</code>, and the computer prints one warning line (the library writes it in Chinese; it starts with <code>MBC: Port</code>). Plug it back in and it works again by itself. Use <code>sensor_ok()</code> to check the connection. Tick "Unplug the sensor" on the right to see this. If you unplug while following a blob, the robot keeps turning toward the last place it saw the blob.</li>
+      <li><b>Unplugging does not stop the program.</b> If the sensor cannot be read, you get the last value it read. If it was never read, you get <code>None</code>, and the computer prints one warning line (in Chinese and English; it starts with <code>MBC: Port</code>). Plug it back in and it works again by itself. Use <code>sensor_ok()</code> to check the connection. Tick "Unplug the sensor" on the right to see this. If you unplug while following a blob, the robot keeps turning toward the last place it saw the blob.</li>
       <li><b>You set the colours on the sensor, not in the program.</b> Hue looks at the sample point from "Setup 1: COLOR". The blob is the colour you picked in "Setup 2: TRACK". You can only set them with the buttons on the sensor. <b>If you have not done Setup 1, hue is always 0, the same as red</b>, so the program thinks it sees red.</li>
       <li><b>Check that a blob is found first.</b> When no blob is found, <code>blob_x()</code>, <code>blob_y()</code>, <code>blob_w()</code>, <code>blob_h()</code> and <code>area()</code> are all 0, which looks like "the blob is in the bottom-left corner". So check with <code>found()</code> (or <code>area() == 0</code>) before you look at the position.</li>
       <li><b>Reading the same data group again within 10 ms is not slower.</b> <code>read_all()</code>, hue to blob height, <code>found()</code> and <code>area()</code> are one group, so you can call several of them together. On SPIKE, <code>blob_xya()</code> is another group, and so are <code>device_id()</code> and <code>firmware_version()</code> (put these outside the loop). EV3 cannot read <code>device_id()</code> or <code>firmware_version()</code>; everything else is the same. On SPIKE, <code>area()</code>, <code>blob_xya()</code> and <code>device_id()</code> need sensor firmware from 2026-10 or later. With older firmware the area is always 0, so use <code>blob_w() * blob_h()</code> instead.</li>
@@ -816,7 +816,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     updateCardOutputs();
     if (reset) log = [];
     if ($('unplug').checked && !warned) {
-      log.push({ c: 'warnline', t: 'MBC: Port ' + portLetter() + ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV' }, { c: 'warnline', t: '(The library prints this line in Chinese. It means: cannot read the sensor, returning the last value.)' }); warned = true;
+      log.push({ c: 'warnline', t: 'MBC: Port ' + portLetter() + ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV' }); warned = true;
     }
     if (S.step < 3) {
       log = [{ c: '', t: '(Finish step 3 "Use the functions" and the printed text shows up here)' }];

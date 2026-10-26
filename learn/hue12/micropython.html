@@ -760,8 +760,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     s.ok = false; return s;
   }
   function runOut(f, st) {
-    if (f.noRead) return 'ValueError: ' + f.id + '(): ' + (S.host === 'ev3' ? 'EV3' : 'SPIKE') + ' 讀不到這個值';
-    if (f.spikeOnly && S.host === 'ev3') return 'ValueError: ' + f.id + '(): EV3 讀不到這個值';
+    if (f.noRead) return 'ValueError: ' + f.id + '(): ' + (S.host === 'ev3' ? 'EV3' : 'SPIKE') + ' 讀不到這個值 / cannot read this value';
+    if (f.spikeOnly && S.host === 'ev3') return 'ValueError: ' + f.id + '(): EV3 讀不到這個值 / cannot read this value';
     return f.out(st);
   }
   function drawPalette() {
@@ -811,7 +811,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); paintSlot(Number(g.getAttribute('data-slot'))); }
   });
   var log = [];
-  function warnText() { return 'MBC: Port ' + portLetter() + ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV'; }
+  function warnText() { return 'MBC: Port ' + portLetter() + ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV'; }
   // 建立物件時函式庫會印出 Connected to ID（沒接上 = 先提醒一次，再印 None）
   function startLines() {
     return $('unplug').checked ? [{ c: 'warnline', t: warnText() }, { c: '', t: 'Connected to ID: None' }] : [{ c: '', t: 'Connected to ID: 95' }];

@@ -580,7 +580,7 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
     drawField(st);
     FNS.forEach(function (g) { var el = document.querySelector('#fn-' + g.id + ' .out code'); if (el) el.textContent = g.out(st); });
     if (reset) log = [];
-    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + HOST_LET[S.port - 1] + ' cannot read the sensor, returning the last value: [Errno 19] ENODEV' }); warned = true; }
+    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + HOST_LET[S.port - 1] + ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV' }); warned = true; }
     if (S.step < 3) log = [{ c: '', t: '(Finish step 3 "Use a function", and what the program prints shows up here)' }];
     else if (f.once) log = [{ c: '', t: f.out(st) }];
     else log.push({ c: '', t: f.out(st) });

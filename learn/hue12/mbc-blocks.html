@@ -556,7 +556,7 @@ var BLK = {"img":["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAKCAQAAAA
     if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); paintSlot(Number(g.getAttribute('data-slot'))); }
   });
   var log = [];
-  function warnText() { return 'MBC: Port ' + S.port + ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV'; }
+  function warnText() { return 'MBC: Port ' + S.port + ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV'; }
   function tick(reset) {
     var st = state(), f = BY[S.fn], unplug = $('unplug').checked;
     drawField(st);

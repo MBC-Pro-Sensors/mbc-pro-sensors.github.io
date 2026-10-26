@@ -358,7 +358,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
       <li><b>await and call must match multitasking:</b> multitasking true → pick await; multitasking false → pick call. If you mix them, the program fails on the hub.</li>
       <li><b>Put update at the start of every loop.</b> <code>buttons</code>, <code>pressed</code>, <code>any_pressed</code>, <code>stick</code>, <code>stick_centered</code>, <code>buttons_psx</code> and <code>pressed_psx</code> all read the snapshot taken by the last <code>update</code>. Without update, the values stay the way they were the first time. <code>connected</code>, <code>battery</code>, <code>kind</code>, <code>device_id</code> and <code>firmware_version</code> do not need update.</li>
       <li><b>Behind the blocks is MicroPython.</b> The code pane on the right of Pybricks Code is the program the blocks make, the same as "Matching MicroPython" on this page (the multitasking version has one extra line, <code>await wait(0)</code>, which Pybricks adds by itself).</li>
-      <li><b>Unplugging does not stop the program:</b> when the receiver cannot be read, you get the last value it read; use the <code>sensor_ok</code> function to check the connection. (The library prints its warning line in Chinese; this page shows it in English.) Push a stick right or up and the number gets bigger (1 to 9, 5 = centre); when you use a stick as a switch, use 7 or more and 3 or less, so both sides feel the same. On PS4, SHARE = <code>SELECT</code> and OPTIONS = <code>START</code>.</li>
+      <li><b>Unplugging does not stop the program:</b> when the receiver cannot be read, you get the last value it read; use the <code>sensor_ok</code> function to check the connection. (The warning line is in Chinese and English.) Push a stick right or up and the number gets bigger (1 to 9, 5 = centre); when you use a stick as a switch, use 7 or more and 3 or less, so both sides feel the same. On PS4, SHARE = <code>SELECT</code> and OPTIONS = <code>START</code>.</li>
     </ol>
   </section>
 </div>
@@ -629,7 +629,7 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
     paintPad(st);
     FNS.forEach(function (g) { var el = document.querySelector('#fn-' + g.id + ' .out code'); if (el) el.textContent = outOf(g, st); });
     if (reset) log = [];
-    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + HOST_LET[S.port - 1] + ' cannot read the sensor, returning the last value: [Errno 19] ENODEV' }); warned = true; }
+    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + HOST_LET[S.port - 1] + ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV' }); warned = true; }
     if (S.step < 3) log = [{ c: '', t: '(Finish step 3 "Use the functions" and what the program prints shows up here)' }];
     else if (f.once) log = [{ c: '', t: outOf(f, st) }];
     else log.push({ c: '', t: outOf(f, st) });

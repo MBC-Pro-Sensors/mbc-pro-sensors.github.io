@@ -362,7 +362,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
       <li><b>Import the library file into the project first.</b> If <code>MBC_line16.py</code> is not in the project, you cannot pick <code>MBC_LINE16</code> in the red blocks.</li>
       <li><b>await and call must match multitasking:</b> multitasking true → choose await; multitasking false → choose call. If you mix them, the program fails on the hub.</li>
       <li><b>Behind the blocks is MicroPython.</b> The code pane on the right of Pybricks Code shows the program the blocks make. It is the same as "Matching MicroPython" on this page (the multitasking version has an extra <code>await wait(0)</code> line that Pybricks adds by itself).</li>
-      <li><b>Unplugging does not stop the program:</b> if the sensor cannot be read, you get the last value it read. The library prints one warning line in Chinese (<code>MBC: Port C 讀不到感應器…</code> means "cannot read the sensor on port C"). Use the <code>sensor_ok</code> function to check if it is connected. When the line is lost, <code>pos16</code> gives −16 / +16 and <code>pos100</code> gives −100 / +100 (the side where the line left). To check "really no line", check that <code>width</code> equals 0.</li>
+      <li><b>Unplugging does not stop the program:</b> if the sensor cannot be read, you get the last value it read. The library prints one warning line in Chinese and English (<code>MBC: Port C 讀不到感應器… / no sensor…</code>). Use the <code>sensor_ok</code> function to check if it is connected. When the line is lost, <code>pos16</code> gives −16 / +16 and <code>pos100</code> gives −100 / +100 (the side where the line left). To check "really no line", check that <code>width</code> equals 0.</li>
       <li><b>Light values are 0 to 15:</b> on SPIKE, each of the 16 channels only goes from 0 to 15 (not 0 to 100); below 8 counts as black. For a crossroads, check whether <code>width</code> is 11 or more; <code>junction</code> (line segments) is still 1 at a crossroads.</li>
       <li><b>Direction:</b> stand behind the robot and look forward. A line on the left gives a negative number, a line on the right gives a positive number. Channel 1 is on the far left, channel 16 on the far right.</li>
     </ol>
@@ -586,8 +586,8 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
     drawField(st);
     FNS.forEach(function (g) { var el = document.querySelector('#fn-' + g.id + ' .out code'); if (el) el.textContent = g.out(st); });
     if (reset) log = [];
-    // this warning is printed by the library itself, in Chinese ("cannot read the sensor, returning the last value")
-    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + HOST_LET[S.port - 1] + ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV' }); warned = true; }
+    // this warning is printed by the library itself, in Chinese and English
+    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + HOST_LET[S.port - 1] + ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV' }); warned = true; }
     if (S.step < 3) log = [{ c: '', t: '(Finish step 3 "Use the functions" and what the program prints will appear here)' }];
     else if (f.once) log = [{ c: '', t: f.out(st) }];
     else log.push({ c: '', t: f.out(st) });

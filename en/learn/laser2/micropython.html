@@ -371,7 +371,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <li><b>SPIKE: do not mix centimetres and millimetres in the same loop.</b> The centimetre group (<code>left()</code>, <code>right()</code>, <code>ch()</code>, <code>average()</code>, <code>min_distance()</code>, <code>min_side()</code>, <code>diff()</code>, <code>is_ok()</code>, <code>init_status()</code>, <code>fault_status()</code>, <code>read_all()</code>) and the millimetre group (<code>left_mm()</code>, <code>right_mm()</code>, <code>average_mm()</code>) are two different sets of sensor data. Each time you switch sets, it takes a few dozen milliseconds more. Put <code>device_id()</code> and <code>firmware_version()</code> outside the loop. Millimetres need sensor firmware from 2026-10 or later. On EV3, centimetres and millimetres come in the same set, so this does not matter there.</li>
       <li><b>No need to read very fast.</b> The lasers measure about once every 0.1 seconds, so <code>wait(20)</code> to <code>wait(50)</code> in the loop is enough. The same set of data is read from the sensor at most once every 10 ms, so calling several functions in a row is fine.</li>
       <li><b>Direction:</b> stand behind the robot and look forward. Laser 1 (<code>ch(1)</code>) is on the left and laser 2 is on the right. <code>diff()</code> = left minus right, so a negative number means the left side is closer. <code>min_side()</code> gives −1 = left side is closer, +1 = right side is closer, 0 = both the same.</li>
-      <li><b>The library's own messages are in Chinese.</b> <code>讀不到感應器，先回傳上一次的值</code> means "cannot read the sensor, returning the last value". <code>EV3 讀不到這個值</code> means "EV3 cannot read this value".</li>
+      <li><b>The library's own messages are in Chinese and English</b>, for example <code>MBC: Port C 讀不到感應器，先回傳上一次的值 / no sensor, using the last value</code>.</li>
     </ol>
   </section>
 </div>
@@ -745,7 +745,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     s.ok = false; return s;
   }
   function runOut(f, st) {
-    if (f.spikeOnly && S.host === 'ev3') return 'ValueError: ' + f.id + '(): EV3 讀不到這個值';
+    if (f.spikeOnly && S.host === 'ev3') return 'ValueError: ' + f.id + '(): EV3 讀不到這個值 / cannot read this value';
     if (st.none && f.id !== 'sensor_ok') return f.id === 'read_all' ? 'TypeError (read_all() returned None)' : 'None';
     return f.out(st);
   }
@@ -791,7 +791,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     updateCardOutputs();
     if (reset) log = [];
     if ($('unplug').checked && !warned) {
-      log.push({ c: 'warnline', t: 'MBC: Port ' + portLetter() + ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV' }); warned = true;
+      log.push({ c: 'warnline', t: 'MBC: Port ' + portLetter() + ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV' }); warned = true;
     }
     if (S.step < 3) {
       log = [{ c: '', t: '(Finish step 3 "Use the functions" and what the program prints shows up here)' }];

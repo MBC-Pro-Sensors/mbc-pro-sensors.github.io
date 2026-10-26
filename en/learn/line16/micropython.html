@@ -368,7 +368,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
   <section class="tips" aria-labelledby="tiph">
     <h2 id="tiph">Things to know</h2>
     <ol>
-      <li><b>Unplugging does not stop the program.</b> If the sensor cannot be read, you get the last value it read. If it has never been read, you get <code>None</code>. One warning line is printed on the computer (the library prints it in Chinese: <code>MBC: Port C 讀不到感應器，先回傳上一次的值</code> means "cannot read the sensor on port C, returning the last value"). Plug it back in and it works again by itself. Use <code>sensor_ok()</code> to check if it is connected. Tick "Unplug the sensor" in the simulator to see this. If you unplug it while line following, the robot keeps driving with the last position.</li>
+      <li><b>Unplugging does not stop the program.</b> If the sensor cannot be read, you get the last value it read. If it has never been read, you get <code>None</code>. One warning line is printed on the computer, in Chinese and English: <code>MBC: Port C 讀不到感應器，先回傳上一次的值 / no sensor, using the last value</code>. Plug it back in and it works again by itself. Use <code>sensor_ok()</code> to check if it is connected. Tick "Unplug the sensor" in the simulator to see this. If you unplug it while line following, the robot keeps driving with the last position.</li>
       <li><b>Reading again within 10 ms does not slow things down.</b> The same data is read from the sensor at most once every 10 ms (the sensor itself updates every 10 ms), so calling several functions in a row is fine.</li>
       <li><b>The light value range depends on the hub.</b> On SPIKE, each channel's light value is <b>0 to 15</b> (all 16 channels are sent in one go, so each channel gets only 4 bits). On EV3, <code>ir_ch()</code> and <code>ir_calibration()</code> give <b>1 to 9</b>, while <code>edge_l()</code> and <code>edge_r()</code> give <b>0 to 100</b>. Change your black/white threshold to match (SPIKE: below 8 is black; EV3 edge: below 50 is black).</li>
       <li><b>On EV3, switching to another data group takes about 0.5 seconds.</b> Try to use one group in the same loop: <code>pos100()</code>, <code>width()</code>, <code>edge_l()</code>, <code>edge_r()</code> are one group (the most used for line following); <code>bin_raw()</code>, <code>bitmap()</code>, <code>on_sensors()</code>, <code>junction()</code>, <code>junction_name()</code> are one group; <code>pos16()</code> is a group on its own; <code>ir_ch()</code> and <code>ir_calibration()</code> are one group. Put <code>device_id()</code> and <code>firmware_version()</code> outside the loop. SPIKE does not have this problem.</li>
@@ -783,8 +783,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     s.ok = false; return s;
   }
   function runOut(f, st) {
-    // the ValueError text is printed by the library itself (in Chinese: "EV3 cannot read this value")
-    if (f.spikeOnly && S.host === 'ev3') return 'ValueError: ' + f.id + '(): EV3 讀不到這個值';
+    // the ValueError text is printed by the library itself (in Chinese and English)
+    if (f.spikeOnly && S.host === 'ev3') return 'ValueError: ' + f.id + '(): EV3 讀不到這個值 / cannot read this value';
     if (st.none && f.id !== 'sensor_ok') return f.id === 'read_all' ? 'TypeError (read_all() returned None)' : (f.out.length ? 'None' : f.out(st));
     return f.out(st);
   }
@@ -826,8 +826,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     updateCardOutputs();
     if (reset) log = [];
     if ($('unplug').checked && !warned) {
-      // this warning is printed by the library itself, in Chinese ("cannot read the sensor, returning the last value")
-      log.push({ c: 'warnline', t: 'MBC: Port ' + portLetter() + ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV' }); warned = true;
+      // this warning is printed by the library itself, in Chinese and English
+      log.push({ c: 'warnline', t: 'MBC: Port ' + portLetter() + ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV' }); warned = true;
     }
     if (S.step < 3) {
       log = [{ c: '', t: '(Finish step 3 "Use the functions" and what the program prints will appear here)' }];

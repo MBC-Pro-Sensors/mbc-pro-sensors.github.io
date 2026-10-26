@@ -384,8 +384,8 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
     { id: 'update', zh: '讀最新資料', grp: '讀顏色', ret: 'True／False', what: '向感應器讀一次最新的 12 格。讀到了是 True；讀不到（拔線）是 False，資料保留上一次的。範例用「if」判斷讀到了沒有。', out: function (s) { return s.ok ? '讀到最新的 12 格' : '讀不到，沿用上一次的資料'; } },
     { id: 'get_slot', zh: '某一格的顏色', grp: '讀顏色', ret: "(顏色名稱, 色相, 飽和度)，例如 ('Red', 5, 200)", what: '先放一塊 update，再用 get_slot 拿第幾格的顏色：按功能積木右邊的「>」多出一格，填 1 ~ 12。一次給三個值：顏色名稱（Red、Grn、Wht、Blk，沒設定是 NONE）、色相、飽和度。', out: function (s) { var c = s.cells[0]; return "第 1 格 ('" + c.name + "', " + c.hue + ', ' + c.sat + ')'; } },
     { id: 'sensor_ok', zh: '有沒有接好', grp: '感應器資訊', ret: 'True／False', what: '最近一次有沒有讀到感應器。先放 update 讀過，才知道最新的情形。到下面勾「拔掉感應器」試試看。', out: function (s) { return s.ok ? '感應器正常' : '感應器沒接好！'; } },
-    { id: 'device_id', zh: '感應器身分', grp: '感應器資訊', ret: '這款讀不到（ValueError）', what: '神攝手 WRO 版沒有身分資料，執行會出現 ValueError。要確認接的是它，看一開始印出的 Connected to ID: 95。', once: true, noRead: true, out: function () { return 'ValueError: device_id(): SPIKE 讀不到這個值'; } },
-    { id: 'firmware_version', zh: '韌體版本', grp: '感應器資訊', ret: '這款讀不到（ValueError）', what: '神攝手 WRO 版沒有送韌體版本，執行會出現 ValueError。韌體版本請看感應器開機畫面。', once: true, noRead: true, out: function () { return 'ValueError: firmware_version(): SPIKE 讀不到這個值'; } }
+    { id: 'device_id', zh: '感應器身分', grp: '感應器資訊', ret: '這款讀不到（ValueError）', what: '神攝手 WRO 版沒有身分資料，執行會出現 ValueError。要確認接的是它，看一開始印出的 Connected to ID: 95。', once: true, noRead: true, out: function () { return 'ValueError: device_id(): SPIKE 讀不到這個值 / cannot read this value'; } },
+    { id: 'firmware_version', zh: '韌體版本', grp: '感應器資訊', ret: '這款讀不到（ValueError）', what: '神攝手 WRO 版沒有送韌體版本，執行會出現 ValueError。韌體版本請看感應器開機畫面。', once: true, noRead: true, out: function () { return 'ValueError: firmware_version(): SPIKE 讀不到這個值 / cannot read this value'; } }
   ];
   var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; });
 
@@ -585,7 +585,7 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
     if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); paintSlot(Number(g.getAttribute('data-slot'))); }
   });
   var log = [];
-  function warnText() { return 'MBC: Port ' + HOST_LET[S.port - 1] + ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV'; }
+  function warnText() { return 'MBC: Port ' + HOST_LET[S.port - 1] + ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV'; }
   function startLines() { return $('unplug').checked ? [{ c: 'warnline', t: warnText() }, { c: '', t: 'Connected to ID: None' }] : [{ c: '', t: 'Connected to ID: 95' }]; }
   function tick(reset) {
     var st = state(), f = BY[S.fn];

@@ -364,7 +364,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
       <li><b>await and call must match multitasking:</b> multitasking true means pick await; multitasking false means pick call. If you mix them, the program gives an error on the hub.</li>
       <li><b>Behind the blocks is MicroPython.</b> The code pane on the right of Pybricks Code shows the program the blocks make. It is the same as "Matching MicroPython" on this page (the multitasking version has one extra line, <code>await wait(0)</code>, which Pybricks adds by itself).</li>
       <li><b>You set the colours on the sensor, not in the program:</b> hue looks at the sample point from "Setup 1: COLOR"; the blob is the colour from "Setup 2: TRACK". If you have not done Setup 1, hue is always 0, the same as red. When no blob is found, X, Y, width, height and area are all 0, so check with <code>found</code> first.</li>
-      <li><b>Unplugging does not stop the program:</b> if the sensor cannot be read, you get the last value it read, and the computer prints one warning line (in Chinese; it starts with <code>MBC: Port</code>). Use the <code>sensor_ok</code> function to check the connection.</li>
+      <li><b>Unplugging does not stop the program:</b> if the sensor cannot be read, you get the last value it read, and the computer prints one warning line (in Chinese and English; it starts with <code>MBC: Port</code>). Use the <code>sensor_ok</code> function to check the connection.</li>
       <li><b>Which way is which:</b> stand behind the robot and look forward. X: left 0, right 98, centre about 50 (X − 50 is negative on the left, positive on the right). Y is small at the bottom and big at the top (bottom 1, top 75). Only SPIKE can read <code>device_id</code> and <code>firmware_version</code>. On SPIKE, <code>area</code> and <code>blob_xya</code> need sensor firmware from 2026-10 or later.</li>
     </ol>
   </section>
@@ -595,7 +595,7 @@ var PYB = {"img":["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAKCAQAAAA
     drawField(st);
     updateCardOutputs(st);
     if (reset) log = [];
-    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + HOST_LET[S.port - 1] + ' 讀不到感應器，先回傳上一次的值: [Errno 19] ENODEV' }, { c: 'warnline', t: '(The library prints this line in Chinese. It means: cannot read the sensor, returning the last value.)' }); warned = true; }
+    if ($('unplug').checked && !warned) { log.push({ c: 'warnline', t: 'MBC: Port ' + HOST_LET[S.port - 1] + ' 讀不到感應器，先回傳上一次的值 / no sensor, using the last value: [Errno 19] ENODEV' }); warned = true; }
     if (S.step < 3) log = [{ c: '', t: '(Finish step 3 "Use the functions" and the printed text shows up here)' }];
     else {
       var line = f.out(st), cls = /Error/.test(line) ? 'errline' : '';

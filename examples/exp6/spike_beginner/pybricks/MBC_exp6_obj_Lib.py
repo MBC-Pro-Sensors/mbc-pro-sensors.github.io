@@ -169,20 +169,20 @@ def _is_near_zero(v, tol=1):
 # meaningfully change behavior (degrees getting truncated means the stop action fires early).
 def _check_port(port_num, name="port"):
     if isinstance(port_num, bool) or not isinstance(port_num, int) or not (1 <= port_num <= 6):
-        raise ValueError("%s=%r 不是有效孔位，必須是 1~6 的整數" % (name, port_num))
+        raise ValueError("%s=%r 不是有效孔位，必須是 1~6 的整數 / must be an integer 1~6" % (name, port_num))
 
 def _check_distinct_ports(port_a, port_b):
     if port_a == port_b:
         raise ValueError(
             "left_port 與 right_port 不能是同一孔位(%r)，會被協議的 left*10+right 算式"
-            "誤解成單馬達 PID 指令(port*11)" % (port_a,))
+            "誤解成單馬達 PID 指令(port*11) / left_port and right_port must be different ports" % (port_a,))
 
 _VALID_MODES = (MODE_SPEED, MODE_ANGLE, MODE_ABS_ANGLE, MODE_RESET,
                 MODE_COLOR, MODE_RGB, MODE_HSV, MODE_DISTANCE, MODE_FORCE)
 
 def _check_mode(mode):
     if mode not in _VALID_MODES:
-        raise ValueError("mode=%r 不是合法的 MODE_* 常數" % (mode,))
+        raise ValueError("mode=%r 不是合法的 MODE_* 常數 / is not a valid MODE_* constant" % (mode,))
 
 def _clamp(v, lo, hi, name):
     v = int(v)
@@ -196,7 +196,7 @@ def _clamp_warn(v, lo, hi, name):
     v = int(v)
     if v < lo or v > hi:
         c = lo if v < lo else hi
-        print("[EXP6] %s=%d 超出範圍，已限制在 %d~%d 之間" % (name, v, lo, hi))
+        print("[EXP6] %s=%d 超出範圍，已限制在 %d~%d 之間 / out of range, clamped" % (name, v, lo, hi))
         return c
     return v
 
@@ -248,7 +248,7 @@ def _norm_stop(stop):
         if s in _VALID_STOP_NAMES:
             return s
     print("[EXP6] stop=%r 不符合定義範圍(1:coast, 2:brake, 3:hold, 4:continue)，"
-          "已改用 brake 模式" % (stop,))
+          "已改用 brake 模式 / invalid stop value, using brake" % (stop,))
     return "brake"
 
 def _stop_to_l2(stop):
@@ -720,7 +720,7 @@ _instances = []
 def _default_instance():
     if not _instances:
         raise RuntimeError(
-            "EXP6 尚未初始化。請先建立 MBC_EXP6(port, multitask) 物件。"
+            "EXP6 尚未初始化。請先建立 MBC_EXP6(port, multitask) 物件。/ EXP6 is not set up: create MBC_EXP6(port, multitask) first."
         )
     return _instances[-1]
 
@@ -862,7 +862,7 @@ class MBC_EXP6:
     # ── 內部：初始化 / 連線狀態檢查 ─────────────────────────────
     def _open_uart(self, port, multitask):
         if port not in _PORT_MAP:
-            raise ValueError("port 必須為 1~6（對應 Port.A~F），收到：{}".format(port))
+            raise ValueError("port 必須為 1~6（對應 Port.A~F），收到：{} / port must be 1~6 (Port.A~F)".format(port))
         self._selected_port = port
         self._async_mode    = bool(multitask)
         self._uart          = UARTDevice(_PORT_MAP[port], baudrate=_BAUD)
@@ -889,7 +889,7 @@ class MBC_EXP6:
         if self._uart is None:
             letter = _PORT_LETTER.get(self._selected_port, str(self._selected_port)) if self._selected_port else "?"
             raise RuntimeError(
-                "EXP6 未初始化（Port {}）。請先建立 MBC_EXP6(port, multitask) 物件。".format(letter)
+                "EXP6 未初始化（Port {}）。請先建立 MBC_EXP6(port, multitask) 物件。/ EXP6 is not set up: create MBC_EXP6(port, multitask) first.".format(letter)
             )
 
     def _probe_board(self, timeout_ms=_PROBE_TIMEOUT_MS):
