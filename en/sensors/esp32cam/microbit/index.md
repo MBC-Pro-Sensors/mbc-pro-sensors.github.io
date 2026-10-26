@@ -10,7 +10,7 @@ Using the Sharpshooter Vision (ESP32CAM) with BBC micro:bit V1 / V2: check the e
 
 ## Which edition
 
-Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `0x4C`. The sensor needs 5 V; use a breakout board with a 5 V output.
+Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `0x4C`. It **must use an external 5 V supply** (ESP32 camera + screen + lights), not the micro:bit 3V pin; share the supply GND with the micro:bit.
 
 ## Wiring
 

@@ -89,7 +89,7 @@ export function render(product, common, ctx, lang) {
 function mark(product, v, p) {
   const on = {
     spike: v.spike && v.spike.length, ev3: v.ev3 && v.ev3.length, arduino: v.i2c, mblock: v.mblock && v.mblock.block,
-    matrix: v.matrix && (v.matrix.ch22 || v.matrix.big), microbit: v.microbit && v.microbit.block,
+    matrix: v.matrix && (v.matrix.ch22 || v.matrix.big), microbit: v.microbit && (v.microbit.js || v.microbit.see),
   }[p.id];
   return on ? '✓' : '—';
 }

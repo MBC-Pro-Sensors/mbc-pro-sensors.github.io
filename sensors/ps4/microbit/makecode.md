@@ -7,7 +7,7 @@
 
 ## 要買哪個版本、怎麼接
 
-買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `0x42`。感應器要 5 V 供電，micro:bit 本身只有 3.3 V，請用有 5 V 輸出的擴充板。
+買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `0x42`。**一定要外接 5 V 供電**（ESP32 藍牙接收，瞬間電流大），不能吃 micro:bit 的 3V 腳；外部電源的 GND 要和 micro:bit 共地。
 
 <figure class="ref-fig"><img src="/images/figures/ps4/wiring-microbit.svg" alt="掌控者 PS4/PS5 × BBC micro:bit V1／V2" loading="lazy"></figure>
 
@@ -21,7 +21,7 @@
 
 ## 讀值
 
-MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC」分類找積木；JavaScript 寫法一併列出，位址 `0x42`。
+MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC 感應器」分類找積木；JavaScript 寫法一併列出，位址 `0x42`。
 
 <section id="v01" class="ref-item">
 
@@ -33,13 +33,26 @@ MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC」分類找積木；JavaSc
 | :--- | :--- |
 | `0~65535` bit | 全部按鍵一個 16 bit（PSX 排列）：bit0 SELECT(SHARE)、1 L3、2 R3、3 START(OPTIONS)、4 上、5 右、6 下、7 左、8 L2、9 R2、10 L1、11 R1、12 ▲、13 ●、14 ✕、15 ■；1 = 按下；未連線 = 0 |
 
-<pre class="blocks">(MBC 十六鍵 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 十六鍵位元圖 :: #00A4E4)</pre>
 
 ```typescript
-let buttons16 = MBC.readValue(0x42, 0x01)   // 十六鍵：0~65535 bit
+let buttons16 = mbc.padButtons()   // 十六鍵：0~65535 bit
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+**相關積木「掌控者 按鈕 ［✕］ 被按住？」**
+
+```typescript
+let padButtonPressed = mbc.padButtonPressed(MbcPadButton.Cross)
+```
+
+**相關積木「當掌控者 按鈕 ［✕］ ［按下］」**
+
+```typescript
+mbc.onPadButton(MbcPadButton.Cross, MbcPadButtonEvent.Pressed, function () {
+})
+```
+
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -53,13 +66,13 @@ let buttons16 = MBC.readValue(0x42, 0x01)   // 十六鍵：0~65535 bit
 | :--- | :--- |
 | `0~15` bit | 上 1、右 2、下 4、左 8，同時按相加（0~15） |
 
-<pre class="blocks">(MBC 方向鍵 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 [方向鍵 v]（0~15） :: #00A4E4)</pre>
 
 ```typescript
-let dpad = MBC.readValue(0x42, 0x02)   // 方向鍵：0~15 bit
+let dpad = mbc.padGroup(MbcPadGroup.Dpad)   // 方向鍵：0~15 bit
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -73,13 +86,13 @@ let dpad = MBC.readValue(0x42, 0x02)   // 方向鍵：0~15 bit
 | :--- | :--- |
 | `0~15` bit | ▲ 1、● 2、✕ 4、■ 8，同時按相加（0~15） |
 
-<pre class="blocks">(MBC 形狀鍵 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 [形狀鍵 v]（0~15） :: #00A4E4)</pre>
 
 ```typescript
-let shapeKeys = MBC.readValue(0x42, 0x03)   // 形狀鍵：0~15 bit
+let shapeKeys = mbc.padGroup(MbcPadGroup.Shapes)   // 形狀鍵：0~15 bit
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -93,13 +106,13 @@ let shapeKeys = MBC.readValue(0x42, 0x03)   // 形狀鍵：0~15 bit
 | :--- | :--- |
 | `0~15` bit | L2 1、R2 2、L1 4、R1 8，同時按相加（0~15） |
 
-<pre class="blocks">(MBC 肩鍵 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 [肩鍵 v]（0~15） :: #00A4E4)</pre>
 
 ```typescript
-let shoulderKeys = MBC.readValue(0x42, 0x04)   // 肩鍵：0~15 bit
+let shoulderKeys = mbc.padGroup(MbcPadGroup.Shoulders)   // 肩鍵：0~15 bit
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -113,13 +126,13 @@ let shoulderKeys = MBC.readValue(0x42, 0x04)   // 肩鍵：0~15 bit
 | :--- | :--- |
 | `0~15` bit | SELECT(SHARE) 1、L3 2、R3 4、START(OPTIONS) 8，同時按相加（0~15） |
 
-<pre class="blocks">(MBC 功能鍵 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 [功能鍵 v]（0~15） :: #00A4E4)</pre>
 
 ```typescript
-let funcKeys = MBC.readValue(0x42, 0x05)   // 功能鍵：0~15 bit
+let funcKeys = mbc.padGroup(MbcPadGroup.Functions)   // 功能鍵：0~15 bit
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -131,13 +144,13 @@ let funcKeys = MBC.readValue(0x42, 0x05)   // 功能鍵：0~15 bit
 | :--- | :--- |
 | `0~1` | 1 = 手把已連線且 300 ms 內有資料，0 = 未連線（斷線時按鍵 0、搖桿中間） |
 
-<pre class="blocks">(MBC 手把已連線？ :: #E8711E)</pre>
+<pre class="blocks"><掌控者 手把已連線？ :: #00A4E4></pre>
 
 ```typescript
-let connected = MBC.readValue(0x42, 0x06)   // 已連線：0~1
+let connected = mbc.padConnected()   // 已連線：0~1
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回「否」。</p>
 
 </section>
 
@@ -151,13 +164,13 @@ let connected = MBC.readValue(0x42, 0x06)   // 已連線：0~1
 | :--- | :--- |
 | `0~100` % | 手把電量 0~100（PS2 接收器恆 0） |
 
-<pre class="blocks">(MBC 電量 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 電量（百分比） :: #00A4E4)</pre>
 
 ```typescript
-let battery = MBC.readValue(0x42, 0x07)   // 電量：0~100 %
+let battery = mbc.padBattery()   // 電量：0~100 %
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -171,13 +184,13 @@ let battery = MBC.readValue(0x42, 0x07)   // 電量：0~100 %
 | :--- | :--- |
 | `0~255` | L2 扳機壓多深 0~255（未連線 0） |
 
-<pre class="blocks">(MBC L2 類比 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 扳機 [L2 v] 類比值 :: #00A4E4)</pre>
 
 ```typescript
-let l2Analog = MBC.readValue(0x42, 0x08)   // L2 類比：0~255
+let l2Analog = mbc.padTrigger(MbcPadTrigger.L2)   // L2 類比：0~255
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -191,13 +204,13 @@ let l2Analog = MBC.readValue(0x42, 0x08)   // L2 類比：0~255
 | :--- | :--- |
 | `0~255` | R2 扳機壓多深 0~255（未連線 0） |
 
-<pre class="blocks">(MBC R2 類比 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 扳機 [R2 v] 類比值 :: #00A4E4)</pre>
 
 ```typescript
-let r2Analog = MBC.readValue(0x42, 0x09)   // R2 類比：0~255
+let r2Analog = mbc.padTrigger(MbcPadTrigger.R2)   // R2 類比：0~255
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -211,13 +224,11 @@ let r2Analog = MBC.readValue(0x42, 0x09)   // R2 類比：0~255
 | :--- | :--- |
 | `0~3` bit | b0 PS 鍵、b1 擷取（PS5 靜音）鍵；未連線 0（PS2 恆 0） |
 
-<pre class="blocks">(MBC 系統鍵 :: #E8711E)</pre>
+擴充沒有這顆積木；在 JavaScript 用 `mbc.readValue(位址, 編號)` 讀（讀不到 = −32768）。相關積木：「掌控者 系統鍵 ［PS］ 被按住？」。
 
 ```typescript
-let sysKeys = MBC.readValue(0x42, 0x0A)   // 系統鍵：0~3 bit
+let sysKeys = mbc.readValue(0x42, 0x0A)   // 系統鍵：0~3 bit
 ```
-
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
 
 </section>
 
@@ -229,13 +240,13 @@ let sysKeys = MBC.readValue(0x42, 0x0A)   // 系統鍵：0~3 bit
 | :--- | :--- |
 | `0~4` | 0 無、1 PS2 數位、2 PS2 類比、3 PS4、4 PS5（或其他） |
 
-<pre class="blocks">(MBC 手把類型 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 手把類型 :: #00A4E4)</pre>
 
 ```typescript
-let padType = MBC.readValue(0x42, 0x0B)   // 手把類型：0~4
+let padType = mbc.padType()   // 手把類型：0~4
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -249,13 +260,13 @@ let padType = MBC.readValue(0x42, 0x0B)   // 手把類型：0~4
 | :--- | :--- |
 | `-100~+100` | 10 LX、11 LY、12 RX、13 RY：−100 ~ +100，0 = 中間，右／上為正；未連線 0 |
 
-<pre class="blocks">(MBC 搖桿 [軸] :: #E8711E)</pre>
+<pre class="blocks">(掌控者 搖桿 [左搖桿 X v] :: #00A4E4)</pre>
 
 ```typescript
-let stick = MBC.readValues(0x42, 0x10, 4)   // 搖桿 1~4 軸
+let stick = [mbc.padStick(MbcPadAxis.LeftX), mbc.padStick(MbcPadAxis.LeftY), mbc.padStick(MbcPadAxis.RightX), mbc.padStick(MbcPadAxis.RightY)]   // 搖桿 1~4 軸：-100~+100
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -267,10 +278,10 @@ let stick = MBC.readValues(0x42, 0x10, 4)   // 搖桿 1~4 軸
 
 [強度 0~255]，0 = 停；每次 200 ms（PS2 收到忽略）
 
-<pre class="blocks">MBC 震動 [強度] :: #E8711E</pre>
+<pre class="blocks">掌控者 震動 強度 (200) :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x42, 0xE5, [50])   // 震動
+mbc.padRumble(200)   // 震動
 ```
 
 </section>
@@ -281,10 +292,10 @@ MBC.writeCmd(0x42, 0xE5, [50])   // 震動
 
 [R][G][B] 各 0~255，要剛好 3 byte；未連線先記住，連上再套用；預設藍 (0,0,255)（PS2 收到忽略）
 
-<pre class="blocks">MBC 燈條 R[r] G[g] B[b] :: #E8711E</pre>
+<pre class="blocks">掌控者 燈條顏色 [#ff0000] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x42, 0xE6, [50, 50, 50])   // 燈條顏色
+mbc.padLight(0xff0000)   // 燈條顏色
 ```
 
 </section>

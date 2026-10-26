@@ -33,6 +33,7 @@ Sensor → mBot adapter → RJ25 port on the board (S1 = host TX, S2 = host RX).
 | Controller port [port] system keys | 0 bit | [`0A`](/en/sensors/ps2/reference.md#v0a) | b0 PS button, b1 capture button; PS2 pads have none → always 0 (PS4 only) |
 | Controller port [port] gamepad type | 0~2 | [`0B`](/en/sensors/ps2/reference.md#v0b) | 0 none, 1 PS2 digital mode, 2 PS2 analog mode (3 PS4 / 4 PS5 only appear on the PS4 receiver) |
 | Controller port [port] stick [LX/LY/RX/RY] | -100~+100 | [`10~13`](/en/sensors/ps2/reference.md#v10) | 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right / up positive (raw 0~255 with ±7 dead zone); 0 when not connected. EV3 / SPIKE / MATRIX carry 0~99 (50 = centre) or 1~9 (5 = centre), see each platform |
+| Controller port [port] [button] pressed? | true/false | [`01`](/en/sensors/ps2/reference.md#v01) | one button split out of 16 buttons 01 (PSX order); menu: ✕ ● ▲ ■ up down left right L1 R1 L2 R2 L3 R3 SELECT START |
 
 ## Command blocks
 
@@ -40,6 +41,7 @@ Sensor → mBot adapter → RJ25 port on the board (S1 = host TX, S2 = host RX).
 | :--- | :--- | :--- |
 | Controller port [port] rumble [strength] | [`E5`](/en/sensors/ps2/reference.md#ce5) | [strength 0~255], 0 = stop; the PS2 receiver ACKs and ignores it (pad rumble disabled since 250614), effective on PS4 only |
 | Controller port [port] light bar colour [red] [green] [blue] | [`E6`](/en/sensors/ps2/reference.md#ce6) | [R][G][B] 0~255 each; PS2 pads have no light bar, the receiver ACKs and ignores it, effective on PS4 only |
+| Controller port [port] update all values | `FD` | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 
 ## Status blocks
 

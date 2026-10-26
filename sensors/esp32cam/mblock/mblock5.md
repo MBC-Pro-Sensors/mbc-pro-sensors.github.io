@@ -181,6 +181,18 @@
 
 </section>
 
+## 命令
+
+<section id="cx-readall" class="ref-item ref-cmd">
+
+### 更新全部數值 <small>readAll</small>
+
+一次讀整張值表進快取（FD 整包）；接下來 10 ms 內的讀值積木直接用快取，不再逐一詢問
+
+<pre class="blocks">神攝手 連接埠 [1 v] 更新全部數值 :: sensing</pre>
+
+</section>
+
 ## 讀值（WRO 版）
 
 裝好 MBC Pro Sensors 擴展後，在「神攝手 WRO」分類找積木，連接埠選感應器實際插的孔。
@@ -214,6 +226,18 @@
 <pre class="blocks">(神攝手 WRO 連接埠 [1 v] 色點 [1 v] 鮮豔度 :: sensing)</pre>
 
 <p class="ref-note">積木傳回 色點 1~12 鮮豔度（0~255）。主機送 <code>[20]</code> → 回 <code>[值低][值高][20 ^ 值低 ^ 值高]</code>，值 = int16 小端；第 N 路的編號 = 0x20 + (N − 1)。</p>
+
+</section>
+
+## 命令（WRO 版）
+
+<section id="wcx-readall" class="ref-item ref-cmd">
+
+### 更新全部數值 <small>readAll</small>
+
+一次讀整張值表進快取（FD 整包）；接下來 10 ms 內的讀值積木直接用快取，不再逐一詢問
+
+<pre class="blocks">神攝手 WRO 連接埠 [1 v] 更新全部數值 :: sensing</pre>
 
 </section>
 

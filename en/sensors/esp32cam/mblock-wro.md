@@ -24,6 +24,12 @@ Sensor → mBot adapter → RJ25 port on the board (S1 = host TX, S2 = host RX).
 | Vision WRO port [port] spot [1~12] colour code | 0~255 | [`10~1B`](/en/sensors/esp32cam/reference-wro.md#v10) | 10~1B = colour code of spots S1~S12: 0~239 colour (hue 0~255 scaled to 0~239), 240~245 white (saturation < 30, lower = larger), 246~250 black (value < 30, darker = larger), 255 = spot not enabled |
 | Vision WRO port [port] spot [1~12] vividness | 0~255 | [`20~2B`](/en/sensors/esp32cam/reference-wro.md#v20) | 20~2B = vividness (saturation) of spots S1~S12, 0~255: black = 1, white/colour = actual saturation; 0 when the spot is not enabled |
 
+## Command blocks
+
+| Block | Id | Meaning |
+| :--- | :--- | :--- |
+| Vision WRO port [port] update all values | `FD` | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
+
 ## Status blocks
 
 The extension exposes each `F3` bit as a boolean block:

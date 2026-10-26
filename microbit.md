@@ -4,7 +4,7 @@
 MBC 通用 I2C 版的循行者、測距者、掌控者、IMU 陀螺儀與神攝手，都能接 BBC micro:bit V1／V2：在 MakeCode 加一個擴充 **pxt-mbc-sensors v2**，積木區就多出「MBC 感應器」分類，每個數值一顆積木，內部走 [MBC 通用 I2C 協議 v2](/i2c-protocol.md)。
 
 > [!IMPORTANT]
-> **上機待測**：擴充 v2.0.4 已在 MakeCode 編譯通過（V1＋V2），但還沒有接實機逐顆積木核對數值。積木名稱以 GitHub 發布版為準：<https://github.com/contactmbcrobot/pxt-mbc-sensors>。實測後本頁會更新。
+> **上機待測**：擴充 v2.0.5 已在 MakeCode 編譯通過（V1＋V2），但還沒有接實機逐顆積木核對數值。積木名稱以 GitHub 發布版為準：<https://github.com/contactmbcrobot/pxt-mbc-sensors>。實測後本頁會更新。
 
 ---
 
@@ -17,7 +17,7 @@ MBC 通用 I2C 版的循行者、測距者、掌控者、IMU 陀螺儀與神攝�
 5. 編輯器語言切到 **繁體中文**（右上齒輪 → Language），積木就會顯示中文。
 
 > [!TIP]
-> 不需要送審、不需要下載檔案：老師把上面這個網址給學生貼就能用。要固定版本可貼 `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.4`。
+> 不需要送審、不需要下載檔案：老師把上面這個網址給學生貼就能用。要固定版本可貼 `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.5`。
 
 ## 🔌 接線
 
@@ -49,7 +49,7 @@ micro:bit 的 I2C 腳位是固定的：**P19 = SCL、P20 = SDA**（金手指邊�
 | **時脈延展（clock stretching）** | STM32 產品（循行者、測距者、PS2、陀螺儀）準備資料時會拉住 SCL；micro:bit V2 的 nRF52 對時脈延展有已知問題（errata 219），**V1／V2 各要實測**，不穩就改韌體不延展。ESP32 產品（PS4、神攝手）不延展，擴充已內建「寫完編號等 2 ms 再讀」。 |
 | **上拉電阻** | micro:bit 板上已有 4.7 kΩ 上拉；產品板也有時並聯會變強，正常情況仍可用。 |
 | **同位址不能同接** | 循行者 8 路和 16 路都是 `0x16`、測距者 2 路和 8 路都是 `0x29`、PS2 和 PS4 都是 `0x42`，兩個同類產品要一起接時，先用「裝置 → 把位址 … 改成位址 …」積木把其中一個改掉（存在感應器裡，重開機生效），再用「循行者 改用位址」這類積木告訴擴充新位址。 |
-| **裝置沒接時** | 讀值積木回 **0**（內部的 −32768 已過濾），不會報錯；先用「裝置 → 等位址 … 的裝置就緒」確認接線。 |
+| **裝置沒接時** | 讀值積木回 **0**（內部的 −32768 已過濾）、是／否積木一律回 **否**，不會報錯也不會停。0 也可能是真的讀值（線在正中間、東西貼在前面、色相紅色），所以先用「裝置 → 等位址 … 的裝置就緒」或「位址 … 的裝置就緒？」確認接線。 |
 
 ## 🧩 積木清單（83 顆）
 
@@ -211,5 +211,5 @@ basic.forever(function () {
 
 ## 📦 下載與原始碼
 
-- 擴充 repo（MIT）：<https://github.com/contactmbcrobot/pxt-mbc-sensors>（v2.0.4，2026-10）
+- 擴充 repo（MIT）：<https://github.com/contactmbcrobot/pxt-mbc-sensors>（v2.0.5，2026-10）
 - 其他平台的函式庫與範例：[下載專區](/downloads.md)

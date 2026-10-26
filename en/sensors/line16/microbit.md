@@ -20,34 +20,44 @@ The universal I2C edition of the Line Follower 16-ch works with BBC micro:bit V1
 
 | Sensor | micro:bit |
 | :--- | :--- |
-| SDA | P20 |
-| SCL | P19 |
-| 5V | external 5 V (or the V2 3V pin, check current) |
+| SDA（RX） | P20 |
+| SCL（TX） | P19 |
+| VCC | micro:bit 3V (external 5 V recommended on batteries) |
 | GND | GND |
 
 ## Reporter blocks
 
 | Block | Returns | Id | Meaning |
 | :--- | :--- | :--- | :--- |
-| MBC line position | -16~+16 | [`01`](/en/sensors/line16/reference.md#v01) | which channel the line is under: −16 (far left) to +16 (far right), 0 = centre; seen from behind the robot, negative = left (normally ±15; ±16 only for 200 ms after the line leaves the outermost channel) |
-| MBC fine line position | -100~+100 | [`02`](/en/sensors/line16/reference.md#v02) | sub-channel position: −100 to +100, 0 = centre, negative = left (same sign as line position) |
-| MBC line width | 0~16 路 | [`03`](/en/sensors/line16/reference.md#v03) | number of channels on the line, 0~16; 0 = no line |
-| MBC line segments | 0~8 | [`04`](/en/sensors/line16/reference.md#v04) | number of separate line segments: 0 = lost, 1 = one line, ≥2 = fork / crossing |
-| MBC line bitmap | 0~65535 bit | [`05`](/en/sensors/line16/reference.md#v05) | bit0 = channel 1 (left) … bit15 = channel 16; 1 = that channel sees the line |
-| MBC last exit direction | -16~+16 | [`06`](/en/sensors/line16/reference.md#v06) | where the line was before it was lost: −16 to +16 (negative = left); keeps the last value |
-| MBC threshold | 1~99 | [`07`](/en/sensors/line16/reference.md#v07) | reflect threshold for 'on line', 1~99, default 50; set with E4 |
-| MBC channel [1~16] reflect | 0~100 | [`10~1F`](/en/sensors/line16/reference.md#v10) | calibrated reflect of channel 1~16, 0~100 (channel 1 = left); ids 10~1F |
+| line position | -16~+16 | [`01`](/en/sensors/line16/reference.md#v01) | which channel the line is under: −16 (far left) to +16 (far right), 0 = centre; seen from behind the robot, negative = left (normally ±15; ±16 only for 200 ms after the line leaves the outermost channel) |
+| fine line position | -100~+100 | [`02`](/en/sensors/line16/reference.md#v02) | sub-channel position: −100 to +100, 0 = centre, negative = left (same sign as line position) |
+| line width | 0~16 路 | [`03`](/en/sensors/line16/reference.md#v03) | number of channels on the line, 0~16; 0 = no line |
+| line segments | 0~8 | [`04`](/en/sensors/line16/reference.md#v04) | number of separate line segments: 0 = lost, 1 = one line, ≥2 = fork / crossing |
+| line bitmap | 0~65535 bit | [`05`](/en/sensors/line16/reference.md#v05) | bit0 = channel 1 (left) … bit15 = channel 16; 1 = that channel sees the line |
+| last exit direction | -16~+16 | [`06`](/en/sensors/line16/reference.md#v06) | where the line was before it was lost: −16 to +16 (negative = left); keeps the last value |
+| line threshold | 1~99 | [`07`](/en/sensors/line16/reference.md#v07) | reflect threshold for 'on line', 1~99, default 50; set with E4 |
+| line calibration count | 0~255 次 | [`08`](/en/sensors/line16/reference.md#v08) | number of calibrations completed since power-on (button calibrations included) |
+| channel [1~16] reflect | 0~100 | [`10~1F`](/en/sensors/line16/reference.md#v10) | calibrated reflect of channel 1~16, 0~100 (channel 1 = left); ids 10~1F |
+
+### More blocks (yes / no, events)
+
+| Block | Related value |
+| :--- | :--- |
+| line is seen | [`04`](/en/sensors/line16/reference.md#v04) |
+| on line [lost] | [`04`](/en/sensors/line16/reference.md#v04) |
+| channel 1 is on the line | [`05`](/en/sensors/line16/reference.md#v05) |
+| line follower is calibrating | [`08`](/en/sensors/line16/reference.md#v08) |
 
 ## Command blocks
 
 | Block | Id | Meaning |
 | :--- | :--- | :--- |
-| MBC set black line | [`E0`](/en/sensors/line16/reference.md#ce0) | follow a black line (default) |
-| MBC set white line | [`E1`](/en/sensors/line16/reference.md#ce1) | follow a white line (F3 b1 = 1) |
-| MBC calibrate black | [`E2`](/en/sensors/line16/reference.md#ce2) | store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM |
-| MBC calibrate white | [`E3`](/en/sensors/line16/reference.md#ce3) | store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM |
-| MBC set threshold [n] | [`E4`](/en/sensors/line16/reference.md#ce4) | threshold 1~99 (RAM only, back to 50 after reboot) |
-| MBC auto calibrate (5 s) | [`E7`](/en/sensors/line16/reference.md#ce7) | sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile |
+| line follower follow [black] line | [`E0`](/en/sensors/line16/reference.md#ce0) | follow a black line (default) |
+| line follower follow [white] line | [`E1`](/en/sensors/line16/reference.md#ce1) | follow a white line (F3 b1 = 1) |
+| line follower calibrate [current reading is black] | [`E2`](/en/sensors/line16/reference.md#ce2) | store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM |
+| line follower calibrate [current reading is white] | [`E3`](/en/sensors/line16/reference.md#ce3) | store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM |
+| line follower set threshold 50 | [`E4`](/en/sensors/line16/reference.md#ce4) | threshold 1~99 (RAM only, back to 50 after reboot) |
+| line follower calibrate [auto (sweep for 5 s)] | [`E7`](/en/sensors/line16/reference.md#ce7) | sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile |
 
 ## Status
 
@@ -62,9 +72,11 @@ The universal I2C edition of the Line Follower 16-ch works with BBC micro:bit V1
 ## JavaScript
 
 ```typescript
+if (!(mbc.waitReady(0x16, 3000))) {
+    basic.showIcon(IconNames.No)   // nothing answers: check wiring and power
+}
 basic.forever(function () {
-    let linePos = MBC.readValue(0x16, 0x01)   // line position
-    basic.showNumber(linePos)
+    basic.showNumber(mbc.linePosition())   // line position
     basic.pause(100)
 })
 ```
@@ -80,4 +92,4 @@ Generated by `_build/gen-reference.mjs` from `_build/protocol/line16.json` (sing
 - 線段數 04 範圍：定案沒寫，16 路最多 8 段（交錯壓線），採 0~8。
 - mBlock 舊版：MBC_MBLOCK_LEGACY=1 時逐 byte 同 2026-10-21 統一後韌體（0x01 位置、0x02 線寬、n<<4|03 反向兩路壓一 byte、0x07 細位置 0~200），0x0B 回 1（B-1）。
 - Flash：C031 硬體鎖 28 KB，I2C 版餘 848 B；不夠時照 B-17 順序瘦身，JSON 不受影響。
-- The extension reads `Int16LE` and pauses 2 ms after writing the id (D5).
+- The extension reads `Int16LE` and pauses 2 ms after writing the id (D5); with no sensor answering, reporters return 0 and yes / no blocks return false.

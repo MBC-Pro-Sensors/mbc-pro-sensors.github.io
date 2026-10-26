@@ -20,23 +20,27 @@
 
 | 感應器 | micro:bit |
 | :--- | :--- |
-| SDA | P20 |
-| SCL | P19 |
-| 5V | 外接 5 V（或 V2 的 3V 腳，需確認電流） |
+| SDA（RX） | P20 |
+| SCL（TX） | P19 |
+| VCC | micro:bit 3V（電池供電時建議外接 5 V） |
 | GND | GND |
 
 ## 讀值積木
 
 | 積木 | 傳回 | 編號 | 說明 |
 | :--- | :--- | :--- | :--- |
-| MBC 左距離 cm | 0~120 cm | [`01`](/sensors/tof2/reference.md#v01) | 左邊那顆的距離 0~120 cm（站在車後往前看，左 = 第 0 顆），120 = 前面沒東西／那顆失效 |
-| MBC 右距離 cm | 0~120 cm | [`02`](/sensors/tof2/reference.md#v02) | 右邊那顆的距離 0~120 cm（右 = 第 1 顆），120 = 前面沒東西／那顆失效 |
-| MBC 較近距離 cm | 0~120 cm | [`03`](/sensors/tof2/reference.md#v03) | 左右兩顆取較近的 0~120 cm |
-| MBC 左距離 mm | 0~1200 mm | [`04`](/sensors/tof2/reference.md#v04) | 左邊那顆的距離 0~1200 mm，1200 = 前面沒東西／那顆失效 |
-| MBC 右距離 mm | 0~1200 mm | [`05`](/sensors/tof2/reference.md#v05) | 右邊那顆的距離 0~1200 mm，1200 = 前面沒東西／那顆失效 |
-| MBC 初始化位元圖 | 0~3 bit | [`06`](/sensors/tof2/reference.md#v06) | bit0 = 左、bit1 = 右，1 = 那顆開機初始化成功（失敗不重試）；3 = 兩顆都好 |
-| MBC 故障位元圖 | 0~3 bit | [`07`](/sensors/tof2/reference.md#v07) | bit0 = 左、bit1 = 右，1 = 那顆目前失效（I2C 讀失敗或 200 ms 沒更新）；失效那顆距離回 120／1200 |
-| MBC 左右平均 mm | 0~1200 mm | [`08`](/sensors/tof2/reference.md#v08) | (左 mm + 右 mm) / 2，0~1200；跟 EV3 模式 3、SPIKE 模式 6 第 3 個值一致（共識 #8 補上） |
+| 測距者 2 路 ［左］ 距離（［公分］） | 0~120 cm | [`01`](/sensors/tof2/reference.md#v01) | 左邊那顆的距離 0~120 cm（站在車後往前看，左 = 第 0 顆），120 = 前面沒東西／那顆失效 |
+| 測距者 2 路 ［右］ 距離（［公分］） | 0~120 cm | [`02`](/sensors/tof2/reference.md#v02) | 右邊那顆的距離 0~120 cm（右 = 第 1 顆），120 = 前面沒東西／那顆失效 |
+| 測距者 2 路 較近距離（公分） | 0~120 cm | [`03`](/sensors/tof2/reference.md#v03) | 左右兩顆取較近的 0~120 cm |
+| 測距者 2 路 ［左］ 距離（［公釐］） | 0~1200 mm | [`04`](/sensors/tof2/reference.md#v04) | 左邊那顆的距離 0~1200 mm，1200 = 前面沒東西／那顆失效 |
+| 測距者 2 路 ［右］ 距離（［公釐］） | 0~1200 mm | [`05`](/sensors/tof2/reference.md#v05) | 右邊那顆的距離 0~1200 mm，1200 = 前面沒東西／那顆失效 |
+| 測距者 2 路 平均距離（公釐） | 0~1200 mm | [`08`](/sensors/tof2/reference.md#v08) | (左 mm + 右 mm) / 2，0~1200；跟 EV3 模式 3、SPIKE 模式 6 第 3 個值一致（共識 #8 補上） |
+
+### 其他積木（是／否、事件）
+
+| 積木 | 相關的值 |
+| :--- | :--- |
+| 當測距者 2 路 距離小於 10 公分 | [`03`](/sensors/tof2/reference.md#v03) |
 
 ## 狀態
 
@@ -48,9 +52,11 @@
 ## JavaScript 寫法
 
 ```typescript
+if (!(mbc.waitReady(0x29, 3000))) {
+    basic.showIcon(IconNames.No)   // 讀不到：檢查接線與電源
+}
 basic.forever(function () {
-    let leftCm = MBC.readValue(0x29, 0x01)   // 左距離 cm
-    basic.showNumber(leftCm)
+    basic.showNumber(mbc.tof2Distance(MbcTofSide.Left, MbcDistUnit.Cm))   // 左距離 cm
     basic.pause(100)
 })
 ```
@@ -65,4 +71,4 @@ basic.forever(function () {
 - SPIKE：0/5/7/9 鎖住，另加模式 3 鎖住（網站 sensors/tof2/index.md read(3) = 左／右 cm，共識 #11）；模式 6 改 [左 mm, 右 mm, 平均 mm]；模式 1、2、4、8 維持不動；模式 8 v[0] 改 ID|hw[0]<<8（統一後共用函式）。
 - 「左」= 站在車後往前看的左（第 0 顆，XSHUT PA6）；韌體只有 L/R 巨集名，盤點檔標為推測。
 - 沒有寫入命令；F8 換位址／EF 重開機用共用的。
-- 擴充內部用 `Int16LE` 讀、寫完編號 `basic.pause(2)`（D5）。
+- 擴充內部用 `Int16LE` 讀、寫完編號 `basic.pause(2)`（D5）；感應器沒接好時讀值積木回 0、是／否積木回「否」。

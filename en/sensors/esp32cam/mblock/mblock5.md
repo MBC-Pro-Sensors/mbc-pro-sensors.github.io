@@ -181,6 +181,18 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Vision" cate
 
 </section>
 
+## Commands
+
+<section id="cx-readall" class="ref-item ref-cmd">
+
+### update all values <small>readAll</small>
+
+reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one
+
+<pre class="blocks">Vision port [1 v] update all values :: sensing</pre>
+
+</section>
+
 ## Reading values (WRO edition)
 
 After adding the MBC Pro Sensors extension, find the blocks in the "Vision WRO" category and pick the port the sensor is plugged into.
@@ -214,6 +226,18 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Vision WRO" 
 <pre class="blocks">(Vision WRO port [1 v] spot [1 v] vividness :: sensing)</pre>
 
 <p class="ref-note">Block returns spot 1~12 vividness（0~255）。Host sends <code>[20]</code> → reply <code>[lo][hi][20 ^ lo ^ hi]</code>, value = int16 little-endian; channel N uses id 0x20 + (N − 1).</p>
+
+</section>
+
+## Commands (WRO edition)
+
+<section id="wcx-readall" class="ref-item ref-cmd">
+
+### update all values <small>readAll</small>
+
+reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one
+
+<pre class="blocks">Vision WRO port [1 v] update all values :: sensing</pre>
 
 </section>
 

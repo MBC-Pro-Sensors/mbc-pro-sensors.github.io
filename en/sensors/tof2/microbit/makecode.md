@@ -7,7 +7,7 @@ This page covers **MakeCode (blocks / JavaScript)** only: how to set it up for t
 
 ## Which edition and how to connect
 
-Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `0x29`. The sensor needs 5 V; use a breakout board with a 5 V output.
+Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `0x29`. It draws little current, so VCC can go to the micro:bit **3V** pin (about 90 mA on V1, 190 mA on V2); on batteries the rail can sag below 3 V, so switch to external 5 V if readings are unstable (share GND with the micro:bit).
 
 <figure class="ref-fig"><img src="/images/figures/tof2/wiring-microbit.svg" alt="Ranger 2-Way (TOF2) × BBC micro:bit V1 / V2" loading="lazy"></figure>
 
@@ -21,7 +21,7 @@ Get the **Universal I2C edition** and connect it to the I2C header of a micro:bi
 
 ## Reading values
 
-After adding pxt-mbc-sensors, find the blocks in the MBC category; the JavaScript form is shown too, address `0x29`.
+After adding pxt-mbc-sensors, find the blocks in the MBC Sensors category; the JavaScript form is shown too, address `0x29`.
 
 <section id="v01" class="ref-item">
 
@@ -33,13 +33,13 @@ After adding pxt-mbc-sensors, find the blocks in the MBC category; the JavaScrip
 | :--- | :--- |
 | `0~120` cm | distance from the left sensor, 0~120 cm (left = sensor 0 seen from behind the robot); 120 = nothing in range / sensor failed |
 
-<pre class="blocks">(MBC left distance cm :: #E8711E)</pre>
+<pre class="blocks">(distance 2-ch [left v] \([cm v]\) :: #00A4E4)</pre>
 
 ```typescript
-let leftCm = MBC.readValue(0x29, 0x01)   // left distance (cm)：0~120 cm
+let leftCm = mbc.tof2Distance(MbcTofSide.Left, MbcDistUnit.Cm)   // left distance (cm)：0~120 cm
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -53,13 +53,13 @@ let leftCm = MBC.readValue(0x29, 0x01)   // left distance (cm)：0~120 cm
 | :--- | :--- |
 | `0~120` cm | distance from the right sensor, 0~120 cm (right = sensor 1); 120 = nothing in range / sensor failed |
 
-<pre class="blocks">(MBC right distance cm :: #E8711E)</pre>
+<pre class="blocks">(distance 2-ch [right v] \([cm v]\) :: #00A4E4)</pre>
 
 ```typescript
-let rightCm = MBC.readValue(0x29, 0x02)   // right distance (cm)：0~120 cm
+let rightCm = mbc.tof2Distance(MbcTofSide.Right, MbcDistUnit.Cm)   // right distance (cm)：0~120 cm
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -73,13 +73,20 @@ let rightCm = MBC.readValue(0x29, 0x02)   // right distance (cm)：0~120 cm
 | :--- | :--- |
 | `0~120` cm | the smaller of left and right, 0~120 cm |
 
-<pre class="blocks">(MBC nearer distance cm :: #E8711E)</pre>
+<pre class="blocks">(distance 2-ch nearest \(cm\) :: #00A4E4)</pre>
 
 ```typescript
-let nearCm = MBC.readValue(0x29, 0x03)   // nearer distance (cm)：0~120 cm
+let nearCm = mbc.tof2NearestCm()   // nearer distance (cm)：0~120 cm
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+**Related block "on distance 2-ch nearer than 10 cm"**
+
+```typescript
+mbc.onTof2Near(10, function () {
+})
+```
+
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -93,13 +100,13 @@ let nearCm = MBC.readValue(0x29, 0x03)   // nearer distance (cm)：0~120 cm
 | :--- | :--- |
 | `0~1200` mm | left sensor distance 0~1200 mm; 1200 = nothing in range / sensor failed |
 
-<pre class="blocks">(MBC left distance mm :: #E8711E)</pre>
+<pre class="blocks">(distance 2-ch [left v] \([mm v]\) :: #00A4E4)</pre>
 
 ```typescript
-let leftMm = MBC.readValue(0x29, 0x04)   // left distance (mm)：0~1200 mm
+let leftMm = mbc.tof2Distance(MbcTofSide.Left, MbcDistUnit.Mm)   // left distance (mm)：0~1200 mm
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -113,13 +120,13 @@ let leftMm = MBC.readValue(0x29, 0x04)   // left distance (mm)：0~1200 mm
 | :--- | :--- |
 | `0~1200` mm | right sensor distance 0~1200 mm; 1200 = nothing in range / sensor failed |
 
-<pre class="blocks">(MBC right distance mm :: #E8711E)</pre>
+<pre class="blocks">(distance 2-ch [right v] \([mm v]\) :: #00A4E4)</pre>
 
 ```typescript
-let rightMm = MBC.readValue(0x29, 0x05)   // right distance (mm)：0~1200 mm
+let rightMm = mbc.tof2Distance(MbcTofSide.Right, MbcDistUnit.Mm)   // right distance (mm)：0~1200 mm
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -133,13 +140,11 @@ let rightMm = MBC.readValue(0x29, 0x05)   // right distance (mm)：0~1200 mm
 | :--- | :--- |
 | `0~3` bit | bit0 = left, bit1 = right; 1 = that sensor initialised at power-on (no retry); 3 = both OK |
 
-<pre class="blocks">(MBC init bitmap :: #E8711E)</pre>
+No dedicated block; in JavaScript read it with `mbc.readValue(address, id)` (−32768 when nothing answers). Related block: "distance 2-ch [left] sensor is OK".
 
 ```typescript
-let initOk = MBC.readValue(0x29, 0x06)   // init bitmap：0~3 bit
+let initOk = mbc.readValue(0x29, 0x06)   // init bitmap：0~3 bit
 ```
-
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
 
 </section>
 
@@ -153,13 +158,11 @@ let initOk = MBC.readValue(0x29, 0x06)   // init bitmap：0~3 bit
 | :--- | :--- |
 | `0~3` bit | bit0 = left, bit1 = right; 1 = that sensor is currently failing (I2C error or no update for 200 ms); its distance reads 120 / 1200 |
 
-<pre class="blocks">(MBC fault bitmap :: #E8711E)</pre>
+No dedicated block; in JavaScript read it with `mbc.readValue(address, id)` (−32768 when nothing answers). Related block: "distance 2-ch [left] sensor is OK".
 
 ```typescript
-let fault = MBC.readValue(0x29, 0x07)   // fault bitmap：0~3 bit
+let fault = mbc.readValue(0x29, 0x07)   // fault bitmap：0~3 bit
 ```
-
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
 
 </section>
 
@@ -173,13 +176,13 @@ let fault = MBC.readValue(0x29, 0x07)   // fault bitmap：0~3 bit
 | :--- | :--- |
 | `0~1200` mm | (left mm + right mm) / 2, 0~1200; same number as EV3 mode 3 and the 3rd value of SPIKE mode 6 |
 
-<pre class="blocks">(MBC average distance mm :: #E8711E)</pre>
+<pre class="blocks">(distance 2-ch average \(mm\) :: #00A4E4)</pre>
 
 ```typescript
-let avgMm = MBC.readValue(0x29, 0x08)   // average distance (mm)：0~1200 mm
+let avgMm = mbc.tof2AverageMm()   // average distance (mm)：0~1200 mm
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 

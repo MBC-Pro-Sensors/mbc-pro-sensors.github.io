@@ -120,12 +120,18 @@ Serial.println();
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 色點 [1 v] 顏色碼 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 色點 (1) 顏色碼 :: #00A4E4)</pre>
 
 ```typescript
-let spotColor = MBC.readValues(0x4C, 0x10, 12)   // 色點 1~12 顏色碼
+let spotColor = mbc.camSpotColor(1)   // 色點 1~12 顏色碼：0~255（N = 1~12）
+```
+
+**相關積木「神攝手 色點 ［1~12］ 是 ［彩色］？」**
+
+```typescript
+let camSpotIs = mbc.camSpotIs(1, MbcCamSpotKind.Colour)
 ```
 
 </details>
@@ -222,12 +228,12 @@ Serial.println();
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 色點 [1 v] 鮮豔度 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 色點 (1) 鮮豔度 :: #00A4E4)</pre>
 
 ```typescript
-let spotVivid = MBC.readValues(0x4C, 0x20, 12)   // 色點 1~12 鮮豔度
+let spotVivid = mbc.camSpotVivid(1)   // 色點 1~12 鮮豔度：0~255（N = 1~12）
 ```
 
 </details>
@@ -302,11 +308,11 @@ bool ready = st & (1 << 0);   // 就緒
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks"><MBC 裝置就緒 :: #E8711E></pre>
+<pre class="blocks"><位址 (0x4C v) 的裝置就緒？ :: #00A4E4></pre>
 
 ```typescript
-let st = MBC.status(0x4C)   // F3
-let ready = (st & 1) != 0
+let ready = mbc.deviceReady(0x4C)   // F3 bit0；沒接 = false
+let st = mbc.status(0x4C)   // F3
 ```
 
 </details>

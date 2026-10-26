@@ -7,7 +7,7 @@
 
 ## 要買哪個版本、怎麼接
 
-買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `0x29`。感應器要 5 V 供電，micro:bit 本身只有 3.3 V，請用有 5 V 輸出的擴充板。
+買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `0x29`。這款耗電小，VCC 可以先接 micro:bit 的 **3V** 腳（V1 約 90 mA、V2 約 190 mA）；用電池供電時電壓可能掉到 3 V 以下，不穩就改外接 5 V（GND 要和 micro:bit 共地）。
 
 <figure class="ref-fig"><img src="/images/figures/tof2/wiring-microbit.svg" alt="測距者 2 路 (TOF2) × BBC micro:bit V1／V2" loading="lazy"></figure>
 
@@ -21,7 +21,7 @@
 
 ## 讀值
 
-MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC」分類找積木；JavaScript 寫法一併列出，位址 `0x29`。
+MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC 感應器」分類找積木；JavaScript 寫法一併列出，位址 `0x29`。
 
 <section id="v01" class="ref-item">
 
@@ -33,13 +33,13 @@ MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC」分類找積木；JavaSc
 | :--- | :--- |
 | `0~120` cm | 左邊那顆的距離 0~120 cm（站在車後往前看，左 = 第 0 顆），120 = 前面沒東西／那顆失效 |
 
-<pre class="blocks">(MBC 左距離 cm :: #E8711E)</pre>
+<pre class="blocks">(測距者 2 路 [左 v] 距離（[公分 v]） :: #00A4E4)</pre>
 
 ```typescript
-let leftCm = MBC.readValue(0x29, 0x01)   // 左距離 cm：0~120 cm
+let leftCm = mbc.tof2Distance(MbcTofSide.Left, MbcDistUnit.Cm)   // 左距離 cm：0~120 cm
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -53,13 +53,13 @@ let leftCm = MBC.readValue(0x29, 0x01)   // 左距離 cm：0~120 cm
 | :--- | :--- |
 | `0~120` cm | 右邊那顆的距離 0~120 cm（右 = 第 1 顆），120 = 前面沒東西／那顆失效 |
 
-<pre class="blocks">(MBC 右距離 cm :: #E8711E)</pre>
+<pre class="blocks">(測距者 2 路 [右 v] 距離（[公分 v]） :: #00A4E4)</pre>
 
 ```typescript
-let rightCm = MBC.readValue(0x29, 0x02)   // 右距離 cm：0~120 cm
+let rightCm = mbc.tof2Distance(MbcTofSide.Right, MbcDistUnit.Cm)   // 右距離 cm：0~120 cm
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -73,13 +73,20 @@ let rightCm = MBC.readValue(0x29, 0x02)   // 右距離 cm：0~120 cm
 | :--- | :--- |
 | `0~120` cm | 左右兩顆取較近的 0~120 cm |
 
-<pre class="blocks">(MBC 較近距離 cm :: #E8711E)</pre>
+<pre class="blocks">(測距者 2 路 較近距離（公分） :: #00A4E4)</pre>
 
 ```typescript
-let nearCm = MBC.readValue(0x29, 0x03)   // 較近距離 cm：0~120 cm
+let nearCm = mbc.tof2NearestCm()   // 較近距離 cm：0~120 cm
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+**相關積木「當測距者 2 路 距離小於 10 公分」**
+
+```typescript
+mbc.onTof2Near(10, function () {
+})
+```
+
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -93,13 +100,13 @@ let nearCm = MBC.readValue(0x29, 0x03)   // 較近距離 cm：0~120 cm
 | :--- | :--- |
 | `0~1200` mm | 左邊那顆的距離 0~1200 mm，1200 = 前面沒東西／那顆失效 |
 
-<pre class="blocks">(MBC 左距離 mm :: #E8711E)</pre>
+<pre class="blocks">(測距者 2 路 [左 v] 距離（[公釐 v]） :: #00A4E4)</pre>
 
 ```typescript
-let leftMm = MBC.readValue(0x29, 0x04)   // 左距離 mm：0~1200 mm
+let leftMm = mbc.tof2Distance(MbcTofSide.Left, MbcDistUnit.Mm)   // 左距離 mm：0~1200 mm
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -113,13 +120,13 @@ let leftMm = MBC.readValue(0x29, 0x04)   // 左距離 mm：0~1200 mm
 | :--- | :--- |
 | `0~1200` mm | 右邊那顆的距離 0~1200 mm，1200 = 前面沒東西／那顆失效 |
 
-<pre class="blocks">(MBC 右距離 mm :: #E8711E)</pre>
+<pre class="blocks">(測距者 2 路 [右 v] 距離（[公釐 v]） :: #00A4E4)</pre>
 
 ```typescript
-let rightMm = MBC.readValue(0x29, 0x05)   // 右距離 mm：0~1200 mm
+let rightMm = mbc.tof2Distance(MbcTofSide.Right, MbcDistUnit.Mm)   // 右距離 mm：0~1200 mm
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -133,13 +140,11 @@ let rightMm = MBC.readValue(0x29, 0x05)   // 右距離 mm：0~1200 mm
 | :--- | :--- |
 | `0~3` bit | bit0 = 左、bit1 = 右，1 = 那顆開機初始化成功（失敗不重試）；3 = 兩顆都好 |
 
-<pre class="blocks">(MBC 初始化位元圖 :: #E8711E)</pre>
+擴充沒有這顆積木；在 JavaScript 用 `mbc.readValue(位址, 編號)` 讀（讀不到 = −32768）。相關積木：「測距者 2 路 ［左］ 感應器正常？」。
 
 ```typescript
-let initOk = MBC.readValue(0x29, 0x06)   // 初始化位元圖：0~3 bit
+let initOk = mbc.readValue(0x29, 0x06)   // 初始化位元圖：0~3 bit
 ```
-
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
 
 </section>
 
@@ -153,13 +158,11 @@ let initOk = MBC.readValue(0x29, 0x06)   // 初始化位元圖：0~3 bit
 | :--- | :--- |
 | `0~3` bit | bit0 = 左、bit1 = 右，1 = 那顆目前失效（I2C 讀失敗或 200 ms 沒更新）；失效那顆距離回 120／1200 |
 
-<pre class="blocks">(MBC 故障位元圖 :: #E8711E)</pre>
+擴充沒有這顆積木；在 JavaScript 用 `mbc.readValue(位址, 編號)` 讀（讀不到 = −32768）。相關積木：「測距者 2 路 ［左］ 感應器正常？」。
 
 ```typescript
-let fault = MBC.readValue(0x29, 0x07)   // 故障位元圖：0~3 bit
+let fault = mbc.readValue(0x29, 0x07)   // 故障位元圖：0~3 bit
 ```
-
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
 
 </section>
 
@@ -173,13 +176,13 @@ let fault = MBC.readValue(0x29, 0x07)   // 故障位元圖：0~3 bit
 | :--- | :--- |
 | `0~1200` mm | (左 mm + 右 mm) / 2，0~1200；跟 EV3 模式 3、SPIKE 模式 6 第 3 個值一致（共識 #8 補上） |
 
-<pre class="blocks">(MBC 左右平均 mm :: #E8711E)</pre>
+<pre class="blocks">(測距者 2 路 平均距離（公釐） :: #00A4E4)</pre>
 
 ```typescript
-let avgMm = MBC.readValue(0x29, 0x08)   // 左右平均 mm：0~1200 mm
+let avgMm = mbc.tof2AverageMm()   // 左右平均 mm：0~1200 mm
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 

@@ -92,7 +92,7 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
-nearCm = sensor.read(2)[1]   # 最近距離 cm：0~120 cm
+nearCm = sensor.read(2)[1]   # 最近距離 cm：cm×100/120（0~100）
 ```
 
 ```basic
@@ -133,12 +133,19 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 最近距離 cm :: #E8711E)</pre>
+<pre class="blocks">(測距者 8 路 最近距離（[公分 v]） :: #00A4E4)</pre>
 
 ```typescript
-let nearCm = MBC.readValue(0x29, 0x01)   // 最近距離 cm：0~120 cm
+let nearCm = mbc.tof8Nearest(MbcDistUnit.Cm)   // 最近距離 cm：0~120 cm
+```
+
+**相關積木「當測距者 8 路 距離小於 10 公分」**
+
+```typescript
+mbc.onTof8Near(10, function () {
+})
 ```
 
 </details>
@@ -242,12 +249,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 最近方向 :: #E8711E)</pre>
+<pre class="blocks">(測距者 8 路 最近方向 :: #00A4E4)</pre>
 
 ```typescript
-let nearDir = MBC.readValue(0x29, 0x02)   // 最近方向：-8~+8
+let nearDir = mbc.tof8NearestDirection()   // 最近方向：-8~+8
 ```
 
 </details>
@@ -307,7 +314,7 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
-farCm = sensor.read(2)[3]   # 最空曠距離 cm：0~120 cm
+farCm = sensor.read(2)[3]   # 最空曠距離 cm：cm×100/120（0~100）
 ```
 
 ```basic
@@ -348,12 +355,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 最空曠距離 cm :: #E8711E)</pre>
+<pre class="blocks">(測距者 8 路 最空曠距離（公分） :: #00A4E4)</pre>
 
 ```typescript
-let farCm = MBC.readValue(0x29, 0x03)   // 最空曠距離 cm：0~120 cm
+let farCm = mbc.tof8OpenCm()   // 最空曠距離 cm：0~120 cm
 ```
 
 </details>
@@ -454,12 +461,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 最空曠方向 :: #E8711E)</pre>
+<pre class="blocks">(測距者 8 路 最空曠方向 :: #00A4E4)</pre>
 
 ```typescript
-let farDir = MBC.readValue(0x29, 0x04)   // 最空曠方向：-7~+7
+let farDir = mbc.tof8OpenDirection()   // 最空曠方向：-7~+7
 ```
 
 </details>
@@ -498,7 +505,7 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
-frontCm = sensor.read(0)[0]   # 正前方 cm：0~120 cm
+frontCm = sensor.read(0)[0]   # 正前方 cm：cm×100/120（0~100）
 ```
 
 ```basic
@@ -539,12 +546,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 正前方距離 cm :: #E8711E)</pre>
+<pre class="blocks">(測距者 8 路 正前方距離（[公分 v]） :: #00A4E4)</pre>
 
 ```typescript
-let frontCm = MBC.readValue(0x29, 0x05)   // 正前方 cm：0~120 cm
+let frontCm = mbc.tof8Front(MbcDistUnit.Cm)   // 正前方 cm：0~120 cm
 ```
 
 </details>
@@ -643,12 +650,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 最近距離 mm :: #E8711E)</pre>
+<pre class="blocks">(測距者 8 路 最近距離（[公釐 v]） :: #00A4E4)</pre>
 
 ```typescript
-let nearMm = MBC.readValue(0x29, 0x06)   // 最近距離 mm：0~1200 mm
+let nearMm = mbc.tof8Nearest(MbcDistUnit.Mm)   // 最近距離 mm：0~1200 mm
 ```
 
 </details>
@@ -734,12 +741,10 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
-
-<pre class="blocks">(MBC 初始化位元圖 :: #E8711E)</pre>
+擴充沒有這顆積木；在 JavaScript 用 `mbc.readValue(位址, 編號)` 讀（讀不到 = −32768）。相關積木：「測距者 8 路 第 1 顆正常？」。
 
 ```typescript
-let initOk = MBC.readValue(0x29, 0x07)   // 初始化位元圖：0~255 bit
+let initOk = mbc.readValue(0x29, 0x07)   // 初始化位元圖：0~255 bit
 ```
 
 </details>
@@ -825,12 +830,10 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
-
-<pre class="blocks">(MBC 故障位元圖 :: #E8711E)</pre>
+擴充沒有這顆積木；在 JavaScript 用 `mbc.readValue(位址, 編號)` 讀（讀不到 = −32768）。相關積木：「測距者 8 路 第 1 顆正常？」。
 
 ```typescript
-let fault = MBC.readValue(0x29, 0x08)   // 故障位元圖：0~255 bit
+let fault = mbc.readValue(0x29, 0x08)   // 故障位元圖：0~255 bit
 ```
 
 </details>
@@ -888,7 +891,7 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
-frontMm = sensor.read(3)[0]   # 正前方距離 mm：0~1200 mm
+frontMm = sensor.read(3)[0]   # 正前方距離 mm：mm（0~1200）
 ```
 
 ```basic
@@ -929,12 +932,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 正前方距離 mm :: #E8711E)</pre>
+<pre class="blocks">(測距者 8 路 正前方距離（[公釐 v]） :: #00A4E4)</pre>
 
 ```typescript
-let frontMm = MBC.readValue(0x29, 0x09)   // 正前方距離 mm：0~1200 mm
+let frontMm = mbc.tof8Front(MbcDistUnit.Mm)   // 正前方距離 mm：0~1200 mm
 ```
 
 </details>
@@ -1049,12 +1052,12 @@ int raw = MiniR4.I2C1.MXColor.getColor(R);   // 第 1 組
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 第 [1 v] 顆距離 cm :: #E8711E)</pre>
+<pre class="blocks">(測距者 8 路 第 (1) 顆距離（[公分 v]） :: #00A4E4)</pre>
 
 ```typescript
-let distCm = MBC.readValues(0x29, 0x10, 8)   // 第 1~8 顆距離 cm
+let distCm = mbc.tof8Sensor(1, MbcDistUnit.Cm)   // 第 1~8 顆距離 cm：0~120 cm（N = 1~8）
 ```
 
 </details>
@@ -1122,12 +1125,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 第 [1 v] 顆距離 mm :: #E8711E)</pre>
+<pre class="blocks">(測距者 8 路 第 (1) 顆距離（[公釐 v]） :: #00A4E4)</pre>
 
 ```typescript
-let distMm = MBC.readValues(0x29, 0x18, 8)   // 第 1~8 顆距離 mm
+let distMm = mbc.tof8Sensor(1, MbcDistUnit.Mm)   // 第 1~8 顆距離 mm：0~1200 mm（N = 1~8）
 ```
 
 </details>
@@ -1211,11 +1214,11 @@ MATRIX 原廠 0x22 積木讀不到狀態旗標。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks"><MBC 裝置就緒 :: #E8711E></pre>
+<pre class="blocks"><位址 (0x29 v) 的裝置就緒？ :: #00A4E4></pre>
 
 ```typescript
-let st = MBC.status(0x29)   // F3
-let ready = (st & 1) != 0
+let ready = mbc.deviceReady(0x29)   // F3 bit0；沒接 = false
+let st = mbc.status(0x29)   // F3
 ```
 
 </details>

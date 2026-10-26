@@ -25,7 +25,7 @@ Code assumes port 1 and reads raw modes with `LUMPDevice`; EV3 MicroPython v2 wo
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~120` cm | distance from the left sensor, 0~120 cm (left = sensor 0 seen from behind the robot); 120 = nothing in range / sensor failed |
+| `0~120` cm (EV3 mode 1, mode 2, mode 4 give a scaled value: cm×100/120 (0~100)) | distance from the left sensor, 0~120 cm (left = sensor 0 seen from behind the robot); 120 = nothing in range / sensor failed |
 
 ```python
 from pybricks.iodevices import LUMPDevice
@@ -33,9 +33,9 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # sensor on port 1
 
-leftCm = sensor.read(1)[0]   # left distance (cm)：0~120 cm
-leftCm = sensor.read(2)[0]   # left distance (cm)：0~120 cm
-leftCm = sensor.read(4)[0]   # left distance (cm)：0~120 cm
+leftCm = sensor.read(1)[0]   # left distance (cm)：cm×100/120 (0~100)
+leftCm = sensor.read(2)[0]   # left distance (cm)：cm×100/120 (0~100)
+leftCm = sensor.read(4)[0]   # left distance (cm)：cm×100/120 (0~100)
 ```
 
 <p class="ref-note">mode 1 · int8 · #67 新：IR-SEEK 8×int8 = [左, 右, 左, 右, 左, 右, 左, 右]（index 0/2/4/6 = 左；原本 index 2~7 = 0）; mode 2 · int8 · IR-REMOTE [左, 右, 0, 0]（INO:137-139）; mode 4 · int8 · IR-S-ALT 同模式 2 (locked mode: firmware and hosts will not change it)</p>
@@ -50,7 +50,7 @@ leftCm = sensor.read(4)[0]   # left distance (cm)：0~120 cm
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~120` cm | distance from the right sensor, 0~120 cm (right = sensor 1); 120 = nothing in range / sensor failed |
+| `0~120` cm (EV3 mode 1, mode 2, mode 4 give a scaled value: cm×100/120 (0~100)) | distance from the right sensor, 0~120 cm (right = sensor 1); 120 = nothing in range / sensor failed |
 
 ```python
 from pybricks.iodevices import LUMPDevice
@@ -58,9 +58,9 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # sensor on port 1
 
-rightCm = sensor.read(1)[1]   # right distance (cm)：0~120 cm
-rightCm = sensor.read(2)[1]   # right distance (cm)：0~120 cm
-rightCm = sensor.read(4)[1]   # right distance (cm)：0~120 cm
+rightCm = sensor.read(1)[1]   # right distance (cm)：cm×100/120 (0~100)
+rightCm = sensor.read(2)[1]   # right distance (cm)：cm×100/120 (0~100)
+rightCm = sensor.read(4)[1]   # right distance (cm)：cm×100/120 (0~100)
 ```
 
 <p class="ref-note">mode 1 · int8 · #67 新：index 1/3/5/7 = 右; mode 2 · int8; mode 4 · int8 (locked mode: firmware and hosts will not change it)</p>
@@ -121,7 +121,7 @@ rightMm = sensor.read(5)[1]   # right distance (mm)：0~1200 mm
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~1200` mm | (left mm + right mm) / 2, 0~1200; same number as EV3 mode 3 and the 3rd value of SPIKE mode 6 |
+| `0~1200` mm (EV3 mode 0 gives a scaled value: cm average ×100/120 (0~100)) | (left mm + right mm) / 2, 0~1200; same number as EV3 mode 3 and the 3rd value of SPIKE mode 6 |
 
 ```python
 from pybricks.iodevices import LUMPDevice
@@ -129,7 +129,7 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # sensor on port 1
 
-avgMm = sensor.read(0)[0]   # average distance (mm)：0~1200 mm
+avgMm = sensor.read(0)[0]   # average distance (mm)：cm average ×100/120 (0~100)
 avgMm = sensor.read(3)[0]   # average distance (mm)：0~1200 mm
 ```
 

@@ -25,7 +25,7 @@
 
 | 範圍 | 意思 |
 | :--- | :--- |
-| `0~120` cm | 8 顆裡最小的距離 0~120 cm（失效那顆以 120 參與），120 = 四周沒東西 |
+| `0~120` cm（EV3 模式 2 讀到的是換算值：cm×100/120（0~100）） | 8 顆裡最小的距離 0~120 cm（失效那顆以 120 參與），120 = 四周沒東西 |
 
 ```python
 from pybricks.iodevices import LUMPDevice
@@ -33,7 +33,7 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
-nearCm = sensor.read(2)[1]   # 最近距離 cm：0~120 cm
+nearCm = sensor.read(2)[1]   # 最近距離 cm：cm×100/120（0~100）
 ```
 
 <p class="ref-note">模式 2 · int8 · IR-REMOTE [最近方向−8, 最近', 最空曠方向−8, 最空曠']（INO:154-159）（已鎖住的模式，韌體與主機端都不再改）</p>
@@ -72,7 +72,7 @@ nearDir = sensor.read(5)[1]   # 最近方向：-8~+8
 
 | 範圍 | 意思 |
 | :--- | :--- |
-| `0~120` cm | 8 顆裡最大的距離 0~120 cm（壞掉那顆永遠 120，會被當成最空曠） |
+| `0~120` cm（EV3 模式 2 讀到的是換算值：cm×100/120（0~100）） | 8 顆裡最大的距離 0~120 cm（壞掉那顆永遠 120，會被當成最空曠） |
 
 ```python
 from pybricks.iodevices import LUMPDevice
@@ -80,7 +80,7 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
-farCm = sensor.read(2)[3]   # 最空曠距離 cm：0~120 cm
+farCm = sensor.read(2)[3]   # 最空曠距離 cm：cm×100/120（0~100）
 ```
 
 <p class="ref-note">模式 2 · int8（已鎖住的模式，韌體與主機端都不再改）</p>
@@ -118,7 +118,7 @@ farDir = sensor.read(2)[2]   # 最空曠方向：-7~+7
 
 | 範圍 | 意思 |
 | :--- | :--- |
-| `0~120` cm | 第 4、5 顆（兩顆平行朝前）平均 0~120 cm；EV3 模式 3、SPIKE 模式 6 給的是同一個值的 mm；0x22 的 C 是 min(第 4, 第 5 顆) 不是平均（見 10） |
+| `0~120` cm（EV3 模式 0 讀到的是換算值：cm×100/120（0~100）） | 第 4、5 顆（兩顆平行朝前）平均 0~120 cm；EV3 模式 3、SPIKE 模式 6 給的是同一個值的 mm；0x22 的 C 是 min(第 4, 第 5 顆) 不是平均（見 10） |
 
 ```python
 from pybricks.iodevices import LUMPDevice
@@ -126,7 +126,7 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
-frontCm = sensor.read(0)[0]   # 正前方 cm：0~120 cm
+frontCm = sensor.read(0)[0]   # 正前方 cm：cm×100/120（0~100）
 ```
 
 <p class="ref-note">模式 0 · int8 · IR-PROX = (第 4'+第 5')>>1（鎖住，INO:148-150）（已鎖住的模式，韌體與主機端都不再改）</p>
@@ -164,7 +164,7 @@ nearMm = sensor.read(5)[0]   # 最近距離 mm：0~1200 mm
 
 | 範圍 | 意思 |
 | :--- | :--- |
-| `0~1200` mm | 第 4、5 顆（正前方兩顆）平均，0~1200 mm；1200 = 前面沒東西。cm 版是 05 |
+| `0~1200` mm（EV3 模式 3 讀到的是換算值：mm（0~1200）） | 第 4、5 顆（正前方兩顆）平均，0~1200 mm；1200 = 前面沒東西。cm 版是 05 |
 
 ```python
 from pybricks.iodevices import LUMPDevice
@@ -172,7 +172,7 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
-frontMm = sensor.read(3)[0]   # 正前方距離 mm：0~1200 mm
+frontMm = sensor.read(3)[0]   # 正前方距離 mm：mm（0~1200）
 ```
 
 <p class="ref-note">模式 3 · int16 · #67 新：IR-REM-A 1×int16 = 正前方（第 4、5 顆平均）mm（原本 = 第 1 顆 0~100）</p>
@@ -187,7 +187,7 @@ frontMm = sensor.read(3)[0]   # 正前方距離 mm：0~1200 mm
 
 | 範圍 | 意思 |
 | :--- | :--- |
-| `0~120` cm | 第 1~8 顆各自的距離 0~120 cm（第 1 顆正左、第 4、5 顆正前、第 8 顆正右，每顆隔 30°）；120 = 那個方向沒東西／那顆失效；編號 10~17 |
+| `0~120` cm（EV3 模式 1、模式 4 讀到的是換算值：cm×100/120（0~100）） | 第 1~8 顆各自的距離 0~120 cm（第 1 顆正左、第 4、5 顆正前、第 8 顆正右，每顆隔 30°）；120 = 那個方向沒東西／那顆失效；編號 10~17 |
 
 ```python
 from pybricks.iodevices import LUMPDevice

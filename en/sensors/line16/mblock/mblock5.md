@@ -161,6 +161,18 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Pathfinder" 
 
 </section>
 
+<section id="vx-online" class="ref-item">
+
+### channel N on line? <small>onLine</small>
+
+| Range | Meaning |
+| :--- | :--- |
+| true/false | bit N−1 of line bitmap 05 (channel 1 = bit0, leftmost): true when that channel sees the line |
+
+<pre class="blocks"><Pathfinder port [1 v] channel [1 v] on line? :: sensing></pre>
+
+</section>
+
 ## Commands
 
 <section id="ce0" class="ref-item ref-cmd">
@@ -232,6 +244,16 @@ sweep the sensor across black line and white surface for 5 s; min/max become the
 <pre class="blocks">Pathfinder port [1 v] 5-second auto calibration :: sensing</pre>
 
 <p class="ref-note">Host sends <code>[E7]</code> → reply <code>[00][00][E7]</code> (ack), then it runs; F3 bit2 = 1 while busy.</p>
+
+</section>
+
+<section id="cx-readall" class="ref-item ref-cmd">
+
+### update all values <small>readAll</small>
+
+reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one
+
+<pre class="blocks">Pathfinder port [1 v] update all values :: sensing</pre>
 
 </section>
 

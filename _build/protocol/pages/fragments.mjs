@@ -27,14 +27,16 @@ export function mblockBlocks(products, lang) {
   for (const p of products.filter((p) => p.hosts && p.hosts.mblock)) {
     const k = siteKey(p);
     for (const v of p.values.filter((v) => v.mblock && v.mblock.block)) rows.push([mb.blockText(p, v, lang), `${v.range}${v.unit ? ' ' + v.unit : ''}`, `[${L(p.name, lang)}](${pageHref(lang, pageFile(p, 'mblock'))})`, L(v.desc, lang)]);
+    for (const x of mb.extraReporters(p, lang)) rows.push([x.text, T(lang, '是／否', 'true/false'), `[${L(p.name, lang)}](${pageHref(lang, pageFile(p, 'mblock'))})`, x.desc]);
     for (const c of (p.commands || []).filter((c) => c.mblock)) rows.push([mb.commandText(p, c, lang), '—', `[${L(p.name, lang)}](${pageHref(lang, pageFile(p, 'mblock'))})`, L(c.desc, lang)]);
+    for (const x of mb.extraCommands(p, lang)) rows.push([x.text, '—', `[${L(p.name, lang)}](${pageHref(lang, pageFile(p, 'mblock'))})`, x.desc]);
   }
   return table([T(lang, '積木', 'Block'), T(lang, '傳回', 'Returns'), T(lang, '產品', 'Product'), T(lang, '說明', 'Meaning')], rows);
 }
 export function mblockProducts(products, lang) {
   return table([T(lang, '產品', 'Product'), T(lang, '積木分類', 'Category'), T(lang, '積木', 'Blocks'), T(lang, '舊版擴展', 'Legacy ext.')],
     products.filter((p) => p.hosts && p.hosts.mblock).map((p) => [`[${L(p.name, lang)}](${pageHref(lang, pageFile(p, 'mblock'))})`, mb.category(p, lang),
-      p.values.filter((v) => v.mblock && v.mblock.block).map((v) => L(v.mblock.block, lang).replace('[N]', 'N')).join(T(lang, '、', ', ')),
+      [...p.values.filter((v) => v.mblock && v.mblock.block).map((v) => L(v.mblock.block, lang).replace('[N]', 'N')), ...mb.extraReporters(p, lang).map((x) => x.name)].join(T(lang, '、', ', ')),
       p.hosts.mblock.legacy ? T(lang, 'v1.0.0 可用（2026-10 前韌體）', 'v1.0.0 works (pre-2026-10 firmware)') : '—']));
 }
 

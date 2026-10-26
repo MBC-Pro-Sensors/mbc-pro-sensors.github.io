@@ -211,6 +211,18 @@
 
 </section>
 
+<section id="vx-pressed" class="ref-item">
+
+### ［按鈕］ 被按下？ <small>pressed</small>
+
+| 範圍 | 意思 |
+| :--- | :--- |
+| 是／否 | 從十六鍵 01 拆出的單一按鈕（PSX 排列），選單：✕ ● ▲ ■ 上 下 左 右 L1 R1 L2 R2 L3 R3 SELECT START |
+
+<pre class="blocks"><掌控者 連接埠 [1 v] [■ v] 被按下？ :: sensing></pre>
+
+</section>
+
 ## 命令
 
 <section id="ce5" class="ref-item ref-cmd">
@@ -234,6 +246,16 @@
 <pre class="blocks">掌控者 連接埠 [1 v] 燈條顏色 (128) (128) (128) :: sensing</pre>
 
 <p class="ref-note">主機送 <code>[E6][參數…]</code> → 感應器回 <code>[00][00][E6]</code>（收到了）再執行。</p>
+
+</section>
+
+<section id="cx-readall" class="ref-item ref-cmd">
+
+### 更新全部數值 <small>readAll</small>
+
+一次讀整張值表進快取（FD 整包）；接下來 10 ms 內的讀值積木直接用快取，不再逐一詢問
+
+<pre class="blocks">掌控者 連接埠 [1 v] 更新全部數值 :: sensing</pre>
 
 </section>
 

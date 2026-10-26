@@ -137,12 +137,18 @@ int16_t hue = mbcRead(0x4C, 0x01);   // 色相：-1~100
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 色相 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 顏色 [色相 v] :: #00A4E4)</pre>
 
 ```typescript
-let hue = MBC.readValue(0x4C, 0x01)   // 色相：-1~100
+let hue = mbc.camColor(MbcCamColor.Hue)   // 色相：-1~100
+```
+
+**相關積木「神攝手 顏色是黑白灰？」**
+
+```typescript
+let camIsGrey = mbc.camIsGrey()
 ```
 
 </details>
@@ -242,12 +248,12 @@ int16_t saturation = mbcRead(0x4C, 0x02);   // 飽和度：0~100
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 飽和度 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 顏色 [飽和度 v] :: #00A4E4)</pre>
 
 ```typescript
-let saturation = MBC.readValue(0x4C, 0x02)   // 飽和度：0~100
+let saturation = mbc.camColor(MbcCamColor.Saturation)   // 飽和度：0~100
 ```
 
 </details>
@@ -344,12 +350,12 @@ int16_t value = mbcRead(0x4C, 0x03);   // 明度：0~100
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 明度 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 顏色 [明度 v] :: #00A4E4)</pre>
 
 ```typescript
-let value = MBC.readValue(0x4C, 0x03)   // 明度：0~100
+let value = mbc.camColor(MbcCamColor.Brightness)   // 明度：0~100
 ```
 
 </details>
@@ -446,12 +452,12 @@ int16_t motion = mbcRead(0x4C, 0x04);   // 動態：0~100
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 動態 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 動態 :: #00A4E4)</pre>
 
 ```typescript
-let motion = MBC.readValue(0x4C, 0x04)   // 動態：0~100
+let motion = mbc.camMotion()   // 動態：0~100
 ```
 
 </details>
@@ -548,12 +554,12 @@ int16_t blobX = mbcRead(0x4C, 0x05);   // 色塊 X：0~100
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 色塊 X :: #E8711E)</pre>
+<pre class="blocks">(神攝手 色塊 [X v] :: #00A4E4)</pre>
 
 ```typescript
-let blobX = MBC.readValue(0x4C, 0x05)   // 色塊 X：0~100
+let blobX = mbc.camBlob(MbcCamBlob.X)   // 色塊 X：0~100
 ```
 
 </details>
@@ -650,12 +656,12 @@ int16_t blobY = mbcRead(0x4C, 0x06);   // 色塊 Y：0~75
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 色塊 Y :: #E8711E)</pre>
+<pre class="blocks">(神攝手 色塊 [Y v] :: #00A4E4)</pre>
 
 ```typescript
-let blobY = MBC.readValue(0x4C, 0x06)   // 色塊 Y：0~75
+let blobY = mbc.camBlob(MbcCamBlob.Y)   // 色塊 Y：0~75
 ```
 
 </details>
@@ -752,12 +758,12 @@ int16_t blobW = mbcRead(0x4C, 0x07);   // 色塊寬：0~100
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 色塊寬 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 色塊 [寬 v] :: #00A4E4)</pre>
 
 ```typescript
-let blobW = MBC.readValue(0x4C, 0x07)   // 色塊寬：0~100
+let blobW = mbc.camBlob(MbcCamBlob.Width)   // 色塊寬：0~100
 ```
 
 </details>
@@ -854,12 +860,12 @@ int16_t blobH = mbcRead(0x4C, 0x08);   // 色塊高：0~75
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 色塊高 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 色塊 [高 v] :: #00A4E4)</pre>
 
 ```typescript
-let blobH = MBC.readValue(0x4C, 0x08)   // 色塊高：0~75
+let blobH = mbc.camBlob(MbcCamBlob.Height)   // 色塊高：0~75
 ```
 
 </details>
@@ -936,12 +942,12 @@ int16_t blobArea = mbcRead(0x4C, 0x09);   // 色塊面積：0~7500
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 色塊面積 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 色塊 [面積 v] :: #00A4E4)</pre>
 
 ```typescript
-let blobArea = MBC.readValue(0x4C, 0x09)   // 色塊面積：0~7500
+let blobArea = mbc.camBlob(MbcCamBlob.Area)   // 色塊面積：0~7500
 ```
 
 </details>
@@ -997,12 +1003,19 @@ int16_t found = mbcRead(0x4C, 0x0A);   // 有找到色塊：0~1
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回「否」。
 
-<pre class="blocks">(MBC 有找到色塊？ :: #E8711E)</pre>
+<pre class="blocks"><神攝手 有找到色塊？ :: #00A4E4></pre>
 
 ```typescript
-let found = MBC.readValue(0x4C, 0x0A)   // 有找到色塊：0~1
+let found = mbc.camFound()   // 有找到色塊：0~1
+```
+
+**相關積木「當神攝手 色塊 ［找到］」**
+
+```typescript
+mbc.onCamBlob(MbcCamEvent.Found, function () {
+})
 ```
 
 </details>
@@ -1079,11 +1092,11 @@ bool found = st & (1 << 1);   // 有找到色塊
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks"><MBC 裝置就緒 :: #E8711E></pre>
+<pre class="blocks"><位址 (0x4C v) 的裝置就緒？ :: #00A4E4></pre>
 
 ```typescript
-let st = MBC.status(0x4C)   // F3
-let ready = (st & 1) != 0
+let ready = mbc.deviceReady(0x4C)   // F3 bit0；沒接 = false
+let st = mbc.status(0x4C)   // F3
 ```
 
 </details>

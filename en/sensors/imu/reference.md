@@ -79,7 +79,7 @@ headingGyro3D = Sensor.ReadRawValue(1, 0)
 <details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
-Returns `MBC_NONE` (−32768) when the module does not answer.
+This value can itself be −32768 (top bit set, e.g. `0x8000`), the same as `MBC_NONE` for no answer, so do not test for −32768: use `mbcReadMany(0x6A, 0x01, 1, &headingGyro3D)` instead; only a `false` return means no answer.
 
 ```cpp
 int16_t headingGyro3D = mbcRead(0x6A, 0x01);   // gyro 3D heading：-32768~32767 °
@@ -111,12 +111,12 @@ int raw = MiniR4.I2C1.MXColor.getColor(R);   // group 1
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC gyro 3D heading :: #E8711E)</pre>
+<pre class="blocks">(IMU heading [gyro 3D v] \(°\) :: #00A4E4)</pre>
 
 ```typescript
-let headingGyro3D = MBC.readValue(0x6A, 0x01)   // gyro 3D heading：-32768~32767 °
+let headingGyro3D = mbc.imuHeading(MbcImuHeading.Gyro3D)   // gyro 3D heading：-32768~32767 °
 ```
 
 </details>
@@ -161,7 +161,7 @@ headingFused = Sensor.ReadRawValue(1, 0)
 <details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
-Returns `MBC_NONE` (−32768) when the module does not answer.
+This value can itself be −32768 (top bit set, e.g. `0x8000`), the same as `MBC_NONE` for no answer, so do not test for −32768: use `mbcReadMany(0x6A, 0x02, 1, &headingFused)` instead; only a `false` return means no answer.
 
 ```cpp
 int16_t headingFused = mbcRead(0x6A, 0x02);   // fused heading：-32768~32767 °
@@ -193,12 +193,19 @@ int raw = MiniR4.I2C1.MXColor.getColor(B);   // group 1
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC fused heading :: #E8711E)</pre>
+<pre class="blocks">(IMU heading [fused v] \(°\) :: #00A4E4)</pre>
 
 ```typescript
-let headingFused = MBC.readValue(0x6A, 0x02)   // fused heading：-32768~32767 °
+let headingFused = mbc.imuHeading(MbcImuHeading.Fused)   // fused heading：-32768~32767 °
+```
+
+**Related block "on IMU turned by 90 °"**
+
+```typescript
+mbc.onImuTurned(90, function () {
+})
 ```
 
 </details>
@@ -243,7 +250,7 @@ headingGyro1D = Sensor.ReadRawValue(1, 0)
 <details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
-Returns `MBC_NONE` (−32768) when the module does not answer.
+This value can itself be −32768 (top bit set, e.g. `0x8000`), the same as `MBC_NONE` for no answer, so do not test for −32768: use `mbcReadMany(0x6A, 0x03, 1, &headingGyro1D)` instead; only a `false` return means no answer.
 
 ```cpp
 int16_t headingGyro1D = mbcRead(0x6A, 0x03);   // gyro 1D heading：-32768~32767 °
@@ -275,12 +282,12 @@ int raw = MiniR4.I2C1.MXColor.getColor(M);   // group 1
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC gyro 1D heading :: #E8711E)</pre>
+<pre class="blocks">(IMU heading [gyro 1D v] \(°\) :: #00A4E4)</pre>
 
 ```typescript
-let headingGyro1D = MBC.readValue(0x6A, 0x03)   // gyro 1D heading：-32768~32767 °
+let headingGyro1D = mbc.imuHeading(MbcImuHeading.Gyro1D)   // gyro 1D heading：-32768~32767 °
 ```
 
 </details>
@@ -325,7 +332,7 @@ headingMag = Sensor.ReadRawValue(1, 1)
 <details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
-Returns `MBC_NONE` (−32768) when the module does not answer.
+This value can itself be −32768 (top bit set, e.g. `0x8000`), the same as `MBC_NONE` for no answer, so do not test for −32768: use `mbcReadMany(0x6A, 0x04, 1, &headingMag)` instead; only a `false` return means no answer.
 
 ```cpp
 int16_t headingMag = mbcRead(0x6A, 0x04);   // magnetic heading：-32768~32767 °
@@ -352,12 +359,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC magnetic heading :: #E8711E)</pre>
+<pre class="blocks">(IMU heading [magnetic v] \(°\) :: #00A4E4)</pre>
 
 ```typescript
-let headingMag = MBC.readValue(0x6A, 0x04)   // magnetic heading：-32768~32767 °
+let headingMag = mbc.imuHeading(MbcImuHeading.Magnetic)   // magnetic heading：-32768~32767 °
 ```
 
 </details>
@@ -403,7 +410,7 @@ yawRate = Sensor.ReadRawValue(1, 0)
 <details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
-Returns `MBC_NONE` (−32768) when the module does not answer.
+This value can itself be −32768 (top bit set, e.g. `0x8000`), the same as `MBC_NONE` for no answer, so do not test for −32768: use `mbcReadMany(0x6A, 0x05, 1, &yawRate)` instead; only a `false` return means no answer.
 
 ```cpp
 int16_t yawRate = mbcRead(0x6A, 0x05);   // yaw rate：-32768~32767 0.1 dps
@@ -430,12 +437,18 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC yaw rate :: #E8711E)</pre>
+<pre class="blocks">(IMU turn rate \(0.1 °/s\) :: #00A4E4)</pre>
 
 ```typescript
-let yawRate = MBC.readValue(0x6A, 0x05)   // yaw rate：-32768~32767 0.1 dps
+let yawRate = mbc.imuYawRate()   // yaw rate：-32768~32767 0.1 dps
+```
+
+**Related block "IMU is [still]"**
+
+```typescript
+let imuFlag = mbc.imuFlag(MbcImuFlag.Still)
 ```
 
 </details>
@@ -508,12 +521,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC pitch angle :: #E8711E)</pre>
+<pre class="blocks">(IMU pitch \(°\) :: #00A4E4)</pre>
 
 ```typescript
-let pitch = MBC.readValue(0x6A, 0x06)   // pitch angle：-90~+90 °
+let pitch = mbc.imuPitch()   // pitch angle：-90~+90 °
 ```
 
 </details>
@@ -559,7 +572,7 @@ pitchRate = Sensor.ReadRawValue(1, 0)
 <details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
-Returns `MBC_NONE` (−32768) when the module does not answer.
+This value can itself be −32768 (top bit set, e.g. `0x8000`), the same as `MBC_NONE` for no answer, so do not test for −32768: use `mbcReadMany(0x6A, 0x07, 1, &pitchRate)` instead; only a `false` return means no answer.
 
 ```cpp
 int16_t pitchRate = mbcRead(0x6A, 0x07);   // pitch rate：-32768~32767 0.1 dps
@@ -586,12 +599,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC pitch rate :: #E8711E)</pre>
+<pre class="blocks">(IMU pitch rate \(0.1 °/s\) :: #00A4E4)</pre>
 
 ```typescript
-let pitchRate = MBC.readValue(0x6A, 0x07)   // pitch rate：-32768~32767 0.1 dps
+let pitchRate = mbc.imuPitchRate()   // pitch rate：-32768~32767 0.1 dps
 ```
 
 </details>
@@ -649,12 +662,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC magnetometer trust :: #E8711E)</pre>
+<pre class="blocks">(IMU magnetic trust :: #00A4E4)</pre>
 
 ```typescript
-let magTrust = MBC.readValue(0x6A, 0x08)   // magnetometer trust：0~255
+let magTrust = mbc.imuMagTrust()   // magnetometer trust：0~255
 ```
 
 </details>
@@ -712,12 +725,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC magnetic disturbance :: #E8711E)</pre>
+<pre class="blocks">(IMU magnetic disturbance :: #00A4E4)</pre>
 
 ```typescript
-let magDisturb = MBC.readValue(0x6A, 0x09)   // magnetic disturbance：0~255 0.01°
+let magDisturb = mbc.imuMagDisturbance()   // magnetic disturbance：0~255 0.01°
 ```
 
 </details>
@@ -775,12 +788,18 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC face up :: #E8711E)</pre>
+<pre class="blocks">(IMU face up :: #00A4E4)</pre>
 
 ```typescript
-let upFace = MBC.readValue(0x6A, 0x0A)   // face up：0~5
+let upFace = mbc.imuFaceUp()   // face up：0~5
+```
+
+**Related block "IMU face up is [+Z]"**
+
+```typescript
+let imuFaceUpIs = mbc.imuFaceUpIs(MbcImuFace.PlusZ)
 ```
 
 </details>
@@ -841,12 +860,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC gyro [axis] :: #E8711E)</pre>
+<pre class="blocks">(IMU [gyro \(0.1 °/s\) v] axis [X v] :: #00A4E4)</pre>
 
 ```typescript
-let gyro = MBC.readValues(0x6A, 0x10, 3)   // gyro axis 1~3
+let gyro = [mbc.imuAxis(MbcImuSensor.Gyro, MbcAxis.X), mbc.imuAxis(MbcImuSensor.Gyro, MbcAxis.Y), mbc.imuAxis(MbcImuSensor.Gyro, MbcAxis.Z)]   // gyro axis 1~3：-32768~32767 0.1 dps
 ```
 
 </details>
@@ -907,12 +926,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC accel [axis] :: #E8711E)</pre>
+<pre class="blocks">(IMU [accelerometer \(mg\) v] axis [X v] :: #00A4E4)</pre>
 
 ```typescript
-let accel = MBC.readValues(0x6A, 0x13, 3)   // accel axis 1~3
+let accel = [mbc.imuAxis(MbcImuSensor.Accel, MbcAxis.X), mbc.imuAxis(MbcImuSensor.Accel, MbcAxis.Y), mbc.imuAxis(MbcImuSensor.Accel, MbcAxis.Z)]   // accel axis 1~3：-32768~32767 mg
 ```
 
 </details>
@@ -973,12 +992,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC mag [axis] :: #E8711E)</pre>
+<pre class="blocks">(IMU [magnetometer \(mG\) v] axis [X v] :: #00A4E4)</pre>
 
 ```typescript
-let mag = MBC.readValues(0x6A, 0x16, 3)   // mag axis 1~3
+let mag = [mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.X), mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.Y), mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.Z)]   // mag axis 1~3：-32768~32767 mG
 ```
 
 </details>
@@ -1036,10 +1055,10 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC zero heading :: #E8711E</pre>
+<pre class="blocks">IMU zero heading :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE0)   // zero heading
+mbc.imuZeroHeading()   // zero heading
 ```
 
 </details>
@@ -1070,7 +1089,7 @@ The EV3 port carries no write commands: calibrate with the button on the sensor,
 
 ```cpp
 mbcWrite(0x6A, 0xE1);   // start accelerometer calibration
-while (mbcRead(0x6A, 0xF3) & (1 << 4)) delay(10);   // wait until F3 bit4 clears = done
+// F3 bit4 = 1 while calibrating. Do the moves in the product guide, then send "end accelerometer calibration": mbcWrite(0x6A, 0xE2); only then bit4 clears
 ```
 
 </details>
@@ -1094,10 +1113,10 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC start accel calibration :: #E8711E</pre>
+<pre class="blocks">IMU calibration [accelerometer start v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE1)   // start accelerometer calibration
+mbc.imuCalibrate(MbcImuCalib.AccelStart)   // start accelerometer calibration
 ```
 
 </details>
@@ -1151,10 +1170,10 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC end accel calibration :: #E8711E</pre>
+<pre class="blocks">IMU calibration [accelerometer end v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE2)   // end accelerometer calibration
+mbc.imuCalibrate(MbcImuCalib.AccelEnd)   // end accelerometer calibration
 ```
 
 </details>
@@ -1185,7 +1204,7 @@ The EV3 port carries no write commands: calibrate with the button on the sensor,
 
 ```cpp
 mbcWrite(0x6A, 0xE3);   // start magnetometer calibration
-while (mbcRead(0x6A, 0xF3) & (1 << 5)) delay(10);   // wait until F3 bit5 clears = done
+// F3 bit5 = 1 while calibrating. Do the moves in the product guide, then send "end magnetometer calibration": mbcWrite(0x6A, 0xE4); only then bit5 clears
 ```
 
 </details>
@@ -1209,10 +1228,10 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC start mag calibration :: #E8711E</pre>
+<pre class="blocks">IMU calibration [magnetometer start v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE3)   // start magnetometer calibration
+mbc.imuCalibrate(MbcImuCalib.MagStart)   // start magnetometer calibration
 ```
 
 </details>
@@ -1266,10 +1285,10 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC end mag calibration :: #E8711E</pre>
+<pre class="blocks">IMU calibration [magnetometer end v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE4)   // end magnetometer calibration
+mbc.imuCalibrate(MbcImuCalib.MagEnd)   // end magnetometer calibration
 ```
 
 </details>
@@ -1347,11 +1366,11 @@ The status flags are not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks"><MBC device ready :: #E8711E></pre>
+<pre class="blocks"><device at (0x6A v) is ready :: #00A4E4></pre>
 
 ```typescript
-let st = MBC.status(0x6A)   // F3
-let ready = (st & 1) != 0
+let ready = mbc.deviceReady(0x6A)   // F3 bit0; false when nothing answers
+let st = mbc.status(0x6A)   // F3
 ```
 
 </details>

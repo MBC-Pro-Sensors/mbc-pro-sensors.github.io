@@ -7,7 +7,7 @@ This page covers **MakeCode (blocks / JavaScript)** only: how to set it up for t
 
 ## Which edition and how to connect
 
-Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `0x6A`. The sensor needs 5 V; use a breakout board with a 5 V output.
+Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `0x6A`. It draws little current, so VCC can go to the micro:bit **3V** pin (about 90 mA on V1, 190 mA on V2); on batteries the rail can sag below 3 V, so switch to external 5 V if readings are unstable (share GND with the micro:bit).
 
 <figure class="ref-fig"><img src="/images/figures/imu/wiring-microbit.svg" alt="IMU 9-Axis Gyro × BBC micro:bit V1 / V2" loading="lazy"></figure>
 
@@ -21,7 +21,7 @@ Get the **Universal I2C edition** and connect it to the I2C header of a micro:bi
 
 ## Reading values
 
-After adding pxt-mbc-sensors, find the blocks in the MBC category; the JavaScript form is shown too, address `0x6A`.
+After adding pxt-mbc-sensors, find the blocks in the MBC Sensors category; the JavaScript form is shown too, address `0x6A`.
 
 <section id="v01" class="ref-item">
 
@@ -31,13 +31,13 @@ After adding pxt-mbc-sensors, find the blocks in the MBC category; the JavaScrip
 | :--- | :--- |
 | `-32768~32767` ° | heading from the 3D quaternion, degrees, 0 at boot/zero, accumulates past 360 (wraps at ±32767, ~91 turns) |
 
-<pre class="blocks">(MBC gyro 3D heading :: #E8711E)</pre>
+<pre class="blocks">(IMU heading [gyro 3D v] \(°\) :: #00A4E4)</pre>
 
 ```typescript
-let headingGyro3D = MBC.readValue(0x6A, 0x01)   // gyro 3D heading：-32768~32767 °
+let headingGyro3D = mbc.imuHeading(MbcImuHeading.Gyro3D)   // gyro 3D heading：-32768~32767 °
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -49,13 +49,20 @@ let headingGyro3D = MBC.readValue(0x6A, 0x01)   // gyro 3D heading：-32768~3276
 | :--- | :--- |
 | `-32768~32767` ° | 3D gyro heading slowly corrected by the magnetometer, degrees, relative to the zero point; may exceed 360 |
 
-<pre class="blocks">(MBC fused heading :: #E8711E)</pre>
+<pre class="blocks">(IMU heading [fused v] \(°\) :: #00A4E4)</pre>
 
 ```typescript
-let headingFused = MBC.readValue(0x6A, 0x02)   // fused heading：-32768~32767 °
+let headingFused = mbc.imuHeading(MbcImuHeading.Fused)   // fused heading：-32768~32767 °
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+**Related block "on IMU turned by 90 °"**
+
+```typescript
+mbc.onImuTurned(90, function () {
+})
+```
+
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -67,13 +74,13 @@ let headingFused = MBC.readValue(0x6A, 0x02)   // fused heading：-32768~32767 �
 | :--- | :--- |
 | `-32768~32767` ° | heading integrated about the yaw axis only, degrees, 0 at boot/zero; may exceed 360 |
 
-<pre class="blocks">(MBC gyro 1D heading :: #E8711E)</pre>
+<pre class="blocks">(IMU heading [gyro 1D v] \(°\) :: #00A4E4)</pre>
 
 ```typescript
-let headingGyro1D = MBC.readValue(0x6A, 0x03)   // gyro 1D heading：-32768~32767 °
+let headingGyro1D = mbc.imuHeading(MbcImuHeading.Gyro1D)   // gyro 1D heading：-32768~32767 °
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -85,13 +92,13 @@ let headingGyro1D = MBC.readValue(0x6A, 0x03)   // gyro 1D heading：-32768~3276
 | :--- | :--- |
 | `-32768~32767` ° | tilt-compensated magnetometer heading, degrees, relative to the zero point |
 
-<pre class="blocks">(MBC magnetic heading :: #E8711E)</pre>
+<pre class="blocks">(IMU heading [magnetic v] \(°\) :: #00A4E4)</pre>
 
 ```typescript
-let headingMag = MBC.readValue(0x6A, 0x04)   // magnetic heading：-32768~32767 °
+let headingMag = mbc.imuHeading(MbcImuHeading.Magnetic)   // magnetic heading：-32768~32767 °
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -105,13 +112,19 @@ let headingMag = MBC.readValue(0x6A, 0x04)   // magnetic heading：-32768~32767 
 | :--- | :--- |
 | `-32768~32767` 0.1 dps | angular rate about the yaw axis (getYawAxis()), 0.1 deg/s, same sign as the heading |
 
-<pre class="blocks">(MBC yaw rate :: #E8711E)</pre>
+<pre class="blocks">(IMU turn rate \(0.1 °/s\) :: #00A4E4)</pre>
 
 ```typescript
-let yawRate = MBC.readValue(0x6A, 0x05)   // yaw rate：-32768~32767 0.1 dps
+let yawRate = mbc.imuYawRate()   // yaw rate：-32768~32767 0.1 dps
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+**Related block "IMU is [still]"**
+
+```typescript
+let imuFlag = mbc.imuFlag(MbcImuFlag.Still)
+```
+
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -125,13 +138,13 @@ let yawRate = MBC.readValue(0x6A, 0x05)   // yaw rate：-32768~32767 0.1 dps
 | :--- | :--- |
 | `-90~+90` ° | elevation of the board's printed X axis above horizontal: +90 pointing up, −90 pointing down, 0 level (from the gravity vector) |
 
-<pre class="blocks">(MBC pitch angle :: #E8711E)</pre>
+<pre class="blocks">(IMU pitch \(°\) :: #00A4E4)</pre>
 
 ```typescript
-let pitch = MBC.readValue(0x6A, 0x06)   // pitch angle：-90~+90 °
+let pitch = mbc.imuPitch()   // pitch angle：-90~+90 °
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -145,13 +158,13 @@ let pitch = MBC.readValue(0x6A, 0x06)   // pitch angle：-90~+90 °
 | :--- | :--- |
 | `-32768~32767` 0.1 dps | angular rate about the board's printed X axis, 0.1 °/s (right-hand rule, CCW seen from +X is positive); this is gyro X, not the derivative of 06 |
 
-<pre class="blocks">(MBC pitch rate :: #E8711E)</pre>
+<pre class="blocks">(IMU pitch rate \(0.1 °/s\) :: #00A4E4)</pre>
 
 ```typescript
-let pitchRate = MBC.readValue(0x6A, 0x07)   // pitch rate：-32768~32767 0.1 dps
+let pitchRate = mbc.imuPitchRate()   // pitch rate：-32768~32767 0.1 dps
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -165,13 +178,13 @@ let pitchRate = MBC.readValue(0x6A, 0x07)   // pitch rate：-32768~32767 0.1 dps
 | :--- | :--- |
 | `0~255` | how much the fusion trusts the magnetometer, 0~255 (= 0~1 × 255) |
 
-<pre class="blocks">(MBC magnetometer trust :: #E8711E)</pre>
+<pre class="blocks">(IMU magnetic trust :: #00A4E4)</pre>
 
 ```typescript
-let magTrust = MBC.readValue(0x6A, 0x08)   // magnetometer trust：0~255
+let magTrust = mbc.imuMagTrust()   // magnetometer trust：0~255
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -185,13 +198,13 @@ let magTrust = MBC.readValue(0x6A, 0x08)   // magnetometer trust：0~255
 | :--- | :--- |
 | `0~255` 0.01° | magnetic disturbance level 0~255 (degrees × 100, capped at 255) |
 
-<pre class="blocks">(MBC magnetic disturbance :: #E8711E)</pre>
+<pre class="blocks">(IMU magnetic disturbance :: #00A4E4)</pre>
 
 ```typescript
-let magDisturb = MBC.readValue(0x6A, 0x09)   // magnetic disturbance：0~255 0.01°
+let magDisturb = mbc.imuMagDisturbance()   // magnetic disturbance：0~255 0.01°
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -205,13 +218,19 @@ let magDisturb = MBC.readValue(0x6A, 0x09)   // magnetic disturbance：0~255 0.0
 | :--- | :--- |
 | `0~5` | which axis points up: 0 +X, 1 +Y, 2 +Z, 3 −X, 4 −Y, 5 −Z (physical axes) |
 
-<pre class="blocks">(MBC face up :: #E8711E)</pre>
+<pre class="blocks">(IMU face up :: #00A4E4)</pre>
 
 ```typescript
-let upFace = MBC.readValue(0x6A, 0x0A)   // face up：0~5
+let upFace = mbc.imuFaceUp()   // face up：0~5
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+**Related block "IMU face up is [+Z]"**
+
+```typescript
+let imuFaceUpIs = mbc.imuFaceUpIs(MbcImuFace.PlusZ)
+```
+
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -225,13 +244,13 @@ let upFace = MBC.readValue(0x6A, 0x0A)   // face up：0~5
 | :--- | :--- |
 | `-32768~32767` 0.1 dps | 10 X, 11 Y, 12 Z angular rate, 0.1 deg/s (physical axes, sign-corrected) |
 
-<pre class="blocks">(MBC gyro [axis] :: #E8711E)</pre>
+<pre class="blocks">(IMU [gyro \(0.1 °/s\) v] axis [X v] :: #00A4E4)</pre>
 
 ```typescript
-let gyro = MBC.readValues(0x6A, 0x10, 3)   // gyro axis 1~3
+let gyro = [mbc.imuAxis(MbcImuSensor.Gyro, MbcAxis.X), mbc.imuAxis(MbcImuSensor.Gyro, MbcAxis.Y), mbc.imuAxis(MbcImuSensor.Gyro, MbcAxis.Z)]   // gyro axis 1~3：-32768~32767 0.1 dps
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -245,13 +264,13 @@ let gyro = MBC.readValues(0x6A, 0x10, 3)   // gyro axis 1~3
 | :--- | :--- |
 | `-32768~32767` mg | 13 X, 14 Y, 15 Z acceleration, mg (1000 = 1 g) |
 
-<pre class="blocks">(MBC accel [axis] :: #E8711E)</pre>
+<pre class="blocks">(IMU [accelerometer \(mg\) v] axis [X v] :: #00A4E4)</pre>
 
 ```typescript
-let accel = MBC.readValues(0x6A, 0x13, 3)   // accel axis 1~3
+let accel = [mbc.imuAxis(MbcImuSensor.Accel, MbcAxis.X), mbc.imuAxis(MbcImuSensor.Accel, MbcAxis.Y), mbc.imuAxis(MbcImuSensor.Accel, MbcAxis.Z)]   // accel axis 1~3：-32768~32767 mg
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -265,13 +284,13 @@ let accel = MBC.readValues(0x6A, 0x13, 3)   // accel axis 1~3
 | :--- | :--- |
 | `-32768~32767` mG | 16 X, 17 Y, 18 Z magnetic field, mG (milligauss) |
 
-<pre class="blocks">(MBC mag [axis] :: #E8711E)</pre>
+<pre class="blocks">(IMU [magnetometer \(mG\) v] axis [X v] :: #00A4E4)</pre>
 
 ```typescript
-let mag = MBC.readValues(0x6A, 0x16, 3)   // mag axis 1~3
+let mag = [mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.X), mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.Y), mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.Z)]   // mag axis 1~3：-32768~32767 mG
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -283,10 +302,10 @@ let mag = MBC.readValues(0x6A, 0x16, 3)   // mag axis 1~3
 
 zero all four headings (zeroHeadings()); EV3 also accepts the stock gyro-reset WRITE 0x11
 
-<pre class="blocks">MBC zero heading :: #E8711E</pre>
+<pre class="blocks">IMU zero heading :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE0)   // zero heading
+mbc.imuZeroHeading()   // zero heading
 ```
 
 </section>
@@ -297,10 +316,10 @@ MBC.writeCmd(0x6A, 0xE0)   // zero heading
 
 start accelerometer calibration (= v1 0x20=0x01); F3 b4 = 1 meanwhile
 
-<pre class="blocks">MBC start accel calibration :: #E8711E</pre>
+<pre class="blocks">IMU calibration [accelerometer start v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE1)   // start accelerometer calibration
+mbc.imuCalibrate(MbcImuCalib.AccelStart)   // start accelerometer calibration
 ```
 
 </section>
@@ -311,10 +330,10 @@ MBC.writeCmd(0x6A, 0xE1)   // start accelerometer calibration
 
 finish accelerometer calibration and save to EEPROM (= v1 0x20=0x02); headings are zeroed once on success
 
-<pre class="blocks">MBC end accel calibration :: #E8711E</pre>
+<pre class="blocks">IMU calibration [accelerometer end v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE2)   // end accelerometer calibration
+mbc.imuCalibrate(MbcImuCalib.AccelEnd)   // end accelerometer calibration
 ```
 
 </section>
@@ -325,10 +344,10 @@ MBC.writeCmd(0x6A, 0xE2)   // end accelerometer calibration
 
 start magnetometer calibration (= v1 0x20=0x03); F3 b5 = 1 meanwhile
 
-<pre class="blocks">MBC start mag calibration :: #E8711E</pre>
+<pre class="blocks">IMU calibration [magnetometer start v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE3)   // start magnetometer calibration
+mbc.imuCalibrate(MbcImuCalib.MagStart)   // start magnetometer calibration
 ```
 
 </section>
@@ -339,10 +358,10 @@ MBC.writeCmd(0x6A, 0xE3)   // start magnetometer calibration
 
 finish magnetometer calibration and save to EEPROM (= v1 0x20=0x04)
 
-<pre class="blocks">MBC end mag calibration :: #E8711E</pre>
+<pre class="blocks">IMU calibration [magnetometer end v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE4)   // end magnetometer calibration
+mbc.imuCalibrate(MbcImuCalib.MagEnd)   // end magnetometer calibration
 ```
 
 </section>

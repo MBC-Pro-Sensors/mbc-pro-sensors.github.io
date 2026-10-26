@@ -21,16 +21,22 @@ Get the **Universal I2C edition** (4 pins: 5V, GND, SDA, SCL), factory I2C addre
 
 ## Reading values
 
-Every snippet uses the `mbcRead()` helper (expand "Helper code" and paste it at the bottom of your sketch); address `0x42`.
+Every snippet uses the `mbcRead()` helper: expand "Helper code", put part ① (2 lines) at the top of your sketch and paste part ② at the bottom; address `0x42`.
 
 <details class="helper">
-<summary>Helper code (paste at the bottom of your sketch)</summary>
+<summary>Helper code (① at the top, ② at the bottom)</summary>
+
+**① At the top of your sketch** (before `setup()`)
 
 ```cpp
 #include <Wire.h>
 
 const int16_t MBC_NONE = -32768;   // no answer / undefined id
+```
 
+**② At the bottom of your sketch** (after `loop()`)
+
+```cpp
 // read k consecutive values (k ≤ 16) starting at id, int16 little-endian
 bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
   Wire.beginTransmission(addr);
@@ -52,6 +58,7 @@ int16_t mbcRead(uint8_t addr, uint8_t id) {
 }
 
 // write a command (0~3 parameters)
+// with 2 parameters whose first is 0, write (uint8_t)0, e.g. mbcWrite(ADDR, 0xF8, (uint8_t)0x00, 0xFF); otherwise it clashes with the array form below and will not compile
 void mbcWrite(uint8_t addr, uint8_t id, const uint8_t *args, uint8_t n) {
   Wire.beginTransmission(addr);
   Wire.write(id);
@@ -91,7 +98,7 @@ bool mbcWaitReady(uint8_t addr, unsigned long ms) {
 int16_t buttons16 = mbcRead(0x42, 0x01);   // 16 buttons：0~65535 bit
 ```
 
-<p class="ref-note">Returns <code>MBC_NONE</code> (−32768) when the module does not answer.</p>
+<p class="ref-note">This value can itself be −32768 (top bit set, e.g. <code>0x8000</code>), the same as <code>MBC_NONE</code> for no answer, so do not test for −32768: use <code>mbcReadMany(0x42, 0x01, 1, &buttons16)</code> instead; only a <code>false</code> return means no answer.</p>
 
 </section>
 

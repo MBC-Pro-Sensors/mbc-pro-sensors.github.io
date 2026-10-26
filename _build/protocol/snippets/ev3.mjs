@@ -1,6 +1,9 @@
 // EV3 片段：Pybricks v4 LUMPDevice.read(mode)[index] ＋ clev3r Sensor.ReadRawValue（EV3欄位定案）
 import { L, T, valueName } from '../../gen-lib.mjs';
 
+// protocol 的 scale（例如「cm×100/120（0~100）」）：EV3 讀到的是換算後的數，註解照它寫，不寫值本身的範圍
+export function scaleText(s, lang) { return lang === 'en' ? s.replace(/平均\s*/g, 'average ').replace(/（/g, ' (').replace(/）/g, ')') : s; }
+
 export function available(product) { return !!(product.hosts && product.hosts.ev3); }
 
 const PY = 'python';
@@ -21,7 +24,7 @@ export function value(product, v, lang) {
       py = `${v.key} = sensor.read(${e.mode})[${e.index}:${e.index + e.count}]${off ? '   # ' + T(lang, `每筆減 ${e.offset}`, `subtract ${e.offset} from each`) : ''}   # ${name}`;
       basic = `Sensor.SetMode(1, ${e.mode})\n${v.key}1 = Sensor.ReadRawValue(1, ${e.index})   ' ${T(lang, '第 1 筆；第 N 筆改成', 'first; for the N-th use')} ${e.index} + N - 1`;
     } else {
-      py = `${v.key} = sensor.read(${e.mode})[${e.index}]${off}   # ${name}：${v.range}${v.unit ? ' ' + v.unit : ''}`;
+      py = `${v.key} = sensor.read(${e.mode})[${e.index}]${off}   # ${name}：${e.scale ? scaleText(e.scale, lang) : v.range + (v.unit ? ' ' + v.unit : '')}`;
       basic = `Sensor.SetMode(1, ${e.mode})\n${v.key} = Sensor.ReadRawValue(1, ${e.index})${off}`;
     }
     const noteParts = [T(lang, `模式 ${e.mode}`, `mode ${e.mode}`) + (e.format ? ` · ${e.format}` : '') + (e.note ? ` · ${e.note}` : '')];

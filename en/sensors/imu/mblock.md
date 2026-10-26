@@ -44,6 +44,7 @@ Sensor → mBot adapter → RJ25 port on the board (S1 = host TX, S2 = host RX).
 | IMU Gyro port [port] end accelerometer calibration | [`E2`](/en/sensors/imu/reference.md#ce2) | finish accelerometer calibration and save to EEPROM (= v1 0x20=0x02); headings are zeroed once on success |
 | IMU Gyro port [port] start magnetometer calibration | [`E3`](/en/sensors/imu/reference.md#ce3) | start magnetometer calibration (= v1 0x20=0x03); F3 b5 = 1 meanwhile（F3 bit5 = 1 while running） |
 | IMU Gyro port [port] end magnetometer calibration | [`E4`](/en/sensors/imu/reference.md#ce4) | finish magnetometer calibration and save to EEPROM (= v1 0x20=0x04) |
+| IMU Gyro port [port] update all values | `FD` | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 
 ## Status blocks
 

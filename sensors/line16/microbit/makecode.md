@@ -7,7 +7,7 @@
 
 ## 要買哪個版本、怎麼接
 
-買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `0x16`。感應器要 5 V 供電，micro:bit 本身只有 3.3 V，請用有 5 V 輸出的擴充板。
+買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `0x16`。這款耗電小，VCC 可以先接 micro:bit 的 **3V** 腳（V1 約 90 mA、V2 約 190 mA）；用電池供電時電壓可能掉到 3 V 以下，不穩就改外接 5 V（GND 要和 micro:bit 共地）。
 
 <figure class="ref-fig"><img src="/images/figures/line16/wiring-microbit.svg" alt="循行者 16 路 (Line16) × BBC micro:bit V1／V2" loading="lazy"></figure>
 
@@ -21,7 +21,7 @@
 
 ## 讀值
 
-MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC」分類找積木；JavaScript 寫法一併列出，位址 `0x16`。
+MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC 感應器」分類找積木；JavaScript 寫法一併列出，位址 `0x16`。
 
 <section id="v01" class="ref-item">
 
@@ -33,13 +33,13 @@ MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC」分類找積木；JavaSc
 | :--- | :--- |
 | `-16~+16` | 線在哪一路：−16（最左）~+16（最右），0 = 正中間；站在車後往前看，負 = 線在左（平常 ±15，±16 只在最外側掉線後 200 ms 內） |
 
-<pre class="blocks">(MBC 線的位置 :: #E8711E)</pre>
+<pre class="blocks">(循行者 線位置 :: #00A4E4)</pre>
 
 ```typescript
-let linePos = MBC.readValue(0x16, 0x01)   // 線位置：-16~+16
+let linePos = mbc.linePosition()   // 線位置：-16~+16
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -53,13 +53,13 @@ let linePos = MBC.readValue(0x16, 0x01)   // 線位置：-16~+16
 | :--- | :--- |
 | `-100~+100` | 線位置的細分：−100 ~ +100，0 = 正中間，負 = 線在左（與線位置同號） |
 
-<pre class="blocks">(MBC 線的細位置 :: #E8711E)</pre>
+<pre class="blocks">(循行者 細位置 :: #00A4E4)</pre>
 
 ```typescript
-let linePosFine = MBC.readValue(0x16, 0x02)   // 細位置：-100~+100
+let linePosFine = mbc.linePositionFine()   // 細位置：-100~+100
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -73,13 +73,13 @@ let linePosFine = MBC.readValue(0x16, 0x02)   // 細位置：-100~+100
 | :--- | :--- |
 | `0~16` 路 | 壓到線的路數 0~16，0 = 找不到線 |
 
-<pre class="blocks">(MBC 線寬 :: #E8711E)</pre>
+<pre class="blocks">(循行者 線寬 :: #00A4E4)</pre>
 
 ```typescript
-let lineWidth = MBC.readValue(0x16, 0x03)   // 線寬：0~16 路
+let lineWidth = mbc.lineWidth()   // 線寬：0~16 路
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -93,13 +93,26 @@ let lineWidth = MBC.readValue(0x16, 0x03)   // 線寬：0~16 路
 | :--- | :--- |
 | `0~8` | 看到幾段線：0 丟線、1 一條線、2 以上 = 分岔／十字 |
 
-<pre class="blocks">(MBC 線段數 :: #E8711E)</pre>
+<pre class="blocks">(循行者 線段數 :: #00A4E4)</pre>
 
 ```typescript
-let groupCount = MBC.readValue(0x16, 0x04)   // 線段數：0~8
+let groupCount = mbc.lineSegments()   // 線段數：0~8
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+**相關積木「循行者 看到線？」**
+
+```typescript
+let lineSeen = mbc.lineSeen()
+```
+
+**相關積木「當循行者 ［丟線］」**
+
+```typescript
+mbc.onLineEvent(MbcLineEvent.Lost, function () {
+})
+```
+
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -113,13 +126,19 @@ let groupCount = MBC.readValue(0x16, 0x04)   // 線段數：0~8
 | :--- | :--- |
 | `0~65535` bit | bit0 = 第 1 路（最左）… bit15 = 第 16 路，1 = 那一路在線上 |
 
-<pre class="blocks">(MBC 壓線位元圖 :: #E8711E)</pre>
+<pre class="blocks">(循行者 壓線位元圖 :: #00A4E4)</pre>
 
 ```typescript
-let bitmap = MBC.readValue(0x16, 0x05)   // 壓線位元圖：0~65535 bit
+let bitmap = mbc.lineBitmap()   // 壓線位元圖：0~65535 bit
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+**相關積木「循行者 第 1 路在線上？」**
+
+```typescript
+let lineChannelOnLine = mbc.lineChannelOnLine(1)
+```
+
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -131,13 +150,13 @@ let bitmap = MBC.readValue(0x16, 0x05)   // 壓線位元圖：0~65535 bit
 | :--- | :--- |
 | `-16~+16` | 丟線前線最後在哪一側：−16 ~ +16（負 = 左），找回線後維持最後一次 |
 
-<pre class="blocks">(MBC 最後離線方向 :: #E8711E)</pre>
+<pre class="blocks">(循行者 最後離線方向 :: #00A4E4)</pre>
 
 ```typescript
-let lastDir = MBC.readValue(0x16, 0x06)   // 最後離線方向：-16~+16
+let lastDir = mbc.lineLastDirection()   // 最後離線方向：-16~+16
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -149,13 +168,13 @@ let lastDir = MBC.readValue(0x16, 0x06)   // 最後離線方向：-16~+16
 | :--- | :--- |
 | `1~99` | 判斷「在線上」的光值門檻 1~99，預設 50；用 E4 改 |
 
-<pre class="blocks">(MBC 門檻 :: #E8711E)</pre>
+<pre class="blocks">(循行者 門檻 :: #00A4E4)</pre>
 
 ```typescript
-let threshold = MBC.readValue(0x16, 0x07)   // 二值化門檻：1~99
+let threshold = mbc.lineThreshold()   // 二值化門檻：1~99
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -167,7 +186,19 @@ let threshold = MBC.readValue(0x16, 0x07)   // 二值化門檻：1~99
 | :--- | :--- |
 | `0~255` 次 | 開機後完成校準的次數（按鈕校準也算） |
 
-micro:bit 擴充沒有這顆積木（可用 `MBC.readValue(位址, 編號)` 通用積木讀）。
+<pre class="blocks">(循行者 校準次數 :: #00A4E4)</pre>
+
+```typescript
+let calibCount = mbc.lineCalibrationCount()   // 校準完成次數：0~255 次
+```
+
+**相關積木「循行者 校準中？」**
+
+```typescript
+let lineCalibrating = mbc.lineCalibrating()
+```
+
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -181,13 +212,13 @@ micro:bit 擴充沒有這顆積木（可用 `MBC.readValue(位址, 編號)` 通�
 | :--- | :--- |
 | `0~100` | 第 1~16 路校準後光值 0~100（第 1 路最左）；編號 10~1F |
 
-<pre class="blocks">(MBC 第 [1 v] 路光值 :: #E8711E)</pre>
+<pre class="blocks">(循行者 第 (1) 路光值 :: #00A4E4)</pre>
 
 ```typescript
-let light = MBC.readValues(0x16, 0x10, 16)   // 第 1~16 路光值
+let light = mbc.lineChannel(1)   // 第 1~16 路光值：0~100（N = 1~16）
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -199,10 +230,10 @@ let light = MBC.readValues(0x16, 0x10, 16)   // 第 1~16 路光值
 
 追黑線（預設）
 
-<pre class="blocks">MBC 切換為黑線 :: #E8711E</pre>
+<pre class="blocks">循行者 循 [黑 v] 線 :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE0)   // 切黑線
+mbc.lineSetColor(MbcLineColor.Black)   // 切黑線
 ```
 
 </section>
@@ -213,10 +244,10 @@ MBC.writeCmd(0x16, 0xE0)   // 切黑線
 
 追白線（F3 b1 = 1）
 
-<pre class="blocks">MBC 切換為白線 :: #E8711E</pre>
+<pre class="blocks">循行者 循 [白 v] 線 :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE1)   // 切白線
+mbc.lineSetColor(MbcLineColor.White)   // 切白線
 ```
 
 </section>
@@ -227,10 +258,10 @@ MBC.writeCmd(0x16, 0xE1)   // 切白線
 
 把目前讀值記為黑（感應器壓在黑線上），約 50 ms；寫入 EEPROM
 
-<pre class="blocks">MBC 黑色校準 :: #E8711E</pre>
+<pre class="blocks">循行者 校準 [目前讀值記為黑 v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE2)   // 黑色校準
+mbc.lineCalibrate(MbcLineCalib.Black)   // 黑色校準
 ```
 
 </section>
@@ -241,10 +272,10 @@ MBC.writeCmd(0x16, 0xE2)   // 黑色校準
 
 把目前讀值記為白（感應器壓在白底上），約 50 ms；寫入 EEPROM
 
-<pre class="blocks">MBC 白色校準 :: #E8711E</pre>
+<pre class="blocks">循行者 校準 [目前讀值記為白 v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE3)   // 白色校準
+mbc.lineCalibrate(MbcLineCalib.White)   // 白色校準
 ```
 
 </section>
@@ -255,10 +286,10 @@ MBC.writeCmd(0x16, 0xE3)   // 白色校準
 
 二值化門檻 1~99（RAM，重開機回預設 50）
 
-<pre class="blocks">MBC 門檻設為 (50) :: #E8711E</pre>
+<pre class="blocks">循行者 門檻設為 (50) :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE4, [50])   // 設定門檻
+mbc.lineSetThreshold(50)   // 設定門檻
 ```
 
 </section>
@@ -269,10 +300,10 @@ MBC.writeCmd(0x16, 0xE4, [50])   // 設定門檻
 
 5 秒內把感應器在黑線與白底上來回掃，取極值當黑白參考（共識 B-12，= v1 的 0x20=0x01）；期間 F3 b2 = 1
 
-<pre class="blocks">MBC 5 秒動態校準 :: #E8711E</pre>
+<pre class="blocks">循行者 校準 [自動（來回掃 5 秒） v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE7)   // 5 秒動態校準
+mbc.lineCalibrate(MbcLineCalib.Auto)   // 5 秒動態校準
 ```
 
 </section>

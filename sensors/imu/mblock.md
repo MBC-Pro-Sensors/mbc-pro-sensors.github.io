@@ -44,6 +44,7 @@ IMU 陀螺儀 MakeBlock 版接在 mBot、Ranger、Orion、MegaPi 的 RJ25 連接
 | IMU 陀螺儀 連接埠 ［埠］ 加速度計校準結束 | [`E2`](/sensors/imu/reference.md#ce2) | 結束加速度計校準並存 EEPROM（= v1 的 0x20=0x02）；通過後自動航向歸零一次 |
 | IMU 陀螺儀 連接埠 ［埠］ 磁力計校準開始 | [`E3`](/sensors/imu/reference.md#ce3) | 開始磁力計校準（= v1 的 0x20=0x03）；期間 F3 b5 = 1（執行中 F3 bit5 = 1） |
 | IMU 陀螺儀 連接埠 ［埠］ 磁力計校準結束 | [`E4`](/sensors/imu/reference.md#ce4) | 結束磁力計校準並存 EEPROM（= v1 的 0x20=0x04） |
+| IMU 陀螺儀 連接埠 ［埠］ 更新全部數值 | `FD` | 一次讀整張值表進快取（FD 整包）；接下來 10 ms 內的讀值積木直接用快取，不再逐一詢問 |
 
 ## 狀態積木
 

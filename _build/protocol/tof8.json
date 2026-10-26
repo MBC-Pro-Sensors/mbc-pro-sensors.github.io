@@ -116,10 +116,10 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "最近距離 cm",
-          "en": "nearest distance cm"
-        }
+        "js": "mbc.tof8Nearest(MbcDistUnit.Cm)",
+        "also": [
+          "mbc.onTof8Near(10)"
+        ]
       },
       "examples": [],
       "locked": true
@@ -210,10 +210,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "最近方向",
-          "en": "nearest direction"
-        }
+        "js": "mbc.tof8NearestDirection()"
       },
       "examples": [],
       "locked": true
@@ -266,10 +263,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "最空曠距離 cm",
-          "en": "farthest distance cm"
-        }
+        "js": "mbc.tof8OpenCm()"
       },
       "examples": [],
       "locked": true
@@ -324,10 +318,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "最空曠方向",
-          "en": "farthest direction"
-        }
+        "js": "mbc.tof8OpenDirection()"
       },
       "examples": [],
       "locked": true
@@ -375,10 +366,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "正前方距離 cm",
-          "en": "front distance cm"
-        }
+        "js": "mbc.tof8Front(MbcDistUnit.Cm)"
       },
       "examples": []
     },
@@ -430,10 +418,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "最近距離 mm",
-          "en": "nearest distance mm"
-        }
+        "js": "mbc.tof8Nearest(MbcDistUnit.Mm)"
       },
       "examples": []
     },
@@ -478,10 +463,8 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "初始化位元圖",
-          "en": "init bitmap"
-        }
+        "js": null,
+        "see": "mbc.tof8SensorOk(1)"
       },
       "examples": [],
       "locked": true
@@ -527,10 +510,8 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "故障位元圖",
-          "en": "fault bitmap"
-        }
+        "js": null,
+        "see": "mbc.tof8SensorOk(1)"
       },
       "examples": [],
       "locked": true
@@ -585,10 +566,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "正前方距離 mm",
-          "en": "front distance mm"
-        }
+        "js": "mbc.tof8Front(MbcDistUnit.Mm)"
       },
       "examples": []
     },
@@ -689,10 +667,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "第 [N] 顆距離 cm",
-          "en": "sensor [N] distance cm"
-        }
+        "js": "mbc.tof8Sensor(N, MbcDistUnit.Cm)"
       },
       "examples": [],
       "locked": true
@@ -731,10 +706,7 @@
       "matrix": null,
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "第 [N] 顆距離 mm",
-          "en": "sensor [N] distance mm"
-        }
+        "js": "mbc.tof8Sensor(N, MbcDistUnit.Mm)"
       },
       "examples": []
     }

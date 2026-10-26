@@ -285,6 +285,16 @@ finish magnetometer calibration and save to EEPROM (= v1 0x20=0x04)
 
 </section>
 
+<section id="cx-readall" class="ref-item ref-cmd">
+
+### update all values <small>readAll</small>
+
+reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one
+
+<pre class="blocks">IMU Gyro port [1 v] update all values :: sensing</pre>
+
+</section>
+
 ## Examples
 
 <!-- examples: en/sensors/imu/mblock-examples.md host=mblock sw=mblock5 whole -->

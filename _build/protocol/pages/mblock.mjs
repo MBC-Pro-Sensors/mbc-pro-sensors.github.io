@@ -24,12 +24,15 @@ export function render(product, common, ctx, lang) {
   // 積木表
   out.push('', `## ${T(lang, '讀值積木', 'Reporter blocks')}`, '');
   out.push(table([T(lang, '積木', 'Block'), T(lang, '傳回', 'Returns'), T(lang, '編號', 'Id'), T(lang, '說明', 'Meaning')],
-    product.values.filter((v) => v.mblock && v.mblock.block).map((v) => [mb.blockText(product, v, lang), `${v.range}${v.unit ? ' ' + v.unit : ''}`, `[\`${valueIdRange(v)}\`](${ref}#v${v.id.toLowerCase()})`, L(v.desc, lang)])));
+    [...product.values.filter((v) => v.mblock && v.mblock.block).map((v) => [mb.blockText(product, v, lang), `${v.range}${v.unit ? ' ' + v.unit : ''}`, `[\`${valueIdRange(v)}\`](${ref}#v${v.id.toLowerCase()})`, L(v.desc, lang)]),
+      ...mb.extraReporters(product, lang).map((x) => [x.text, T(lang, '是／否', 'true/false'), `[\`${x.id}\`](${ref}#v${x.id.toLowerCase()})`, x.desc])]));
   const cmds = (product.commands || []).filter((c) => c.mblock);
-  if (cmds.length) {
+  const extraCmds = mb.extraCommands(product, lang);
+  if (cmds.length || extraCmds.length) {
     out.push('', `## ${T(lang, '命令積木', 'Command blocks')}`, '');
     out.push(table([T(lang, '積木', 'Block'), T(lang, '編號', 'Id'), T(lang, '說明', 'Meaning')],
-      cmds.map((c) => [mb.commandText(product, c, lang), `[\`${c.id}\`](${ref}#c${c.id.toLowerCase()})`, L(c.desc, lang) + (c.busyFlag != null ? `（${T(lang, `執行中 F3 bit${c.busyFlag} = 1`, `F3 bit${c.busyFlag} = 1 while running`)}）` : '')])));
+      [...cmds.map((c) => [mb.commandText(product, c, lang), `[\`${c.id}\`](${ref}#c${c.id.toLowerCase()})`, L(c.desc, lang) + (c.busyFlag != null ? `（${T(lang, `執行中 F3 bit${c.busyFlag} = 1`, `F3 bit${c.busyFlag} = 1 while running`)}）` : '')]),
+        ...extraCmds.map((x) => [x.text, `\`${x.id}\``, x.desc])]));
   }
   out.push('', `## ${T(lang, '狀態積木', 'Status blocks')}`, '');
   out.push(T(lang, '擴展把 `F3` 各 bit 拆成布林積木：', 'The extension exposes each `F3` bit as a boolean block:'), '', flagsTable(product, lang));

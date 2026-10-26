@@ -59,15 +59,18 @@ export function render(product, common, ctx, lang) {
 
   // 小幫手
   out.push('', `## ${T(lang, '單檔小幫手函式', 'Single-file helper functions')}`, '');
-  out.push(T(lang, '每支範例底部都貼這一段，不需要安裝函式庫：', 'Paste this at the bottom of every sketch; no library to install:'), '');
-  out.push(fence(i2c.helpers(product, lang), 'cpp'));
+  out.push(T(lang, '不需要安裝函式庫。分兩段貼：第 ① 段（2 行）放程式最上面，第 ② 段貼程式最下面。`#include <Wire.h>` 和 `MBC_NONE` 一定要在 `setup()` 用到之前出現，整段放最下面會編不過。', 'No library to install. Paste it in two parts: part ① (2 lines) at the top of the sketch, part ② at the bottom. `#include <Wire.h>` and `MBC_NONE` must appear before `setup()` uses them; pasting everything at the bottom will not compile.'), '');
+  out.push(i2c.helperParts(product, lang));
 
   // 範例：整張值表
   out.push('', `## ${T(lang, '範例：整張值表逐行印', 'Example: print the whole value table')}`, '');
   const lines = product.values.filter((v) => v.i2c).map((v) => v.count
     ? `  { int16_t a[${v.count}]; mbcReadMany(ADDR, ${hex(v.id)}, ${v.count}, a); Serial.print("${v.key}: "); for (uint8_t i = 0; i < ${v.count}; i++) { Serial.print(a[i]); Serial.print(' '); } Serial.println(); }`
     : `  Serial.print("${v.key}: "); Serial.println(mbcRead(ADDR, ${hex(v.id)}));   // ${valueName(v, lang)}`);
-  out.push(fence(`const uint8_t ADDR = ${product.addr};
+  out.push(fence(`// ${T(lang, '小幫手第 ① 段', 'helper part ①')}
+${i2c.helpersTop(product, lang)}
+
+const uint8_t ADDR = ${product.addr};
 
 void setup() {
   Serial.begin(115200);
@@ -86,7 +89,7 @@ ${lines.join('\n')}
   delay(200);
 }
 
-// ${T(lang, '下面貼上「單檔小幫手函式」', 'paste the helper functions below')}`, 'cpp'));
+// ${T(lang, '下面貼上「單檔小幫手函式」第 ② 段', 'paste part ② of the helper functions below')}`, 'cpp'));
 
   out.push('', assumptions(product, lang, [T(lang, '接線表的腳位以各主機板常見預設為準（ESP32 可用 `Wire.begin(sda, scl)` 改）。', 'Pin table uses each board\'s common defaults (ESP32: change with `Wire.begin(sda, scl)`).')]));
   return out.join('\n') + '\n';

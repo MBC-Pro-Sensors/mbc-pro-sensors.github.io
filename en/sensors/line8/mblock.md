@@ -33,6 +33,7 @@ Sensor → mBot adapter → RJ25 port on the board (S1 = host TX, S2 = host RX).
 | Pathfinder port [port] threshold | 1~99 | [`07`](/en/sensors/line8/reference.md#v07) | reflect threshold for 'on line', 1~99, default 50; set with E4 |
 | Pathfinder port [port] calibration count | 0~255 次 | [`08`](/en/sensors/line8/reference.md#v08) | number of calibrations completed since power-on (button calibrations included) |
 | Pathfinder port [port] channel [1~8] reflect | 0~100 | [`10~17`](/en/sensors/line8/reference.md#v10) | calibrated reflect of channel 1~8, 0~100 (channel 1 = left); ids 10~17 |
+| Pathfinder port [port] channel [1~8] on line? | true/false | [`05`](/en/sensors/line8/reference.md#v05) | bit N−1 of line bitmap 05 (channel 1 = bit0, leftmost): true when that channel sees the line |
 
 ## Command blocks
 
@@ -44,6 +45,7 @@ Sensor → mBot adapter → RJ25 port on the board (S1 = host TX, S2 = host RX).
 | Pathfinder port [port] calibrate white | [`E3`](/en/sensors/line8/reference.md#ce3) | store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM（F3 bit2 = 1 while running） |
 | Pathfinder port [port] set threshold [threshold] | [`E4`](/en/sensors/line8/reference.md#ce4) | threshold 1~99 (RAM only, back to 50 after reboot) |
 | Pathfinder port [port] 5-second auto calibration | [`E7`](/en/sensors/line8/reference.md#ce7) | sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile（F3 bit2 = 1 while running） |
+| Pathfinder port [port] update all values | `FD` | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 
 ## Status blocks
 

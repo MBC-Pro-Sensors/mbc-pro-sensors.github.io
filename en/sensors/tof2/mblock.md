@@ -30,6 +30,12 @@ Sensor → mBot adapter → RJ25 port on the board (S1 = host TX, S2 = host RX).
 | Ranger 2 port [port] fault bitmap | 0~3 bit | [`07`](/en/sensors/tof2/reference.md#v07) | bit0 = left, bit1 = right; 1 = that sensor is currently failing (I2C error or no update for 200 ms); its distance reads 120 / 1200 |
 | Ranger 2 port [port] average distance mm | 0~1200 mm | [`08`](/en/sensors/tof2/reference.md#v08) | (left mm + right mm) / 2, 0~1200; same number as EV3 mode 3 and the 3rd value of SPIKE mode 6 |
 
+## Command blocks
+
+| Block | Id | Meaning |
+| :--- | :--- | :--- |
+| Ranger 2 port [port] update all values | `FD` | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
+
 ## Status blocks
 
 The extension exposes each `F3` bit as a boolean block:

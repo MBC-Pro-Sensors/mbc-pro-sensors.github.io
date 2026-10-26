@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="MicroPython on the EV3 always goes in this order: first import, then create the object and name the gyro, and only then use that name to read values. Pick Pybri">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/imu/ev3-pybricks.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/imu/ev3-pybricks.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/imu/ev3-pybricks.html">
+<title>IMU Gyro EV3 Pybricks Tutorial | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+
+:root {
+  --bg: #f3f6f5;          
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;      
+  --accent-soft: #dff1ef;
+  --tape: #121212;        
+  --ir: #e04a3b;          
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+[hidden] { display: none !important; }  /* 頁面用 hidden 切換「積木／程式」，.ws{display:grid} 會蓋掉它 */
+.learn-nav .tabs .tl { color: var(--muted, #666); font-size: 0.8rem; align-self: center; }
+.learn-nav .tabs .tsep { flex-basis: 100%; height: 0; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
+   排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
+@media (max-width: 900px) {
+  .learn-nav { position: static; width: 100vw; margin: -24px 0 14px calc(50% - 50vw); }
+  .learn-nav .in { padding: 6px 12px 8px; gap: 4px 14px; font-size: 0.85rem; }
+  .learn-nav .in > a { min-height: 36px; display: inline-flex; align-items: center; }
+  .learn-nav .tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .learn-nav .tabs::-webkit-scrollbar { display: none; }
+  .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
+  body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
+  .panel.follow { margin: 12px 0 16px; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow, .ctrl > .panel.follow { grid-column: 1 / -1; }
+  .flash { animation: followFlash 1.2s ease-out; }
+  @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
+  /* 點選目標放大：選項、勾選框、拉桿 */
+  .wrap > *, .main > *, .steps > *, .step-body > * { min-width: 0; }
+  label:has(input[type=radio]), label:has(input[type=checkbox]) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  button.copy, .viewtabs button { min-height: 36px; }
+  label:has(select) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  label select { min-height: 36px; }
+  input[type=radio], input[type=checkbox] { width: 20px; height: 20px; flex: none; }
+  input[type=range] { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/imu/ev3/">← IMU EV3 guide</a><a class="lang" href="/learn/imu/ev3-pybricks.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/imu/ev3-pybricks.html" aria-current="page">EV3</a><a href="/en/learn/imu/arduino.html">Arduino</a><a href="/en/learn/imu/mblock.html">mBlock</a><a href="/en/learn/imu/matrix.html">MATRIX</a><a href="/en/learn/imu/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/imu/ev3-pybricks.html" aria-current="page">Pybricks / EV3 MicroPython</a><a href="/en/learn/imu/clev3r.html">clev3r</a><a href="/en/learn/imu/ev3-classroom.html">EV3 Classroom</a><a href="/en/learn/imu/ev3g.html">EV3-G (LEGO software)</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC IMU Gyro × EV3 Pybricks</span>
+    <h1>Read the IMU gyro on the EV3 with MicroPython in three steps</h1>
+    <p class="lead">MicroPython on the EV3 always goes in this order: first <b>import</b>, then <b>create the object and name the gyro</b>, and only then use that name to <b>read values</b>. Pick Pybricks v4 or EV3 MicroPython v2 above, follow the steps on the left, and the program on the right grows with you. Turn, raise and shake the robot in the simulator to see what the program prints.</p>
+    <div class="hostbar">
+      <span class="small">Your software:</span>
+      <div class="seg" role="group" aria-label="Software">
+        <button type="button" id="sw-v4" aria-pressed="true">Pybricks v4</button>
+        <button type="button" id="sw-v2" aria-pressed="false">EV3 MicroPython v2</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="main" aria-label="Tutorial">
+    <div class="steps">
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>Import the modules</h2></div>
+        <div class="step-body">
+          <p class="why"><span data-sw="v4">On the EV3 the gyro acts as a stock gyro, so <b>no library is needed</b>: Pybricks' built-in <code>LUMPDevice</code> reads its "modes" directly (each mode sends back a few numbers).</span><span data-sw="v2" hidden>EV3 MicroPython v2 reads the gyro's "modes" directly with the built-in <code>Ev3devSensor</code>; <b>nothing to download</b>.</span></p>
+          <div data-sw="v4">
+          <ol class="howto">
+            <li>Open code.pybricks.com in Chrome and put the Pybricks firmware on the EV3 as the site explains (the EV3 version is in beta).</li>
+            <li>Turn on the EV3 first, then plug the gyro into a sensor port (keep the robot still at that moment).</li>
+            <li>Create a new program and write these lines at the top (marked ① on the right).</li>
+          </ol>
+          </div>
+          <div data-sw="v2" hidden>
+          <ol class="howto">
+            <li>Boot the EV3 from the official LEGO EV3 MicroPython microSD card.</li>
+            <li>Install the "LEGO MINDSTORMS EV3 MicroPython" extension in VS Code and create a project.</li>
+            <li>Open <code>main.py</code> and write these lines at the top (keep the <code>#!</code> line 1). Press <b>F5</b> to download and run.</li>
+          </ol>
+          </div>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">Done, next step</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>Create the object: which port</h2></div>
+        <div class="step-body">
+          <p class="why"><span data-sw="v4">Create an object with <code>LUMPDevice</code>: tell the program which port the gyro is on and give it a name. You read values through that name.</span><span data-sw="v2" hidden>Create an object with <code>Ev3devSensor</code>: tell the program which port the gyro is on and give it a name. You read values through that name.</span></p>
+          <div class="row">
+            <span class="small">Which port is the gyro on?</span>
+            <div class="ports" id="ports" role="group" aria-label="Port"></div>
+          </div>
+          <label class="f" for="varname">Give it a name (start with a letter; digits and _ are fine)
+            <input autocomplete="off" type="text" id="varname" value="gyro" spellcheck="false">
+          </label>
+          <p class="err" id="nameerr" hidden></p>
+          <p class="small">The port must be written as <code>Port.S<span class="portnum">1</span></code> (not just a number), which is why step 1 imports <code>Port</code>.</p>
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2">Done, next step</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>Read values</h2></div>
+        <div class="step-body">
+          <p class="why"><span data-sw="v4">Write "<code>name.read(mode)[which]</code>": each mode sends a few numbers, and [0], [1]… pick one (counting from 0). <b>Use one mode per loop</b>: the EV3 needs about 0.5 s every time the mode changes. Click a reading and the program and output change to its example.</span><span data-sw="v2" hidden>Write "<code>name.read('MODE-NAME')[which]</code>": mode names follow ev3dev (GYRO-ANG, TILT-ANG…); each mode sends a few numbers and [0], [1]… pick one. <b>Use one mode per loop</b>. Click a reading and the program and output change to its example.</span></p>
+          <div id="picker" class="ref"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+          <div class="sim-box">
+            <style>.imu-btns { display: flex; flex-wrap: wrap; gap: 6px; } .imu-btns button { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; padding: 4px 12px; font-weight: 700; min-height: 36px; } .imu-btns button.zero { border-color: var(--accent); }</style>
+            <div class="sim-title">Sensor simulator: the left picture is seen from above (heading), the right one from the side (pitch). Drag the sliders and press the buttons, and watch the output change</div>
+            <div class="sim">
+              <svg id="field" viewBox="0 0 460 200" role="img" aria-label="The robot seen from above and from the side"></svg>
+              <div class="ctrl">
+                <label class="f" for="imu-hd"><span>Robot direction (turn it by hand): <b id="imu-hdv">0</b>° (turning right is positive)</span>
+                  <input autocomplete="off" type="range" id="imu-hd" min="-720" max="720" step="5" value="0">
+                </label>
+                <div class="imu-btns">
+                  <button type="button" id="imu-l90">↺ Turn left 90°</button>
+                  <button type="button" id="imu-r90">↻ Turn right 90°</button>
+                  <button type="button" id="imu-zero" class="zero">Zero (this direction becomes 0)</button>
+                </div>
+                <label class="f" for="imu-pt"><span>Nose up or down (pitch): <b id="imu-ptv">0</b>°</span>
+                  <input autocomplete="off" type="range" id="imu-pt" min="-90" max="90" step="1" value="0">
+                </label>
+                <div class="toggles">
+                  <label><input autocomplete="off" type="checkbox" id="imu-shake"> Shake the robot (gives turn rates)</label>
+                  <label><input autocomplete="off" type="checkbox" id="imu-drift"> Running a long time (6° gyro drift)</label>
+                  <label><input autocomplete="off" type="checkbox" id="imu-magx"> Near a motor or iron (magnetic disturbance)</label>
+                  <label><input autocomplete="off" type="checkbox" id="unplug"> Unplug the sensor</label>
+                </div>
+              </div>
+              <p class="note">The simulator is only a picture: values come from the robot's direction and angle on screen, not the sensor's own algorithm; real readings wobble by about 1°. The EV3 port is read-only, so Pybricks cannot tell the sensor to zero; the "Zero" button here is like unplugging and replugging the sensor (the heading is 0 at power-on). To zero inside a program, use the "Remember the start" card. Firmware version 400 is an example value.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">An example for every reading</h2>
+        <p class="ref-intro" id="refintro"></p>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="Your program">
+      <div class="panel">
+        <div class="panel-head"><span>Your program</span><button type="button" class="copy" id="copymain">Copy program</button></div>
+        <pre class="code" id="maincode" aria-live="polite"></pre>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>Output on the computer (printed every 0.6 s)</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="ref" aria-labelledby="fullh">
+    <h2 id="fullh">Full examples</h2>
+    <div class="full">
+      <div class="panel" id="exp0">
+        <div class="panel-head"><span id="ext0"></span><button type="button" class="copy" data-copy="0">Copy</button></div>
+        <pre class="code" id="ex0"></pre>
+        <p class="bubble"><i>!</i><span id="exb0"></span></p>
+      </div>
+      <div class="panel" id="exp1">
+        <div class="panel-head"><span id="ext1"></span><button type="button" class="copy" data-copy="1">Copy</button></div>
+        <pre class="code" id="ex1"></pre>
+        <p class="bubble"><i>!</i><span id="exb1"></span></p>
+      </div>
+      <div class="panel" id="exp2">
+        <div class="panel-head"><span id="ext2"></span><button type="button" class="copy" data-copy="2">Copy</button></div>
+        <pre class="code" id="ex2"></pre>
+        <p class="bubble"><i>!</i><span id="exb2"></span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">Good to know</h2>
+    <ol>
+      <li><b>Unplugging stops the program:</b> this page reads the sensor modes directly with no MBC library to help, so a missing sensor gives <code>OSError: [Errno 19] ENODEV</code> and the program stops (in both Pybricks v4 and EV3 MicroPython v2). Plug it back in and run again. Plug the sensor in before you press run.</li>
+      <li><b>One mode per loop:</b> the EV3 needs about 0.5 s every time the mode changes. Use mode 0 (3D heading) for turning and mode 6 (pitch) for slopes, but do not read both in the same loop.</li>
+      <li><b>The stock gyro way works too:</b> on the EV3 the sensor acts as a stock gyro, and website EV3 beginner examples 1 to 5 use <code>GyroSensor(Port.S1)</code> with <code>angle()</code> and <code>reset_angle(0)</code> (Pybricks <code>angle()</code> reads the gyro 1D heading). For pitch, turn rate and the other new modes, use <code>LUMPDevice</code> / <code>Ev3devSensor</code> as on this page.</li>
+      <li><b>Direction and zero:</b> turning right makes the heading bigger; one turn = 360 and it keeps adding up. Keep the robot still at power-on (the heading is 0 then). If the heading is off, unplug the sensor and plug it back in. Modes 2 to 6 need sensor firmware v4.0 or later.</li>
+      <li><b>Values the EV3 cannot read:</b> magnetometer trust, magnetic disturbance, face up, raw 9-axis values and the calibration commands are only for Arduino, mBlock and micro:bit; on the EV3, calibrate with the buttons on the sensor.</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function pyDiv10(n) { var x = n / 10; return Number.isInteger(x) ? x.toFixed(1) : String(x); }
+  function A(n) { return n; }
+  function copyText(text, btn) {
+    var done = function () { var o = btn.textContent; btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = o; }, 1400); };
+    try { navigator.clipboard.writeText(text).then(done, function () { fallback(text); }); } catch (e) { fallback(text); }
+    function fallback(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e2) { btn.textContent = 'Select and copy by hand'; }
+      document.body.removeChild(ta);
+    }
+  }
+  function plain(lines) { return lines.map(function (l) { return l.t; }).join('\n') + '\n'; }
+  function render(el, lines, opts) {
+    opts = opts || {};
+    el.innerHTML = lines.map(function (l, k) {
+      var cls = 'ln' + (l.hl ? ' hl' : '') + (l.isNew ? ' new' : '');
+      var tag = opts.noTag ? '' : '<span class="tag">' + (l.tag ? '<i>' + l.tag + '</i>' : '') + '</span>';
+      return '<span class="' + cls + '"><span class="no">' + (l.no || k + 1) + '</span>' + tag + '<span>' + (l.t ? HI(l.t) : ' ') + '</span></span>';
+    }).join('');
+  }
+  var KW = /^(from|import|while|True|False|None|if|else|elif|not|and|or|for|in|return|abs|print)$/;
+  function hiPy(line) {
+    var out = '', i = 0;
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest[0] === '#') { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if ((m = rest.match(/^("[^"]*"|'[^']*')/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (KW.test(w) && w !== 'abs' && w !== 'print') out += '<span class="tk-kw">' + w + '</span>';
+        else if (after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^\d+/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  var BKW = /^(While|EndWhile|If|Then|Else|ElseIf|EndIf|For|To|Step|EndFor|And|Or|folder)$/;
+  function hiBas(line) {
+    var out = '', i = 0;
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest[0] === "'") { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if ((m = rest.match(/^"[^"]*"/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)?/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (BKW.test(w)) out += '<span class="tk-kw">' + w + '</span>';
+        else if (after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^\d+/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  var miniPrev = {};
+  function drawMinis() {
+    var keep = S.step; S.step = 3; var full = programLines(); S.step = keep;
+    [1, 2, 3].forEach(function (k) {
+      var el = $('mini' + k); if (!el) return;
+      var lines = [];
+      full.forEach(function (l, i) { if (l.tag === k) lines.push({ t: l.t, no: i + 1 }); });
+      while (lines.length && !lines[0].t) lines.shift();
+      if (!lines.length) { el.innerHTML = ''; return; }
+      var txt = lines.map(function (l) { return l.no + l.t; }).join('\n');
+      var a = lines[0].no, z = lines[lines.length - 1].no;
+      el.innerHTML = '<span>' + (z !== a ? 'This step\'s code (lines ' + a + '～' + z + ')' : 'This step\'s code (line ' + a + ')') + '</span><pre class="code"></pre>';
+      render(el.querySelector('pre'), lines, { noTag: true });
+      if (miniPrev[k] !== undefined && miniPrev[k] !== txt) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      miniPrev[k] = txt;
+    });
+  }
+  var lastKeys = '';
+  function drawMain() {
+    var keep = S.step; S.step = S.view; var L = programLines(); S.step = keep;
+    var keys = L.map(function (l) { return l.t; }), prev = lastKeys ? lastKeys.split('\n') : [];
+    L.forEach(function (l) { if (l.t && prev.indexOf(l.t) < 0 && lastKeys) l.isNew = true; });
+    lastKeys = keys.join('\n');
+    render($('maincode'), L);
+    var b = $('bubble'); b.querySelector('i').textContent = S.view; b.querySelector('span').textContent = bubble(S.view);
+    drawMinis();
+  }
+  function setStep(n) {
+    S.step = Math.max(S.step, n); S.view = n;
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    drawMain();
+  }
+  function drawPorts() {
+    var box = $('ports'); box.innerHTML = '';
+    [1, 2, 3, 4].forEach(function (p) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = PORTLAB(p);
+      b.setAttribute('aria-pressed', String(S.port === p)); b.setAttribute('aria-label', 'Port ' + p);
+      b.addEventListener('click', function () { S.port = p; drawPorts(); drawMain(); drawPicker(); drawCards(); tick(true); });
+      box.appendChild(b);
+    });
+    document.querySelectorAll('.portnum').forEach(function (e) { e.textContent = S.port; });
+  }
+  function drawPicker() {
+    var g = {}, order = []; LIST().forEach(function (f) { if (!g[f.grp]) { g[f.grp] = []; order.push(f.grp); } g[f.grp].push(f); });
+    var box = $('picker'); box.innerHTML = '';
+    order.forEach(function (k) {
+      var w = document.createElement('div'); w.className = 'fgroup'; w.innerHTML = '<span>' + k + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      g[k].forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = f.name;
+        b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      w.appendChild(chips); box.appendChild(w);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + f.name + '</b><span>' + f.what + '</span><span class="small">Returns: ' + f.ret + (badge(f) ? ' · ' + badge(f) : '') + '</span>';
+  }
+  function pick(id) { S.fn = id; setStep(3); drawPicker(); tick(true); }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    LIST().forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      c.innerHTML = '<div class="card-head"><h3>' + f.name + '</h3><span class="badges">' + (badge(f) ? '<span class="badge yes">' + badge(f) + '</span>' : '') + '</span></div>' +
+        '<p>' + f.what + '</p><dl class="meta"><dt>Returns</dt><dd>' + f.ret + '</dd><dt>Example</dt><dd>' + (f.once ? ONCE : INLOOP) + '</dd></dl>' +
+        '<pre class="code"></pre><p class="out">' + OUTLAB + '<code></code></p><button type="button" class="try">Try it</button>';
+      render(c.querySelector('pre'), cardLines(f).map(function (t) { return { t: t }; }), { noTag: true });
+      c.querySelector('.try').addEventListener('click', function () { pick(f.id); var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ block: 'start' }); });
+      box.appendChild(c);
+    });
+    $('refintro').textContent = REFINTRO.replace('{n}', LIST().length);
+  }
+  var EXC = {};
+  function drawExamples() {
+    var list = EXLIST();
+    [0, 1, 2].forEach(function (k) {
+      var e = list[k]; $('exp' + k).hidden = !e; if (!e) return;
+      EXC[k] = e.code; $('ext' + k).textContent = e.title; $('exb' + k).innerHTML = e.tip;
+      render($('ex' + k), e.code.map(function (t) { return { t: t }; }), { noTag: true });
+    });
+  }
+
+
+  var IMU = { base: 0, t: 0, cal: { acc: false, mag: false }, lastProg: null, fw: 400 };
+  var IMU_W = 2 * Math.PI / 1.7;
+  function imuRound(v) { return v >= 0 ? Math.floor(v + 0.5) : -Math.floor(-v + 0.5); }
+  function imuI16(v) { v = imuRound(v); return ((v + 32768) % 65536 + 65536) % 65536 - 32768; }
+  function imuWorld() {
+    var hd = Number($('imu-hd').value), pt = Number($('imu-pt').value), sh = $('imu-shake').checked, ph = IMU.t * IMU_W;
+    return {
+      hd: hd + (sh ? 8 * Math.sin(ph) : 0), slider: hd, pt: pt, sh: sh,
+      yawDps: sh ? 8 * IMU_W * Math.cos(ph) : 0,
+      xDps: sh ? 6 * IMU_W * Math.cos(ph + 1.1) : 0,
+      drift: $('imu-drift').checked, magx: $('imu-magx').checked
+    };
+  }
+
+  function imuVals() {
+    var w = imuWorld(), rel = w.hd - IMU.base, g = rel + (w.drift ? 6 : 0);
+    var p = w.pt * Math.PI / 180, th = w.hd * Math.PI / 180;
+    var yr = imuRound(w.yawDps * 10), xr = imuRound(w.xDps * 10);
+    var flags = 1 | (w.sh ? 0 : 2) | 4 | (IMU.cal.acc ? 16 : 0) | (IMU.cal.mag ? 32 : 0) | 64 | 128;
+    return {
+      h3d: imuI16(g),
+      fused: imuI16(w.magx ? g : rel),
+      h1d: imuI16(g),
+      mag: imuI16(rel + (w.magx ? 35 : 0)),
+      yawRate: yr,
+      pitch: imuRound(w.pt),
+      pitchRate: xr,
+      trust: w.magx ? 0 : 230, disturb: w.magx ? 255 : 4,
+      upFace: w.pt > 45 ? 0 : w.pt < -45 ? 3 : 2,
+      gx: xr, gy: 0, gz: -yr,
+      ax: imuRound(1000 * Math.sin(p)), ay: 0, az: imuRound(1000 * Math.cos(p)),
+      mx: imuRound(350 * Math.cos(th)) + (w.magx ? 400 : 0), my: imuRound(-350 * Math.sin(th)), mz: -300,
+      flags: flags, devId: 362, proto: 2, fw: IMU.fw
+    };
+  }
+
+  function imuZero() { IMU.base = imuWorld().hd; $('imu-drift').checked = false; }
+  function imuStep() { IMU.t += 0.6; }
+
+  function imuProgram(id, zeroAtStart) { if (IMU.lastProg !== id) { IMU.lastProg = id; if (zeroAtStart) imuZero(); } }
+  function imuDraw(v, unplug, info) {
+    var w = imuWorld(), ir = getComputedStyle(document.documentElement).getPropertyValue('--ir').trim() || '#e04a3b';
+    var cx = 112, cy = 112, r = 62;
+    var h = '<rect x="0" y="0" width="460" height="200" fill="#f7f7f2"/>';
+    h += '<text x="' + cx + '" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="#3d4a47">Seen from above (heading)</text>';
+    h += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#cfd6d3" stroke-width="2" stroke-dasharray="5 5"/>';
+
+    var b = IMU.base * Math.PI / 180;
+    h += '<line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + Math.sin(b) * (r + 8)).toFixed(1) + '" y2="' + (cy - Math.cos(b) * (r + 8)).toFixed(1) + '" stroke="#8a9a96" stroke-width="2" stroke-dasharray="4 3"/>';
+    h += '<text x="' + (cx + Math.sin(b) * (r + 18)).toFixed(1) + '" y="' + (cy - Math.cos(b) * (r + 18) + 4).toFixed(1) + '" text-anchor="middle" font-size="11" fill="#6b7875">0°</text>';
+    if (w.magx) h += '<rect x="8" y="150" width="40" height="22" rx="4" fill="#b03a2e"/><text x="28" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">magnet</text>';
+    h += '<g transform="rotate(' + w.hd.toFixed(1) + ' ' + cx + ' ' + cy + ')">';
+    h += '<rect x="' + (cx - 20) + '" y="' + (cy - 30) + '" width="40" height="60" rx="7" fill="#1b2422"/>';
+    h += '<polygon points="' + cx + ',' + (cy - 44) + ' ' + (cx - 12) + ',' + (cy - 30) + ' ' + (cx + 12) + ',' + (cy - 30) + '" fill="' + ir + '"/>';
+    h += '<rect x="' + (cx - 27) + '" y="' + (cy - 18) + '" width="7" height="22" rx="2" fill="#5b6b67"/><rect x="' + (cx + 20) + '" y="' + (cy - 18) + '" width="7" height="22" rx="2" fill="#5b6b67"/>';
+    h += '<rect x="' + (cx - 9) + '" y="' + (cy - 6) + '" width="18" height="18" rx="3" fill="' + (unplug ? '#7d918c' : '#2f9e8f') + '"/>';
+    h += '</g>';
+    if (w.sh) h += '<text x="' + (cx + 58) + '" y="40" text-anchor="start" font-size="11" fill="' + ir + '">~ shaking</text>';
+
+    var sx = 345, sy = 132;
+    h += '<text x="' + sx + '" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="#3d4a47">Seen from the side (pitch)</text>';
+    h += '<line x1="245" y1="' + (sy + 22) + '" x2="450" y2="' + (sy + 22) + '" stroke="#b7c0bd" stroke-width="2"/>';
+    h += '<g transform="rotate(' + (-w.pt) + ' ' + sx + ' ' + sy + ')">';
+    h += '<rect x="' + (sx - 46) + '" y="' + (sy - 14) + '" width="92" height="26" rx="6" fill="#1b2422"/>';
+    h += '<circle cx="' + (sx - 28) + '" cy="' + (sy + 14) + '" r="9" fill="#5b6b67"/><circle cx="' + (sx + 28) + '" cy="' + (sy + 14) + '" r="9" fill="#5b6b67"/>';
+    h += '<rect x="' + (sx - 9) + '" y="' + (sy - 22) + '" width="18" height="8" rx="2" fill="' + (unplug ? '#7d918c' : '#2f9e8f') + '"/>';
+    h += '<line x1="' + (sx + 10) + '" y1="' + (sy - 18) + '" x2="' + (sx + 64) + '" y2="' + (sy - 18) + '" stroke="' + ir + '" stroke-width="2.5"/>';
+    h += '<polygon points="' + (sx + 70) + ',' + (sy - 18) + ' ' + (sx + 61) + ',' + (sy - 23) + ' ' + (sx + 61) + ',' + (sy - 13) + '" fill="' + ir + '"/>';
+    h += '<text x="' + (sx + 66) + '" y="' + (sy - 26) + '" font-size="11" font-weight="700" fill="' + ir + '">X</text>';
+    h += '</g>';
+    h += '<text x="446" y="' + (sy + 16) + '" text-anchor="end" font-size="11" fill="#6b7875">front →</text>';
+    if (info) {
+      info.forEach(function (t, i) { h += '<text x="' + (i < 2 ? 14 : 446) + '" y="' + (i % 2 ? 196 : 180) + '" text-anchor="' + (i < 2 ? 'start' : 'end') + '" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#16201e">' + t + '</text>'; });
+    }
+    if (unplug) h += '<text x="230" y="64" text-anchor="middle" font-size="15" font-weight="700" fill="' + ir + '" stroke="#fff" stroke-width="4" paint-order="stroke">' + (typeof IMU_UNPLUG_TXT === 'function' ? IMU_UNPLUG_TXT() : 'Sensor unplugged') + '</text>';
+    $('field').innerHTML = h;
+    $('imu-hdv').textContent = $('imu-hd').value; $('imu-ptv').textContent = $('imu-pt').value;
+  }
+
+  function imuBind(changed, skipInputs) {
+    function nudge(d) { var e = $('imu-hd'); e.value = Math.max(-720, Math.min(720, Number(e.value) + d)); changed(); }
+    $('imu-l90').addEventListener('click', function () { nudge(-90); });
+    $('imu-r90').addEventListener('click', function () { nudge(90); });
+    $('imu-zero').addEventListener('click', function () { imuZero(); changed(); });
+    if (!skipInputs) ['imu-hd', 'imu-pt', 'imu-shake', 'imu-drift', 'imu-magx'].forEach(function (id) { $(id).addEventListener('input', changed); });
+  }
+
+  var S = { sw: 'v4', port: 1, name: 'gyro', step: 1, view: 1, fn: 'h3d', stopped: false };
+  function HI(l) { return hiPy(l); }
+  function PORTLAB(p) { return 'S' + p; }
+  var MODE_NAMES = {"0":"GYRO-ANG","1":"GYRO-RATE","2":"GYRO-FAS","3":"GYRO-G&A","4":"GYRO-CAL","5":"TILT-RATE","6":"TILT-ANG"};
+  var READS = [{ "id": "h3d", "mode": 0, "idx": 0, "grp": "Heading (how far it turned)", "name": "Gyro 3D heading", "ret": "-32768 ~ 32767 degrees (0 at power-on / zero, bigger turning right)", "lab": "ANGLE", "what": "How many degrees the robot has turned; try this one first (it is the \"angle\" of the gyro in EV3-G and Classroom). The sensor works out how it is mounted, so even a tilted mount is right. Right is bigger, left smaller; one full turn = 360 and it keeps adding up.", "py": ["heading = {R}","print(\"3D heading:\", heading)"], out: function (v) { return '3D heading: ' + v.h3d; }, val: function (v) { return v.h3d; } },
+    { "id": "fused", "mode": 1, "idx": 0, "grp": "Heading (how far it turned)", "name": "Fused heading", "ret": "-32768 ~ 32767 degrees (0 at power-on / zero, bigger turning right)", "lab": "FUSED", "what": "The gyro 3D heading slowly corrected by the magnetometer, so it does not drift on long runs (it is what the gyro \"rate\" reads in EV3-G and Classroom, <b>not</b> degrees per second). Near motors or an iron field the correction stops by itself. Tick \"Running a long time\": the 3D heading gains 6°, the fused heading does not.", "py": ["fused = {R}","print(\"Fused heading:\", fused)"], out: function (v) { return 'Fused heading: ' + v.fused; }, val: function (v) { return v.fused; } },
+    { "id": "h1d", "mode": 3, "idx": 0, "grp": "Heading (how far it turned)", "name": "Gyro 1D heading", "ret": "-32768 ~ 32767 degrees (0 at power-on / zero, bigger turning right)", "lab": "G1D", "what": "The classic gyro heading about the turning axis only; on flat ground it is almost the same as the 3D heading. Mode 3 sends 2 numbers at once: [0] gyro 1D, [1] magnetic heading.", "py": ["g1d = {R}","print(\"1D heading:\", g1d)"], out: function (v) { return '1D heading: ' + v.h1d; }, val: function (v) { return v.h1d; } },
+    { "id": "mag", "mode": 3, "idx": 1, "grp": "Heading (how far it turned)", "name": "Magnetic heading", "ret": "-32768 ~ 32767 degrees (0 at power-on / zero, bigger turning right)", "lab": "MAG", "what": "A heading from the magnetometer only, relative (0 when zeroed, not north). It does not drift, but magnetic disturbance throws it off. Tick \"Near a motor or iron\" to see it go wrong.", "py": ["mag = {R}","print(\"Magnetic heading:\", mag)"], out: function (v) { return 'Magnetic heading: ' + v.mag; }, val: function (v) { return v.mag; } },
+    { "id": "both3", "mode": 3, "idx": null, "grp": "Heading (how far it turned)", "name": "Mode 3, both at once", "ret": "2 numbers: [gyro 1D, magnetic heading]", "lab": null, "what": "Read both numbers of mode 3 at once, then take [0] and [1]; faster than two reads and from the same moment.", "py": ["data = {n}.{READ}","print(\"1D:\", data[0], \"MAG:\", data[1])"], out: function (v) { return '1D: ' + v.h1d + ' MAG: ' + v.mag; }, "cl": ["g1d = Sensor.ReadRawValue({p}, 0)","mag = Sensor.ReadRawValue({p}, 1)","LCD.Text(1, 0, 0, 1, \"G1D \" + g1d + \"      \")","LCD.Text(1, 0, 16, 1, \"MAG \" + mag + \"      \")"], clOut: function (v, A) { return ['G1D ' + A(v.h1d), 'MAG ' + A(v.mag)]; } },
+    { "id": "yawRate", "mode": 2, "idx": 0, "grp": "Turn rate and tilt", "name": "Yaw rate", "ret": "degrees per second × 10 (right is positive)", "lab": "RATE", "what": "How fast it turns right now: degrees per second × 10, positive turning right. Divide by 10 for degrees per second (900 = 90° per second). Tick \"Shake the robot\" to try it.", "py": ["rate = {R}","print(\"Degrees per second:\", rate / 10)"], out: function (v) { return 'Degrees per second: ' + pyDiv10(v.yawRate); }, val: function (v) { return v.yawRate; } },
+    { "id": "pitch", "mode": 6, "idx": 0, "grp": "Turn rate and tilt", "name": "Pitch angle", "ret": "-90 ~ +90 degrees (0 when flat)", "lab": "TILT", "what": "How far the board's printed X axis is raised: X up +90, down -90, flat 0. Mount X along the robot's nose and it means \"how far the nose is up\".", "py": ["tilt = {R}","print(\"Pitch:\", tilt)"], out: function (v) { return 'Pitch: ' + v.pitch; }, val: function (v) { return v.pitch; } },
+    { "id": "pitchRate", "mode": 5, "idx": 0, "grp": "Turn rate and tilt", "name": "Pitch rate", "ret": "degrees per second × 10", "lab": "TRATE", "what": "How fast it turns about the board's printed X axis (degrees per second × 10, counter-clockwise seen from the front of X is positive). Note: it is the gyro X value, not how fast the pitch angle changes.", "py": ["trate = {R}","print(\"Pitch rate:\", trate)"], out: function (v) { return 'Pitch rate: ' + v.pitchRate; }, val: function (v) { return v.pitchRate; } },
+    { "id": "devId", "mode": 4, "idx": null, "grp": "Sensor info", "once": true, "name": "Device ID and firmware", "ret": "4 numbers: [362, firmware, 0, 0]", "lab": null, "what": "Mode 4 sends 4 numbers: [0] device ID (low 8 bits = factory I2C address 0x6A, high 8 bits = 1 = IMU, so 362), [1] firmware version (major × 100 + minor, e.g. 400 = v4.0), then two 0s. Modes 2 to 6 need firmware v4.0 or later. Read it once.", "py": ["data = {n}.{READ}","print(\"ID:\", data[0], \"FW:\", data[1])"], out: function (v) { return 'ID: ' + v.devId + ' FW: ' + v.fw; }, "cl": ["id = Sensor.ReadRawValue({p}, 0)","fw = Sensor.ReadRawValue({p}, 1)","LCD.Text(1, 0, 0, 1, \"ID \" + id + \"      \")","LCD.Text(1, 0, 16, 1, \"FW \" + fw + \"      \")"], clOut: function (v, A) { return ['ID ' + A(v.devId), 'FW ' + A(v.fw)]; } },
+    { "id": "zero", "mode": 0, "idx": 0, "grp": "Zeroing", "name": "Remember the start", "ret": "degrees turned since the program started", "what": "The EV3 port is read-only, so Pybricks cannot tell the sensor to zero. Instead, read the heading once into <code>start</code> before the loop and subtract it from every reading: that is \"degrees turned since the program started\". Picking this card makes the simulator use the current direction as the start.", "pre": ["start = {R}    # remember the heading at the start"], "py": ["turned = {R} - start","print(\"Turned:\", turned)"], out: function (v) { return ''; } }];
+  var BY = {}; READS.forEach(function (f) { BY[f.id] = f; });
+  function LIST() { return READS; }
+  var ONCE = 'outside the loop, read once', INLOOP = 'inside the while True loop', OUTLAB = 'The simulator prints: ';
+  var REFINTRO = '{n} readings, each with an example. Press "Try it" to jump to step 3; the program and output on the right change to that example.';
+  var EXS = {"v4":[{"title":"Spin right 90° (gyro S1, left wheel B, right wheel C)","code":["from pybricks.ev3devices import Motor","from pybricks.iodevices import LUMPDevice","from pybricks.parameters import Port","from pybricks.tools import wait","","gyro = LUMPDevice(Port.S1)     # IMU gyro on port 1","left = Motor(Port.B)","right = Motor(Port.C)","","start = gyro.read(0)[0]        # remember the heading now (as 0)","left.dc(20)                    # left forward, right back: spin right","right.dc(-20)","while gyro.read(0)[0] - start < 88:   # turning right grows the heading; stop at 88 (2° for braking)","    wait(10)","left.brake()","right.brake()"],"tip":"Turning by gyro is far more accurate than \"turn for N seconds\". If it always overshoots, lower 88 or slow down 20; if it never stops, the sensor is mounted upside down."},{"title":"Slow down on a slope (pitch, mode 6)","code":["from pybricks.ev3devices import Motor","from pybricks.iodevices import LUMPDevice","from pybricks.parameters import Port","from pybricks.tools import wait","","gyro = LUMPDevice(Port.S1)","left = Motor(Port.B)","right = Motor(Port.C)","","while True:","    tilt = gyro.read(6)[0]     # mode 6: pitch, 0 when flat","    if abs(tilt) > 8:             # slope more than 8°","        left.dc(20)","        right.dc(20)","    else:","        left.dc(50)","        right.dc(50)","    wait(20)"],"tip":"Runs at 50 on flat ground and slows to 20 on any slope over 8°. It uses the absolute value, so up and down slopes both slow it. Mount the board's printed X axis along the robot."},{"title":"Beep when turning too fast (yaw rate, mode 2)","code":["from pybricks.hubs import EV3Brick","from pybricks.iodevices import LUMPDevice","from pybricks.parameters import Port, Color","from pybricks.tools import wait","","ev3 = EV3Brick()","gyro = LUMPDevice(Port.S1)","","while True:","    rate = gyro.read(2)[0]     # degrees per second × 10","    ev3.screen.draw_text(0, 0, \"RATE \" + str(rate) + \"      \", Color.BLACK, Color.WHITE)","    if abs(rate) > 900:           # faster than 90° per second","        ev3.speaker.beep()","    wait(100)"],"tip":"The angle tells you how far it turned; the rate tells you how fast. The EV3 screen shows only English letters and numbers."}],"v2":[{"title":"Spin right 90° (gyro S1, left wheel B, right wheel C)","code":["#!/usr/bin/env pybricks-micropython","from pybricks.ev3devices import Motor","from pybricks.iodevices import Ev3devSensor","from pybricks.parameters import Port","from pybricks.tools import wait","","gyro = Ev3devSensor(Port.S1)     # IMU gyro on port 1","left = Motor(Port.B)","right = Motor(Port.C)","","start = gyro.read('GYRO-ANG')[0]        # remember the heading now (as 0)","left.dc(20)                    # left forward, right back: spin right","right.dc(-20)","while gyro.read('GYRO-ANG')[0] - start < 88:   # turning right grows the heading; stop at 88 (2° for braking)","    wait(10)","left.brake()","right.brake()"],"tip":"Turning by gyro is far more accurate than \"turn for N seconds\". If it always overshoots, lower 88 or slow down 20; if it never stops, the sensor is mounted upside down."},{"title":"Slow down on a slope (pitch, mode 6)","code":["#!/usr/bin/env pybricks-micropython","from pybricks.ev3devices import Motor","from pybricks.iodevices import Ev3devSensor","from pybricks.parameters import Port","from pybricks.tools import wait","","gyro = Ev3devSensor(Port.S1)","left = Motor(Port.B)","right = Motor(Port.C)","","while True:","    tilt = gyro.read('TILT-ANG')[0]     # mode 6: pitch, 0 when flat","    if abs(tilt) > 8:             # slope more than 8°","        left.dc(20)","        right.dc(20)","    else:","        left.dc(50)","        right.dc(50)","    wait(20)"],"tip":"Runs at 50 on flat ground and slows to 20 on any slope over 8°. It uses the absolute value, so up and down slopes both slow it. Mount the board's printed X axis along the robot."},{"title":"Beep when turning too fast (yaw rate, mode 2)","code":["#!/usr/bin/env pybricks-micropython","from pybricks.hubs import EV3Brick","from pybricks.iodevices import Ev3devSensor","from pybricks.parameters import Port, Color","from pybricks.tools import wait","","ev3 = EV3Brick()","gyro = Ev3devSensor(Port.S1)","","while True:","    rate = gyro.read('GYRO-FAS')[0]     # degrees per second × 10","    ev3.screen.draw_text(0, 0, \"RATE \" + str(rate) + \"      \", Color.BLACK, Color.WHITE)","    if abs(rate) > 900:           # faster than 90° per second","        ev3.speaker.beep()","    wait(100)"],"tip":"The angle tells you how far it turned; the rate tells you how fast. The EV3 screen shows only English letters and numbers."}]};
+  function EXLIST() { return EXS[S.sw]; }
+  function badge(f) { return f.mode === null || f.mode === undefined ? '' : 'Mode ' + f.mode + (S.sw === 'v2' ? ' ' + MODE_NAMES[f.mode] : ''); }
+  function rexpr(f, n) { return n + '.read(' + (S.sw === 'v2' ? "'" + MODE_NAMES[f.mode] + "'" : f.mode) + ')' + (f.idx === null ? '' : '[' + f.idx + ']'); }
+  function body(f, n) { return f.py.map(function (t) { return t.split('{R}').join(rexpr(f, n)).split('{n}.{READ}').join(rexpr(f, n)); }); }
+  function cardLines(f) {
+    var n = 'gyro', b = body(f, n);
+    if (f.once) return b;
+    return (f.pre || []).map(function (t) { return t.split('{R}').join(rexpr(f, n)); }).concat(['while True:'], b.map(function (t) { return '    ' + t; }), ['    wait(100)']);
+  }
+  function validName() {
+    var v = $('varname').value.trim(), bad = '';
+    if (!v) bad = 'The name cannot be empty.';
+    else if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(v)) bad = 'Use only letters, digits and _, and do not start with a digit.';
+    else if (/^(from|import|while|True|False|None|if|else|elif|not|and|or|for|in|return|def|class|async|await|pass|break|continue|global|lambda|try|except|with|yield|is|del|as|raise|finally|assert|nonlocal)$/.test(v)) bad = '"' + v + '" is a Python keyword. Pick another name.';
+    else if (['wait', 'print', 'Port', 'LUMPDevice', 'Ev3devSensor', 'start', 'data', 'heading', 'fused', 'g1d', 'mag', 'rate', 'tilt', 'trate', 'abs'].indexOf(v) >= 0) bad = 'That name is already used. Pick another one.';
+    $('nameerr').hidden = !bad; $('nameerr').textContent = bad;
+    if (!bad) S.name = v;
+    return !bad;
+  }
+  function programLines() {
+    var n = S.name, L = [], v2 = S.sw === 'v2', f = BY[S.fn], s1 = S.step === 1, s2 = S.step === 2, s3 = S.step === 3;
+    if (v2) L.push({ t: '#!/usr/bin/env pybricks-micropython', tag: 1, hl: s1 });
+    L.push({ t: 'from pybricks.iodevices import ' + (v2 ? 'Ev3devSensor' : 'LUMPDevice'), tag: 1, hl: s1 });
+    L.push({ t: 'from pybricks.parameters import Port', tag: 1, hl: s1 });
+    L.push({ t: 'from pybricks.tools import wait', tag: 1, hl: s1 });
+    if (S.step >= 2) {
+      L.push({ t: '' });
+      L.push({ t: n + ' = ' + (v2 ? 'Ev3devSensor' : 'LUMPDevice') + '(Port.S' + S.port + ')    # gyro on S' + S.port, tag: 2, hl: s2 });
+    }
+    if (S.step >= 3) {
+      L.push({ t: '' });
+      (f.pre || []).forEach(function (t) { L.push({ t: t.split('{R}').join(rexpr(f, n)), tag: 3, hl: s3 }); });
+      var b = body(f, n);
+      if (f.once) b.forEach(function (t) { L.push({ t: t, tag: 3, hl: s3 }); });
+      else {
+        L.push({ t: 'while True:', tag: 3, hl: s3 });
+        b.forEach(function (t) { L.push({ t: '    ' + t, tag: 3, hl: s3 }); });
+        L.push({ t: '    wait(100)', tag: 3, hl: s3 });
+      }
+    }
+    return L;
+  }
+  function bubble(k) {
+    var f = BY[S.fn], v2 = S.sw === 'v2';
+    if (k === 1) return v2 ? 'Step 1: line 1 tells the EV3 to run MicroPython; then import Ev3devSensor (reads sensor modes), Port and wait.' : 'Step 1: import LUMPDevice (reads sensor modes directly), Port and wait. No library to download.';
+    if (k === 2) return 'Step 2: create the object. ' + S.name + ' on the left is the name you picked; the right side says the gyro is on S' + S.port + '.';
+    if (f.id === 'zero') return 'Step 3: read the heading once into start before the loop; then subtract start from every reading, so it is 0 when the program starts.';
+    return 'Step 3: ' + rexpr(f, S.name) + ' reads mode ' + f.mode + (f.once ? '; read it once, outside the loop.' : '; while True repeats it and wait(100) makes it read every 0.1 s.');
+  }
+
+  var log = [];
+  function runOut(f, v) {
+    if (f.id === 'zero') return 'Turned: ' + (v.h3d - (S.swStart === null ? v.h3d : S.swStart));
+    return f.out(v);
+  }
+  function state() { var v = imuVals(); return { v: v, unplug: $('unplug').checked }; }
+  function updateCardOutputs(st) {
+    READS.forEach(function (f) { var el = document.querySelector('#fn-' + f.id + ' .out code'); if (el) el.textContent = st.unplug ? ERR : runOut(f, st.v); });
+  }
+  var ERR = 'OSError: [Errno 19] ENODEV (the program stops here)';
+  function IMU_UNPLUG_TXT() { return 'Sensor unplugged: the program stops (OSError)'; }
+  S.swStart = null;
+  function tick(reset) {
+    if (S.step >= 3 && IMU.lastProg !== S.fn) { IMU.lastProg = S.fn; reset = true; }
+    var st = state(), f = BY[S.fn];
+    if (reset) { log = []; S.stopped = false; S.swStart = st.unplug ? null : st.v.h3d; }
+    imuDraw(st.v, st.unplug, st.unplug ? [] : ['ANGLE ' + st.v.h3d, 'RATE ' + st.v.yawRate, 'TILT ' + st.v.pitch, 'TRATE ' + st.v.pitchRate]);
+    updateCardOutputs(st);
+    if (S.step < 3) log = [{ c: '', t: '(Finish step 3 and what the program prints shows up here)' }];
+    else if (S.stopped) {  }
+    else if (st.unplug) { log.push({ c: 'errline', t: ERR }); S.stopped = true; }
+    else if (f.once) log = [{ c: '', t: runOut(f, st.v) }];
+    else log.push({ c: '', t: runOut(f, st.v) });
+    while (log.length > 7) log.shift();
+    $('console').innerHTML = log.map(function (l) { return '<span class="' + l.c + '">' + esc(l.t) + '</span>'; }).join('\n');
+  }
+  function setSw(sw) {
+    S.sw = sw;
+    document.querySelectorAll('[data-sw]').forEach(function (el) { el.hidden = el.getAttribute('data-sw') !== sw; });
+    $('sw-v4').setAttribute('aria-pressed', String(sw === 'v4')); $('sw-v2').setAttribute('aria-pressed', String(sw === 'v2'));
+    drawPicker(); drawCards(); drawExamples(); drawMain(); tick(true);
+  }
+  $('sw-v4').addEventListener('click', function () { setSw('v4'); });
+  $('sw-v2').addEventListener('click', function () { setSw('v2'); });
+  $('next1').addEventListener('click', function () { setStep(2); });
+  $('next2').addEventListener('click', function () { if (validName()) { setStep(3); drawPicker(); tick(true); } });
+  $('varname').addEventListener('input', function () { var ok = validName(); $('next2').disabled = !ok; if (ok) { drawMain(); } });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) { $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } }); });
+  $('copymain').addEventListener('click', function (e) { copyText(plain(programLines()), e.currentTarget); });
+  document.querySelectorAll('[data-copy]').forEach(function (b) { b.addEventListener('click', function () { copyText(EXC[b.getAttribute('data-copy')].join('\n') + '\n', b); }); });
+  $('unplug').addEventListener('input', function () { tick(false); });
+  imuBind(function () { tick(false); });
+  drawPorts(); setSw('v4'); setStep(1); tick(true);
+  setInterval(function () { imuStep(); if (S.step >= 3 && !BY[S.fn].once) tick(false); else { var st = state(); imuDraw(st.v, st.unplug, st.unplug ? [] : ['ANGLE ' + st.v.h3d, 'RATE ' + st.v.yawRate, 'TILT ' + st.v.pitch, 'TRATE ' + st.v.pitchRate]); updateCardOutputs(st); } }, 600);
+
+})();
+</script>
+<script>
+(function () {
+  var side = document.querySelector('.side'); if (!side) return;
+  var mq = window.matchMedia('(max-width: 900px)');
+  var home = side.parentNode, homeNext = side.nextSibling;
+  var con = document.getElementById('console'), conP = con && con.closest('.panel');
+  if (conP && conP.parentNode !== side) conP = null;
+  var last = null, ready = false;
+  var STOP = '.step-body, .cards, .ref, .steps, .main, .wrap, body';
+  function anchorOf(el) { var a = el; while (a && a.parentElement && !a.parentElement.matches(STOP)) a = a.parentElement; return a && a.parentElement ? a : null; }
+  function flash(el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  // 把 box 搬到 a 那一塊的後面；a 在畫面上的位置維持不動（點下去時就記住 a：頁面常在點擊後重畫按鈕，按鈕本身會被換掉）
+  function moveAfter(box, a) {
+    if (!a || !a.isConnected || a === box || a.contains(box)) return false;
+    if (a.nextElementSibling === box) return true;
+    var y = a.getBoundingClientRect().top;
+    a.parentNode.insertBefore(box, a.nextSibling); box.classList.add('follow');
+    var d = a.getBoundingClientRect().top - y; if (d) window.scrollBy(0, d);
+    return true;
+  }
+  function inPanel(el) { return side.contains(el) || (conP && conP.contains(el)); }
+  function placeSide(a, scroll) {
+    if (!mq.matches || !a) return;
+    if (conP && conP.parentNode !== side) { conP.classList.remove('follow'); side.appendChild(conP); }
+    if (!moveAfter(side, a)) return;
+    if (scroll) { var r = side.getBoundingClientRect(); if (r.top > window.innerHeight * 0.7) window.scrollBy({ top: r.top - window.innerHeight * 0.3, behavior: 'smooth' }); }
+  }
+  function placeConsole(el) {
+    if (!mq.matches || !conP || inPanel(el)) return;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在「正在操作的那一排」正下方（排＝控制區的直接子元素），
+    // 畫面、那一排、輸出同一屏；控制區很長或那一排在最下面（例如拔線勾選）都不會跑出畫面
+    var sim = el.closest('.sim'), ctrl = null, row = null;
+    if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (ctrl && ctrl !== el) for (var j = 0; j < ctrl.children.length; j++) if (ctrl.children[j].contains(el)) row = ctrl.children[j];
+    if (sim && ctrl) {
+      var box = row ? ctrl : sim, after = row || null;
+      if (after ? after.nextElementSibling === conP : conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var y = el.getBoundingClientRect().top;
+      if (after) box.insertBefore(conP, after.nextSibling); else sim.insertBefore(conP, ctrl);
+      conP.classList.add('follow');
+      var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
+      return;
+    }
+    var a = anchorOf(el); if (a && a.nextElementSibling === side) return; // 程式那格已經緊接在下面，輸出就在它裡面
+    moveAfter(conP, a);
+  }
+  function reset() {
+    if (mq.matches) { var b = document.querySelector('#step1 .step-body button') || document.querySelector('#step1 button'); if (b) placeSide(anchorOf(b), false); return; }
+    if (conP) { conP.classList.remove('follow'); side.appendChild(conP); }
+    side.classList.remove('follow'); home.insertBefore(side, homeNext);
+  }
+  function remember(e) { if (!inPanel(e.target)) last = anchorOf(e.target); }
+  document.addEventListener('pointerdown', remember, true);
+  document.addEventListener('focusin', remember, true);
+  var mo = new MutationObserver(function () { if (ready && mq.matches) { placeSide(last, true); flash(side); } });
+  ['maincode', 'mainblocks'].forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true }); });
+  function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
+  document.addEventListener('input', sim, true);
+  document.addEventListener('change', sim, true);
+  // 模擬器裡的按鈕（掌控者按鍵、色點調色盤…）也算在操作模擬器
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.sim button'); if (b) placeConsole(b); }, true);
+  reset(); setTimeout(function () { ready = true; }, 800);
+  if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
+})();
+</script>
+</body>
+</html>

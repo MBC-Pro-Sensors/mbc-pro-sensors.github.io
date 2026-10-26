@@ -7,7 +7,7 @@
 
 ## 要買哪個版本、怎麼接
 
-買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `0x6A`。感應器要 5 V 供電，micro:bit 本身只有 3.3 V，請用有 5 V 輸出的擴充板。
+買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `0x6A`。這款耗電小，VCC 可以先接 micro:bit 的 **3V** 腳（V1 約 90 mA、V2 約 190 mA）；用電池供電時電壓可能掉到 3 V 以下，不穩就改外接 5 V（GND 要和 micro:bit 共地）。
 
 <figure class="ref-fig"><img src="/images/figures/imu/wiring-microbit.svg" alt="陀螺儀 IMU 九軸 × BBC micro:bit V1／V2" loading="lazy"></figure>
 
@@ -21,7 +21,7 @@
 
 ## 讀值
 
-MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC」分類找積木；JavaScript 寫法一併列出，位址 `0x6A`。
+MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC 感應器」分類找積木；JavaScript 寫法一併列出，位址 `0x6A`。
 
 <section id="v01" class="ref-item">
 
@@ -31,13 +31,13 @@ MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC」分類找積木；JavaSc
 | :--- | :--- |
 | `-32768~32767` ° | 四元數算出的航向，度，開機／歸零 = 0，連續累積可超過 360（int16 到 ±32767 繞回，約 91 圈） |
 
-<pre class="blocks">(MBC 陀螺 3D 航向 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 [陀螺 3D v] 航向（°） :: #00A4E4)</pre>
 
 ```typescript
-let headingGyro3D = MBC.readValue(0x6A, 0x01)   // 陀螺 3D 航向：-32768~32767 °
+let headingGyro3D = mbc.imuHeading(MbcImuHeading.Gyro3D)   // 陀螺 3D 航向：-32768~32767 °
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -49,13 +49,20 @@ let headingGyro3D = MBC.readValue(0x6A, 0x01)   // 陀螺 3D 航向：-32768~327
 | :--- | :--- |
 | `-32768~32767` ° | 陀螺 3D 加磁力計慢修正的航向，度，減去相對零點；可超過 360 |
 
-<pre class="blocks">(MBC 融合航向 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 [融合 v] 航向（°） :: #00A4E4)</pre>
 
 ```typescript
-let headingFused = MBC.readValue(0x6A, 0x02)   // 融合航向：-32768~32767 °
+let headingFused = mbc.imuHeading(MbcImuHeading.Fused)   // 融合航向：-32768~32767 °
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+**相關積木「當陀螺儀 轉了 90 °」**
+
+```typescript
+mbc.onImuTurned(90, function () {
+})
+```
+
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -67,13 +74,13 @@ let headingFused = MBC.readValue(0x6A, 0x02)   // 融合航向：-32768~32767 °
 | :--- | :--- |
 | `-32768~32767` ° | 只繞轉向軸積分的航向，度，開機／歸零 = 0；可超過 360 |
 
-<pre class="blocks">(MBC 陀螺 1D 航向 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 [陀螺 1D v] 航向（°） :: #00A4E4)</pre>
 
 ```typescript
-let headingGyro1D = MBC.readValue(0x6A, 0x03)   // 陀螺 1D 航向：-32768~32767 °
+let headingGyro1D = mbc.imuHeading(MbcImuHeading.Gyro1D)   // 陀螺 1D 航向：-32768~32767 °
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -85,13 +92,13 @@ let headingGyro1D = MBC.readValue(0x6A, 0x03)   // 陀螺 1D 航向：-32768~327
 | :--- | :--- |
 | `-32768~32767` ° | 磁力計傾斜補償航向，度，減去相對零點 |
 
-<pre class="blocks">(MBC 磁力航向 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 [磁力計 v] 航向（°） :: #00A4E4)</pre>
 
 ```typescript
-let headingMag = MBC.readValue(0x6A, 0x04)   // 磁力航向：-32768~32767 °
+let headingMag = mbc.imuHeading(MbcImuHeading.Magnetic)   // 磁力航向：-32768~32767 °
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -105,13 +112,19 @@ let headingMag = MBC.readValue(0x6A, 0x04)   // 磁力航向：-32768~32767 °
 | :--- | :--- |
 | `-32768~32767` 0.1 dps | 繞轉向軸（getYawAxis()）的角速度，0.1 度／秒，正負跟航向同向 |
 
-<pre class="blocks">(MBC 轉向角速度 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 轉向角速度（0.1 °/s） :: #00A4E4)</pre>
 
 ```typescript
-let yawRate = MBC.readValue(0x6A, 0x05)   // 轉向軸角速度：-32768~32767 0.1 dps
+let yawRate = mbc.imuYawRate()   // 轉向軸角速度：-32768~32767 0.1 dps
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+**相關積木「陀螺儀 ［靜止］？」**
+
+```typescript
+let imuFlag = mbc.imuFlag(MbcImuFlag.Still)
+```
+
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -125,13 +138,13 @@ let yawRate = MBC.readValue(0x6A, 0x05)   // 轉向軸角速度：-32768~32767 0
 | :--- | :--- |
 | `-90~+90` ° | 板子絲印 X 軸相對水平面的仰角：X 軸朝上 +90、朝下 −90、水平 0（用重力向量 atan2 算） |
 
-<pre class="blocks">(MBC 俯仰角 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 俯仰角（°） :: #00A4E4)</pre>
 
 ```typescript
-let pitch = MBC.readValue(0x6A, 0x06)   // 俯仰角：-90~+90 °
+let pitch = mbc.imuPitch()   // 俯仰角：-90~+90 °
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -145,13 +158,13 @@ let pitch = MBC.readValue(0x6A, 0x06)   // 俯仰角：-90~+90 °
 | :--- | :--- |
 | `-32768~32767` 0.1 dps | 繞板子絲印 X 軸的角速度，0.1 度／秒（右手定則，從 +X 端看逆時針為正）；注意這是 gyro X，不是 06 的微分 |
 
-<pre class="blocks">(MBC 俯仰角速度 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 俯仰角速度（0.1 °/s） :: #00A4E4)</pre>
 
 ```typescript
-let pitchRate = MBC.readValue(0x6A, 0x07)   // 俯仰角速度：-32768~32767 0.1 dps
+let pitchRate = mbc.imuPitchRate()   // 俯仰角速度：-32768~32767 0.1 dps
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -165,13 +178,13 @@ let pitchRate = MBC.readValue(0x6A, 0x07)   // 俯仰角速度：-32768~32767 0.
 | :--- | :--- |
 | `0~255` | 融合演算法對磁力計的信任度 0~255（= 0~1 × 255） |
 
-<pre class="blocks">(MBC 磁力信任度 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 磁力信任度 :: #00A4E4)</pre>
 
 ```typescript
-let magTrust = MBC.readValue(0x6A, 0x08)   // 磁力信任度：0~255
+let magTrust = mbc.imuMagTrust()   // 磁力信任度：0~255
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -185,13 +198,13 @@ let magTrust = MBC.readValue(0x6A, 0x08)   // 磁力信任度：0~255
 | :--- | :--- |
 | `0~255` 0.01° | 磁場干擾程度 0~255（度 × 100，上限 255） |
 
-<pre class="blocks">(MBC 磁場干擾度 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 磁場干擾度 :: #00A4E4)</pre>
 
 ```typescript
-let magDisturb = MBC.readValue(0x6A, 0x09)   // 磁場干擾度：0~255 0.01°
+let magDisturb = mbc.imuMagDisturbance()   // 磁場干擾度：0~255 0.01°
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -205,13 +218,19 @@ let magDisturb = MBC.readValue(0x6A, 0x09)   // 磁場干擾度：0~255 0.01°
 | :--- | :--- |
 | `0~5` | 哪個軸朝上：0 +X、1 +Y、2 +Z、3 −X、4 −Y、5 −Z（實體軸） |
 
-<pre class="blocks">(MBC 朝上的面 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 朝上的面 :: #00A4E4)</pre>
 
 ```typescript
-let upFace = MBC.readValue(0x6A, 0x0A)   // 朝上的面：0~5
+let upFace = mbc.imuFaceUp()   // 朝上的面：0~5
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+**相關積木「陀螺儀 朝上的面是 ［+Z］？」**
+
+```typescript
+let imuFaceUpIs = mbc.imuFaceUpIs(MbcImuFace.PlusZ)
+```
+
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -225,13 +244,13 @@ let upFace = MBC.readValue(0x6A, 0x0A)   // 朝上的面：0~5
 | :--- | :--- |
 | `-32768~32767` 0.1 dps | 10 X、11 Y、12 Z 角速度，0.1 度／秒（實體軸，已套軸向號誌） |
 
-<pre class="blocks">(MBC 角速度 [軸] :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 [角速度（0.1 °/s） v] [X v] 軸 :: #00A4E4)</pre>
 
 ```typescript
-let gyro = MBC.readValues(0x6A, 0x10, 3)   // 角速度 1~3 軸
+let gyro = [mbc.imuAxis(MbcImuSensor.Gyro, MbcAxis.X), mbc.imuAxis(MbcImuSensor.Gyro, MbcAxis.Y), mbc.imuAxis(MbcImuSensor.Gyro, MbcAxis.Z)]   // 角速度 1~3 軸：-32768~32767 0.1 dps
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -245,13 +264,13 @@ let gyro = MBC.readValues(0x6A, 0x10, 3)   // 角速度 1~3 軸
 | :--- | :--- |
 | `-32768~32767` mg | 13 X、14 Y、15 Z 加速度，mg（1000 = 1 g） |
 
-<pre class="blocks">(MBC 加速度 [軸] :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 [加速度（mg） v] [X v] 軸 :: #00A4E4)</pre>
 
 ```typescript
-let accel = MBC.readValues(0x6A, 0x13, 3)   // 加速度 1~3 軸
+let accel = [mbc.imuAxis(MbcImuSensor.Accel, MbcAxis.X), mbc.imuAxis(MbcImuSensor.Accel, MbcAxis.Y), mbc.imuAxis(MbcImuSensor.Accel, MbcAxis.Z)]   // 加速度 1~3 軸：-32768~32767 mg
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -265,13 +284,13 @@ let accel = MBC.readValues(0x6A, 0x13, 3)   // 加速度 1~3 軸
 | :--- | :--- |
 | `-32768~32767` mG | 16 X、17 Y、18 Z 磁場強度，mG（毫高斯） |
 
-<pre class="blocks">(MBC 磁力 [軸] :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 [磁力（mG） v] [X v] 軸 :: #00A4E4)</pre>
 
 ```typescript
-let mag = MBC.readValues(0x6A, 0x16, 3)   // 磁力 1~3 軸
+let mag = [mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.X), mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.Y), mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.Z)]   // 磁力 1~3 軸：-32768~32767 mG
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -283,10 +302,10 @@ let mag = MBC.readValues(0x6A, 0x16, 3)   // 磁力 1~3 軸
 
 四個航向都歸零（zeroHeadings()）；EV3 另有原廠 WRITE 0x11 陀螺歸零
 
-<pre class="blocks">MBC 航向歸零 :: #E8711E</pre>
+<pre class="blocks">陀螺儀 航向歸零 :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE0)   // 航向歸零
+mbc.imuZeroHeading()   // 航向歸零
 ```
 
 </section>
@@ -297,10 +316,10 @@ MBC.writeCmd(0x6A, 0xE0)   // 航向歸零
 
 開始加速度計校準（= v1 的 0x20=0x01）；期間 F3 b4 = 1
 
-<pre class="blocks">MBC 加速度計校準開始 :: #E8711E</pre>
+<pre class="blocks">陀螺儀 校準 [加速度計 開始 v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE1)   // 加速度計校準開始
+mbc.imuCalibrate(MbcImuCalib.AccelStart)   // 加速度計校準開始
 ```
 
 </section>
@@ -311,10 +330,10 @@ MBC.writeCmd(0x6A, 0xE1)   // 加速度計校準開始
 
 結束加速度計校準並存 EEPROM（= v1 的 0x20=0x02）；通過後自動航向歸零一次
 
-<pre class="blocks">MBC 加速度計校準結束 :: #E8711E</pre>
+<pre class="blocks">陀螺儀 校準 [加速度計 結束 v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE2)   // 加速度計校準結束
+mbc.imuCalibrate(MbcImuCalib.AccelEnd)   // 加速度計校準結束
 ```
 
 </section>
@@ -325,10 +344,10 @@ MBC.writeCmd(0x6A, 0xE2)   // 加速度計校準結束
 
 開始磁力計校準（= v1 的 0x20=0x03）；期間 F3 b5 = 1
 
-<pre class="blocks">MBC 磁力計校準開始 :: #E8711E</pre>
+<pre class="blocks">陀螺儀 校準 [磁力計 開始 v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE3)   // 磁力計校準開始
+mbc.imuCalibrate(MbcImuCalib.MagStart)   // 磁力計校準開始
 ```
 
 </section>
@@ -339,10 +358,10 @@ MBC.writeCmd(0x6A, 0xE3)   // 磁力計校準開始
 
 結束磁力計校準並存 EEPROM（= v1 的 0x20=0x04）
 
-<pre class="blocks">MBC 磁力計校準結束 :: #E8711E</pre>
+<pre class="blocks">陀螺儀 校準 [磁力計 結束 v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE4)   // 磁力計校準結束
+mbc.imuCalibrate(MbcImuCalib.MagEnd)   // 磁力計校準結束
 ```
 
 </section>

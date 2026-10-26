@@ -33,6 +33,12 @@ Sensor → mBot adapter → RJ25 port on the board (S1 = host TX, S2 = host RX).
 | Ranger 8 port [port] sensor [1~8] distance cm | 0~120 cm | [`10~17`](/en/sensors/tof8/reference.md#v10) | distance of each sensor 1~8, 0~120 cm (1 = far left, 4 and 5 = front, 8 = far right, 30° apart); 120 = nothing that way / sensor failed; ids 10~17 |
 | Ranger 8 port [port] sensor [1~8] distance mm | 0~1200 mm | [`18~1F`](/en/sensors/tof8/reference.md#v18) | distance of each sensor 1~8, 0~1200 mm; 1200 = nothing that way / sensor failed; ids 18~1F |
 
+## Command blocks
+
+| Block | Id | Meaning |
+| :--- | :--- | :--- |
+| Ranger 8 port [port] update all values | `FD` | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
+
 ## Status blocks
 
 The extension exposes each `F3` bit as a boolean block:

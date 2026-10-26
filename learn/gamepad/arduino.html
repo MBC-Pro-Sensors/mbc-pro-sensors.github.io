@@ -1,0 +1,1125 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="寫 Arduino 程式照這個順序：先接好線、貼上小幫手，再在 setup() 開始通訊、等接收器準備好，最後在 loop() 用 mbcRead() 讀按鍵和搖桿。PS2 和 PS4 接收器的寫法完全一樣。左邊一步一步做，右邊的程式會跟著長出來；點模擬手把上的按鍵、拖動搖桿，就能看到序列埠監控視窗會印出什麼。">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/gamepad/arduino.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/gamepad/arduino.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/gamepad/arduino.html">
+<title>掌控者 PS2／PS4 遙控接收器 Arduino 教學 | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* 版面：左邊是照順序走的教學步驟，右邊固定「你的程式＋模擬感應器」；下面是 16 個功能的範例卡 */
+:root {
+  --bg: #f3f6f5;          /* 場地墊的淺色 */
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;      /* MBC 青綠 */
+  --accent-soft: #dff1ef;
+  --tape: #121212;        /* 黑膠帶線 */
+  --ir: #e04a3b;          /* 感應器紅外燈 */
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* 頁首 */
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+/* 主區：左教學、右程式 */
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+/* 右邊：程式＋模擬 */
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+/* 右邊固定區只放程式和輸出，高度不超過一個畫面，往下捲時一直看得到 */
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+/* 每一步卡片裡的「這一步寫的程式」：設定一改就更新並閃一下 */
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+/* 功能範例卡 */
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+/* 完整範例與注意事項 */
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+[hidden] { display: none !important; }  /* 頁面用 hidden 切換「積木／程式」，.ws{display:grid} 會蓋掉它 */
+.learn-nav .tabs .tl { color: var(--muted, #666); font-size: 0.8rem; align-self: center; }
+.learn-nav .tabs .tsep { flex-basis: 100%; height: 0; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
+   排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
+@media (max-width: 900px) {
+  .learn-nav { position: static; width: 100vw; margin: -24px 0 14px calc(50% - 50vw); }
+  .learn-nav .in { padding: 6px 12px 8px; gap: 4px 14px; font-size: 0.85rem; }
+  .learn-nav .in > a { min-height: 36px; display: inline-flex; align-items: center; }
+  .learn-nav .tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .learn-nav .tabs::-webkit-scrollbar { display: none; }
+  .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
+  body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
+  .panel.follow { margin: 12px 0 16px; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow, .ctrl > .panel.follow { grid-column: 1 / -1; }
+  .flash { animation: followFlash 1.2s ease-out; }
+  @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
+  /* 點選目標放大：選項、勾選框、拉桿 */
+  .wrap > *, .main > *, .steps > *, .step-body > * { min-width: 0; }
+  label:has(input[type=radio]), label:has(input[type=checkbox]) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  button.copy, .viewtabs button { min-height: 36px; }
+  label:has(select) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  label select { min-height: 36px; }
+  input[type=radio], input[type=checkbox] { width: 20px; height: 20px; flex: none; }
+  input[type=range] { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/learn/">全部互動教學</a><a class="back" href="/sensors/ps2/arduino/">← 掌控者 Arduino 說明</a><a class="back" href="/sensors/ps4/arduino/">PS4</a><a class="lang" href="/en/learn/gamepad/arduino.html" hreflang="en">EN</a><div class="tabs"><span class="tl">主機</span><a href="/learn/gamepad/micropython.html">SPIKE</a><a href="/learn/gamepad/ev3-pybricks.html">EV3</a><a href="/learn/gamepad/arduino.html" aria-current="page">Arduino</a><a href="/learn/gamepad/mblock.html">mBlock</a><a href="/learn/gamepad/matrix.html">MATRIX</a><a href="/learn/gamepad/makecode.html">micro:bit</a><span class="tsep"></span><a href="/learn/gamepad/arduino.html" aria-current="page">Arduino IDE</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC 掌控者 PS2／PS4 × Arduino</span>
+    <h1>三個步驟用 Arduino 讀掌控者遙控接收器</h1>
+    <p class="lead">寫 Arduino 程式照這個順序：先<b>接好線、貼上小幫手</b>，再在 <code>setup()</code> <b>開始通訊、等接收器準備好</b>，最後在 <code>loop()</code> 用 <code>mbcRead()</code> <b>讀按鍵和搖桿</b>。PS2 和 PS4 接收器的寫法完全一樣。左邊一步一步做，右邊的程式會跟著長出來；點模擬手把上的按鍵、拖動搖桿，就能看到序列埠監控視窗會印出什麼。</p>
+  </header>
+
+  <section class="main" aria-label="教學">
+    <div class="steps">
+      <!-- 步驟 1 -->
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>接線，貼上小幫手</h2></div>
+        <div class="step-body">
+          <p class="why">Arduino 用 <b>I2C</b>（4 條線）跟感應器講話，<b>不用安裝函式庫</b>。程式<b>最上面寫 2 行</b>、<b>最下面貼一段「小幫手」</b>，之後就能用 <code>mbcRead()</code> 讀值、<code>mbcWrite()</code> 送命令。</p>
+          <p class="small">你用哪一塊板子？（只差 SDA／SCL 接哪兩腳，程式完全一樣）</p>
+          <div class="choice" role="group" aria-label="板子">
+            <button type="button" class="opt" id="board-uno" aria-pressed="true"><b>UNO／Nano</b><small>最常見的板子。SDA = A4、SCL = A5。</small></button>
+            <button type="button" class="opt" id="board-mega" aria-pressed="false"><b>Mega 2560</b><small>SDA = 20、SCL = 21。</small></button>
+            <button type="button" class="opt" id="board-r4" aria-pressed="false"><b>UNO R4</b><small>A4、A5（板子上也標 SDA／SCL）。</small></button>
+            <button type="button" class="opt" id="board-esp32" aria-pressed="false"><b>ESP32</b><small>SDA = GPIO 21、SCL = GPIO 22。要先安裝 ESP32 板子套件。</small></button>
+          </div>
+          <ol class="howto">
+            <li>接線前先拔掉 USB 線。要用 <b>通用 I2C 版</b>（SPIKE 版、EV3 版的韌體不同，不能接 Arduino）。</li>
+            <li>感應器 VCC → <b id="pinvcc">5V</b>、GND → <b>GND</b></li>
+            <li>感應器 SDA → <b id="pinsda">A4</b>、SCL → <b id="pinscl">A5</b></li>
+            <li>接收器上印的是 <b>TX、RX</b>：通用 I2C 版的 <b>RX 就是 SDA、TX 就是 SCL</b>。接收器裡有電壓轉換，5 V 和 3.3 V 的板子都能直接接。</li>
+            <li><b>PS2：</b>手把開機就會連上；按手把中間的 <b>ANALOG</b> 鍵讓燈亮（類比模式），搖桿才有數字。<b>PS4／PS5：</b>第一次要配對：接收器開機（或按 Reset）後 30 秒內，PS4 手把長按 <b>SHARE＋PS</b>、PS5 手把長按 <b>建立＋PS</b>，燈條快閃就好；之後按 PS 鍵就會自動連上。</li>
+            <li>打開 Arduino IDE：<b>檔案 → 新增</b>，把原本的內容刪掉。</li>
+            <li><b>最上面</b>寫第 1、2 行；<b>最下面</b>貼「小幫手」（右邊程式標 ① 的地方，按「複製程式」會一起拿到）。</li>
+          </ol>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">寫好了，下一步</button>
+        </div>
+      </article>
+
+      <!-- 步驟 2 -->
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>開始通訊，等感應器準備好</h2></div>
+        <div class="step-body">
+          <p class="why"><code>setup()</code> 是開機時只跑一次的地方：打開序列埠、開始 I2C、等感應器說「準備好了」。<code>ADDR</code> 是感應器的「門牌號碼」（I2C 位址），之後每次讀值都寫它。</p>
+          <p class="small">感應器的 I2C 位址：</p>
+          <div class="choice" role="group" aria-label="位址">
+            <button type="button" class="opt" id="addr-factory" aria-pressed="true"><b>出廠位址 0x42</b><small>沒有用命令 F8 換過位址，就選這個。</small></button>
+            <button type="button" class="opt" id="addr-custom" aria-pressed="false"><b>我換過位址</b><small>用命令 F8 換過，例如同一條線上接了兩顆同型號。</small></button>
+          </div>
+          <label class="f" for="addr" id="addrbox" style="display:none">新的位址（0x08 ~ 0x77）
+            <input autocomplete="off" type="text" id="addr" value="0x20" spellcheck="false">
+          </label>
+          <p class="err" id="addrerr" hidden></p>
+          <p class="small">找不到感應器的時候：</p>
+          <div class="choice" role="group" aria-label="找不到時">
+            <button type="button" class="opt" id="fail-stop" aria-pressed="true"><b>停在這裡（建議）</b><small>印一行提醒，程式停住，不會亂跑。</small></button>
+            <button type="button" class="opt" id="fail-go" aria-pressed="false"><b>繼續跑</b><small>程式照樣往下跑，讀到的值都會是 -32768。</small></button>
+          </div>
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2">寫好了，下一步</button>
+        </div>
+      </article>
+
+      <!-- 步驟 3 -->
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>使用功能</h2></div>
+        <div class="step-body">
+          <p class="why">讀值寫「<code>mbcRead(ADDR, 編號)</code>」，送命令寫「<code>mbcWrite(ADDR, 命令)</code>」。點一個功能，程式和序列埠監控視窗會換成它的範例。</p>
+          <div id="picker" class="ref"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+          <div class="sim-box">
+        <div class="sim-title">模擬手把：點按鍵、拖動搖桿，看右邊序列埠監控視窗怎麼變</div>
+        <div class="sim">
+          <svg id="field" viewBox="0 0 460 270" role="group" aria-label="模擬手把：按鍵可以點，搖桿可以拖或用方向鍵移動"></svg>
+          <div class="ctrl">
+            <div class="toggles">
+              <label><input autocomplete="off" type="radio" name="kind" id="k2" value="PS2" checked> PS2 接收器</label>
+              <label><input autocomplete="off" type="radio" name="kind" id="k4" value="PS4"> PS4 接收器＋PS4 手把</label>
+              <label><input autocomplete="off" type="radio" name="kind" id="k5" value="PS5"> PS4 接收器＋PS5 手把</label>
+              <label><input autocomplete="off" type="checkbox" id="digital"> PS2 手把數位模式（ANALOG 燈熄）</label>
+              <label><input autocomplete="off" type="checkbox" id="nopad"> 手把沒連線（接收器有接）</label>
+              <label><input autocomplete="off" type="checkbox" id="unplug"> 拔掉接收器</label>
+              <button type="button" class="copy" id="release">全部放開</button>
+            </div>
+            <label class="f" for="trig">L2／R2 扳機壓多深（按住 L2 或 R2 時讀到的值 0 ~ 255）
+              <input autocomplete="off" type="range" id="trig" min="0" max="255" value="200">
+            </label>
+          </div>
+          <p class="note">模擬畫面是示意：點一下按鍵＝按住，再點一下放開；拖動搖桿的圓點改變位置（放開滑鼠會停在那裡，按「全部放開」回到中間）。搖桿 −100 ~ +100，0 = 中間，往右、往上是正數。PS4 手把的電量固定示意為 80。PS 鍵只有 PS4 接收器有；L3、R3（把搖桿往下壓）這裡按不到。<b>手把沒連線</b>：接收器還在，0x06 = 0、按鍵和搖桿全部是 0；<b>拔掉接收器</b>：Arduino 讀到的每個值都是 -32768。</p>
+        </div>
+          </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">每個功能的範例</h2>
+        <p class="ref-intro"><span id="fncount">26</span> 個功能（讀值、命令、每款 MBC 感應器都有的共用編號），每個都有一段範例。標「PS4 才有」的只有 PS4 接收器有作用，PS2 接收器收到會忽略或一直是 0。按「試試看」會切到第 3 步，右邊的程式和序列埠監控視窗會換成這個範例。</p>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="你的程式與輸出">
+      <div class="panel">
+        <div class="panel-head"><span>你的程式（Arduino）</span><span class="row"><button type="button" class="copy" id="helperbtn" aria-pressed="false">顯示小幫手</button><button type="button" class="copy" id="copymain">複製程式</button></span></div>
+        <pre class="code" id="maincode" aria-live="polite"></pre>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>序列埠監控視窗（115200，每 0.6 秒更新）</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="ref" aria-labelledby="fullh">
+    <h2 id="fullh">完整範例</h2>
+    <p class="ref-intro">按「複製」拿到的是完整程式（最下面已經接好小幫手），貼進 Arduino IDE 就能上傳。</p>
+    <div class="full">
+      <div class="panel">
+        <div class="panel-head"><span>坦克遙控車（L298N 馬達驅動板）</span><button type="button" class="copy" data-copy="tank">複製</button></div>
+        <pre class="code" id="ex-tank"></pre>
+        <p class="bubble"><i>!</i><span>左搖桿上下管左輪、右搖桿上下管右輪。手把斷線或讀不到接收器就立刻停車。第一次先把車子架高（輪子懸空）試：兩支搖桿一起往上推，哪個輪子轉反了就把那一顆的 <code>REVERSE</code> 改成 <code>true</code>；太快就把 <code>MAX_SPEED</code> 調小。L298N 的 GND 要跟 Arduino 的 GND 接在一起。PS2、PS4 接收器都能用。</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>按了哪一顆鍵？</span><button type="button" class="copy" data-copy="buttons">複製</button></div>
+        <pre class="code" id="ex-buttons"></pre>
+        <p class="bubble"><i>!</i><span>按下、放開任何一顆鍵，序列埠監控視窗都會說是哪一顆；可以同時按好幾顆。十六鍵用 <code>mbcReadMany()</code> 讀，因為只按 ■ 時值剛好是 -32768，用 <code>mbcRead()</code> 會分不出是不是讀不到。</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>震動和燈條（PS4／PS5 手把才有）</span><button type="button" class="copy" data-copy="rumble">複製</button></div>
+        <pre class="code" id="ex-rumble"></pre>
+        <p class="bubble"><i>!</i><span>按住 ✕ 手把就震動；推左搖桿改燈條顏色（左右 → 紅、上下 → 綠）。命令 <code>E5</code> 每送一次震 200 ms，所以按住時每一圈都再送一次；<code>E6</code> 要剛好給紅、綠、藍 3 個數字。接 PS2 接收器時程式照樣跑，只是手把不會震、也沒有燈條。</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">使用注意</h2>
+    <ol>
+      <li><b>拔掉接收器和手把沒開是兩回事。</b>讀不到接收器時 <code>mbcRead()</code> 回傳 <code>-32768</code>（<code>MBC_NONE</code>）、<code>mbcReadMany()</code> 回傳 <code>false</code>；接收器有接好、但手把沒開（沒電、沒配對）時，<code>0x06</code> 已連線 = 0，按鍵、搖桿全部是 0。遙控車兩種情形都要停車（完整範例的坦克車就是這樣做）。在右邊勾「手把沒連線」「拔掉接收器」比較看看。</li>
+      <li><b>只按 ■ 時，0x01 十六鍵剛好是 -32768。</b>■ 在最高位（bit15），16 個 bit 只有它是 1 時，數字跟「讀不到」的 <code>MBC_NONE</code> 一樣。要分辨就用 <code>mbcReadMany()</code> 讀（看它回 <code>true</code> 還是 <code>false</code>），或改讀 <code>0x03</code> 形狀鍵（■ = 8）。</li>
+      <li><b>兩款接收器的編號一樣，位址都是 0x42。</b>只差在：<code>0x07</code> 電量、<code>0x0A</code> 系統鍵 PS2 一直是 0；<code>0x0B</code> 手把類型 3、4 只有 PS4 接收器會出現；<code>E5</code> 震動、<code>E6</code> 燈條只對 PS4／PS5 手把有作用，PS2 接收器收到會忽略（程式不會出錯）。同一條 I2C 線只能接其中一個；用 <code>0xF0</code> 的高 byte 分辨（1 = PS2、2 = PS4）。</li>
+      <li><b>搖桿 −100 ~ +100，0 = 中間。</b>站在車後面往前看：往左、往下是負數，往右、往上是正數。中間附近輕輕晃會停在 0（死區），放開搖桿時車子才不會自己慢慢跑。連號的 <code>0x10</code>～<code>0x13</code> 用 <code>mbcReadMany()</code> 一次讀，保證是同一瞬間的資料。</li>
+      <li><b>小幫手裡的 <code>delay(2)</code> 不要刪。</b>PS4／PS5 接收器是 ESP32 做的，寫完編號要等 2 ms 它才準備好資料；兩款位址一樣、程式分不出來，所以一律等。接收器開機要 1 秒多，第 2 步最多等 5 秒。序列埠監控視窗的速度要選 <b>115200</b>，不然會看到亂碼。</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var PROD = {"lang":"zh","helper":["// ===== 小幫手（MBC I2C 協議 v2）：整段貼在程式最下面，不用改 =====","// 從編號 id 起連續讀 k 個值（k ≤ 16），int16 小端","bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {","  Wire.beginTransmission(addr);","  Wire.write(id);","  if (Wire.endTransmission() != 0) return false;","  delay(2);                                        // 一律等 2 ms（ESP32 產品不能時脈延展）","  if (Wire.requestFrom(addr, (uint8_t)(k * 2)) != (uint8_t)(k * 2)) return false;","  for (uint8_t i = 0; i < k; i++) {","    uint8_t lo = Wire.read(), hi = Wire.read();","    out[i] = (int16_t)(lo | (hi << 8));","  }","  return true;","}","","// 讀 1 個值；讀不到回 MBC_NONE","int16_t mbcRead(uint8_t addr, uint8_t id) {","  int16_t v;","  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;","}","","// 寫入命令（0~3 個參數）","void mbcWrite(uint8_t addr, uint8_t id, const uint8_t *args, uint8_t n) {","  Wire.beginTransmission(addr);","  Wire.write(id);","  for (uint8_t i = 0; i < n; i++) Wire.write(args[i]);","  Wire.endTransmission();","}","void mbcWrite(uint8_t addr, uint8_t id) { mbcWrite(addr, id, nullptr, 0); }","void mbcWrite(uint8_t addr, uint8_t id, uint8_t a) { mbcWrite(addr, id, &a, 1); }","void mbcWrite(uint8_t addr, uint8_t id, uint8_t a, uint8_t b) { uint8_t p[2] = {a, b}; mbcWrite(addr, id, p, 2); }","void mbcWrite(uint8_t addr, uint8_t id, uint8_t a, uint8_t b, uint8_t c) { uint8_t p[3] = {a, b, c}; mbcWrite(addr, id, p, 3); }","","// 等模組就緒（F3 bit0 = 1），最多 ms 毫秒","bool mbcWaitReady(uint8_t addr, unsigned long ms) {","  unsigned long t0 = millis();","  while (millis() - t0 < ms) {","    int16_t st = mbcRead(addr, 0xF3);","    if (st != MBC_NONE && (st & 1)) return true;","    delay(20);","  }","  return false;","}"],"defaultFn":"cross","addr":"0x42","readyMs":5000};
+  var EX = {"tank":["#include <Wire.h>","const int16_t MBC_NONE = -32768;","","const uint8_t ADDR = 0x42;               // 掌控者接收器的 I2C 位址（PS2、PS4 都是 0x42）","","// ===== 可以改的參數 =====","const int ENA = 5, IN1 = 7, IN2 = 8;     // 左輪接 L298N 的 ENA、IN1、IN2","const int ENB = 6, IN3 = 9, IN4 = 10;    // 右輪接 L298N 的 ENB、IN3、IN4","const int MAX_SPEED = 200;               // 搖桿推到底的速度 0 ~ 255","const bool LEFT_REVERSE = false;         // 左輪轉反了改成 true","const bool RIGHT_REVERSE = false;        // 右輪轉反了改成 true","// ========================","","void setMotor(int en, int inA, int inB, int speed) {","  speed = constrain(speed, -255, 255);","  digitalWrite(inA, speed >= 0 ? HIGH : LOW);","  digitalWrite(inB, speed >= 0 ? LOW : HIGH);","  analogWrite(en, abs(speed));","}","","void drive(int left, int right) {        // 速度 -255（後退）~ 255（前進）","  if (LEFT_REVERSE) left = -left;","  if (RIGHT_REVERSE) right = -right;","  setMotor(ENA, IN1, IN2, left);","  setMotor(ENB, IN3, IN4, right);","}","","void setup() {","  Serial.begin(115200);","  pinMode(ENA, OUTPUT); pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);","  pinMode(ENB, OUTPUT); pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT);","  drive(0, 0);                           // 先停好","  Wire.begin();","  if (!mbcWaitReady(ADDR, 5000)) {","    Serial.println(F(\"找不到接收器，檢查接線！\"));","    while (true) {}","  }","  Serial.println(F(\"準備好了！用兩支搖桿開車。\"));","}","","void loop() {","  int16_t v[14];                         // 0x06 ~ 0x13 一次讀：v[0] = 0x06 已連線、v[11] = 0x11 LY、v[13] = 0x13 RY","  if (!mbcReadMany(ADDR, 0x06, 14, v) || v[0] != 1) {","    drive(0, 0);                         // 讀不到接收器，或手把沒連線：先停車","    delay(50);","    return;","  }","  int left = (long)v[11] * MAX_SPEED / 100;    // 左搖桿上下（上 = 正）→ 左輪","  int right = (long)v[13] * MAX_SPEED / 100;   // 右搖桿上下 → 右輪","  drive(left, right);","  delay(20);","}","","@HELPER"],"buttons":["#include <Wire.h>","const int16_t MBC_NONE = -32768;","","const uint8_t ADDR = 0x42;","","uint16_t last = 0;                       // 上一次的十六鍵","","void printName(uint8_t bit) {            // 第幾位 → 按鍵名稱（PSX 排列）","  switch (bit) {","    case 0:  Serial.print(F(\"SELECT（PS4：SHARE）\")); break;","    case 1:  Serial.print(F(\"L3\")); break;","    case 2:  Serial.print(F(\"R3\")); break;","    case 3:  Serial.print(F(\"START（PS4：OPTIONS）\")); break;","    case 4:  Serial.print(F(\"↑ 上\")); break;","    case 5:  Serial.print(F(\"→ 右\")); break;","    case 6:  Serial.print(F(\"↓ 下\")); break;","    case 7:  Serial.print(F(\"← 左\")); break;","    case 8:  Serial.print(F(\"L2\")); break;","    case 9:  Serial.print(F(\"R2\")); break;","    case 10: Serial.print(F(\"L1\")); break;","    case 11: Serial.print(F(\"R1\")); break;","    case 12: Serial.print(F(\"▲ 三角形\")); break;","    case 13: Serial.print(F(\"● 圓圈\")); break;","    case 14: Serial.print(F(\"✕ 叉叉\")); break;","    default: Serial.print(F(\"■ 正方形\")); break;","  }","}","","void setup() {","  Serial.begin(115200);","  Wire.begin();","  if (!mbcWaitReady(ADDR, 5000)) {","    Serial.println(F(\"找不到接收器，檢查接線！\"));","    while (true) {}","  }","  Serial.println(F(\"準備好了！按手把上的按鍵看看。\"));","}","","void loop() {","  int16_t raw;","  if (!mbcReadMany(ADDR, 0x01, 1, &raw)) {   // 讀不到接收器：等一下再試","    delay(100);","    return;","  }","  uint16_t now = (uint16_t)raw;            // 十六鍵：bit = 1 是按下","  for (uint8_t i = 0; i < 16; i++) {","    uint16_t m = 1u << i;","    if ((now & m) && !(last & m)) { Serial.print(F(\"按下：\")); printName(i); Serial.println(); }","    if (!(now & m) && (last & m)) { Serial.print(F(\"放開：\")); printName(i); Serial.println(); }","  }","  last = now;","  delay(20);","}","","@HELPER"],"rumble":["#include <Wire.h>","const int16_t MBC_NONE = -32768;","","const uint8_t ADDR = 0x42;","","unsigned long lastLed = 0;               // 上一次送燈條的時間","","void setup() {","  Serial.begin(115200);","  Wire.begin();","  if (!mbcWaitReady(ADDR, 5000)) {","    Serial.println(F(\"找不到接收器，檢查接線！\"));","    while (true) {}","  }","  if (((mbcRead(ADDR, 0xF0) >> 8) & 0xFF) != 2) {   // 0xF0 高 byte：1 = PS2、2 = PS4","    Serial.println(F(\"這是 PS2 接收器：震動和燈條不會有反應\"));","  }","  Serial.println(F(\"按住 ✕ 震動；推左搖桿換燈條顏色。\"));","}","","void loop() {","  int16_t shape = mbcRead(ADDR, 0x03);   // 形狀鍵：▲ 1、● 2、✕ 4、■ 8","  if (shape != MBC_NONE && (shape & 4)) {","    mbcWrite(ADDR, 0xE5, 200);           // 按住 ✕：震動強度 200（每次震 200 ms）","  }","  if (millis() - lastLed >= 100) {       // 燈條每 0.1 秒更新一次","    lastLed = millis();","    int16_t s[2];                        // s[0] = 0x10 LX、s[1] = 0x11 LY","    if (mbcReadMany(ADDR, 0x10, 2, s)) {","      uint8_t r = map(s[0], -100, 100, 0, 255);   // 左右 → 紅","      uint8_t g = map(s[1], -100, 100, 0, 255);   // 上下 → 綠","      mbcWrite(ADDR, 0xE6, r, g, (uint8_t)(255 - r));   // 藍 = 跟紅相反","    }","  }","  delay(50);","}","","@HELPER"]};
+
+  var LANG = PROD.lang;
+  function T(zh, en) { return LANG === 'en' ? en : zh; }
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  var S = { step: 1, viewStep: 1, fn: PROD.defaultFn };
+  var NONE = -32768;
+  // 模擬讀值：st.ok = 有接好；st.r[編號] = 感應器那一格的值。讀不到時跟小幫手一樣回 -32768
+  function R(st, id) { return st.ok && st.r[id] !== undefined ? st.r[id] : NONE; }
+  // mbcReadMany：讀不到回 null（小幫手回 false）
+  function RM(st, id, k) { if (!st.ok) return null; var a = []; for (var i = 0; i < k; i++) a.push(R(st, id + i)); return a; }
+  // Arduino 的 Serial.print(x, HEX／BIN)：負的 int 會印成 32 位元
+  function cHex(n) { return (n < 0 ? n >>> 0 : n).toString(16).toUpperCase(); }
+  function cBin(n) { return (n < 0 ? n >>> 0 : n).toString(2); }
+  function cDiv(a, b) { var q = a / b; return q < 0 ? Math.ceil(q) : Math.floor(q); }
+  function i16(n) { n = n & 0xFFFF; return n >= 0x8000 ? n - 0x10000 : n; }
+  function pad(s, n) { s = String(s) + '  '; while (s.length < n) s += ' '; return s; }
+
+  // 很簡單的 C++ 上色：註解、字串、前置指令、關鍵字、數字、函式名稱
+  var KW = /^(void|bool|int|long|unsigned|char|float|double|const|if|else|while|for|return|true|false|nullptr|NULL|switch|case|break|default|static|uint8_t|uint16_t|uint32_t|int8_t|int16_t|int32_t|byte|defined)$/;
+  function hiCpp(line) {
+    var out = '', i = 0;
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest.slice(0, 2) === '//') { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if ((m = rest.match(/^#[a-z]+/))) { out += '<span class="tk-kw">' + m[0] + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^<[A-Za-z0-9_.\/]+\.h>/)) && /#include\s*$/.test(line.slice(0, i))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (KW.test(w)) out += '<span class="tk-kw">' + w + '</span>';
+        else if (/^\s*\(/.test(after) && after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^(0[xX][0-9A-Fa-f]+|\d+)/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  function render(el, lines, opts) {
+    // lines：[{t: 文字, tag: 步驟編號或 '', tagHide: 不畫圈圈, hl: 標亮, isNew: 新長出來}]
+    opts = opts || {};
+    el.innerHTML = lines.map(function (l, k) {
+      var cls = 'ln' + (l.hl ? ' hl' : '') + (l.isNew ? ' new' : '');
+      var tag = opts.noTag ? '' : '<span class="tag">' + (l.tag && !l.tagHide ? '<i>' + l.tag + '</i>' : '') + '</span>';
+      return '<span class="' + cls + '"><span class="no">' + (l.no !== undefined ? l.no : k + 1) + '</span>' + tag + '<span>' + (l.t ? hiCpp(l.t) : ' ') + '</span></span>';
+    }).join('');
+  }
+  function plain(lines) { return lines.map(function (l) { return l.t; }).join('\n') + '\n'; }
+  function copyText(text, btn) {
+    var done = function () { var o = btn.textContent; btn.textContent = ('已複製'); setTimeout(function () { btn.textContent = o; }, 1400); };
+    try {
+      navigator.clipboard.writeText(text).then(done, function () { fallback(text); });
+    } catch (e) { fallback(text); }
+    function fallback(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e2) { btn.textContent = ('請手動選取複製'); }
+      document.body.removeChild(ta);
+    }
+  }
+
+  // ═════ 通訊方式（共用） ═════
+
+    // ───── I2C：板子、位址、找不到時 ─────
+    var BOARDS = {
+      uno: { name: ('UNO／Nano'), sda: 'A4', scl: 'A5', vcc: '5V' },
+      mega: { name: 'Mega 2560', sda: '20', scl: '21', vcc: '5V' },
+      r4: { name: 'UNO R4', sda: 'A4', scl: 'A5', vcc: '5V' },
+      esp32: { name: 'ESP32', sda: 'GPIO 21', scl: 'GPIO 22', vcc: ('5V（VIN）') }
+    };
+    var READY_MS = PROD.readyMs || 2000;   // 產品可在 vars() 給 readyMs（例如 8 顆雷射開機要 2~4 秒）
+    S.board = 'uno'; S.addrMode = 'factory'; S.addr = PROD.addr; S.onFail = 'stop';
+    function addrOk() {
+      if (S.addrMode === 'factory') return '';
+      var v = $('addr').value.trim();
+      if (!/^0[xX][0-9A-Fa-f]{1,2}$/.test(v)) return ('寫成 0x 開頭的 16 進位，例如 0x20。');
+      var n = parseInt(v, 16);
+      if (n < 0x08 || n > 0x77) return ('I2C 位址只能是 0x08 ~ 0x77。');
+      return '';
+    }
+    var BASE = {
+      top: function () {
+        var b = BOARDS[S.board];
+        return [
+          pad('#include <Wire.h>', 34) + '// ' + ('I2C：SDA = ' + b.sda + '、SCL = ' + b.scl),
+          pad('const int16_t MBC_NONE = -32768;', 34) + '// ' + ('讀不到時的代號')
+        ];
+      },
+      decl: function () {
+        return [pad('const uint8_t ADDR = ' + S.addr + ';', 34) + '// ' + (S.addrMode === 'factory'
+          ? ('I2C 位址（出廠 ' + PROD.addr + '）')
+          : ('換過的 I2C 位址'))];
+      },
+      setupOpen: function () {
+        var L = [
+          'void setup() {',
+          pad('  Serial.begin(115200);', 34) + '// ' + ('序列埠監控視窗選 115200'),
+          pad('  Wire.begin();', 34) + '// ' + ('開始 I2C 通訊'),
+          pad('  if (!mbcWaitReady(ADDR, ' + READY_MS + ')) {', 34) + '// ' + ('等感應器準備好，最多 ' + READY_MS / 1000 + ' 秒'),
+          '    Serial.println(F("' + BASE.bootFail() + '"));'
+        ];
+        if (S.onFail === 'stop') L.push(pad('    while (true) {}', 34) + '// ' + ('找不到就停在這裡'));
+        L.push('  }');
+        return L;
+      },
+      setupClose: function () { return ['}']; },
+      loopWait: 'delay(100);',
+      cardOnceHead: function () { return ('// ……第 2 步：開始通訊、等感應器準備好……'); },
+      bootFail: function () { return ('找不到感應器，檢查接線！'); },
+      halts: function () { return S.onFail === 'stop'; },
+      bubble: function (n, f) {
+        if (n === 1) return ('第 1 步：最上面先寫 2 行（#include 讓 Arduino 認得 I2C 的 Wire；MBC_NONE 是「讀不到」的代號 -32768），小幫手整段貼在程式最下面。');
+        if (n === 2) return ('第 2 步：setup() 開機時跑一次。Serial.begin(115200) 打開序列埠，Wire.begin() 開始 I2C，mbcWaitReady() 最多等 ' + READY_MS / 1000 + ' 秒讓感應器準備好。') +
+          (S.onFail === 'stop' ? ('找不到就停在 while (true) {}。') : ('找不到也繼續跑，讀到的值會是 -32768。'));
+        return f.once
+          ? ('第 3 步：這個功能做一次就好，放在 setup() 裡、等感應器準備好之後；loop() 留空。')
+          : ('第 3 步：loop() 會一直重複。mbcRead(ADDR, 編號) 讀一個值，delay(100) 讓它每 0.1 秒讀一次。');
+      },
+      valid: function () {
+        var bad = addrOk();
+        $('addrerr').hidden = !bad; $('addrerr').textContent = bad;
+        if (!bad) S.addr = S.addrMode === 'factory' ? PROD.addr : '0x' + parseInt($('addr').value.trim(), 16).toString(16).toUpperCase();
+        return !bad;
+      },
+      bind: function (redraw) {
+        function press(group, id) { group.forEach(function (g) { $(g).setAttribute('aria-pressed', String(g === id)); }); }
+        var boards = ['board-uno', 'board-mega', 'board-r4', 'board-esp32'];
+        boards.forEach(function (id) {
+          $(id).addEventListener('click', function () {
+            S.board = id.slice(6); press(boards, id);
+            var b = BOARDS[S.board]; $('pinsda').textContent = b.sda; $('pinscl').textContent = b.scl; $('pinvcc').textContent = b.vcc;
+            redraw(false);
+          });
+        });
+        var addrs = ['addr-factory', 'addr-custom'];
+        addrs.forEach(function (id) {
+          $(id).addEventListener('click', function () {
+            S.addrMode = id === 'addr-factory' ? 'factory' : 'custom'; press(addrs, id);
+            $('addrbox').style.display = S.addrMode === 'custom' ? '' : 'none';
+            BASE.valid(); redraw(false);
+          });
+        });
+        $('addr').addEventListener('input', function () { BASE.valid(); redraw(false); });
+        var fails = ['fail-stop', 'fail-go'];
+        fails.forEach(function (id) {
+          $(id).addEventListener('click', function () { S.onFail = id === 'fail-stop' ? 'stop' : 'go'; press(fails, id); redraw(true); });
+        });
+      }
+    };
+  
+  // ═════ 產品 ═════
+
+    var T0 = Date.now();
+    function upSec() { return 3 + Math.floor((Date.now() - T0) / 1000); }
+    var G_BTN = ('按鍵'), G_STK = ('搖桿'), G_PAD = ('手把狀態'),
+      G_CMD = ('命令（PS4 才有作用）'), G_INFO = ('接收器資訊（每款 MBC 感應器都有）');
+    var PS4ONLY = ('PS4 才有');
+    function hasBit(v, b) { return ((v >> b) & 1) === 1; }
+    var FNS = [
+      // ── 按鍵 ──
+      { id: 'cross', code: '0x01', grp: G_BTN, name: ('某個鍵有沒有按（✕）'), kind: 'read', ret: ('看十六鍵的某一位：1 = 按下'),
+        what: ('十六鍵 0x01 每一位代表一顆鍵。要知道某一顆有沒有按，就用 <code>&amp; (1 &lt;&lt; 位)</code> 取出那一位。範例看 ✕（第 14 位）。各鍵在第幾位見下一張卡。到下面的模擬手把點 ✕ 試試看。'),
+        body: (['if (mbcRead(ADDR, 0x01) & (1 << 14)) {  // 十六鍵 bit14 = ✕', '  Serial.println(F("按下 ✕"));', '} else {', '  Serial.println(F("✕ 沒按"));', '}']),
+        out: function (s) { return hasBit(R(s, 0x01), 14) ? ('按下 ✕') : ('✕ 沒按'); } },
+      { id: 'buttons16', code: '0x01', grp: G_BTN, name: ('十六鍵（全部按鍵）'), kind: 'read', ret: ('0 ~ 65535，每一位一顆鍵（1 = 按下）'),
+        what: ('16 顆鍵合成一個數字（PSX 排列）：bit0 SELECT（PS4：SHARE）、1 L3、2 R3、3 START（PS4：OPTIONS）、4 上、5 右、6 下、7 左、8 L2、9 R2、10 L1、11 R1、12 ▲、13 ●、14 ✕、15 ■。手把沒連線 = 0。只按 ■ 時值剛好是 -32768，跟「讀不到」一樣，所以範例用 <code>mbcReadMany()</code> 讀 1 格：它用 <code>true</code>／<code>false</code> 告訴你有沒有讀到。'),
+        body: (['int16_t b;                             // 十六鍵（PSX 排列）', 'if (mbcReadMany(ADDR, 0x01, 1, &b)) {  // 讀到了', '  Serial.print(F("十六鍵: "));', '  Serial.print((uint16_t)b);', '  Serial.print(F(" = 0b"));', '  Serial.println((uint16_t)b, BIN);    // 最右邊一位 = bit0 SELECT', '} else {', '  Serial.println(F("讀不到接收器"));', '}']),
+        out: function (s) { var a = RM(s, 0x01, 1); if (!a) return ('讀不到接收器'); var u = a[0] & 0xFFFF; return ('十六鍵: ') + u + ' = 0b' + u.toString(2); } },
+      { id: 'dpad', code: '0x02', grp: G_BTN, name: ('方向鍵'), kind: 'read', ret: ('0 ~ 15（上 1、右 2、下 4、左 8）'),
+        what: ('只看 4 顆方向鍵：上 1、右 2、下 4、左 8，同時按就相加（例如上＋右 = 3）。手把沒連線 = 0。用 <code>&amp;</code> 取出每一顆。'),
+        body: (['int16_t d = mbcRead(ADDR, 0x02);       // 方向鍵：上 1、右 2、下 4、左 8', 'Serial.print(F("方向鍵: "));', 'Serial.print(d);', 'if (d & 1) Serial.print(F(" 上"));', 'if (d & 2) Serial.print(F(" 右"));', 'if (d & 4) Serial.print(F(" 下"));', 'if (d & 8) Serial.print(F(" 左"));', 'Serial.println();']),
+        out: function (s) { var d = R(s, 0x02); return ('方向鍵: ') + d + (d & 1 ? (' 上') : '') + (d & 2 ? (' 右') : '') + (d & 4 ? (' 下') : '') + (d & 8 ? (' 左') : ''); } },
+      { id: 'shape', code: '0x03', grp: G_BTN, name: ('形狀鍵'), kind: 'read', ret: ('0 ~ 15（▲ 1、● 2、✕ 4、■ 8）'),
+        what: ('只看 4 顆形狀鍵：▲ 1、● 2、✕ 4、■ 8，同時按就相加。手把沒連線 = 0。只按 ■ 也是 8，不會跟 -32768 混在一起。'),
+        body: (['int16_t sh = mbcRead(ADDR, 0x03);      // 形狀鍵：▲ 1、● 2、✕ 4、■ 8', 'Serial.print(F("形狀鍵: "));', 'Serial.print(sh);', 'if (sh & 1) Serial.print(F(" ▲"));', 'if (sh & 2) Serial.print(F(" ●"));', 'if (sh & 4) Serial.print(F(" ✕"));', 'if (sh & 8) Serial.print(F(" ■"));', 'Serial.println();']),
+        out: function (s) { var v = R(s, 0x03); return ('形狀鍵: ') + v + (v & 1 ? (' ▲') : '') + (v & 2 ? (' ●') : '') + (v & 4 ? (' ✕') : '') + (v & 8 ? (' ■') : ''); } },
+      { id: 'shoulder', code: '0x04', grp: G_BTN, name: ('肩鍵'), kind: 'read', ret: ('0 ~ 15（L2 1、R2 2、L1 4、R1 8）'),
+        what: ('手把前面的 4 顆肩鍵：L2 1、R2 2、L1 4、R1 8，同時按就相加。手把沒連線 = 0。想知道 L2、R2 壓多深，看 0x08、0x09。'),
+        body: (['int16_t sd = mbcRead(ADDR, 0x04);      // 肩鍵：L2 1、R2 2、L1 4、R1 8', 'Serial.print(F("肩鍵: "));', 'Serial.print(sd);', 'if (sd & 1) Serial.print(F(" L2"));', 'if (sd & 2) Serial.print(F(" R2"));', 'if (sd & 4) Serial.print(F(" L1"));', 'if (sd & 8) Serial.print(F(" R1"));', 'Serial.println();']),
+        out: function (s) { var v = R(s, 0x04); return ('肩鍵: ') + v + (v & 1 ? ' L2' : '') + (v & 2 ? ' R2' : '') + (v & 4 ? ' L1' : '') + (v & 8 ? ' R1' : ''); } },
+      { id: 'func', code: '0x05', grp: G_BTN, name: ('功能鍵'), kind: 'read', ret: ('0 ~ 15（SELECT 1、L3 2、R3 4、START 8）'),
+        what: ('SELECT 1、L3 2、R3 4、START 8，同時按就相加。PS4／PS5 手把的 SHARE（建立）= SELECT、OPTIONS = START；L3、R3 是把搖桿往下壓。手把沒連線 = 0。'),
+        body: (['int16_t fn = mbcRead(ADDR, 0x05);      // 功能鍵：SELECT 1、L3 2、R3 4、START 8', 'Serial.print(F("功能鍵: "));', 'Serial.print(fn);', 'if (fn & 1) Serial.print(F(" SELECT"));', 'if (fn & 2) Serial.print(F(" L3"));', 'if (fn & 4) Serial.print(F(" R3"));', 'if (fn & 8) Serial.print(F(" START"));', 'Serial.println();']),
+        out: function (s) { var v = R(s, 0x05); return ('功能鍵: ') + v + (v & 1 ? ' SELECT' : '') + (v & 2 ? ' L3' : '') + (v & 4 ? ' R3' : '') + (v & 8 ? ' START' : ''); } },
+      // ── 搖桿 ──
+      { id: 'sticks', code: '0x10~0x13', grp: G_STK, name: ('兩支搖桿（一次讀 4 個）'), kind: 'read', ret: ('4 個 −100 ~ +100（0 = 中間）'),
+        what: ('0x10 LX 左搖桿左右、0x11 LY 左搖桿上下、0x12 RX 右搖桿左右、0x13 RY 右搖桿上下。往右、往上是正數，推到底 ±100；手把沒連線 = 0。4 個編號連號，用 <code>mbcReadMany()</code> 一次讀完；讀不到時它回傳 <code>false</code>。'),
+        body: (['int16_t st[4];                         // st[0] LX、st[1] LY、st[2] RX、st[3] RY', 'if (mbcReadMany(ADDR, 0x10, 4, st)) {', '  Serial.print(F("LX "));   Serial.print(st[0]);', '  Serial.print(F("  LY ")); Serial.print(st[1]);', '  Serial.print(F("  RX ")); Serial.print(st[2]);', '  Serial.print(F("  RY ")); Serial.println(st[3]);', '} else {', '  Serial.println(F("讀不到接收器"));', '}']),
+        out: function (s) { var a = RM(s, 0x10, 4); return a ? 'LX ' + a[0] + '  LY ' + a[1] + '  RX ' + a[2] + '  RY ' + a[3] : ('讀不到接收器'); } },
+      { id: 'stickLY', code: '0x11', grp: G_STK, name: ('左搖桿上下'), kind: 'read', ret: ('−100（下）~ +100（上）'),
+        what: ('只讀一支搖桿的一個方向：0x10 LX、0x11 LY、0x12 RX、0x13 RY。範例讀左搖桿上下，推超過一半就說往哪邊推。'),
+        body: (['int16_t ly = mbcRead(ADDR, 0x11);      // 左搖桿上下：-100（下）~ +100（上）', 'Serial.print(F("左搖桿上下: "));', 'Serial.print(ly);', 'if (ly == MBC_NONE) Serial.println(F("  讀不到接收器"));', 'else if (ly > 50) Serial.println(F("  往上推"));', 'else if (ly < -50) Serial.println(F("  往下推"));', 'else Serial.println();']),
+        out: function (s) { var v = R(s, 0x11); return ('左搖桿上下: ') + v + (v === NONE ? ('  讀不到接收器') : v > 50 ? ('  往上推') : v < -50 ? ('  往下推') : ''); } },
+      // ── 手把狀態 ──
+      { id: 'connected', code: '0x06', grp: G_PAD, name: ('手把已連線'), kind: 'read', ret: ('1 = 連上、0 = 沒連上'),
+        what: ('手把有沒有連上接收器。手把沒開、沒電、沒配對時是 0，這時按鍵和搖桿全部是 0。跟「讀不到接收器」（-32768）不一樣，範例三種情形都分開說。到下面勾「手把沒連線」「拔掉接收器」比較看看。'),
+        body: (['int16_t c = mbcRead(ADDR, 0x06);       // 已連線：1 = 有、0 = 沒有', 'if (c == 1) Serial.println(F("手把連上了"));', 'else if (c == 0) Serial.println(F("手把沒連線（接收器有接好）"));', 'else Serial.println(F("讀不到接收器"));']),
+        out: function (s) { var c = R(s, 0x06); return c === 1 ? ('手把連上了') : c === 0 ? ('手把沒連線（接收器有接好）') : ('讀不到接收器'); } },
+      { id: 'battery', code: '0x07', grp: G_PAD, name: ('手把電量'), kind: 'read', badge: PS4ONLY, ret: ('0 ~ 100 %（PS2 一直是 0）'),
+        what: ('PS4／PS5 手把的電量。PS2 的 2.4G 手把不會回報電量，PS2 接收器這一格一直是 0。到下面切換 PS2／PS4 試試看。'),
+        body: (['Serial.print(F("電量: "));', 'Serial.print(mbcRead(ADDR, 0x07));     // 0 ~ 100（PS2 一直是 0）', 'Serial.println(F(" %"));']),
+        out: function (s) { return ('電量: ') + R(s, 0x07) + ' %'; } },
+      { id: 'l2', code: '0x08', grp: G_PAD, name: ('L2 壓多深'), kind: 'read', ret: ('0 ~ 255'),
+        what: ('L2 扳機壓多深：0 = 放開、255 = 壓到底。PS4／PS5 的扳機和 DualShock 2 類比模式才有中間的數字；沒有壓力值的手把按下 = 255、放開 = 0。手把沒連線 = 0。到下面按住 L2、拉「扳機壓多深」試試看。'),
+        body: (['Serial.print(F("L2 壓多深: "));', 'Serial.println(mbcRead(ADDR, 0x08));   // 0（放開）~ 255（壓到底）']),
+        out: function (s) { return ('L2 壓多深: ') + R(s, 0x08); } },
+      { id: 'r2', code: '0x09', grp: G_PAD, name: ('R2 壓多深'), kind: 'read', ret: ('0 ~ 255'),
+        what: ('R2 扳機壓多深，規則跟 0x08 L2 一樣。拿來當油門很好用：壓越深跑越快。'),
+        body: (['Serial.print(F("R2 壓多深: "));', 'Serial.println(mbcRead(ADDR, 0x09));   // 0（放開）~ 255（壓到底）']),
+        out: function (s) { return ('R2 壓多深: ') + R(s, 0x09); } },
+      { id: 'sysKeys', code: '0x0A', grp: G_PAD, name: ('系統鍵（PS 鍵）'), kind: 'read', badge: PS4ONLY, ret: ('bit0 PS 鍵、bit1 擷取鍵（PS2 一直是 0）'),
+        what: ('PS4／PS5 手把中間的 <b>PS 鍵</b>（bit0）和擷取鍵（bit1，PS5 是靜音鍵）。這兩顆不在十六鍵裡。PS2 手把沒有這兩顆，PS2 接收器一直是 0。到下面切成 PS4 接收器、點 PS 鍵試試看。'),
+        body: (['int16_t sys = mbcRead(ADDR, 0x0A);     // bit0 = PS 鍵、bit1 = 擷取鍵', 'Serial.print(F("PS 鍵 "));', 'Serial.print(sys & 1);', 'Serial.print(F("  擷取鍵 "));', 'Serial.println((sys >> 1) & 1);']),
+        out: function (s) { var v = R(s, 0x0A); return ('PS 鍵 ') + (v & 1) + ('  擷取鍵 ') + ((v >> 1) & 1); } },
+      { id: 'padType', code: '0x0B', grp: G_PAD, name: ('手把類型'), kind: 'read', badge: ('3、4 只有 PS4'), ret: ('0 沒有、1 PS2 數位、2 PS2 類比、3 PS4、4 PS5'),
+        what: ('接上的是哪一種手把。PS2 接收器只會出現 0、1、2：1 = 數位模式（ANALOG 燈熄，搖桿沒作用）、2 = 類比模式。3 PS4、4 PS5（或其他藍牙手把）只有 PS4 接收器會出現。到下面切換接收器、勾「數位模式」試試看。'),
+        body: (['int16_t t = mbcRead(ADDR, 0x0B);       // 0 沒有、1 PS2 數位、2 PS2 類比、3 PS4、4 PS5', 'Serial.print(F("手把類型: "));', 'Serial.print(t);', 'if (t == 0) Serial.println(F("（沒有手把）"));', 'else if (t == 1) Serial.println(F("（PS2 數位模式，搖桿沒作用）"));', 'else if (t == 2) Serial.println(F("（PS2 類比模式）"));', 'else if (t == 3) Serial.println(F("（PS4 手把）"));', 'else if (t == 4) Serial.println(F("（PS5 手把）"));', 'else Serial.println();']),
+        out: function (s) {
+          var t = R(s, 0x0B);
+          var nm = [('（沒有手把）'), ('（PS2 數位模式，搖桿沒作用）'), ('（PS2 類比模式）'), ('（PS4 手把）'), ('（PS5 手把）')];
+          return ('手把類型: ') + t + (t >= 0 && t <= 4 ? nm[t] : '');
+        } },
+      { id: 'padMany', code: '0x06~0x0B', grp: G_PAD, name: ('手把狀態（一次讀 6 個）'), kind: 'read', ret: ('已連線、電量、L2、R2、系統鍵、類型'),
+        what: ('0x06～0x0B 是連號，用 <code>mbcReadMany()</code> 一次讀回 6 個，保證是同一瞬間的資料：<code>v[0]</code> 是 0x06 已連線 … <code>v[5]</code> 是 0x0B 手把類型。讀不到時回傳 <code>false</code>。'),
+        body: (['int16_t v[6];                          // v[0] = 0x06 已連線 … v[5] = 0x0B 手把類型', 'if (mbcReadMany(ADDR, 0x06, 6, v)) {', '  Serial.print(F("已連線 "));   Serial.print(v[0]);', '  Serial.print(F("  電量 "));   Serial.print(v[1]);', '  Serial.print(F("  L2 "));     Serial.print(v[2]);', '  Serial.print(F("  R2 "));     Serial.print(v[3]);', '  Serial.print(F("  系統鍵 ")); Serial.print(v[4]);', '  Serial.print(F("  類型 "));   Serial.println(v[5]);', '} else {', '  Serial.println(F("讀不到接收器"));', '}']),
+        out: function (s) {
+          var a = RM(s, 0x06, 6);
+          if (!a) return ('讀不到接收器');
+          return ('已連線 ') + a[0] + ('  電量 ') + a[1] + '  L2 ' + a[2] + '  R2 ' + a[3] + ('  系統鍵 ') + a[4] + ('  類型 ') + a[5];
+        } },
+      // ── 命令（PS4 才有作用）──
+      { id: 'vibrate', code: 'E5', grp: G_CMD, name: ('震動'), kind: 'cmd', badge: PS4ONLY, ret: ('1 個參數：強度 0 ~ 255（0 = 停）'),
+        what: ('讓 PS4／PS5 手把震動。每送一次震 200 ms，要一直震就每 0.1 秒左右再送一次（範例放在 <code>loop()</code> 裡，按住 ✕ 就一直送）。<b>PS2 接收器收到會忽略</b>（PS2 手把的震動已經關掉），程式照樣跑、不會出錯。到下面切成 PS4 接收器、按住 ✕ 試試看。'),
+        body: (['if (mbcRead(ADDR, 0x01) & (1 << 14)) {  // 按住 ✕（十六鍵 bit14）', '  mbcWrite(ADDR, 0xE5, 200);            // 震動強度 200（0 ~ 255），每次震 200 ms', '  Serial.println(F("送出 E5：震動 200"));', '} else {', '  mbcWrite(ADDR, 0xE5, (uint8_t)0);     // 0 = 停', '  Serial.println(F("送出 E5：0（停）"));', '}']),
+        out: function (s) { return hasBit(R(s, 0x01), 14) ? ('送出 E5：震動 200') : ('送出 E5：0（停）'); } },
+      { id: 'setLed', code: 'E6', grp: G_CMD, name: ('燈條顏色'), kind: 'cmd', once: true, badge: PS4ONLY, ret: ('3 個參數：紅、綠、藍 各 0 ~ 255'),
+        what: ('把 PS4／PS5 手把的燈條換顏色，要剛好給紅、綠、藍 3 個數字。手把還沒連上時送也可以，接收器會先記住、連上再套用；接收器預設是藍色 (0, 0, 255)。數字 0 寫成 <code>(uint8_t)0</code>。PS2 手把沒有燈條，<b>PS2 接收器收到會忽略</b>。'),
+        body: (['mbcWrite(ADDR, 0xE6, 255, (uint8_t)0, (uint8_t)0);   // 燈條：紅 255、綠 0、藍 0', 'Serial.println(F("送出 E6：燈條換成紅色"));']),
+        out: function (s) { return ('送出 E6：燈條換成紅色'); } },
+      // ── 接收器資訊（共用編號）──
+      { id: 'sensorOk', code: 'MBC_NONE', grp: G_INFO, name: ('有沒有接好'), kind: 'read', ret: ('讀到 -32768 = 沒接好'),
+        what: ('讀任何一格，讀到 <code>MBC_NONE</code>（-32768）就是接收器沒接好、位址錯了。範例讀 0xF0 裝置 ID（它永遠不會是 -32768）。到右邊勾「拔掉接收器」試試看。'),
+        body: (['if (mbcRead(ADDR, 0xF0) == MBC_NONE) {', '  Serial.println(F("接收器沒接好！"));', '} else {', '  Serial.println(F("接收器正常"));', '}']),
+        out: function (s) { return s.ok ? ('接收器正常') : ('接收器沒接好！'); } },
+      { id: 'deviceId', code: '0xF0', grp: G_INFO, name: ('裝置 ID'), kind: 'read', once: true, ret: ('低 byte = 出廠位址 0x42、高 byte = 款式（1 PS2、2 PS4）'),
+        what: ('確認接的是哪一款：低 byte 是出廠位址 0x42（換過位址也不變），高 byte 是款式：1 = PS2 接收器、2 = PS4／PS5 接收器。兩款位址一樣，程式要分辨就看這個。到下面切換 PS2／PS4 試試看。'),
+        body: (['int16_t id = mbcRead(ADDR, 0xF0);', 'Serial.print(F("出廠位址 0x"));', 'Serial.print((uint8_t)(id & 0xFF), HEX);', 'Serial.print(F("，款式 "));          // 1 = PS2、2 = PS4／PS5', 'Serial.println((uint8_t)((id >> 8) & 0xFF));']),
+        out: function (s) { var id = R(s, 0xF0); return ('出廠位址 0x') + cHex(id & 0xFF) + ('，款式 ') + ((id >> 8) & 0xFF); } },
+      { id: 'protoVer', code: '0xF1', grp: G_INFO, name: ('協議版本'), kind: 'read', once: true, ret: '2',
+        what: ('這份寫法照協議版本 2。讀到 2 就對了。'),
+        body: (['Serial.print(F("協議版本: "));', 'Serial.println(mbcRead(ADDR, 0xF1));']),
+        out: function (s) { return ('協議版本: ') + R(s, 0xF1); } },
+      { id: 'fwVer', code: '0xF2', grp: G_INFO, name: ('韌體版本'), kind: 'read', once: true, ret: ('主版 × 100 + 次版（例 102 = 1.2）'),
+        what: ('接收器韌體的版本。除以 100 是主版、餘數是次版。'),
+        body: (['int16_t fw = mbcRead(ADDR, 0xF2);', 'Serial.print(F("韌體版本: "));', 'Serial.print(fw / 100);', 'Serial.print(F("."));', 'Serial.println(fw % 100);']),
+        out: function (s) { var fw = R(s, 0xF2); return ('韌體版本: ') + cDiv(fw, 100) + '.' + (fw % 100); } },
+      { id: 'status', code: '0xF3', grp: G_INFO, name: ('狀態旗標'), kind: 'read', ret: ('bit0 就緒、bit1 手把已連線'),
+        what: ('一個 bit 代表一件事，1 = 是。bit1 跟 0x06 已連線一樣。勾「手把沒連線」，看 bit1 怎麼變。'),
+        body: (['int16_t st = mbcRead(ADDR, 0xF3);', 'Serial.print(F("就緒 "));        Serial.print((st >> 0) & 1);', 'Serial.print(F("  手把已連線 ")); Serial.println((st >> 1) & 1);']),
+        out: function (s) { var st = R(s, 0xF3); return ('就緒 ') + ((st >> 0) & 1) + ('  手把已連線 ') + ((st >> 1) & 1); } },
+      { id: 'seq', code: '0xF4', grp: G_INFO, name: ('更新序號'), kind: 'read', ret: ('0 ~ 255（每 10 ms 加 1）'),
+        what: ('接收器每 10 ms 加 1，到 255 再從 0 開始。數字一直在跳 = 接收器活著；停住不動 = 接收器忙。'),
+        body: (['Serial.print(F("更新序號: "));', 'Serial.println(mbcRead(ADDR, 0xF4));']),
+        out: function (s) { return ('更新序號: ') + R(s, 0xF4); } },
+      { id: 'uptime', code: '0xF5', grp: G_INFO, name: ('開機秒數'), kind: 'read', ret: ('0 ~ 32767 秒'),
+        what: ('接收器開機多久了。數字突然變小 = 接收器重新開機過（例如電源接觸不良）。'),
+        body: (['Serial.print(F("開機秒數: "));', 'Serial.println(mbcRead(ADDR, 0xF5));']),
+        out: function (s) { return ('開機秒數: ') + R(s, 0xF5); } },
+      { id: 'setAddress', code: 'F8', grp: G_INFO, name: ('換 I2C 位址'), kind: 'cmd', once: true, ret: ('2 個參數：新位址、新位址取反'),
+        what: ('同一條線上有別的裝置也用 0x42 時，先把接收器換位址（0x08 ~ 0x77）。存進接收器，<b>重新開機後才生效</b>，之後程式的 <code>ADDR</code> 也要改。回出廠位址寫 <code>0x00, 0xFF</code>。'),
+        warn: ('只在需要時跑一次，跑完記得把這段刪掉。'),
+        body: (['mbcWrite(ADDR, 0xF8, 0x20, (uint8_t)~0x20);      // 換到 0x20，重開機後生效', '// mbcWrite(ADDR, 0xF8, (uint8_t)0x00, 0xFF);    // 回出廠位址', 'Serial.println(F("已送出：重新開機後位址是 0x20"));']),
+        out: function (s) { return ('已送出：重新開機後位址是 0x20'); } },
+      { id: 'reboot', code: 'EF', grp: G_INFO, name: ('重新開機'), kind: 'cmd', once: true, ret: ('1 個參數：確認碼 0xA5'),
+        what: ('讓接收器重新開機（換位址之後用它就不用拔電）。重開完 0xF5 開機秒數會從 0 開始，手把要再連一次。'),
+        body: (['mbcWrite(ADDR, 0xEF, 0xA5);            // 重新開機', 'delay(500);', 'mbcWaitReady(ADDR, 5000);              // 等它開好', 'Serial.print(F("重新開機完成，開機秒數: "));', 'Serial.println(mbcRead(ADDR, 0xF5));']),
+        out: function (s) { return ('重新開機完成，開機秒數: ') + (s.ok ? 0 : NONE); } }
+    ];
+
+    // ───── 模擬手把（沿用 SPIKE 版的畫面；只用畫面示意換算）─────
+    // 按鍵在十六鍵裡的位置（PSX 排列，照 protocol ps2.json／ps4.json 0x01）
+    var PSX = { SELECT: 0, L3: 1, R3: 2, START: 3, UP: 4, RIGHT: 5, DOWN: 6, LEFT: 7, L2: 8, R2: 9, L1: 10, R1: 11, TRIANGLE: 12, CIRCLE: 13, CROSS: 14, SQUARE: 15 };
+    // 畫面上的按鍵：[名稱, 形狀 r=方塊／c=圓, x, y, w 或半徑, h, 文字]
+    var PADG = [
+      ['L2', 'r', 46, 8, 92, 22, 'L2'], ['L1', 'r', 46, 34, 92, 22, 'L1'], ['R2', 'r', 322, 8, 92, 22, 'R2'], ['R1', 'r', 322, 34, 92, 22, 'R1'],
+      ['UP', 'r', 88, 72, 26, 28, '↑'], ['DOWN', 'r', 88, 126, 26, 28, '↓'], ['LEFT', 'r', 60, 100, 28, 26, '←'], ['RIGHT', 'r', 114, 100, 28, 26, '→'],
+      ['TRIANGLE', 'c', 359, 84, 14, 0, '△'], ['CIRCLE', 'c', 387, 112, 14, 0, '○'], ['CROSS', 'c', 359, 140, 14, 0, '✕'], ['SQUARE', 'c', 331, 112, 14, 0, '□'],
+      ['SELECT', 'r', 180, 96, 46, 18, 'SELECT'], ['START', 'r', 234, 96, 46, 18, 'START'], ['PS', 'c', 230, 134, 11, 0, 'PS']
+    ];
+    var LAB = { UP: ('上'), DOWN: ('下'), LEFT: ('左'), RIGHT: ('右'), TRIANGLE: ('三角形 △'), CIRCLE: ('圓形 ○'), CROSS: ('叉叉 ✕'), SQUARE: ('方形 □'), PS: ('PS 鍵') };
+    var STK = { L: [172, 176], R: [288, 176] }, STK_R = 18;
+    var held = {}, stk = { L: [0, 0], R: [0, 0] }, drag = null, built = false;
+    // 示意：圓點離中心多遠 → −100 ~ +100，中間附近當 0（死區）
+    function axis(a) { var v = Math.max(-100, Math.min(100, Math.round(a * 100))); return Math.abs(v) < 6 ? 0 : v; }
+    function kindNow() { return $('k5').checked ? 'PS5' : $('k4').checked ? 'PS4' : 'PS2'; }
+    function buildPad() {
+      var svg = $('field'), h = '';
+      h += '<rect x="0" y="0" width="460" height="270" fill="#f7f7f2"/>';
+      h += '<rect id="padbody" x="30" y="58" width="400" height="150" rx="64" fill="#26302e" stroke="#26302e" stroke-width="3"/>';
+      h += '<rect id="lightbar" x="196" y="62" width="68" height="7" rx="3.5" fill="#0000ff"/>';
+      PADG.forEach(function (b) {
+        var lab = LAB[b[0]] || b[0];
+        h += '<g data-btn="' + b[0] + '" tabindex="0" role="button" aria-pressed="false" aria-label="' + lab + '" style="cursor:pointer">';
+        if (b[1] === 'r') h += '<rect x="' + b[2] + '" y="' + b[3] + '" width="' + b[4] + '" height="' + b[5] + '" rx="6" fill="#55605d" stroke="#1b2422" stroke-width="1.5"/>' +
+          '<text x="' + (b[2] + b[4] / 2) + '" y="' + (b[3] + b[5] / 2 + 5) + '" text-anchor="middle" font-size="' + (b[6].length > 2 ? 10 : 14) + '" font-weight="700" fill="#fff" pointer-events="none">' + b[6] + '</text>';
+        else h += '<circle cx="' + b[2] + '" cy="' + b[3] + '" r="' + b[4] + '" fill="#55605d" stroke="#1b2422" stroke-width="1.5"/>' +
+          '<text x="' + b[2] + '" y="' + (b[3] + (b[0] === 'PS' ? 4 : 5)) + '" text-anchor="middle" font-size="' + (b[0] === 'PS' ? 10 : 14) + '" font-weight="700" fill="#fff" pointer-events="none">' + b[6] + '</text>';
+        h += '</g>';
+      });
+      ['L', 'R'].forEach(function (k) {
+        var c = STK[k];
+        h += '<g data-stick="' + k + '" tabindex="0" role="slider" aria-label="' + (k === 'L' ? ('左搖桿（方向鍵移動）') : ('右搖桿（方向鍵移動）')) + '" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0" style="cursor:grab">' +
+          '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="30" fill="#3b4846" stroke="#1b2422" stroke-width="2"/>' +
+          '<line x1="' + (c[0] - 24) + '" y1="' + c[1] + '" x2="' + (c[0] + 24) + '" y2="' + c[1] + '" stroke="#55605d"/><line x1="' + c[0] + '" y1="' + (c[1] - 24) + '" x2="' + c[0] + '" y2="' + (c[1] + 24) + '" stroke="#55605d"/>' +
+          '<circle id="knob' + k + '" cx="' + c[0] + '" cy="' + c[1] + '" r="15" fill="#8a9794" stroke="#f7f7f2" stroke-width="2"/></g>';
+      });
+      h += '<text id="padsel" x="203" y="90" text-anchor="middle" font-size="10" fill="#9aaba7"></text><text id="padsta" x="257" y="90" text-anchor="middle" font-size="10" fill="#9aaba7"></text>';
+      h += '<text id="padval" x="230" y="230" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#3d4a47"></text>';
+      h += '<text id="padmsg" x="230" y="257" text-anchor="middle" font-size="13" font-weight="700"></text>';
+      svg.innerHTML = h;
+      svg.style.touchAction = 'none';
+      svg.addEventListener('pointerdown', function (e) {
+        var t = e.target.closest ? e.target.closest('[data-stick],[data-btn]') : null;
+        if (!t) return;
+        e.preventDefault();
+        if (t.hasAttribute('data-stick')) { drag = t.getAttribute('data-stick'); try { svg.setPointerCapture(e.pointerId); } catch (x) {} moveStick(e); }
+        else toggleBtn(t.getAttribute('data-btn'));
+      });
+      svg.addEventListener('pointermove', function (e) { if (drag) moveStick(e); });
+      svg.addEventListener('pointerup', function () { drag = null; });
+      svg.addEventListener('pointercancel', function () { drag = null; });
+      svg.addEventListener('keydown', function (e) {
+        var t = e.target;
+        if (t.hasAttribute && t.hasAttribute('data-btn') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggleBtn(t.getAttribute('data-btn')); }
+        if (t.hasAttribute && t.hasAttribute('data-stick')) {
+          var d = { ArrowLeft: [-0.25, 0], ArrowRight: [0.25, 0], ArrowUp: [0, 0.25], ArrowDown: [0, -0.25] }[e.key];
+          if (d) { e.preventDefault(); var k = t.getAttribute('data-stick'); stk[k] = [Math.max(-1, Math.min(1, stk[k][0] + d[0])), Math.max(-1, Math.min(1, stk[k][1] + d[1]))]; tick(false); }
+        }
+      });
+      $('release').addEventListener('click', function () { held = {}; stk = { L: [0, 0], R: [0, 0] }; tick(false); });
+      built = true;
+    }
+    function toggleBtn(n) { held[n] = !held[n]; tick(false); }
+    function moveStick(e) {
+      var svg = $('field'), m = svg.getScreenCTM ? svg.getScreenCTM() : null; if (!m) return;
+      var p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; var q = p.matrixTransform(m.inverse());
+      var c = STK[drag], dx = (q.x - c[0]) / STK_R, dy = -(q.y - c[1]) / STK_R, r = Math.sqrt(dx * dx + dy * dy);
+      if (r > 1) { dx /= r; dy /= r; }
+      stk[drag] = [dx, dy]; tick(false);
+    }
+    function rawState() {
+      var kind = kindNow(), ps2 = kind === 'PS2', conn = !$('nopad').checked, digital = ps2 && $('digital').checked;
+      var trig = Number($('trig').value), bits = 0;
+      // 手把沒連線：接收器還在，按鍵、搖桿全部是 0
+      if (conn) Object.keys(held).forEach(function (k) { if (held[k] && PSX[k] !== undefined) bits |= 1 << PSX[k]; });
+      function on(k) { return ((bits >> PSX[k]) & 1) === 1; }
+      var st = conn && !digital;
+      return {
+        kind: kind, ps2: ps2, conn: conn, digital: digital, bits: bits,
+        dpad: (on('UP') ? 1 : 0) | (on('RIGHT') ? 2 : 0) | (on('DOWN') ? 4 : 0) | (on('LEFT') ? 8 : 0),
+        shape: (on('TRIANGLE') ? 1 : 0) | (on('CIRCLE') ? 2 : 0) | (on('CROSS') ? 4 : 0) | (on('SQUARE') ? 8 : 0),
+        shoulder: (on('L2') ? 1 : 0) | (on('R2') ? 2 : 0) | (on('L1') ? 4 : 0) | (on('R1') ? 8 : 0),
+        func: (on('SELECT') ? 1 : 0) | (on('L3') ? 2 : 0) | (on('R3') ? 4 : 0) | (on('START') ? 8 : 0),
+        // PS2 數位模式沒有壓力值：按下 = 255
+        l2: on('L2') ? (digital ? 255 : trig) : 0, r2: on('R2') ? (digital ? 255 : trig) : 0,
+        sys: conn && !ps2 && held.PS ? 1 : 0,
+        type: !conn ? 0 : ps2 ? (digital ? 1 : 2) : kind === 'PS4' ? 3 : 4,
+        battery: conn && !ps2 ? 80 : 0,
+        LX: st ? axis(stk.L[0]) : 0, LY: st ? axis(stk.L[1]) : 0, RX: st ? axis(stk.R[0]) : 0, RY: st ? axis(stk.R[1]) : 0
+      };
+    }
+    function regs(s) {
+      var r = {};
+      r[0x01] = i16(s.bits); r[0x02] = s.dpad; r[0x03] = s.shape; r[0x04] = s.shoulder; r[0x05] = s.func;
+      r[0x06] = s.conn ? 1 : 0; r[0x07] = s.battery; r[0x08] = s.l2; r[0x09] = s.r2; r[0x0A] = s.sys; r[0x0B] = s.type;
+      r[0x10] = s.LX; r[0x11] = s.LY; r[0x12] = s.RX; r[0x13] = s.RY;   // 0x0C~0x0F 是空號（讀到 -32768）
+      r[0xF0] = (s.ps2 ? 1 : 2) * 256 + 0x42; r[0xF1] = 2; r[0xF2] = 102;
+      r[0xF3] = 1 | (s.conn ? 2 : 0);
+      r[0xF4] = Math.floor((Date.now() - T0) / 10) & 255; r[0xF5] = upSec();
+      return r;
+    }
+    function paintPad(st) {
+      if (!built) buildPad();
+      var s = st.raw, tok = getComputedStyle(document.documentElement);
+      var acc = tok.getPropertyValue('--accent').trim() || '#0a7c78', ir = tok.getPropertyValue('--ir').trim() || '#e04a3b';
+      var svg = $('field');
+      svg.querySelectorAll('[data-btn]').forEach(function (g) {
+        var n = g.getAttribute('data-btn'), on = !!held[n];
+        g.setAttribute('aria-pressed', String(on));
+        g.firstChild.setAttribute('fill', on ? acc : '#55605d');
+        if (n === 'PS') g.style.display = s.ps2 ? 'none' : '';
+      });
+      ['L', 'R'].forEach(function (k) {
+        var c = STK[k], kn = $('knob' + k);
+        kn.setAttribute('cx', (c[0] + stk[k][0] * STK_R).toFixed(1)); kn.setAttribute('cy', (c[1] - stk[k][1] * STK_R).toFixed(1));
+        kn.setAttribute('fill', stk[k][0] || stk[k][1] ? acc : '#8a9794');
+        kn.parentNode.setAttribute('aria-valuenow', String(axis(stk[k][1])));
+        kn.parentNode.setAttribute('aria-valuetext', k + 'X ' + axis(stk[k][0]) + ', ' + k + 'Y ' + axis(stk[k][1]));
+      });
+      $('padsel').textContent = s.ps2 ? '' : (s.kind === 'PS5' ? ('建立') : 'SHARE');
+      $('padsta').textContent = s.ps2 ? '' : 'OPTIONS';
+      // 燈條：PS4／PS5 才有；跑了 E6 範例就變紅（示意）
+      var ran = S.step >= 3 && st.ok;
+      var lb = $('lightbar');
+      lb.style.display = s.ps2 ? 'none' : '';
+      lb.setAttribute('fill', ran && S.fn === 'setLed' ? '#ff2020' : '#2050ff');
+      var rumble = ran && S.fn === 'vibrate' && s.conn && ((s.bits >> 14) & 1) === 1;
+      $('padbody').setAttribute('stroke', rumble && !s.ps2 ? acc : '#26302e');
+      if (st.ok) {
+        $('padval').textContent = ('Arduino 讀到　') + 'LX ' + R(st, 0x10) + '  LY ' + R(st, 0x11) + '  RX ' + R(st, 0x12) + '  RY ' + R(st, 0x13) + '  0x01 = ' + R(st, 0x01);
+      } else {
+        $('padval').textContent = ('Arduino 讀到的每個值都是 -32768');
+      }
+      var msg = $('padmsg'), t = '';
+      if (!st.ok) t = ('接收器拔掉了：Arduino 讀到 -32768');
+      else if (!s.conn) t = ('手把沒連線：0x06 = 0，按鍵、搖桿都是 0');
+      else if (ran && S.fn === 'vibrate' && rumble) t = s.ps2 ? ('PS2 接收器收到 E5 會忽略：手把不會震') : ('手把震動中（E5 強度 200）');
+      else if (ran && S.fn === 'setLed') t = s.ps2 ? ('PS2 接收器收到 E6 會忽略：PS2 手把沒有燈條') : ('燈條變成紅色（E6 255, 0, 0）');
+      else if (s.digital) t = ('PS2 數位模式：搖桿都是 0、0x0B = 1');
+      msg.textContent = t;
+      msg.setAttribute('fill', !st.ok || !s.conn ? ir : acc);
+    }
+    var SIM = {
+      state: function () { var raw = rawState(); return { ok: !$('unplug').checked, raw: raw, r: regs(raw) }; },
+      draw: paintPad,
+      inputs: ['k2', 'k4', 'k5', 'digital', 'nopad', 'unplug', 'trig']
+    };
+  
+  // ═════ 頁面 ═════
+
+  // 需要：BASE（通訊方式）、FNS（功能）、SIM（模擬器）
+  var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; });
+  if (!BY[S.fn]) S.fn = FNS[0].id;
+
+  // ───── 主程式組裝 ─────
+  function programLines() {
+    var f = BY[S.fn], L = [];
+    var s1 = S.step === 1, s2 = S.step === 2, s3 = S.step === 3;
+    BASE.top().forEach(function (t) { L.push({ t: t, tag: 1, hl: s1 }); });
+    if (S.step >= 2) {
+      L.push({ t: '' });
+      BASE.decl().forEach(function (t) { L.push({ t: t, tag: 2, hl: s2 }); });
+      if (S.step >= 3 && f.pre) { L.push({ t: '' }); f.pre.forEach(function (t) { L.push({ t: t, tag: 3, hl: s3 }); }); }
+      L.push({ t: '' });
+      BASE.setupOpen().forEach(function (t) { L.push({ t: t, tag: 2, hl: s2 }); });
+      if (S.step >= 3 && f.once) f.body.forEach(function (b) { L.push({ t: '  ' + b, tag: 3, hl: s3 }); });
+      BASE.setupClose().forEach(function (t) { L.push({ t: t, tag: 2, hl: s2 }); });
+      if (S.step >= 3) {
+        L.push({ t: '' });
+        L.push({ t: 'void loop() {', tag: 3, hl: s3 });
+        if (f.once) {
+          L.push({ t: '  ' + ('// 這個功能在 setup() 做一次就好，loop() 不用寫'), tag: 3, hl: s3 });
+        } else {
+          (BASE.loopHead ? BASE.loopHead() : []).forEach(function (t) { L.push({ t: '  ' + t, tag: 3, hl: s3 }); });
+          f.body.forEach(function (b) { L.push({ t: '  ' + b, tag: 3, hl: s3 }); });
+          L.push({ t: '  ' + (f.wait || BASE.loopWait), tag: 3, hl: s3 });
+        }
+        L.push({ t: '}', tag: 3, hl: s3 });
+        if (f.post) { L.push({ t: '' }); f.post.forEach(function (t) { L.push({ t: t, tag: 3, hl: s3 }); }); }
+      }
+    }
+    L.push({ t: '' });
+    PROD.helper.forEach(function (t, i) { L.push({ t: t, tag: 1, hl: s1, helper: true, tagHide: i > 0 }); });
+    return L;
+  }
+  var lastKeys = '';
+  function drawMain() {
+    var L = programLines();
+    L.forEach(function (l, k) { l.no = k + 1; });
+    if (!S.showHelper) {
+      // 小幫手很長：平常只露第一行，按「顯示小幫手」才全部展開（複製程式一定是完整的）
+      var nH = L.filter(function (l) { return l.helper; }).length, seen = false, F = [];
+      L.forEach(function (l) {
+        if (!l.helper) { F.push(l); return; }
+        if (seen) return;
+        seen = true; F.push(l);
+        F.push({ t: ('// ⋯ 還有 ' + (nH - 1) + ' 行（按「顯示小幫手」看）'), no: '⋮', tag: 1, tagHide: true, hl: l.hl, helper: true });
+      });
+      L = F;
+    }
+    var prev = lastKeys ? lastKeys.split('\n') : [];
+    L.forEach(function (l) { if (l.t && lastKeys && prev.indexOf(l.t) < 0) l.isNew = true; });
+    lastKeys = L.map(function (l) { return l.t; }).join('\n');
+    render($('maincode'), L);
+    var b = $('bubble'); b.querySelector('i').textContent = S.step; b.querySelector('span').textContent = BASE.bubble(S.step, BY[S.fn]);
+    drawMinis();
+  }
+
+  // 每一步卡片裡的「這一步寫的程式」：用完整程式的真實行號；小幫手只列開頭兩行
+  var miniPrev = {};
+  function drawMinis() {
+    var keep = S.step; S.step = 3; var full = programLines(); S.step = keep;
+    [1, 2, 3].forEach(function (k) {
+      var el = $('mini' + k); if (!el) return;
+      var lines = [], nHelper = 0, total = 0;
+      full.forEach(function (l, i) { if (l.tag === k && l.helper) total++; });
+      full.forEach(function (l, i) {
+        if (l.tag !== k) return;
+        if (l.helper) {
+          nHelper++;
+          if (nHelper <= 2) lines.push({ t: l.t, no: i + 1 });
+          else if (nHelper === 3) lines.push({ t: ('// ⋯ 小幫手共 ' + total + ' 行，按右邊「顯示小幫手」看全部'), no: '⋮' });
+          return;
+        }
+        lines.push({ t: l.t, no: i + 1 });
+      });
+      if (!lines.length) { el.innerHTML = ''; return; }
+      var nums = [], h0 = 0;
+      full.forEach(function (l, i) { if (l.tag !== k) return; if (l.helper) { if (!h0) h0 = i + 1; } else nums.push(i + 1); });
+      var a = nums[0], z = nums[nums.length - 1];
+      var txt = lines.map(function (l) { return l.no + l.t; }).join('\n');
+      var range = ('第 ' + a + (z !== a ? '～' + z : '') + ' 行');
+      if (h0) range += ('，和最下面第 ' + h0 + ' 行起的小幫手');
+      el.innerHTML = '<span>' + ('這一步寫的程式（') + range + ('）') + '</span><pre class="code"></pre>';
+      render(el.querySelector('pre'), lines, { noTag: true });
+      if (miniPrev[k] !== undefined && miniPrev[k] !== txt) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      miniPrev[k] = txt;
+    });
+  }
+
+  // ───── 步驟 ─────
+  function setStep(n) {
+    S.step = Math.max(S.step, n);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    S.viewStep = n;
+    drawMain();
+    $('next2').disabled = !BASE.valid();
+  }
+  // 顯示用：畫程式時用「目前看的步驟」決定長到哪一步
+  var _draw = drawMain;
+  drawMain = function () { var keep = S.step; S.step = S.viewStep || S.step; _draw(); S.step = keep; };
+
+  // ───── 功能選擇器（第 3 步）與範例卡 ─────
+  function groups() {
+    var g = {}, order = [];
+    FNS.forEach(function (f) { if (!g[f.grp]) { g[f.grp] = []; order.push(f.grp); } g[f.grp].push(f); });
+    return { g: g, order: order };
+  }
+  function drawPicker() {
+    var box = $('picker'), gg = groups(); box.innerHTML = '';
+    gg.order.forEach(function (k) {
+      var wrap = document.createElement('div'); wrap.className = 'fgroup';
+      wrap.innerHTML = '<span>' + k + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      gg.g[k].forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip';
+        b.textContent = f.code + ' ' + f.name; b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.title = f.name;
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      wrap.appendChild(chips); box.appendChild(wrap);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + f.code + ('　') + f.name + '</b><span>' + f.what + '</span><span class="small">' +
+      (f.kind === 'cmd' ? ('命令：') : ('回傳：')) + f.ret + '</span>' + (f.warn ? '<span class="err">' + f.warn + '</span>' : '');
+  }
+  function pick(id) {
+    S.fn = id;
+    setStep(3);
+    drawPicker(); tick(true);
+  }
+  function cardLines(f) {
+    if (f.once) return ['void setup() {', '  ' + BASE.cardOnceHead()].concat(f.body.map(function (b) { return '  ' + b; }), ['}']);
+    var head = (BASE.loopHead ? BASE.loopHead() : []).map(function (b) { return '  ' + b; });
+    return ['void loop() {'].concat(head, f.body.map(function (b) { return '  ' + b; }), ['  ' + (f.wait || BASE.loopWait), '}']);
+  }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    FNS.forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      c.innerHTML =
+        '<div class="card-head"><h3>' + f.code + '<span class="zh">' + f.name + '</span></h3>' +
+        '<span class="badges"><span class="badge yes">' + (f.kind === 'cmd' ? ('命令') : ('讀值')) + '</span>' + (f.badge ? '<span class="badge yes">' + f.badge + '</span>' : '') + '</span></div>' +
+        '<p>' + f.what + '</p>' +
+        '<dl class="meta"><dt>' + (f.kind === 'cmd' ? ('命令') : ('回傳')) + '</dt><dd>' + f.ret + '</dd><dt>' + ('範例') + '</dt><dd>' +
+        (f.once ? ('放在 setup() 裡，開機時做一次') : ('放在 loop() 裡，一直重複')) + '</dd></dl>' +
+        '<pre class="code"></pre>' +
+        '<p class="out">' + ('序列埠監控視窗會印出：') + '<code></code></p>' +
+        '<button type="button" class="try">' + ('試試看') + '</button>';
+      render(c.querySelector('pre'), cardLines(f).map(function (t) { return { t: t }; }), { noTag: true });
+      c.querySelector('.try').addEventListener('click', function () {
+        pick(f.id);
+        var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      });
+      box.appendChild(c);
+    });
+    var cnt = $('fncount'); if (cnt) cnt.textContent = FNS.length;
+  }
+  function outText(f, st) { var o = f.out(st); return Array.isArray(o) ? o.join('\n') : String(o); }
+  function updateCardOutputs(st) {
+    FNS.forEach(function (f) {
+      var el = document.querySelector('#fn-' + f.id + ' .out code');
+      if (el) el.textContent = outText(f, st);
+    });
+  }
+
+  // ───── 完整範例 ─────
+  function exFull(id) {
+    // 複製用：把「小幫手貼在這裡」那一行換成真的小幫手
+    var out = [];
+    EX[id].forEach(function (t) { if (t === '@HELPER') out = out.concat(PROD.helper); else out.push(t); });
+    return out;
+  }
+  function drawExamples() {
+    Object.keys(EX).forEach(function (k) {
+      var el = $('ex-' + k); if (!el) return;
+      var shown = EX[k].map(function (t) { return t === '@HELPER' ? ('// ……第 1 步的小幫手貼在這裡（按「複製」會自動帶上）……') : t; });
+      render(el, shown.map(function (t) { return { t: t }; }), { noTag: true });
+    });
+  }
+
+  // ───── 序列埠監控視窗 ─────
+  var log = [], booted = false, halted = false;
+  var WARN = (/-32768|讀不到|找不到|沒接好|收不到/);
+  function cls(t) { return WARN.test(t) ? 'warnline' : ''; }
+  function pushOut(f, st) { outText(f, st).split('\n').forEach(function (t) { log.push({ c: cls(t), t: t }); }); }
+  function tick(reset) {
+    var st = SIM.state(), f = BY[S.fn];
+    SIM.draw(st);
+    updateCardOutputs(st);
+    if (S.step < 3) {
+      log = [{ c: '', t: ('（做完第 3 步「使用功能」，這裡會出現 Arduino 印出的內容）') }];
+      booted = false;
+    } else if (reset || !booted) {
+      // 重新上傳＝開機：setup() 先跑；讀不到就印提醒，選「停在這裡」就不再往下跑
+      log = []; booted = true; halted = false;
+      (BASE.bootLines ? BASE.bootLines(st) : []).forEach(function (t) { log.push({ c: '', t: t }); });
+      if (!st.ok) { log.push({ c: 'warnline', t: BASE.bootFail() }); halted = BASE.halts(); }
+      if (halted) log.push({ c: '', t: BASE.haltNote ? BASE.haltNote() : ('（程式停在 while (true) {}：接好線後按 Arduino 的重置鍵，這裡是再點一次功能）') });
+      else pushOut(f, st);
+    } else if (!f.once && !halted) {
+      pushOut(f, st);
+    }
+    while (log.length > 8) log.shift();
+    $('console').innerHTML = log.map(function (l) { return '<span class="' + l.c + '">' + esc(l.t) + '</span>'; }).join('\n');
+  }
+
+  // ───── 事件 ─────
+  $('next1').addEventListener('click', function () { setStep(2); });
+  $('next2').addEventListener('click', function () { if (BASE.valid()) { setStep(3); drawPicker(); tick(true); } });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) {
+    $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } });
+  });
+  BASE.bind(function (rerun) { drawMain(); drawPicker(); $('next2').disabled = !BASE.valid(); if (rerun && S.step >= 3) tick(true); });
+  SIM.inputs.forEach(function (id) {
+    var el = $(id); if (!el) return;
+    el.addEventListener('input', function () { tick(id === 'unplug' && BY[S.fn].once); });
+  });
+  $('helperbtn').addEventListener('click', function (e) {
+    S.showHelper = !S.showHelper;
+    e.currentTarget.textContent = S.showHelper ? ('收起小幫手') : ('顯示小幫手');
+    e.currentTarget.setAttribute('aria-pressed', String(!!S.showHelper));
+    drawMain();
+  });
+  $('copymain').addEventListener('click', function (e) { copyText(plain(programLines()), e.currentTarget); });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { copyText(exFull(b.getAttribute('data-copy')).join('\n') + '\n', b); });
+  });
+
+  // ───── 開始 ─────
+  drawPicker(); drawCards(); drawExamples(); setStep(1); tick(true);
+  setInterval(function () { if (S.step >= 3 && !BY[S.fn].once) tick(false); }, 600);
+
+})();
+</script>
+<script>
+(function () {
+  var side = document.querySelector('.side'); if (!side) return;
+  var mq = window.matchMedia('(max-width: 900px)');
+  var home = side.parentNode, homeNext = side.nextSibling;
+  var con = document.getElementById('console'), conP = con && con.closest('.panel');
+  if (conP && conP.parentNode !== side) conP = null;
+  var last = null, ready = false;
+  var STOP = '.step-body, .cards, .ref, .steps, .main, .wrap, body';
+  function anchorOf(el) { var a = el; while (a && a.parentElement && !a.parentElement.matches(STOP)) a = a.parentElement; return a && a.parentElement ? a : null; }
+  function flash(el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  // 把 box 搬到 a 那一塊的後面；a 在畫面上的位置維持不動（點下去時就記住 a：頁面常在點擊後重畫按鈕，按鈕本身會被換掉）
+  function moveAfter(box, a) {
+    if (!a || !a.isConnected || a === box || a.contains(box)) return false;
+    if (a.nextElementSibling === box) return true;
+    var y = a.getBoundingClientRect().top;
+    a.parentNode.insertBefore(box, a.nextSibling); box.classList.add('follow');
+    var d = a.getBoundingClientRect().top - y; if (d) window.scrollBy(0, d);
+    return true;
+  }
+  function inPanel(el) { return side.contains(el) || (conP && conP.contains(el)); }
+  function placeSide(a, scroll) {
+    if (!mq.matches || !a) return;
+    if (conP && conP.parentNode !== side) { conP.classList.remove('follow'); side.appendChild(conP); }
+    if (!moveAfter(side, a)) return;
+    if (scroll) { var r = side.getBoundingClientRect(); if (r.top > window.innerHeight * 0.7) window.scrollBy({ top: r.top - window.innerHeight * 0.3, behavior: 'smooth' }); }
+  }
+  function placeConsole(el) {
+    if (!mq.matches || !conP || inPanel(el)) return;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在「正在操作的那一排」正下方（排＝控制區的直接子元素），
+    // 畫面、那一排、輸出同一屏；控制區很長或那一排在最下面（例如拔線勾選）都不會跑出畫面
+    var sim = el.closest('.sim'), ctrl = null, row = null;
+    if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (ctrl && ctrl !== el) for (var j = 0; j < ctrl.children.length; j++) if (ctrl.children[j].contains(el)) row = ctrl.children[j];
+    if (sim && ctrl) {
+      var box = row ? ctrl : sim, after = row || null;
+      if (after ? after.nextElementSibling === conP : conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var y = el.getBoundingClientRect().top;
+      if (after) box.insertBefore(conP, after.nextSibling); else sim.insertBefore(conP, ctrl);
+      conP.classList.add('follow');
+      var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
+      return;
+    }
+    var a = anchorOf(el); if (a && a.nextElementSibling === side) return; // 程式那格已經緊接在下面，輸出就在它裡面
+    moveAfter(conP, a);
+  }
+  function reset() {
+    if (mq.matches) { var b = document.querySelector('#step1 .step-body button') || document.querySelector('#step1 button'); if (b) placeSide(anchorOf(b), false); return; }
+    if (conP) { conP.classList.remove('follow'); side.appendChild(conP); }
+    side.classList.remove('follow'); home.insertBefore(side, homeNext);
+  }
+  function remember(e) { if (!inPanel(e.target)) last = anchorOf(e.target); }
+  document.addEventListener('pointerdown', remember, true);
+  document.addEventListener('focusin', remember, true);
+  var mo = new MutationObserver(function () { if (ready && mq.matches) { placeSide(last, true); flash(side); } });
+  ['maincode', 'mainblocks'].forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true }); });
+  function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
+  document.addEventListener('input', sim, true);
+  document.addEventListener('change', sim, true);
+  // 模擬器裡的按鈕（掌控者按鍵、色點調色盤…）也算在操作模擬器
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.sim button'); if (b) placeConsole(b); }, true);
+  reset(); setTimeout(function () { ready = true; }, 800);
+  if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
+})();
+</script>
+</body>
+</html>

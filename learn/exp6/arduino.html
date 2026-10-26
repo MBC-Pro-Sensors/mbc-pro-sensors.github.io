@@ -1,0 +1,1265 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="寫 Arduino 程式照這個順序：先選板子、接好線、貼上通訊小幫手，再在 setup() 用 exp6Begin() 叫醒 EXP6，最後在 loop() 送指令、讀值（轉馬達、讀角度、讀感應器）。EXP6 走 UART 序列埠，不是 I2C。左邊一步一步做，右邊的程式會跟著長出來；在模擬 EXP6 上選每一埠接什麼">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/exp6/arduino.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/exp6/arduino.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/exp6/arduino.html">
+<title>SPIKE 6 路擴充器 EXP6 Arduino 教學 | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* 版面：左邊是照順序走的教學步驟，右邊固定「你的程式＋模擬感應器」；下面是 16 個功能的範例卡 */
+:root {
+  --bg: #f3f6f5;          /* 場地墊的淺色 */
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;      /* MBC 青綠 */
+  --accent-soft: #dff1ef;
+  --tape: #121212;        /* 黑膠帶線 */
+  --ir: #e04a3b;          /* 感應器紅外燈 */
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* 頁首 */
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+/* 主區：左教學、右程式 */
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+/* 右邊：程式＋模擬 */
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+/* 右邊固定區只放程式和輸出，高度不超過一個畫面，往下捲時一直看得到 */
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+/* 每一步卡片裡的「這一步寫的程式」：設定一改就更新並閃一下 */
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+/* 功能範例卡 */
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+/* 完整範例與注意事項 */
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+[hidden] { display: none !important; }  /* 頁面用 hidden 切換「積木／程式」，.ws{display:grid} 會蓋掉它 */
+.learn-nav .tabs .tl { color: var(--muted, #666); font-size: 0.8rem; align-self: center; }
+.learn-nav .tabs .tsep { flex-basis: 100%; height: 0; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
+   排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
+@media (max-width: 900px) {
+  .learn-nav { position: static; width: 100vw; margin: -24px 0 14px calc(50% - 50vw); }
+  .learn-nav .in { padding: 6px 12px 8px; gap: 4px 14px; font-size: 0.85rem; }
+  .learn-nav .in > a { min-height: 36px; display: inline-flex; align-items: center; }
+  .learn-nav .tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .learn-nav .tabs::-webkit-scrollbar { display: none; }
+  .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
+  body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
+  .panel.follow { margin: 12px 0 16px; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow, .ctrl > .panel.follow { grid-column: 1 / -1; }
+  .flash { animation: followFlash 1.2s ease-out; }
+  @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
+  /* 點選目標放大：選項、勾選框、拉桿 */
+  .wrap > *, .main > *, .steps > *, .step-body > * { min-width: 0; }
+  label:has(input[type=radio]), label:has(input[type=checkbox]) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  button.copy, .viewtabs button { min-height: 36px; }
+  label:has(select) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  label select { min-height: 36px; }
+  input[type=radio], input[type=checkbox] { width: 20px; height: 20px; flex: none; }
+  input[type=range] { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/learn/">全部互動教學</a><a class="back" href="/sensors/exp6/arduino/">← EXP6 Arduino 說明</a><a class="lang" href="/en/learn/exp6/arduino.html" hreflang="en">EN</a><div class="tabs"><span class="tl">主機</span><a href="/learn/exp6/micropython.html">SPIKE</a><a href="/learn/exp6/arduino.html" aria-current="page">Arduino</a><span class="tsep"></span><a href="/learn/exp6/arduino.html" aria-current="page">Arduino IDE</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC SPIKE 6 路擴充器 EXP6 × Arduino</span>
+    <h1>三個步驟用 Arduino 控制 EXP6</h1>
+    <p class="lead">寫 Arduino 程式照這個順序：先<b>選板子、接好線、貼上通訊小幫手</b>，再在 <code>setup()</code> 用 <code>exp6Begin()</code> <b>叫醒 EXP6</b>，最後在 <code>loop()</code> <b>送指令、讀值</b>（轉馬達、讀角度、讀感應器）。EXP6 走 <b>UART 序列埠</b>，不是 I2C。左邊一步一步做，右邊的程式會跟著長出來；在模擬 EXP6 上選每一埠接什麼，就能看到馬達怎麼轉、序列埠監控視窗會印出什麼。</p>
+  </header>
+
+  <section class="main" aria-label="教學">
+    <div class="steps">
+      <!-- 步驟 1 -->
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>選板子、接線，貼上小幫手</h2></div>
+        <div class="step-body">
+          <p class="why">Arduino 用 <b>UART 序列埠</b>（TX／RX 兩條線）跟 EXP6 講話，<b>不能用 I2C</b>，也<b>不用安裝函式庫</b>。程式<b>最下面貼一段「通訊小幫手」</b>，之後就能用 <code>exp6Send()</code> 送指令、<code>exp6Receive()</code> 收資料。出貨的 EXP6 不用重燒韌體：收到 Arduino 的第一包指令，就自動從「樂高模式」切到「UART 模式」。</p>
+          <p class="small">你用哪一塊板子？（只差接哪幾腳，程式完全一樣：小幫手會自己選序列埠）</p>
+          <div class="choice" role="group" aria-label="板子">
+            <button type="button" class="opt" id="board-r4" aria-pressed="true"><b>UNO R4（推薦）</b><small>Minima 或 WiFi。D0、D1 是 <code>Serial1</code>，跟 USB 分開，上傳和看序列埠監控視窗都不受影響。</small></button>
+            <button type="button" class="opt" id="board-mega" aria-pressed="false"><b>Mega 2560</b><small>18、19（<code>Serial1</code>）。有 4 組序列埠。</small></button>
+            <button type="button" class="opt" id="board-esp32" aria-pressed="false"><b>ESP32</b><small>GPIO16、17（<code>Serial2</code>）。訊號是 3.3V，第 4 腳接 3V3；要先安裝 ESP32 板子套件。</small></button>
+            <button type="button" class="opt" id="board-r3" aria-pressed="false"><b>UNO R3／Nano（不能用）</b><small>看看為什麼不行：唯一的序列埠被 USB 用掉了。</small></button>
+          </div>
+          <p class="err" id="r3why" hidden>UNO R3、Nano 只有一組硬體序列埠（D0／D1），已經接著 USB。EXP6 每 0.01 秒回傳一包資料，速度固定 115200 不能改；改用軟體序列埠（SoftwareSerial）在 115200 收不穩，收資料時也不能同時送指令。所以程式在這種板子上會印「這塊板子……不能接 EXP6」然後停下來。請改用 UNO R4、Mega 2560 或 ESP32。</p>
+          <ol class="howto">
+            <li>接線前先拔掉 USB 線和電池。用「樂高 6 針轉杜邦線」（或樂高接頭轉接板）接 EXP6 的 <b>Host 孔</b>（接主機的那個孔）。</li>
+            <li>Host 孔第 3 腳 GND → <b>GND</b>、第 4 腳 VCC → <b id="pinvcc">5V</b>（第 4 腳也是 EXP6 的「開機鑰匙」，沒電 EXP6 不會開機）</li>
+            <li>第 5 腳（EXP6 收）→ <b id="pintx">D1（TX）</b>、第 6 腳（EXP6 送）→ <b id="pinrx">D0（RX）</b>。兩條線是交叉的；第 1、2 腳不接。</li>
+            <li>EXP6 的 XT30 電源座一定要接 <b>2～3S 鋰電池</b>，馬達和感應器都靠它供電。EXP6 <b>不會供電給 Arduino</b>：Arduino 用 USB 或行動電源另外供電。</li>
+            <li>打開 Arduino IDE：<b>檔案 → 新增</b>，把原本的內容刪掉；開發板選你的板子（例如 Arduino UNO R4 Minima）。</li>
+            <li><b>最下面</b>貼「通訊小幫手」（右邊程式標 ① 的地方，按「複製程式」會一起拿到）。最上面兩行是接線的註解，提醒你哪條線接哪裡。</li>
+          </ol>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">寫好了，下一步</button>
+        </div>
+      </article>
+
+      <!-- 步驟 2 -->
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>叫醒 EXP6，等它準備好</h2></div>
+        <div class="step-body">
+          <p class="why"><code>setup()</code> 是開機時只跑一次的地方：打開序列埠、用 <code>exp6Begin()</code> 叫醒 EXP6（最多等 3 秒，順便讓馬達停下、角度歸零），再等 1.5 秒讓馬達和感應器被認出來。<b>等待一律用 <code>exp6Wait()</code>，不要用 <code>delay()</code></b>：EXP6 超過 0.5 秒沒收到指令，就會自動把馬達停下來（看門狗）。</p>
+          <p class="small">找不到 EXP6 的時候：</p>
+          <div class="choice" role="group" aria-label="找不到時">
+            <button type="button" class="opt" id="fail-stop" aria-pressed="true"><b>停在這裡（建議）</b><small>印一行提醒，程式停住，不會亂跑。</small></button>
+            <button type="button" class="opt" id="fail-go" aria-pressed="false"><b>繼續跑</b><small>程式照樣往下跑，但 <code>exp6Receive()</code> 一直收不到資料（回傳 false），指令也送不到。</small></button>
+          </div>
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2">寫好了，下一步</button>
+        </div>
+      </article>
+
+      <!-- 步驟 3 -->
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>使用功能</h2></div>
+        <div class="step-body">
+          <p class="why">送指令寫「<code>exp6Send(L1, L2, L3, L4)</code>」，或用範例裡的 <code>motorRun()</code> 這類「指令小抄」函式；讀值先用 <code>exp6Receive()</code> 收一包最新資料，再用 <code>exp6Port(埠)</code>、<code>exp6Device(埠)</code> 讀。點一個功能，程式和序列埠監控視窗會換成它的範例，模擬 EXP6 的馬達也會照著動。</p>
+          <div id="picker" class="ref"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+          <div class="sim-box">
+            <div class="sim-title">模擬 EXP6（從上面看）：選每一埠接什麼，看馬達怎麼轉、右邊序列埠監控視窗印出什麼</div>
+            <div class="sim">
+              <svg id="field" viewBox="0 0 460 250" role="img" aria-label="模擬 EXP6：Arduino、擴充器和 6 個埠"></svg>
+              <div class="ctrl">
+                <div class="toggles" role="group" aria-label="每一埠接什麼">
+                <label>第 1 埠 <select id="dev1" style="font:inherit"><option value="0">沒接</option><option value="5" selected>馬達</option><option value="3">顏色感應器</option><option value="4">超音波感應器</option><option value="1">力量感應器</option></select></label>
+                <label>第 2 埠 <select id="dev2" style="font:inherit"><option value="0">沒接</option><option value="5" selected>馬達</option><option value="3">顏色感應器</option><option value="4">超音波感應器</option><option value="1">力量感應器</option></select></label>
+                <label>第 3 埠 <select id="dev3" style="font:inherit"><option value="0" selected>沒接</option><option value="5">馬達</option><option value="3">顏色感應器</option><option value="4">超音波感應器</option><option value="1">力量感應器</option></select></label>
+                <label>第 4 埠 <select id="dev4" style="font:inherit"><option value="0">沒接</option><option value="5">馬達</option><option value="3" selected>顏色感應器</option><option value="4">超音波感應器</option><option value="1">力量感應器</option></select></label>
+                <label>第 5 埠 <select id="dev5" style="font:inherit"><option value="0">沒接</option><option value="5">馬達</option><option value="3">顏色感應器</option><option value="4" selected>超音波感應器</option><option value="1">力量感應器</option></select></label>
+                <label>第 6 埠 <select id="dev6" style="font:inherit"><option value="0">沒接</option><option value="5">馬達</option><option value="3">顏色感應器</option><option value="4">超音波感應器</option><option value="1" selected>力量感應器</option></select></label>
+                </div>
+                <label class="f" for="hand">用手轉第 1 埠的馬達（往右 = 順時針）
+                  <input autocomplete="off" type="range" id="hand" min="-360" max="360" step="5" value="0">
+                </label>
+                <label class="f" for="colorobj">顏色感應器前面放什麼
+                  <select id="colorobj" style="font:inherit"><option value="white">白紙</option><option value="black">黑膠帶</option><option value="red">紅色積木</option><option value="green">綠色積木</option><option value="blue">藍色積木</option><option value="yellow">黃色積木</option><option value="none">什麼都沒有（看不出顏色）</option></select>
+                </label>
+                <label class="f" for="dist">超音波前面的東西多遠（mm）
+                  <input autocomplete="off" type="range" id="dist" min="40" max="1990" step="10" value="300">
+                </label>
+                <label class="f" for="force">力量感應器壓多大力（0 ~ 100）
+                  <input autocomplete="off" type="range" id="force" min="0" max="100" value="0">
+                </label>
+                <label class="f" for="volt">EXP6 電池電壓（6.00 ~ 8.40 V）
+                  <input autocomplete="off" type="range" id="volt" min="600" max="840" value="786">
+                </label>
+                <div class="toggles">
+                  <label><input autocomplete="off" type="checkbox" id="far"> 超音波前面沒有東西</label>
+                  <label><input autocomplete="off" type="checkbox" id="unplug"> 拔掉 EXP6 的 Host 線</label>
+                </div>
+              </div>
+              <p class="note">一開始第 1、2 埠接馬達，第 4 埠顏色、第 5 埠超音波、第 6 埠力量感應器，跟功能範例用的埠一樣。模擬畫面是示意：馬達速度 1 當成每秒 10 度（實際要看馬達型號），感應器的數值也簡化過；紅色指針是轉軸的朝向，↻ = 順時針。拔掉 Host 線時 EXP6 會關機（第 4 腳是它的開機鑰匙）、馬達停下，<code>exp6Receive()</code> 收不到資料、回傳 false；<code>exp6Port()</code> 會留著上一包的數字，所以範例都先檢查 <code>exp6Receive()</code>。插回去 EXP6 重新開機，收到 Arduino 的下一包指令就自動切回 UART 模式。只在 <code>setup()</code> 做一次的功能，<code>loop()</code> 空著，大約 0.5 秒後看門狗會讓馬達停下（轉角度還沒轉完的會先轉完）。</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">每個功能的範例</h2>
+        <p class="ref-intro"><span id="fncount">25</span> 個功能（通訊小幫手的每個函式、網站「指令小抄」的每一種指令、顏色／超音波／力量感應器的讀法），每個都有一段範例。按「試試看」會切到第 3 步，右邊的程式和序列埠監控視窗會換成這個範例。</p>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="你的程式與輸出">
+      <div class="panel">
+        <div class="panel-head"><span>你的程式（Arduino）</span><span class="row"><button type="button" class="copy" id="helperbtn" aria-pressed="false">顯示小幫手</button><button type="button" class="copy" id="copymain">複製程式</button></span></div>
+        <pre class="code" id="maincode" aria-live="polite"></pre>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>序列埠監控視窗（115200，每 0.6 秒更新）</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="ref" aria-labelledby="fullh">
+    <h2 id="fullh">完整範例</h2>
+    <p class="ref-intro">按「複製」拿到的是完整程式（最下面已經接好小幫手），貼進 Arduino IDE 就能上傳。</p>
+    <div class="full">
+      <div class="panel">
+        <div class="panel-head"><span>範例 1：跟 EXP6 打招呼</span><button type="button" class="copy" data-copy="hello">複製</button></div>
+        <pre class="code" id="ex-hello"></pre>
+        <p class="bubble"><i>!</i><span>確認 Arduino 跟 EXP6 接好了：每秒印一次電池電壓，還有 6 個埠各接了什麼。拔插馬達，印出來的表會跟著變。每次重新接線，都建議先跑這個範例。</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>範例 2：馬達轉起來</span><button type="button" class="copy" data-copy="motor">複製</button></div>
+        <pre class="code" id="ex-motor"></pre>
+        <p class="bubble"><i>!</i><span>第 1 埠的馬達「正轉 3 秒 → 煞車 → 反轉 3 秒 → 滑行停下」，一直重複。試試看：把 <code>SPEED</code> 改成 100、20；或把 <code>runFor(3000)</code> 那一行改成 <code>delay(3000);</code>，看看門狗怎麼在 0.5 秒後把馬達停下來（看完記得改回來）。</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>範例 5：讀感應器</span><button type="button" class="copy" data-copy="sensors">複製</button></div>
+        <pre class="code" id="ex-sensors"></pre>
+        <p class="bubble"><i>!</i><span>EXP6 自己認得每一埠接的感應器，這個範例把顏色、距離、力量都印出來。有東西靠近超音波 10 公分內、或力量感應器被按下時，Arduino 板上的燈會亮。顏色感應器、超音波、力量感應器插哪一埠都可以。</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>範例 6：兩輪小車（進階）</span><button type="button" class="copy" data-copy="car">複製</button></div>
+        <pre class="code" id="ex-car"></pre>
+        <p class="bubble"><i>!</i><span>左輪插第 1 埠、右輪插第 2 埠。先把車子架高（輪子懸空）上傳，確認兩個輪子都往前轉；轉反了就改 <code>LEFT_REVERSE</code> 或 <code>RIGHT_REVERSE</code>。Arduino 要用行動電源另外供電。轉彎轉太多或太少，就調整 <code>TURN_MS</code>。</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">使用注意</h2>
+    <ol>
+      <li><b>一定要接 EXP6 的電池和第 4 腳。</b>馬達和感應器全部靠 EXP6 自己的電池（2～3S 鋰電池）；第 4 腳是 EXP6 的「開機鑰匙」，電壓要跟板子的訊號一樣（UNO R4、Mega 接 5V，ESP32 接 3V3）。EXP6 的埠只認得樂高馬達和樂高 SPIKE 的顏色、超音波、力量感應器。</li>
+      <li><b>等待用 <code>exp6Wait()</code>，不要用 <code>delay()</code>。</b>EXP6 超過 0.5 秒沒收到 Arduino 的任何指令，就會自動把馬達停下來（看門狗）。<code>motorRun(1, 50); delay(3000);</code> 只會轉 0.5 秒；<code>motorRun(1, 50); exp6Wait(3000);</code> 才會轉 3 秒。算很久的地方中間送 <code>exp6Send(1, 0, 0, 0)</code>。</li>
+      <li><b>拔線不會讓程式停。</b>收不到資料時 <code>exp6Receive()</code> 回傳 <code>false</code>（範例印「收不到資料，檢查一下線有沒有鬆掉。」），<code>exp6Port()</code>、<code>exp6Device()</code> 還是上一包的數字，所以每次讀值前先檢查 <code>exp6Receive()</code>。在右邊勾「拔掉 EXP6 的 Host 線」可以看到這個情形。開機時找不到 EXP6，<code>exp6Begin()</code> 回傳 <code>false</code>。</li>
+      <li><b>指令的 L1～L4 都要在 0～100。</b>連續送兩筆一模一樣的指令，第二筆會被略過（轉角度、角度歸零不受這條限制）。轉角度的指令<b>只送一次</b>，EXP6 會自己轉到位；轉到之後再收到同一筆，它會再轉一次。</li>
+      <li><b>剛插上的裝置要 1～2 秒才會被認出來</b>（<code>exp6Device()</code> 會先是 0）。<b>UNO R3、Nano 不能用</b>：唯一的硬體序列埠被 USB 用掉了。UNO R4 上傳程式時不用拔掉 D0、D1 的線。序列埠監控視窗的速度選 <b>115200</b>。</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var PROD = {"lang":"zh","helper":["// 以下是「通訊小幫手」：負責跟 EXP6 講話（UART 序列埠）。","// 所有 EXP6 範例都一樣，不用改，也不用看懂。會用到的只有這幾個：","//   exp6Begin(毫秒)          叫醒 EXP6，等它開始回傳資料。成功回傳 true","//   exp6Send(L1, L2, L3, L4) 送一筆指令（4 個數字，每個 0 ~ 100）","//   exp6Receive()            收一包最新資料（6 個埠＋電池）。收到回傳 true","//   exp6Port(埠)             第幾埠的數字（馬達 = 角度、超音波 = 距離 …）","//   exp6Device(埠)           第幾埠接了什麼：0 沒接、1 力量、3 顏色、4 超音波、5 馬達、7 其他","//   exp6Volt100()            電池電壓 × 100（例如 812 = 8.12 V）","//   exp6Wait(毫秒)           取代 delay()：等待的同時，一直跟 EXP6 說「我還在」","//   exp6WaitDevice(埠, 種類, 毫秒)  等某一埠出現指定的裝置。等到了回傳 true","// ============================================================","","// 用哪一組序列埠跟 EXP6 講話（依板子自動選，不用改）","#if defined(ARDUINO_ARCH_ESP32)","#define EXP6_SERIAL Serial2              // ESP32：RX2 = GPIO16、TX2 = GPIO17","#define EXP6_RX_PIN 16","#define EXP6_TX_PIN 17","#elif defined(ARDUINO_ARCH_RENESAS) || defined(HAVE_HWSERIAL1) || defined(ARDUINO_ARCH_MEGAAVR)","#define EXP6_SERIAL Serial1              // UNO R4：D0(RX) / D1(TX)；Mega：19(RX1) / 18(TX1)","#endif","","uint8_t exp6Data[32];                    // 最新一包資料：8 個數字，每個 4 bytes","unsigned long exp6LastSend = 0;          // 上一次送指令的時間","","// 叫醒 EXP6：一直送「我還在」，直到收到 EXP6 回傳的資料，最多等 timeoutMs 毫秒","bool exp6Begin(uint16_t timeoutMs) {","#ifdef EXP6_SERIAL","#if defined(ARDUINO_ARCH_ESP32)","  EXP6_SERIAL.begin(115200, SERIAL_8N1, EXP6_RX_PIN, EXP6_TX_PIN);","#else","  EXP6_SERIAL.begin(115200);             // EXP6 固定用 115200 的速度講話","#endif","  unsigned long start = millis();","  while (millis() - start < timeoutMs) {","    exp6Send(1, 0, 0, 0);                // 收到第一包正確的指令，EXP6 就從「樂高模式」切到「UART 模式」","    if (exp6Receive()) {","      exp6Send(0, 1, 0, 0);              // 先送一筆「什麼都不做」的指令，下一筆才不會被當成重複指令略過","      exp6Send(0, 0, 0, 0);              // 全部重來：馬達停下、角度歸零","      exp6Wait(300);","      return exp6Receive();","    }","  }","#else","  (void)timeoutMs;                       // 這種板子用不到這個數字","  Serial.println(F(\"這塊板子沒有第二組硬體序列埠（例如 UNO R3、Nano），不能接 EXP6。\"));","  Serial.println(F(\"請改用 UNO R4、Mega 2560 或 ESP32。\"));","#endif","  return false;","}","","// 送一筆指令：[0xA5, L1, L2, L3, L4, 檢查碼]","void exp6Send(uint8_t L1, uint8_t L2, uint8_t L3, uint8_t L4) {","  uint8_t pkt[6] = { 0xA5, L1, L2, L3, L4, 0 };","  pkt[5] = pkt[0] ^ L1 ^ L2 ^ L3 ^ L4;   // 檢查碼：前 5 個數字 XOR 起來","#ifdef EXP6_SERIAL","  EXP6_SERIAL.write(pkt, 6);","#endif","  exp6LastSend = millis();","}","","// 超過 0.1 秒沒送東西，就送一包「我還在」（L1 = 1），不會讓馬達做任何事","void exp6KeepAlive() {","  if (millis() - exp6LastSend >= 100) exp6Send(1, 0, 0, 0);","}","","// 取代 delay()：EXP6 超過 0.5 秒沒收到指令，會自動把馬達停下來（看門狗）","void exp6Wait(unsigned long ms) {","  unsigned long start = millis();","  while (millis() - start < ms) {","    exp6KeepAlive();","    delay(1);","  }","}","","// 收一包最新資料：[0x5A, 32, 32 個數字, 檢查碼]，共 35 bytes。EXP6 每 0.01 秒送一包","bool exp6Receive() {","#ifdef EXP6_SERIAL","  exp6KeepAlive();","  while (EXP6_SERIAL.available()) EXP6_SERIAL.read();   // 丟掉舊資料，只要最新的","  static uint8_t buf[32];","  uint8_t n = 0, x = 0;","  unsigned long start = millis();","  while (millis() - start < 100) {","    if (!EXP6_SERIAL.available()) continue;","    uint8_t b = EXP6_SERIAL.read();","    if (n == 0) {                        // 找開頭記號 0x5A","      if (b == 0x5A) n = 1;","    } else if (n == 1) {                 // 第 2 個一定是 32（後面有 32 個數字）","      if (b == 32) { x = b; n = 2; } else n = (b == 0x5A) ? 1 : 0;","    } else if (n < 34) {                 // 32 個數字","      buf[n - 2] = b;","      x ^= b;","      n++;","    } else {                             // 最後一個是檢查碼，對了才收下","      if (b == x) {","        memcpy(exp6Data, buf, 32);","        return true;","      }","      n = 0;","    }","  }","#endif","  return false;","}","","// 第 port 埠的數字（4 個 bytes 組成一個數字，小的在前面）","int32_t exp6Port(uint8_t port) {","  if (port < 1 || port > 6) return 0;","  const uint8_t *d = &exp6Data[(port - 1) * 4];","  return (int32_t)((uint32_t)d[0] | ((uint32_t)d[1] << 8) | ((uint32_t)d[2] << 16) | ((uint32_t)d[3] << 24));","}","","// 第 port 埠接了什麼：每個埠用 3 個位元記錄","uint8_t exp6Device(uint8_t port) {","  uint16_t r7 = exp6Data[24] | ((uint16_t)exp6Data[25] << 8);   // 第 7 個數字：電壓＋第 1 埠","  uint16_t r8 = exp6Data[28] | ((uint16_t)exp6Data[29] << 8);   // 第 8 個數字：第 2 ~ 6 埠","  if (port == 1) return (r7 >> 12) & 0x07;","  if (port >= 2 && port <= 6) return (r8 >> ((port - 2) * 3)) & 0x07;","  return 0;","}","","// 電池電壓 × 100","uint16_t exp6Volt100() {","  return (exp6Data[24] | ((uint16_t)exp6Data[25] << 8)) & 0x0FFF;","}","","// 等第 port 埠出現 kind 這種裝置（例如 5 = 馬達），最多等 timeoutMs 毫秒","bool exp6WaitDevice(uint8_t port, uint8_t kind, uint16_t timeoutMs) {","  unsigned long start = millis();","  while (millis() - start < timeoutMs) {","    if (exp6Receive() && exp6Device(port) == kind) {","      exp6Wait(200);                     // 剛認出來，再給 EXP6 0.2 秒準備","      return true;","    }","  }","  return false;","}"],"defaultFn":"motorRun","snips":{"motorRun":["// 定速轉：speed = -100 ~ 100。正數順時針、負數逆時針、0 = 停","void motorRun(uint8_t port, int8_t speed) {","  uint8_t dir = (speed >= 0) ? 1 : 2;    // L2：1 = 順時針、2 = 逆時針","  int16_t s = (speed >= 0) ? speed : -(int16_t)speed;","  if (s > 100) s = 100;","  exp6Send(port * 11, dir, s, 0);        // L1 = 埠號 × 11（11、22 … 66 = 定速轉）","}"],"motorStop":["// 停止：how = STOP_COAST、STOP_HOLD 或 STOP_BRAKE","void motorStop(uint8_t port, uint8_t how) {","  exp6Send(port * 10, how, 0, 0);        // L1 = 埠號 × 10，L2 = 停止方式","}"],"stopConst":["// 停止的方式","const uint8_t STOP_COAST = 3;            // 滑行：放開馬達，讓它自己慢慢停（用手轉得動）","const uint8_t STOP_HOLD  = 4;            // 鎖住：用力咬住現在的角度（用手轉不動）","const uint8_t STOP_BRAKE = 5;            // 煞車：馬上停下，但用手還轉得動"],"motorDegrees":["// 轉相對角度：deg 正數順時針、負數逆時針，最多 ±2499 度；after = 到位後怎麼停","void motorDegrees(uint8_t port, uint8_t speed, int deg, uint8_t after) {","  uint8_t way = (deg >= 0) ? 8 : 9;      // 個位數 8 = 順時針、9 = 逆時針","  uint16_t d = (deg >= 0) ? deg : -deg;","  if (d > 2499) d = 2499;","  // L1 = 埠號 × 10 + 8 或 9；L3 = 停法 × 25 + 角度的百位數；L4 = 角度的後兩位","  exp6Send(port * 10 + way, speed, after * 25 + d / 100, d % 100);","}"],"motorGoTo":["// 轉到馬達上的絕對角度 0 ~ 359（0 = 馬達上的記號），EXP6 會自己挑最近的方向","void motorGoTo(uint8_t port, uint8_t speed, uint16_t angle, uint8_t after) {","  angle = angle % 360;","  // L1 = 埠號 × 10 + 7；L3 = 停法 × 4 + 角度的百位數；L4 = 角度的後兩位","  exp6Send(port * 10 + 7, speed, after * 4 + angle / 100, angle % 100);","}"],"afterConst":["// 轉到位以後要怎麼停","const uint8_t AFTER_COAST = 0;           // 滑行（放開）","const uint8_t AFTER_BRAKE = 1;           // 煞車","const uint8_t AFTER_HOLD  = 2;           // 鎖住（用手轉不動）"],"carDrive":["// 兩輪一起轉：left、right = -100 ~ 100（正數往前、負數往後）","void carDrive(int8_t left, int8_t right) {","  int16_t l = LEFT_REVERSE  ? -(int16_t)left  : left;    // 馬達裝反的那一邊，正負顛倒","  int16_t r = RIGHT_REVERSE ? -(int16_t)right : right;","  uint8_t dirs = 0;                      // L2：第 1 位元 = 左輪逆轉、第 0 位元 = 右輪逆轉","  if (l < 0) { dirs |= 2; l = -l; }","  if (r < 0) { dirs |= 1; r = -r; }","  if (l > 100) l = 100;","  if (r > 100) r = 100;","  // L1 = 左輪埠號 × 10 + 右輪埠號（例如 12）；L3 = 左輪速度；L4 = 右輪速度","  exp6Send(LEFT_PORT * 10 + RIGHT_PORT, dirs, l, r);","}"],"carStop":["// 兩輪一起煞車","void carStop() {","  exp6Send(LEFT_PORT * 10 + RIGHT_PORT, 5, 0, 0);   // 兩輪速度都 0，L2 = 5：煞車","}"],"carConst":["const uint8_t LEFT_PORT  = 1;            // 👉 可以改：左輪馬達插第幾埠","const uint8_t RIGHT_PORT = 2;            // 👉 可以改：右輪馬達插第幾埠（不能跟左輪一樣）","const bool LEFT_REVERSE  = true;         // 👉 可以改：左輪轉反了就改 true / false","const bool RIGHT_REVERSE = false;        // 👉 可以改：右輪轉反了就改 true / false"],"printDeviceName":["// 把裝置代號換成中文印出來","void printDeviceName(uint8_t kind) {","  switch (kind) {","    case 0:  Serial.print(F(\"沒接\"));   break;","    case 1:  Serial.print(F(\"力量\"));   break;","    case 3:  Serial.print(F(\"顏色\"));   break;","    case 4:  Serial.print(F(\"超音波\")); break;","    case 5:  Serial.print(F(\"馬達\"));   break;","    default: Serial.print(F(\"其他\"));   break;","  }","}"],"printColorName":["// 把顏色代號換成中文（樂高標準色碼）","void printColorName(uint8_t c) {","  switch (c) {","    case 0:  Serial.print(F(\"黑\"));   break;","    case 1:  Serial.print(F(\"紫\"));   break;","    case 3:  Serial.print(F(\"藍\"));   break;","    case 4:  Serial.print(F(\"天藍\")); break;","    case 5:  Serial.print(F(\"綠\"));   break;","    case 7:  Serial.print(F(\"黃\"));   break;","    case 9:  Serial.print(F(\"紅\"));   break;","    case 10: Serial.print(F(\"白\"));   break;","    case 15: Serial.print(F(\"看不出來\")); break;","    default:","      Serial.print(F(\"其他代號 \"));","      Serial.print(c);","      break;","  }","}"]}};
+  var EX = {"hello":["void setup() {","  Serial.begin(115200);                  // 打開跟電腦講話的通道，速度 115200","  while (!Serial && millis() < 3000) {}  // UNO R4 要等電腦連上序列埠，最多等 3 秒","  Serial.println(F(\"=== EXP6：跟 EXP6 打招呼 ===\"));","","  // 叫醒 EXP6，等它開始回傳資料，最多等 3 秒（小幫手在檔案最下面）","  if (!exp6Begin(3000)) {","    Serial.println(F(\"找不到 EXP6！請檢查：\"));","    Serial.println(F(\"  1. 第 5 腳接 TX、第 6 腳接 RX（UNO R4 是 D1、D0），有沒有接反？\"));","    Serial.println(F(\"  2. 第 4 腳接 5V（ESP32 接 3V3）、第 3 腳接 GND，有沒有插緊？\"));","    Serial.println(F(\"  3. EXP6 的電池有沒有接上？電量燈有沒有亮？\"));","    Serial.println(F(\"  4. 你的板子是 UNO R4、Mega 或 ESP32 嗎？（UNO R3 不能用）\"));","    while (true) {}                      // 找不到就停在這裡","  }","  Serial.println(F(\"連上了！每秒更新一次，試著拔插馬達看看。\"));","}","","void loop() {","  if (!exp6Receive()) {                  // 收一包最新資料","    Serial.println(F(\"收不到資料，檢查一下線有沒有鬆掉。\"));","    exp6Wait(500);","    return;","  }","","  uint16_t v = exp6Volt100();            // 電池電壓 × 100，例如 812 = 8.12 V","  Serial.print(F(\"電池 \"));","  Serial.print(v / 100);                 // 整數部分","  Serial.print('.');","  if (v % 100 < 10) Serial.print('0');   // 小數不到 2 位數，前面補 0","  Serial.print(v % 100);","  Serial.print(F(\" V |\"));","","  for (uint8_t port = 1; port <= 6; port++) {   // 第 1 埠到第 6 埠，一個一個看","    Serial.print(' ');","    Serial.print(port);","    Serial.print(':');","    printDeviceName(exp6Device(port));","  }","  Serial.println();","","  exp6Wait(1000);                        // 等 1 秒（等的時候，小幫手會一直跟 EXP6 說「我還在」）","}","","// 把裝置代號換成中文印出來","void printDeviceName(uint8_t kind) {","  switch (kind) {","    case 0:  Serial.print(F(\"沒接\"));   break;","    case 1:  Serial.print(F(\"力量\"));   break;","    case 3:  Serial.print(F(\"顏色\"));   break;","    case 4:  Serial.print(F(\"超音波\")); break;","    case 5:  Serial.print(F(\"馬達\"));   break;","    default: Serial.print(F(\"其他\"));   break;","  }","}","","@HELPER"],"motor":["const uint8_t MOTOR_PORT = 1;            // 👉 可以改：馬達插在 EXP6 的第幾埠（1 ~ 6）","const int8_t  SPEED = 50;                // 👉 可以改：速度 1 ~ 100（100 = 這顆馬達的最快速度）","","// 停止的方式","const uint8_t STOP_COAST = 3;            // 滑行：放開馬達，讓它自己慢慢停（用手轉得動）","const uint8_t STOP_HOLD  = 4;            // 鎖住：用力咬住現在的角度（用手轉不動）","const uint8_t STOP_BRAKE = 5;            // 煞車：馬上停下，但用手還轉得動","","void setup() {","  Serial.begin(115200);","  while (!Serial && millis() < 3000) {}  // UNO R4 要等電腦連上序列埠","  Serial.println(F(\"=== EXP6：馬達轉起來 ===\"));","","  if (!exp6Begin(3000)) {","    Serial.println(F(\"找不到 EXP6，請先跑範例 1 檢查接線。\"));","    while (true) {}","  }","  // 等第 MOTOR_PORT 埠認出馬達（種類 5），最多等 3 秒","  if (!exp6WaitDevice(MOTOR_PORT, 5, 3000)) {","    Serial.print(F(\"第 \"));","    Serial.print(MOTOR_PORT);","    Serial.println(F(\" 埠沒有馬達，請把馬達插好，再按 Arduino 的重置鍵。\"));","    while (true) {}","  }","  Serial.println(F(\"找到馬達了，開始轉！\"));","}","","void loop() {","  Serial.println(F(\"正轉 3 秒……\"));","  motorRun(MOTOR_PORT, SPEED);           // 正數 = 順時針","  if (!runFor(3000)) return;             // 轉 3 秒，同時看著馬達；出問題就重來","","  Serial.println(F(\"煞車！\"));","  motorStop(MOTOR_PORT, STOP_BRAKE);","  exp6Wait(1000);                        // 停 1 秒","","  Serial.println(F(\"反轉 3 秒……\"));","  motorRun(MOTOR_PORT, -SPEED);          // 負數 = 逆時針","  if (!runFor(3000)) return;","","  Serial.println(F(\"滑行停下。\"));","  motorStop(MOTOR_PORT, STOP_COAST);","  exp6Wait(1000);","}","","// 轉 ms 毫秒，每 0.5 秒印一次角度。收不到資料或馬達被拔掉，就停車並回傳 false","bool runFor(unsigned long ms) {","  unsigned long start = millis();","  unsigned long lastPrint = 0;","  while (millis() - start < ms) {","    if (!exp6Receive() || exp6Device(MOTOR_PORT) != 5) {","      motorStop(MOTOR_PORT, STOP_COAST); // 安全第一：先停車","      Serial.println(F(\"收不到馬達的資料，先停車！檢查馬達和電池。\"));","      exp6Wait(1000);","      return false;","    }","    if (millis() - lastPrint >= 500) {","      lastPrint = millis();","      Serial.print(F(\"  角度 \"));","      Serial.print(exp6Port(MOTOR_PORT)); // 馬達的埠，數字就是角度（度）","      Serial.println(F(\" 度\"));","    }","  }","  return true;","}","","// ---------- 馬達指令小抄 ----------","// 定速轉：speed = -100 ~ 100。正數順時針、負數逆時針、0 = 停","void motorRun(uint8_t port, int8_t speed) {","  uint8_t dir = (speed >= 0) ? 1 : 2;    // L2：1 = 順時針、2 = 逆時針","  int16_t s = (speed >= 0) ? speed : -(int16_t)speed;","  if (s > 100) s = 100;","  exp6Send(port * 11, dir, s, 0);        // L1 = 埠號 × 11（11、22 … 66 = 定速轉）","}","","// 停止：how = STOP_COAST、STOP_HOLD 或 STOP_BRAKE","void motorStop(uint8_t port, uint8_t how) {","  exp6Send(port * 10, how, 0, 0);        // L1 = 埠號 × 10，L2 = 停止方式","}","","@HELPER"],"sensors":["#ifndef LED_BUILTIN","#define LED_BUILTIN 2                    // 有些 ESP32 板子沒寫內建燈在哪，就用第 2 腳","#endif","","const int16_t NEAR_MM   = 100;           // 👉 可以改：超音波多近（毫米）算「有東西靠近」，100 = 10 公分","const int16_t PRESS_MIN = 20;            // 👉 可以改：力量感應器超過多少算「被按下」","","void setup() {","  Serial.begin(115200);","  while (!Serial && millis() < 3000) {}  // UNO R4 要等電腦連上序列埠","  pinMode(LED_BUILTIN, OUTPUT);","  Serial.println(F(\"=== EXP6：讀感應器 ===\"));","","  if (!exp6Begin(3000)) {","    Serial.println(F(\"找不到 EXP6，請先跑範例 1 檢查接線。\"));","    while (true) {}","  }","  exp6Wait(1500);                        // 感應器插上後要 1 秒多才會被認出來","}","","void loop() {","  if (!exp6Receive()) {","    Serial.println(F(\"收不到資料，檢查一下線有沒有鬆掉。\"));","    digitalWrite(LED_BUILTIN, LOW);","    exp6Wait(500);","    return;","  }","","  bool alert = false;                    // 有沒有東西靠近、或被按下","  uint8_t found = 0;                     // 找到幾個感應器","","  for (uint8_t port = 1; port <= 6; port++) {","    uint8_t kind = exp6Device(port);","    int32_t value = exp6Port(port);      // 這一埠的數字，意思看接什麼感應器","","    if (kind == 3) {                     // ---- 顏色感應器 ----","      found++;","      // 一個數字裡塞了 5 樣東西：顏色代號、反射光、紅、綠、藍","      uint32_t v = (uint32_t)value;","      uint8_t color = (v >> 28) & 0x0F;  // 顏色代號 0 ~ 10（15 = 看不出來）","      uint8_t refl  = (v >> 21) & 0x7F;  // 反射光 0 ~ 100（越亮越大，循線用）","      uint8_t r     = (v >> 14) & 0x7F;  // 紅 0 ~ 100","      uint8_t g     = (v >> 7)  & 0x7F;  // 綠 0 ~ 100","      uint8_t b     = v & 0x7F;          // 藍 0 ~ 100","      Serial.print(F(\"埠 \"));","      Serial.print(port);","      Serial.print(F(\" 顏色：\"));","      printColorName(color);","      Serial.print(F(\"  反射光 \"));","      Serial.print(refl);","      Serial.print(F(\"  紅 \"));","      Serial.print(r);","      Serial.print(F(\" 綠 \"));","      Serial.print(g);","      Serial.print(F(\" 藍 \"));","      Serial.println(b);","    } else if (kind == 4) {              // ---- 超音波感應器 ----","      found++;","      Serial.print(F(\"埠 \"));","      Serial.print(port);","      Serial.print(F(\" 距離：\"));","      if (value < 0 || value >= 2000) {  // 太遠或前面沒東西","        Serial.println(F(\"前面沒東西\"));","      } else {                           // 數字的單位是毫米，除以 10 變公分","        Serial.print(value / 10);","        Serial.print('.');","        Serial.print(value % 10);","        Serial.println(F(\" 公分\"));","        if (value < NEAR_MM) alert = true;","      }","    } else if (kind == 1) {              // ---- 力量感應器 ----","      found++;","      Serial.print(F(\"埠 \"));","      Serial.print(port);","      Serial.print(F(\" 力量：\"));","      Serial.println(value);             // 0 = 沒按，按越用力數字越大","      if (value > PRESS_MIN) alert = true;","    }","  }","","  if (found == 0) Serial.println(F(\"沒有找到感應器，插一個顏色、超音波或力量感應器看看。\"));","  Serial.println(F(\"--------\"));","","  digitalWrite(LED_BUILTIN, alert ? HIGH : LOW);   // 有東西靠近或被按下 → 板子上的燈亮","  exp6Wait(500);                         // 👉 可以改：每 0.5 秒看一次","}","","// 把顏色代號換成中文（樂高標準色碼）","void printColorName(uint8_t c) {","  switch (c) {","    case 0:  Serial.print(F(\"黑\"));   break;","    case 1:  Serial.print(F(\"紫\"));   break;","    case 3:  Serial.print(F(\"藍\"));   break;","    case 4:  Serial.print(F(\"天藍\")); break;","    case 5:  Serial.print(F(\"綠\"));   break;","    case 7:  Serial.print(F(\"黃\"));   break;","    case 9:  Serial.print(F(\"紅\"));   break;","    case 10: Serial.print(F(\"白\"));   break;","    case 15: Serial.print(F(\"看不出來\")); break;","    default:","      Serial.print(F(\"其他代號 \"));","      Serial.print(c);","      break;","  }","}","","@HELPER"],"car":["const uint8_t LEFT_PORT  = 1;            // 👉 可以改：左輪馬達插第幾埠","const uint8_t RIGHT_PORT = 2;            // 👉 可以改：右輪馬達插第幾埠（不能跟左輪一樣）","const bool LEFT_REVERSE  = true;         // 👉 可以改：左輪轉反了就改 true / false","const bool RIGHT_REVERSE = false;        // 👉 可以改：右輪轉反了就改 true / false","const int8_t SPEED      = 40;            // 👉 可以改：前進速度 1 ~ 100","const int8_t TURN_SPEED = 25;            // 👉 可以改：轉彎速度 1 ~ 100","const uint16_t TURN_MS  = 900;           // 👉 可以改：轉彎要轉多久（毫秒），調到剛好轉 90 度","","void setup() {","  Serial.begin(115200);","  while (!Serial && millis() < 3000) {}  // UNO R4 要等電腦連上序列埠","  Serial.println(F(\"=== EXP6：兩輪小車 ===\"));","","  if (!exp6Begin(3000)) {","    Serial.println(F(\"找不到 EXP6，請先跑範例 1 檢查接線。\"));","    while (true) {}","  }","  if (!exp6WaitDevice(LEFT_PORT, 5, 3000) || !exp6WaitDevice(RIGHT_PORT, 5, 3000)) {","    Serial.println(F(\"左輪或右輪的馬達沒插好，插好後再按 Arduino 的重置鍵。\"));","    while (true) {}","  }","  Serial.println(F(\"準備好了，3 秒後出發！\"));","  exp6Wait(3000);","}","","void loop() {","  Serial.println(F(\"前進\"));","  carDrive(SPEED, SPEED);                // 左右輪一樣快 = 直走","  if (!driveFor(2000)) return;","","  Serial.println(F(\"右轉\"));","  carDrive(TURN_SPEED, -TURN_SPEED);     // 左輪往前、右輪往後 = 原地右轉","  if (!driveFor(TURN_MS)) return;","","  Serial.println(F(\"前進\"));","  carDrive(SPEED, SPEED);","  if (!driveFor(2000)) return;","","  Serial.println(F(\"左轉\"));","  carDrive(-TURN_SPEED, TURN_SPEED);     // 左輪往後、右輪往前 = 原地左轉","  if (!driveFor(TURN_MS)) return;","","  Serial.println(F(\"後退\"));","  carDrive(-SPEED, -SPEED);","  if (!driveFor(1500)) return;","","  Serial.println(F(\"停車，休息 3 秒\"));","  carStop();","  exp6Wait(3000);","}","","// 開 ms 毫秒。收不到資料或馬達被拔掉，就停車並回傳 false","bool driveFor(unsigned long ms) {","  unsigned long start = millis();","  while (millis() - start < ms) {","    if (!exp6Receive() || exp6Device(LEFT_PORT) != 5 || exp6Device(RIGHT_PORT) != 5) {","      carStop();                         // 安全第一：先停車","      Serial.println(F(\"收不到馬達的資料，先停車！檢查馬達和電池。\"));","      exp6Wait(1000);","      return false;","    }","  }","  return true;","}","","// ---------- 小車指令小抄 ----------","// 兩輪一起轉：left、right = -100 ~ 100（正數往前、負數往後）","void carDrive(int8_t left, int8_t right) {","  int16_t l = LEFT_REVERSE  ? -(int16_t)left  : left;    // 馬達裝反的那一邊，正負顛倒","  int16_t r = RIGHT_REVERSE ? -(int16_t)right : right;","  uint8_t dirs = 0;                      // L2：第 1 位元 = 左輪逆轉、第 0 位元 = 右輪逆轉","  if (l < 0) { dirs |= 2; l = -l; }","  if (r < 0) { dirs |= 1; r = -r; }","  if (l > 100) l = 100;","  if (r > 100) r = 100;","  // L1 = 左輪埠號 × 10 + 右輪埠號（例如 12）；L3 = 左輪速度；L4 = 右輪速度","  exp6Send(LEFT_PORT * 10 + RIGHT_PORT, dirs, l, r);","}","","// 兩輪一起煞車","void carStop() {","  exp6Send(LEFT_PORT * 10 + RIGHT_PORT, 5, 0, 0);   // 兩輪速度都 0，L2 = 5：煞車","}","","@HELPER"]};
+
+  var LANG = PROD.lang;
+  function T(zh, en) { return LANG === 'en' ? en : zh; }
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  var S = { step: 1, viewStep: 1, fn: PROD.defaultFn };
+  var NONE = -32768;
+  // 模擬讀值：st.ok = 有接好；st.r[編號] = 感應器那一格的值。讀不到時跟小幫手一樣回 -32768
+  function R(st, id) { return st.ok && st.r[id] !== undefined ? st.r[id] : NONE; }
+  // mbcReadMany：讀不到回 null（小幫手回 false）
+  function RM(st, id, k) { if (!st.ok) return null; var a = []; for (var i = 0; i < k; i++) a.push(R(st, id + i)); return a; }
+  // Arduino 的 Serial.print(x, HEX／BIN)：負的 int 會印成 32 位元
+  function cHex(n) { return (n < 0 ? n >>> 0 : n).toString(16).toUpperCase(); }
+  function cBin(n) { return (n < 0 ? n >>> 0 : n).toString(2); }
+  function cDiv(a, b) { var q = a / b; return q < 0 ? Math.ceil(q) : Math.floor(q); }
+  function i16(n) { n = n & 0xFFFF; return n >= 0x8000 ? n - 0x10000 : n; }
+  function pad(s, n) { s = String(s) + '  '; while (s.length < n) s += ' '; return s; }
+
+  // 很簡單的 C++ 上色：註解、字串、前置指令、關鍵字、數字、函式名稱
+  var KW = /^(void|bool|int|long|unsigned|char|float|double|const|if|else|while|for|return|true|false|nullptr|NULL|switch|case|break|default|static|uint8_t|uint16_t|uint32_t|int8_t|int16_t|int32_t|byte|defined)$/;
+  function hiCpp(line) {
+    var out = '', i = 0;
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest.slice(0, 2) === '//') { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if ((m = rest.match(/^#[a-z]+/))) { out += '<span class="tk-kw">' + m[0] + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^<[A-Za-z0-9_.\/]+\.h>/)) && /#include\s*$/.test(line.slice(0, i))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (KW.test(w)) out += '<span class="tk-kw">' + w + '</span>';
+        else if (/^\s*\(/.test(after) && after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^(0[xX][0-9A-Fa-f]+|\d+)/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  function render(el, lines, opts) {
+    // lines：[{t: 文字, tag: 步驟編號或 '', tagHide: 不畫圈圈, hl: 標亮, isNew: 新長出來}]
+    opts = opts || {};
+    el.innerHTML = lines.map(function (l, k) {
+      var cls = 'ln' + (l.hl ? ' hl' : '') + (l.isNew ? ' new' : '');
+      var tag = opts.noTag ? '' : '<span class="tag">' + (l.tag && !l.tagHide ? '<i>' + l.tag + '</i>' : '') + '</span>';
+      return '<span class="' + cls + '"><span class="no">' + (l.no !== undefined ? l.no : k + 1) + '</span>' + tag + '<span>' + (l.t ? hiCpp(l.t) : ' ') + '</span></span>';
+    }).join('');
+  }
+  function plain(lines) { return lines.map(function (l) { return l.t; }).join('\n') + '\n'; }
+  function copyText(text, btn) {
+    var done = function () { var o = btn.textContent; btn.textContent = ('已複製'); setTimeout(function () { btn.textContent = o; }, 1400); };
+    try {
+      navigator.clipboard.writeText(text).then(done, function () { fallback(text); });
+    } catch (e) { fallback(text); }
+    function fallback(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e2) { btn.textContent = ('請手動選取複製'); }
+      document.body.removeChild(ta);
+    }
+  }
+
+  // ═════ 通訊方式（共用） ═════
+
+    // ───── UART：板子、找不到時 ─────
+    var BOARDS = {
+      r4: { name: 'UNO R4', ser: 'Serial1', tx: ('D1（TX）'), rx: ('D0（RX）'), vcc: '5V' },
+      mega: { name: 'Mega 2560', ser: 'Serial1', tx: ('18（TX1）'), rx: ('19（RX1）'), vcc: '5V' },
+      esp32: { name: 'ESP32', ser: 'Serial2', tx: ('GPIO17（TX2）'), rx: ('GPIO16（RX2）'), vcc: '3V3' },
+      r3: { name: ('UNO R3／Nano'), ser: '', tx: ('（不能接）'), rx: ('（不能接）'), vcc: ('（不能接）') }
+    };
+    S.board = 'r4'; S.onFail = 'stop';
+    var W = 41;   // 註解對齊的欄位
+    var BASE = {
+      top: function () {
+        var b = BOARDS[S.board];
+        if (S.board === 'r3') return [
+          ('// UNO R3／Nano 不能接 EXP6：唯一的序列埠被 USB 用掉了'),
+          ('// 請改用 UNO R4、Mega 2560 或 ESP32')
+        ];
+        return [
+          ('// EXP6 Host 孔 → ' + b.name + '：第 5 腳 → ' + b.tx + '、第 6 腳 → ' + b.rx),
+          ('// 第 4 腳 → ' + b.vcc + '、第 3 腳 → GND；EXP6 的 XT30 接 2～3S 鋰電池')
+        ];
+      },
+      decl: function () {
+        var b = BOARDS[S.board];
+        if (S.board === 'r3') return [('// 這塊板子沒有第二組硬體序列埠，exp6Begin() 會失敗')];
+        return [('// 跟 EXP6 講話用 ' + b.ser + '，速度固定 115200（小幫手會自己選，不用寫）')];
+      },
+      setupOpen: function () {
+        var L = [
+          'void setup() {',
+          pad('  Serial.begin(115200);', W) + '// ' + ('序列埠監控視窗選 115200'),
+          pad('  while (!Serial && millis() < 3000) {}', W) + '// ' + ('UNO R4 要等電腦連上序列埠，最多等 3 秒'),
+          pad('  if (!exp6Begin(3000)) {', W) + '// ' + ('叫醒 EXP6，最多等 3 秒'),
+          '    Serial.println(F("' + BASE.bootFail() + '"));'
+        ];
+        if (S.onFail === 'stop') L.push(pad('    while (true) {}', W) + '// ' + ('找不到就停在這裡'));
+        L.push('  }');
+        L.push(pad('  exp6Wait(1500);', W) + '// ' + ('馬達、感應器插上後要 1 秒多才會被認出來'));
+        return L;
+      },
+      setupClose: function () { return ['}']; },
+      loopWait: pad('exp6Wait(100);', W - 2) + '// ' + ('等 0.1 秒：用 exp6Wait()，不要用 delay()'),
+      cardOnceHead: function () { return ('// ……第 2 步：叫醒 EXP6、等它準備好……'); },
+      bootFail: function () { return ('找不到 EXP6，請檢查接線！'); },
+      bootLines: function (st) {
+        // UNO R3／Nano：小幫手 exp6Begin() 印的兩行（網站範例原文）
+        if (S.board !== 'r3') return [];
+        return [('這塊板子沒有第二組硬體序列埠（例如 UNO R3、Nano），不能接 EXP6。'),
+          ('請改用 UNO R4、Mega 2560 或 ESP32。')];
+      },
+      halts: function () { return S.onFail === 'stop'; },
+      haltNote: function () {
+        return S.board === 'r3'
+          ? ('（程式停在 while (true) {}：這塊板子不能接 EXP6，請換 UNO R4、Mega 或 ESP32）')
+          : ('（程式停在 while (true) {}：接好線後按 Arduino 的重置鍵，這裡是再點一次功能）');
+      },
+      bubble: function (n, f) {
+        if (n === 1) return S.board === 'r3'
+          ? ('第 1 步：UNO R3／Nano 不能接 EXP6。程式還是編得過，但小幫手的 exp6Begin() 會印「這塊板子不能接 EXP6」然後回傳 false。請改用 UNO R4、Mega 或 ESP32。')
+          : ('第 1 步：最上面兩行是接線的註解；通訊小幫手整段貼在程式最下面。小幫手會依板子自動選序列埠（' + BOARDS[S.board].ser + '），不用改。');
+        if (n === 2) return ('第 2 步：setup() 開機時跑一次。Serial.begin(115200) 打開序列埠，exp6Begin(3000) 最多等 3 秒叫醒 EXP6，exp6Wait(1500) 等馬達和感應器被認出來。') +
+          (S.onFail === 'stop' ? ('找不到就停在 while (true) {}。') : ('找不到也繼續跑，exp6Receive() 會一直收不到資料。'));
+        return f.once
+          ? ('第 3 步：這個功能做一次就好，放在 setup() 裡。loop() 空著就沒有人送「我還在」，EXP6 的看門狗 0.5 秒後會把馬達放開。')
+          : ('第 3 步：loop() 會一直重複。讀值先 exp6Receive() 收一包資料；等待用 exp6Wait()，它會一直跟 EXP6 說「我還在」，看門狗才不會停馬達。');
+      },
+      valid: function () { return true; },
+      bind: function (redraw) {
+        function press(group, id) { group.forEach(function (g) { $(g).setAttribute('aria-pressed', String(g === id)); }); }
+        var boards = ['board-r4', 'board-mega', 'board-esp32', 'board-r3'];
+        boards.forEach(function (id) {
+          $(id).addEventListener('click', function () {
+            S.board = id.slice(6); press(boards, id);
+            var b = BOARDS[S.board]; $('pintx').textContent = b.tx; $('pinrx').textContent = b.rx; $('pinvcc').textContent = b.vcc;
+            $('r3why').hidden = S.board !== 'r3';
+            redraw(true);
+          });
+        });
+        var fails = ['fail-stop', 'fail-go'];
+        fails.forEach(function (id) {
+          $(id).addEventListener('click', function () { S.onFail = id === 'fail-stop' ? 'stop' : 'go'; press(fails, id); redraw(true); });
+        });
+      }
+    };
+  
+  // ═════ 產品 ═════
+
+    var SN = PROD.snips;
+    var NODATA = ('收不到資料，檢查一下線有沒有鬆掉。');
+    // 程式行：程式碼＋對齊的註解
+    function C(code, cmt) { return pad(code, 39) + '// ' + cmt; }
+    function C2(code, cmt) { return pad(code, 37) + '// ' + cmt; }
+    function PR(s) { return 'Serial.print(F("' + s + '"));'; }
+    function PL(s) { return 'Serial.println(F("' + s + '"));'; }
+    // 先收一包資料，收到才讀；收不到印提醒（照網站範例）
+    function RX(lines, cmt) {
+      return [C('if (exp6Receive()) {', cmt || ('收一包最新資料'))]
+        .concat(lines.map(function (l) { return '  ' + l; }), ['} else {', '  ' + PL(NODATA), '}']);
+    }
+    function recv(st, g) { return st.ok ? g(st.s) : NODATA; }
+    function join() { var a = []; for (var i = 0; i < arguments.length; i++) { if (a.length) a.push(''); a = a.concat(arguments[i]); } return a; }
+    var ANGLE = [PR(('角度 ')), C2('Serial.print(exp6Port(1));', ('馬達的埠，數字就是角度（度）')), PL((' 度'))];
+    function angleOut(st) { return recv(st, function (s) { return ('角度 ') + s.RAWF(1, 255) + (' 度'); }); }
+    function voltStr(v) { return cDiv(v, 100) + '.' + (v % 100 < 10 ? '0' : '') + (v % 100); }
+    // Arduino 的 Serial.print(x, 1)：加 0.05 再取到小數第 1 位
+    function f1(x) { var n = Math.abs(x) + 0.05, ip = Math.floor(n); return (x < 0 ? '-' : '') + ip + '.' + Math.floor((n - ip) * 10); }
+    function devName(k) { return k === 0 ? ('沒接') : k === 1 ? ('力量') : k === 3 ? ('顏色') : k === 4 ? ('超音波') : k === 5 ? ('馬達') : ('其他'); }
+    var COLN = { 0: ('黑'), 1: ('紫'), 3: ('藍'), 4: ('天藍'), 5: ('綠'), 7: ('黃'), 9: ('紅'), 10: ('白'), 15: ('看不出來') };
+    function colName(c) { return COLN[c] !== undefined ? COLN[c] : ('其他代號 ') + c; }
+    function colorParts(s) { var v = s.RAWF(4, 255) >>> 0; return { color: (v >>> 28) & 0x0F, refl: (v >>> 21) & 0x7F, r: (v >>> 14) & 0x7F, g: (v >>> 7) & 0x7F, b: v & 0x7F }; }
+    var COLOR_V = C2('uint32_t v = (uint32_t)exp6Port(4);', ('第 4 埠的顏色感應器：一個數字塞了 5 樣東西'));
+
+    var G1 = ('連線、電池、裝置');
+    var G2 = ('看門狗');
+    var G3 = ('馬達：轉起來、停下來');
+    var G4 = ('馬達：角度');
+    var G5 = ('馬達：設定');
+    var G6 = ('兩輪小車');
+    var G7 = ('感應器（顏色、超音波、力量）');
+
+    var FNS = [
+      // ── 連線、電池、裝置 ──
+      { id: 'linkOk', code: 'exp6Receive', grp: G1, name: ('有沒有接好'), kind: 'read', ret: ('true = 收到資料、false = 收不到'),
+        what: ('收一包 EXP6 最新的資料（6 個埠的數字＋電池）。EXP6 每 0.01 秒送一包；收到回傳 true，等 0.1 秒還收不到就回傳 false。每次讀值前都先呼叫它。到右邊勾「拔掉 EXP6 的 Host 線」試試看。'),
+        body: [C('if (exp6Receive()) {', ('收到一包資料 = 接好了')), '  ' + PL(('EXP6 正常')), '} else {', '  ' + PL(NODATA), '}'],
+        out: function (st) { return st.ok ? ('EXP6 正常') : NODATA; } },
+      { id: 'volt', code: 'exp6Volt100', grp: G1, name: ('電池電壓'), kind: 'read', ret: ('電壓 × 100（例 812 = 8.12 V）'),
+        what: ('EXP6 電池的電壓 × 100，用整數就能印出小數點後兩位。拉右邊的「EXP6 電池電壓」看看。'),
+        body: RX([C2('uint16_t v = exp6Volt100();', ('電池電壓 × 100，例如 812 = 8.12 V')), PR(('電池 ')),
+          C2('Serial.print(v / 100);', ('整數部分')), "Serial.print('.');", C2("if (v % 100 < 10) Serial.print('0');", ('小數不到 2 位數，前面補 0')), 'Serial.print(v % 100);', PL(' V')]),
+        out: function (st) { return recv(st, function (s) { return ('電池 ') + voltStr(s.V()) + ' V'; }); } },
+      { id: 'device', code: 'exp6Device', grp: G1, name: ('每一埠接了什麼'), kind: 'read', ret: ('0 沒接、1 力量、3 顏色、4 超音波、5 馬達、7 其他'),
+        what: ('EXP6 自己認得每一埠插的樂高裝置。剛插上的要 1～2 秒才會被認出來，會先是 0。<code>printDeviceName()</code> 是網站範例 1 把代號換成文字的函式，貼在 loop() 後面。到右邊改每一埠接什麼看看。'),
+        body: RX([C2('for (uint8_t port = 1; port <= 6; port++) {', ('第 1 埠到第 6 埠，一個一個看')), '  Serial.print(port);', "  Serial.print(':');", '  printDeviceName(exp6Device(port));', "  Serial.print(' ');", '}', 'Serial.println();']),
+        post: SN.printDeviceName,
+        out: function (st) { return recv(st, function (s) { var a = ''; for (var m = 1; m <= 6; m++) a += m + ':' + devName(s.ID(m)) + ' '; return a; }); } },
+      { id: 'waitDevice', code: 'exp6WaitDevice', grp: G1, name: ('等裝置被認出來'), kind: 'read', once: true, ret: ('true = 等到了、false = 時間到還沒有'),
+        what: ('一直收資料，等某一埠出現指定的裝置（5 = 馬達），最多等幾毫秒；等到了再多等 0.2 秒讓 EXP6 準備好。程式一開始先等馬達被認出來，再叫它轉。到右邊把第 1 埠改成「沒接」，再點一次這個功能試試看。'),
+        body: [C('if (exp6WaitDevice(1, 5, 3000)) {', ('等第 1 埠出現馬達（5），最多等 3 秒')), '  ' + PL(('找到馬達了！')), '} else {',
+          '  ' + PL(('第 1 埠沒有馬達，請把馬達插好，再按 Arduino 的重置鍵。')), '}'],
+        out: function (st) { return st.ok && st.s.ID(1) === 5 ? ('找到馬達了！') : ('第 1 埠沒有馬達，請把馬達插好，再按 Arduino 的重置鍵。'); } },
+      // ── 看門狗 ──
+      { id: 'wait', code: 'exp6Wait', grp: G2, name: ('等待（取代 delay）'), kind: 'cmd', ret: ('1 個參數：等幾毫秒'),
+        what: ('等待的同時，每 0.1 秒跟 EXP6 說一次「我還在」。EXP6 超過 0.5 秒沒收到指令，就會自動把馬達停下來（看門狗），所以等待一律用 <code>exp6Wait()</code>。'),
+        warn: ('寫成 delay(1000)，馬達轉 0.5 秒就會被看門狗停下來。'),
+        body: [C('motorRun(1, 30);', ('第 1 埠的馬達慢慢轉')), PL(('等 1 秒，馬達一直轉'))],
+        wait: C('exp6Wait(1000);', ('不要寫 delay(1000)')),
+        post: SN.motorRun,
+        act: function (c) { c.run(1, 30); },
+        out: function () { return ('等 1 秒，馬達一直轉'); } },
+      { id: 'keepAlive', code: 'exp6Send', grp: G2, name: ('「我還在」（餵看門狗）'), kind: 'cmd', ret: ('L1 = 1，L2～L4 = 0'),
+        what: ('不會讓馬達做任何事，只是告訴 EXP6「Arduino 還在」。<code>exp6Wait()</code>、<code>exp6Receive()</code> 會自動送；程式要算很久、又不能用 exp6Wait() 的時候，自己在中間送幾次。'),
+        body: ['motorRun(1, 30);', 'long sum = 0;', C('for (long i = 0; i < 30000; i++) {', ('算很久的事')), '  sum += i;',
+          '  ' + C2('if (i % 1000 == 0) exp6Send(1, 0, 0, 0);', ('每算一段送一次「我還在」')), '}', PR(('算完了: ')), 'Serial.println(sum);'],
+        post: SN.motorRun,
+        act: function (c) { c.run(1, 30); },
+        out: function () { return ('算完了: ') + 449985000; } },
+      // ── 馬達：轉起來、停下來 ──
+      { id: 'motorRun', code: 'motorRun', grp: G3, name: ('定速轉'), kind: 'cmd', ret: ('2 個參數：埠 1 ~ 6、速度 -100 ~ 100'),
+        what: ('EXP6 自己調整出力，讓馬達維持你指定的速度（有點負載也一樣）。正數順時針、負數逆時針、0 = 停。它送的是 <code>exp6Send(埠 × 11, 方向, 速度, 0)</code>；<code>motorRun()</code> 是網站範例的「指令小抄」函式，貼在 loop() 後面。'),
+        body: [C('motorRun(1, 50);', ('第 1 埠，速度 50（正數順時針、負數逆時針）'))].concat(RX(ANGLE)),
+        post: SN.motorRun,
+        act: function (c) { c.run(1, 50); },
+        out: angleOut },
+      { id: 'motorPower', code: 'exp6Send', grp: G3, name: ('直接出力（不穩速）'), kind: 'cmd', ret: ('L1 = 埠 × 10、L2 = 1 順時針／2 逆時針、L3 = 力道 0 ~ 100、L4 = 加速度（0 = 立刻）'),
+        what: ('直接給馬達力道，不幫你維持速度：負載變大，馬達就變慢。一般用「定速轉」比較穩。'),
+        body: [C('exp6Send(1 * 10, 1, 50, 0);', ('第 1 埠：1 = 順時針、力道 50、加速度 0（立刻）'))].concat(RX(ANGLE)),
+        act: function (c) { c.power(1, 50); },
+        out: angleOut },
+      { id: 'motorStop', code: 'motorStop', grp: G3, name: ('停止（滑行／鎖住／煞車）'), kind: 'cmd', once: true, ret: ('2 個參數：埠、停法 STOP_COAST／STOP_HOLD／STOP_BRAKE'),
+        what: ('三種停法：<b>滑行</b>（放開馬達，自己慢慢停，用手轉得動）、<b>煞車</b>（馬上停，用手還轉得動）、<b>鎖住</b>（用力咬住現在的角度，用手轉不動）。範例先轉 2 秒再煞車。'),
+        pre: SN.stopConst,
+        body: [C('motorRun(1, 50);', ('先轉起來')), C('exp6Wait(2000);', ('轉 2 秒')),
+          C('motorStop(1, STOP_BRAKE);', ('煞車！（滑行寫 STOP_COAST、鎖住寫 STOP_HOLD）')), PL(('煞車！'))],
+        post: join(SN.motorRun, SN.motorStop),
+        prog: [[0, function (c) { c.run(1, 50); }], [2000, function (c) { c.stop(1, 5); }]], dur: 2000,
+        out: function () { return ('煞車！'); } },
+      // ── 馬達：角度 ──
+      { id: 'readAngle', code: 'exp6Port', grp: G4, name: ('讀馬達角度'), kind: 'read', ret: ('角度（度），會一直累加：順時針變大、逆時針變小'),
+        what: ('馬達的埠，<code>exp6Port()</code> 讀到的數字就是角度。開機時 <code>exp6Begin()</code> 會把角度歸零；轉 10 圈就是 3600 度，不會繞回 0。拖右邊「用手轉第 1 埠的馬達」試試看。'),
+        body: RX([C2('int32_t angle = exp6Port(1);', ('轉了幾度：順時針變大、逆時針變小')), PR(('角度 ')), 'Serial.print(angle);', PR((' 度，約 ')),
+          C2('Serial.print(angle / 360.0, 1);', ('轉了幾圈，印到小數第 1 位')), PL((' 圈'))]),
+        out: function (st) { return recv(st, function (s) { var a = s.RAWF(1, 255); return ('角度 ') + a + (' 度，約 ') + f1(a / 360) + (' 圈'); }); } },
+      { id: 'motorDegrees', code: 'motorDegrees', grp: G4, name: ('轉相對角度'), kind: 'cmd', ret: ('4 個參數：埠、速度 1 ~ 100、角度 -2499 ~ 2499、轉到後怎麼停'),
+        what: ('從現在的位置<b>再轉</b> N 度：正數順時針、負數逆時針，最多 ±2499 度（約 7 圈）。指令只要送一次，EXP6 會自己轉到位；轉到之後再收到同一筆，它會再轉一次。範例每次 loop 先印角度、再轉 90 度。'),
+        pre: SN.afterConst,
+        body: RX([PR(('現在角度 ')), 'Serial.print(exp6Port(1));', PL((' 度'))]).concat([C('motorDegrees(1, 40, 90, AFTER_HOLD);', ('再轉 90 度，轉到後鎖住'))]),
+        wait: C('exp6Wait(1000);', ('等它轉到，再送下一個')),
+        post: SN.motorDegrees,
+        act: function (c) { c.deg(1, 40, 90, 'hold'); },
+        out: function (st) { return recv(st, function (s) { return ('現在角度 ') + s.RAWF(1, 255) + (' 度'); }); } },
+      { id: 'motorGoTo', code: 'motorGoTo', grp: G4, name: ('轉到絕對角度'), kind: 'cmd', once: true, ret: ('4 個參數：埠、速度、角度 0 ~ 359（0 = 馬達上的記號）、轉到後怎麼停'),
+        what: ('轉到馬達上的<b>某個方向</b>（0 = 馬達上的記號），EXP6 自動挑最近的路。例如「指針轉回 12 點鐘方向」。'),
+        pre: SN.afterConst,
+        body: [C('motorGoTo(1, 40, 0, AFTER_HOLD);', ('轉到馬達上的 0 度記號（自動走最近的路）')), C('exp6Wait(1500);', ('等它轉到')),
+          PL(('到了！看看馬達上的記號是不是對齊了。'))],
+        post: SN.motorGoTo,
+        prog: [[0, function (c) { c.goTo(1, 40, 0, 'hold'); }]], dur: 1500,
+        out: function () { return ('到了！看看馬達上的記號是不是對齊了。'); } },
+      { id: 'heading', code: 'exp6Send', grp: G4, name: ('朝向（絕對角度）'), kind: 'read', ret: ('-180 ~ 179 度（0 = 馬達上的記號）'),
+        what: ('先把這一埠的回傳格式改成「絕對角度」（L1 = 69 + 埠，L2 = 2），<code>exp6Port()</code> 讀到的就是轉軸現在指向哪裡，不會累加。拖右邊「用手轉第 1 埠的馬達」轉超過半圈看看。'),
+        body: [C('exp6Send(69 + 1, 2, 0, 0);', ('第 1 埠改回傳「絕對角度」（L2 = 2）'))].concat(RX([PR(('朝向 ')), 'Serial.print(exp6Port(1));', PL((' 度'))])),
+        act: function (c) { c.mode(1, 2); },
+        out: function (st) { return recv(st, function (s) { return ('朝向 ') + s.RAWF(1, 2) + (' 度'); }); } },
+      { id: 'resetAngle', code: 'exp6Send', grp: G4, name: ('角度歸零'), kind: 'cmd', ret: ('L1 = 69 + 埠（70 ~ 75）、L2 = 3'),
+        what: ('把這一埠的角度設成 0，馬達不會動。範例讓馬達慢慢轉，轉滿一圈就歸零。'),
+        body: ['motorRun(1, 30);'].concat(RX([C2('int32_t angle = exp6Port(1);', ('現在的角度')), C2('if (angle >= 360) {', ('轉滿一圈')),
+          '  ' + pad('exp6Send(69 + 1, 3, 0, 0);', 35) + '// ' + ('L1 = 69 + 埠號，L2 = 3：角度歸零'), '  ' + PL(('轉滿一圈，角度歸零！')), '} else {', '  ' + PR(('角度 ')), '  Serial.println(angle);', '}'])),
+        post: SN.motorRun,
+        act: function (c, s) { c.run(1, 30); if (s.ok && s.RAWF(1, 255) >= 360) c.reset(1); },
+        out: function (st) { return recv(st, function (s) { var a = s.RAWF(1, 255); return a >= 360 ? ('轉滿一圈，角度歸零！') : ('角度 ') + a; }); } },
+      // ── 馬達：設定 ──
+      { id: 'speedFmt', code: 'exp6Send', grp: G5, name: ('讀速度（改回傳格式）'), kind: 'read', ret: ('L1 = 69 + 埠、L2 = 0 速度／1 角度／2 絕對角度／255 自動'),
+        what: ('每一埠回傳的數字可以換：0 速度、1 角度、2 絕對角度、255 自動（馬達預設是角度）。範例改成讀速度。「全部重來」會讓格式回到自動。'),
+        body: [C('exp6Send(69 + 1, 0, 0, 0);', ('第 1 埠改回傳「速度」（L2 = 0）')), 'motorRun(1, 30);'].concat(RX([PR(('速度 ')), 'Serial.println(exp6Port(1));'])),
+        post: SN.motorRun,
+        act: function (c) { c.mode(1, 0); c.run(1, 30); },
+        out: function (st) { return recv(st, function (s) { return ('速度 ') + s.RAWF(1, 0); }); } },
+      { id: 'inverted', code: 'exp6Send', grp: G5, name: ('馬達反裝'), kind: 'cmd', ret: ('L1 = 76、L2 = 埠、L3 = 0 正裝／1 反裝'),
+        what: ('馬達裝反了，就把它設成「反裝」：正數變成逆時針，角度也反過來算，程式就不用到處改正負號。'),
+        body: [C('exp6Send(76, 1, 1, 0);', ('第 1 埠的馬達反裝（L3 = 0 改回正裝）')), C('motorRun(1, 50);', ('正數現在是逆時針'))].concat(RX(ANGLE)),
+        post: SN.motorRun,
+        act: function (c) { c.inv(1, true); c.run(1, 50); },
+        out: angleOut },
+      { id: 'pid', code: 'exp6Send', grp: G5, name: ('PID 倍率'), kind: 'cmd', ret: ('L1 = 80 + 埠、L2 = P、L3 = I、L4 = D（各 50 = 原廠值）'),
+        what: ('調整 EXP6 維持馬達速度、角度的方式。各 50 = 原廠值；不確定就保持 50。模擬器不會模擬 PID 的差別。'),
+        body: [C('exp6Send(80 + 1, 70, 50, 50);', ('第 1 埠：P 改成 70，I、D 維持 50')), 'motorRun(1, 30);'].concat(RX(ANGLE)),
+        post: SN.motorRun,
+        act: function (c) { c.run(1, 30); },
+        out: angleOut },
+      { id: 'resetAll', code: 'exp6Send', grp: G5, name: ('全部重來'), kind: 'cmd', once: true, ret: ('L1～L4 都是 0'),
+        what: ('全部馬達停下、角度歸零、回傳格式回到自動。<code>exp6Begin()</code> 一開始就會送一次。'),
+        body: [C('motorRun(1, 50);', ('先讓第 1 埠的馬達轉')), C('exp6Wait(2000);', ('轉 2 秒')),
+          C('exp6Send(0, 0, 0, 0);', ('全部重來：馬達停下、角度歸零、格式回自動')), 'exp6Wait(300);'].concat(RX([PR(('全部重來，角度 ')), 'Serial.println(exp6Port(1));'])),
+        post: SN.motorRun,
+        prog: [[0, function (c) { c.run(1, 50); }], [2000, function (c) { c.resetAll(); }]], dur: 2300,
+        out: function (st) { return recv(st, function (s) { return ('全部重來，角度 ') + (s.ID(1) === 5 ? 0 : s.RAWF(1, 255)); }); } },
+      // ── 兩輪小車 ──
+      { id: 'carDrive', code: 'carDrive', grp: G6, name: ('兩輪同步'), kind: 'cmd', ret: ('2 個參數：左輪、右輪速度 -100 ~ 100（正數往前）'),
+        what: ('兩顆馬達用「同步」指令一起控制，EXP6 會讓兩輪互相配合，車子走得比較直。它送的是 <code>exp6Send(左埠 × 10 + 右埠, 方向, 左速, 右速)</code>。左右兩顆馬達裝的方向相反，範例的 <code>LEFT_REVERSE</code> 預設是 true。'),
+        warn: ('兩個輪子的速度不要只有一個剛好是 0（例如 carDrive(40, 0)）：EXP6 不走同步控制，車子會比較不穩。要停車用 carStop()。'),
+        pre: SN.carConst,
+        body: [C('carDrive(40, 40);', ('左右輪一樣快 = 直走'))].concat(RX([PR(('左輪 ')), 'Serial.print(exp6Port(LEFT_PORT));', PR(('  右輪 ')), 'Serial.println(exp6Port(RIGHT_PORT));'])),
+        post: SN.carDrive,
+        act: function (c) { c.run(1, -40); c.run(2, 40); },
+        out: function (st) { return recv(st, function (s) { return ('左輪 ') + s.RAWF(1, 255) + ('  右輪 ') + s.RAWF(2, 255); }); } },
+      { id: 'carStop', code: 'carStop', grp: G6, name: ('兩輪煞車'), kind: 'cmd', once: true, ret: ('沒有參數'),
+        what: ('兩輪一起煞車（L2 = 5）。要停車用它。範例先往前開 2 秒再停。'),
+        pre: SN.carConst,
+        body: [C('carDrive(40, 40);', ('先往前開')), C('exp6Wait(2000);', ('開 2 秒')), C('carStop();', ('兩輪一起煞車')), PL(('停車！'))],
+        post: join(SN.carDrive, SN.carStop),
+        prog: [[0, function (c) { c.run(1, -40); c.run(2, 40); }], [2000, function (c) { c.stop(1, 5); c.stop(2, 5); }]], dur: 2000,
+        out: function () { return ('停車！'); } },
+      // ── 感應器 ──
+      { id: 'color', code: 'exp6Port', grp: G7, name: ('顏色（第 4 埠）'), kind: 'read', ret: ('顏色代號 0 ~ 10（15 = 看不出來）'),
+        what: ('顏色感應器的埠，一個數字裡塞了 5 樣東西：顏色代號、反射光、紅、綠、藍。顏色代號在最上面 4 個位元（<code>&gt;&gt; 28</code>）。0 黑、1 紫、3 藍、4 天藍、5 綠、7 黃、9 紅、10 白、15 看不出來。<code>printColorName()</code> 是網站範例 5 的函式。'),
+        body: RX([COLOR_V, C2('uint8_t color = (v >> 28) & 0x0F;', ('顏色代號 0 ~ 10（15 = 看不出來）')), PR(('顏色：')), 'printColorName(color);', PR(('（代號 ')), 'Serial.print(color);', PL(('）'))]),
+        post: SN.printColorName,
+        out: function (st) { return recv(st, function (s) { var c = colorParts(s).color; return ('顏色：') + colName(c) + ('（代號 ') + c + ('）'); }); } },
+      { id: 'reflect', code: 'exp6Port', grp: G7, name: ('反射光（第 4 埠）'), kind: 'read', ret: '0 ~ 100',
+        what: ('越亮越大。循線車就是靠這個數字判斷自己在線的哪一邊：對著黑線和白紙移動看看。'),
+        body: RX([COLOR_V, C2('uint8_t refl = (v >> 21) & 0x7F;', ('反射光 0 ~ 100（越亮越大）')), PR(('反射光 ')), 'Serial.println(refl);']),
+        out: function (st) { return recv(st, function (s) { return ('反射光 ') + colorParts(s).refl; }); } },
+      { id: 'rgb', code: 'exp6Port', grp: G7, name: ('紅、綠、藍（第 4 埠）'), kind: 'read', ret: ('3 個 0 ~ 100'),
+        what: ('顏色感應器看到的紅、綠、藍各多少，各占 7 個位元。'),
+        body: RX([COLOR_V, PR(('紅 ')), 'Serial.print((v >> 14) & 0x7F);', PR((' 綠 ')), 'Serial.print((v >> 7) & 0x7F);', PR((' 藍 ')), 'Serial.println(v & 0x7F);']),
+        out: function (st) { return recv(st, function (s) { var p = colorParts(s); return ('紅 ') + p.r + (' 綠 ') + p.g + (' 藍 ') + p.b; }); } },
+      { id: 'distance', code: 'exp6Port', grp: G7, name: ('距離（第 5 埠，超音波）'), kind: 'read', ret: ('毫米；小於 0 或 2000 以上 = 前面沒東西'),
+        what: ('超音波感應器的埠，數字的單位是毫米，除以 10 變公分。太遠或前面沒東西時是負數或很大的數。'),
+        body: RX([C2('int32_t value = exp6Port(5);', ('第 5 埠的超音波：單位是毫米')), C2('if (value < 0 || value >= 2000) {', ('太遠或前面沒東西')), '  ' + PL(('前面沒東西')),
+          C2('} else {', ('除以 10 變公分')), '  ' + PR(('距離 ')), '  Serial.print(value / 10);', "  Serial.print('.');", '  Serial.print(value % 10);', '  ' + PL((' 公分')), '}']),
+        out: function (st) { return recv(st, function (s) { var v = s.RAWF(5, 255); return v < 0 || v >= 2000 ? ('前面沒東西') : ('距離 ') + cDiv(v, 10) + '.' + (v % 10) + (' 公分'); }); } },
+      { id: 'force', code: 'exp6Port', grp: G7, name: ('力量（第 6 埠）'), kind: 'read', ret: ('0 = 沒按，按越用力數字越大'),
+        what: ('力量感應器的埠，數字就是按得多用力。拉右邊的「力量感應器壓多大力」看看。'),
+        body: RX([PR(('力量 ')), C2('Serial.println(exp6Port(6));', ('0 = 沒按，按越用力數字越大'))]),
+        out: function (st) { return recv(st, function (s) { return ('力量 ') + s.RAWF(6, 255); }); } }
+    ];
+    var FBY = {}; FNS.forEach(function (f) { FBY[f.id] = f; });
+
+    // ───── 模擬 EXP6（沿用 SPIKE 版的畫面與馬達模型；只用畫面示意換算）─────
+    var K = 10;
+    var OBJS = {
+      white: { cc: 10, refl: 95, rgb: [88, 92, 90], fill: '#f4f4ef' },
+      black: { cc: 0, refl: 8, rgb: [6, 7, 6], fill: '#151515' },
+      red: { cc: 9, refl: 55, rgb: [80, 12, 10], fill: '#d8392b' },
+      green: { cc: 5, refl: 30, rgb: [12, 55, 20], fill: '#2e9d48' },
+      blue: { cc: 3, refl: 25, rgb: [10, 25, 70], fill: '#2f62c9' },
+      yellow: { cc: 7, refl: 80, rgb: [90, 80, 15], fill: '#f2c200' },
+      none: { cc: 15, refl: 0, rgb: [1, 1, 1], fill: '#8a9693' }
+    };
+    var M = { dev: [0, 5, 5, 0, 3, 4, 1], mot: [], fmt: [], end: 0, bootAt: 0, halted: true, todo: [] };
+    [0, 37, 200, 90, 0, 0, 0].forEach(function (ph) { M.mot.push({ phys: ph, v: 0, mode: 'coast', tv: 0, tgt: 0, after: 'hold', zero: ph, inv: false }); M.fmt.push(255); });
+    function pmod(a, b) { var q = a % b; if (q < 0) q += b; return q; }
+    function linkOk() { return !$('unplug').checked && S.board !== 'r3'; }
+    function isMot(m) { return M.dev[m] === 5; }
+    function sg(m) { return M.mot[m].inv ? -1 : 1; }
+    function ci(v, lo, hi) { v = Math.trunc(Number(v)); return v < lo ? lo : v > hi ? hi : v; }
+    function can(m) { return linkOk() && isMot(m); }
+    function stopL2(how) { return how === 3 ? 'coast' : how === 4 ? 'hold' : 'brake'; }
+    // exp6Begin() 會送 exp6Send(0, 0, 0, 0)：馬達停下、角度歸零、格式回自動
+    function initBoard() {
+      for (var m = 1; m <= 6; m++) { var o = M.mot[m]; o.mode = 'coast'; o.zero = o.phys; o.inv = false; M.fmt[m] = 255; }
+    }
+    // 指令：跟網站「指令小抄」一一對應
+    var MC = {
+      run: function (m, s) { if (!can(m)) return; var o = M.mot[m]; o.mode = 'run'; o.tv = sg(m) * ci(s, -100, 100) * K; },
+      power: function (m, p) { if (!can(m)) return; var o = M.mot[m]; o.mode = 'run'; o.tv = sg(m) * ci(p, -100, 100) * K * 0.9; },
+      stop: function (m, how) { if (!can(m)) return; M.mot[m].mode = stopL2(how); },
+      deg: function (m, s, d, after) {
+        if (!can(m)) return; var o = M.mot[m];
+        if (o.mode === 'deg') return;   // 還在轉上一個角度
+        s = ci(s, 1, 100); d = ci(d, -2499, 2499); if (!d) return;
+        var dir = (d < 0 ? -1 : 1) * sg(m);
+        o.mode = 'deg'; o.tgt = o.phys + dir * Math.abs(d); o.tv = dir * s * K; o.after = after;
+      },
+      goTo: function (m, s, a, after) {
+        if (!can(m)) return; var o = M.mot[m];
+        if (o.mode === 'deg') return;
+        s = ci(s, 1, 100);
+        var cur = pmod(Math.round(sg(m) * o.phys), 360), diff = pmod(pmod(Math.trunc(a), 360) - cur + 180, 360) - 180, delta = sg(m) * diff;
+        if (!delta) { o.mode = after; return; }
+        o.mode = 'deg'; o.tgt = o.phys + delta; o.tv = (delta > 0 ? 1 : -1) * s * K; o.after = after;
+      },
+      inv: function (m, f) { if (!can(m)) return; f = !!f; var o = M.mot[m]; if (o.inv !== f) { o.inv = f; o.zero = o.phys; o.mode = 'coast'; } },
+      reset: function (m) { if (!can(m)) return; M.mot[m].zero = M.mot[m].phys; },
+      mode: function (m, f) { if (linkOk()) M.fmt[m] = f; },
+      resetAll: function () { if (linkOk()) initBoard(); }
+    };
+    function step(dt) {
+      var wd = M.end && Date.now() - M.end > 500;
+      for (var m = 1; m <= 6; m++) {
+        var o = M.mot[m];
+        if (!isMot(m)) { o.v = 0; continue; }
+        if (!linkOk()) o.mode = 'coast';
+        if (wd && o.mode !== 'deg') o.mode = 'coast';   // 看門狗：只有「轉角度還沒到」的會先轉完
+        if (o.mode === 'run') o.v += Math.max(-4000 * dt, Math.min(4000 * dt, o.tv - o.v));
+        else if (o.mode === 'deg') {
+          var rem = o.tgt - o.phys;
+          if (Math.abs(rem) <= Math.abs(o.tv) * dt || (rem > 0) !== (o.tv > 0)) {
+            o.phys = o.tgt;
+            if (o.after === 'run') { o.mode = 'run'; o.v = o.tv; } else { o.mode = o.after; o.v = 0; }
+            continue;
+          }
+          o.v = o.tv;
+        } else if (o.mode === 'coast') o.v *= Math.exp(-dt / 0.25);
+        else if (o.mode === 'brake') o.v *= Math.exp(-dt / 0.04);
+        else o.v = 0;
+        if (o.mode !== 'run' && Math.abs(o.v) < 2) o.v = 0;
+        o.phys += o.v * dt;
+      }
+    }
+    // 讀值：每個都是「現在」的值；拔線時畫面上都是 0（Arduino 這邊是 exp6Receive() 收不到）
+    function snap() {
+      var off = !linkOk();
+      function z(v) { return v === 0 ? 0 : v; }
+      function rel(m) { return z(Math.round(sg(m) * (M.mot[m].phys - M.mot[m].zero))); }
+      function col(m) {
+        if (off || M.dev[m] !== 3) return { cc: 0, refl: 0, r: 0, g: 0, b: 0 };
+        var o = OBJS[$('colorobj').value] || OBJS.white;
+        return { cc: o.cc, refl: o.refl, r: o.rgb[0], g: o.rgb[1], b: o.rgb[2] };
+      }
+      var s = {
+        ok: !off,
+        ID: function (m) { return off ? 0 : M.dev[m]; },
+        A: function (m) { return off || !isMot(m) ? 0 : rel(m); },
+        AA: function (m) { return off || !isMot(m) ? 0 : pmod(Math.round(sg(m) * M.mot[m].phys), 360); },
+        SP: function (m) { return off || !isMot(m) ? 0 : z(Math.round(sg(m) * M.mot[m].v)); },
+        D: function (m) { return off || M.dev[m] !== 4 ? 0 : ($('far').checked ? 2000 : Number($('dist').value)); },
+        F: function (m) { return off || M.dev[m] !== 1 ? 0 : Number($('force').value); },
+        C: col,
+        V: function () { return off ? 0 : Number($('volt').value); },
+        // exp6Port(m)：f = 這一埠的回傳格式（0 速度、1 角度、2 絕對角度、255 自動）
+        RAWF: function (m, f) {
+          if (off) return 0;
+          var d = M.dev[m];
+          if (d === 5) {
+            if (f === 0) return s.SP(m);
+            if (f === 2) { var a = s.AA(m); return a >= 180 ? a - 360 : a; }
+            return s.A(m);
+          }
+          if (d === 3) { var c = col(m), v = c.cc * 268435456 + c.refl * 2097152 + c.r * 16384 + c.g * 128 + c.b; return v >= 2147483648 ? v - 4294967296 : v; }
+          if (d === 4) return $('far').checked ? -1 : Number($('dist').value);
+          if (d === 1) return Number($('force').value);
+          return 0;
+        }
+      };
+      return s;
+    }
+
+    // ───── 畫面 ─────
+    function tx(x, y, t, size, fill, anchor, weight) {
+      return '<text x="' + x + '" y="' + y + '" font-size="' + size + '" fill="' + fill + '" text-anchor="' + (anchor || 'middle') + '"' + (weight ? ' font-weight="' + weight + '"' : '') + '>' + t + '</text>';
+    }
+    function voltV(cv) { return cDiv(cv, 100) + '.' + (cv % 100 < 10 ? '0' : '') + (cv % 100); }
+    function drawField() {
+      var st = snap(), off = !st.ok, r3 = S.board === 'r3', ink = '#16201e', dim = '#3d4a47';
+      var h = '<rect x="0" y="0" width="460" height="250" rx="8" fill="#f7f7f2" stroke="#d6dfdc"/>';
+      h += '<rect x="10" y="14" width="96" height="52" rx="8" fill="#e8ecea" stroke="#9aa6a3"/>';
+      h += tx(58, 35, 'Arduino', 12, dim) + tx(58, 55, r3 ? 'UNO R3' : S.board === 'mega' ? 'Mega' : S.board === 'esp32' ? 'ESP32' : 'UNO R4', 14, r3 ? '#e04a3b' : '#0a7c78', 'middle', 700);
+      h += '<path d="M106 40 L150 40" stroke="' + (off ? '#e04a3b' : ink) + '" stroke-width="4"' + (off ? ' stroke-dasharray="5 5"' : '') + '/>';
+      h += '<rect x="150" y="12" width="300" height="56" rx="8" fill="#1b2422"/>';
+      h += tx(166, 37, 'EXP6', 17, '#ffffff', 'start', 900);
+      h += tx(166, 57, r3 ? ('這塊板子沒有第二組序列埠') : off ? ('Host 線拔掉了：EXP6 關機') : ('UART 模式・電池 ') + voltV(st.V()) + ' V', 12, off ? '#ff8f6b' : '#9ad98a', 'start');
+      h += tx(440, 37, ('第 1 ～ 6 埠在下面'), 11, '#9aaba7', 'end');
+      for (var m = 1; m <= 6; m++) {
+        var x = 8 + (m - 1) * 75, y = 82, cx = x + 34.5, cy = y + 60, d = M.dev[m];
+        h += '<rect x="' + x + '" y="' + y + '" width="69" height="158" rx="8" fill="#ffffff" stroke="' + (d ? '#9aa6a3' : '#d6dfdc') + '"' + (d ? '' : ' stroke-dasharray="4 4"') + '/>';
+        h += tx(cx, y + 18, ('第 ' + m + ' 埠'), 13, ink, 'middle', 700);
+        if (d === 5) {
+          var o = M.mot[m], th = o.phys * Math.PI / 180, px = cx + 19 * Math.sin(th), py = cy - 19 * Math.cos(th), qx = cx - 7 * Math.sin(th), qy = cy + 7 * Math.cos(th);
+          h += '<circle cx="' + cx + '" cy="' + cy + '" r="25" fill="#e9eeec" stroke="#0a7c78" stroke-width="3"/>';
+          h += '<line x1="' + qx.toFixed(1) + '" y1="' + qy.toFixed(1) + '" x2="' + px.toFixed(1) + '" y2="' + py.toFixed(1) + '" stroke="#e04a3b" stroke-width="5" stroke-linecap="round"/>';
+          h += '<circle cx="' + cx + '" cy="' + cy + '" r="4" fill="' + ink + '"/>';
+          if (Math.abs(o.v) > 5) h += tx(cx + 25, cy - 20, o.v > 0 ? '↻' : '↺', 15, '#e04a3b');
+          if (o.inv) h += tx(cx - 25, cy - 20, ('反'), 10, '#b25e00', 'middle', 700);
+          h += tx(cx, y + 108, ('角度 ') + st.A(m), 11, dim) + tx(cx, y + 124, ('朝向 ') + st.AA(m), 10, dim) + tx(cx, y + 140, ('速度 ') + st.SP(m), 11, dim);
+          h += tx(cx, y + 153, ('馬達'), 10, '#7d918c');
+        } else if (d === 3) {
+          var ob = OBJS[$('colorobj').value] || OBJS.white, c = st.C(m);
+          h += '<rect x="' + (cx - 22) + '" y="' + (cy - 22) + '" width="44" height="44" rx="8" fill="#ffffff" stroke="#55605d" stroke-width="2"/>';
+          h += '<circle cx="' + cx + '" cy="' + cy + '" r="14" fill="' + ob.fill + '" stroke="#55605d"/>';
+          h += tx(cx, y + 108, ('代號 ') + c.cc, 11, dim) + tx(cx, y + 124, ('反射 ') + c.refl, 11, dim) + tx(cx, y + 140, c.r + '/' + c.g + '/' + c.b, 10, dim);
+          h += tx(cx, y + 153, ('顏色感應器'), 10, '#7d918c');
+        } else if (d === 4) {
+          var far = $('far').checked;
+          h += '<rect x="' + (cx - 30) + '" y="' + (cy - 16) + '" width="60" height="32" rx="10" fill="#ffffff" stroke="#55605d" stroke-width="2"/>';
+          h += '<circle cx="' + (cx - 14) + '" cy="' + cy + '" r="10" fill="#1b2422"/><circle cx="' + (cx + 14) + '" cy="' + cy + '" r="10" fill="#1b2422"/>';
+          h += tx(cx, y + 108, ('距離'), 11, dim) + tx(cx, y + 124, off ? '0' : far ? ('看不到') : st.D(m) + ' mm', 11, dim, 'middle', 700);
+          h += tx(cx, y + 153, ('超音波'), 10, '#7d918c');
+        } else if (d === 1) {
+          var fv = Number($('force').value), dep = Math.round(fv / 100 * 10);
+          h += '<rect x="' + (cx - 20) + '" y="' + (cy - 8) + '" width="40" height="30" rx="6" fill="#ffffff" stroke="#55605d" stroke-width="2"/>';
+          h += '<rect x="' + (cx - 9) + '" y="' + (cy - 22 + dep) + '" width="18" height="16" rx="4" fill="' + (fv > 0 ? '#e04a3b' : '#1b2422') + '"/>';
+          h += tx(cx, y + 108, ('力量'), 11, dim) + tx(cx, y + 124, String(st.F(m)), 11, dim, 'middle', 700);
+          h += tx(cx, y + 153, ('力量感應器'), 10, '#7d918c');
+        } else {
+          h += tx(cx, cy + 4, ('沒接'), 12, '#9aa6a3');
+        }
+      }
+      if (off) {
+        h += '<rect x="8" y="172" width="444" height="40" rx="8" fill="#fff1dc" opacity="0.95"/>';
+        h += tx(230, 197, r3 ? ('UNO R3 不能接 EXP6：exp6Begin() 回傳 false') : ('Host 線拔掉了：馬達停下，exp6Receive() 收不到資料'), 13, '#b25e00', 'middle', 700);
+      }
+      $('field').innerHTML = h;
+    }
+
+    // ───── 「程式重新上傳」＝開機：exp6Begin() 全部重來；setup() 裡只做一次的指令照時間排好 ─────
+    var BOOT = true;
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      if (t && t.closest && t.closest('.chip, .try, .step-head, #next2, .opt')) BOOT = true;
+    }, true);
+    function boot(f) {
+      M.todo = []; M.bootAt = Date.now();
+      if (S.step < 3) { M.halted = true; M.end = M.bootAt - 1000; return; }
+      var ok = linkOk();
+      if (ok) initBoard();
+      M.halted = !ok && BASE.halts();
+      if (M.halted) { M.end = M.bootAt; return; }
+      M.end = f.once ? M.bootAt + (f.dur || 0) : 0;
+      if (f.once && f.prog) M.todo = f.prog.map(function (p) { return { at: M.bootAt + p[0], go: p[1] }; });
+    }
+    // 模擬器控制項（要比頁面的 tick 先處理，所以先綁）
+    [1, 2, 3, 4, 5, 6].forEach(function (k) {
+      $('dev' + k).addEventListener('input', function () { M.dev[k] = Number(this.value); M.fmt[k] = 255; });
+    });
+    var handLast = 0;
+    $('hand').addEventListener('input', function () {
+      var v = Number(this.value), d = v - handLast, o = M.mot[1]; handLast = v;
+      if (isMot(1) && (o.mode === 'coast' || o.mode === 'brake' || !linkOk())) { o.phys += d; o.v = 0; }
+    });
+    $('unplug').addEventListener('input', function () {
+      var f = FBY[S.fn];
+      if (f && f.once) BOOT = true;              // 頁面會當成重新上傳
+      else if (!$('unplug').checked && S.board !== 'r3') initBoard();   // 插回去：EXP6 重新開機
+    });
+    setInterval(function () {
+      var now = Date.now();
+      M.todo = M.todo.filter(function (p) { if (now >= p.at) { p.go(MC); return false; } return true; });
+      step(0.05); drawField();
+    }, 50);
+
+    var SIM = {
+      state: function () {
+        var f = FBY[S.fn] || FNS[0];
+        if (BOOT) { BOOT = false; boot(f); }
+        var sn = snap();
+        // loop() 跑一圈：先讀（印出來的是這一刻的值），再照範例送指令
+        if (S.step >= 3 && !f.once && !M.halted && f.act) f.act(MC, sn);
+        return { ok: linkOk(), r: {}, s: sn };
+      },
+      draw: function () { drawField(); },
+      inputs: ['unplug', 'far', 'dist', 'force', 'volt', 'hand', 'colorobj', 'dev1', 'dev2', 'dev3', 'dev4', 'dev5', 'dev6']
+    };
+  
+  // ═════ 頁面 ═════
+
+  // 需要：BASE（通訊方式）、FNS（功能）、SIM（模擬器）
+  var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; });
+  if (!BY[S.fn]) S.fn = FNS[0].id;
+
+  // ───── 主程式組裝 ─────
+  function programLines() {
+    var f = BY[S.fn], L = [];
+    var s1 = S.step === 1, s2 = S.step === 2, s3 = S.step === 3;
+    BASE.top().forEach(function (t) { L.push({ t: t, tag: 1, hl: s1 }); });
+    if (S.step >= 2) {
+      L.push({ t: '' });
+      BASE.decl().forEach(function (t) { L.push({ t: t, tag: 2, hl: s2 }); });
+      if (S.step >= 3 && f.pre) { L.push({ t: '' }); f.pre.forEach(function (t) { L.push({ t: t, tag: 3, hl: s3 }); }); }
+      L.push({ t: '' });
+      BASE.setupOpen().forEach(function (t) { L.push({ t: t, tag: 2, hl: s2 }); });
+      if (S.step >= 3 && f.once) f.body.forEach(function (b) { L.push({ t: '  ' + b, tag: 3, hl: s3 }); });
+      BASE.setupClose().forEach(function (t) { L.push({ t: t, tag: 2, hl: s2 }); });
+      if (S.step >= 3) {
+        L.push({ t: '' });
+        L.push({ t: 'void loop() {', tag: 3, hl: s3 });
+        if (f.once) {
+          L.push({ t: '  ' + ('// 這個功能在 setup() 做一次就好，loop() 不用寫'), tag: 3, hl: s3 });
+        } else {
+          (BASE.loopHead ? BASE.loopHead() : []).forEach(function (t) { L.push({ t: '  ' + t, tag: 3, hl: s3 }); });
+          f.body.forEach(function (b) { L.push({ t: '  ' + b, tag: 3, hl: s3 }); });
+          L.push({ t: '  ' + (f.wait || BASE.loopWait), tag: 3, hl: s3 });
+        }
+        L.push({ t: '}', tag: 3, hl: s3 });
+        if (f.post) { L.push({ t: '' }); f.post.forEach(function (t) { L.push({ t: t, tag: 3, hl: s3 }); }); }
+      }
+    }
+    L.push({ t: '' });
+    PROD.helper.forEach(function (t, i) { L.push({ t: t, tag: 1, hl: s1, helper: true, tagHide: i > 0 }); });
+    return L;
+  }
+  var lastKeys = '';
+  function drawMain() {
+    var L = programLines();
+    L.forEach(function (l, k) { l.no = k + 1; });
+    if (!S.showHelper) {
+      // 小幫手很長：平常只露第一行，按「顯示小幫手」才全部展開（複製程式一定是完整的）
+      var nH = L.filter(function (l) { return l.helper; }).length, seen = false, F = [];
+      L.forEach(function (l) {
+        if (!l.helper) { F.push(l); return; }
+        if (seen) return;
+        seen = true; F.push(l);
+        F.push({ t: ('// ⋯ 還有 ' + (nH - 1) + ' 行（按「顯示小幫手」看）'), no: '⋮', tag: 1, tagHide: true, hl: l.hl, helper: true });
+      });
+      L = F;
+    }
+    var prev = lastKeys ? lastKeys.split('\n') : [];
+    L.forEach(function (l) { if (l.t && lastKeys && prev.indexOf(l.t) < 0) l.isNew = true; });
+    lastKeys = L.map(function (l) { return l.t; }).join('\n');
+    render($('maincode'), L);
+    var b = $('bubble'); b.querySelector('i').textContent = S.step; b.querySelector('span').textContent = BASE.bubble(S.step, BY[S.fn]);
+    drawMinis();
+  }
+
+  // 每一步卡片裡的「這一步寫的程式」：用完整程式的真實行號；小幫手只列開頭兩行
+  var miniPrev = {};
+  function drawMinis() {
+    var keep = S.step; S.step = 3; var full = programLines(); S.step = keep;
+    [1, 2, 3].forEach(function (k) {
+      var el = $('mini' + k); if (!el) return;
+      var lines = [], nHelper = 0, total = 0;
+      full.forEach(function (l, i) { if (l.tag === k && l.helper) total++; });
+      full.forEach(function (l, i) {
+        if (l.tag !== k) return;
+        if (l.helper) {
+          nHelper++;
+          if (nHelper <= 2) lines.push({ t: l.t, no: i + 1 });
+          else if (nHelper === 3) lines.push({ t: ('// ⋯ 小幫手共 ' + total + ' 行，按右邊「顯示小幫手」看全部'), no: '⋮' });
+          return;
+        }
+        lines.push({ t: l.t, no: i + 1 });
+      });
+      if (!lines.length) { el.innerHTML = ''; return; }
+      var nums = [], h0 = 0;
+      full.forEach(function (l, i) { if (l.tag !== k) return; if (l.helper) { if (!h0) h0 = i + 1; } else nums.push(i + 1); });
+      var a = nums[0], z = nums[nums.length - 1];
+      var txt = lines.map(function (l) { return l.no + l.t; }).join('\n');
+      var range = ('第 ' + a + (z !== a ? '～' + z : '') + ' 行');
+      if (h0) range += ('，和最下面第 ' + h0 + ' 行起的小幫手');
+      el.innerHTML = '<span>' + ('這一步寫的程式（') + range + ('）') + '</span><pre class="code"></pre>';
+      render(el.querySelector('pre'), lines, { noTag: true });
+      if (miniPrev[k] !== undefined && miniPrev[k] !== txt) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      miniPrev[k] = txt;
+    });
+  }
+
+  // ───── 步驟 ─────
+  function setStep(n) {
+    S.step = Math.max(S.step, n);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    S.viewStep = n;
+    drawMain();
+    $('next2').disabled = !BASE.valid();
+  }
+  // 顯示用：畫程式時用「目前看的步驟」決定長到哪一步
+  var _draw = drawMain;
+  drawMain = function () { var keep = S.step; S.step = S.viewStep || S.step; _draw(); S.step = keep; };
+
+  // ───── 功能選擇器（第 3 步）與範例卡 ─────
+  function groups() {
+    var g = {}, order = [];
+    FNS.forEach(function (f) { if (!g[f.grp]) { g[f.grp] = []; order.push(f.grp); } g[f.grp].push(f); });
+    return { g: g, order: order };
+  }
+  function drawPicker() {
+    var box = $('picker'), gg = groups(); box.innerHTML = '';
+    gg.order.forEach(function (k) {
+      var wrap = document.createElement('div'); wrap.className = 'fgroup';
+      wrap.innerHTML = '<span>' + k + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      gg.g[k].forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip';
+        b.textContent = f.code + ' ' + f.name; b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.title = f.name;
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      wrap.appendChild(chips); box.appendChild(wrap);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + f.code + ('　') + f.name + '</b><span>' + f.what + '</span><span class="small">' +
+      (f.kind === 'cmd' ? ('命令：') : ('回傳：')) + f.ret + '</span>' + (f.warn ? '<span class="err">' + f.warn + '</span>' : '');
+  }
+  function pick(id) {
+    S.fn = id;
+    setStep(3);
+    drawPicker(); tick(true);
+  }
+  function cardLines(f) {
+    if (f.once) return ['void setup() {', '  ' + BASE.cardOnceHead()].concat(f.body.map(function (b) { return '  ' + b; }), ['}']);
+    var head = (BASE.loopHead ? BASE.loopHead() : []).map(function (b) { return '  ' + b; });
+    return ['void loop() {'].concat(head, f.body.map(function (b) { return '  ' + b; }), ['  ' + (f.wait || BASE.loopWait), '}']);
+  }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    FNS.forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      c.innerHTML =
+        '<div class="card-head"><h3>' + f.code + '<span class="zh">' + f.name + '</span></h3>' +
+        '<span class="badges"><span class="badge yes">' + (f.kind === 'cmd' ? ('命令') : ('讀值')) + '</span>' + (f.badge ? '<span class="badge yes">' + f.badge + '</span>' : '') + '</span></div>' +
+        '<p>' + f.what + '</p>' +
+        '<dl class="meta"><dt>' + (f.kind === 'cmd' ? ('命令') : ('回傳')) + '</dt><dd>' + f.ret + '</dd><dt>' + ('範例') + '</dt><dd>' +
+        (f.once ? ('放在 setup() 裡，開機時做一次') : ('放在 loop() 裡，一直重複')) + '</dd></dl>' +
+        '<pre class="code"></pre>' +
+        '<p class="out">' + ('序列埠監控視窗會印出：') + '<code></code></p>' +
+        '<button type="button" class="try">' + ('試試看') + '</button>';
+      render(c.querySelector('pre'), cardLines(f).map(function (t) { return { t: t }; }), { noTag: true });
+      c.querySelector('.try').addEventListener('click', function () {
+        pick(f.id);
+        var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      });
+      box.appendChild(c);
+    });
+    var cnt = $('fncount'); if (cnt) cnt.textContent = FNS.length;
+  }
+  function outText(f, st) { var o = f.out(st); return Array.isArray(o) ? o.join('\n') : String(o); }
+  function updateCardOutputs(st) {
+    FNS.forEach(function (f) {
+      var el = document.querySelector('#fn-' + f.id + ' .out code');
+      if (el) el.textContent = outText(f, st);
+    });
+  }
+
+  // ───── 完整範例 ─────
+  function exFull(id) {
+    // 複製用：把「小幫手貼在這裡」那一行換成真的小幫手
+    var out = [];
+    EX[id].forEach(function (t) { if (t === '@HELPER') out = out.concat(PROD.helper); else out.push(t); });
+    return out;
+  }
+  function drawExamples() {
+    Object.keys(EX).forEach(function (k) {
+      var el = $('ex-' + k); if (!el) return;
+      var shown = EX[k].map(function (t) { return t === '@HELPER' ? ('// ……第 1 步的小幫手貼在這裡（按「複製」會自動帶上）……') : t; });
+      render(el, shown.map(function (t) { return { t: t }; }), { noTag: true });
+    });
+  }
+
+  // ───── 序列埠監控視窗 ─────
+  var log = [], booted = false, halted = false;
+  var WARN = (/-32768|讀不到|找不到|沒接好|收不到/);
+  function cls(t) { return WARN.test(t) ? 'warnline' : ''; }
+  function pushOut(f, st) { outText(f, st).split('\n').forEach(function (t) { log.push({ c: cls(t), t: t }); }); }
+  function tick(reset) {
+    var st = SIM.state(), f = BY[S.fn];
+    SIM.draw(st);
+    updateCardOutputs(st);
+    if (S.step < 3) {
+      log = [{ c: '', t: ('（做完第 3 步「使用功能」，這裡會出現 Arduino 印出的內容）') }];
+      booted = false;
+    } else if (reset || !booted) {
+      // 重新上傳＝開機：setup() 先跑；讀不到就印提醒，選「停在這裡」就不再往下跑
+      log = []; booted = true; halted = false;
+      (BASE.bootLines ? BASE.bootLines(st) : []).forEach(function (t) { log.push({ c: '', t: t }); });
+      if (!st.ok) { log.push({ c: 'warnline', t: BASE.bootFail() }); halted = BASE.halts(); }
+      if (halted) log.push({ c: '', t: BASE.haltNote ? BASE.haltNote() : ('（程式停在 while (true) {}：接好線後按 Arduino 的重置鍵，這裡是再點一次功能）') });
+      else pushOut(f, st);
+    } else if (!f.once && !halted) {
+      pushOut(f, st);
+    }
+    while (log.length > 8) log.shift();
+    $('console').innerHTML = log.map(function (l) { return '<span class="' + l.c + '">' + esc(l.t) + '</span>'; }).join('\n');
+  }
+
+  // ───── 事件 ─────
+  $('next1').addEventListener('click', function () { setStep(2); });
+  $('next2').addEventListener('click', function () { if (BASE.valid()) { setStep(3); drawPicker(); tick(true); } });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) {
+    $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } });
+  });
+  BASE.bind(function (rerun) { drawMain(); drawPicker(); $('next2').disabled = !BASE.valid(); if (rerun && S.step >= 3) tick(true); });
+  SIM.inputs.forEach(function (id) {
+    var el = $(id); if (!el) return;
+    el.addEventListener('input', function () { tick(id === 'unplug' && BY[S.fn].once); });
+  });
+  $('helperbtn').addEventListener('click', function (e) {
+    S.showHelper = !S.showHelper;
+    e.currentTarget.textContent = S.showHelper ? ('收起小幫手') : ('顯示小幫手');
+    e.currentTarget.setAttribute('aria-pressed', String(!!S.showHelper));
+    drawMain();
+  });
+  $('copymain').addEventListener('click', function (e) { copyText(plain(programLines()), e.currentTarget); });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { copyText(exFull(b.getAttribute('data-copy')).join('\n') + '\n', b); });
+  });
+
+  // ───── 開始 ─────
+  drawPicker(); drawCards(); drawExamples(); setStep(1); tick(true);
+  setInterval(function () { if (S.step >= 3 && !BY[S.fn].once) tick(false); }, 600);
+
+})();
+</script>
+<script>
+(function () {
+  var side = document.querySelector('.side'); if (!side) return;
+  var mq = window.matchMedia('(max-width: 900px)');
+  var home = side.parentNode, homeNext = side.nextSibling;
+  var con = document.getElementById('console'), conP = con && con.closest('.panel');
+  if (conP && conP.parentNode !== side) conP = null;
+  var last = null, ready = false;
+  var STOP = '.step-body, .cards, .ref, .steps, .main, .wrap, body';
+  function anchorOf(el) { var a = el; while (a && a.parentElement && !a.parentElement.matches(STOP)) a = a.parentElement; return a && a.parentElement ? a : null; }
+  function flash(el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  // 把 box 搬到 a 那一塊的後面；a 在畫面上的位置維持不動（點下去時就記住 a：頁面常在點擊後重畫按鈕，按鈕本身會被換掉）
+  function moveAfter(box, a) {
+    if (!a || !a.isConnected || a === box || a.contains(box)) return false;
+    if (a.nextElementSibling === box) return true;
+    var y = a.getBoundingClientRect().top;
+    a.parentNode.insertBefore(box, a.nextSibling); box.classList.add('follow');
+    var d = a.getBoundingClientRect().top - y; if (d) window.scrollBy(0, d);
+    return true;
+  }
+  function inPanel(el) { return side.contains(el) || (conP && conP.contains(el)); }
+  function placeSide(a, scroll) {
+    if (!mq.matches || !a) return;
+    if (conP && conP.parentNode !== side) { conP.classList.remove('follow'); side.appendChild(conP); }
+    if (!moveAfter(side, a)) return;
+    if (scroll) { var r = side.getBoundingClientRect(); if (r.top > window.innerHeight * 0.7) window.scrollBy({ top: r.top - window.innerHeight * 0.3, behavior: 'smooth' }); }
+  }
+  function placeConsole(el) {
+    if (!mq.matches || !conP || inPanel(el)) return;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在「正在操作的那一排」正下方（排＝控制區的直接子元素），
+    // 畫面、那一排、輸出同一屏；控制區很長或那一排在最下面（例如拔線勾選）都不會跑出畫面
+    var sim = el.closest('.sim'), ctrl = null, row = null;
+    if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (ctrl && ctrl !== el) for (var j = 0; j < ctrl.children.length; j++) if (ctrl.children[j].contains(el)) row = ctrl.children[j];
+    if (sim && ctrl) {
+      var box = row ? ctrl : sim, after = row || null;
+      if (after ? after.nextElementSibling === conP : conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var y = el.getBoundingClientRect().top;
+      if (after) box.insertBefore(conP, after.nextSibling); else sim.insertBefore(conP, ctrl);
+      conP.classList.add('follow');
+      var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
+      return;
+    }
+    var a = anchorOf(el); if (a && a.nextElementSibling === side) return; // 程式那格已經緊接在下面，輸出就在它裡面
+    moveAfter(conP, a);
+  }
+  function reset() {
+    if (mq.matches) { var b = document.querySelector('#step1 .step-body button') || document.querySelector('#step1 button'); if (b) placeSide(anchorOf(b), false); return; }
+    if (conP) { conP.classList.remove('follow'); side.appendChild(conP); }
+    side.classList.remove('follow'); home.insertBefore(side, homeNext);
+  }
+  function remember(e) { if (!inPanel(e.target)) last = anchorOf(e.target); }
+  document.addEventListener('pointerdown', remember, true);
+  document.addEventListener('focusin', remember, true);
+  var mo = new MutationObserver(function () { if (ready && mq.matches) { placeSide(last, true); flash(side); } });
+  ['maincode', 'mainblocks'].forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true }); });
+  function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
+  document.addEventListener('input', sim, true);
+  document.addEventListener('change', sim, true);
+  // 模擬器裡的按鈕（掌控者按鍵、色點調色盤…）也算在操作模擬器
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.sim button'); if (b) placeConsole(b); }, true);
+  reset(); setTimeout(function () { ready = true; }, 800);
+  if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
+})();
+</script>
+</body>
+</html>

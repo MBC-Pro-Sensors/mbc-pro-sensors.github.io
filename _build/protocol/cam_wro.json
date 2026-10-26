@@ -87,10 +87,10 @@
         "note": "不動：byte 0~11 = S1~S12 顏色碼各 1 byte（idx 0 = S1 低 byte／S2 高 byte … idx 5 = S11／S12）；照 HUE12_AS_mVisionSensor_v1.0.8.mbr4 解碼"
       },
       "microbit": {
-        "block": {
-          "zh": "色點 [N] 顏色碼",
-          "en": "spot [N] colour code"
-        }
+        "js": "mbc.camSpotColor(N)",
+        "also": [
+          "mbc.camSpotIs(N, MbcCamSpotKind.Colour)"
+        ]
       },
       "examples": [],
       "locked": true
@@ -151,10 +151,7 @@
         "note": "不動：byte 12~17 = 12 格各 4 bit（S>>4，1~15；黑 = 1；沒抓到 = 0），byte 12+2j = S(4j+1) | S(4j+2)<<4、byte 13+2j = S(4j+3) | S(4j+4)<<4"
       },
       "microbit": {
-        "block": {
-          "zh": "色點 [N] 鮮豔度",
-          "en": "spot [N] vividness"
-        }
+        "js": "mbc.camSpotVivid(N)"
       },
       "examples": [],
       "locked": true

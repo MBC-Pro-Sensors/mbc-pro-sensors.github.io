@@ -21,16 +21,22 @@
 
 ## 讀值
 
-下面的寫法都用到 `mbcRead()` 小幫手（展開「小幫手程式」貼在程式最下面），位址 `0x16`。
+下面的寫法都用到 `mbcRead()` 小幫手：展開「小幫手程式」，第 ① 段（2 行）放在程式最上面、第 ② 段貼在程式最下面，位址 `0x16`。
 
 <details class="helper">
-<summary>小幫手程式（貼在程式最下面）</summary>
+<summary>小幫手程式（① 放最上面、② 貼最下面）</summary>
+
+**① 放在程式最上面**（`setup()` 前面）
 
 ```cpp
 #include <Wire.h>
 
 const int16_t MBC_NONE = -32768;   // 讀不到／空號
+```
 
+**② 貼在程式最下面**（`loop()` 後面）
+
+```cpp
 // 從編號 id 起連續讀 k 個值（k ≤ 16），int16 小端
 bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
   Wire.beginTransmission(addr);
@@ -52,6 +58,7 @@ int16_t mbcRead(uint8_t addr, uint8_t id) {
 }
 
 // 寫入命令（0~3 個參數）
+// 2 個參數、第 1 個是 0 時要寫 (uint8_t)0，例如 mbcWrite(ADDR, 0xF8, (uint8_t)0x00, 0xFF)，不然會跟下面陣列版的 mbcWrite 分不清而編不過
 void mbcWrite(uint8_t addr, uint8_t id, const uint8_t *args, uint8_t n) {
   Wire.beginTransmission(addr);
   Wire.write(id);
@@ -163,7 +170,7 @@ int16_t groupCount = mbcRead(0x16, 0x04);   // 線段數：0~8
 int16_t bitmap = mbcRead(0x16, 0x05);   // 壓線位元圖：0~65535 bit
 ```
 
-<p class="ref-note">讀不到（沒接、位址錯）時回 <code>MBC_NONE</code>（−32768）。</p>
+<p class="ref-note">這個值本身就可能是 −32768（最高位元 = 1，例如 <code>0x8000</code>），跟讀不到時回的 <code>MBC_NONE</code> 一樣，不要拿 −32768 判斷有沒有讀到：要分辨就改用 <code>mbcReadMany(0x16, 0x05, 1, &bitmap)</code>，回傳 <code>false</code> 才是讀不到。</p>
 
 </section>
 

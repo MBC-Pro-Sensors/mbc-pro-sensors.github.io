@@ -20,34 +20,40 @@ The universal I2C edition of the Gamepad Receiver PS4/PS5 works with BBC micro:b
 
 | Sensor | micro:bit |
 | :--- | :--- |
-| SDA | P20 |
-| SCL | P19 |
-| 5V | external 5 V (or the V2 3V pin, check current) |
+| SDA（RX） | P20 |
+| SCL（TX） | P19 |
+| VCC | **must use external 5 V** (share GND with the micro:bit) |
 | GND | GND |
 
 ## Reporter blocks
 
 | Block | Returns | Id | Meaning |
 | :--- | :--- | :--- | :--- |
-| MBC 16 buttons | 0~65535 bit | [`01`](/en/sensors/ps4/reference.md#v01) | all buttons in one 16-bit word (PSX layout): bit0 SELECT(SHARE), 1 L3, 2 R3, 3 START(OPTIONS), 4 up, 5 right, 6 down, 7 left, 8 L2, 9 R2, 10 L1, 11 R1, 12 triangle, 13 circle, 14 cross, 15 square; 1 = pressed; 0 when not connected |
-| MBC D-pad | 0~15 bit | [`02`](/en/sensors/ps4/reference.md#v02) | up 1, right 2, down 4, left 8, added when pressed together (0~15) |
-| MBC shape buttons | 0~15 bit | [`03`](/en/sensors/ps4/reference.md#v03) | triangle 1, circle 2, cross 4, square 8, added when pressed together (0~15) |
-| MBC shoulder buttons | 0~15 bit | [`04`](/en/sensors/ps4/reference.md#v04) | L2 1, R2 2, L1 4, R1 8, added when pressed together (0~15) |
-| MBC function buttons | 0~15 bit | [`05`](/en/sensors/ps4/reference.md#v05) | SELECT(SHARE) 1, L3 2, R3 4, START(OPTIONS) 8, added when pressed together (0~15) |
-| MBC gamepad connected? | 0~1 | [`06`](/en/sensors/ps4/reference.md#v06) | 1 = gamepad connected and data seen within 300 ms, 0 = not connected (buttons 0, sticks centred while disconnected) |
-| MBC battery | 0~100 % | [`07`](/en/sensors/ps4/reference.md#v07) | gamepad battery 0~100 (always 0 on the PS2 receiver) |
-| MBC L2 analog | 0~255 | [`08`](/en/sensors/ps4/reference.md#v08) | L2 trigger depth 0~255 (0 when not connected) |
-| MBC R2 analog | 0~255 | [`09`](/en/sensors/ps4/reference.md#v09) | R2 trigger depth 0~255 (0 when not connected) |
-| MBC system buttons | 0~3 bit | [`0A`](/en/sensors/ps4/reference.md#v0a) | b0 PS button, b1 capture (PS5 mute) button; 0 when not connected (always 0 on PS2) |
-| MBC gamepad type | 0~4 | [`0B`](/en/sensors/ps4/reference.md#v0b) | 0 none, 1 PS2 digital, 2 PS2 analog, 3 PS4, 4 PS5 (or other) |
-| MBC stick [axis] | -100~+100 | [`10~13`](/en/sensors/ps4/reference.md#v10) | 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right/up positive; 0 when not connected |
+| gamepad buttons bit mask | 0~65535 bit | [`01`](/en/sensors/ps4/reference.md#v01) | all buttons in one 16-bit word (PSX layout): bit0 SELECT(SHARE), 1 L3, 2 R3, 3 START(OPTIONS), 4 up, 5 right, 6 down, 7 left, 8 L2, 9 R2, 10 L1, 11 R1, 12 triangle, 13 circle, 14 cross, 15 square; 1 = pressed; 0 when not connected |
+| gamepad [d-pad] buttons (0-15) | 0~15 bit | [`02`](/en/sensors/ps4/reference.md#v02) | up 1, right 2, down 4, left 8, added when pressed together (0~15) |
+| gamepad [shapes] buttons (0-15) | 0~15 bit | [`03`](/en/sensors/ps4/reference.md#v03) | triangle 1, circle 2, cross 4, square 8, added when pressed together (0~15) |
+| gamepad [shoulders] buttons (0-15) | 0~15 bit | [`04`](/en/sensors/ps4/reference.md#v04) | L2 1, R2 2, L1 4, R1 8, added when pressed together (0~15) |
+| gamepad [functions] buttons (0-15) | 0~15 bit | [`05`](/en/sensors/ps4/reference.md#v05) | SELECT(SHARE) 1, L3 2, R3 4, START(OPTIONS) 8, added when pressed together (0~15) |
+| gamepad is connected | 0~1 | [`06`](/en/sensors/ps4/reference.md#v06) | 1 = gamepad connected and data seen within 300 ms, 0 = not connected (buttons 0, sticks centred while disconnected) |
+| gamepad battery percent | 0~100 % | [`07`](/en/sensors/ps4/reference.md#v07) | gamepad battery 0~100 (always 0 on the PS2 receiver) |
+| gamepad trigger [L2] analog | 0~255 | [`08`](/en/sensors/ps4/reference.md#v08) | L2 trigger depth 0~255 (0 when not connected) |
+| gamepad trigger [R2] analog | 0~255 | [`09`](/en/sensors/ps4/reference.md#v09) | R2 trigger depth 0~255 (0 when not connected) |
+| gamepad type | 0~4 | [`0B`](/en/sensors/ps4/reference.md#v0b) | 0 none, 1 PS2 digital, 2 PS2 analog, 3 PS4, 4 PS5 (or other) |
+| gamepad joystick [left X / left Y / right X / right Y] | -100~+100 | [`10~13`](/en/sensors/ps4/reference.md#v10) | 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right/up positive; 0 when not connected |
+
+### More blocks (yes / no, events)
+
+| Block | Related value |
+| :--- | :--- |
+| gamepad button [cross] is pressed | [`01`](/en/sensors/ps4/reference.md#v01) |
+| on gamepad button [cross] [pressed] | [`01`](/en/sensors/ps4/reference.md#v01) |
 
 ## Command blocks
 
 | Block | Id | Meaning |
 | :--- | :--- | :--- |
-| MBC rumble [strength] | [`E5`](/en/sensors/ps4/reference.md#ce5) | [strength 0~255], 0 = stop; 200 ms per call (ignored by PS2) |
-| MBC light bar R[r] G[g] B[b] | [`E6`](/en/sensors/ps4/reference.md#ce6) | [R][G][B] each 0~255, exactly 3 bytes; remembered until connected; default blue (0,0,255) (ignored by PS2) |
+| gamepad rumble strength 200 | [`E5`](/en/sensors/ps4/reference.md#ce5) | [strength 0~255], 0 = stop; 200 ms per call (ignored by PS2) |
+| gamepad light bar colour #ff0000 | [`E6`](/en/sensors/ps4/reference.md#ce6) | [R][G][B] each 0~255, exactly 3 bytes; remembered until connected; default blue (0,0,255) (ignored by PS2) |
 
 ## Status
 
@@ -59,9 +65,11 @@ The universal I2C edition of the Gamepad Receiver PS4/PS5 works with BBC micro:b
 ## JavaScript
 
 ```typescript
+if (!(mbc.waitReady(0x42, 3000))) {
+    basic.showIcon(IconNames.No)   // nothing answers: check wiring and power
+}
 basic.forever(function () {
-    let buttons16 = MBC.readValue(0x42, 0x01)   // 16 buttons
-    basic.showNumber(buttons16)
+    basic.showNumber(mbc.padButtons())   // 16 buttons
     basic.pause(100)
 })
 ```
@@ -78,4 +86,4 @@ Generated by `_build/gen-reference.mjs` from `_build/protocol/ps4.json` (single 
 - SPIKE 模式 3 改 [已連線, 電量, 0]（3×int8）、模式 8 改 [0x42 | 2<<8, 協議版 2, 韌體版, 更新序號]；其餘空模式 1、2、4、6 維持現狀。
 - ESP32 從機不能時脈延展：I2C v2 在 onReceive 就預載從該編號起 32 B；0x22照 MATRIX 定案 §5 #2 預載最新一包，待上機。
 - I2C 0A 系統鍵 b1 = 擷取鍵（v1 0x15 放在 b3，v2 改 b1，照 I2C 定案 §4）。
-- The extension reads `Int16LE` and pauses 2 ms after writing the id (D5).
+- The extension reads `Int16LE` and pauses 2 ms after writing the id (D5); with no sensor answering, reporters return 0 and yes / no blocks return false.

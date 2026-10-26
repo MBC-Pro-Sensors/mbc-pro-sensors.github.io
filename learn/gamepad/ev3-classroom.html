@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="在 EV3 Classroom 裡，掌控者 PS2／PS4會被當成樂高的紅外線感應器，所以不用匯入函式庫、不用裝擴充，直接用紅外線感應器的積木讀。左邊一步一步做，右邊的積木會跟著長出來；這些積木圖是用 EV3 Classroom 1.5.3 拼好後直接從軟體畫面匯出的，跟你在軟體裡看到的一樣。EV3 Classroom">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/gamepad/ev3-classroom.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/gamepad/ev3-classroom.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/gamepad/ev3-classroom.html">
+<title>掌控者 PS2／PS4 遙控接收器 EV3 Classroom 教學 | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* 版面：左邊是照順序走的教學步驟，右邊固定「你的程式＋模擬感應器」；下面是 16 個功能的範例卡 */
+:root {
+  --bg: #f3f6f5;          /* 場地墊的淺色 */
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;      /* MBC 青綠 */
+  --accent-soft: #dff1ef;
+  --tape: #121212;        /* 黑膠帶線 */
+  --ir: #e04a3b;          /* 感應器紅外燈 */
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* 頁首 */
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+/* 主區：左教學、右程式 */
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+/* 右邊：程式＋模擬 */
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+/* 右邊固定區只放程式和輸出，高度不超過一個畫面，往下捲時一直看得到 */
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+/* 每一步卡片裡的「這一步寫的程式」：設定一改就更新並閃一下 */
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+/* 功能範例卡 */
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+/* 完整範例與注意事項 */
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+/* ───── EV3 Classroom 的積木圖（SVG 直接取自 EV3 Classroom 1.5.3 畫面） ───── */
+.ws { background-color: #f5f6f8; background-image: radial-gradient(#d8dce2 1.1px, transparent 1.2px); background-size: 22px 22px; padding: 14px; overflow-x: auto; display: grid; gap: 22px; justify-items: start; }
+.mini .ws, .card .ws { border-radius: 8px; padding: 10px; border: 1px solid var(--rule); }
+svg.lego { display: block; overflow: visible; max-width: none; }
+svg.lego .blocklyText { fill: #fff; font-family: Chalet, "Arial Rounded MT Bold", Arial, sans-serif; font-size: 12pt; font-weight: 700; }
+svg.lego .blocklyNonEditableText > text, svg.lego .blocklyEditableText > text { fill: #575E75; }
+svg.lego .blocklyEditableText > .blocklyEditableLabel { fill: #fff; }
+svg.lego .blocklyDropdownText { fill: #fff !important; }
+img.shot { display: block; max-width: none; height: auto; background: #fff; border-radius: 4px; }
+.blk-wrap.flash { animation: flash 0.9s ease-out; border-radius: 8px; }
+@media (prefers-reduced-motion: reduce) { .blk-wrap.flash { animation: none; } }
+.stepmark { font-size: 0.78rem; font-weight: 700; color: var(--muted); letter-spacing: 0.04em; margin-bottom: 4px; }
+.conv { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+.conv th, .conv td { border: 1px solid var(--rule); padding: 6px 8px; text-align: left; vertical-align: top; }
+.conv th { background: var(--accent-soft); }
+.cant { font-size: 0.92rem; }
+.cant code { white-space: nowrap; }
+.tbl-wrap { overflow-x: auto; }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+[hidden] { display: none !important; }  /* 頁面用 hidden 切換「積木／程式」，.ws{display:grid} 會蓋掉它 */
+.learn-nav .tabs .tl { color: var(--muted, #666); font-size: 0.8rem; align-self: center; }
+.learn-nav .tabs .tsep { flex-basis: 100%; height: 0; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
+   排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
+@media (max-width: 900px) {
+  .learn-nav { position: static; width: 100vw; margin: -24px 0 14px calc(50% - 50vw); }
+  .learn-nav .in { padding: 6px 12px 8px; gap: 4px 14px; font-size: 0.85rem; }
+  .learn-nav .in > a { min-height: 36px; display: inline-flex; align-items: center; }
+  .learn-nav .tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .learn-nav .tabs::-webkit-scrollbar { display: none; }
+  .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
+  body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
+  .panel.follow { margin: 12px 0 16px; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow, .ctrl > .panel.follow { grid-column: 1 / -1; }
+  .flash { animation: followFlash 1.2s ease-out; }
+  @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
+  /* 點選目標放大：選項、勾選框、拉桿 */
+  .wrap > *, .main > *, .steps > *, .step-body > * { min-width: 0; }
+  label:has(input[type=radio]), label:has(input[type=checkbox]) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  button.copy, .viewtabs button { min-height: 36px; }
+  label:has(select) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  label select { min-height: 36px; }
+  input[type=radio], input[type=checkbox] { width: 20px; height: 20px; flex: none; }
+  input[type=range] { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/learn/">全部互動教學</a><a class="back" href="/sensors/ps2/ev3/">← 掌控者 EV3 說明</a><a class="back" href="/sensors/ps4/ev3/">PS4</a><a class="lang" href="/en/learn/gamepad/ev3-classroom.html" hreflang="en">EN</a><div class="tabs"><span class="tl">主機</span><a href="/learn/gamepad/micropython.html">SPIKE</a><a href="/learn/gamepad/ev3-pybricks.html" aria-current="page">EV3</a><a href="/learn/gamepad/arduino.html">Arduino</a><a href="/learn/gamepad/mblock.html">mBlock</a><a href="/learn/gamepad/matrix.html">MATRIX</a><a href="/learn/gamepad/makecode.html">micro:bit</a><span class="tsep"></span><a href="/learn/gamepad/ev3-pybricks.html">Pybricks／EV3 MicroPython</a><a href="/learn/gamepad/clev3r.html">clev3r</a><a href="/learn/gamepad/ev3-classroom.html" aria-current="page">EV3 Classroom</a><a href="/learn/gamepad/ev3g.html">EV3-G 官方軟體</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC 掌控者 PS2／PS4 × EV3 Classroom</span>
+    <h1>三個步驟用 EV3 Classroom 讀掌控者</h1>
+    <p class="lead">在 EV3 Classroom 裡，掌控者 PS2／PS4會被當成樂高的<b>紅外線感應器</b>，所以不用匯入函式庫、不用裝擴充，直接用紅外線感應器的積木讀。左邊一步一步做，右邊的積木會跟著長出來；這些積木圖是用 EV3 Classroom 1.5.3 拼好後直接從軟體畫面匯出的，跟你在軟體裡看到的一樣。EV3 Classroom 沒有繁體中文介面，所以積木是英文。</p>
+  </header>
+
+  <section class="main" aria-label="教學">
+    <div class="steps">
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>開始：程式開始＋一直重複</h2></div>
+        <div class="step-body">
+          <p class="why">讀感應器要一直重複讀。新專案裡已經有黃色的「when program starts」，下面接「forever」（一直重複），裡面放「wait 0.1 seconds」，每 0.1 秒讀一次。</p>
+          <ol class="howto">
+            <li>打開 EV3 Classroom，按「New Project」開一個新專案。</li>
+            <li>從「Control」拖出「forever」，接在「when program starts」下面。</li>
+            <li>再拖一顆「wait 1 seconds」放進 forever，數字改成 <b>0.1</b>。</li>
+          </ol>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">放好了，下一步</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>認識讀值積木（紅外線感應器）</h2></div>
+        <div class="step-body">
+          <p class="why">掌控者 PS2／PS4插在 EV3 上會被當成樂高的<b>紅外線感應器</b>，所以用「Sensors」裡紅外線感應器的積木讀，不用裝擴充。積木最前面的數字是孔號，選 <b>1</b>（感應器插 1 號孔）。產品把不同的值放在不同的積木裡：</p>
+          <div class="tbl-wrap"><table class="conv">
+            <tr><th>積木</th><th>讀到的是</th><th>範圍</th></tr>
+            <tr><td>proximity</td><td>方向鍵</td><td>0 ~ 15</td></tr>
+            <tr><td>heading to beacon 2</td><td>形狀鍵</td><td>0 ~ 15</td></tr>
+            <tr><td>heading to beacon 3</td><td>肩鍵</td><td>0 ~ 15</td></tr>
+            <tr><td>heading to beacon 4</td><td>功能鍵</td><td>0 ~ 15</td></tr>
+            <tr><td>proximity to beacon 1</td><td>左搖桿（第 1 個：LX）</td><td>0 ~ 99（50 = 中間）</td></tr>
+            <tr><td>proximity to beacon 2</td><td>左搖桿（第 2 個：LY）</td><td>0 ~ 99（50 = 中間）</td></tr>
+            <tr><td>proximity to beacon 3</td><td>右搖桿（第 1 個：RX）</td><td>0 ~ 99（50 = 中間）</td></tr>
+            <tr><td>proximity to beacon 4</td><td>右搖桿（第 2 個：RY）</td><td>0 ~ 99（50 = 中間）</td></tr>
+          </table></div>
+          <p class="small">一支程式只用同一種模式的積木（近接、信標、遙控三選一）。EV3 每換一次模式要卡約 0.5 秒。</p>
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2">知道了，下一步</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>顯示在 EV3 螢幕上</h2></div>
+        <div class="step-body">
+          <p class="why">把讀值積木放進「Display」的「write … at line …」，前面用「Operators」的「join」加一個名字（例如 POS），程式一開始先放「clear display」清螢幕。點一個功能，積木和結果會換成它的範例。</p>
+          <div id="picker" class="ref"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+          <div class="sim-box">
+            <div class="sim-title">模擬手把：點按鍵、拖動搖桿，看右邊的輸出怎麼變</div>
+            <div class="sim">
+              <svg id="field" viewBox="0 0 460 250" role="group" aria-label="模擬手把：按鍵可以點，搖桿可以拖或用方向鍵移動"></svg>
+              <div class="ctrl">
+                <div class="toggles">
+                  <label><input autocomplete="off" type="radio" name="kind" id="k2" value="PS2" checked> PS2 接收器</label>
+                  <label><input autocomplete="off" type="radio" name="kind" id="k4" value="PS4"> PS4 接收器</label>
+                  <label><input autocomplete="off" type="checkbox" id="nopad"> 手把沒連線</label>
+                  <label><input autocomplete="off" type="checkbox" id="unplug"> 拔掉感應器</label>
+                  <button type="button" class="copy" id="release">全部放開</button>
+                </div>
+              </div>
+              <p class="note">模擬畫面是示意：點一下按鍵＝按住，再點一下放開；拖動搖桿的圓點改變位置（放開滑鼠會停在那裡，按「全部放開」回到中間）。EV3 上搖桿是 0 ～ 99、50 = 中間，往右、往上數字變大。</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">每個功能的積木範例</h2>
+        <p class="ref-intro">EV3 Classroom 讀得到的值，每個都有一支可以照著拼的小程式（感應器插 1 號孔）。按「試試看」會切到第 3 步。</p>
+        <div class="cards" id="cards"></div>
+        <p class="cant"><b>EV3 Classroom 讀不到的：</b>16 鍵合成數字、手把有沒有連上（模式 3）、電量、L2／R2 按多深、PS 鍵與觸控板、手把種類、裝置 ID 與韌體版本；PS4 才有的震動、燈條是「命令」，EV3 接頭不能送命令。韌體 v4.0 新增的模式 3～6（例如公釐距離、位元圖、連線狀態、裝置 ID）EV3 Classroom 的積木也讀不到。要用這些，改用 <a href="/learn/gamepad/ev3-pybricks.html">Pybricks</a>（EV3 要換開機卡）或 <a href="/learn/gamepad/clev3r.html">clev3r</a>。</p>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="你的積木與結果">
+      <div class="panel">
+        <div class="panel-head"><span>你的積木</span></div>
+        <div class="ws" id="mainblocks" aria-live="polite"></div>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>EV3 螢幕上看到的（每 0.6 秒更新）</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">使用注意</h2>
+    <ol>
+      <li><b>感應器插 1 號孔。</b>插別的孔，就把積木上的孔號改成那一孔。EV3 要<b>先開機再插感應器</b>；數字一直不動時拔掉重插一次。</li>
+      <li><b>一支程式只用一種模式。</b>近接、信標、遙控三種模式，EV3 每換一次要卡約 0.5 秒，比賽時車子可能失控。</li>
+      <li><b>拔掉感應器時：</b>EV3 讀不到，數字變成「不是數字」，螢幕顯示 <code>----</code>，而且每讀一次要等約 1.2 秒；程式不會停，插回去會自動恢復。</li>
+      <li><b>一個模式就夠：</b>信標（Beacon）模式同時有全部按鍵和兩支搖桿（方向 = 按鍵、近接 = 搖桿），開車程式只用它就不會切換模式。</li>
+      <li><b>手把沒連線時：</b>按鍵都是 0、搖桿都是 50（在中間），車子不會亂衝。PS2 和 PS4 接收器在 EV3 上的數字完全一樣。</li>
+      <li><b>積木是英文：</b>EV3 Classroom 只有英文和簡體中文介面，本頁用英文介面。</li>
+      <li><b>想看完整的應用範例</b>（循線、避障、開車……）：到 <a href="/sensors/ps2/ev3-examples.html">EV3 範例頁</a>，大部分範例都有 EV3 Classroom 檔可以下載。</li>
+    </ol>
+  </section>
+</div>
+<script>
+var BLK = {"kind":"svg","img":["data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDIxLjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9InJlcGVhdCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCgkgdmlld0JveD0iMCAwIDI0IDI0IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAyNCAyNDsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOiNDRjhCMTc7fQoJLnN0MXtmaWxsOiNGRkZGRkY7fQo8L3N0eWxlPgo8dGl0bGU+cmVwZWF0PC90aXRsZT4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTIzLjMsMTFjLTAuMywwLjYtMC45LDEtMS41LDFoLTEuNmMtMC4xLDEuMy0wLjUsMi41LTEuMSwzLjZjLTAuOSwxLjctMi4zLDMuMi00LjEsNC4xCgljLTEuNywwLjktMy42LDEuMi01LjUsMC45Yy0xLjgtMC4zLTMuNS0xLjEtNC45LTIuM2MtMC43LTAuNy0wLjctMS45LDAtMi42YzAuNi0wLjYsMS42LTAuNywyLjMtMC4ySDdjMC45LDAuNiwxLjksMC45LDIuOSwwLjkKCXMxLjktMC4zLDIuNy0wLjljMS4xLTAuOCwxLjgtMi4xLDEuOC0zLjVoLTEuNWMtMC45LDAtMS43LTAuNy0xLjctMS43YzAtMC40LDAuMi0wLjksMC41LTEuMmw0LjQtNC40YzAuNy0wLjYsMS43LTAuNiwyLjQsMEwyMyw5LjIKCUMyMy41LDkuNywyMy42LDEwLjQsMjMuMywxMXoiLz4KPHBhdGggY2xhc3M9InN0MSIgZD0iTTIxLjgsMTFoLTIuNmMwLDEuNS0wLjMsMi45LTEsNC4yYy0wLjgsMS42LTIuMSwyLjgtMy43LDMuNmMtMS41LDAuOC0zLjMsMS4xLTQuOSwwLjhjLTEuNi0wLjItMy4yLTEtNC40LTIuMQoJYy0wLjQtMC4zLTAuNC0wLjktMC4xLTEuMmMwLjMtMC40LDAuOS0wLjQsMS4yLTAuMWwwLDBjMSwwLjcsMi4yLDEuMSwzLjQsMS4xczIuMy0wLjMsMy4zLTFjMC45LTAuNiwxLjYtMS41LDItMi42CgljMC4zLTAuOSwwLjQtMS44LDAuMi0yLjhoLTIuNGMtMC40LDAtMC43LTAuMy0wLjctMC43YzAtMC4yLDAuMS0wLjMsMC4yLTAuNGw0LjQtNC40YzAuMy0wLjMsMC43LTAuMywwLjksMEwyMiw5LjgKCWMwLjMsMC4zLDAuNCwwLjYsMC4zLDAuOVMyMiwxMSwyMS44LDExeiIvPgo8L3N2Zz4K","data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGcgaWQ9Ikljb24vNDgvcGxheS1ibG9jayIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PHBhdGggaWQ9IkNvbWJpbmVkLVNoYXBlIiBmaWxsPSIjRkZGRkZGIiBkPSJNMzMuNjggMjQuNUwxNS4zMiAxMi4wOHYyNC44NHoiLz48L2c+PC9zdmc+","data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMi43MSIgaGVpZ2h0PSI4Ljc5IiB2aWV3Qm94PSIwIDAgMTIuNzEgOC43OSI+PHRpdGxlPmRyb3Bkb3duLWFycm93PC90aXRsZT48ZyBvcGFjaXR5PSIwLjEiPjxwYXRoIGQ9Ik0xMi43MSwyLjQ0QTIuNDEsMi40MSwwLDAsMSwxMiw0LjE2TDguMDgsOC4wOGEyLjQ1LDIuNDUsMCwwLDEtMy40NSwwTDAuNzIsNC4xNkEyLjQyLDIuNDIsMCwwLDEsMCwyLjQ0LDIuNDgsMi40OCwwLDAsMSwuNzEuNzFDMSwwLjQ3LDEuNDMsMCw2LjM2LDBTMTEuNzUsMC40NiwxMiwuNzFBMi40NCwyLjQ0LDAsMCwxLDEyLjcxLDIuNDRaIiBmaWxsPSIjMjMxZjIwIi8+PC9nPjxwYXRoIGQ9Ik02LjM2LDcuNzlhMS40MywxLjQzLDAsMCwxLTEtLjQyTDEuNDIsMy40NWExLjQ0LDEuNDQsMCwwLDEsMC0yYzAuNTYtLjU2LDkuMzEtMC41Niw5Ljg3LDBhMS40NCwxLjQ0LDAsMCwxLDAsMkw3LjM3LDcuMzdBMS40MywxLjQzLDAsMCwxLDYuMzYsNy43OVoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=","data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGcgaWQ9Ikljb24vNDgvSVItc2Vuc29yIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMjYuNSAzMC41aC01LjQ2OGMtMS41MTYgMi4zNDUtMy45Mi0uMDE0LTYuOTMzIDAtNC43My4wMi04LjU3OS0zLjc3LTguNi04LjQ2My0uMDE5LTQuNjk1IDMuNzk3LTguNTE4IDguNTI2LTguNTM3IDMuMDQtLjAxMyA1LjQ4LTIuMzY1IDcuMDA5IDBIMjYuNWMxLjUxNi0yLjM0NiA0LjM4Ny4wMTIgNy40IDAgNC43My0uMDIgOC41OCAzLjc2OCA4LjYgOC40NjMuMDIxIDQuNjk1LTMuNzk2IDguNTE2LTguNTI1IDguNTM3LTMuMDQuMDEzLTUuOTQ2IDIuMzY0LTcuNDc1IDB6IiBpZD0iQmciIGZpbGw9IiNGRkYiLz48cGF0aCBkPSJNMzMuOTc1IDMwLjVjNC43MjktLjAyMSA4LjU0Ni0zLjg0MiA4LjUyNS04LjUzNy0uMDItNC42ODMtMy44NS04LjQ2My04LjU2Mi04LjQ2MlYxMy41SDMwLjZjLS4zMjkgMC0uNjQ3LjEzLS44OC4zNjNsLTMuMTkzIDMuMTg0YTEuMjUgMS4yNSAwIDAgMS0uODgxLjM2NGgtMy4yODJjLS4zMyAwLS42NDYtLjEzMi0uODgtLjM2M2wtMy4yLTMuMTg3YTEuMjQ5IDEuMjQ5IDAgMCAwLS44OC0uMzYxaC0zLjM0MnYuMDAxbC0uMDM3LS4wMDFjLTQuNzI5LjAxOC04LjU0NSAzLjg0Mi04LjUyNSA4LjUzNy4wMiA0LjY4OSAzLjg2NCA4LjQ3OCA4LjU4OCA4LjQ2M2gxLjA0NmMuMTk3LS4wMDEuMzkxLS4wNDYuNTY5LS4xMzNsNC40Mi0yLjIwOGMuMTc5LS4wOS4zNzUtLjEzNi41NzUtLjEzNmg2LjIxM2MuMTg1IDAgLjM2OS4wNC41MzguMTE5bDQuODY4IDIuMjQ0Yy4xNjIuMDc2LjM0LjExMy41MTguMTE0aDEuMTAzdi0uMDAzYy4wMTMgMCAuMDI1LjAwMy4wMzcuMDAzek0xNCAxMmwyMCAuMDAzYzUuNTA0IDAgOS45NzYgNC40OCAxMCAxMC4wM2E5Ljk2OCA5Ljk2OCAwIDAgMS05Ljk1OCAxMC4wMzZjLS4wMTMgMC0uMDI3LS4wMDItLjA0MiAwaC01LjAwOEwyOSAzNS42MjJjMCAuMjEtLjE3Ni4zNzgtLjM5NC4zNzhoLTkuMjEyYS4zODYuMzg2IDAgMCAxLS4zOTQtLjM3N1YzMi4wN2wtNS0uMDAyQTkuOTY1IDkuOTY1IDAgMCAxIDQgMjIuMTJDMy45NzggMTYuNTU2IDguNDM1IDEyLjAyNSAxMy45NTggMTJjLjAxMyAwIC4wMjcuMDAzLjA0MiAwem0yNS41IDkuNXYxLjI1aC04LjMwNkwzMC41NTYgMjRIMjhsMS4yNzgtMi41SDM5LjV6bS0zMSAwaDEwLjIyMkwyMCAyNGgtMi41NTZsLS42MzgtMS4yNUg4LjVWMjEuNXoiIGlkPSJDb21iaW5lZC1TaGFwZSIgZmlsbD0iIzAwQThDOSIvPjwvZz48L3N2Zz4=","data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2aWV3Qm94PSIwIDAgNDggNDgiPjxkZWZzPjxyZWN0IGlkPSJwYXRoLTEiIHg9IjAiIHk9IjAiIHdpZHRoPSIyNiIgaGVpZ2h0PSIzNCIgcng9IjQiLz48L2RlZnM+PGcgaWQ9Ikljb24vNDgvbWluZHN0b3Jtcy1odWIiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxyZWN0IGlkPSJCZyIgZmlsbD0iI0ZGRiIgeD0iMTEiIHk9IjciIHdpZHRoPSIyNiIgaGVpZ2h0PSIzNCIgcng9IjQiLz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMSA3KSIgaWQ9Ikdyb3VwIj48bWFzayBpZD0ibWFzay0yIiBmaWxsPSIjZmZmIj48dXNlIHhsaW5rOmhyZWY9IiNwYXRoLTEiLz48L21hc2s+PHJlY3Qgc3Ryb2tlPSIjNjkxRkYwIiBzdHJva2Utd2lkdGg9IjEuNSIgeD0iLjc1IiB5PSIuNzUiIHdpZHRoPSIyNC41IiBoZWlnaHQ9IjMyLjUiIHJ4PSI0Ii8+PHJlY3QgaWQ9IlJlY3RhbmdsZSIgZmlsbD0iIzY5MUZGMCIgbWFzaz0idXJsKCNtYXNrLTIpIiB4PSI0IiB5PSI0IiB3aWR0aD0iMTgiIGhlaWdodD0iOSIgcng9IjIiLz48cGF0aCBkPSJNMTggMjFhMSAxIDAgMSAxIDAgMmgtM3YtMmgzek04IDIzYTEgMSAwIDEgMSAwLTJoM3YySDh6bTQgMHYtMmgydjJoLTJ6bTIuNjEyLTVjLjQ0MyAwIC44NDYuMjE0IDEuMDQ0LjU1M0wxNi41IDIwaC03bC44NDUtMS40NDdjLjE5Ny0uMzM5LjYtLjU1MyAxLjA0My0uNTUzaDMuMjI0em0tMy4yMjQgOGMtLjQ0MyAwLS44NDYtLjIxNC0xLjA0NC0uNTUzTDkuNSAyNGg3bC0uODQ1IDEuNDQ3Yy0uMTk3LjMzOS0uNi41NTMtMS4wNDMuNTUzaC0zLjIyNHoiIGlkPSJDb21iaW5lZC1TaGFwZSIgZmlsbD0iIzY5MUZGMCIgbWFzaz0idXJsKCNtYXNrLTIpIi8+PC9nPjwvZz48L3N2Zz4="],"pics":{"step1":{"vb":"-3 197.5 236.6 200.5","w":237,"h":201,"g":"<g transform=\"translate(0,217)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#B89A00\" fill=\"#F5C400\" d=\"m 0,0 c 25,-22 71,-22 96,0 H 226.5 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 64 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 h -8 a 4,4 0 0,0 -4,4 v 40 a 4,4 0 0,0 4,4 h 8 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 H 156 a 4,4 0 0,1 4,4 v 24 a 4,4 0 0,1 -4,4 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(16,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 164.3 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(48,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24.5 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.2\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">0.1</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"15.4\" transform=\"translate(8, 24) \">wait</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#C18401\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"31.8\" transform=\"translate(96.5, 24) \">seconds</text></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"26.2\" transform=\"translate(8, 24) \">forever</text><g transform=\"translate(128, 100) \"><image height=\"24px\" width=\"24px\" xlink:href=\"§0\"></image></g></g><g transform=\"translate(8, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§1\"></image></g><g transform=\"translate(56, 4) \"><line stroke=\"#D9B100\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"36\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"78.7\" transform=\"translate(65, 24) \">when&nbsp;program&nbsp;starts</text></g>"},"reps":{"vb":"-3 -3 346.2 196","w":347,"h":196,"g":"<g transform=\"translate(0,0)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,0 m 24,0 H 186.9 a 24 24 0 0 1 0 48 H 24 a 24 24 0 0 1 0 -48 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(73,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g transform=\"translate(16, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(64, 4) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"34.5\" transform=\"translate(129.7, 24) \">proximity</text></g><g transform=\"translate(0,70)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,0 m 24,0 H 307.9 a 24 24 0 0 1 0 48 H 24 a 24 24 0 0 1 0 -48 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(73,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g data-argument-type=\"dropdown\" transform=\"translate(279.2,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g transform=\"translate(16, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(64, 4) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"70.7\" transform=\"translate(129.7, 24) \">heading&nbsp;to&nbsp;beacon</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path></g><g transform=\"translate(0,140)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,0 m 24,0 H 316.1 a 24 24 0 0 1 0 48 H 24 a 24 24 0 0 1 0 -48 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(73,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g data-argument-type=\"dropdown\" transform=\"translate(287.4,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g transform=\"translate(16, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(64, 4) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"74.8\" transform=\"translate(129.7, 24) \">proximity&nbsp;to&nbsp;beacon</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path></g>"},"dpad":{"vb":"-3 197.5 679.2 328.5","w":680,"h":329,"g":"<g transform=\"translate(0,217)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#B89A00\" fill=\"#F5C400\" d=\"m 0,0 c 25,-22 71,-22 96,0 H 226.5 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 165.7 a 4,4 0 0,1 4,4 v 48 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,56)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 64 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 h -8 a 4,4 0 0,0 -4,4 v 112 a 4,4 0 0,0 4,4 h 8 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 H 156 a 4,4 0 0,1 4,4 v 24 a 4,4 0 0,1 -4,4 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(16,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 653.1 a 4,4 0 0,1 4,4 v 64 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(609.1,20)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text></g></g><g transform=\"translate(110.1,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 32,0 H 404.9 a 32 32 0 0 1 0 64 H 32 a 32 32 0 0 1 0 -64 z\"></path><g data-argument-type=\"text\" transform=\"translate(46.4,16)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 51.4 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"25.7\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">DPAD&nbsp;</text></g></g><g transform=\"translate(121.8,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 28,0 H 283.0 a 28 28 0 0 1 0 56 H 28 a 28 28 0 0 1 0 -56 z\"></path><g transform=\"translate(46.4,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,0 m 24,0 H 186.9 a 24 24 0 0 1 0 48 H 24 a 24 24 0 0 1 0 -48 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(73,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g transform=\"translate(16, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(64, 4) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"34.5\" transform=\"translate(129.7, 24) \">proximity</text></g><g data-argument-type=\"text\" transform=\"translate(265.3,12)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 25.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.8\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">&nbsp;&nbsp;&nbsp;&nbsp;</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 28) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 32) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><g transform=\"translate(0,72)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 164.3 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(48,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24.5 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.2\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">0.1</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"15.4\" transform=\"translate(8, 24) \">wait</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#C18401\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"31.8\" transform=\"translate(96.5, 24) \">seconds</text></g><g transform=\"translate(8, 20) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 16) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"18.5\" transform=\"translate(65, 36) \">write</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"23.0\" transform=\"translate(555.1, 36) \">at&nbsp;line</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"26.2\" transform=\"translate(8, 24) \">forever</text><g transform=\"translate(128, 172) \"><image height=\"24px\" width=\"24px\" xlink:href=\"§0\"></image></g></g><g transform=\"translate(8, 12) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 8) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"48.3\" transform=\"translate(65, 28) \">clear&nbsp;display</text></g><g transform=\"translate(8, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§1\"></image></g><g transform=\"translate(56, 4) \"><line stroke=\"#D9B100\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"36\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"78.7\" transform=\"translate(65, 24) \">when&nbsp;program&nbsp;starts</text></g>"},"shape":{"vb":"-3 197.5 813.5 328.5","w":814,"h":329,"g":"<g transform=\"translate(0,217)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#B89A00\" fill=\"#F5C400\" d=\"m 0,0 c 25,-22 71,-22 96,0 H 226.5 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 165.7 a 4,4 0 0,1 4,4 v 48 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,56)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 64 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 h -8 a 4,4 0 0,0 -4,4 v 112 a 4,4 0 0,0 4,4 h 8 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 H 156 a 4,4 0 0,1 4,4 v 24 a 4,4 0 0,1 -4,4 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(16,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 787.5 a 4,4 0 0,1 4,4 v 64 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(743.5,20)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text></g></g><g transform=\"translate(110.1,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 32,0 H 539.3 a 32 32 0 0 1 0 64 H 32 a 32 32 0 0 1 0 -64 z\"></path><g data-argument-type=\"text\" transform=\"translate(46.4,16)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 62.4 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"31.2\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">SHAPE&nbsp;</text></g></g><g transform=\"translate(132.9,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 28,0 H 406.4 a 28 28 0 0 1 0 56 H 28 a 28 28 0 0 1 0 -56 z\"></path><g transform=\"translate(46.4,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,0 m 24,0 H 310.2 a 24 24 0 0 1 0 48 H 24 a 24 24 0 0 1 0 -48 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(73,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g data-argument-type=\"dropdown\" transform=\"translate(279.2,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 35.0 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"7.5\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">2</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(19.0,11)\"></image></g></g><g transform=\"translate(16, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(64, 4) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"70.7\" transform=\"translate(129.7, 24) \">heading&nbsp;to&nbsp;beacon</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path></g><g data-argument-type=\"text\" transform=\"translate(388.6,12)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 25.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.8\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">&nbsp;&nbsp;&nbsp;&nbsp;</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 28) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 32) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><g transform=\"translate(0,72)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 164.3 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(48,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24.5 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.2\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">0.1</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"15.4\" transform=\"translate(8, 24) \">wait</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#C18401\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"31.8\" transform=\"translate(96.5, 24) \">seconds</text></g><g transform=\"translate(8, 20) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 16) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"18.5\" transform=\"translate(65, 36) \">write</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"23.0\" transform=\"translate(689.4, 36) \">at&nbsp;line</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"26.2\" transform=\"translate(8, 24) \">forever</text><g transform=\"translate(128, 172) \"><image height=\"24px\" width=\"24px\" xlink:href=\"§0\"></image></g></g><g transform=\"translate(8, 12) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 8) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"48.3\" transform=\"translate(65, 28) \">clear&nbsp;display</text></g><g transform=\"translate(8, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§1\"></image></g><g transform=\"translate(56, 4) \"><line stroke=\"#D9B100\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"36\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"78.7\" transform=\"translate(65, 24) \">when&nbsp;program&nbsp;starts</text></g>"},"shoulder":{"vb":"-3 197.5 802.9 328.5","w":803,"h":329,"g":"<g transform=\"translate(0,217)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#B89A00\" fill=\"#F5C400\" d=\"m 0,0 c 25,-22 71,-22 96,0 H 226.5 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 165.7 a 4,4 0 0,1 4,4 v 48 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,56)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 64 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 h -8 a 4,4 0 0,0 -4,4 v 112 a 4,4 0 0,0 4,4 h 8 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 H 156 a 4,4 0 0,1 4,4 v 24 a 4,4 0 0,1 -4,4 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(16,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 776.9 a 4,4 0 0,1 4,4 v 64 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(732.9,20)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text></g></g><g transform=\"translate(110.1,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 32,0 H 528.7 a 32 32 0 0 1 0 64 H 32 a 32 32 0 0 1 0 -64 z\"></path><g data-argument-type=\"text\" transform=\"translate(46.4,16)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 51.9 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"25.9\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">SHLD&nbsp;</text></g></g><g transform=\"translate(122.3,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 28,0 H 406.3 a 28 28 0 0 1 0 56 H 28 a 28 28 0 0 1 0 -56 z\"></path><g transform=\"translate(46.4,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,0 m 24,0 H 310.1 a 24 24 0 0 1 0 48 H 24 a 24 24 0 0 1 0 -48 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(73,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g data-argument-type=\"dropdown\" transform=\"translate(279.2,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 34.9 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"7.4\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">3</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(18.9,11)\"></image></g></g><g transform=\"translate(16, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(64, 4) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"70.7\" transform=\"translate(129.7, 24) \">heading&nbsp;to&nbsp;beacon</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path></g><g data-argument-type=\"text\" transform=\"translate(388.5,12)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 25.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.8\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">&nbsp;&nbsp;&nbsp;&nbsp;</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 28) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 32) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><g transform=\"translate(0,72)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 164.3 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(48,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24.5 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.2\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">0.1</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"15.4\" transform=\"translate(8, 24) \">wait</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#C18401\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"31.8\" transform=\"translate(96.5, 24) \">seconds</text></g><g transform=\"translate(8, 20) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 16) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"18.5\" transform=\"translate(65, 36) \">write</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"23.0\" transform=\"translate(678.8, 36) \">at&nbsp;line</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"26.2\" transform=\"translate(8, 24) \">forever</text><g transform=\"translate(128, 172) \"><image height=\"24px\" width=\"24px\" xlink:href=\"§0\"></image></g></g><g transform=\"translate(8, 12) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 8) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"48.3\" transform=\"translate(65, 28) \">clear&nbsp;display</text></g><g transform=\"translate(8, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§1\"></image></g><g transform=\"translate(56, 4) \"><line stroke=\"#D9B100\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"36\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"78.7\" transform=\"translate(65, 24) \">when&nbsp;program&nbsp;starts</text></g>"},"func":{"vb":"-3 197.5 804.1 328.5","w":805,"h":329,"g":"<g transform=\"translate(0,217)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#B89A00\" fill=\"#F5C400\" d=\"m 0,0 c 25,-22 71,-22 96,0 H 226.5 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 165.7 a 4,4 0 0,1 4,4 v 48 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,56)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 64 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 h -8 a 4,4 0 0,0 -4,4 v 112 a 4,4 0 0,0 4,4 h 8 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 H 156 a 4,4 0 0,1 4,4 v 24 a 4,4 0 0,1 -4,4 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(16,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 778.1 a 4,4 0 0,1 4,4 v 64 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(734.1,20)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text></g></g><g transform=\"translate(110.1,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 32,0 H 529.8 a 32 32 0 0 1 0 64 H 32 a 32 32 0 0 1 0 -64 z\"></path><g data-argument-type=\"text\" transform=\"translate(46.4,16)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 53.1 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"26.5\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">FUNC&nbsp;</text></g></g><g transform=\"translate(123.6,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 28,0 H 406.2 a 28 28 0 0 1 0 56 H 28 a 28 28 0 0 1 0 -56 z\"></path><g transform=\"translate(46.4,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,0 m 24,0 H 310.0 a 24 24 0 0 1 0 48 H 24 a 24 24 0 0 1 0 -48 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(73,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g data-argument-type=\"dropdown\" transform=\"translate(279.2,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 34.8 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"7.4\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">4</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(18.8,11)\"></image></g></g><g transform=\"translate(16, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(64, 4) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"70.7\" transform=\"translate(129.7, 24) \">heading&nbsp;to&nbsp;beacon</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path></g><g data-argument-type=\"text\" transform=\"translate(388.5,12)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 25.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.8\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">&nbsp;&nbsp;&nbsp;&nbsp;</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 28) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 32) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><g transform=\"translate(0,72)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 164.3 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(48,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24.5 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.2\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">0.1</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"15.4\" transform=\"translate(8, 24) \">wait</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#C18401\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"31.8\" transform=\"translate(96.5, 24) \">seconds</text></g><g transform=\"translate(8, 20) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 16) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"18.5\" transform=\"translate(65, 36) \">write</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"23.0\" transform=\"translate(680.0, 36) \">at&nbsp;line</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"26.2\" transform=\"translate(8, 24) \">forever</text><g transform=\"translate(128, 172) \"><image height=\"24px\" width=\"24px\" xlink:href=\"§0\"></image></g></g><g transform=\"translate(8, 12) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 8) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"48.3\" transform=\"translate(65, 28) \">clear&nbsp;display</text></g><g transform=\"translate(8, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§1\"></image></g><g transform=\"translate(56, 4) \"><line stroke=\"#D9B100\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"36\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"78.7\" transform=\"translate(65, 24) \">when&nbsp;program&nbsp;starts</text></g>"},"stickL":{"vb":"-3 197.5 786.8 400.5","w":787,"h":401,"g":"<g transform=\"translate(0,217)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#B89A00\" fill=\"#F5C400\" d=\"m 0,0 c 25,-22 71,-22 96,0 H 226.5 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 165.7 a 4,4 0 0,1 4,4 v 48 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,56)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 64 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 h -8 a 4,4 0 0,0 -4,4 v 184 a 4,4 0 0,0 4,4 h 8 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 H 156 a 4,4 0 0,1 4,4 v 24 a 4,4 0 0,1 -4,4 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(16,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 760.6 a 4,4 0 0,1 4,4 v 64 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(716.6,20)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text></g></g><g transform=\"translate(110.1,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 32,0 H 512.4 a 32 32 0 0 1 0 64 H 32 a 32 32 0 0 1 0 -64 z\"></path><g data-argument-type=\"text\" transform=\"translate(46.4,16)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 29.6 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"14.8\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">LX&nbsp;</text></g></g><g transform=\"translate(100.0,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 28,0 H 412.3 a 28 28 0 0 1 0 56 H 28 a 28 28 0 0 1 0 -56 z\"></path><g transform=\"translate(46.4,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,0 m 24,0 H 316.1 a 24 24 0 0 1 0 48 H 24 a 24 24 0 0 1 0 -48 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(73,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g data-argument-type=\"dropdown\" transform=\"translate(287.4,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g transform=\"translate(16, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(64, 4) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"74.8\" transform=\"translate(129.7, 24) \">proximity&nbsp;to&nbsp;beacon</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path></g><g data-argument-type=\"text\" transform=\"translate(394.6,12)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 25.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.8\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">&nbsp;&nbsp;&nbsp;&nbsp;</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 28) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 32) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><g transform=\"translate(0,72)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 760.8 a 4,4 0 0,1 4,4 v 64 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(716.8,20)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">2</text></g></g><g transform=\"translate(110.1,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 32,0 H 512.5 a 32 32 0 0 1 0 64 H 32 a 32 32 0 0 1 0 -64 z\"></path><g data-argument-type=\"text\" transform=\"translate(46.4,16)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 27.4 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"13.7\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">LY&nbsp;</text></g></g><g transform=\"translate(97.9,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 28,0 H 414.6 a 28 28 0 0 1 0 56 H 28 a 28 28 0 0 1 0 -56 z\"></path><g transform=\"translate(46.4,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,0 m 24,0 H 318.4 a 24 24 0 0 1 0 48 H 24 a 24 24 0 0 1 0 -48 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(73,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g data-argument-type=\"dropdown\" transform=\"translate(287.4,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 35.0 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"7.5\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">2</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(19.0,11)\"></image></g></g><g transform=\"translate(16, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(64, 4) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"74.8\" transform=\"translate(129.7, 24) \">proximity&nbsp;to&nbsp;beacon</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path></g><g data-argument-type=\"text\" transform=\"translate(396.9,12)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 25.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.8\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">&nbsp;&nbsp;&nbsp;&nbsp;</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 28) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 32) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><g transform=\"translate(0,72)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 164.3 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(48,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24.5 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.2\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">0.1</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"15.4\" transform=\"translate(8, 24) \">wait</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#C18401\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"31.8\" transform=\"translate(96.5, 24) \">seconds</text></g><g transform=\"translate(8, 20) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 16) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"18.5\" transform=\"translate(65, 36) \">write</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"23.0\" transform=\"translate(662.7, 36) \">at&nbsp;line</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path></g><g transform=\"translate(8, 20) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 16) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"18.5\" transform=\"translate(65, 36) \">write</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"23.0\" transform=\"translate(662.5, 36) \">at&nbsp;line</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"26.2\" transform=\"translate(8, 24) \">forever</text><g transform=\"translate(128, 244) \"><image height=\"24px\" width=\"24px\" xlink:href=\"§0\"></image></g></g><g transform=\"translate(8, 12) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 8) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"48.3\" transform=\"translate(65, 28) \">clear&nbsp;display</text></g><g transform=\"translate(8, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§1\"></image></g><g transform=\"translate(56, 4) \"><line stroke=\"#D9B100\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"36\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"78.7\" transform=\"translate(65, 24) \">when&nbsp;program&nbsp;starts</text></g>"},"stickR":{"vb":"-3 197.5 790.4 400.5","w":791,"h":401,"g":"<g transform=\"translate(0,217)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#B89A00\" fill=\"#F5C400\" d=\"m 0,0 c 25,-22 71,-22 96,0 H 226.5 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 165.7 a 4,4 0 0,1 4,4 v 48 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,56)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 64 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 h -8 a 4,4 0 0,0 -4,4 v 184 a 4,4 0 0,0 4,4 h 8 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 H 156 a 4,4 0 0,1 4,4 v 24 a 4,4 0 0,1 -4,4 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(16,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 764.4 a 4,4 0 0,1 4,4 v 64 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(720.4,20)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text></g></g><g transform=\"translate(110.1,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 32,0 H 516.2 a 32 32 0 0 1 0 64 H 32 a 32 32 0 0 1 0 -64 z\"></path><g data-argument-type=\"text\" transform=\"translate(46.4,16)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 31.1 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"15.5\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">RX&nbsp;</text></g></g><g transform=\"translate(101.6,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 28,0 H 414.5 a 28 28 0 0 1 0 56 H 28 a 28 28 0 0 1 0 -56 z\"></path><g transform=\"translate(46.4,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,0 m 24,0 H 318.3 a 24 24 0 0 1 0 48 H 24 a 24 24 0 0 1 0 -48 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(73,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g data-argument-type=\"dropdown\" transform=\"translate(287.4,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 34.9 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"7.4\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">3</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(18.9,11)\"></image></g></g><g transform=\"translate(16, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(64, 4) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"74.8\" transform=\"translate(129.7, 24) \">proximity&nbsp;to&nbsp;beacon</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path></g><g data-argument-type=\"text\" transform=\"translate(396.8,12)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 25.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.8\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">&nbsp;&nbsp;&nbsp;&nbsp;</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 28) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 32) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><g transform=\"translate(0,72)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 763.9 a 4,4 0 0,1 4,4 v 64 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(719.9,20)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">2</text></g></g><g transform=\"translate(110.1,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 32,0 H 515.7 a 32 32 0 0 1 0 64 H 32 a 32 32 0 0 1 0 -64 z\"></path><g data-argument-type=\"text\" transform=\"translate(46.4,16)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 30.8 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"15.4\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">RY&nbsp;</text></g></g><g transform=\"translate(101.2,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 28,0 H 414.5 a 28 28 0 0 1 0 56 H 28 a 28 28 0 0 1 0 -56 z\"></path><g transform=\"translate(46.4,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,0 m 24,0 H 318.3 a 24 24 0 0 1 0 48 H 24 a 24 24 0 0 1 0 -48 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(73,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g data-argument-type=\"dropdown\" transform=\"translate(287.4,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 34.8 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"7.4\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">4</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(18.8,11)\"></image></g></g><g transform=\"translate(16, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(64, 4) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"74.8\" transform=\"translate(129.7, 24) \">proximity&nbsp;to&nbsp;beacon</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path></g><g data-argument-type=\"text\" transform=\"translate(396.7,12)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 25.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.8\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">&nbsp;&nbsp;&nbsp;&nbsp;</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 28) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 32) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><g transform=\"translate(0,72)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 164.3 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(48,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24.5 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.2\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">0.1</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"15.4\" transform=\"translate(8, 24) \">wait</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#C18401\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"31.8\" transform=\"translate(96.5, 24) \">seconds</text></g><g transform=\"translate(8, 20) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 16) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"18.5\" transform=\"translate(65, 36) \">write</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"23.0\" transform=\"translate(665.9, 36) \">at&nbsp;line</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path></g><g transform=\"translate(8, 20) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 16) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"18.5\" transform=\"translate(65, 36) \">write</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"23.0\" transform=\"translate(666.3, 36) \">at&nbsp;line</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"26.2\" transform=\"translate(8, 24) \">forever</text><g transform=\"translate(128, 244) \"><image height=\"24px\" width=\"24px\" xlink:href=\"§0\"></image></g></g><g transform=\"translate(8, 12) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 8) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"48.3\" transform=\"translate(65, 28) \">clear&nbsp;display</text></g><g transform=\"translate(8, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§1\"></image></g><g transform=\"translate(56, 4) \"><line stroke=\"#D9B100\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"36\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"78.7\" transform=\"translate(65, 24) \">when&nbsp;program&nbsp;starts</text></g>"}}};
+(function () {
+  var S = { port: '1', step: 1, view: 1, fn: "dpad" };
+  var SCALE = 0.72;
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function pic(k, scale) {
+    var d = BLK.pics[k], s = scale || (BLK.kind === 'img' && k === 'reps' ? 0.9 : SCALE);
+    if (BLK.kind === 'svg') {
+      var g = d.g.replace(/§(\d+)/g, function (m, i) { return BLK.img[+i]; });
+      return '<svg class="lego" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="' + d.vb + '" width="' + Math.round(d.w * s) + '" height="' + Math.round(d.h * s) + '" role="img"><g>' + g + '</g></svg>';
+    }
+    return '<img class="shot" src="' + BLK.img[d.i] + '" width="' + Math.round(d.w * s) + '" height="' + Math.round(d.h * s) + '" alt="EV3-G 程式截圖">';
+  }
+  function ax(a) { return Math.max(0, Math.min(99, Math.round(49.5 + a * 49.5))); } function ev3(s) { var c = !$('nopad').checked; return { dpad: s.bits & 15, shape: (s.bits >> 4) & 15, shoulder: (s.bits >> 8) & 15, func: (s.bits >> 12) & 15, lx: c ? ax(stk.L[0]) : 50, ly: c ? ax(stk.L[1]) : 50, rx: c ? ax(stk.R[0]) : 50, ry: c ? ax(stk.R[1]) : 50 }; }
+  var ROWS = {"dpad":[["DPAD","dpad"]],"shape":[["SHAPE","shape"]],"shoulder":[["SHLD","shoulder"]],"func":[["FUNC","func"]],"stickL":[["LX","lx"],["LY","ly"]],"stickR":[["RX","rx"],["RY","ry"]]};
+  function screenRows(id, s) {
+    var u = $('unplug') && $('unplug').checked, v = u ? null : ev3(s);
+    return ROWS[id].map(function (r) { return r[0] + ' ' + (u ? '----' : v[r[1]]); });
+  }
+  var FNS = [{"id":"dpad","zh":"方向鍵","grp":"按鍵","ret":"0 ~ 15","what":"「proximity」讀到的是方向鍵：上 1、右 2、下 4、左 8，同時按就相加（例如上＋右 = 3），都沒按 = 0。"},{"id":"shape","zh":"形狀鍵","grp":"按鍵","ret":"0 ~ 15","what":"「heading to beacon 2」讀到的是形狀鍵：△ 1、○ 2、✕ 4、□ 8，同時按就相加。"},{"id":"shoulder","zh":"肩鍵","grp":"按鍵","ret":"0 ~ 15","what":"「heading to beacon 3」讀到的是肩鍵：L2 1、R2 2、L1 4、R1 8，同時按就相加。"},{"id":"func","zh":"功能鍵","grp":"按鍵","ret":"0 ~ 15","what":"「heading to beacon 4」讀到的是功能鍵：SELECT 1、L3（按下左搖桿）2、R3 4、START 8。PS4 的 SHARE＝SELECT、OPTIONS＝START。"},{"id":"stickL","zh":"左搖桿","grp":"搖桿","ret":"0 ~ 99（50 = 中間）","what":"「proximity to beacon 1」是左搖桿左右（往右變大），「proximity to beacon 2」是左搖桿上下（往上變大）。放開時是 50。"},{"id":"stickR","zh":"右搖桿","grp":"搖桿","ret":"0 ~ 99（50 = 中間）","what":"「proximity to beacon 3」是右搖桿左右，「proximity to beacon 4」是右搖桿上下。減 50 再乘 2，就是 -100 ～ 100 的馬達力量。"}];
+  FNS.forEach(function (f) { f.out = function (s) { return screenRows(f.id, s).join(' / '); }; });
+  var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; });
+
+  var lastKey = {};
+  function setHTML(el, key, html) {
+    if (lastKey[el.id] === key) return;
+    var changed = lastKey[el.id] !== undefined;
+    lastKey[el.id] = key; el.innerHTML = html;
+    if (changed) { var w = el.querySelector('.blk-wrap:last-child') || el; w.classList.remove('flash'); void w.offsetWidth; w.classList.add('flash'); }
+  }
+  function wrap(label, inner) { return '<div class="blk-wrap">' + (label ? '<div class="stepmark">' + label + '</div>' : '') + inner + '</div>'; }
+  function drawBlocks() {
+    var parts = [];
+    if (S.view === 1) parts.push(wrap("第 1 步", pic('step1')));
+    else if (S.view === 2) parts.push(wrap("第 1 步", pic('step1')), wrap("第 2 步：讀值積木", pic('reps')));
+    else parts.push(wrap("第 1～3 步", pic(S.fn)));
+    setHTML($('mainblocks'), [S.view, S.fn].join(), parts.join(''));
+    setHTML($('miniws1'), 'step1', wrap('', pic('step1')));
+    setHTML($('miniws2'), 'reps', wrap('', pic('reps')));
+    setHTML($('miniws3'), S.fn, wrap('', pic(S.fn)));
+  }
+  function makeMini(k) { $('mini' + k).innerHTML = '<span>這一步要放的積木</span><div class="ws" id="miniws' + k + '"></div>'; }
+  var TIPS = ["第 1 步：「when program starts」下面接「forever」，裡面放「wait 0.1 seconds」。","第 2 步：紅外線感應器的積木，孔號選 1。","第 3 步：讀值積木放進「write … at line …」，放在 forever 裡、wait 的上面。"];
+  function drawAll() {
+    drawBlocks();
+    var b = $('bubble'); b.querySelector('i').textContent = S.view; b.querySelector('span').textContent = TIPS[S.view - 1];
+  }
+  function setStep(n) {
+    S.step = Math.max(S.step, n); S.view = n;
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    drawAll();
+  }
+  function drawPorts() {}
+  function drawPicker() {
+    var g = {}; FNS.forEach(function (f) { (g[f.grp] = g[f.grp] || []).push(f); });
+    var box = $('picker'); box.innerHTML = '';
+    Object.keys(g).forEach(function (k) {
+      var w = document.createElement('div'); w.className = 'fgroup'; w.innerHTML = '<span>' + k + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      g[k].forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = f.zh; b.title = f.id;
+        b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      w.appendChild(chips); box.appendChild(w);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + f.zh + '</b><span>' + f.what + '</span><span class="small">結果：' + esc(f.ret) + '</span>';
+  }
+  function pick(id) { S.fn = id; setStep(3); drawPicker(); tick(true); }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    FNS.forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      c.innerHTML = '<div class="card-head"><h3>' + f.zh + '</h3></div><p>' + f.what + '</p>' +
+        '<dl class="meta"><dt>範圍</dt><dd>' + esc(f.ret) + '</dd></dl>' +
+        '<div class="ws">' + pic(f.id, 0.62) + '</div><p class="out">模擬畫面上會看到：<code></code></p><button type="button" class="try">試試看</button>';
+      c.querySelector('.try').addEventListener('click', function () { pick(f.id); var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ block: 'start' }); });
+      box.appendChild(c);
+    });
+  }
+  function updateCardOutputs(st) { FNS.forEach(function (g) { var el = document.querySelector('#fn-' + g.id + ' .out code'); if (el) el.textContent = g.out(st); }); }
+
+  // ───── 模擬器（沿用 MBC 積木網站版，換成 EV3 的數字） ─────
+  var BTN = { UP: 0, RIGHT: 1, DOWN: 2, LEFT: 3, TRIANGLE: 4, CIRCLE: 5, CROSS: 6, SQUARE: 7, L2: 8, R2: 9, L1: 10, R1: 11, SELECT: 12, L3: 13, R3: 14, START: 15 };
+  var PSX = { SELECT: 0, L3: 1, R3: 2, START: 3, UP: 4, RIGHT: 5, DOWN: 6, LEFT: 7, L2: 8, R2: 9, L1: 10, R1: 11, TRIANGLE: 12, CIRCLE: 13, CROSS: 14, SQUARE: 15 };
+  function pr(s, n) { return ((s.bits >> BTN[n]) & 1) === 1; }
+
+  // 模擬器（示意值，不是感應器內部算法）
+  var PADG = [
+    ['L2', 'r', 46, 8, 92, 22, 'L2'], ['L1', 'r', 46, 34, 92, 22, 'L1'], ['R2', 'r', 322, 8, 92, 22, 'R2'], ['R1', 'r', 322, 34, 92, 22, 'R1'],
+    ['UP', 'r', 88, 72, 26, 28, '↑'], ['DOWN', 'r', 88, 126, 26, 28, '↓'], ['LEFT', 'r', 60, 100, 28, 26, '←'], ['RIGHT', 'r', 114, 100, 28, 26, '→'],
+    ['TRIANGLE', 'c', 359, 84, 14, 0, '△'], ['CIRCLE', 'c', 387, 112, 14, 0, '○'], ['CROSS', 'c', 359, 140, 14, 0, '✕'], ['SQUARE', 'c', 331, 112, 14, 0, '□'],
+    ['SELECT', 'r', 180, 96, 46, 18, 'SELECT'], ['START', 'r', 234, 96, 46, 18, 'START']
+  ];
+  var ZH = { UP: '上', DOWN: '下', LEFT: '左', RIGHT: '右', TRIANGLE: '三角形 △', CIRCLE: '圓形 ○', CROSS: '叉叉 ✕', SQUARE: '方形 □' };
+  var STK = { L: [172, 176], R: [288, 176] }, STK_R = 18;
+  var held = {}, stk = { L: [0, 0], R: [0, 0] }, drag = null;
+  function axisVal(a) { return Math.max(1, Math.min(9, Math.round(5 + a * 4))); }
+  function kindNow() { return $('k4').checked ? 'PS4' : 'PS2'; }
+  function buildPad() {
+    var svgEl = $('field'), h = '';
+    h += '<rect x="0" y="0" width="460" height="250" fill="#f7f7f2"/>';
+    h += '<rect x="30" y="58" width="400" height="150" rx="64" fill="#26302e"/>';
+    PADG.forEach(function (b) {
+      var lab = b[0] === 'SELECT' || b[0] === 'START' ? b[0] : (ZH[b[0]] || b[0]);
+      h += '<g data-btn="' + b[0] + '" tabindex="0" role="button" aria-pressed="false" aria-label="' + lab + '" style="cursor:pointer">';
+      if (b[1] === 'r') h += '<rect x="' + b[2] + '" y="' + b[3] + '" width="' + b[4] + '" height="' + b[5] + '" rx="6" fill="#55605d" stroke="#1b2422" stroke-width="1.5"/>' +
+        '<text x="' + (b[2] + b[4] / 2) + '" y="' + (b[3] + b[5] / 2 + 5) + '" text-anchor="middle" font-size="' + (b[6].length > 2 ? 10 : 14) + '" font-weight="700" fill="#fff" pointer-events="none">' + b[6] + '</text>';
+      else h += '<circle cx="' + b[2] + '" cy="' + b[3] + '" r="' + b[4] + '" fill="#55605d" stroke="#1b2422" stroke-width="1.5"/>' +
+        '<text x="' + b[2] + '" y="' + (b[3] + 5) + '" text-anchor="middle" font-size="14" font-weight="700" fill="#fff" pointer-events="none">' + b[6] + '</text>';
+      h += '</g>';
+    });
+    ['L', 'R'].forEach(function (k) {
+      var c = STK[k];
+      h += '<g data-stick="' + k + '" tabindex="0" role="slider" aria-label="' + (k === 'L' ? '左' : '右') + '搖桿（方向鍵移動）" aria-valuemin="1" aria-valuemax="9" aria-valuenow="5" style="cursor:grab">' +
+        '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="30" fill="#3b4846" stroke="#1b2422" stroke-width="2"/>' +
+        '<line x1="' + (c[0] - 24) + '" y1="' + c[1] + '" x2="' + (c[0] + 24) + '" y2="' + c[1] + '" stroke="#55605d"/><line x1="' + c[0] + '" y1="' + (c[1] - 24) + '" x2="' + c[0] + '" y2="' + (c[1] + 24) + '" stroke="#55605d"/>' +
+        '<circle id="knob' + k + '" cx="' + c[0] + '" cy="' + c[1] + '" r="15" fill="#8a9794" stroke="#f7f7f2" stroke-width="2"/></g>';
+    });
+    h += '<text id="padsel" x="203" y="90" text-anchor="middle" font-size="10" fill="#9aaba7"></text><text id="padsta" x="257" y="90" text-anchor="middle" font-size="10" fill="#9aaba7"></text>';
+    h += '<text id="padval" x="230" y="234" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#3d4a47"></text>';
+    h += '<text id="padmsg" x="230" y="76" text-anchor="middle" font-size="14" font-weight="700"></text>';
+    svgEl.innerHTML = h;
+    svgEl.style.touchAction = 'none';
+    svgEl.addEventListener('pointerdown', function (e) {
+      var t = e.target.closest ? e.target.closest('[data-stick],[data-btn]') : null;
+      if (!t) return;
+      e.preventDefault();
+      if (t.hasAttribute('data-stick')) { drag = t.getAttribute('data-stick'); try { svgEl.setPointerCapture(e.pointerId); } catch (x) {} moveStick(e); }
+      else toggleBtn(t.getAttribute('data-btn'));
+    });
+    svgEl.addEventListener('pointermove', function (e) { if (drag) moveStick(e); });
+    svgEl.addEventListener('pointerup', function () { drag = null; });
+    svgEl.addEventListener('pointercancel', function () { drag = null; });
+    svgEl.addEventListener('keydown', function (e) {
+      var t = e.target;
+      if (t.hasAttribute && t.hasAttribute('data-btn') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggleBtn(t.getAttribute('data-btn')); }
+      if (t.hasAttribute && t.hasAttribute('data-stick')) {
+        var d = { ArrowLeft: [-0.25, 0], ArrowRight: [0.25, 0], ArrowUp: [0, 0.25], ArrowDown: [0, -0.25] }[e.key];
+        if (d) { e.preventDefault(); var k = t.getAttribute('data-stick'); stk[k] = [Math.max(-1, Math.min(1, stk[k][0] + d[0])), Math.max(-1, Math.min(1, stk[k][1] + d[1]))]; tick(false); }
+      }
+    });
+  }
+  function toggleBtn(n) { held[n] = !held[n]; tick(false); }
+  function moveStick(e) {
+    var svgEl = $('field'), m = svgEl.getScreenCTM(); if (!m) return;
+    var p = svgEl.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; var q = p.matrixTransform(m.inverse());
+    var c = STK[drag], dx = (q.x - c[0]) / STK_R, dy = -(q.y - c[1]) / STK_R, r = Math.sqrt(dx * dx + dy * dy);
+    if (r > 1) { dx /= r; dy /= r; }
+    stk[drag] = [dx, dy]; tick(false);
+  }
+  var frozen = null, warned = false;
+  function rawState() {
+    var conn = !$('nopad').checked, kind = kindNow(), bits = 0, psx = 0;
+    // 手把沒連線：接收器送「按鍵全放開、搖桿在中間」
+    if (conn) Object.keys(held).forEach(function (k) { if (held[k]) { bits |= 1 << BTN[k]; psx |= 1 << PSX[k]; } });
+    return { bits: bits, psx: psx, LX: conn ? axisVal(stk.L[0]) : 5, LY: conn ? axisVal(stk.L[1]) : 5, RX: conn ? axisVal(stk.R[0]) : 5, RY: conn ? axisVal(stk.R[1]) : 5,
+      conn: conn, kind: kind, battery: conn && kind === 'PS4' ? 80 : 0, ok: true };
+  }
+  // 模擬器（示意值，不是感應器內部算法）
+  function state() {
+    if (!$('unplug').checked) { frozen = rawState(); warned = false; return frozen; }
+    if (!frozen) return { none: true, ok: false };
+    var s = JSON.parse(JSON.stringify(frozen)); s.ok = false; return s;
+  }
+  function paintPad(st) {
+    var svgEl = $('field'), tok = getComputedStyle(document.documentElement);
+    var acc = tok.getPropertyValue('--accent').trim() || '#0a7c78', ir = tok.getPropertyValue('--ir').trim() || '#e04a3b';
+    svgEl.querySelectorAll('[data-btn]').forEach(function (g) {
+      var n = g.getAttribute('data-btn'), on = !!held[n];
+      g.setAttribute('aria-pressed', String(on));
+      g.firstChild.setAttribute('fill', on ? acc : '#55605d');
+    });
+    ['L', 'R'].forEach(function (k) {
+      var c = STK[k], kn = $('knob' + k);
+      kn.setAttribute('cx', (c[0] + stk[k][0] * STK_R).toFixed(1)); kn.setAttribute('cy', (c[1] - stk[k][1] * STK_R).toFixed(1));
+      kn.setAttribute('fill', stk[k][0] || stk[k][1] ? acc : '#8a9794');
+      kn.parentNode.setAttribute('aria-valuetext', k + 'X ' + ax(stk[k][0]) + ', ' + k + 'Y ' + ax(stk[k][1]));
+    });
+    var ps4 = kindNow() === 'PS4';
+    $('padsel').textContent = ps4 ? 'SHARE' : ''; $('padsta').textContent = ps4 ? 'OPTIONS' : '';
+    var q = function (x) { return st.none ? '?' : x; };
+    $('padval').textContent = padText(st);
+    var msg = $('padmsg');
+    if ($('unplug').checked) { msg.textContent = '感應器拔掉了：EV3 讀不到，螢幕顯示 ----'; msg.setAttribute('fill', ir); }
+    else if ($('nopad').checked) { msg.textContent = '手把沒連線：按鍵全放開、搖桿在中間'; msg.setAttribute('fill', ir); }
+    else msg.textContent = '';
+  }
+  // 模擬器（示意值，不是感應器內部算法）
+
+  function padText(st) { var v = ev3(st), u = $('unplug').checked, q = function (x) { return u ? '----' : x; };
+    return 'EV3 讀到　LX ' + q(v.lx) + '  LY ' + q(v.ly) + '　RX ' + q(v.rx) + '  RY ' + q(v.ry); }
+
+  function tick(reset) {
+    var st = state(), f = BY[S.fn], u = $('unplug').checked;
+    paintPad(st);
+    updateCardOutputs(st);
+    if (S.step < 3) { $('console').innerHTML = esc("（做完第 3 步，這裡會出現 EV3 螢幕上的字）"); return; }
+    var lines = screenRows(S.fn, st).map(function (t) { return '<span>' + esc(t) + '</span>'; });
+    if (u) lines.push('<span class="warnline">' + esc("（說明）EV3 讀不到感應器：數字變成 ----，每讀一次要等約 1.2 秒；插回去會自動恢復") + '</span>');
+    $('console').innerHTML = lines.join('\n');
+  }
+
+  $('next1').addEventListener('click', function () { setStep(2); });
+  $('next2').addEventListener('click', function () { setStep(3); drawPicker(); tick(true); });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) { $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } }); });
+  ['k2', 'k4', 'nopad', 'unplug'].forEach(function (id) { $(id).addEventListener('input', function () { tick(id === 'unplug'); }); });
+  $('release').addEventListener('click', function () { held = {}; stk = { L: [0, 0], R: [0, 0] }; tick(false); });
+
+  [1, 2, 3].forEach(makeMini);
+  buildPad(); drawPicker(); drawCards(); drawAll(); tick(true);
+  setInterval(function () { if (S.step >= 3) tick(false); }, 600);
+})();
+</script>
+<script>
+(function () {
+  var side = document.querySelector('.side'); if (!side) return;
+  var mq = window.matchMedia('(max-width: 900px)');
+  var home = side.parentNode, homeNext = side.nextSibling;
+  var con = document.getElementById('console'), conP = con && con.closest('.panel');
+  if (conP && conP.parentNode !== side) conP = null;
+  var last = null, ready = false;
+  var STOP = '.step-body, .cards, .ref, .steps, .main, .wrap, body';
+  function anchorOf(el) { var a = el; while (a && a.parentElement && !a.parentElement.matches(STOP)) a = a.parentElement; return a && a.parentElement ? a : null; }
+  function flash(el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  // 把 box 搬到 a 那一塊的後面；a 在畫面上的位置維持不動（點下去時就記住 a：頁面常在點擊後重畫按鈕，按鈕本身會被換掉）
+  function moveAfter(box, a) {
+    if (!a || !a.isConnected || a === box || a.contains(box)) return false;
+    if (a.nextElementSibling === box) return true;
+    var y = a.getBoundingClientRect().top;
+    a.parentNode.insertBefore(box, a.nextSibling); box.classList.add('follow');
+    var d = a.getBoundingClientRect().top - y; if (d) window.scrollBy(0, d);
+    return true;
+  }
+  function inPanel(el) { return side.contains(el) || (conP && conP.contains(el)); }
+  function placeSide(a, scroll) {
+    if (!mq.matches || !a) return;
+    if (conP && conP.parentNode !== side) { conP.classList.remove('follow'); side.appendChild(conP); }
+    if (!moveAfter(side, a)) return;
+    if (scroll) { var r = side.getBoundingClientRect(); if (r.top > window.innerHeight * 0.7) window.scrollBy({ top: r.top - window.innerHeight * 0.3, behavior: 'smooth' }); }
+  }
+  function placeConsole(el) {
+    if (!mq.matches || !conP || inPanel(el)) return;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在「正在操作的那一排」正下方（排＝控制區的直接子元素），
+    // 畫面、那一排、輸出同一屏；控制區很長或那一排在最下面（例如拔線勾選）都不會跑出畫面
+    var sim = el.closest('.sim'), ctrl = null, row = null;
+    if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (ctrl && ctrl !== el) for (var j = 0; j < ctrl.children.length; j++) if (ctrl.children[j].contains(el)) row = ctrl.children[j];
+    if (sim && ctrl) {
+      var box = row ? ctrl : sim, after = row || null;
+      if (after ? after.nextElementSibling === conP : conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var y = el.getBoundingClientRect().top;
+      if (after) box.insertBefore(conP, after.nextSibling); else sim.insertBefore(conP, ctrl);
+      conP.classList.add('follow');
+      var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
+      return;
+    }
+    var a = anchorOf(el); if (a && a.nextElementSibling === side) return; // 程式那格已經緊接在下面，輸出就在它裡面
+    moveAfter(conP, a);
+  }
+  function reset() {
+    if (mq.matches) { var b = document.querySelector('#step1 .step-body button') || document.querySelector('#step1 button'); if (b) placeSide(anchorOf(b), false); return; }
+    if (conP) { conP.classList.remove('follow'); side.appendChild(conP); }
+    side.classList.remove('follow'); home.insertBefore(side, homeNext);
+  }
+  function remember(e) { if (!inPanel(e.target)) last = anchorOf(e.target); }
+  document.addEventListener('pointerdown', remember, true);
+  document.addEventListener('focusin', remember, true);
+  var mo = new MutationObserver(function () { if (ready && mq.matches) { placeSide(last, true); flash(side); } });
+  ['maincode', 'mainblocks'].forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true }); });
+  function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
+  document.addEventListener('input', sim, true);
+  document.addEventListener('change', sim, true);
+  // 模擬器裡的按鈕（掌控者按鍵、色點調色盤…）也算在操作模擬器
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.sim button'); if (b) placeConsole(b); }, true);
+  reset(); setTimeout(function () { ready = true; }, 800);
+  if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
+})();
+</script>
+</body>
+</html>

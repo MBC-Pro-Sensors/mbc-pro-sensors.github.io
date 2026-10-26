@@ -25,7 +25,7 @@ Code assumes port 1: `Sensor.SetMode` picks the mode, `Sensor.ReadRawValue` read
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~120` cm | smallest of the 8 distances, 0~120 cm (a failed sensor counts as 120); 120 = nothing around |
+| `0~120` cm (EV3 mode 2 gives a scaled value: cm×100/120 (0~100)) | smallest of the 8 distances, 0~120 cm (a failed sensor counts as 120); 120 = nothing around |
 
 ```basic
 ' clev3r (BASIC)
@@ -67,7 +67,7 @@ nearDir = Sensor.ReadRawValue(1, 1)
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~120` cm | largest of the 8 distances, 0~120 cm (a failed sensor always reads 120 and looks 'farthest') |
+| `0~120` cm (EV3 mode 2 gives a scaled value: cm×100/120 (0~100)) | largest of the 8 distances, 0~120 cm (a failed sensor always reads 120 and looks 'farthest') |
 
 ```basic
 ' clev3r (BASIC)
@@ -107,7 +107,7 @@ farDir = Sensor.ReadRawValue(1, 2)
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~120` cm | average of sensors 4 and 5 (both facing forward), 0~120 cm; EV3 mode 3 and SPIKE mode 6 carry the same thing in mm; 0x22 'C' is min(4, 5), not the average (see 10) |
+| `0~120` cm (EV3 mode 0 gives a scaled value: cm×100/120 (0~100)) | average of sensors 4 and 5 (both facing forward), 0~120 cm; EV3 mode 3 and SPIKE mode 6 carry the same thing in mm; 0x22 'C' is min(4, 5), not the average (see 10) |
 
 ```basic
 ' clev3r (BASIC)
@@ -147,7 +147,7 @@ nearMm = Sensor.ReadRawValue(1, 0)
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~1200` mm | average of sensors 4 and 5 (the two facing forward), 0~1200 mm; 1200 = nothing ahead. cm version is 05 |
+| `0~1200` mm (EV3 mode 3 gives a scaled value: mm (0~1200)) | average of sensors 4 and 5 (the two facing forward), 0~1200 mm; 1200 = nothing ahead. cm version is 05 |
 
 ```basic
 ' clev3r (BASIC)
@@ -167,7 +167,7 @@ frontMm = Sensor.ReadRawValue(1, 0)
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~120` cm | distance of each sensor 1~8, 0~120 cm (1 = far left, 4 and 5 = front, 8 = far right, 30° apart); 120 = nothing that way / sensor failed; ids 10~17 |
+| `0~120` cm (EV3 mode 1, mode 4 give a scaled value: cm×100/120 (0~100)) | distance of each sensor 1~8, 0~120 cm (1 = far left, 4 and 5 = front, 8 = far right, 30° apart); 120 = nothing that way / sensor failed; ids 10~17 |
 
 ```basic
 ' clev3r (BASIC)

@@ -7,7 +7,7 @@
 
 ## 要買哪個版本、怎麼接
 
-買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `0x4C`。感應器要 5 V 供電，micro:bit 本身只有 3.3 V，請用有 5 V 輸出的擴充板。
+買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `0x4C`。**一定要外接 5 V 供電**（ESP32 相機＋螢幕＋補光燈），不能吃 micro:bit 的 3V 腳；外部電源的 GND 要和 micro:bit 共地。
 
 <figure class="ref-fig"><img src="/images/figures/esp32cam/wiring-microbit.svg" alt="神攝手 ESP32CAM × BBC micro:bit V1／V2" loading="lazy"></figure>
 
@@ -21,7 +21,7 @@
 
 ## 讀值（學校版）
 
-MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC」分類找積木；JavaScript 寫法一併列出，位址 `0x4C`。
+MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC 感應器」分類找積木；JavaScript 寫法一併列出，位址 `0x4C`。
 
 <section id="v01" class="ref-item">
 
@@ -33,13 +33,19 @@ MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC」分類找積木；JavaSc
 | :--- | :--- |
 | `-1~100` | S1 取樣點色相 0~100（色相環 0~240 等比縮放）；−1 = 黑白灰（飽和度 < 10）；S1 沒設定 = 0 |
 
-<pre class="blocks">(MBC 色相 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 顏色 [色相 v] :: #00A4E4)</pre>
 
 ```typescript
-let hue = MBC.readValue(0x4C, 0x01)   // 色相：-1~100
+let hue = mbc.camColor(MbcCamColor.Hue)   // 色相：-1~100
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+**相關積木「神攝手 顏色是黑白灰？」**
+
+```typescript
+let camIsGrey = mbc.camIsGrey()
+```
+
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -53,13 +59,13 @@ let hue = MBC.readValue(0x4C, 0x01)   // 色相：-1~100
 | :--- | :--- |
 | `0~100` | S1 取樣點飽和度 0~100 |
 
-<pre class="blocks">(MBC 飽和度 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 顏色 [飽和度 v] :: #00A4E4)</pre>
 
 ```typescript
-let saturation = MBC.readValue(0x4C, 0x02)   // 飽和度：0~100
+let saturation = mbc.camColor(MbcCamColor.Saturation)   // 飽和度：0~100
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -73,13 +79,13 @@ let saturation = MBC.readValue(0x4C, 0x02)   // 飽和度：0~100
 | :--- | :--- |
 | `0~100` | S1 取樣點明度 0~100 |
 
-<pre class="blocks">(MBC 明度 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 顏色 [明度 v] :: #00A4E4)</pre>
 
 ```typescript
-let value = MBC.readValue(0x4C, 0x03)   // 明度：0~100
+let value = mbc.camColor(MbcCamColor.Brightness)   // 明度：0~100
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -93,13 +99,13 @@ let value = MBC.readValue(0x4C, 0x03)   // 明度：0~100
 | :--- | :--- |
 | `0~100` | 全畫面動態量 0~100（畫面變化越多越大） |
 
-<pre class="blocks">(MBC 動態 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 動態 :: #00A4E4)</pre>
 
 ```typescript
-let motion = MBC.readValue(0x4C, 0x04)   // 動態：0~100
+let motion = mbc.camMotion()   // 動態：0~100
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -113,13 +119,13 @@ let motion = MBC.readValue(0x4C, 0x04)   // 動態：0~100
 | :--- | :--- |
 | `0~100` | 色塊中心 X 0~100，左 = 0；沒找到 = 0 |
 
-<pre class="blocks">(MBC 色塊 X :: #E8711E)</pre>
+<pre class="blocks">(神攝手 色塊 [X v] :: #00A4E4)</pre>
 
 ```typescript
-let blobX = MBC.readValue(0x4C, 0x05)   // 色塊 X：0~100
+let blobX = mbc.camBlob(MbcCamBlob.X)   // 色塊 X：0~100
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -133,13 +139,13 @@ let blobX = MBC.readValue(0x4C, 0x05)   // 色塊 X：0~100
 | :--- | :--- |
 | `0~75` | 色塊中心 Y 0~75，下 = 0、上 = 75；沒找到 = 0 |
 
-<pre class="blocks">(MBC 色塊 Y :: #E8711E)</pre>
+<pre class="blocks">(神攝手 色塊 [Y v] :: #00A4E4)</pre>
 
 ```typescript
-let blobY = MBC.readValue(0x4C, 0x06)   // 色塊 Y：0~75
+let blobY = mbc.camBlob(MbcCamBlob.Y)   // 色塊 Y：0~75
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -153,13 +159,13 @@ let blobY = MBC.readValue(0x4C, 0x06)   // 色塊 Y：0~75
 | :--- | :--- |
 | `0~100` | 色塊寬 W 0~100；0 = 沒找到 |
 
-<pre class="blocks">(MBC 色塊寬 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 色塊 [寬 v] :: #00A4E4)</pre>
 
 ```typescript
-let blobW = MBC.readValue(0x4C, 0x07)   // 色塊寬：0~100
+let blobW = mbc.camBlob(MbcCamBlob.Width)   // 色塊寬：0~100
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -173,13 +179,13 @@ let blobW = MBC.readValue(0x4C, 0x07)   // 色塊寬：0~100
 | :--- | :--- |
 | `0~75` | 色塊高 H 0~75；沒找到 = 0 |
 
-<pre class="blocks">(MBC 色塊高 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 色塊 [高 v] :: #00A4E4)</pre>
 
 ```typescript
-let blobH = MBC.readValue(0x4C, 0x08)   // 色塊高：0~75
+let blobH = mbc.camBlob(MbcCamBlob.Height)   // 色塊高：0~75
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -193,13 +199,13 @@ let blobH = MBC.readValue(0x4C, 0x08)   // 色塊高：0~75
 | :--- | :--- |
 | `0~7500` | W×H（0~7500）；沒找到 = 0 |
 
-<pre class="blocks">(MBC 色塊面積 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 色塊 [面積 v] :: #00A4E4)</pre>
 
 ```typescript
-let blobArea = MBC.readValue(0x4C, 0x09)   // 色塊面積：0~7500
+let blobArea = mbc.camBlob(MbcCamBlob.Area)   // 色塊面積：0~7500
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -211,19 +217,26 @@ let blobArea = MBC.readValue(0x4C, 0x09)   // 色塊面積：0~7500
 | :--- | :--- |
 | `0~1` | 1 = 畫面裡有目標色的色塊（W > 0），0 = 沒有 |
 
-<pre class="blocks">(MBC 有找到色塊？ :: #E8711E)</pre>
+<pre class="blocks"><神攝手 有找到色塊？ :: #00A4E4></pre>
 
 ```typescript
-let found = MBC.readValue(0x4C, 0x0A)   // 有找到色塊：0~1
+let found = mbc.camFound()   // 有找到色塊：0~1
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+**相關積木「當神攝手 色塊 ［找到］」**
+
+```typescript
+mbc.onCamBlob(MbcCamEvent.Found, function () {
+})
+```
+
+<p class="ref-note">感應器沒接好（讀不到）時回「否」。</p>
 
 </section>
 
 ## 讀值（WRO 版）
 
-MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC」分類找積木；JavaScript 寫法一併列出，位址 `0x4C`。
+MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC 感應器」分類找積木；JavaScript 寫法一併列出，位址 `0x4C`。
 
 <section id="w10" class="ref-item">
 
@@ -235,13 +248,19 @@ MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC」分類找積木；JavaSc
 | :--- | :--- |
 | `0~255` | 10~1B = S1~S12 顏色碼：0~239 彩色（色相 0~255 等比縮成 0~239）、240~245 白（飽和度 < 30，越低越大）、246~250 黑（明度 < 30，越暗越大）、255 = 色點沒開 |
 
-<pre class="blocks">(MBC 色點 [1 v] 顏色碼 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 色點 (1) 顏色碼 :: #00A4E4)</pre>
 
 ```typescript
-let spotColor = MBC.readValues(0x4C, 0x10, 12)   // 色點 1~12 顏色碼
+let spotColor = mbc.camSpotColor(1)   // 色點 1~12 顏色碼：0~255（N = 1~12）
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+**相關積木「神攝手 色點 ［1~12］ 是 ［彩色］？」**
+
+```typescript
+let camSpotIs = mbc.camSpotIs(1, MbcCamSpotKind.Colour)
+```
+
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 
@@ -255,13 +274,13 @@ let spotColor = MBC.readValues(0x4C, 0x10, 12)   // 色點 1~12 顏色碼
 | :--- | :--- |
 | `0~255` | 20~2B = S1~S12 鮮豔度（飽和度）0~255：黑 = 1、白／彩色 = 實際飽和度；色點沒開 = 0 |
 
-<pre class="blocks">(MBC 色點 [1 v] 鮮豔度 :: #E8711E)</pre>
+<pre class="blocks">(神攝手 色點 (1) 鮮豔度 :: #00A4E4)</pre>
 
 ```typescript
-let spotVivid = MBC.readValues(0x4C, 0x20, 12)   // 色點 1~12 鮮豔度
+let spotVivid = mbc.camSpotVivid(1)   // 色點 1~12 鮮豔度：0~255（N = 1~12）
 ```
 
-<p class="ref-note">擴充內部用 <code>Int16LE</code> 讀 2 byte；寫完編號 <code>basic.pause(2)</code> 再讀。</p>
+<p class="ref-note">感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。</p>
 
 </section>
 

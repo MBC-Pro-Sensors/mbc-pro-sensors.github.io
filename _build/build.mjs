@@ -411,9 +411,9 @@ function gEnter(lang, k, h, keepSw) {
 }
 const GL = {
   zh: { product: '產品', host: '主機', sw: '軟體', pickSw: '選軟體', overview: '平台總覽：版本與接線', switcher: '切換產品、主機、軟體', none: (h) => `沒有 ${h} 版`,
-    learn: '用 SPIKE 主機？不用接線，先在網頁上玩互動教學。', pickHost: '① 選你的主機', pickHostSub: '只列出這款產品能用的主機；選好主機再選軟體，之後整頁都只講你的軟體。', pickSwTitle: '選你用的軟體', cont: '繼續用', step1: '選產品', step2: '選主機', step3: '選軟體', go: '前往', result: '選好產品、主機和軟體，這裡就會出現入口', table: '所有產品 × 主機對照表', noHost: '這款沒有這個主機', moved: '這頁內容已整合到新的說明頁：', title: '找到你的程式' },
+    learn: '不用接線、不用主機，先在網頁上玩互動教學。', pickHost: '① 選你的主機', pickHostSub: '只列出這款產品能用的主機；選好主機再選軟體，之後整頁都只講你的軟體。', pickSwTitle: '選你用的軟體', cont: '繼續用', step1: '選產品', step2: '選主機', step3: '選軟體', go: '前往', result: '選好產品、主機和軟體，這裡就會出現入口', table: '所有產品 × 主機對照表', noHost: '這款沒有這個主機', moved: '這頁內容已整合到新的說明頁：', title: '找到你的程式' },
   en: { product: 'Product', host: 'Host', sw: 'Software', pickSw: 'Pick software', overview: 'Host overview: edition and wiring', switcher: 'Switch product, host or software', none: (h) => `no ${h} edition`,
-    learn: 'Using a SPIKE hub? Try the interactive tutorial in your browser first, no wiring needed.', pickHost: '① Pick your host', pickHostSub: 'Only hosts this product supports are listed; pick one, then your software, and the page covers just that software.', pickSwTitle: 'Pick your software', cont: 'Continue with', step1: 'Pick a product', step2: 'Pick a host', step3: 'Pick software', go: 'Go to', result: 'Pick a product, a host and software to get the link', table: 'All products × hosts', noHost: 'Not available for this product', moved: 'This page has moved into the new guide: ', title: 'Find your program' },
+    learn: 'No wiring, no hub: try the interactive tutorial in your browser first.', pickHost: '① Pick your host', pickHostSub: 'Only hosts this product supports are listed; pick one, then your software, and the page covers just that software.', pickSwTitle: 'Pick your software', cont: 'Continue with', step1: 'Pick a product', step2: 'Pick a host', step3: 'Pick software', go: 'Go to', result: 'Pick a product, a host and software to get the link', table: 'All products × hosts', noHost: 'Not available for this product', moved: 'This page has moved into the new guide: ', title: 'Find your program' },
 };
 const fileOk = (p) => p && p.startsWith('/') && fs.existsSync(path.join(ROOT, decodeURI(p)));
 // 主機圖：images/illust/host-*.svg（插畫）優先，沒有就用 hubs 照片或 Lucide 圖示
@@ -432,52 +432,73 @@ const swNames = (lang, h, sws) => sws.map((s) => L_(gSw(h, s).name, lang)).join(
 function L_(o, lang) { return (o && (o[lang] || o.zh)) || ''; }
 
 // 互動教學（learn/<教學>/<種類>.html，英文在 en/learn/；由互動教學技能的 wrap_learn.js 產生）
-// 網站產品 → 教學（神攝手分學校版、WRO 版；PS2／PS4 共用一套）；SPIKE 軟體 → 教學種類。只列實際有檔的頁。
-const LEARN = { line8: ['line8'], line16: ['line16'], tof2: ['laser2'], tof8: ['laser8'], ps2: ['gamepad'], ps4: ['gamepad'], esp32cam: ['cam_school', 'hue12'], exp6: ['exp6'], servo6: ['servo6'] };
-const LEARN_SW = { pybricks: ['micropython', 'pybricks-blocks'], mbcblocks: ['mbc-blocks'], official: ['spike-app'] };
+// 網站產品 → 教學（神攝手分學校版、WRO 版；PS2／PS4 共用一套）；主機 → 軟體 → 教學種類。只列實際有檔的頁。
+const LEARN = { line8: ['line8'], line16: ['line16'], tof2: ['laser2'], tof8: ['laser8'], ps2: ['gamepad'], ps4: ['gamepad'], esp32cam: ['cam_school', 'hue12'], exp6: ['exp6'], servo6: ['servo6'], imu: ['imu'] };
+const LEARN_KINDS = {
+  spike: { pybricks: ['micropython', 'pybricks-blocks'], mbcblocks: ['mbc-blocks'], official: ['spike-app'] },
+  ev3: { pybricks: ['ev3-pybricks'], clev3r: ['clev3r'], classroom: ['ev3-classroom'], ev3g: ['ev3g'] },
+  arduino: { ide: ['arduino'] },
+  mblock: { mblock5: ['mblock'] },
+  matrix: { matrixblock: ['matrix'], mvision: ['matrix'] },
+  microbit: { makecode: ['makecode'] },
+};
+const LEARN_HOST_NAME = { spike: 'SPIKE', ev3: 'EV3', arduino: 'Arduino', mblock: 'mBlock', matrix: 'MATRIX', microbit: 'micro:bit' };
 const LK = {
-  zh: { title: '互動教學', tag: 'SPIKE', sub: '不用接主機，先在網頁上點點看：左邊選功能，右邊的程式或積木跟著長出來，還能拖拉模擬感應器看數值。',
-    swSub: '第一次用？先跟著互動教學在網頁上做一遍，再照下面的步驟接主機。', all: '全部產品的互動教學', guide: 'SPIKE 說明',
-    kinds: { micropython: 'MicroPython（Pybricks）', 'pybricks-blocks': 'Pybricks 積木', 'mbc-blocks': 'MBC 積木網站', 'spike-app': '樂高官方 SPIKE App' },
+  zh: { title: '互動教學', sub: '不用接主機，先在網頁上點點看：左邊選功能，右邊的程式或積木跟著長出來，還能拖拉模擬感應器看數值。',
+    swSub: '第一次用？先跟著互動教學在網頁上做一遍，再照下面的步驟接主機。', all: '全部產品的互動教學', guide: '產品說明',
+    kinds: { micropython: 'MicroPython（Pybricks）', 'pybricks-blocks': 'Pybricks 積木', 'mbc-blocks': 'MBC 積木網站', 'spike-app': '樂高官方 SPIKE App',
+      'ev3-pybricks': 'Pybricks／EV3 MicroPython', clev3r: 'clev3r', 'ev3-classroom': 'EV3 Classroom', ev3g: 'EV3-G 官方軟體',
+      arduino: 'Arduino IDE', mblock: 'mBlock 5', matrix: 'MATRIXblock', makecode: 'MakeCode' },
     eds: { cam_school: '學校版', hue12: 'WRO 版' }, gamepad: '掌控者 PS2／PS4' },
-  en: { title: 'Interactive tutorial', tag: 'SPIKE', sub: 'No hub needed: click through it in your browser. Pick a function on the left, watch the code or blocks build up on the right, and drag the simulated sensor to see the values.',
-    swSub: 'First time? Try the interactive tutorial in your browser first, then follow the steps below with your hub.', all: 'Interactive tutorials for all products', guide: 'SPIKE guide',
-    kinds: { micropython: 'MicroPython (Pybricks)', 'pybricks-blocks': 'Pybricks blocks', 'mbc-blocks': 'MBC Blocks website', 'spike-app': 'LEGO SPIKE App' },
+  en: { title: 'Interactive tutorial', sub: 'No hub needed: click through it in your browser. Pick a function on the left, watch the code or blocks build up on the right, and drag the simulated sensor to see the values.',
+    swSub: 'First time? Try the interactive tutorial in your browser first, then follow the steps below with your hub.', all: 'Interactive tutorials for all products', guide: 'Product guide',
+    kinds: { micropython: 'MicroPython (Pybricks)', 'pybricks-blocks': 'Pybricks blocks', 'mbc-blocks': 'MBC Blocks website', 'spike-app': 'LEGO SPIKE App',
+      'ev3-pybricks': 'Pybricks / EV3 MicroPython', clev3r: 'clev3r', 'ev3-classroom': 'EV3 Classroom', ev3g: 'EV3-G (LEGO software)',
+      arduino: 'Arduino IDE', mblock: 'mBlock 5', matrix: 'MATRIXblock', makecode: 'MakeCode' },
     eds: { cam_school: 'School edition', hue12: 'WRO edition' }, gamepad: 'Controller PS2 / PS4' },
 };
 const learnHub = (lang) => `${gpre(lang)}/learn/`;
-// [{ t: 教學, items: [{ kind, url }] }]；sws 不給 = 全部軟體
-function learnOf(lang, key, sws) {
-  const kinds = (sws || Object.keys(LEARN_SW)).flatMap((s) => LEARN_SW[s] || []);
-  return (LEARN[key] || []).map((t) => ({ t, items: kinds.map((kind) => ({ kind, url: `${learnHub(lang)}${t}/${kind}.html` })).filter((x) => fileOk(x.url)) }))
-    .filter((g) => g.items.length);
+// [{ t: 教學, host, items: [{ kind, url }] }]；host 不給 = 全部主機，sws 不給 = 該主機全部軟體
+function learnOf(lang, key, host, sws) {
+  const out = [];
+  for (const h of host ? [host] : Object.keys(LEARN_KINDS)) {
+    const kinds = [...new Set((sws || Object.keys(LEARN_KINDS[h])).flatMap((s) => LEARN_KINDS[h][s] || []))];
+    for (const t of LEARN[key] || []) {
+      const items = kinds.map((kind) => ({ kind, url: `${learnHub(lang)}${t}/${kind}.html` })).filter((x) => fileOk(x.url));
+      if (items.length) out.push({ t, host: h, items });
+    }
+  }
+  return out;
 }
-function learnLinks(lang, groups) {
+function learnLinks(lang, groups, showHost) {
   const K = LK[lang];
-  return groups.map((g) => `<p class="lb-links">${K.eds[g.t] ? `<span class="lb-ed">${K.eds[g.t]}</span>` : ''}${g.items.map((x) => `<a href="${x.url}">${K.kinds[x.kind]}</a>`).join('')}</p>`).join('');
+  return groups.map((g) => {
+    const label = [showHost ? LEARN_HOST_NAME[g.host] : '', K.eds[g.t] || ''].filter(Boolean).join(' ');
+    return `<p class="lb-links">${label ? `<span class="lb-ed">${label}</span>` : ''}${g.items.map((x) => `<a href="${x.url}">${K.kinds[x.kind]}</a>`).join('')}</p>`;
+  }).join('');
 }
-// 產品頁（主機格子下面）、SPIKE 平台頁（軟體格子下面）、SPIKE 軟體頁（最上面）共用的入口框
-function learnBox(lang, key, sws, mode) {
-  const groups = learnOf(lang, key, sws);
+// 產品頁（主機格子下面，列全部主機）、平台頁（軟體格子下面，只列這個主機）、軟體頁（最上面，只列這個軟體）共用的入口框
+function learnBox(lang, key, host, sws, mode) {
+  const groups = learnOf(lang, key, host, sws);
   if (!groups.length) return '';
   const K = LK[lang];
-  return `<div class="learn-box${mode === 'sw' ? ' lb-sw' : ''}"><p class="lb-title">${icon('puzzle')}<b>${K.title}</b><span class="lb-tag">${K.tag}</span></p>` +
-    `<p class="lb-sub">${mode === 'sw' ? K.swSub : K.sub}</p>${learnLinks(lang, groups)}` +
+  return `<div class="learn-box${mode === 'sw' ? ' lb-sw' : ''}"><p class="lb-title">${icon('puzzle')}<b>${K.title}</b>${host ? `<span class="lb-tag">${LEARN_HOST_NAME[host]}</span>` : ''}</p>` +
+    `<p class="lb-sub">${mode === 'sw' ? K.swSub : K.sub}</p>${learnLinks(lang, groups, !host)}` +
     (mode === 'sw' ? '' : `<p class="lb-all"><a href="${learnHub(lang)}">${K.all} →</a></p>`) + `</div>`;
 }
-// learn/index.md 的 <!-- learn-hub -->：每款產品一張卡（PS2／PS4 合一張）
+// learn/index.md 的 <!-- learn-hub -->：每款產品一張卡（PS2／PS4 合一張），卡內每個主機一排
 function learnHubHtml(lang) {
   const K = LK[lang], seen = new Set(), cards = [];
   for (const [k, p] of Object.entries(GI.products)) {
     for (const t of LEARN[k] || []) {
       if (seen.has(t)) continue;
       seen.add(t);
-      const groups = learnOf(lang, k, null).filter((g) => g.t === t);
+      const groups = learnOf(lang, k, null, null).filter((g) => g.t === t);
       if (!groups.length) continue;
       const name = t === 'gamepad' ? K.gamepad : escAttr(L_(p.short, lang)) + (K.eds[t] ? ` ${K.eds[t]}` : '');
       cards.push(`<div class="learn-card" id="${t}" style="--pc:${p.color}">${p.image ? `<img src="${p.image}" alt="" loading="lazy">` : '<span class="ft-noimg"></span>'}` +
-        `<div><h3>${name}</h3>${groups[0].items.map((x) => `<a href="${x.url}">${K.kinds[x.kind]}</a>`).join('')}` +
-        `<a class="lc-guide" href="${gHostUrl(lang, k, 'spike')}">${K.guide} →</a></div></div>`);
+        `<div><h3>${name}</h3>${groups.map((g) => `<p class="lc-row"><span class="lc-host">${LEARN_HOST_NAME[g.host]}</span>${g.items.map((x) => `<a href="${x.url}">${K.kinds[x.kind]}</a>`).join('')}</p>`).join('')}` +
+        `<a class="lc-guide" href="${gProductUrl(lang, k)}">${K.guide} →</a></div></div>`);
     }
   }
   return `<div class="learn-hub">${cards.join('')}</div>`;
@@ -530,7 +551,7 @@ function platformGrid(key, lang) {
   const ref = [`/images/illust/ref-${key}.webp`, `/images/illust/ref-${key}.svg`].find(fileOk);
   return `<div class="pick" id="pick-host">${ref ? `<img class="pick-banner" src="${ref}" alt="" loading="lazy">` : ""}<h2 class="pick-title">${T_.pickHost}</h2><p class="pick-sub">${T_.pickHostSub}</p>` +
     `<p class="pick-continue" hidden></p>` +
-    `<div class="pick-grid pick-hosts">${tiles.join('')}</div>` + learnBox(lang, key, null, 'product') +
+    `<div class="pick-grid pick-hosts">${tiles.join('')}</div>` + learnBox(lang, key, null, null, 'product') +
     `<script type="application/json" class="pick-data">${JSON.stringify({ cont: T_.cont, hosts: data }).replace(/</g, '\\u003c')}</script></div>`;
 }
 
@@ -977,10 +998,10 @@ for (const file of pages) {
   if (html.includes('<!-- learn-hub -->')) html = html.replace('<!-- learn-hub -->', learnHubHtml(lang));
   if (html.includes('<!-- finder -->')) html = html.replace('<!-- finder -->', finderHtml(lang));
   if (guide) {
-    html = html.replace('<!-- sw-grid -->', swGridHtml(lang, guide.key, guide.host) + (guide.host === 'spike' ? learnBox(lang, guide.key, null, 'host') : ''));
-    // SPIKE 軟體頁：互動教學入口放最上面（標題、麵包屑之後）
-    if (guide.sw && guide.host === 'spike') {
-      const box = learnBox(lang, guide.key, [guide.sw], 'sw');
+    html = html.replace('<!-- sw-grid -->', swGridHtml(lang, guide.key, guide.host) + learnBox(lang, guide.key, guide.host, null, 'host'));
+    // 軟體頁：互動教學入口放最上面（標題、麵包屑之後）
+    if (guide.sw) {
+      const box = learnBox(lang, guide.key, guide.host, [guide.sw], 'sw');
       if (box) html = html.replace(/<\/h1>(?:<nav class="breadcrumbs"[\s\S]*?<\/nav>)?/, (m) => m + box);
     }
     html = switcherHtml(lang, guide) + html;

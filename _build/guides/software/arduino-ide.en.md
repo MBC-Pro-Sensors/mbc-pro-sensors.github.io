@@ -54,7 +54,7 @@ MBC Universal I2C sensors use only **4 wires**: two for power (VCC, GND) and two
 ### FAQ
 
 - **Keeps saying the sensor is not found?** Check that SDA and SCL are not swapped and that VCC and GND are firmly in; make sure it is the **Universal I2C edition**.
-- **Reading `-32768`?** The sensor could not be read (loose wire, wrong address), or that value id does not exist. A normal value is never this number.
+- **Reading `-32768`?** The sensor could not be read (loose wire, wrong address), or that value id does not exist. Most values never take this number; the exception is a value that uses all 16 bits (Controller 16 buttons with only ■ pressed, Pathfinder 16-ch line bitmap with only channel 16 on the line, IMU raw values), which really can be -32768. For those, check the true / false returned by `mbcReadMany` instead.
 - **Strange symbols in the Serial Monitor?** The speed is not **115200**.
 - **Board not in the drop-down menu?** The USB cable can only charge → try another; the board is a CH340 compatible → install the CH340 driver first, then unplug and replug the USB.
 - **ESP32 reads nothing or odd values?** Some MBC products are themselves built on an ESP32 and cannot clock-stretch: after writing the value id, **wait 2 ms** before reading. Do not delete the `delay(2)` in the example helper.

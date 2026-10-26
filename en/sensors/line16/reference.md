@@ -30,7 +30,7 @@ Every value and command the Line Follower 16-ch reports to each host: what it me
 | [`05`](#v05) | [line bitmap](#v05) | 0~65535 bit | ✓ | ✓ | ✓ | ✓ | — | ✓ |
 | [`06`](#v06) | [last exit direction](#v06) | -16~+16 | — | — | ✓ | ✓ | — | ✓ |
 | [`07`](#v07) | [threshold](#v07) | 1~99 | — | — | ✓ | ✓ | — | ✓ |
-| [`08`](#v08) | [calibrations done](#v08) | 0~255 次 | — | — | ✓ | ✓ | — | — |
+| [`08`](#v08) | [calibrations done](#v08) | 0~255 次 | — | — | ✓ | ✓ | — | ✓ |
 | [`10~1F`](#v10) | [channel 1~16 reflect](#v10) | 0~100 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 
 ✓ = available on that host; — = not sent.
@@ -136,12 +136,12 @@ int linePos = MiniR4.I2C1.MXColor.getColor(R) - 16;
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC line position :: #E8711E)</pre>
+<pre class="blocks">(line position :: #00A4E4)</pre>
 
 ```typescript
-let linePos = MBC.readValue(0x16, 0x01)   // line position：-16~+16
+let linePos = mbc.linePosition()   // line position：-16~+16
 ```
 
 </details>
@@ -250,12 +250,12 @@ int linePosFine = MiniR4.I2C1.MXColor.getColor(B) - 100;
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC fine line position :: #E8711E)</pre>
+<pre class="blocks">(fine line position :: #00A4E4)</pre>
 
 ```typescript
-let linePosFine = MBC.readValue(0x16, 0x02)   // fine position：-100~+100
+let linePosFine = mbc.linePositionFine()   // fine position：-100~+100
 ```
 
 </details>
@@ -364,12 +364,12 @@ int lineWidth = MiniR4.I2C1.MXColor.getColor(G);
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC line width :: #E8711E)</pre>
+<pre class="blocks">(line width :: #00A4E4)</pre>
 
 ```typescript
-let lineWidth = MBC.readValue(0x16, 0x03)   // line width：0~16 路
+let lineWidth = mbc.lineWidth()   // line width：0~16 路
 ```
 
 </details>
@@ -454,12 +454,25 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC line segments :: #E8711E)</pre>
+<pre class="blocks">(line segments :: #00A4E4)</pre>
 
 ```typescript
-let groupCount = MBC.readValue(0x16, 0x04)   // line segments：0~8
+let groupCount = mbc.lineSegments()   // line segments：0~8
+```
+
+**Related block "line is seen"**
+
+```typescript
+let lineSeen = mbc.lineSeen()
+```
+
+**Related block "on line [lost]"**
+
+```typescript
+mbc.onLineEvent(MbcLineEvent.Lost, function () {
+})
 ```
 
 </details>
@@ -531,7 +544,7 @@ bitmap = Sensor.ReadRawValue(1, 0)
 <details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
-Returns `MBC_NONE` (−32768) when the module does not answer.
+This value can itself be −32768 (top bit set, e.g. `0x8000`), the same as `MBC_NONE` for no answer, so do not test for −32768: use `mbcReadMany(0x16, 0x05, 1, &bitmap)` instead; only a `false` return means no answer.
 
 ```cpp
 int16_t bitmap = mbcRead(0x16, 0x05);   // line bitmap：0~65535 bit
@@ -558,12 +571,18 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC line bitmap :: #E8711E)</pre>
+<pre class="blocks">(line bitmap :: #00A4E4)</pre>
 
 ```typescript
-let bitmap = MBC.readValue(0x16, 0x05)   // line bitmap：0~65535 bit
+let bitmap = mbc.lineBitmap()   // line bitmap：0~65535 bit
+```
+
+**Related block "channel 1 is on the line"**
+
+```typescript
+let lineChannelOnLine = mbc.lineChannelOnLine(1)
 ```
 
 </details>
@@ -626,12 +645,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC last exit direction :: #E8711E)</pre>
+<pre class="blocks">(last exit direction :: #00A4E4)</pre>
 
 ```typescript
-let lastDir = MBC.readValue(0x16, 0x06)   // last exit direction：-16~+16
+let lastDir = mbc.lineLastDirection()   // last exit direction：-16~+16
 ```
 
 </details>
@@ -694,12 +713,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC threshold :: #E8711E)</pre>
+<pre class="blocks">(line threshold :: #00A4E4)</pre>
 
 ```typescript
-let threshold = MBC.readValue(0x16, 0x07)   // threshold：1~99
+let threshold = mbc.lineThreshold()   // threshold：1~99
 ```
 
 </details>
@@ -762,7 +781,19 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-No dedicated block (use the generic `MBC.readValue(address, id)` block).
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
+
+<pre class="blocks">(line calibration count :: #00A4E4)</pre>
+
+```typescript
+let calibCount = mbc.lineCalibrationCount()   // calibrations done：0~255 次
+```
+
+**Related block "line follower is calibrating"**
+
+```typescript
+let lineCalibrating = mbc.lineCalibrating()
+```
 
 </details>
 
@@ -879,12 +910,12 @@ int raw = MiniR4.I2C1.MXColor.getColor(C);   // group 1
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC channel [1 v] reflect :: #E8711E)</pre>
+<pre class="blocks">(channel (1) reflect :: #00A4E4)</pre>
 
 ```typescript
-let light = MBC.readValues(0x16, 0x10, 16)   // channel 1~16 reflect
+let light = mbc.lineChannel(1)   // channel 1~16 reflect：0~100 (N = 1~16)
 ```
 
 </details>
@@ -949,10 +980,10 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC set black line :: #E8711E</pre>
+<pre class="blocks">line follower follow [black v] line :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE0)   // black line mode
+mbc.lineSetColor(MbcLineColor.Black)   // black line mode
 ```
 
 </details>
@@ -1013,10 +1044,10 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC set white line :: #E8711E</pre>
+<pre class="blocks">line follower follow [white v] line :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE1)   // white line mode
+mbc.lineSetColor(MbcLineColor.White)   // white line mode
 ```
 
 </details>
@@ -1078,10 +1109,10 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC calibrate black :: #E8711E</pre>
+<pre class="blocks">line follower calibrate [current reading is black v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE2)   // calibrate black
+mbc.lineCalibrate(MbcLineCalib.Black)   // calibrate black
 ```
 
 </details>
@@ -1143,10 +1174,10 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC calibrate white :: #E8711E</pre>
+<pre class="blocks">line follower calibrate [current reading is white v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE3)   // calibrate white
+mbc.lineCalibrate(MbcLineCalib.White)   // calibrate white
 ```
 
 </details>
@@ -1207,10 +1238,10 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC set threshold (50) :: #E8711E</pre>
+<pre class="blocks">line follower set threshold (50) :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE4, [50])   // set threshold
+mbc.lineSetThreshold(50)   // set threshold
 ```
 
 </details>
@@ -1272,10 +1303,10 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC auto calibrate (5 s) :: #E8711E</pre>
+<pre class="blocks">line follower calibrate [auto \(sweep for 5 s\) v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE7)   // 5-second auto calibration
+mbc.lineCalibrate(MbcLineCalib.Auto)   // 5-second auto calibration
 ```
 
 </details>
@@ -1365,11 +1396,11 @@ The status flags are not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks"><MBC device ready :: #E8711E></pre>
+<pre class="blocks"><device at (0x16 v) is ready :: #00A4E4></pre>
 
 ```typescript
-let st = MBC.status(0x16)   // F3
-let ready = (st & 1) != 0
+let ready = mbc.deviceReady(0x16)   // F3 bit0; false when nothing answers
+let st = mbc.status(0x16)   // F3
 ```
 
 </details>

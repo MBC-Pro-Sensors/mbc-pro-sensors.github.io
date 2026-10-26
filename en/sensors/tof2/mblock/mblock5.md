@@ -151,6 +151,18 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Ranger 2" ca
 
 </section>
 
+## Commands
+
+<section id="cx-readall" class="ref-item ref-cmd">
+
+### update all values <small>readAll</small>
+
+reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one
+
+<pre class="blocks">Ranger 2 port [1 v] update all values :: sensing</pre>
+
+</section>
+
 ## Examples
 
 <!-- examples: en/sensors/tof2/mblock-examples.md host=mblock sw=mblock5 whole -->

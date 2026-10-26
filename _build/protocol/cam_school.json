@@ -136,10 +136,10 @@
         "note": "0~100；255 = 黑白灰（−1 不能放 uint16，MATRIX 定案 §7）"
       },
       "microbit": {
-        "block": {
-          "zh": "色相",
-          "en": "hue"
-        }
+        "js": "mbc.camColor(MbcCamColor.Hue)",
+        "also": [
+          "mbc.camIsGrey()"
+        ]
       },
       "examples": [],
       "locked": true
@@ -203,10 +203,7 @@
         "idx": 1
       },
       "microbit": {
-        "block": {
-          "zh": "飽和度",
-          "en": "saturation"
-        }
+        "js": "mbc.camColor(MbcCamColor.Saturation)"
       },
       "examples": [],
       "locked": true
@@ -265,10 +262,7 @@
         "idx": 2
       },
       "microbit": {
-        "block": {
-          "zh": "明度",
-          "en": "brightness"
-        }
+        "js": "mbc.camColor(MbcCamColor.Brightness)"
       },
       "examples": [],
       "locked": true
@@ -339,10 +333,7 @@
         "idx": 3
       },
       "microbit": {
-        "block": {
-          "zh": "動態",
-          "en": "motion"
-        }
+        "js": "mbc.camMotion()"
       },
       "examples": [],
       "locked": true
@@ -427,10 +418,7 @@
         "idx": 4
       },
       "microbit": {
-        "block": {
-          "zh": "色塊 X",
-          "en": "blob X"
-        }
+        "js": "mbc.camBlob(MbcCamBlob.X)"
       },
       "examples": [],
       "locked": true
@@ -513,10 +501,7 @@
         "idx": 5
       },
       "microbit": {
-        "block": {
-          "zh": "色塊 Y",
-          "en": "blob Y"
-        }
+        "js": "mbc.camBlob(MbcCamBlob.Y)"
       },
       "examples": [],
       "locked": true
@@ -576,10 +561,7 @@
         "idx": 6
       },
       "microbit": {
-        "block": {
-          "zh": "色塊寬",
-          "en": "blob width"
-        }
+        "js": "mbc.camBlob(MbcCamBlob.Width)"
       },
       "examples": [],
       "locked": true
@@ -639,10 +621,7 @@
         "idx": 7
       },
       "microbit": {
-        "block": {
-          "zh": "色塊高",
-          "en": "blob height"
-        }
+        "js": "mbc.camBlob(MbcCamBlob.Height)"
       },
       "examples": [],
       "locked": true
@@ -711,10 +690,7 @@
         "note": "W×H"
       },
       "microbit": {
-        "block": {
-          "zh": "色塊面積",
-          "en": "blob area"
-        }
+        "js": "mbc.camBlob(MbcCamBlob.Area)"
       },
       "examples": []
     },
@@ -748,10 +724,10 @@
         "idx": 9
       },
       "microbit": {
-        "block": {
-          "zh": "有找到色塊？",
-          "en": "blob found?"
-        }
+        "js": "mbc.camFound()",
+        "also": [
+          "mbc.onCamBlob(MbcCamEvent.Found)"
+        ]
       },
       "examples": []
     }

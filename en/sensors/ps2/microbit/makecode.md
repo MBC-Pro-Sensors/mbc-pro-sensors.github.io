@@ -7,7 +7,7 @@ This page covers **MakeCode (blocks / JavaScript)** only: how to set it up for t
 
 ## Which edition and how to connect
 
-Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `0x42`. The sensor needs 5 V; use a breakout board with a 5 V output.
+Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `0x42`. It draws little current, so VCC can go to the micro:bit **3V** pin (about 90 mA on V1, 190 mA on V2); on batteries the rail can sag below 3 V, so switch to external 5 V if readings are unstable (share GND with the micro:bit).
 
 <figure class="ref-fig"><img src="/images/figures/ps2/wiring-microbit.svg" alt="Controller 2.4G (PS2) × BBC micro:bit V1 / V2" loading="lazy"></figure>
 
@@ -21,7 +21,7 @@ Get the **Universal I2C edition** and connect it to the I2C header of a micro:bi
 
 ## Reading values
 
-After adding pxt-mbc-sensors, find the blocks in the MBC category; the JavaScript form is shown too, address `0x42`.
+After adding pxt-mbc-sensors, find the blocks in the MBC Sensors category; the JavaScript form is shown too, address `0x42`.
 
 <section id="v01" class="ref-item">
 
@@ -33,13 +33,26 @@ After adding pxt-mbc-sensors, find the blocks in the MBC category; the JavaScrip
 | :--- | :--- |
 | `0~65535` bit | all 16 buttons in one word (PSX order, 1 = pressed): bit0 SELECT, 1 L3, 2 R3, 3 START, 4 Up, 5 Right, 6 Down, 7 Left, 8 L2, 9 R2, 10 L1, 11 R1, 12 Triangle, 13 Circle, 14 Cross, 15 Square; 0 when not connected |
 
-<pre class="blocks">(MBC 16 buttons :: #E8711E)</pre>
+<pre class="blocks">(gamepad buttons bit mask :: #00A4E4)</pre>
 
 ```typescript
-let buttons16 = MBC.readValue(0x42, 0x01)   // 16 buttons：0~65535 bit
+let buttons16 = mbc.padButtons()   // 16 buttons：0~65535 bit
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+**Related block "gamepad button [cross] is pressed"**
+
+```typescript
+let padButtonPressed = mbc.padButtonPressed(MbcPadButton.Cross)
+```
+
+**Related block "on gamepad button [cross] [pressed]"**
+
+```typescript
+mbc.onPadButton(MbcPadButton.Cross, MbcPadButtonEvent.Pressed, function () {
+})
+```
+
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -53,13 +66,13 @@ let buttons16 = MBC.readValue(0x42, 0x01)   // 16 buttons：0~65535 bit
 | :--- | :--- |
 | `0~15` bit | Up 1, Right 2, Down 4, Left 8 (added when pressed together), 0~15; 0 when not connected |
 
-<pre class="blocks">(MBC d-pad :: #E8711E)</pre>
+<pre class="blocks">(gamepad [d-pad v] buttons \(0-15\) :: #00A4E4)</pre>
 
 ```typescript
-let dpad = MBC.readValue(0x42, 0x02)   // d-pad：0~15 bit
+let dpad = mbc.padGroup(MbcPadGroup.Dpad)   // d-pad：0~15 bit
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -73,13 +86,13 @@ let dpad = MBC.readValue(0x42, 0x02)   // d-pad：0~15 bit
 | :--- | :--- |
 | `0~15` bit | Triangle 1, Circle 2, Cross 4, Square 8 (added when pressed together), 0~15; 0 when not connected; high nibble of 0x22 'R' |
 
-<pre class="blocks">(MBC shape buttons :: #E8711E)</pre>
+<pre class="blocks">(gamepad [shapes v] buttons \(0-15\) :: #00A4E4)</pre>
 
 ```typescript
-let shape = MBC.readValue(0x42, 0x03)   // shape buttons：0~15 bit
+let shape = mbc.padGroup(MbcPadGroup.Shapes)   // shape buttons：0~15 bit
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -93,13 +106,13 @@ let shape = MBC.readValue(0x42, 0x03)   // shape buttons：0~15 bit
 | :--- | :--- |
 | `0~15` bit | L2 1, R2 2, L1 4, R1 8 (added when pressed together), 0~15; 0 when not connected |
 
-<pre class="blocks">(MBC shoulder buttons :: #E8711E)</pre>
+<pre class="blocks">(gamepad [shoulders v] buttons \(0-15\) :: #00A4E4)</pre>
 
 ```typescript
-let shoulder = MBC.readValue(0x42, 0x04)   // shoulder buttons：0~15 bit
+let shoulder = mbc.padGroup(MbcPadGroup.Shoulders)   // shoulder buttons：0~15 bit
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -113,13 +126,13 @@ let shoulder = MBC.readValue(0x42, 0x04)   // shoulder buttons：0~15 bit
 | :--- | :--- |
 | `0~15` bit | SELECT 1, L3 2, R3 4, START 8 (added when pressed together), 0~15; 0 when not connected; high nibble of 0x22 'G' |
 
-<pre class="blocks">(MBC function buttons :: #E8711E)</pre>
+<pre class="blocks">(gamepad [functions v] buttons \(0-15\) :: #00A4E4)</pre>
 
 ```typescript
-let func = MBC.readValue(0x42, 0x05)   // function buttons：0~15 bit
+let func = mbc.padGroup(MbcPadGroup.Functions)   // function buttons：0~15 bit
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -131,13 +144,13 @@ let func = MBC.readValue(0x42, 0x05)   // function buttons：0~15 bit
 | :--- | :--- |
 | `0~1` | 1 = gamepad connected (psx.read() succeeds), 0 = not; while disconnected all buttons read 0 and sticks are centred |
 
-<pre class="blocks">(MBC gamepad connected? :: #E8711E)</pre>
+<pre class="blocks"><gamepad is connected :: #00A4E4></pre>
 
 ```typescript
-let connected = MBC.readValue(0x42, 0x06)   // connected：0~1
+let connected = mbc.padConnected()   // connected：0~1
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns false when the sensor does not answer.</p>
 
 </section>
 
@@ -149,13 +162,13 @@ let connected = MBC.readValue(0x42, 0x06)   // connected：0~1
 | :--- | :--- |
 | `0` % | 0~100; PS2 pads report no battery → always 0 (PS4 only) |
 
-<pre class="blocks">(MBC battery :: #E8711E)</pre>
+<pre class="blocks">(gamepad battery percent :: #00A4E4)</pre>
 
 ```typescript
-let battery = MBC.readValue(0x42, 0x07)   // battery：0 %
+let battery = mbc.padBattery()   // battery：0 %
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -167,13 +180,13 @@ let battery = MBC.readValue(0x42, 0x07)   // battery：0 %
 | :--- | :--- |
 | `0~255` | L2 pressure 0~255 (only DualShock 2 in analog mode reports pressure; otherwise pressed = 255, released = 0); 0 when not connected |
 
-<pre class="blocks">(MBC L2 analog :: #E8711E)</pre>
+<pre class="blocks">(gamepad trigger [L2 v] analog :: #00A4E4)</pre>
 
 ```typescript
-let l2Analog = MBC.readValue(0x42, 0x08)   // L2 analog：0~255
+let l2Analog = mbc.padTrigger(MbcPadTrigger.L2)   // L2 analog：0~255
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -185,13 +198,13 @@ let l2Analog = MBC.readValue(0x42, 0x08)   // L2 analog：0~255
 | :--- | :--- |
 | `0~255` | R2 pressure 0~255 (same rule as 08); 0 when not connected |
 
-<pre class="blocks">(MBC R2 analog :: #E8711E)</pre>
+<pre class="blocks">(gamepad trigger [R2 v] analog :: #00A4E4)</pre>
 
 ```typescript
-let r2Analog = MBC.readValue(0x42, 0x09)   // R2 analog：0~255
+let r2Analog = mbc.padTrigger(MbcPadTrigger.R2)   // R2 analog：0~255
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -203,13 +216,11 @@ let r2Analog = MBC.readValue(0x42, 0x09)   // R2 analog：0~255
 | :--- | :--- |
 | `0` bit | b0 PS button, b1 capture button; PS2 pads have none → always 0 (PS4 only) |
 
-<pre class="blocks">(MBC system keys :: #E8711E)</pre>
+No dedicated block; in JavaScript read it with `mbc.readValue(address, id)` (−32768 when nothing answers). Related block: "gamepad system button [PS] is pressed".
 
 ```typescript
-let sysKeys = MBC.readValue(0x42, 0x0A)   // system keys：0 bit
+let sysKeys = mbc.readValue(0x42, 0x0A)   // system keys：0 bit
 ```
-
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
 
 </section>
 
@@ -221,13 +232,13 @@ let sysKeys = MBC.readValue(0x42, 0x0A)   // system keys：0 bit
 | :--- | :--- |
 | `0~2` | 0 none, 1 PS2 digital mode, 2 PS2 analog mode (3 PS4 / 4 PS5 only appear on the PS4 receiver) |
 
-<pre class="blocks">(MBC gamepad type :: #E8711E)</pre>
+<pre class="blocks">(gamepad type :: #00A4E4)</pre>
 
 ```typescript
-let padType = MBC.readValue(0x42, 0x0B)   // gamepad type：0~2
+let padType = mbc.padType()   // gamepad type：0~2
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -241,13 +252,13 @@ let padType = MBC.readValue(0x42, 0x0B)   // gamepad type：0~2
 | :--- | :--- |
 | `-100~+100` | 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right / up positive (raw 0~255 with ±7 dead zone); 0 when not connected. EV3 / SPIKE / MATRIX carry 0~99 (50 = centre) or 1~9 (5 = centre), see each platform |
 
-<pre class="blocks">(MBC stick [LX/LY/RX/RY] :: #E8711E)</pre>
+<pre class="blocks">(gamepad joystick [left X v] :: #00A4E4)</pre>
 
 ```typescript
-let stick = MBC.readValues(0x42, 0x10, 4)   // stick LX / LY / RX / RY
+let stick = [mbc.padStick(MbcPadAxis.LeftX), mbc.padStick(MbcPadAxis.LeftY), mbc.padStick(MbcPadAxis.RightX), mbc.padStick(MbcPadAxis.RightY)]   // stick LX / LY / RX / RY：-100~+100
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -259,10 +270,10 @@ let stick = MBC.readValues(0x42, 0x10, 4)   // stick LX / LY / RX / RY
 
 [strength 0~255], 0 = stop; the PS2 receiver ACKs and ignores it (pad rumble disabled since 250614), effective on PS4 only
 
-<pre class="blocks">MBC rumble (50) :: #E8711E</pre>
+<pre class="blocks">gamepad rumble strength (200) :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x42, 0xE5, [50])   // rumble
+mbc.padRumble(200)   // rumble
 ```
 
 </section>
@@ -273,10 +284,10 @@ MBC.writeCmd(0x42, 0xE5, [50])   // rumble
 
 [R][G][B] 0~255 each; PS2 pads have no light bar, the receiver ACKs and ignores it, effective on PS4 only
 
-<pre class="blocks">MBC light bar R[r] G[g] B[b] :: #E8711E</pre>
+<pre class="blocks">gamepad light bar colour [#ff0000] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x42, 0xE6, [50, 50, 50])   // light bar colour
+mbc.padLight(0xff0000)   // light bar colour
 ```
 
 </section>

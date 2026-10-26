@@ -1,14 +1,18 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-# 🧩 Interactive tutorials (SPIKE)
+# 🧩 Interactive tutorials
 
-No hub and no software to install: open a tutorial and learn in your browser. Pick a function on the left and watch the code or blocks build up on the right. Drag the simulated sensor to see the values your program reads. When you are ready, follow the product's "SPIKE guide" to connect your hub.
+No hub and no software to install: open a tutorial and learn in your browser. Pick a function on the left and watch the code or blocks build up on the right. Drag the simulated sensor to see the values your program reads. When you are ready, follow the product guide to connect your hub.
 
-**Four ways to program. Pick the one your class uses:**
+**Find your hub, then pick the way your class programs it:**
 
-- **MicroPython (Pybricks)**: type your code. It has every function.
-- **Pybricks blocks**: blocks on the Pybricks website. They turn into MicroPython for you.
-- **MBC Blocks website**: MBC's own blocks website. The sensor blocks are ready to drag in.
-- **LEGO SPIKE App**: blocks in the normal SPIKE App. No firmware change needed.
+| Hub / board | Ways to program |
+|---|---|
+| SPIKE Prime / Robot Inventor | MicroPython (Pybricks), Pybricks blocks, MBC Blocks website, LEGO SPIKE App |
+| EV3 | Pybricks / EV3 MicroPython, clev3r, EV3 Classroom, EV3-G (LEGO software) |
+| Arduino (Uno and others) | Arduino IDE |
+| mBot / MegaPi | mBlock 5 |
+| MATRIX Mini R4 | MATRIXblock |
+| micro:bit | MakeCode |
 
 <!-- learn-hub -->
 

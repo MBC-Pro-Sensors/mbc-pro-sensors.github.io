@@ -1,0 +1,1090 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="寫 Arduino 程式照這個順序：先接好線、貼上小幫手，再在 setup() 開始通訊、等感應器準備好，最後在 loop() 用 mbcRead() 讀值。左邊一步一步做，右邊的程式會跟著長出來；轉動、抬高、搖晃模擬器裡的車子，就能看到序列埠監控視窗會印出什麼。">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/imu/arduino.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/imu/arduino.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/imu/arduino.html">
+<title>IMU 陀螺儀 Arduino 教學 | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* 版面：左邊是照順序走的教學步驟，右邊固定「你的程式＋模擬感應器」；下面是 16 個功能的範例卡 */
+:root {
+  --bg: #f3f6f5;          /* 場地墊的淺色 */
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;      /* MBC 青綠 */
+  --accent-soft: #dff1ef;
+  --tape: #121212;        /* 黑膠帶線 */
+  --ir: #e04a3b;          /* 感應器紅外燈 */
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* 頁首 */
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+/* 主區：左教學、右程式 */
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+/* 右邊：程式＋模擬 */
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+/* 右邊固定區只放程式和輸出，高度不超過一個畫面，往下捲時一直看得到 */
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+/* 每一步卡片裡的「這一步寫的程式」：設定一改就更新並閃一下 */
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+/* 功能範例卡 */
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+/* 完整範例與注意事項 */
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+[hidden] { display: none !important; }  /* 頁面用 hidden 切換「積木／程式」，.ws{display:grid} 會蓋掉它 */
+.learn-nav .tabs .tl { color: var(--muted, #666); font-size: 0.8rem; align-self: center; }
+.learn-nav .tabs .tsep { flex-basis: 100%; height: 0; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
+   排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
+@media (max-width: 900px) {
+  .learn-nav { position: static; width: 100vw; margin: -24px 0 14px calc(50% - 50vw); }
+  .learn-nav .in { padding: 6px 12px 8px; gap: 4px 14px; font-size: 0.85rem; }
+  .learn-nav .in > a { min-height: 36px; display: inline-flex; align-items: center; }
+  .learn-nav .tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .learn-nav .tabs::-webkit-scrollbar { display: none; }
+  .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
+  body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
+  .panel.follow { margin: 12px 0 16px; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow, .ctrl > .panel.follow { grid-column: 1 / -1; }
+  .flash { animation: followFlash 1.2s ease-out; }
+  @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
+  /* 點選目標放大：選項、勾選框、拉桿 */
+  .wrap > *, .main > *, .steps > *, .step-body > * { min-width: 0; }
+  label:has(input[type=radio]), label:has(input[type=checkbox]) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  button.copy, .viewtabs button { min-height: 36px; }
+  label:has(select) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  label select { min-height: 36px; }
+  input[type=radio], input[type=checkbox] { width: 20px; height: 20px; flex: none; }
+  input[type=range] { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/learn/">全部互動教學</a><a class="back" href="/sensors/imu/arduino/">← 陀螺儀 IMU Arduino 說明</a><a class="lang" href="/en/learn/imu/arduino.html" hreflang="en">EN</a><div class="tabs"><span class="tl">主機</span><a href="/learn/imu/ev3-pybricks.html">EV3</a><a href="/learn/imu/arduino.html" aria-current="page">Arduino</a><a href="/learn/imu/mblock.html">mBlock</a><a href="/learn/imu/matrix.html">MATRIX</a><a href="/learn/imu/makecode.html">micro:bit</a><span class="tsep"></span><a href="/learn/imu/arduino.html" aria-current="page">Arduino IDE</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC IMU 陀螺儀 × Arduino</span>
+    <h1>三個步驟用 Arduino 讀陀螺儀</h1>
+    <p class="lead">寫 Arduino 程式照這個順序：先<b>接好線、貼上小幫手</b>，再在 <code>setup()</code> <b>開始通訊、等感應器準備好</b>，最後在 <code>loop()</code> 用 <code>mbcRead()</code> <b>讀值</b>。左邊一步一步做，右邊的程式會跟著長出來；轉動、抬高、搖晃模擬器裡的車子，就能看到序列埠監控視窗會印出什麼。</p>
+  </header>
+
+  <section class="main" aria-label="教學">
+    <div class="steps">
+      <!-- 步驟 1 -->
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>接線，貼上小幫手</h2></div>
+        <div class="step-body">
+          <p class="why">Arduino 用 <b>I2C</b>（4 條線）跟感應器講話，<b>不用安裝函式庫</b>。程式<b>最上面寫 2 行</b>、<b>最下面貼一段「小幫手」</b>，之後就能用 <code>mbcRead()</code> 讀值、<code>mbcWrite()</code> 送命令。</p>
+          <p class="small">你用哪一塊板子？（只差 SDA／SCL 接哪兩腳，程式完全一樣）</p>
+          <div class="choice" role="group" aria-label="板子">
+            <button type="button" class="opt" id="board-uno" aria-pressed="true"><b>UNO／Nano</b><small>最常見的板子。SDA = A4、SCL = A5。</small></button>
+            <button type="button" class="opt" id="board-mega" aria-pressed="false"><b>Mega 2560</b><small>SDA = 20、SCL = 21。</small></button>
+            <button type="button" class="opt" id="board-r4" aria-pressed="false"><b>UNO R4</b><small>A4、A5（板子上也標 SDA／SCL）。</small></button>
+            <button type="button" class="opt" id="board-esp32" aria-pressed="false"><b>ESP32</b><small>SDA = GPIO 21、SCL = GPIO 22。要先安裝 ESP32 板子套件。</small></button>
+          </div>
+          <ol class="howto">
+            <li>接線前先拔掉 USB 線。要用 <b>通用 I2C 版</b>（SPIKE 版、EV3 版的韌體不同，不能接 Arduino）。</li>
+            <li>感應器 VCC → <b id="pinvcc">5V</b>、GND → <b>GND</b></li>
+            <li>感應器 SDA → <b id="pinsda">A4</b>、SCL → <b id="pinscl">A5</b></li>
+            <li>感應器平放固定在車上，板子絲印的 X 軸跟車頭同方向。<b>開機時車子要靜止約 0.5 秒</b>，它會自己記住哪一面朝上並歸零。</li>
+            <li>打開 Arduino IDE：<b>檔案 → 新增</b>，把原本的內容刪掉。</li>
+            <li><b>最上面</b>寫第 1、2 行；<b>最下面</b>貼「小幫手」（右邊程式標 ① 的地方，按「複製程式」會一起拿到）。</li>
+          </ol>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">寫好了，下一步</button>
+        </div>
+      </article>
+
+      <!-- 步驟 2 -->
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>開始通訊，等感應器準備好</h2></div>
+        <div class="step-body">
+          <p class="why"><code>setup()</code> 是開機時只跑一次的地方：打開序列埠、開始 I2C、等感應器說「準備好了」。<code>ADDR</code> 是感應器的「門牌號碼」（I2C 位址），之後每次讀值都寫它。</p>
+          <p class="small">感應器的 I2C 位址：</p>
+          <div class="choice" role="group" aria-label="位址">
+            <button type="button" class="opt" id="addr-factory" aria-pressed="true"><b>出廠位址 0x6A</b><small>沒有用命令 F8 換過位址，就選這個。</small></button>
+            <button type="button" class="opt" id="addr-custom" aria-pressed="false"><b>我換過位址</b><small>用命令 F8 換過，例如同一條線上接了兩顆同型號。</small></button>
+          </div>
+          <label class="f" for="addr" id="addrbox" style="display:none">新的位址（0x08 ~ 0x77）
+            <input autocomplete="off" type="text" id="addr" value="0x20" spellcheck="false">
+          </label>
+          <p class="err" id="addrerr" hidden></p>
+          <p class="small">找不到感應器的時候：</p>
+          <div class="choice" role="group" aria-label="找不到時">
+            <button type="button" class="opt" id="fail-stop" aria-pressed="true"><b>停在這裡（建議）</b><small>印一行提醒，程式停住，不會亂跑。</small></button>
+            <button type="button" class="opt" id="fail-go" aria-pressed="false"><b>繼續跑</b><small>程式照樣往下跑，讀到的值都會是 -32768。</small></button>
+          </div>
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2">寫好了，下一步</button>
+        </div>
+      </article>
+
+      <!-- 步驟 3 -->
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>使用功能</h2></div>
+        <div class="step-body">
+          <p class="why">讀值寫「<code>mbcRead(ADDR, 編號)</code>」，送命令寫「<code>mbcWrite(ADDR, 命令)</code>」。點一個功能，程式和序列埠監控視窗會換成它的範例。</p>
+          <div id="picker" class="ref"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+<div class="sim-box">
+            <style>.imu-btns { display: flex; flex-wrap: wrap; gap: 6px; } .imu-btns button { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; padding: 4px 12px; font-weight: 700; min-height: 36px; } .imu-btns button.zero { border-color: var(--accent); }</style>
+            <div class="sim-title">模擬感應器：左邊從上面看（航向），右邊從側面看（俯仰）。拖動拉桿、按按鈕，看右邊的輸出怎麼變</div>
+            <div class="sim">
+              <svg id="field" viewBox="0 0 460 200" role="img" aria-label="車子從上面看與從側面看的示意圖"></svg>
+              <div class="ctrl">
+                <label class="f" for="imu-hd"><span>車頭方向（用手把車子轉過去）：<b id="imu-hdv">0</b>° （往右轉是正）</span>
+                  <input autocomplete="off" type="range" id="imu-hd" min="-720" max="720" step="5" value="0">
+                </label>
+                <div class="imu-btns">
+                  <button type="button" id="imu-l90">↺ 左轉 90°</button>
+                  <button type="button" id="imu-r90">↻ 右轉 90°</button>
+                  <button type="button" id="imu-zero" class="zero">歸零（現在的方向變 0）</button>
+                </div>
+                <label class="f" for="imu-pt"><span>車頭抬高或壓低（俯仰）：<b id="imu-ptv">0</b>°</span>
+                  <input autocomplete="off" type="range" id="imu-pt" min="-90" max="90" step="1" value="0">
+                </label>
+                <div class="toggles">
+                  <label><input autocomplete="off" type="checkbox" id="imu-shake"> 搖晃車子（會有角速度）</label>
+                  <label><input autocomplete="off" type="checkbox" id="imu-drift"> 開很久了（陀螺累積誤差 6°）</label>
+                  <label><input autocomplete="off" type="checkbox" id="imu-magx"> 靠近馬達或鐵（磁場干擾）</label>
+                  <label><input autocomplete="off" type="checkbox" id="unplug"> 拔掉感應器</label>
+                </div>
+              </div>
+              <p class="note">模擬畫面是示意：數值用畫面上車子的方向和角度換算，不是感應器裡面的演算法；實際讀值會有 1 度左右的跳動。「歸零」按鈕 = 命令 E0。拔掉感應器時，Arduino 讀到的每個值都是 -32768。韌體版本 102 是示意值。</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">每個功能的範例</h2>
+        <p class="ref-intro"><span id="fncount">28</span> 個功能（讀值、命令、每款 MBC 感應器都有的共用編號），每個都有一段範例。按「試試看」會切到第 3 步，右邊的程式和序列埠監控視窗會換成這個範例。</p>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="你的程式與輸出">
+      <div class="panel">
+        <div class="panel-head"><span>你的程式（Arduino）</span><span class="row"><button type="button" class="copy" id="helperbtn" aria-pressed="false">顯示小幫手</button><button type="button" class="copy" id="copymain">複製程式</button></span></div>
+        <pre class="code" id="maincode" aria-live="polite"></pre>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>序列埠監控視窗（115200，每 0.6 秒更新）</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="ref" aria-labelledby="fullh">
+    <h2 id="fullh">完整範例</h2>
+    <p class="ref-intro">按「複製」拿到的是完整程式（最下面已經接好小幫手），貼進 Arduino IDE 就能上傳。</p>
+    <div class="full">
+      <div class="panel">
+        <div class="panel-head"><span>四個航向＋打 z 歸零</span><button type="button" class="copy" data-copy="heading">複製</button></div>
+        <pre class="code" id="ex-heading"></pre>
+        <p class="bubble"><i>!</i><span>照網站範例 3 改短。上傳後打開序列埠監控視窗（115200），把陀螺儀平放慢慢轉一圈看數字；在上面的輸入框打 <code>z</code> 再按 Enter，四個航向都歸零。</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>哪一面朝上？平放就亮燈</span><button type="button" class="copy" data-copy="level">複製</button></div>
+        <pre class="code" id="ex-level"></pre>
+        <p class="bubble"><i>!</i><span>照網站範例 6 改短：一次讀 0x08～0x0A（磁力信任度、干擾度、朝上的面），朝上的面有變才印一行；平放（+Z 朝上）時板子內建的 LED 亮。</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">使用注意</h2>
+    <ol>
+      <li><b>拔線不會讓程式停。</b>讀不到時 <code>mbcRead()</code> 回傳 <code>-32768</code>（<code>MBC_NONE</code>），<code>mbcReadMany()</code> 回傳 <code>false</code>；插回去就恢復。-32768 剛好也是航向能表示的最小值，所以<b>拿航向做判斷前先檢查是不是 <code>MBC_NONE</code></b>（小車讀不到要先停車）。</li>
+      <li><b>方向：</b>右轉航向變大、左轉變小，轉一圈 = 360，會一直累加（兩圈 = 720，也可以是負的）。右轉變小就是感應器裝反了（上下顛倒）。「角速度 Z」是原始陀螺值，平放時右轉為負，跟航向相反。</li>
+      <li><b>四種航向怎麼選：</b>先用 3D 航向（任意角度安裝都準）；要開很久、不想飄就用融合航向；附近有馬達、鐵製場地時磁力計會被干擾，用 3D 航向。磁力航向是相對值，不是指北。</li>
+      <li><b>連號一次讀：</b>0x01～0x0A、0x10～0x18 各自連號，用 <code>mbcReadMany()</code> 一次讀，保證是同一瞬間的資料。序列埠監控視窗的速度要選 <b>115200</b>。</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var PROD = {"lang":"zh","helper":["// ===== 小幫手（MBC I2C 協議 v2）：整段貼在程式最下面，不用改 =====","// 從編號 id 起連續讀 k 個值（k ≤ 16），int16 小端","bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {","  Wire.beginTransmission(addr);","  Wire.write(id);","  if (Wire.endTransmission() != 0) return false;","  delay(2);                                        // 一律等 2 ms（ESP32 產品不能時脈延展）","  if (Wire.requestFrom(addr, (uint8_t)(k * 2)) != (uint8_t)(k * 2)) return false;","  for (uint8_t i = 0; i < k; i++) {","    uint8_t lo = Wire.read(), hi = Wire.read();","    out[i] = (int16_t)(lo | (hi << 8));","  }","  return true;","}","","// 讀 1 個值；讀不到回 MBC_NONE","int16_t mbcRead(uint8_t addr, uint8_t id) {","  int16_t v;","  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;","}","","// 寫入命令（0~3 個參數）","// 2 個參數、第 1 個是 0 時要寫 (uint8_t)0，例如 mbcWrite(ADDR, 0xF8, (uint8_t)0x00, 0xFF)，不然會跟下面陣列版的 mbcWrite 分不清而編不過","void mbcWrite(uint8_t addr, uint8_t id, const uint8_t *args, uint8_t n) {","  Wire.beginTransmission(addr);","  Wire.write(id);","  for (uint8_t i = 0; i < n; i++) Wire.write(args[i]);","  Wire.endTransmission();","}","void mbcWrite(uint8_t addr, uint8_t id) { mbcWrite(addr, id, nullptr, 0); }","void mbcWrite(uint8_t addr, uint8_t id, uint8_t a) { mbcWrite(addr, id, &a, 1); }","void mbcWrite(uint8_t addr, uint8_t id, uint8_t a, uint8_t b) { uint8_t p[2] = {a, b}; mbcWrite(addr, id, p, 2); }","void mbcWrite(uint8_t addr, uint8_t id, uint8_t a, uint8_t b, uint8_t c) { uint8_t p[3] = {a, b, c}; mbcWrite(addr, id, p, 3); }","","// 等模組就緒（F3 bit0 = 1），最多 ms 毫秒","bool mbcWaitReady(uint8_t addr, unsigned long ms) {","  unsigned long t0 = millis();","  while (millis() - t0 < ms) {","    int16_t st = mbcRead(addr, 0xF3);","    if (st != MBC_NONE && (st & 1)) return true;","    delay(20);","  }","  return false;","}"],"defaultFn":"h3d","addr":"0x6A","readyMs":3000};
+  var EX = {"heading":["#include <Wire.h>","const int16_t MBC_NONE = -32768;","","const uint8_t ADDR = 0x6A;               // IMU 陀螺儀的 I2C 位址","","void setup() {","  Serial.begin(115200);","  Wire.begin();","  if (!mbcWaitReady(ADDR, 3000)) {","    Serial.println(F(\"找不到感應器，檢查接線！\"));","    while (true) {}","  }","  Serial.println(F(\"  陀螺3D   融合   陀螺1D   磁力\"));","}","","void loop() {","  if (Serial.available()) {","    char ch = Serial.read();","    if (ch == 'z' || ch == 'Z') {","      mbcWrite(ADDR, 0xE0);              // 命令 E0：四個航向都歸零","      Serial.println(F(\">>> 已歸零\"));","    }","  }","  int16_t h[4];                          // 01 陀螺 3D、02 融合、03 陀螺 1D、04 磁力","  if (!mbcReadMany(ADDR, 0x01, 4, h)) {","    Serial.println(F(\"讀不到陀螺儀\"));","  } else {","    char line[48];","    snprintf(line, sizeof(line), \"%7d %7d %7d %7d\", h[0], h[1], h[2], h[3]);","    Serial.println(line);","  }","  delay(100);","}","","@HELPER"],"level":["#include <Wire.h>","const int16_t MBC_NONE = -32768;","","const uint8_t ADDR = 0x6A;               // IMU 陀螺儀的 I2C 位址","#ifndef LED_BUILTIN","#define LED_BUILTIN 2                    // 有些 ESP32 板子沒寫內建燈在哪","#endif","","int16_t lastFace = -1;                   // 上一次朝上的面（-1 = 還沒看過）","","void setup() {","  Serial.begin(115200);","  pinMode(LED_BUILTIN, OUTPUT);","  Wire.begin();","  if (!mbcWaitReady(ADDR, 3000)) {","    Serial.println(F(\"找不到感應器，檢查接線！\"));","    while (true) {}","  }","}","","void loop() {","  int16_t v[3];                          // [0] 磁力信任度 [1] 磁場干擾度 [2] 朝上的面","  if (!mbcReadMany(ADDR, 0x08, 3, v)) {","    Serial.println(F(\"讀不到陀螺儀\"));","    delay(300);","    return;","  }","  digitalWrite(LED_BUILTIN, v[2] == 2 ? HIGH : LOW);   // +Z 朝上（平放）→ 燈亮","  if (v[2] != lastFace) {","    lastFace = v[2];","    Serial.print(F(\"朝上的面 \"));","    Serial.print(v[2]);","    Serial.print(F(\" | 磁力信任度 \"));","    Serial.print(v[0]);","    Serial.print(F(\" | 磁場干擾度 \"));","    Serial.println(v[1]);","  }","  delay(300);","}","","@HELPER"]};
+
+  var LANG = PROD.lang;
+  function T(zh, en) { return LANG === 'en' ? en : zh; }
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  var S = { step: 1, viewStep: 1, fn: PROD.defaultFn };
+  var NONE = -32768;
+  // 模擬讀值：st.ok = 有接好；st.r[編號] = 感應器那一格的值。讀不到時跟小幫手一樣回 -32768
+  function R(st, id) { return st.ok && st.r[id] !== undefined ? st.r[id] : NONE; }
+  // mbcReadMany：讀不到回 null（小幫手回 false）
+  function RM(st, id, k) { if (!st.ok) return null; var a = []; for (var i = 0; i < k; i++) a.push(R(st, id + i)); return a; }
+  // Arduino 的 Serial.print(x, HEX／BIN)：負的 int 會印成 32 位元
+  function cHex(n) { return (n < 0 ? n >>> 0 : n).toString(16).toUpperCase(); }
+  function cBin(n) { return (n < 0 ? n >>> 0 : n).toString(2); }
+  function cDiv(a, b) { var q = a / b; return q < 0 ? Math.ceil(q) : Math.floor(q); }
+  function i16(n) { n = n & 0xFFFF; return n >= 0x8000 ? n - 0x10000 : n; }
+  function pad(s, n) { s = String(s) + '  '; while (s.length < n) s += ' '; return s; }
+
+  // 很簡單的 C++ 上色：註解、字串、前置指令、關鍵字、數字、函式名稱
+  var KW = /^(void|bool|int|long|unsigned|char|float|double|const|if|else|while|for|return|true|false|nullptr|NULL|switch|case|break|default|static|uint8_t|uint16_t|uint32_t|int8_t|int16_t|int32_t|byte|defined)$/;
+  function hiCpp(line) {
+    var out = '', i = 0;
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest.slice(0, 2) === '//') { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if ((m = rest.match(/^#[a-z]+/))) { out += '<span class="tk-kw">' + m[0] + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^<[A-Za-z0-9_.\/]+\.h>/)) && /#include\s*$/.test(line.slice(0, i))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (KW.test(w)) out += '<span class="tk-kw">' + w + '</span>';
+        else if (/^\s*\(/.test(after) && after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^(0[xX][0-9A-Fa-f]+|\d+)/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  function render(el, lines, opts) {
+    // lines：[{t: 文字, tag: 步驟編號或 '', tagHide: 不畫圈圈, hl: 標亮, isNew: 新長出來}]
+    opts = opts || {};
+    el.innerHTML = lines.map(function (l, k) {
+      var cls = 'ln' + (l.hl ? ' hl' : '') + (l.isNew ? ' new' : '');
+      var tag = opts.noTag ? '' : '<span class="tag">' + (l.tag && !l.tagHide ? '<i>' + l.tag + '</i>' : '') + '</span>';
+      return '<span class="' + cls + '"><span class="no">' + (l.no !== undefined ? l.no : k + 1) + '</span>' + tag + '<span>' + (l.t ? hiCpp(l.t) : ' ') + '</span></span>';
+    }).join('');
+  }
+  function plain(lines) { return lines.map(function (l) { return l.t; }).join('\n') + '\n'; }
+  function copyText(text, btn) {
+    var done = function () { var o = btn.textContent; btn.textContent = ('已複製'); setTimeout(function () { btn.textContent = o; }, 1400); };
+    try {
+      navigator.clipboard.writeText(text).then(done, function () { fallback(text); });
+    } catch (e) { fallback(text); }
+    function fallback(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e2) { btn.textContent = ('請手動選取複製'); }
+      document.body.removeChild(ta);
+    }
+  }
+
+  // ═════ 通訊方式（共用） ═════
+
+    // ───── I2C：板子、位址、找不到時 ─────
+    var BOARDS = {
+      uno: { name: ('UNO／Nano'), sda: 'A4', scl: 'A5', vcc: '5V' },
+      mega: { name: 'Mega 2560', sda: '20', scl: '21', vcc: '5V' },
+      r4: { name: 'UNO R4', sda: 'A4', scl: 'A5', vcc: '5V' },
+      esp32: { name: 'ESP32', sda: 'GPIO 21', scl: 'GPIO 22', vcc: ('5V（VIN）') }
+    };
+    var READY_MS = PROD.readyMs || 2000;   // 產品可在 vars() 給 readyMs（例如 8 顆雷射開機要 2~4 秒）
+    S.board = 'uno'; S.addrMode = 'factory'; S.addr = PROD.addr; S.onFail = 'stop';
+    function addrOk() {
+      if (S.addrMode === 'factory') return '';
+      var v = $('addr').value.trim();
+      if (!/^0[xX][0-9A-Fa-f]{1,2}$/.test(v)) return ('寫成 0x 開頭的 16 進位，例如 0x20。');
+      var n = parseInt(v, 16);
+      if (n < 0x08 || n > 0x77) return ('I2C 位址只能是 0x08 ~ 0x77。');
+      return '';
+    }
+    var BASE = {
+      top: function () {
+        var b = BOARDS[S.board];
+        return [
+          pad('#include <Wire.h>', 34) + '// ' + ('I2C：SDA = ' + b.sda + '、SCL = ' + b.scl),
+          pad('const int16_t MBC_NONE = -32768;', 34) + '// ' + ('讀不到時的代號')
+        ];
+      },
+      decl: function () {
+        return [pad('const uint8_t ADDR = ' + S.addr + ';', 34) + '// ' + (S.addrMode === 'factory'
+          ? ('I2C 位址（出廠 ' + PROD.addr + '）')
+          : ('換過的 I2C 位址'))];
+      },
+      setupOpen: function () {
+        var L = [
+          'void setup() {',
+          pad('  Serial.begin(115200);', 34) + '// ' + ('序列埠監控視窗選 115200'),
+          pad('  Wire.begin();', 34) + '// ' + ('開始 I2C 通訊'),
+          pad('  if (!mbcWaitReady(ADDR, ' + READY_MS + ')) {', 34) + '// ' + ('等感應器準備好，最多 ' + READY_MS / 1000 + ' 秒'),
+          '    Serial.println(F("' + BASE.bootFail() + '"));'
+        ];
+        if (S.onFail === 'stop') L.push(pad('    while (true) {}', 34) + '// ' + ('找不到就停在這裡'));
+        L.push('  }');
+        return L;
+      },
+      setupClose: function () { return ['}']; },
+      loopWait: 'delay(100);',
+      cardOnceHead: function () { return ('// ……第 2 步：開始通訊、等感應器準備好……'); },
+      bootFail: function () { return ('找不到感應器，檢查接線！'); },
+      halts: function () { return S.onFail === 'stop'; },
+      bubble: function (n, f) {
+        if (n === 1) return ('第 1 步：最上面先寫 2 行（#include 讓 Arduino 認得 I2C 的 Wire；MBC_NONE 是「讀不到」的代號 -32768），小幫手整段貼在程式最下面。');
+        if (n === 2) return ('第 2 步：setup() 開機時跑一次。Serial.begin(115200) 打開序列埠，Wire.begin() 開始 I2C，mbcWaitReady() 最多等 ' + READY_MS / 1000 + ' 秒讓感應器準備好。') +
+          (S.onFail === 'stop' ? ('找不到就停在 while (true) {}。') : ('找不到也繼續跑，讀到的值會是 -32768。'));
+        return f.once
+          ? ('第 3 步：這個功能做一次就好，放在 setup() 裡、等感應器準備好之後；loop() 留空。')
+          : ('第 3 步：loop() 會一直重複。mbcRead(ADDR, 編號) 讀一個值，delay(100) 讓它每 0.1 秒讀一次。');
+      },
+      valid: function () {
+        var bad = addrOk();
+        $('addrerr').hidden = !bad; $('addrerr').textContent = bad;
+        if (!bad) S.addr = S.addrMode === 'factory' ? PROD.addr : '0x' + parseInt($('addr').value.trim(), 16).toString(16).toUpperCase();
+        return !bad;
+      },
+      bind: function (redraw) {
+        function press(group, id) { group.forEach(function (g) { $(g).setAttribute('aria-pressed', String(g === id)); }); }
+        var boards = ['board-uno', 'board-mega', 'board-r4', 'board-esp32'];
+        boards.forEach(function (id) {
+          $(id).addEventListener('click', function () {
+            S.board = id.slice(6); press(boards, id);
+            var b = BOARDS[S.board]; $('pinsda').textContent = b.sda; $('pinscl').textContent = b.scl; $('pinvcc').textContent = b.vcc;
+            redraw(false);
+          });
+        });
+        var addrs = ['addr-factory', 'addr-custom'];
+        addrs.forEach(function (id) {
+          $(id).addEventListener('click', function () {
+            S.addrMode = id === 'addr-factory' ? 'factory' : 'custom'; press(addrs, id);
+            $('addrbox').style.display = S.addrMode === 'custom' ? '' : 'none';
+            BASE.valid(); redraw(false);
+          });
+        });
+        $('addr').addEventListener('input', function () { BASE.valid(); redraw(false); });
+        var fails = ['fail-stop', 'fail-go'];
+        fails.forEach(function (id) {
+          $(id).addEventListener('click', function () { S.onFail = id === 'fail-stop' ? 'stop' : 'go'; press(fails, id); redraw(true); });
+        });
+      }
+    };
+  
+  // ═════ 產品 ═════
+
+
+  var IMU = { base: 0, t: 0, cal: { acc: false, mag: false }, lastProg: null, fw: 400 };
+  var IMU_W = 2 * Math.PI / 1.7;
+  function imuRound(v) { return v >= 0 ? Math.floor(v + 0.5) : -Math.floor(-v + 0.5); }
+  function imuI16(v) { v = imuRound(v); return ((v + 32768) % 65536 + 65536) % 65536 - 32768; }
+  function imuWorld() {
+    var hd = Number($('imu-hd').value), pt = Number($('imu-pt').value), sh = $('imu-shake').checked, ph = IMU.t * IMU_W;
+    return {
+      hd: hd + (sh ? 8 * Math.sin(ph) : 0), slider: hd, pt: pt, sh: sh,
+      yawDps: sh ? 8 * IMU_W * Math.cos(ph) : 0,
+      xDps: sh ? 6 * IMU_W * Math.cos(ph + 1.1) : 0,
+      drift: $('imu-drift').checked, magx: $('imu-magx').checked
+    };
+  }
+
+  function imuVals() {
+    var w = imuWorld(), rel = w.hd - IMU.base, g = rel + (w.drift ? 6 : 0);
+    var p = w.pt * Math.PI / 180, th = w.hd * Math.PI / 180;
+    var yr = imuRound(w.yawDps * 10), xr = imuRound(w.xDps * 10);
+    var flags = 1 | (w.sh ? 0 : 2) | 4 | (IMU.cal.acc ? 16 : 0) | (IMU.cal.mag ? 32 : 0) | 64 | 128;
+    return {
+      h3d: imuI16(g),
+      fused: imuI16(w.magx ? g : rel),
+      h1d: imuI16(g),
+      mag: imuI16(rel + (w.magx ? 35 : 0)),
+      yawRate: yr,
+      pitch: imuRound(w.pt),
+      pitchRate: xr,
+      trust: w.magx ? 0 : 230, disturb: w.magx ? 255 : 4,
+      upFace: w.pt > 45 ? 0 : w.pt < -45 ? 3 : 2,
+      gx: xr, gy: 0, gz: -yr,
+      ax: imuRound(1000 * Math.sin(p)), ay: 0, az: imuRound(1000 * Math.cos(p)),
+      mx: imuRound(350 * Math.cos(th)) + (w.magx ? 400 : 0), my: imuRound(-350 * Math.sin(th)), mz: -300,
+      flags: flags, devId: 362, proto: 2, fw: IMU.fw
+    };
+  }
+
+  function imuZero() { IMU.base = imuWorld().hd; $('imu-drift').checked = false; }
+  function imuStep() { IMU.t += 0.6; }
+
+  function imuProgram(id, zeroAtStart) { if (IMU.lastProg !== id) { IMU.lastProg = id; if (zeroAtStart) imuZero(); } }
+  function imuDraw(v, unplug, info) {
+    var w = imuWorld(), ir = getComputedStyle(document.documentElement).getPropertyValue('--ir').trim() || '#e04a3b';
+    var cx = 112, cy = 112, r = 62;
+    var h = '<rect x="0" y="0" width="460" height="200" fill="#f7f7f2"/>';
+    h += '<text x="' + cx + '" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="#3d4a47">' + ('從上面看（航向）') + '</text>';
+    h += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#cfd6d3" stroke-width="2" stroke-dasharray="5 5"/>';
+
+    var b = IMU.base * Math.PI / 180;
+    h += '<line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + Math.sin(b) * (r + 8)).toFixed(1) + '" y2="' + (cy - Math.cos(b) * (r + 8)).toFixed(1) + '" stroke="#8a9a96" stroke-width="2" stroke-dasharray="4 3"/>';
+    h += '<text x="' + (cx + Math.sin(b) * (r + 18)).toFixed(1) + '" y="' + (cy - Math.cos(b) * (r + 18) + 4).toFixed(1) + '" text-anchor="middle" font-size="11" fill="#6b7875">0°</text>';
+    if (w.magx) h += '<rect x="8" y="150" width="40" height="22" rx="4" fill="#b03a2e"/><text x="28" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">' + ('磁鐵') + '</text>';
+    h += '<g transform="rotate(' + w.hd.toFixed(1) + ' ' + cx + ' ' + cy + ')">';
+    h += '<rect x="' + (cx - 20) + '" y="' + (cy - 30) + '" width="40" height="60" rx="7" fill="#1b2422"/>';
+    h += '<polygon points="' + cx + ',' + (cy - 44) + ' ' + (cx - 12) + ',' + (cy - 30) + ' ' + (cx + 12) + ',' + (cy - 30) + '" fill="' + ir + '"/>';
+    h += '<rect x="' + (cx - 27) + '" y="' + (cy - 18) + '" width="7" height="22" rx="2" fill="#5b6b67"/><rect x="' + (cx + 20) + '" y="' + (cy - 18) + '" width="7" height="22" rx="2" fill="#5b6b67"/>';
+    h += '<rect x="' + (cx - 9) + '" y="' + (cy - 6) + '" width="18" height="18" rx="3" fill="' + (unplug ? '#7d918c' : '#2f9e8f') + '"/>';
+    h += '</g>';
+    if (w.sh) h += '<text x="' + (cx + 58) + '" y="40" text-anchor="start" font-size="11" fill="' + ir + '">' + ('～ 搖晃中') + '</text>';
+
+    var sx = 345, sy = 132;
+    h += '<text x="' + sx + '" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="#3d4a47">' + ('從側面看（俯仰）') + '</text>';
+    h += '<line x1="245" y1="' + (sy + 22) + '" x2="450" y2="' + (sy + 22) + '" stroke="#b7c0bd" stroke-width="2"/>';
+    h += '<g transform="rotate(' + (-w.pt) + ' ' + sx + ' ' + sy + ')">';
+    h += '<rect x="' + (sx - 46) + '" y="' + (sy - 14) + '" width="92" height="26" rx="6" fill="#1b2422"/>';
+    h += '<circle cx="' + (sx - 28) + '" cy="' + (sy + 14) + '" r="9" fill="#5b6b67"/><circle cx="' + (sx + 28) + '" cy="' + (sy + 14) + '" r="9" fill="#5b6b67"/>';
+    h += '<rect x="' + (sx - 9) + '" y="' + (sy - 22) + '" width="18" height="8" rx="2" fill="' + (unplug ? '#7d918c' : '#2f9e8f') + '"/>';
+    h += '<line x1="' + (sx + 10) + '" y1="' + (sy - 18) + '" x2="' + (sx + 64) + '" y2="' + (sy - 18) + '" stroke="' + ir + '" stroke-width="2.5"/>';
+    h += '<polygon points="' + (sx + 70) + ',' + (sy - 18) + ' ' + (sx + 61) + ',' + (sy - 23) + ' ' + (sx + 61) + ',' + (sy - 13) + '" fill="' + ir + '"/>';
+    h += '<text x="' + (sx + 66) + '" y="' + (sy - 26) + '" font-size="11" font-weight="700" fill="' + ir + '">X</text>';
+    h += '</g>';
+    h += '<text x="446" y="' + (sy + 16) + '" text-anchor="end" font-size="11" fill="#6b7875">' + ('車頭 →') + '</text>';
+    if (info) {
+      info.forEach(function (t, i) { h += '<text x="' + (i < 2 ? 14 : 446) + '" y="' + (i % 2 ? 196 : 180) + '" text-anchor="' + (i < 2 ? 'start' : 'end') + '" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#16201e">' + t + '</text>'; });
+    }
+    if (unplug) h += '<text x="230" y="64" text-anchor="middle" font-size="15" font-weight="700" fill="' + ir + '" stroke="#fff" stroke-width="4" paint-order="stroke">' + (typeof IMU_UNPLUG_TXT === 'function' ? IMU_UNPLUG_TXT() : '' + ('感應器拔掉了') + '') + '</text>';
+    $('field').innerHTML = h;
+    $('imu-hdv').textContent = $('imu-hd').value; $('imu-ptv').textContent = $('imu-pt').value;
+  }
+
+  function imuBind(changed, skipInputs) {
+    function nudge(d) { var e = $('imu-hd'); e.value = Math.max(-720, Math.min(720, Number(e.value) + d)); changed(); }
+    $('imu-l90').addEventListener('click', function () { nudge(-90); });
+    $('imu-r90').addEventListener('click', function () { nudge(90); });
+    $('imu-zero').addEventListener('click', function () { imuZero(); changed(); });
+    if (!skipInputs) ['imu-hd', 'imu-pt', 'imu-shake', 'imu-drift', 'imu-magx'].forEach(function (id) { $(id).addEventListener('input', changed); });
+  }
+
+  var T0 = Date.now();
+  IMU.fw = 102;   // 韌體版本示意值（網站範例 1 的輸出「韌體版本：1.2」）
+  function upSec() { return 5 + Math.floor((Date.now() - T0) / 1000); }
+  function d1(v) { return (v / 10).toFixed(1); }   // Serial.print(v / 10.0, 1)
+  var GI = ('感應器資訊（每款 MBC 感應器都有）');
+  var GH = ('航向（轉了幾度）'), GR = ('角速度與傾斜'), GM = ('磁力計狀態與朝上的面'),
+    G9 = ('九軸原始值'), GC = ('命令');
+  var DEG = ('-32768 ~ 32767 度（開機／歸零 = 0，右轉變大，可超過 360）');
+  var FACE = [('+X（X 軸朝上）'), ('+Y（Y 軸朝上）'), ('+Z（平放，正面朝上）'), ('-X（X 軸朝下）'), ('-Y（Y 軸朝下）'), ('-Z（翻過來）')];
+  function heading(id, code, name, what, label) {
+    return { id: id, code: code, grp: GH, name: name, kind: 'read', ret: DEG, what: what,
+      body: ['int16_t ' + id + ' = mbcRead(ADDR, ' + code + ');   // ' + name, 'Serial.print(F("' + label + ': "));', 'Serial.println(' + id + ');'],
+      out: function (s) { return label + ': ' + R(s, Number(code)); } };
+  }
+  var FNS = [
+    heading('h3d', '0x01', ('陀螺 3D 航向'),
+      ('機器人轉了幾度，最推薦先用這個：感應器自己判斷怎麼裝的，斜著裝、側著裝也算得對。右轉變大、左轉變小，轉一圈 = 360，會一直累加。'), ('3D 航向')),
+    heading('fused', '0x02', ('融合航向'),
+      ('陀螺 3D 航向再用磁力計慢慢修正，開很久也不會飄走；附近有馬達、鐵桌時修正會自動停掉、只跟著陀螺。到下面勾「開很久了」，看 3D 航向多了 6 度、融合航向沒有。'), ('融合航向')),
+    heading('h1d', '0x03', ('陀螺 1D 航向'),
+      ('只算轉向軸的傳統陀螺航向。車子在平地上跟 3D 航向幾乎一樣；在斜坡上轉彎時 3D 比較準。'), ('1D 航向')),
+    heading('mag', '0x04', ('磁力航向'),
+      ('只用磁力計算的航向，<b>相對值</b>（歸零時 = 0，不是指北）。不會累積誤差，但很怕磁場干擾。到下面勾「靠近馬達或鐵」看它偏掉。'), ('磁力航向')),
+    { id: 'heads4', code: '0x01~0x04', grp: GH, name: ('四個航向一次讀'), kind: 'read', ret: ('4 個值：3D、融合、1D、磁力'),
+      what: ('0x01～0x04 是連號，用 <code>mbcReadMany()</code> 一次讀回 4 個，保證是同一瞬間的資料，方便比較。讀不到時它回傳 <code>false</code>。'),
+      body: (['int16_t h[4];                          // h[0] 3D、h[1] 融合、h[2] 1D、h[3] 磁力', 'if (mbcReadMany(ADDR, 0x01, 4, h)) {', '  Serial.print(F("3D "));     Serial.print(h[0]);', '  Serial.print(F("  融合 "));  Serial.print(h[1]);', '  Serial.print(F("  1D "));   Serial.print(h[2]);', '  Serial.print(F("  磁力 "));  Serial.println(h[3]);', '} else {', '  Serial.println(F("讀不到感應器"));', '}']),
+      out: function (s) { var a = RM(s, 0x01, 4); if (!a) return ('讀不到感應器'); return '3D ' + a[0] + ('  融合 ') + a[1] + '  1D ' + a[2] + ('  磁力 ') + a[3]; } },
+    { id: 'turn90', code: '0x01', grp: GH, name: ('轉過 90 度了嗎'), kind: 'read', ret: ('是／否'),
+      what: ('右轉航向變大，所以「大於 90」就是右轉超過 90 度；轉一圈回來是 360，不會回到 0。原地轉彎時用它決定什麼時候停（留 2 度給煞車，寫 88）。讀不到時是 -32768，也要先判斷。'),
+      body: (['int16_t h = mbcRead(ADDR, 0x01);       // 陀螺 3D 航向', 'if (h == MBC_NONE) {', '  Serial.println(F("讀不到感應器"));', '} else if (h > 88) {', '  Serial.println(F("右轉超過 90 度了，停！"));', '} else {', '  Serial.print(F("還要再轉 "));', '  Serial.print(90 - h);', '  Serial.println(F(" 度"));', '}']),
+      out: function (s) { var h = R(s, 0x01); if (h === NONE) return ('讀不到感應器'); if (h > 88) return ('右轉超過 90 度了，停！'); return ('還要再轉 ') + (90 - h) + (' 度'); } },
+    // ── 角速度與傾斜 ──
+    { id: 'yawRate', code: '0x05', grp: GR, name: ('轉向軸角速度'), kind: 'read', ret: ('0.1 度／秒（右轉為正）'),
+      what: ('現在轉得多快：每秒幾度 × 10，右轉是正、左轉是負（跟航向同方向）。除以 10.0 就是每秒幾度。勾「搖晃車子」試試看。'),
+      body: (['int16_t yawRate = mbcRead(ADDR, 0x05);  // 0.1 度／秒', 'Serial.print(F("轉向角速度: "));', 'Serial.print(yawRate / 10.0, 1);', 'Serial.println(F(" 度/秒"));']),
+      out: function (s) { return ('轉向角速度: ') + d1(R(s, 0x05)) + (' 度/秒'); } },
+    { id: 'pitch', code: '0x06', grp: GR, name: ('俯仰角'), kind: 'read', ret: ('-90 ~ +90 度（平放 = 0）'),
+      what: ('板子絲印 X 軸抬高幾度：X 軸朝上 +90、朝下 -90、平放 0。X 軸裝成跟車頭同方向，就是「車頭抬高幾度」。'),
+      body: (['int16_t pitch = mbcRead(ADDR, 0x06);    // -90 ~ +90 度', 'Serial.print(F("俯仰角: "));', 'Serial.println(pitch);']),
+      out: function (s) { return ('俯仰角: ') + R(s, 0x06); } },
+    { id: 'pitchRate', code: '0x07', grp: GR, name: ('俯仰角速度'), kind: 'read', ret: ('0.1 度／秒'),
+      what: ('繞板子絲印 X 軸轉得多快（每秒幾度 × 10，從 X 軸前端看逆時針為正）。注意：它是 X 軸的陀螺值，<b>不是</b>俯仰角變多快。'),
+      body: (['int16_t pitchRate = mbcRead(ADDR, 0x07);  // 0.1 度／秒', 'Serial.print(F("俯仰角速度: "));', 'Serial.print(pitchRate / 10.0, 1);', 'Serial.println(F(" 度/秒"));']),
+      out: function (s) { return ('俯仰角速度: ') + d1(R(s, 0x07)) + (' 度/秒'); } },
+    { id: 'rateTilt', code: '0x05~0x07', grp: GR, name: ('角速度＋俯仰一次讀'), kind: 'read', ret: ('3 個值：轉向角速度、俯仰角、俯仰角速度'),
+      what: ('0x05～0x07 連號，一次讀回 3 個。'),
+      body: (['int16_t v[3];                          // v[0] 轉向角速度、v[1] 俯仰角、v[2] 俯仰角速度', 'if (mbcReadMany(ADDR, 0x05, 3, v)) {', '  Serial.print(F("轉向 "));   Serial.print(v[0]);', '  Serial.print(F("  俯仰 "));  Serial.print(v[1]);', '  Serial.print(F("  俯仰角速度 ")); Serial.println(v[2]);', '} else {', '  Serial.println(F("讀不到感應器"));', '}']),
+      out: function (s) { var a = RM(s, 0x05, 3); if (!a) return ('讀不到感應器'); return ('轉向 ') + a[0] + ('  俯仰 ') + a[1] + ('  俯仰角速度 ') + a[2]; } },
+    // ── 磁力計狀態與朝上的面 ──
+    { id: 'magTrust', code: '0x08', grp: GM, name: ('磁力信任度'), kind: 'read', ret: '0 ~ 255',
+      what: ('融合航向現在多相信磁力計：255 = 完全相信、0 = 不用磁力計（干擾太大）。'),
+      body: (['int16_t trust = mbcRead(ADDR, 0x08);   // 0 ~ 255', 'Serial.print(F("磁力信任度: "));', 'Serial.println(trust);']),
+      out: function (s) { return ('磁力信任度: ') + R(s, 0x08); } },
+    { id: 'magDisturb', code: '0x09', grp: GM, name: ('磁場干擾度'), kind: 'read', ret: ('0 ~ 255（0.01 度）'),
+      what: ('磁場被干擾的程度（單位 0.01 度，最多 255）。大於 100 多半是附近有鐵器、馬達、喇叭。'),
+      body: (['int16_t dist = mbcRead(ADDR, 0x09);    // 0 ~ 255', 'Serial.print(F("磁場干擾度: "));', 'Serial.print(dist);', 'if (dist > 100) Serial.print(F("（干擾大）"));', 'Serial.println();']),
+      out: function (s) { var v = R(s, 0x09); return ('磁場干擾度: ') + v + (v > 100 ? ('（干擾大）') : ''); } },
+    { id: 'upFace', code: '0x0A', grp: GM, name: ('朝上的面'), kind: 'read', ret: ('0 +X、1 +Y、2 +Z、3 -X、4 -Y、5 -Z'),
+      what: ('板子哪一面朝上（板子絲印的軸）。平放 = 2（+Z）。把車頭抬到超過 45 度試試看。'),
+      body: (['int16_t face = mbcRead(ADDR, 0x0A);    // 0 ~ 5', 'Serial.print(F("朝上的面: "));', 'switch (face) {', '  case 0: Serial.println(F("+X（X 軸朝上）")); break;', '  case 1: Serial.println(F("+Y（Y 軸朝上）")); break;', '  case 2: Serial.println(F("+Z（平放，正面朝上）")); break;', '  case 3: Serial.println(F("-X（X 軸朝下）")); break;', '  case 4: Serial.println(F("-Y（Y 軸朝下）")); break;', '  case 5: Serial.println(F("-Z（翻過來）")); break;', '  default: Serial.println(face); break;   // 讀不到時是 -32768', '}']),
+      out: function (s) { var v = R(s, 0x0A); return ('朝上的面: ') + (v >= 0 && v <= 5 ? FACE[v] : v); } },
+    // ── 九軸原始值 ──
+    { id: 'gyro', code: '0x10~0x12', grp: G9, name: ('角速度 X、Y、Z'), kind: 'read', ret: ('0.1 度／秒 × 3'),
+      what: ('三軸陀螺原始值（右手定則：從那一軸前端看逆時針為正）。平放時 Z 朝上，所以<b>右轉時 Z 是負的</b>，跟航向相反。'),
+      body: (['int16_t g[3];                          // 0x10 X、0x11 Y、0x12 Z', 'if (mbcReadMany(ADDR, 0x10, 3, g)) {', '  Serial.print(F("角速度 X ")); Serial.print(g[0]);', '  Serial.print(F("  Y ")); Serial.print(g[1]);', '  Serial.print(F("  Z ")); Serial.println(g[2]);', '} else {', '  Serial.println(F("讀不到感應器"));', '}']),
+      out: function (s) { var a = RM(s, 0x10, 3); if (!a) return ('讀不到感應器'); return ('角速度 X ') + a[0] + '  Y ' + a[1] + '  Z ' + a[2]; } },
+    { id: 'accel', code: '0x13~0x15', grp: G9, name: ('加速度 X、Y、Z'), kind: 'read', ret: ('mg × 3（1000 = 1 g）'),
+      what: ('三軸加速度，單位 mg。平放時 Z 約 1000、X 約 0；車頭抬高，X 變大。'),
+      body: (['int16_t a[3];                          // 0x13 X、0x14 Y、0x15 Z', 'if (mbcReadMany(ADDR, 0x13, 3, a)) {', '  Serial.print(F("加速度 X ")); Serial.print(a[0]);', '  Serial.print(F("  Y ")); Serial.print(a[1]);', '  Serial.print(F("  Z ")); Serial.println(a[2]);', '} else {', '  Serial.println(F("讀不到感應器"));', '}']),
+      out: function (s) { var a = RM(s, 0x13, 3); if (!a) return ('讀不到感應器'); return ('加速度 X ') + a[0] + '  Y ' + a[1] + '  Z ' + a[2]; } },
+    { id: 'magXYZ', code: '0x16~0x18', grp: G9, name: ('磁力 X、Y、Z'), kind: 'read', ret: ('mG × 3（毫高斯）'),
+      what: ('三軸磁場強度，單位 mG（已套用校準）。車子轉方向，X、Y 會跟著變；靠近磁鐵會突然變很大。'),
+      body: (['int16_t m[3];                          // 0x16 X、0x17 Y、0x18 Z', 'if (mbcReadMany(ADDR, 0x16, 3, m)) {', '  Serial.print(F("磁力 X ")); Serial.print(m[0]);', '  Serial.print(F("  Y ")); Serial.print(m[1]);', '  Serial.print(F("  Z ")); Serial.println(m[2]);', '} else {', '  Serial.println(F("讀不到感應器"));', '}']),
+      out: function (s) { var a = RM(s, 0x16, 3); if (!a) return ('讀不到感應器'); return ('磁力 X ') + a[0] + '  Y ' + a[1] + '  Z ' + a[2]; } },
+    // ── 命令 ──
+    { id: 'zero', code: 'E0', grp: GC, name: ('航向歸零'), kind: 'cmd', once: true, ret: ('沒有參數'),
+      what: ('四個航向（3D、融合、1D、磁力）同時歸零：現在車頭的方向就是 0。<b>歸零那一下車子要靜止。</b>模擬器的「歸零」按鈕就是這個命令；選這張卡等於重新上傳，模擬器會先歸零一次。'),
+      body: (['mbcWrite(ADDR, 0xE0);                  // 航向歸零', 'delay(50);', 'Serial.print(F("已歸零，3D 航向: "));', 'Serial.println(mbcRead(ADDR, 0x01));']),
+      out: function (s) { return ('已歸零，3D 航向: ') + R(s, 0x01); } },
+    { id: 'accelCal', code: 'E1 / E2', grp: GC, name: ('加速度計校準'), kind: 'cmd', once: true, ret: ('E1 開始、E2 結束（存進感應器）'),
+      what: ('出廠已經校過，只有朝上的面、俯仰角判斷錯時才需要。送 E1 開始（狀態旗標 bit4 = 1），把感應器<b>六個面各朝上放平幾秒</b>，再送 E2 結束：結果存進感應器，成功後航向自動歸零一次。範例給你 30 秒。'),
+      warn: ('只在需要時跑一次，跑完記得把這段刪掉。'),
+      body: (['mbcWrite(ADDR, 0xE1);                  // E1 加速度計校準開始', 'Serial.println(F("校準中：30 秒內把六個面各朝上放平幾秒"));', 'delay(30000);', 'mbcWrite(ADDR, 0xE2);                  // E2 結束，存進感應器', 'delay(100);', 'Serial.print(F("校準中 bit4 = "));', 'Serial.println((mbcRead(ADDR, 0xF3) >> 4) & 1);   // 0 = 做完了']),
+      out: function (s) { return [('校準中：30 秒內把六個面各朝上放平幾秒'), ('校準中 bit4 = ') + ((R(s, 0xF3) >> 4) & 1)]; } },
+    { id: 'magCal', code: 'E3 / E4', grp: GC, name: ('磁力計校準'), kind: 'cmd', once: true, ret: ('E3 開始、E4 結束（存進感應器）'),
+      what: ('融合航向、磁力航向不準時做。送 E3 開始（狀態旗標 bit5 = 1），把感應器<b>朝各個方向慢慢轉、畫 8 字約 20 秒</b>，再送 E4 結束、存進感應器。要遠離馬達、喇叭、鐵桌。'),
+      warn: ('只在需要時跑一次，跑完記得把這段刪掉。'),
+      body: (['mbcWrite(ADDR, 0xE3);                  // E3 磁力計校準開始', 'Serial.println(F("校準中：20 秒內朝各方向慢慢畫 8 字"));', 'delay(20000);', 'mbcWrite(ADDR, 0xE4);                  // E4 結束，存進感應器', 'delay(100);', 'Serial.print(F("磁力信任度: "));', 'Serial.println(mbcRead(ADDR, 0x08));']),
+      out: function (s) { return [('校準中：20 秒內朝各方向慢慢畫 8 字'), ('磁力信任度: ') + R(s, 0x08)]; } },
+    // ── 感應器資訊（共用編號）──
+    { id: 'sensorOk', code: 'MBC_NONE', grp: GI, name: ('有沒有接好'), kind: 'read', ret: ('讀到 -32768 = 沒接好'),
+      what: ('讀任何一格，讀到 <code>MBC_NONE</code>（-32768）就是沒接好、位址錯了。到右邊勾「拔掉感應器」試試看。'),
+      body: (['if (mbcRead(ADDR, 0xF0) == MBC_NONE) {', '  Serial.println(F("感應器沒接好！"));', '} else {', '  Serial.println(F("感應器正常"));', '}']),
+      out: function (s) { return s.ok ? ('感應器正常') : ('感應器沒接好！'); } },
+    { id: 'deviceId', code: '0xF0', grp: GI, name: ('裝置 ID'), kind: 'read', once: true, ret: ('低 byte = 出廠位址 0x6A、高 byte = 1（IMU）'),
+      what: ('確認接的是哪一款：低 byte 是出廠位址（換過位址也不變），高 byte 1 = IMU 陀螺儀。'),
+      body: (['int16_t id = mbcRead(ADDR, 0xF0);', 'Serial.print(F("出廠位址 0x"));', 'Serial.print((uint8_t)(id & 0xFF), HEX);', 'Serial.print(F("，型號碼 "));', 'Serial.println((uint8_t)((id >> 8) & 0xFF));']),
+      out: function (s) { var id = R(s, 0xF0); return ('出廠位址 0x') + cHex(id & 0xFF) + ('，型號碼 ') + ((id >> 8) & 0xFF); } },
+    { id: 'protoVer', code: '0xF1', grp: GI, name: ('協議版本'), kind: 'read', once: true, ret: '2',
+      what: ('這份寫法照協議版本 2。讀到 2 就對了。'),
+      body: (['Serial.print(F("協議版本: "));', 'Serial.println(mbcRead(ADDR, 0xF1));']),
+      out: function (s) { return ('協議版本: ') + R(s, 0xF1); } },
+    { id: 'fwVer', code: '0xF2', grp: GI, name: ('韌體版本'), kind: 'read', once: true, ret: ('主版 × 100 + 次版（例 102 = 1.2）'),
+      what: ('感應器韌體的版本。除以 100 是主版、餘數是次版。'),
+      body: (['int16_t fw = mbcRead(ADDR, 0xF2);', 'Serial.print(F("韌體版本: "));', 'Serial.print(fw / 100);', "Serial.print('.');", 'Serial.println(fw % 100);']),
+      out: function (s) { var fw = R(s, 0xF2); return ('韌體版本: ') + cDiv(fw, 100) + '.' + (fw % 100); } },
+    { id: 'status', code: '0xF3', grp: GI, name: ('狀態旗標'), kind: 'read', ret: ('8 個 bit'),
+      what: ('一個 bit 代表一件事，1 = 是：bit0 就緒、<b>bit1 靜止</b>、bit2 已擷取安裝軸、bit3 安裝過歪、bit4 加速度計校準中、bit5 磁力計校準中、bit6 磁力融合已初始化、bit7 磁力自動校準已收斂。勾「搖晃車子」看 bit1 變 0。'),
+      body: (['int16_t st = mbcRead(ADDR, 0xF3);', 'Serial.print(F("就緒 "));   Serial.print((st >> 0) & 1);', 'Serial.print(F("  靜止 ")); Serial.print((st >> 1) & 1);', 'Serial.print(F("  校準中 ")); Serial.print((st >> 4) & 3);', 'Serial.print(F("  融合 ")); Serial.println((st >> 6) & 1);']),
+      out: function (s) { var st = R(s, 0xF3); return ('就緒 ') + ((st >> 0) & 1) + ('  靜止 ') + ((st >> 1) & 1) + ('  校準中 ') + ((st >> 4) & 3) + ('  融合 ') + ((st >> 6) & 1); } },
+    { id: 'seq', code: '0xF4', grp: GI, name: ('更新序號'), kind: 'read', ret: ('0 ~ 255（每 10 ms 加 1）'),
+      what: ('感應器每 10 ms 加 1，到 255 再從 0 開始。數字一直在跳 = 感應器活著；停住不動 = 感應器忙。'),
+      body: (['Serial.print(F("更新序號: "));', 'Serial.println(mbcRead(ADDR, 0xF4));']),
+      out: function (s) { return ('更新序號: ') + R(s, 0xF4); } },
+    { id: 'uptime', code: '0xF5', grp: GI, name: ('開機秒數'), kind: 'read', ret: ('0 ~ 32767 秒'),
+      what: ('感應器開機多久了。數字突然變小 = 感應器重新開機過（例如電源接觸不良）。'),
+      body: (['Serial.print(F("開機秒數: "));', 'Serial.println(mbcRead(ADDR, 0xF5));']),
+      out: function (s) { return ('開機秒數: ') + R(s, 0xF5); } },
+    { id: 'setAddress', code: 'F8', grp: GI, name: ('換 I2C 位址'), kind: 'cmd', once: true, ret: ('2 個參數：新位址、新位址取反'),
+      what: ('同一條線要接兩顆 IMU 時，先把其中一顆換位址（0x08 ~ 0x77）。存進感應器，<b>重新開機後才生效</b>，之後程式的 <code>ADDR</code> 也要改。回出廠位址寫 <code>0x00, 0xFF</code>。'),
+      warn: ('只在需要時跑一次，跑完記得把這段刪掉。'),
+      body: (['mbcWrite(ADDR, 0xF8, 0x20, (uint8_t)~0x20);      // 換到 0x20，重開機後生效', '// mbcWrite(ADDR, 0xF8, (uint8_t)0x00, 0xFF);    // 回出廠位址', 'Serial.println(F("已送出：重新開機後位址是 0x20"));']),
+      out: function (s) { return ('已送出：重新開機後位址是 0x20'); } },
+    { id: 'reboot', code: 'EF', grp: GI, name: ('重新開機'), kind: 'cmd', once: true, ret: ('1 個參數：確認碼 0xA5'),
+      what: ('讓感應器重新開機（換位址之後用它就不用拔電）。重新開機那一下車子要靜止，航向會從 0 重新算；0xF5 開機秒數也從 0 重新算。'),
+      body: (['mbcWrite(ADDR, 0xEF, 0xA5);            // 重新開機', 'delay(500);', 'mbcWaitReady(ADDR, 3000);              // 等它重新準備好', 'Serial.print(F("重新開機完成，開機秒數: "));', 'Serial.println(mbcRead(ADDR, 0xF5));']),
+      out: function (s) { return ('重新開機完成，開機秒數: ') + (s.ok ? 1 : NONE); } }
+  ];
+
+  // ───── 模擬感應器（各主機共用的 IMU 模擬器）─────
+  function regs(v) {
+    var r = {};
+    r[0x01] = v.h3d; r[0x02] = v.fused; r[0x03] = v.h1d; r[0x04] = v.mag; r[0x05] = v.yawRate; r[0x06] = v.pitch; r[0x07] = v.pitchRate;
+    r[0x08] = v.trust; r[0x09] = v.disturb; r[0x0A] = v.upFace;
+    r[0x10] = v.gx; r[0x11] = v.gy; r[0x12] = v.gz; r[0x13] = v.ax; r[0x14] = v.ay; r[0x15] = v.az; r[0x16] = v.mx; r[0x17] = v.my; r[0x18] = v.mz;
+    r[0xF0] = v.devId; r[0xF1] = v.proto; r[0xF2] = v.fw; r[0xF3] = v.flags;
+    r[0xF4] = Math.floor((Date.now() - T0) / 10) & 255; r[0xF5] = upSec();
+    return r;
+  }
+  function IMU_UNPLUG_TXT() { return ('感應器拔掉了：Arduino 讀到 -32768'); }
+  var SIM = {
+    state: function () {
+      imuProgram(S.fn, S.step >= 3 && S.fn === 'zero');   // 選「航向歸零」＝重新上傳，setup() 先歸零
+      var v = imuVals(); return { ok: !$('unplug').checked, raw: v, r: regs(v) };
+    },
+    draw: function (st) {
+      var v = st.raw;
+      imuDraw(v, !st.ok, st.ok ? [('3D 航向 ') + v.h3d + '°', ('轉向角速度 ') + v.yawRate, ('俯仰角 ') + v.pitch + '°', ('俯仰角速度 ') + v.pitchRate] : []);
+    },
+    inputs: ['imu-hd', 'imu-pt', 'imu-shake', 'imu-drift', 'imu-magx', 'unplug']
+  };
+  imuBind(function () { tick(false); }, true);
+  setInterval(imuStep, 600);
+
+  // ═════ 頁面 ═════
+
+  // 需要：BASE（通訊方式）、FNS（功能）、SIM（模擬器）
+  var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; });
+  if (!BY[S.fn]) S.fn = FNS[0].id;
+
+  // ───── 主程式組裝 ─────
+  function programLines() {
+    var f = BY[S.fn], L = [];
+    var s1 = S.step === 1, s2 = S.step === 2, s3 = S.step === 3;
+    BASE.top().forEach(function (t) { L.push({ t: t, tag: 1, hl: s1 }); });
+    if (S.step >= 2) {
+      L.push({ t: '' });
+      BASE.decl().forEach(function (t) { L.push({ t: t, tag: 2, hl: s2 }); });
+      if (S.step >= 3 && f.pre) { L.push({ t: '' }); f.pre.forEach(function (t) { L.push({ t: t, tag: 3, hl: s3 }); }); }
+      L.push({ t: '' });
+      BASE.setupOpen().forEach(function (t) { L.push({ t: t, tag: 2, hl: s2 }); });
+      if (S.step >= 3 && f.once) f.body.forEach(function (b) { L.push({ t: '  ' + b, tag: 3, hl: s3 }); });
+      BASE.setupClose().forEach(function (t) { L.push({ t: t, tag: 2, hl: s2 }); });
+      if (S.step >= 3) {
+        L.push({ t: '' });
+        L.push({ t: 'void loop() {', tag: 3, hl: s3 });
+        if (f.once) {
+          L.push({ t: '  ' + ('// 這個功能在 setup() 做一次就好，loop() 不用寫'), tag: 3, hl: s3 });
+        } else {
+          (BASE.loopHead ? BASE.loopHead() : []).forEach(function (t) { L.push({ t: '  ' + t, tag: 3, hl: s3 }); });
+          f.body.forEach(function (b) { L.push({ t: '  ' + b, tag: 3, hl: s3 }); });
+          L.push({ t: '  ' + (f.wait || BASE.loopWait), tag: 3, hl: s3 });
+        }
+        L.push({ t: '}', tag: 3, hl: s3 });
+        if (f.post) { L.push({ t: '' }); f.post.forEach(function (t) { L.push({ t: t, tag: 3, hl: s3 }); }); }
+      }
+    }
+    L.push({ t: '' });
+    PROD.helper.forEach(function (t, i) { L.push({ t: t, tag: 1, hl: s1, helper: true, tagHide: i > 0 }); });
+    return L;
+  }
+  var lastKeys = '';
+  function drawMain() {
+    var L = programLines();
+    L.forEach(function (l, k) { l.no = k + 1; });
+    if (!S.showHelper) {
+      // 小幫手很長：平常只露第一行，按「顯示小幫手」才全部展開（複製程式一定是完整的）
+      var nH = L.filter(function (l) { return l.helper; }).length, seen = false, F = [];
+      L.forEach(function (l) {
+        if (!l.helper) { F.push(l); return; }
+        if (seen) return;
+        seen = true; F.push(l);
+        F.push({ t: ('// ⋯ 還有 ' + (nH - 1) + ' 行（按「顯示小幫手」看）'), no: '⋮', tag: 1, tagHide: true, hl: l.hl, helper: true });
+      });
+      L = F;
+    }
+    var prev = lastKeys ? lastKeys.split('\n') : [];
+    L.forEach(function (l) { if (l.t && lastKeys && prev.indexOf(l.t) < 0) l.isNew = true; });
+    lastKeys = L.map(function (l) { return l.t; }).join('\n');
+    render($('maincode'), L);
+    var b = $('bubble'); b.querySelector('i').textContent = S.step; b.querySelector('span').textContent = BASE.bubble(S.step, BY[S.fn]);
+    drawMinis();
+  }
+
+  // 每一步卡片裡的「這一步寫的程式」：用完整程式的真實行號；小幫手只列開頭兩行
+  var miniPrev = {};
+  function drawMinis() {
+    var keep = S.step; S.step = 3; var full = programLines(); S.step = keep;
+    [1, 2, 3].forEach(function (k) {
+      var el = $('mini' + k); if (!el) return;
+      var lines = [], nHelper = 0, total = 0;
+      full.forEach(function (l, i) { if (l.tag === k && l.helper) total++; });
+      full.forEach(function (l, i) {
+        if (l.tag !== k) return;
+        if (l.helper) {
+          nHelper++;
+          if (nHelper <= 2) lines.push({ t: l.t, no: i + 1 });
+          else if (nHelper === 3) lines.push({ t: ('// ⋯ 小幫手共 ' + total + ' 行，按右邊「顯示小幫手」看全部'), no: '⋮' });
+          return;
+        }
+        lines.push({ t: l.t, no: i + 1 });
+      });
+      if (!lines.length) { el.innerHTML = ''; return; }
+      var nums = [], h0 = 0;
+      full.forEach(function (l, i) { if (l.tag !== k) return; if (l.helper) { if (!h0) h0 = i + 1; } else nums.push(i + 1); });
+      var a = nums[0], z = nums[nums.length - 1];
+      var txt = lines.map(function (l) { return l.no + l.t; }).join('\n');
+      var range = ('第 ' + a + (z !== a ? '～' + z : '') + ' 行');
+      if (h0) range += ('，和最下面第 ' + h0 + ' 行起的小幫手');
+      el.innerHTML = '<span>' + ('這一步寫的程式（') + range + ('）') + '</span><pre class="code"></pre>';
+      render(el.querySelector('pre'), lines, { noTag: true });
+      if (miniPrev[k] !== undefined && miniPrev[k] !== txt) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      miniPrev[k] = txt;
+    });
+  }
+
+  // ───── 步驟 ─────
+  function setStep(n) {
+    S.step = Math.max(S.step, n);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    S.viewStep = n;
+    drawMain();
+    $('next2').disabled = !BASE.valid();
+  }
+  // 顯示用：畫程式時用「目前看的步驟」決定長到哪一步
+  var _draw = drawMain;
+  drawMain = function () { var keep = S.step; S.step = S.viewStep || S.step; _draw(); S.step = keep; };
+
+  // ───── 功能選擇器（第 3 步）與範例卡 ─────
+  function groups() {
+    var g = {}, order = [];
+    FNS.forEach(function (f) { if (!g[f.grp]) { g[f.grp] = []; order.push(f.grp); } g[f.grp].push(f); });
+    return { g: g, order: order };
+  }
+  function drawPicker() {
+    var box = $('picker'), gg = groups(); box.innerHTML = '';
+    gg.order.forEach(function (k) {
+      var wrap = document.createElement('div'); wrap.className = 'fgroup';
+      wrap.innerHTML = '<span>' + k + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      gg.g[k].forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip';
+        b.textContent = f.code + ' ' + f.name; b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.title = f.name;
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      wrap.appendChild(chips); box.appendChild(wrap);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + f.code + ('　') + f.name + '</b><span>' + f.what + '</span><span class="small">' +
+      (f.kind === 'cmd' ? ('命令：') : ('回傳：')) + f.ret + '</span>' + (f.warn ? '<span class="err">' + f.warn + '</span>' : '');
+  }
+  function pick(id) {
+    S.fn = id;
+    setStep(3);
+    drawPicker(); tick(true);
+  }
+  function cardLines(f) {
+    if (f.once) return ['void setup() {', '  ' + BASE.cardOnceHead()].concat(f.body.map(function (b) { return '  ' + b; }), ['}']);
+    var head = (BASE.loopHead ? BASE.loopHead() : []).map(function (b) { return '  ' + b; });
+    return ['void loop() {'].concat(head, f.body.map(function (b) { return '  ' + b; }), ['  ' + (f.wait || BASE.loopWait), '}']);
+  }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    FNS.forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      c.innerHTML =
+        '<div class="card-head"><h3>' + f.code + '<span class="zh">' + f.name + '</span></h3>' +
+        '<span class="badges"><span class="badge yes">' + (f.kind === 'cmd' ? ('命令') : ('讀值')) + '</span>' + (f.badge ? '<span class="badge yes">' + f.badge + '</span>' : '') + '</span></div>' +
+        '<p>' + f.what + '</p>' +
+        '<dl class="meta"><dt>' + (f.kind === 'cmd' ? ('命令') : ('回傳')) + '</dt><dd>' + f.ret + '</dd><dt>' + ('範例') + '</dt><dd>' +
+        (f.once ? ('放在 setup() 裡，開機時做一次') : ('放在 loop() 裡，一直重複')) + '</dd></dl>' +
+        '<pre class="code"></pre>' +
+        '<p class="out">' + ('序列埠監控視窗會印出：') + '<code></code></p>' +
+        '<button type="button" class="try">' + ('試試看') + '</button>';
+      render(c.querySelector('pre'), cardLines(f).map(function (t) { return { t: t }; }), { noTag: true });
+      c.querySelector('.try').addEventListener('click', function () {
+        pick(f.id);
+        var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      });
+      box.appendChild(c);
+    });
+    var cnt = $('fncount'); if (cnt) cnt.textContent = FNS.length;
+  }
+  function outText(f, st) { var o = f.out(st); return Array.isArray(o) ? o.join('\n') : String(o); }
+  function updateCardOutputs(st) {
+    FNS.forEach(function (f) {
+      var el = document.querySelector('#fn-' + f.id + ' .out code');
+      if (el) el.textContent = outText(f, st);
+    });
+  }
+
+  // ───── 完整範例 ─────
+  function exFull(id) {
+    // 複製用：把「小幫手貼在這裡」那一行換成真的小幫手
+    var out = [];
+    EX[id].forEach(function (t) { if (t === '@HELPER') out = out.concat(PROD.helper); else out.push(t); });
+    return out;
+  }
+  function drawExamples() {
+    Object.keys(EX).forEach(function (k) {
+      var el = $('ex-' + k); if (!el) return;
+      var shown = EX[k].map(function (t) { return t === '@HELPER' ? ('// ……第 1 步的小幫手貼在這裡（按「複製」會自動帶上）……') : t; });
+      render(el, shown.map(function (t) { return { t: t }; }), { noTag: true });
+    });
+  }
+
+  // ───── 序列埠監控視窗 ─────
+  var log = [], booted = false, halted = false;
+  var WARN = (/-32768|讀不到|找不到|沒接好|收不到/);
+  function cls(t) { return WARN.test(t) ? 'warnline' : ''; }
+  function pushOut(f, st) { outText(f, st).split('\n').forEach(function (t) { log.push({ c: cls(t), t: t }); }); }
+  function tick(reset) {
+    var st = SIM.state(), f = BY[S.fn];
+    SIM.draw(st);
+    updateCardOutputs(st);
+    if (S.step < 3) {
+      log = [{ c: '', t: ('（做完第 3 步「使用功能」，這裡會出現 Arduino 印出的內容）') }];
+      booted = false;
+    } else if (reset || !booted) {
+      // 重新上傳＝開機：setup() 先跑；讀不到就印提醒，選「停在這裡」就不再往下跑
+      log = []; booted = true; halted = false;
+      (BASE.bootLines ? BASE.bootLines(st) : []).forEach(function (t) { log.push({ c: '', t: t }); });
+      if (!st.ok) { log.push({ c: 'warnline', t: BASE.bootFail() }); halted = BASE.halts(); }
+      if (halted) log.push({ c: '', t: BASE.haltNote ? BASE.haltNote() : ('（程式停在 while (true) {}：接好線後按 Arduino 的重置鍵，這裡是再點一次功能）') });
+      else pushOut(f, st);
+    } else if (!f.once && !halted) {
+      pushOut(f, st);
+    }
+    while (log.length > 8) log.shift();
+    $('console').innerHTML = log.map(function (l) { return '<span class="' + l.c + '">' + esc(l.t) + '</span>'; }).join('\n');
+  }
+
+  // ───── 事件 ─────
+  $('next1').addEventListener('click', function () { setStep(2); });
+  $('next2').addEventListener('click', function () { if (BASE.valid()) { setStep(3); drawPicker(); tick(true); } });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) {
+    $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } });
+  });
+  BASE.bind(function (rerun) { drawMain(); drawPicker(); $('next2').disabled = !BASE.valid(); if (rerun && S.step >= 3) tick(true); });
+  SIM.inputs.forEach(function (id) {
+    var el = $(id); if (!el) return;
+    el.addEventListener('input', function () { tick(id === 'unplug' && BY[S.fn].once); });
+  });
+  $('helperbtn').addEventListener('click', function (e) {
+    S.showHelper = !S.showHelper;
+    e.currentTarget.textContent = S.showHelper ? ('收起小幫手') : ('顯示小幫手');
+    e.currentTarget.setAttribute('aria-pressed', String(!!S.showHelper));
+    drawMain();
+  });
+  $('copymain').addEventListener('click', function (e) { copyText(plain(programLines()), e.currentTarget); });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { copyText(exFull(b.getAttribute('data-copy')).join('\n') + '\n', b); });
+  });
+
+  // ───── 開始 ─────
+  drawPicker(); drawCards(); drawExamples(); setStep(1); tick(true);
+  setInterval(function () { if (S.step >= 3 && !BY[S.fn].once) tick(false); }, 600);
+
+})();
+</script>
+<script>
+(function () {
+  var side = document.querySelector('.side'); if (!side) return;
+  var mq = window.matchMedia('(max-width: 900px)');
+  var home = side.parentNode, homeNext = side.nextSibling;
+  var con = document.getElementById('console'), conP = con && con.closest('.panel');
+  if (conP && conP.parentNode !== side) conP = null;
+  var last = null, ready = false;
+  var STOP = '.step-body, .cards, .ref, .steps, .main, .wrap, body';
+  function anchorOf(el) { var a = el; while (a && a.parentElement && !a.parentElement.matches(STOP)) a = a.parentElement; return a && a.parentElement ? a : null; }
+  function flash(el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  // 把 box 搬到 a 那一塊的後面；a 在畫面上的位置維持不動（點下去時就記住 a：頁面常在點擊後重畫按鈕，按鈕本身會被換掉）
+  function moveAfter(box, a) {
+    if (!a || !a.isConnected || a === box || a.contains(box)) return false;
+    if (a.nextElementSibling === box) return true;
+    var y = a.getBoundingClientRect().top;
+    a.parentNode.insertBefore(box, a.nextSibling); box.classList.add('follow');
+    var d = a.getBoundingClientRect().top - y; if (d) window.scrollBy(0, d);
+    return true;
+  }
+  function inPanel(el) { return side.contains(el) || (conP && conP.contains(el)); }
+  function placeSide(a, scroll) {
+    if (!mq.matches || !a) return;
+    if (conP && conP.parentNode !== side) { conP.classList.remove('follow'); side.appendChild(conP); }
+    if (!moveAfter(side, a)) return;
+    if (scroll) { var r = side.getBoundingClientRect(); if (r.top > window.innerHeight * 0.7) window.scrollBy({ top: r.top - window.innerHeight * 0.3, behavior: 'smooth' }); }
+  }
+  function placeConsole(el) {
+    if (!mq.matches || !conP || inPanel(el)) return;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在「正在操作的那一排」正下方（排＝控制區的直接子元素），
+    // 畫面、那一排、輸出同一屏；控制區很長或那一排在最下面（例如拔線勾選）都不會跑出畫面
+    var sim = el.closest('.sim'), ctrl = null, row = null;
+    if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (ctrl && ctrl !== el) for (var j = 0; j < ctrl.children.length; j++) if (ctrl.children[j].contains(el)) row = ctrl.children[j];
+    if (sim && ctrl) {
+      var box = row ? ctrl : sim, after = row || null;
+      if (after ? after.nextElementSibling === conP : conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var y = el.getBoundingClientRect().top;
+      if (after) box.insertBefore(conP, after.nextSibling); else sim.insertBefore(conP, ctrl);
+      conP.classList.add('follow');
+      var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
+      return;
+    }
+    var a = anchorOf(el); if (a && a.nextElementSibling === side) return; // 程式那格已經緊接在下面，輸出就在它裡面
+    moveAfter(conP, a);
+  }
+  function reset() {
+    if (mq.matches) { var b = document.querySelector('#step1 .step-body button') || document.querySelector('#step1 button'); if (b) placeSide(anchorOf(b), false); return; }
+    if (conP) { conP.classList.remove('follow'); side.appendChild(conP); }
+    side.classList.remove('follow'); home.insertBefore(side, homeNext);
+  }
+  function remember(e) { if (!inPanel(e.target)) last = anchorOf(e.target); }
+  document.addEventListener('pointerdown', remember, true);
+  document.addEventListener('focusin', remember, true);
+  var mo = new MutationObserver(function () { if (ready && mq.matches) { placeSide(last, true); flash(side); } });
+  ['maincode', 'mainblocks'].forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true }); });
+  function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
+  document.addEventListener('input', sim, true);
+  document.addEventListener('change', sim, true);
+  // 模擬器裡的按鈕（掌控者按鍵、色點調色盤…）也算在操作模擬器
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.sim button'); if (b) placeConsole(b); }, true);
+  reset(); setTimeout(function () { ready = true; }, 800);
+  if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
+})();
+</script>
+</body>
+</html>

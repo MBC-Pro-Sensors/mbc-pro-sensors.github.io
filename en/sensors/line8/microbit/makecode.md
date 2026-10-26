@@ -7,7 +7,7 @@ This page covers **MakeCode (blocks / JavaScript)** only: how to set it up for t
 
 ## Which edition and how to connect
 
-Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `0x16`. The sensor needs 5 V; use a breakout board with a 5 V output.
+Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `0x16`. It draws little current, so VCC can go to the micro:bit **3V** pin (about 90 mA on V1, 190 mA on V2); on batteries the rail can sag below 3 V, so switch to external 5 V if readings are unstable (share GND with the micro:bit).
 
 <figure class="ref-fig"><img src="/images/figures/line8/wiring-microbit.svg" alt="Pathfinder 8-Way (Line8) × BBC micro:bit V1 / V2" loading="lazy"></figure>
 
@@ -21,7 +21,7 @@ Get the **Universal I2C edition** and connect it to the I2C header of a micro:bi
 
 ## Reading values
 
-After adding pxt-mbc-sensors, find the blocks in the MBC category; the JavaScript form is shown too, address `0x16`.
+After adding pxt-mbc-sensors, find the blocks in the MBC Sensors category; the JavaScript form is shown too, address `0x16`.
 
 <section id="v01" class="ref-item">
 
@@ -33,13 +33,13 @@ After adding pxt-mbc-sensors, find the blocks in the MBC category; the JavaScrip
 | :--- | :--- |
 | `-8~+8` | which channel the line is under: −8 (far left) to +8 (far right), 0 = centre; seen from behind the robot, negative = left |
 
-<pre class="blocks">(MBC line position :: #E8711E)</pre>
+<pre class="blocks">(line position :: #00A4E4)</pre>
 
 ```typescript
-let linePos = MBC.readValue(0x16, 0x01)   // line position：-8~+8
+let linePos = mbc.linePosition()   // line position：-8~+8
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -53,13 +53,13 @@ let linePos = MBC.readValue(0x16, 0x01)   // line position：-8~+8
 | :--- | :--- |
 | `-100~+100` | sub-channel position: −100 to +100, 0 = centre, negative = left (same sign as line position) |
 
-<pre class="blocks">(MBC fine line position :: #E8711E)</pre>
+<pre class="blocks">(fine line position :: #00A4E4)</pre>
 
 ```typescript
-let linePosFine = MBC.readValue(0x16, 0x02)   // fine position：-100~+100
+let linePosFine = mbc.linePositionFine()   // fine position：-100~+100
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -73,13 +73,13 @@ let linePosFine = MBC.readValue(0x16, 0x02)   // fine position：-100~+100
 | :--- | :--- |
 | `0~8` 路 | number of channels on the line, 0~8; 0 = no line |
 
-<pre class="blocks">(MBC line width :: #E8711E)</pre>
+<pre class="blocks">(line width :: #00A4E4)</pre>
 
 ```typescript
-let lineWidth = MBC.readValue(0x16, 0x03)   // line width：0~8 路
+let lineWidth = mbc.lineWidth()   // line width：0~8 路
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -93,13 +93,26 @@ let lineWidth = MBC.readValue(0x16, 0x03)   // line width：0~8 路
 | :--- | :--- |
 | `0~4` | number of separate line segments: 0 = lost, 1 = one line, ≥2 = fork / crossing |
 
-<pre class="blocks">(MBC line segments :: #E8711E)</pre>
+<pre class="blocks">(line segments :: #00A4E4)</pre>
 
 ```typescript
-let groupCount = MBC.readValue(0x16, 0x04)   // line segments：0~4
+let groupCount = mbc.lineSegments()   // line segments：0~4
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+**Related block "line is seen"**
+
+```typescript
+let lineSeen = mbc.lineSeen()
+```
+
+**Related block "on line [lost]"**
+
+```typescript
+mbc.onLineEvent(MbcLineEvent.Lost, function () {
+})
+```
+
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -113,13 +126,19 @@ let groupCount = MBC.readValue(0x16, 0x04)   // line segments：0~4
 | :--- | :--- |
 | `0~255` bit | bit0 = channel 1 (left) … bit7 = channel 8; 1 = that channel sees the line |
 
-<pre class="blocks">(MBC line bitmap :: #E8711E)</pre>
+<pre class="blocks">(line bitmap :: #00A4E4)</pre>
 
 ```typescript
-let bitmap = MBC.readValue(0x16, 0x05)   // line bitmap：0~255 bit
+let bitmap = mbc.lineBitmap()   // line bitmap：0~255 bit
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+**Related block "channel 1 is on the line"**
+
+```typescript
+let lineChannelOnLine = mbc.lineChannelOnLine(1)
+```
+
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -131,13 +150,13 @@ let bitmap = MBC.readValue(0x16, 0x05)   // line bitmap：0~255 bit
 | :--- | :--- |
 | `-8~+8` | where the line was before it was lost: −8 to +8 (negative = left); keeps the last value |
 
-<pre class="blocks">(MBC last exit direction :: #E8711E)</pre>
+<pre class="blocks">(last exit direction :: #00A4E4)</pre>
 
 ```typescript
-let lastDir = MBC.readValue(0x16, 0x06)   // last exit direction：-8~+8
+let lastDir = mbc.lineLastDirection()   // last exit direction：-8~+8
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -149,13 +168,13 @@ let lastDir = MBC.readValue(0x16, 0x06)   // last exit direction：-8~+8
 | :--- | :--- |
 | `1~99` | reflect threshold for 'on line', 1~99, default 50; set with E4 |
 
-<pre class="blocks">(MBC threshold :: #E8711E)</pre>
+<pre class="blocks">(line threshold :: #00A4E4)</pre>
 
 ```typescript
-let threshold = MBC.readValue(0x16, 0x07)   // threshold：1~99
+let threshold = mbc.lineThreshold()   // threshold：1~99
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -167,7 +186,19 @@ let threshold = MBC.readValue(0x16, 0x07)   // threshold：1~99
 | :--- | :--- |
 | `0~255` 次 | number of calibrations completed since power-on (button calibrations included) |
 
-No dedicated block (use the generic `MBC.readValue(address, id)` block).
+<pre class="blocks">(line calibration count :: #00A4E4)</pre>
+
+```typescript
+let calibCount = mbc.lineCalibrationCount()   // calibrations done：0~255 次
+```
+
+**Related block "line follower is calibrating"**
+
+```typescript
+let lineCalibrating = mbc.lineCalibrating()
+```
+
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -181,13 +212,13 @@ No dedicated block (use the generic `MBC.readValue(address, id)` block).
 | :--- | :--- |
 | `0~100` | calibrated reflect of channel 1~8, 0~100 (channel 1 = left); ids 10~17 |
 
-<pre class="blocks">(MBC channel [1 v] reflect :: #E8711E)</pre>
+<pre class="blocks">(channel (1) reflect :: #00A4E4)</pre>
 
 ```typescript
-let light = MBC.readValues(0x16, 0x10, 8)   // channel 1~8 reflect
+let light = mbc.lineChannel(1)   // channel 1~8 reflect：0~100 (N = 1~8)
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -199,10 +230,10 @@ let light = MBC.readValues(0x16, 0x10, 8)   // channel 1~8 reflect
 
 follow a black line (default)
 
-<pre class="blocks">MBC set black line :: #E8711E</pre>
+<pre class="blocks">line follower follow [black v] line :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE0)   // black line mode
+mbc.lineSetColor(MbcLineColor.Black)   // black line mode
 ```
 
 </section>
@@ -213,10 +244,10 @@ MBC.writeCmd(0x16, 0xE0)   // black line mode
 
 follow a white line (F3 b1 = 1)
 
-<pre class="blocks">MBC set white line :: #E8711E</pre>
+<pre class="blocks">line follower follow [white v] line :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE1)   // white line mode
+mbc.lineSetColor(MbcLineColor.White)   // white line mode
 ```
 
 </section>
@@ -227,10 +258,10 @@ MBC.writeCmd(0x16, 0xE1)   // white line mode
 
 store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM
 
-<pre class="blocks">MBC calibrate black :: #E8711E</pre>
+<pre class="blocks">line follower calibrate [current reading is black v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE2)   // calibrate black
+mbc.lineCalibrate(MbcLineCalib.Black)   // calibrate black
 ```
 
 </section>
@@ -241,10 +272,10 @@ MBC.writeCmd(0x16, 0xE2)   // calibrate black
 
 store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM
 
-<pre class="blocks">MBC calibrate white :: #E8711E</pre>
+<pre class="blocks">line follower calibrate [current reading is white v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE3)   // calibrate white
+mbc.lineCalibrate(MbcLineCalib.White)   // calibrate white
 ```
 
 </section>
@@ -255,10 +286,10 @@ MBC.writeCmd(0x16, 0xE3)   // calibrate white
 
 threshold 1~99 (RAM only, back to 50 after reboot)
 
-<pre class="blocks">MBC set threshold (50) :: #E8711E</pre>
+<pre class="blocks">line follower set threshold (50) :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE4, [50])   // set threshold
+mbc.lineSetThreshold(50)   // set threshold
 ```
 
 </section>
@@ -269,10 +300,10 @@ MBC.writeCmd(0x16, 0xE4, [50])   // set threshold
 
 sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile
 
-<pre class="blocks">MBC auto calibrate (5 s) :: #E8711E</pre>
+<pre class="blocks">line follower calibrate [auto \(sweep for 5 s\) v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE7)   // 5-second auto calibration
+mbc.lineCalibrate(MbcLineCalib.Auto)   // 5-second auto calibration
 ```
 
 </section>

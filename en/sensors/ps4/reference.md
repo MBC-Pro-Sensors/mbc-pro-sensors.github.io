@@ -92,7 +92,7 @@ Not sent in any EV3 mode (the locked EV3 modes stay as they are). Use Arduino I2
 <details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
-Returns `MBC_NONE` (−32768) when the module does not answer.
+This value can itself be −32768 (top bit set, e.g. `0x8000`), the same as `MBC_NONE` for no answer, so do not test for −32768: use `mbcReadMany(0x42, 0x01, 1, &buttons16)` instead; only a `false` return means no answer.
 
 ```cpp
 int16_t buttons16 = mbcRead(0x42, 0x01);   // 16 buttons：0~65535 bit
@@ -119,12 +119,25 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC 16 buttons :: #E8711E)</pre>
+<pre class="blocks">(gamepad buttons bit mask :: #00A4E4)</pre>
 
 ```typescript
-let buttons16 = MBC.readValue(0x42, 0x01)   // 16 buttons：0~65535 bit
+let buttons16 = mbc.padButtons()   // 16 buttons：0~65535 bit
+```
+
+**Related block "gamepad button [cross] is pressed"**
+
+```typescript
+let padButtonPressed = mbc.padButtonPressed(MbcPadButton.Cross)
+```
+
+**Related block "on gamepad button [cross] [pressed]"**
+
+```typescript
+mbc.onPadButton(MbcPadButton.Cross, MbcPadButtonEvent.Pressed, function () {
+})
 ```
 
 </details>
@@ -240,12 +253,12 @@ int dpad = MiniR4.I2C1.MXColor.getColor(R);
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC D-pad :: #E8711E)</pre>
+<pre class="blocks">(gamepad [d-pad v] buttons \(0-15\) :: #00A4E4)</pre>
 
 ```typescript
-let dpad = MBC.readValue(0x42, 0x02)   // D-pad：0~15 bit
+let dpad = mbc.padGroup(MbcPadGroup.Dpad)   // D-pad：0~15 bit
 ```
 
 </details>
@@ -353,12 +366,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC shape buttons :: #E8711E)</pre>
+<pre class="blocks">(gamepad [shapes v] buttons \(0-15\) :: #00A4E4)</pre>
 
 ```typescript
-let shapeKeys = MBC.readValue(0x42, 0x03)   // shape buttons：0~15 bit
+let shapeKeys = mbc.padGroup(MbcPadGroup.Shapes)   // shape buttons：0~15 bit
 ```
 
 </details>
@@ -465,12 +478,12 @@ int shoulderKeys = MiniR4.I2C1.MXColor.getColor(G);
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC shoulder buttons :: #E8711E)</pre>
+<pre class="blocks">(gamepad [shoulders v] buttons \(0-15\) :: #00A4E4)</pre>
 
 ```typescript
-let shoulderKeys = MBC.readValue(0x42, 0x04)   // shoulder buttons：0~15 bit
+let shoulderKeys = mbc.padGroup(MbcPadGroup.Shoulders)   // shoulder buttons：0~15 bit
 ```
 
 </details>
@@ -572,12 +585,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC function buttons :: #E8711E)</pre>
+<pre class="blocks">(gamepad [functions v] buttons \(0-15\) :: #00A4E4)</pre>
 
 ```typescript
-let funcKeys = MBC.readValue(0x42, 0x05)   // function buttons：0~15 bit
+let funcKeys = mbc.padGroup(MbcPadGroup.Functions)   // function buttons：0~15 bit
 ```
 
 </details>
@@ -680,12 +693,12 @@ int connected = MiniR4.I2C1.MXColor.getColor(K);
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns false when the sensor does not answer.
 
-<pre class="blocks">(MBC gamepad connected? :: #E8711E)</pre>
+<pre class="blocks"><gamepad is connected :: #00A4E4></pre>
 
 ```typescript
-let connected = MBC.readValue(0x42, 0x06)   // connected：0~1
+let connected = mbc.padConnected()   // connected：0~1
 ```
 
 </details>
@@ -770,12 +783,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC battery :: #E8711E)</pre>
+<pre class="blocks">(gamepad battery percent :: #00A4E4)</pre>
 
 ```typescript
-let battery = MBC.readValue(0x42, 0x07)   // battery：0~100 %
+let battery = mbc.padBattery()   // battery：0~100 %
 ```
 
 </details>
@@ -840,12 +853,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC L2 analog :: #E8711E)</pre>
+<pre class="blocks">(gamepad trigger [L2 v] analog :: #00A4E4)</pre>
 
 ```typescript
-let l2Analog = MBC.readValue(0x42, 0x08)   // L2 analog：0~255
+let l2Analog = mbc.padTrigger(MbcPadTrigger.L2)   // L2 analog：0~255
 ```
 
 </details>
@@ -910,12 +923,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC R2 analog :: #E8711E)</pre>
+<pre class="blocks">(gamepad trigger [R2 v] analog :: #00A4E4)</pre>
 
 ```typescript
-let r2Analog = MBC.readValue(0x42, 0x09)   // R2 analog：0~255
+let r2Analog = mbc.padTrigger(MbcPadTrigger.R2)   // R2 analog：0~255
 ```
 
 </details>
@@ -980,12 +993,10 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
-
-<pre class="blocks">(MBC system buttons :: #E8711E)</pre>
+No dedicated block; in JavaScript read it with `mbc.readValue(address, id)` (−32768 when nothing answers). Related block: "gamepad system button [PS] is pressed".
 
 ```typescript
-let sysKeys = MBC.readValue(0x42, 0x0A)   // system buttons：0~3 bit
+let sysKeys = mbc.readValue(0x42, 0x0A)   // system buttons：0~3 bit
 ```
 
 </details>
@@ -1048,12 +1059,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC gamepad type :: #E8711E)</pre>
+<pre class="blocks">(gamepad type :: #00A4E4)</pre>
 
 ```typescript
-let padType = MBC.readValue(0x42, 0x0B)   // gamepad type：0~4
+let padType = mbc.padType()   // gamepad type：0~4
 ```
 
 </details>
@@ -1172,12 +1183,12 @@ int raw = MiniR4.I2C1.MXColor.getColor(B);   // group 1
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC stick [axis] :: #E8711E)</pre>
+<pre class="blocks">(gamepad joystick [left X v] :: #00A4E4)</pre>
 
 ```typescript
-let stick = MBC.readValues(0x42, 0x10, 4)   // stick axis 1~4
+let stick = [mbc.padStick(MbcPadAxis.LeftX), mbc.padStick(MbcPadAxis.LeftY), mbc.padStick(MbcPadAxis.RightX), mbc.padStick(MbcPadAxis.RightY)]   // stick axis 1~4：-100~+100
 ```
 
 </details>
@@ -1242,10 +1253,10 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC rumble [strength] :: #E8711E</pre>
+<pre class="blocks">gamepad rumble strength (200) :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x42, 0xE5, [50])   // rumble
+mbc.padRumble(200)   // rumble
 ```
 
 </details>
@@ -1306,10 +1317,10 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC light bar R[r] G[g] B[b] :: #E8711E</pre>
+<pre class="blocks">gamepad light bar colour [#ff0000] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x42, 0xE6, [50, 50, 50])   // light bar colour
+mbc.padLight(0xff0000)   // light bar colour
 ```
 
 </details>
@@ -1393,11 +1404,11 @@ The status flags are not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks"><MBC device ready :: #E8711E></pre>
+<pre class="blocks"><device at (0x42 v) is ready :: #00A4E4></pre>
 
 ```typescript
-let st = MBC.status(0x42)   // F3
-let ready = (st & 1) != 0
+let ready = mbc.deviceReady(0x42)   // F3 bit0; false when nothing answers
+let st = mbc.status(0x42)   // F3
 ```
 
 </details>

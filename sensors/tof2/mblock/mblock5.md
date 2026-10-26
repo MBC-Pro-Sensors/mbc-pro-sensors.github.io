@@ -151,6 +151,18 @@
 
 </section>
 
+## 命令
+
+<section id="cx-readall" class="ref-item ref-cmd">
+
+### 更新全部數值 <small>readAll</small>
+
+一次讀整張值表進快取（FD 整包）；接下來 10 ms 內的讀值積木直接用快取，不再逐一詢問
+
+<pre class="blocks">測距者 2 路 連接埠 [1 v] 更新全部數值 :: sensing</pre>
+
+</section>
+
 ## 範例
 
 <!-- examples: sensors/tof2/mblock-examples.md host=mblock sw=mblock5 whole -->

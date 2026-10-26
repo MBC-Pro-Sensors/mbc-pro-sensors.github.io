@@ -25,7 +25,7 @@ Code assumes port 1: `Sensor.SetMode` picks the mode, `Sensor.ReadRawValue` read
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~120` cm | distance from the left sensor, 0~120 cm (left = sensor 0 seen from behind the robot); 120 = nothing in range / sensor failed |
+| `0~120` cm (EV3 mode 1, mode 2, mode 4 give a scaled value: cm×100/120 (0~100)) | distance from the left sensor, 0~120 cm (left = sensor 0 seen from behind the robot); 120 = nothing in range / sensor failed |
 
 ```basic
 ' clev3r (BASIC)
@@ -49,7 +49,7 @@ leftCm = Sensor.ReadRawValue(1, 0)
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~120` cm | distance from the right sensor, 0~120 cm (right = sensor 1); 120 = nothing in range / sensor failed |
+| `0~120` cm (EV3 mode 1, mode 2, mode 4 give a scaled value: cm×100/120 (0~100)) | distance from the right sensor, 0~120 cm (right = sensor 1); 120 = nothing in range / sensor failed |
 
 ```basic
 ' clev3r (BASIC)
@@ -113,7 +113,7 @@ rightMm = Sensor.ReadRawValue(1, 1)
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~1200` mm | (left mm + right mm) / 2, 0~1200; same number as EV3 mode 3 and the 3rd value of SPIKE mode 6 |
+| `0~1200` mm (EV3 mode 0 gives a scaled value: cm average ×100/120 (0~100)) | (left mm + right mm) / 2, 0~1200; same number as EV3 mode 3 and the 3rd value of SPIKE mode 6 |
 
 ```basic
 ' clev3r (BASIC)

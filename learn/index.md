@@ -1,14 +1,18 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-# 🧩 互動教學（SPIKE）
+# 🧩 互動教學
 
-不用接主機、不用裝軟體，打開就能在網頁上學：左邊選要用的功能，右邊的程式或積木跟著長出來，旁邊的模擬感應器可以拖拉，看程式讀到什麼數值。學會了再照產品的「SPIKE 說明」接上主機。
+不用接主機、不用裝軟體，打開就能在網頁上學：左邊選要用的功能，右邊的程式或積木跟著長出來，旁邊的模擬感應器可以拖拉，看程式讀到什麼數值。學會了再照產品說明接上主機。
 
-**四種寫法，選你上課用的那一種：**
+**先找你的主機，再選上課用的寫法：**
 
-- **MicroPython（Pybricks）**：打字寫程式，功能最完整。
-- **Pybricks 積木**：Pybricks 網頁上的積木，會自動轉成 MicroPython。
-- **MBC 積木網站**：MBC 自己的積木網站，感應器積木直接拉出來用。
-- **樂高官方 SPIKE App**：用原本的 SPIKE App 積木，不用換韌體。
+| 主機 | 寫法 |
+|---|---|
+| SPIKE Prime／Robot Inventor | MicroPython（Pybricks）、Pybricks 積木、MBC 積木網站、樂高官方 SPIKE App |
+| EV3 | Pybricks／EV3 MicroPython、clev3r、EV3 Classroom、EV3-G 官方軟體 |
+| Arduino（Uno 等） | Arduino IDE |
+| mBot／MegaPi | mBlock 5 |
+| MATRIX Mini R4 | MATRIXblock |
+| micro:bit | MakeCode |
 
 <!-- learn-hub -->
 

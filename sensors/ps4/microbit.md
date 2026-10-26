@@ -20,34 +20,40 @@
 
 | 感應器 | micro:bit |
 | :--- | :--- |
-| SDA | P20 |
-| SCL | P19 |
-| 5V | 外接 5 V（或 V2 的 3V 腳，需確認電流） |
+| SDA（RX） | P20 |
+| SCL（TX） | P19 |
+| VCC | **一定要外接 5 V**（GND 要和 micro:bit 共地） |
 | GND | GND |
 
 ## 讀值積木
 
 | 積木 | 傳回 | 編號 | 說明 |
 | :--- | :--- | :--- | :--- |
-| MBC 十六鍵 | 0~65535 bit | [`01`](/sensors/ps4/reference.md#v01) | 全部按鍵一個 16 bit（PSX 排列）：bit0 SELECT(SHARE)、1 L3、2 R3、3 START(OPTIONS)、4 上、5 右、6 下、7 左、8 L2、9 R2、10 L1、11 R1、12 ▲、13 ●、14 ✕、15 ■；1 = 按下；未連線 = 0 |
-| MBC 方向鍵 | 0~15 bit | [`02`](/sensors/ps4/reference.md#v02) | 上 1、右 2、下 4、左 8，同時按相加（0~15） |
-| MBC 形狀鍵 | 0~15 bit | [`03`](/sensors/ps4/reference.md#v03) | ▲ 1、● 2、✕ 4、■ 8，同時按相加（0~15） |
-| MBC 肩鍵 | 0~15 bit | [`04`](/sensors/ps4/reference.md#v04) | L2 1、R2 2、L1 4、R1 8，同時按相加（0~15） |
-| MBC 功能鍵 | 0~15 bit | [`05`](/sensors/ps4/reference.md#v05) | SELECT(SHARE) 1、L3 2、R3 4、START(OPTIONS) 8，同時按相加（0~15） |
-| MBC 手把已連線？ | 0~1 | [`06`](/sensors/ps4/reference.md#v06) | 1 = 手把已連線且 300 ms 內有資料，0 = 未連線（斷線時按鍵 0、搖桿中間） |
-| MBC 電量 | 0~100 % | [`07`](/sensors/ps4/reference.md#v07) | 手把電量 0~100（PS2 接收器恆 0） |
-| MBC L2 類比 | 0~255 | [`08`](/sensors/ps4/reference.md#v08) | L2 扳機壓多深 0~255（未連線 0） |
-| MBC R2 類比 | 0~255 | [`09`](/sensors/ps4/reference.md#v09) | R2 扳機壓多深 0~255（未連線 0） |
-| MBC 系統鍵 | 0~3 bit | [`0A`](/sensors/ps4/reference.md#v0a) | b0 PS 鍵、b1 擷取（PS5 靜音）鍵；未連線 0（PS2 恆 0） |
-| MBC 手把類型 | 0~4 | [`0B`](/sensors/ps4/reference.md#v0b) | 0 無、1 PS2 數位、2 PS2 類比、3 PS4、4 PS5（或其他） |
-| MBC 搖桿 [軸] | -100~+100 | [`10~13`](/sensors/ps4/reference.md#v10) | 10 LX、11 LY、12 RX、13 RY：−100 ~ +100，0 = 中間，右／上為正；未連線 0 |
+| 掌控者 十六鍵位元圖 | 0~65535 bit | [`01`](/sensors/ps4/reference.md#v01) | 全部按鍵一個 16 bit（PSX 排列）：bit0 SELECT(SHARE)、1 L3、2 R3、3 START(OPTIONS)、4 上、5 右、6 下、7 左、8 L2、9 R2、10 L1、11 R1、12 ▲、13 ●、14 ✕、15 ■；1 = 按下；未連線 = 0 |
+| 掌控者 ［方向鍵］（0~15） | 0~15 bit | [`02`](/sensors/ps4/reference.md#v02) | 上 1、右 2、下 4、左 8，同時按相加（0~15） |
+| 掌控者 ［形狀鍵］（0~15） | 0~15 bit | [`03`](/sensors/ps4/reference.md#v03) | ▲ 1、● 2、✕ 4、■ 8，同時按相加（0~15） |
+| 掌控者 ［肩鍵］（0~15） | 0~15 bit | [`04`](/sensors/ps4/reference.md#v04) | L2 1、R2 2、L1 4、R1 8，同時按相加（0~15） |
+| 掌控者 ［功能鍵］（0~15） | 0~15 bit | [`05`](/sensors/ps4/reference.md#v05) | SELECT(SHARE) 1、L3 2、R3 4、START(OPTIONS) 8，同時按相加（0~15） |
+| 掌控者 手把已連線？ | 0~1 | [`06`](/sensors/ps4/reference.md#v06) | 1 = 手把已連線且 300 ms 內有資料，0 = 未連線（斷線時按鍵 0、搖桿中間） |
+| 掌控者 電量（百分比） | 0~100 % | [`07`](/sensors/ps4/reference.md#v07) | 手把電量 0~100（PS2 接收器恆 0） |
+| 掌控者 扳機 ［L2］ 類比值 | 0~255 | [`08`](/sensors/ps4/reference.md#v08) | L2 扳機壓多深 0~255（未連線 0） |
+| 掌控者 扳機 ［R2］ 類比值 | 0~255 | [`09`](/sensors/ps4/reference.md#v09) | R2 扳機壓多深 0~255（未連線 0） |
+| 掌控者 手把類型 | 0~4 | [`0B`](/sensors/ps4/reference.md#v0b) | 0 無、1 PS2 數位、2 PS2 類比、3 PS4、4 PS5（或其他） |
+| 掌控者 搖桿 ［左搖桿 X／左搖桿 Y／右搖桿 X／右搖桿 Y］ | -100~+100 | [`10~13`](/sensors/ps4/reference.md#v10) | 10 LX、11 LY、12 RX、13 RY：−100 ~ +100，0 = 中間，右／上為正；未連線 0 |
+
+### 其他積木（是／否、事件）
+
+| 積木 | 相關的值 |
+| :--- | :--- |
+| 掌控者 按鈕 ［✕］ 被按住？ | [`01`](/sensors/ps4/reference.md#v01) |
+| 當掌控者 按鈕 ［✕］ ［按下］ | [`01`](/sensors/ps4/reference.md#v01) |
 
 ## 命令積木
 
 | 積木 | 編號 | 說明 |
 | :--- | :--- | :--- |
-| MBC 震動 [強度] | [`E5`](/sensors/ps4/reference.md#ce5) | [強度 0~255]，0 = 停；每次 200 ms（PS2 收到忽略） |
-| MBC 燈條 R[r] G[g] B[b] | [`E6`](/sensors/ps4/reference.md#ce6) | [R][G][B] 各 0~255，要剛好 3 byte；未連線先記住，連上再套用；預設藍 (0,0,255)（PS2 收到忽略） |
+| 掌控者 震動 強度 200 | [`E5`](/sensors/ps4/reference.md#ce5) | [強度 0~255]，0 = 停；每次 200 ms（PS2 收到忽略） |
+| 掌控者 燈條顏色 #ff0000 | [`E6`](/sensors/ps4/reference.md#ce6) | [R][G][B] 各 0~255，要剛好 3 byte；未連線先記住，連上再套用；預設藍 (0,0,255)（PS2 收到忽略） |
 
 ## 狀態
 
@@ -59,9 +65,11 @@
 ## JavaScript 寫法
 
 ```typescript
+if (!(mbc.waitReady(0x42, 3000))) {
+    basic.showIcon(IconNames.No)   // 讀不到：檢查接線與電源
+}
 basic.forever(function () {
-    let buttons16 = MBC.readValue(0x42, 0x01)   // 十六鍵
-    basic.showNumber(buttons16)
+    basic.showNumber(mbc.padButtons())   // 十六鍵
     basic.pause(100)
 })
 ```
@@ -78,4 +86,4 @@ basic.forever(function () {
 - SPIKE 模式 3 改 [已連線, 電量, 0]（3×int8）、模式 8 改 [0x42 | 2<<8, 協議版 2, 韌體版, 更新序號]；其餘空模式 1、2、4、6 維持現狀。
 - ESP32 從機不能時脈延展：I2C v2 在 onReceive 就預載從該編號起 32 B；0x22照 MATRIX 定案 §5 #2 預載最新一包，待上機。
 - I2C 0A 系統鍵 b1 = 擷取鍵（v1 0x15 放在 b3，v2 改 b1，照 I2C 定案 §4）。
-- 擴充內部用 `Int16LE` 讀、寫完編號 `basic.pause(2)`（D5）。
+- 擴充內部用 `Int16LE` 讀、寫完編號 `basic.pause(2)`（D5）；感應器沒接好時讀值積木回 0、是／否積木回「否」。

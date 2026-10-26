@@ -59,6 +59,37 @@ function sample(p) {
   return m ? Math.round((Number(m[1]) + Number(m[2])) / 2) : 0;
 }
 
+// 值表以外、擴展另外做的積木（照 build_mext.js 的「產品專屬布林」與每類一顆「更新全部數值」，2026-10-26 補）
+//   循行者：第 N 路在線上？（拆 05 壓線位元圖）；掌控者：[按鈕] 被按下？（拆 01 十六鍵）
+const PAD_BTN = { zh: '✕ ● ▲ ■ 上 下 左 右 L1 R1 L2 R2 L3 R3 SELECT START', en: '✕ ● ▲ ■ up down left right L1 R1 L2 R2 L3 R3 SELECT START' };
+export function extraReporters(product, lang) {
+  const out = [];
+  const cat = category(product, lang);
+  const bm = product.values.find((v) => v.key === 'bitmap');
+  if (/^line(8|16)$/.test(product.id) && bm) {
+    const n = product.hw0 || (product.id === 'line16' ? 16 : 8);
+    out.push({ key: 'onLine', id: bm.id, name: T(lang, '第 N 路在線上？', 'channel N on line?'),
+      text: `${cat} ${T(lang, '連接埠 ［埠］', 'port [port]')} ${T(lang, `第 ［1~${n}］ 路在線上？`, `channel [1~${n}] on line?`)}`,
+      html: blocks(`<${cat} ${PORT(lang)} ${T(lang, '第 [1 v] 路在線上？', 'channel [1 v] on line?')} :: sensing>`),
+      desc: T(lang, `壓線位元圖 ${bm.id} 的第 N 個 bit（第 1 路 = bit0，最左）：那一路壓到線 = 是`, `bit N−1 of line bitmap ${bm.id} (channel 1 = bit0, leftmost): true when that channel sees the line`) });
+  }
+  const b16 = product.values.find((v) => v.key === 'buttons16');
+  if (/^ps[24]$/.test(product.id) && b16) {
+    out.push({ key: 'pressed', id: b16.id, name: T(lang, '［按鈕］ 被按下？', '[button] pressed?'),
+      text: `${cat} ${T(lang, '連接埠 ［埠］', 'port [port]')} ${T(lang, '［按鈕］ 被按下？', '[button] pressed?')}`,
+      html: blocks(`<${cat} ${PORT(lang)} [■ v] ${T(lang, '被按下？', 'pressed?')} :: sensing>`),
+      desc: T(lang, `從十六鍵 ${b16.id} 拆出的單一按鈕（PSX 排列），選單：${PAD_BTN.zh}`, `one button split out of 16 buttons ${b16.id} (PSX order); menu: ${PAD_BTN.en}`) });
+  }
+  return out;
+}
+export function extraCommands(product, lang) {
+  const cat = category(product, lang);
+  return [{ key: 'readAll', id: 'FD', name: T(lang, '更新全部數值', 'update all values'),
+    text: `${cat} ${T(lang, '連接埠 ［埠］', 'port [port]')} ${T(lang, '更新全部數值', 'update all values')}`,
+    html: blocks(`${cat} ${PORT(lang)} ${T(lang, '更新全部數值', 'update all values')} :: sensing`),
+    desc: T(lang, '一次讀整張值表進快取（FD 整包）；接下來 10 ms 內的讀值積木直接用快取，不再逐一詢問', 'reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one') }];
+}
+
 export function status(product, lang) {
   const ok = `<${category(product, lang)} ${PORT(lang)} ${T(lang, '連線正常？', 'connected?')} :: sensing>`;
   return { html: blocks(ok), note: T(lang, '狀態旗標 F3 的各 bit 由擴展拆成布林積木（就緒、校準中…）。', 'The extension splits status flags F3 into boolean blocks (ready, calibrating, …).') };

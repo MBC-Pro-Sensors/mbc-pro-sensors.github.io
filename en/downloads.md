@@ -39,7 +39,7 @@ Install steps and block reference: [MakeBlock (mBot) block extension](/en/makebl
 
 ## 🟠 micro:bit (MakeCode extension)
 
-Nothing to download: MakeCode → Extensions → paste `https://github.com/contactmbcrobot/pxt-mbc-sensors` (v2.0.4, 83 blocks, MIT). Wiring, hardware checklist and block list: [micro:bit overview](/en/microbit.md).
+Nothing to download: MakeCode → Extensions → paste `https://github.com/contactmbcrobot/pxt-mbc-sensors` (v2.0.5, 83 blocks, MIT). Wiring, hardware checklist and block list: [micro:bit overview](/en/microbit.md).
 
 ## 🟢 MATRIX Mini R4
 

@@ -203,6 +203,18 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Controller" 
 
 </section>
 
+<section id="vx-pressed" class="ref-item">
+
+### [button] pressed? <small>pressed</small>
+
+| Range | Meaning |
+| :--- | :--- |
+| true/false | one button split out of 16 buttons 01 (PSX order); menu: ✕ ● ▲ ■ up down left right L1 R1 L2 R2 L3 R3 SELECT START |
+
+<pre class="blocks"><Controller port [1 v] [■ v] pressed? :: sensing></pre>
+
+</section>
+
 ## Commands
 
 <section id="ce5" class="ref-item ref-cmd">
@@ -226,6 +238,16 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Controller" 
 <pre class="blocks">Controller port [1 v] light bar colour (128) (128) (128) :: sensing</pre>
 
 <p class="ref-note">Host sends <code>[E6][params…]</code> → reply <code>[00][00][E6]</code> (ack), then it runs.</p>
+
+</section>
+
+<section id="cx-readall" class="ref-item ref-cmd">
+
+### update all values <small>readAll</small>
+
+reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one
+
+<pre class="blocks">Controller port [1 v] update all values :: sensing</pre>
 
 </section>
 

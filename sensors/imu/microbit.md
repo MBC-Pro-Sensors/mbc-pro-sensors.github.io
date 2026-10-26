@@ -20,38 +20,46 @@ IMU 陀螺儀通用 I2C 版可以接 BBC micro:bit V1／V2，用 MakeCode 擴充
 
 | 感應器 | micro:bit |
 | :--- | :--- |
-| SDA | P20 |
-| SCL | P19 |
-| 5V | 外接 5 V（或 V2 的 3V 腳，需確認電流） |
+| SDA（RX） | P20 |
+| SCL（TX） | P19 |
+| VCC | micro:bit 3V（電池供電時建議外接 5 V） |
 | GND | GND |
 
 ## 讀值積木
 
 | 積木 | 傳回 | 編號 | 說明 |
 | :--- | :--- | :--- | :--- |
-| MBC 陀螺 3D 航向 | -32768~32767 ° | [`01`](/sensors/imu/reference.md#v01) | 四元數算出的航向，度，開機／歸零 = 0，連續累積可超過 360（int16 到 ±32767 繞回，約 91 圈） |
-| MBC 融合航向 | -32768~32767 ° | [`02`](/sensors/imu/reference.md#v02) | 陀螺 3D 加磁力計慢修正的航向，度，減去相對零點；可超過 360 |
-| MBC 陀螺 1D 航向 | -32768~32767 ° | [`03`](/sensors/imu/reference.md#v03) | 只繞轉向軸積分的航向，度，開機／歸零 = 0；可超過 360 |
-| MBC 磁力航向 | -32768~32767 ° | [`04`](/sensors/imu/reference.md#v04) | 磁力計傾斜補償航向，度，減去相對零點 |
-| MBC 轉向角速度 | -32768~32767 0.1 dps | [`05`](/sensors/imu/reference.md#v05) | 繞轉向軸（getYawAxis()）的角速度，0.1 度／秒，正負跟航向同向 |
-| MBC 俯仰角 | -90~+90 ° | [`06`](/sensors/imu/reference.md#v06) | 板子絲印 X 軸相對水平面的仰角：X 軸朝上 +90、朝下 −90、水平 0（用重力向量 atan2 算） |
-| MBC 俯仰角速度 | -32768~32767 0.1 dps | [`07`](/sensors/imu/reference.md#v07) | 繞板子絲印 X 軸的角速度，0.1 度／秒（右手定則，從 +X 端看逆時針為正）；注意這是 gyro X，不是 06 的微分 |
-| MBC 磁力信任度 | 0~255 | [`08`](/sensors/imu/reference.md#v08) | 融合演算法對磁力計的信任度 0~255（= 0~1 × 255） |
-| MBC 磁場干擾度 | 0~255 0.01° | [`09`](/sensors/imu/reference.md#v09) | 磁場干擾程度 0~255（度 × 100，上限 255） |
-| MBC 朝上的面 | 0~5 | [`0A`](/sensors/imu/reference.md#v0a) | 哪個軸朝上：0 +X、1 +Y、2 +Z、3 −X、4 −Y、5 −Z（實體軸） |
-| MBC 角速度 [軸] | -32768~32767 0.1 dps | [`10~12`](/sensors/imu/reference.md#v10) | 10 X、11 Y、12 Z 角速度，0.1 度／秒（實體軸，已套軸向號誌） |
-| MBC 加速度 [軸] | -32768~32767 mg | [`13~15`](/sensors/imu/reference.md#v13) | 13 X、14 Y、15 Z 加速度，mg（1000 = 1 g） |
-| MBC 磁力 [軸] | -32768~32767 mG | [`16~18`](/sensors/imu/reference.md#v16) | 16 X、17 Y、18 Z 磁場強度，mG（毫高斯） |
+| 陀螺儀 ［陀螺 3D］ 航向（°） | -32768~32767 ° | [`01`](/sensors/imu/reference.md#v01) | 四元數算出的航向，度，開機／歸零 = 0，連續累積可超過 360（int16 到 ±32767 繞回，約 91 圈） |
+| 陀螺儀 ［融合］ 航向（°） | -32768~32767 ° | [`02`](/sensors/imu/reference.md#v02) | 陀螺 3D 加磁力計慢修正的航向，度，減去相對零點；可超過 360 |
+| 陀螺儀 ［陀螺 1D］ 航向（°） | -32768~32767 ° | [`03`](/sensors/imu/reference.md#v03) | 只繞轉向軸積分的航向，度，開機／歸零 = 0；可超過 360 |
+| 陀螺儀 ［磁力計］ 航向（°） | -32768~32767 ° | [`04`](/sensors/imu/reference.md#v04) | 磁力計傾斜補償航向，度，減去相對零點 |
+| 陀螺儀 轉向角速度（0.1 °/s） | -32768~32767 0.1 dps | [`05`](/sensors/imu/reference.md#v05) | 繞轉向軸（getYawAxis()）的角速度，0.1 度／秒，正負跟航向同向 |
+| 陀螺儀 俯仰角（°） | -90~+90 ° | [`06`](/sensors/imu/reference.md#v06) | 板子絲印 X 軸相對水平面的仰角：X 軸朝上 +90、朝下 −90、水平 0（用重力向量 atan2 算） |
+| 陀螺儀 俯仰角速度（0.1 °/s） | -32768~32767 0.1 dps | [`07`](/sensors/imu/reference.md#v07) | 繞板子絲印 X 軸的角速度，0.1 度／秒（右手定則，從 +X 端看逆時針為正）；注意這是 gyro X，不是 06 的微分 |
+| 陀螺儀 磁力信任度 | 0~255 | [`08`](/sensors/imu/reference.md#v08) | 融合演算法對磁力計的信任度 0~255（= 0~1 × 255） |
+| 陀螺儀 磁場干擾度 | 0~255 0.01° | [`09`](/sensors/imu/reference.md#v09) | 磁場干擾程度 0~255（度 × 100，上限 255） |
+| 陀螺儀 朝上的面 | 0~5 | [`0A`](/sensors/imu/reference.md#v0a) | 哪個軸朝上：0 +X、1 +Y、2 +Z、3 −X、4 −Y、5 −Z（實體軸） |
+| 陀螺儀 ［角速度（0.1 °/s）］ ［X／Y／Z］ 軸 | -32768~32767 0.1 dps | [`10~12`](/sensors/imu/reference.md#v10) | 10 X、11 Y、12 Z 角速度，0.1 度／秒（實體軸，已套軸向號誌） |
+| 陀螺儀 ［加速度（mg）］ ［X／Y／Z］ 軸 | -32768~32767 mg | [`13~15`](/sensors/imu/reference.md#v13) | 13 X、14 Y、15 Z 加速度，mg（1000 = 1 g） |
+| 陀螺儀 ［磁力（mG）］ ［X／Y／Z］ 軸 | -32768~32767 mG | [`16~18`](/sensors/imu/reference.md#v16) | 16 X、17 Y、18 Z 磁場強度，mG（毫高斯） |
+
+### 其他積木（是／否、事件）
+
+| 積木 | 相關的值 |
+| :--- | :--- |
+| 當陀螺儀 轉了 90 ° | [`02`](/sensors/imu/reference.md#v02) |
+| 陀螺儀 ［靜止］？ | [`05`](/sensors/imu/reference.md#v05) |
+| 陀螺儀 朝上的面是 ［+Z］？ | [`0A`](/sensors/imu/reference.md#v0a) |
 
 ## 命令積木
 
 | 積木 | 編號 | 說明 |
 | :--- | :--- | :--- |
-| MBC 航向歸零 | [`E0`](/sensors/imu/reference.md#ce0) | 四個航向都歸零（zeroHeadings()）；EV3 另有原廠 WRITE 0x11 陀螺歸零 |
-| MBC 加速度計校準開始 | [`E1`](/sensors/imu/reference.md#ce1) | 開始加速度計校準（= v1 的 0x20=0x01）；期間 F3 b4 = 1 |
-| MBC 加速度計校準結束 | [`E2`](/sensors/imu/reference.md#ce2) | 結束加速度計校準並存 EEPROM（= v1 的 0x20=0x02）；通過後自動航向歸零一次 |
-| MBC 磁力計校準開始 | [`E3`](/sensors/imu/reference.md#ce3) | 開始磁力計校準（= v1 的 0x20=0x03）；期間 F3 b5 = 1 |
-| MBC 磁力計校準結束 | [`E4`](/sensors/imu/reference.md#ce4) | 結束磁力計校準並存 EEPROM（= v1 的 0x20=0x04） |
+| 陀螺儀 航向歸零 | [`E0`](/sensors/imu/reference.md#ce0) | 四個航向都歸零（zeroHeadings()）；EV3 另有原廠 WRITE 0x11 陀螺歸零 |
+| 陀螺儀 校準 ［加速度計 開始］ | [`E1`](/sensors/imu/reference.md#ce1) | 開始加速度計校準（= v1 的 0x20=0x01）；期間 F3 b4 = 1 |
+| 陀螺儀 校準 ［加速度計 結束］ | [`E2`](/sensors/imu/reference.md#ce2) | 結束加速度計校準並存 EEPROM（= v1 的 0x20=0x02）；通過後自動航向歸零一次 |
+| 陀螺儀 校準 ［磁力計 開始］ | [`E3`](/sensors/imu/reference.md#ce3) | 開始磁力計校準（= v1 的 0x20=0x03）；期間 F3 b5 = 1 |
+| 陀螺儀 校準 ［磁力計 結束］ | [`E4`](/sensors/imu/reference.md#ce4) | 結束磁力計校準並存 EEPROM（= v1 的 0x20=0x04） |
 
 ## 狀態
 
@@ -69,9 +77,11 @@ IMU 陀螺儀通用 I2C 版可以接 BBC micro:bit V1／V2，用 MakeCode 擴充
 ## JavaScript 寫法
 
 ```typescript
+if (!(mbc.waitReady(0x6A, 3000))) {
+    basic.showIcon(IconNames.No)   // 讀不到：檢查接線與電源
+}
 basic.forever(function () {
-    let headingGyro3D = MBC.readValue(0x6A, 0x01)   // 陀螺 3D 航向
-    basic.showNumber(headingGyro3D)
+    basic.showNumber(mbc.imuHeading(MbcImuHeading.Gyro3D))   // 陀螺 3D 航向
     basic.pause(100)
 })
 ```
@@ -89,4 +99,4 @@ basic.forever(function () {
 - 磁力信任度 08 = round(trust×255)，磁場干擾度 09 = round(disturbance×100) 上限 255，朝上的面 0A = 軸號 + 3×負向：公式照盤點 I2C v1 0x34~0x36。
 - 角速度 10~12 = round(dps×SIGN×10)、加速度 13~15 = mm/s²×1000/9806.65、磁力 16~18 = raw×SIGN×4/15：公式照盤點 I2C v1 0x22~0x24；mBlock 一併有（I2C 定案 §4 共用值表）。
 - 主對話 2026-10-22：06 俯仰角範圍 −90~+90、07 = gyro X（照字面），取自 F5 韌體實作。
-- 擴充內部用 `Int16LE` 讀、寫完編號 `basic.pause(2)`（D5）。
+- 擴充內部用 `Int16LE` 讀、寫完編號 `basic.pause(2)`（D5）；感應器沒接好時讀值積木回 0、是／否積木回「否」。

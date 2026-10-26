@@ -10,7 +10,7 @@ Using the Ranger 8-Way (TOF8) with BBC micro:bit V1 / V2: check the edition and 
 
 ## Which edition
 
-Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `0x29`. The sensor needs 5 V; use a breakout board with a 5 V output.
+Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `0x29`. It **must use an external 5 V supply** (8 lasers measure at once, more current than the micro:bit 3V pin can supply), not the micro:bit 3V pin; share the supply GND with the micro:bit.
 
 ## Wiring
 

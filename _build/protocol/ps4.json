@@ -98,10 +98,11 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "十六鍵",
-          "en": "16 buttons"
-        }
+        "js": "mbc.padButtons()",
+        "also": [
+          "mbc.padButtonPressed(MbcPadButton.Cross)",
+          "mbc.onPadButton(MbcPadButton.Cross, MbcPadButtonEvent.Pressed)"
+        ]
       },
       "examples": [],
       "locked": true
@@ -207,10 +208,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "方向鍵",
-          "en": "D-pad"
-        }
+        "js": "mbc.padGroup(MbcPadGroup.Dpad)"
       },
       "examples": [],
       "locked": true
@@ -304,10 +302,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "形狀鍵",
-          "en": "shape buttons"
-        }
+        "js": "mbc.padGroup(MbcPadGroup.Shapes)"
       },
       "examples": [],
       "locked": true
@@ -387,10 +382,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "肩鍵",
-          "en": "shoulder buttons"
-        }
+        "js": "mbc.padGroup(MbcPadGroup.Shoulders)"
       },
       "examples": [],
       "locked": true
@@ -473,10 +465,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "功能鍵",
-          "en": "function buttons"
-        }
+        "js": "mbc.padGroup(MbcPadGroup.Functions)"
       },
       "examples": [],
       "locked": true
@@ -529,10 +518,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "手把已連線？",
-          "en": "gamepad connected?"
-        }
+        "js": "mbc.padConnected()"
       },
       "examples": []
     },
@@ -578,10 +564,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "電量",
-          "en": "battery"
-        }
+        "js": "mbc.padBattery()"
       },
       "examples": []
     },
@@ -619,10 +602,7 @@
       "matrix": null,
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "L2 類比",
-          "en": "L2 analog"
-        }
+        "js": "mbc.padTrigger(MbcPadTrigger.L2)"
       },
       "examples": []
     },
@@ -660,10 +640,7 @@
       "matrix": null,
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "R2 類比",
-          "en": "R2 analog"
-        }
+        "js": "mbc.padTrigger(MbcPadTrigger.R2)"
       },
       "examples": []
     },
@@ -700,10 +677,8 @@
       "matrix": null,
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "系統鍵",
-          "en": "system buttons"
-        }
+        "js": null,
+        "see": "mbc.padSystemButtonPressed(MbcPadSystemButton.Ps)"
       },
       "examples": []
     },
@@ -735,10 +710,7 @@
       "matrix": null,
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "手把類型",
-          "en": "gamepad type"
-        }
+        "js": "mbc.padType()"
       },
       "examples": []
     },
@@ -834,10 +806,12 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "搖桿 [軸]",
-          "en": "stick [axis]"
-        }
+        "js": [
+          "mbc.padStick(MbcPadAxis.LeftX)",
+          "mbc.padStick(MbcPadAxis.LeftY)",
+          "mbc.padStick(MbcPadAxis.RightX)",
+          "mbc.padStick(MbcPadAxis.RightY)"
+        ]
       },
       "examples": [],
       "locked": true
@@ -869,10 +843,7 @@
       "mblock": true,
       "matrix": null,
       "microbit": {
-        "block": {
-          "zh": "震動 [強度]",
-          "en": "rumble [strength]"
-        }
+        "js": "mbc.padRumble(200)"
       },
       "busyFlag": null
     },
@@ -917,10 +888,7 @@
       "mblock": true,
       "matrix": null,
       "microbit": {
-        "block": {
-          "zh": "燈條 R[r] G[g] B[b]",
-          "en": "light bar R[r] G[g] B[b]"
-        }
+        "js": "mbc.padLight(0xff0000)"
       },
       "busyFlag": null
     }

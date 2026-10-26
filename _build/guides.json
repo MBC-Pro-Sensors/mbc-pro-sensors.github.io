@@ -268,8 +268,8 @@
       "wiring": "microbit",
       "port": "I2C",
       "edition": {
-        "zh": "買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `{{addr}}`。感應器要 5 V 供電，micro:bit 本身只有 3.3 V，請用有 5 V 輸出的擴充板。",
-        "en": "Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `{{addr}}`. The sensor needs 5 V; use a breakout board with a 5 V output."
+        "zh": "買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `{{addr}}`。這款耗電小，VCC 可以先接 micro:bit 的 **3V** 腳（V1 約 90 mA、V2 約 190 mA）；用電池供電時電壓可能掉到 3 V 以下，不穩就改外接 5 V（GND 要和 micro:bit 共地）。",
+        "en": "Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `{{addr}}`. It draws little current, so VCC can go to the micro:bit **3V** pin (about 90 mA on V1, 190 mA on V2); on batteries the rail can sag below 3 V, so switch to external 5 V if readings are unstable (share GND with the micro:bit)."
       },
       "faq": [
         { "q": { "zh": "找不到 MBC 積木？", "en": "Cannot find the MBC blocks?" }, "a": { "zh": "MakeCode「擴充功能」貼上 https://github.com/contactmbcrobot/pxt-mbc-sensors 加入。", "en": "In MakeCode Extensions, paste https://github.com/contactmbcrobot/pxt-mbc-sensors." } }
@@ -293,6 +293,21 @@
   ],
   "legacyProduct": ["reference"],
   "overrides": {
+    "tof8": {
+      "edition": {
+        "microbit": { "zh": "買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `{{addr}}`。**一定要外接 5 V 供電**（8 顆雷射同時量測，電流超過 micro:bit 3V 腳能給的），不能吃 micro:bit 的 3V 腳；外部電源的 GND 要和 micro:bit 共地。", "en": "Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `{{addr}}`. It **must use an external 5 V supply** (8 lasers measure at once, more current than the micro:bit 3V pin can supply), not the micro:bit 3V pin; share the supply GND with the micro:bit." }
+      }
+    },
+    "ps4": {
+      "edition": {
+        "microbit": { "zh": "買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `{{addr}}`。**一定要外接 5 V 供電**（ESP32 藍牙接收，瞬間電流大），不能吃 micro:bit 的 3V 腳；外部電源的 GND 要和 micro:bit 共地。", "en": "Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `{{addr}}`. It **must use an external 5 V supply** (the ESP32 Bluetooth receiver draws current peaks), not the micro:bit 3V pin; share the supply GND with the micro:bit." }
+      }
+    },
+    "esp32cam": {
+      "edition": {
+        "microbit": { "zh": "買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `{{addr}}`。**一定要外接 5 V 供電**（ESP32 相機＋螢幕＋補光燈），不能吃 micro:bit 的 3V 腳；外部電源的 GND 要和 micro:bit 共地。", "en": "Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `{{addr}}`. It **must use an external 5 V supply** (ESP32 camera + screen + lights), not the micro:bit 3V pin; share the supply GND with the micro:bit." }
+      }
+    },
     "exp6": {
       "spike": ["official", "mbcblocks", "pybricks"],
       "arduino": ["ide"],

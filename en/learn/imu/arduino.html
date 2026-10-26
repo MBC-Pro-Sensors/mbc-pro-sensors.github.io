@@ -1,0 +1,1036 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="An Arduino program goes in this order. First wire it up and paste the helper. Then, in setup(), start talking and wait until the sensor is ready. Last, in loop(">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/imu/arduino.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/imu/arduino.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/imu/arduino.html">
+<title>IMU Gyro Arduino Tutorial | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+
+:root {
+  --bg: #f3f6f5;          
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;      
+  --accent-soft: #dff1ef;
+  --tape: #121212;        
+  --ir: #e04a3b;          
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+[hidden] { display: none !important; }  /* 頁面用 hidden 切換「積木／程式」，.ws{display:grid} 會蓋掉它 */
+.learn-nav .tabs .tl { color: var(--muted, #666); font-size: 0.8rem; align-self: center; }
+.learn-nav .tabs .tsep { flex-basis: 100%; height: 0; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
+   排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
+@media (max-width: 900px) {
+  .learn-nav { position: static; width: 100vw; margin: -24px 0 14px calc(50% - 50vw); }
+  .learn-nav .in { padding: 6px 12px 8px; gap: 4px 14px; font-size: 0.85rem; }
+  .learn-nav .in > a { min-height: 36px; display: inline-flex; align-items: center; }
+  .learn-nav .tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .learn-nav .tabs::-webkit-scrollbar { display: none; }
+  .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
+  body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
+  .panel.follow { margin: 12px 0 16px; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow, .ctrl > .panel.follow { grid-column: 1 / -1; }
+  .flash { animation: followFlash 1.2s ease-out; }
+  @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
+  /* 點選目標放大：選項、勾選框、拉桿 */
+  .wrap > *, .main > *, .steps > *, .step-body > * { min-width: 0; }
+  label:has(input[type=radio]), label:has(input[type=checkbox]) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  button.copy, .viewtabs button { min-height: 36px; }
+  label:has(select) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  label select { min-height: 36px; }
+  input[type=radio], input[type=checkbox] { width: 20px; height: 20px; flex: none; }
+  input[type=range] { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/imu/arduino/">← IMU Arduino guide</a><a class="lang" href="/learn/imu/arduino.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/imu/ev3-pybricks.html">EV3</a><a href="/en/learn/imu/arduino.html" aria-current="page">Arduino</a><a href="/en/learn/imu/mblock.html">mBlock</a><a href="/en/learn/imu/matrix.html">MATRIX</a><a href="/en/learn/imu/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/imu/arduino.html" aria-current="page">Arduino IDE</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC IMU Gyro × Arduino</span>
+    <h1>Read the IMU gyro with Arduino in three steps</h1>
+    <p class="lead">An Arduino program goes in this order. First <b>wire it up and paste the helper</b>. Then, in <code>setup()</code>, <b>start talking and wait until the sensor is ready</b>. Last, in <code>loop()</code>, <b>read values</b> with <code>mbcRead()</code>. Follow the steps on the left, and the program on the right grows with you. Turn, raise and shake the robot in the simulator to see what the Serial Monitor shows.</p>
+  </header>
+
+  <section class="main" aria-label="Tutorial">
+    <div class="steps">
+      <!-- Step 1 -->
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>Wire it up and paste the helper</h2></div>
+        <div class="step-body">
+          <p class="why">Arduino talks to the sensor over <b>I2C</b> (4 wires). <b>You do not need to install a library.</b> Write <b>2 lines at the very top</b> and paste a <b>"helper" at the very bottom</b>. Then you can read values with <code>mbcRead()</code> and send commands with <code>mbcWrite()</code>.</p>
+          <p class="small">Which board do you use? (Only the SDA / SCL pins change. The program is the same.)</p>
+          <div class="choice" role="group" aria-label="Board">
+            <button type="button" class="opt" id="board-uno" aria-pressed="true"><b>UNO / Nano</b><small>The most common board. SDA = A4, SCL = A5.</small></button>
+            <button type="button" class="opt" id="board-mega" aria-pressed="false"><b>Mega 2560</b><small>SDA = 20, SCL = 21.</small></button>
+            <button type="button" class="opt" id="board-r4" aria-pressed="false"><b>UNO R4</b><small>A4, A5 (also marked SDA / SCL on the board).</small></button>
+            <button type="button" class="opt" id="board-esp32" aria-pressed="false"><b>ESP32</b><small>SDA = GPIO 21, SCL = GPIO 22. Install the ESP32 board package first.</small></button>
+          </div>
+          <ol class="howto">
+            <li>Unplug the USB cable before wiring. Use the <b>Universal I2C edition</b> (the SPIKE and EV3 editions have different firmware and cannot connect to Arduino).</li>
+            <li>Sensor VCC → <b id="pinvcc">5V</b>, GND → <b>GND</b></li>
+            <li>Sensor SDA → <b id="pinsda">A4</b>, SCL → <b id="pinscl">A5</b></li>
+            <li>Mount the sensor flat on the robot with the board's printed X axis pointing to the front. <b>Keep the robot still for about 0.5 s at power-on</b>; it learns which side is up and zeroes itself.</li>
+            <li>Open the Arduino IDE: <b>File → New</b>, and delete what is already there.</li>
+            <li>Write lines 1 and 2 at the <b>very top</b>. Paste the "helper" at the <b>very bottom</b> (marked ① in the program on the right; "Copy program" copies it too).</li>
+          </ol>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">Done, next step</button>
+        </div>
+      </article>
+
+      <!-- Step 2 -->
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>Start talking and wait until the sensor is ready</h2></div>
+        <div class="step-body">
+          <p class="why"><code>setup()</code> runs only once, when the board starts. It opens the serial port, starts I2C and waits until the sensor says "I am ready". <code>ADDR</code> is the sensor's "house number" (its I2C address). You write it every time you read a value.</p>
+          <p class="small">The sensor's I2C address:</p>
+          <div class="choice" role="group" aria-label="Address">
+            <button type="button" class="opt" id="addr-factory" aria-pressed="true"><b>Factory address 0x6A</b><small>Pick this if you never changed the address with command F8.</small></button>
+            <button type="button" class="opt" id="addr-custom" aria-pressed="false"><b>I changed the address</b><small>You changed it with command F8, for example to use two of the same sensor on one bus.</small></button>
+          </div>
+          <label class="f" for="addr" id="addrbox" style="display:none">New address (0x08 ~ 0x77)
+            <input autocomplete="off" type="text" id="addr" value="0x20" spellcheck="false">
+          </label>
+          <p class="err" id="addrerr" hidden></p>
+          <p class="small">If the sensor is not found:</p>
+          <div class="choice" role="group" aria-label="If not found">
+            <button type="button" class="opt" id="fail-stop" aria-pressed="true"><b>Stop here (recommended)</b><small>It prints a warning and stops, so nothing strange happens.</small></button>
+            <button type="button" class="opt" id="fail-go" aria-pressed="false"><b>Keep going</b><small>The program goes on, but every value it reads is -32768.</small></button>
+          </div>
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2">Done, next step</button>
+        </div>
+      </article>
+
+      <!-- Step 3 -->
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>Use a function</h2></div>
+        <div class="step-body">
+          <p class="why">To read a value, write "<code>mbcRead(ADDR, id)</code>". To send a command, write "<code>mbcWrite(ADDR, command)</code>". Click a function, and the program and the Serial Monitor change to its example.</p>
+          <div id="picker" class="ref"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+<div class="sim-box">
+            <style>.imu-btns { display: flex; flex-wrap: wrap; gap: 6px; } .imu-btns button { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; padding: 4px 12px; font-weight: 700; min-height: 36px; } .imu-btns button.zero { border-color: var(--accent); }</style>
+            <div class="sim-title">Sensor simulator: the left picture is seen from above (heading), the right one from the side (pitch). Drag the sliders and press the buttons, and watch the output change</div>
+            <div class="sim">
+              <svg id="field" viewBox="0 0 460 200" role="img" aria-label="The robot seen from above and from the side"></svg>
+              <div class="ctrl">
+                <label class="f" for="imu-hd"><span>Robot direction (turn it by hand): <b id="imu-hdv">0</b>° (turning right is positive)</span>
+                  <input autocomplete="off" type="range" id="imu-hd" min="-720" max="720" step="5" value="0">
+                </label>
+                <div class="imu-btns">
+                  <button type="button" id="imu-l90">↺ Turn left 90°</button>
+                  <button type="button" id="imu-r90">↻ Turn right 90°</button>
+                  <button type="button" id="imu-zero" class="zero">Zero (this direction becomes 0)</button>
+                </div>
+                <label class="f" for="imu-pt"><span>Nose up or down (pitch): <b id="imu-ptv">0</b>°</span>
+                  <input autocomplete="off" type="range" id="imu-pt" min="-90" max="90" step="1" value="0">
+                </label>
+                <div class="toggles">
+                  <label><input autocomplete="off" type="checkbox" id="imu-shake"> Shake the robot (gives turn rates)</label>
+                  <label><input autocomplete="off" type="checkbox" id="imu-drift"> Running a long time (6° gyro drift)</label>
+                  <label><input autocomplete="off" type="checkbox" id="imu-magx"> Near a motor or iron (magnetic disturbance)</label>
+                  <label><input autocomplete="off" type="checkbox" id="unplug"> Unplug the sensor</label>
+                </div>
+              </div>
+              <p class="note">The simulator is only a picture: values come from the robot's direction and angle on screen, not the sensor's own algorithm; real readings wobble by about 1°. The "Zero" button = command E0. When the sensor is unplugged, every value the Arduino reads is -32768. Firmware version 102 is an example value.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">An example for every function</h2>
+        <p class="ref-intro"><span id="fncount">28</span> functions (values, commands, plus the shared ids every MBC sensor has). Each one has a short example. Press "Try it" to jump to step 3. The program and the Serial Monitor on the right change to that example.</p>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="Your program and output">
+      <div class="panel">
+        <div class="panel-head"><span>Your program (Arduino)</span><span class="row"><button type="button" class="copy" id="helperbtn" aria-pressed="false">Show helper</button><button type="button" class="copy" id="copymain">Copy program</button></span></div>
+        <pre class="code" id="maincode" aria-live="polite"></pre>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>Serial Monitor (115200 baud, updates every 0.6 s)</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="ref" aria-labelledby="fullh">
+    <h2 id="fullh">Full examples</h2>
+    <p class="ref-intro">Press "Copy" to get the whole program (the helper is already at the bottom). Paste it into the Arduino IDE and upload.</p>
+    <div class="full">
+      <div class="panel">
+        <div class="panel-head"><span>Four headings + type z to zero</span><button type="button" class="copy" data-copy="heading">Copy</button></div>
+        <pre class="code" id="ex-heading"></pre>
+        <p class="bubble"><i>!</i><span>A shorter version of website example 3. After uploading, open the Serial Monitor (115200), lay the gyro flat and turn it slowly; type <code>z</code> in the box at the top and press Enter to zero all four headings.</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>Which side is up? LED on when flat</span><button type="button" class="copy" data-copy="level">Copy</button></div>
+        <pre class="code" id="ex-level"></pre>
+        <p class="bubble"><i>!</i><span>A shorter version of website example 6: read 0x08–0x0A at once (trust, disturbance, face up), print a line only when the face up changes, and light the built-in LED when it is flat (+Z up).</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">Good to know</h2>
+    <ol>
+      <li><b>Unplugging does not stop the program.</b> When the sensor cannot be read, <code>mbcRead()</code> gives <code>-32768</code> (<code>MBC_NONE</code>) and <code>mbcReadMany()</code> gives <code>false</code>; plug it back in and it works again. -32768 is also the smallest heading value, so <b>check for <code>MBC_NONE</code> before using a heading</b> (a robot should stop when it cannot read).</li>
+      <li><b>Direction:</b> turning right makes the heading bigger, left smaller; one turn = 360 and it keeps adding up (two turns = 720, and it can go negative). If right makes it smaller, the sensor is upside down. "gyro Z" is the raw gyro value: negative turning right when flat, the opposite of the heading.</li>
+      <li><b>Which heading:</b> start with the 3D heading (right for any mounting angle); for long runs with no drift use the fused heading; near motors or an iron field the magnetometer is disturbed, so use the 3D heading. The magnetic heading is relative, not north.</li>
+      <li><b>Read neighbours together:</b> ids 0x01–0x0A and 0x10–0x18 are each in a row; read them with one <code>mbcReadMany()</code> call so they come from the same moment. Set the Serial Monitor to <b>115200</b> baud.</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var PROD = {"lang":"en","helper":["// ===== Helper (MBC I2C protocol v2): paste all of it at the bottom, no changes needed =====","// read k consecutive values (k ≤ 16) starting at id, int16 little-endian","bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {","  Wire.beginTransmission(addr);","  Wire.write(id);","  if (Wire.endTransmission() != 0) return false;","  delay(2);                                        // always wait 2 ms (ESP32 products cannot clock-stretch)","  if (Wire.requestFrom(addr, (uint8_t)(k * 2)) != (uint8_t)(k * 2)) return false;","  for (uint8_t i = 0; i < k; i++) {","    uint8_t lo = Wire.read(), hi = Wire.read();","    out[i] = (int16_t)(lo | (hi << 8));","  }","  return true;","}","","// read one value; MBC_NONE when nothing answers","int16_t mbcRead(uint8_t addr, uint8_t id) {","  int16_t v;","  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;","}","","// write a command (0~3 parameters)","// with 2 parameters whose first is 0, write (uint8_t)0, e.g. mbcWrite(ADDR, 0xF8, (uint8_t)0x00, 0xFF); otherwise it clashes with the array form below and will not compile","void mbcWrite(uint8_t addr, uint8_t id, const uint8_t *args, uint8_t n) {","  Wire.beginTransmission(addr);","  Wire.write(id);","  for (uint8_t i = 0; i < n; i++) Wire.write(args[i]);","  Wire.endTransmission();","}","void mbcWrite(uint8_t addr, uint8_t id) { mbcWrite(addr, id, nullptr, 0); }","void mbcWrite(uint8_t addr, uint8_t id, uint8_t a) { mbcWrite(addr, id, &a, 1); }","void mbcWrite(uint8_t addr, uint8_t id, uint8_t a, uint8_t b) { uint8_t p[2] = {a, b}; mbcWrite(addr, id, p, 2); }","void mbcWrite(uint8_t addr, uint8_t id, uint8_t a, uint8_t b, uint8_t c) { uint8_t p[3] = {a, b, c}; mbcWrite(addr, id, p, 3); }","","// wait until ready (F3 bit0 = 1), at most ms milliseconds","bool mbcWaitReady(uint8_t addr, unsigned long ms) {","  unsigned long t0 = millis();","  while (millis() - t0 < ms) {","    int16_t st = mbcRead(addr, 0xF3);","    if (st != MBC_NONE && (st & 1)) return true;","    delay(20);","  }","  return false;","}"],"defaultFn":"h3d","addr":"0x6A","readyMs":3000};
+  var EX = {"heading":["#include <Wire.h>","const int16_t MBC_NONE = -32768;","","const uint8_t ADDR = 0x6A;               // IMU gyro I2C address","","void setup() {","  Serial.begin(115200);","  Wire.begin();","  if (!mbcWaitReady(ADDR, 3000)) {","    Serial.println(F(\"Sensor not found. Check the wiring!\"));","    while (true) {}","  }","  Serial.println(F(\"  gyro3D   fused  gyro1D     mag\"));","}","","void loop() {","  if (Serial.available()) {","    char ch = Serial.read();","    if (ch == 'z' || ch == 'Z') {","      mbcWrite(ADDR, 0xE0);              // command E0: zero all four headings","      Serial.println(F(\">>> zeroed\"));","    }","  }","  int16_t h[4];                          // 01 gyro 3D, 02 fused, 03 gyro 1D, 04 magnetic","  if (!mbcReadMany(ADDR, 0x01, 4, h)) {","    Serial.println(F(\"Cannot read the gyro\"));","  } else {","    char line[48];","    snprintf(line, sizeof(line), \"%7d %7d %7d %7d\", h[0], h[1], h[2], h[3]);","    Serial.println(line);","  }","  delay(100);","}","","@HELPER"],"level":["#include <Wire.h>","const int16_t MBC_NONE = -32768;","","const uint8_t ADDR = 0x6A;               // IMU gyro I2C address","#ifndef LED_BUILTIN","#define LED_BUILTIN 2                    // some ESP32 boards do not define the built-in LED","#endif","","int16_t lastFace = -1;                   // the last face up (-1 = not seen yet)","","void setup() {","  Serial.begin(115200);","  pinMode(LED_BUILTIN, OUTPUT);","  Wire.begin();","  if (!mbcWaitReady(ADDR, 3000)) {","    Serial.println(F(\"Sensor not found. Check the wiring!\"));","    while (true) {}","  }","}","","void loop() {","  int16_t v[3];                          // [0] trust [1] disturbance [2] face up","  if (!mbcReadMany(ADDR, 0x08, 3, v)) {","    Serial.println(F(\"Cannot read the gyro\"));","    delay(300);","    return;","  }","  digitalWrite(LED_BUILTIN, v[2] == 2 ? HIGH : LOW);   // +Z up (flat) -> LED on","  if (v[2] != lastFace) {","    lastFace = v[2];","    Serial.print(F(\"Face up \"));","    Serial.print(v[2]);","    Serial.print(F(\" | trust \"));","    Serial.print(v[0]);","    Serial.print(F(\" | disturbance \"));","    Serial.println(v[1]);","  }","  delay(300);","}","","@HELPER"]};
+  var LANG = PROD.lang;
+  function T(zh, en) { return LANG === 'en' ? en : zh; }
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  var S = { step: 1, viewStep: 1, fn: PROD.defaultFn };
+  var NONE = -32768;
+  function R(st, id) { return st.ok && st.r[id] !== undefined ? st.r[id] : NONE; }
+  function RM(st, id, k) { if (!st.ok) return null; var a = []; for (var i = 0; i < k; i++) a.push(R(st, id + i)); return a; }
+  function cHex(n) { return (n < 0 ? n >>> 0 : n).toString(16).toUpperCase(); }
+  function cBin(n) { return (n < 0 ? n >>> 0 : n).toString(2); }
+  function cDiv(a, b) { var q = a / b; return q < 0 ? Math.ceil(q) : Math.floor(q); }
+  function i16(n) { n = n & 0xFFFF; return n >= 0x8000 ? n - 0x10000 : n; }
+  function pad(s, n) { s = String(s) + '  '; while (s.length < n) s += ' '; return s; }
+  var KW = /^(void|bool|int|long|unsigned|char|float|double|const|if|else|while|for|return|true|false|nullptr|NULL|switch|case|break|default|static|uint8_t|uint16_t|uint32_t|int8_t|int16_t|int32_t|byte|defined)$/;
+  function hiCpp(line) {
+    var out = '', i = 0;
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest.slice(0, 2) === '//') { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if ((m = rest.match(/^#[a-z]+/))) { out += '<span class="tk-kw">' + m[0] + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^<[A-Za-z0-9_.\/]+\.h>/)) && /#include\s*$/.test(line.slice(0, i))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (KW.test(w)) out += '<span class="tk-kw">' + w + '</span>';
+        else if (/^\s*\(/.test(after) && after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^(0[xX][0-9A-Fa-f]+|\d+)/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  function render(el, lines, opts) {
+    opts = opts || {};
+    el.innerHTML = lines.map(function (l, k) {
+      var cls = 'ln' + (l.hl ? ' hl' : '') + (l.isNew ? ' new' : '');
+      var tag = opts.noTag ? '' : '<span class="tag">' + (l.tag && !l.tagHide ? '<i>' + l.tag + '</i>' : '') + '</span>';
+      return '<span class="' + cls + '"><span class="no">' + (l.no !== undefined ? l.no : k + 1) + '</span>' + tag + '<span>' + (l.t ? hiCpp(l.t) : ' ') + '</span></span>';
+    }).join('');
+  }
+  function plain(lines) { return lines.map(function (l) { return l.t; }).join('\n') + '\n'; }
+  function copyText(text, btn) {
+    var done = function () { var o = btn.textContent; btn.textContent = ('Copied'); setTimeout(function () { btn.textContent = o; }, 1400); };
+    try {
+      navigator.clipboard.writeText(text).then(done, function () { fallback(text); });
+    } catch (e) { fallback(text); }
+    function fallback(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e2) { btn.textContent = ('Select and copy by hand'); }
+      document.body.removeChild(ta);
+    }
+  }
+    var BOARDS = {
+      uno: { name: ('UNO / Nano'), sda: 'A4', scl: 'A5', vcc: '5V' },
+      mega: { name: 'Mega 2560', sda: '20', scl: '21', vcc: '5V' },
+      r4: { name: 'UNO R4', sda: 'A4', scl: 'A5', vcc: '5V' },
+      esp32: { name: 'ESP32', sda: 'GPIO 21', scl: 'GPIO 22', vcc: ('5V (VIN)') }
+    };
+    var READY_MS = PROD.readyMs || 2000;   
+    S.board = 'uno'; S.addrMode = 'factory'; S.addr = PROD.addr; S.onFail = 'stop';
+    function addrOk() {
+      if (S.addrMode === 'factory') return '';
+      var v = $('addr').value.trim();
+      if (!/^0[xX][0-9A-Fa-f]{1,2}$/.test(v)) return ('Write it in hex starting with 0x, for example 0x20.');
+      var n = parseInt(v, 16);
+      if (n < 0x08 || n > 0x77) return ('An I2C address must be 0x08 ~ 0x77.');
+      return '';
+    }
+    var BASE = {
+      top: function () {
+        var b = BOARDS[S.board];
+        return [
+          pad('#include <Wire.h>', 34) + '// ' + ('I2C: SDA = ' + b.sda + ', SCL = ' + b.scl),
+          pad('const int16_t MBC_NONE = -32768;', 34) + '// ' + ('the "no answer" value')
+        ];
+      },
+      decl: function () {
+        return [pad('const uint8_t ADDR = ' + S.addr + ';', 34) + '// ' + (S.addrMode === 'factory'
+          ? ('I2C address (factory ' + PROD.addr + ')')
+          : ('your new I2C address'))];
+      },
+      setupOpen: function () {
+        var L = [
+          'void setup() {',
+          pad('  Serial.begin(115200);', 34) + '// ' + ('set the Serial Monitor to 115200'),
+          pad('  Wire.begin();', 34) + '// ' + ('start I2C'),
+          pad('  if (!mbcWaitReady(ADDR, ' + READY_MS + ')) {', 34) + '// ' + ('wait until the sensor is ready, up to ' + READY_MS / 1000 + ' s'),
+          '    Serial.println(F("' + BASE.bootFail() + '"));'
+        ];
+        if (S.onFail === 'stop') L.push(pad('    while (true) {}', 34) + '// ' + ('not found: stop here'));
+        L.push('  }');
+        return L;
+      },
+      setupClose: function () { return ['}']; },
+      loopWait: 'delay(100);',
+      cardOnceHead: function () { return ('// … step 2: start I2C and wait until ready …'); },
+      bootFail: function () { return ('Sensor not found. Check the wiring!'); },
+      halts: function () { return S.onFail === 'stop'; },
+      bubble: function (n, f) {
+        if (n === 1) return ('Step 1: write 2 lines at the top (#include lets Arduino use Wire for I2C; MBC_NONE is the "no answer" value -32768). Paste the whole helper at the bottom.');
+        if (n === 2) return ('Step 2: setup() runs once at power-on. Serial.begin(115200) opens the serial port, Wire.begin() starts I2C, and mbcWaitReady() waits up to ' + READY_MS / 1000 + ' s for the sensor.') +
+          (S.onFail === 'stop' ? (' If it is not found, the program stops at while (true) {}.') : (' If it is not found, the program goes on and reads -32768.'));
+        return f.once
+          ? ('Step 3: this function only needs to run once, so it goes in setup(), after the sensor is ready. loop() stays empty.')
+          : ('Step 3: loop() repeats again and again. mbcRead(ADDR, id) reads one value, and delay(100) makes it read every 0.1 s.');
+      },
+      valid: function () {
+        var bad = addrOk();
+        $('addrerr').hidden = !bad; $('addrerr').textContent = bad;
+        if (!bad) S.addr = S.addrMode === 'factory' ? PROD.addr : '0x' + parseInt($('addr').value.trim(), 16).toString(16).toUpperCase();
+        return !bad;
+      },
+      bind: function (redraw) {
+        function press(group, id) { group.forEach(function (g) { $(g).setAttribute('aria-pressed', String(g === id)); }); }
+        var boards = ['board-uno', 'board-mega', 'board-r4', 'board-esp32'];
+        boards.forEach(function (id) {
+          $(id).addEventListener('click', function () {
+            S.board = id.slice(6); press(boards, id);
+            var b = BOARDS[S.board]; $('pinsda').textContent = b.sda; $('pinscl').textContent = b.scl; $('pinvcc').textContent = b.vcc;
+            redraw(false);
+          });
+        });
+        var addrs = ['addr-factory', 'addr-custom'];
+        addrs.forEach(function (id) {
+          $(id).addEventListener('click', function () {
+            S.addrMode = id === 'addr-factory' ? 'factory' : 'custom'; press(addrs, id);
+            $('addrbox').style.display = S.addrMode === 'custom' ? '' : 'none';
+            BASE.valid(); redraw(false);
+          });
+        });
+        $('addr').addEventListener('input', function () { BASE.valid(); redraw(false); });
+        var fails = ['fail-stop', 'fail-go'];
+        fails.forEach(function (id) {
+          $(id).addEventListener('click', function () { S.onFail = id === 'fail-stop' ? 'stop' : 'go'; press(fails, id); redraw(true); });
+        });
+      }
+    };
+  var IMU = { base: 0, t: 0, cal: { acc: false, mag: false }, lastProg: null, fw: 400 };
+  var IMU_W = 2 * Math.PI / 1.7;
+  function imuRound(v) { return v >= 0 ? Math.floor(v + 0.5) : -Math.floor(-v + 0.5); }
+  function imuI16(v) { v = imuRound(v); return ((v + 32768) % 65536 + 65536) % 65536 - 32768; }
+  function imuWorld() {
+    var hd = Number($('imu-hd').value), pt = Number($('imu-pt').value), sh = $('imu-shake').checked, ph = IMU.t * IMU_W;
+    return {
+      hd: hd + (sh ? 8 * Math.sin(ph) : 0), slider: hd, pt: pt, sh: sh,
+      yawDps: sh ? 8 * IMU_W * Math.cos(ph) : 0,
+      xDps: sh ? 6 * IMU_W * Math.cos(ph + 1.1) : 0,
+      drift: $('imu-drift').checked, magx: $('imu-magx').checked
+    };
+  }
+  function imuVals() {
+    var w = imuWorld(), rel = w.hd - IMU.base, g = rel + (w.drift ? 6 : 0);
+    var p = w.pt * Math.PI / 180, th = w.hd * Math.PI / 180;
+    var yr = imuRound(w.yawDps * 10), xr = imuRound(w.xDps * 10);
+    var flags = 1 | (w.sh ? 0 : 2) | 4 | (IMU.cal.acc ? 16 : 0) | (IMU.cal.mag ? 32 : 0) | 64 | 128;
+    return {
+      h3d: imuI16(g),
+      fused: imuI16(w.magx ? g : rel),
+      h1d: imuI16(g),
+      mag: imuI16(rel + (w.magx ? 35 : 0)),
+      yawRate: yr,
+      pitch: imuRound(w.pt),
+      pitchRate: xr,
+      trust: w.magx ? 0 : 230, disturb: w.magx ? 255 : 4,
+      upFace: w.pt > 45 ? 0 : w.pt < -45 ? 3 : 2,
+      gx: xr, gy: 0, gz: -yr,
+      ax: imuRound(1000 * Math.sin(p)), ay: 0, az: imuRound(1000 * Math.cos(p)),
+      mx: imuRound(350 * Math.cos(th)) + (w.magx ? 400 : 0), my: imuRound(-350 * Math.sin(th)), mz: -300,
+      flags: flags, devId: 362, proto: 2, fw: IMU.fw
+    };
+  }
+  function imuZero() { IMU.base = imuWorld().hd; $('imu-drift').checked = false; }
+  function imuStep() { IMU.t += 0.6; }
+  function imuProgram(id, zeroAtStart) { if (IMU.lastProg !== id) { IMU.lastProg = id; if (zeroAtStart) imuZero(); } }
+  function imuDraw(v, unplug, info) {
+    var w = imuWorld(), ir = getComputedStyle(document.documentElement).getPropertyValue('--ir').trim() || '#e04a3b';
+    var cx = 112, cy = 112, r = 62;
+    var h = '<rect x="0" y="0" width="460" height="200" fill="#f7f7f2"/>';
+    h += '<text x="' + cx + '" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="#3d4a47">' + ('Seen from above (heading)') + '</text>';
+    h += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#cfd6d3" stroke-width="2" stroke-dasharray="5 5"/>';
+    var b = IMU.base * Math.PI / 180;
+    h += '<line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + Math.sin(b) * (r + 8)).toFixed(1) + '" y2="' + (cy - Math.cos(b) * (r + 8)).toFixed(1) + '" stroke="#8a9a96" stroke-width="2" stroke-dasharray="4 3"/>';
+    h += '<text x="' + (cx + Math.sin(b) * (r + 18)).toFixed(1) + '" y="' + (cy - Math.cos(b) * (r + 18) + 4).toFixed(1) + '" text-anchor="middle" font-size="11" fill="#6b7875">0°</text>';
+    if (w.magx) h += '<rect x="8" y="150" width="40" height="22" rx="4" fill="#b03a2e"/><text x="28" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">' + ('magnet') + '</text>';
+    h += '<g transform="rotate(' + w.hd.toFixed(1) + ' ' + cx + ' ' + cy + ')">';
+    h += '<rect x="' + (cx - 20) + '" y="' + (cy - 30) + '" width="40" height="60" rx="7" fill="#1b2422"/>';
+    h += '<polygon points="' + cx + ',' + (cy - 44) + ' ' + (cx - 12) + ',' + (cy - 30) + ' ' + (cx + 12) + ',' + (cy - 30) + '" fill="' + ir + '"/>';
+    h += '<rect x="' + (cx - 27) + '" y="' + (cy - 18) + '" width="7" height="22" rx="2" fill="#5b6b67"/><rect x="' + (cx + 20) + '" y="' + (cy - 18) + '" width="7" height="22" rx="2" fill="#5b6b67"/>';
+    h += '<rect x="' + (cx - 9) + '" y="' + (cy - 6) + '" width="18" height="18" rx="3" fill="' + (unplug ? '#7d918c' : '#2f9e8f') + '"/>';
+    h += '</g>';
+    if (w.sh) h += '<text x="' + (cx + 58) + '" y="40" text-anchor="start" font-size="11" fill="' + ir + '">' + ('~ shaking') + '</text>';
+    var sx = 345, sy = 132;
+    h += '<text x="' + sx + '" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="#3d4a47">' + ('Seen from the side (pitch)') + '</text>';
+    h += '<line x1="245" y1="' + (sy + 22) + '" x2="450" y2="' + (sy + 22) + '" stroke="#b7c0bd" stroke-width="2"/>';
+    h += '<g transform="rotate(' + (-w.pt) + ' ' + sx + ' ' + sy + ')">';
+    h += '<rect x="' + (sx - 46) + '" y="' + (sy - 14) + '" width="92" height="26" rx="6" fill="#1b2422"/>';
+    h += '<circle cx="' + (sx - 28) + '" cy="' + (sy + 14) + '" r="9" fill="#5b6b67"/><circle cx="' + (sx + 28) + '" cy="' + (sy + 14) + '" r="9" fill="#5b6b67"/>';
+    h += '<rect x="' + (sx - 9) + '" y="' + (sy - 22) + '" width="18" height="8" rx="2" fill="' + (unplug ? '#7d918c' : '#2f9e8f') + '"/>';
+    h += '<line x1="' + (sx + 10) + '" y1="' + (sy - 18) + '" x2="' + (sx + 64) + '" y2="' + (sy - 18) + '" stroke="' + ir + '" stroke-width="2.5"/>';
+    h += '<polygon points="' + (sx + 70) + ',' + (sy - 18) + ' ' + (sx + 61) + ',' + (sy - 23) + ' ' + (sx + 61) + ',' + (sy - 13) + '" fill="' + ir + '"/>';
+    h += '<text x="' + (sx + 66) + '" y="' + (sy - 26) + '" font-size="11" font-weight="700" fill="' + ir + '">X</text>';
+    h += '</g>';
+    h += '<text x="446" y="' + (sy + 16) + '" text-anchor="end" font-size="11" fill="#6b7875">' + ('front →') + '</text>';
+    if (info) {
+      info.forEach(function (t, i) { h += '<text x="' + (i < 2 ? 14 : 446) + '" y="' + (i % 2 ? 196 : 180) + '" text-anchor="' + (i < 2 ? 'start' : 'end') + '" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#16201e">' + t + '</text>'; });
+    }
+    if (unplug) h += '<text x="230" y="64" text-anchor="middle" font-size="15" font-weight="700" fill="' + ir + '" stroke="#fff" stroke-width="4" paint-order="stroke">' + (typeof IMU_UNPLUG_TXT === 'function' ? IMU_UNPLUG_TXT() : '' + ('Sensor unplugged') + '') + '</text>';
+    $('field').innerHTML = h;
+    $('imu-hdv').textContent = $('imu-hd').value; $('imu-ptv').textContent = $('imu-pt').value;
+  }
+  function imuBind(changed, skipInputs) {
+    function nudge(d) { var e = $('imu-hd'); e.value = Math.max(-720, Math.min(720, Number(e.value) + d)); changed(); }
+    $('imu-l90').addEventListener('click', function () { nudge(-90); });
+    $('imu-r90').addEventListener('click', function () { nudge(90); });
+    $('imu-zero').addEventListener('click', function () { imuZero(); changed(); });
+    if (!skipInputs) ['imu-hd', 'imu-pt', 'imu-shake', 'imu-drift', 'imu-magx'].forEach(function (id) { $(id).addEventListener('input', changed); });
+  }
+  var T0 = Date.now();
+  IMU.fw = 102;   
+  function upSec() { return 5 + Math.floor((Date.now() - T0) / 1000); }
+  function d1(v) { return (v / 10).toFixed(1); }   
+  var GI = ('Sensor info (every MBC sensor has these)');
+  var GH = ('Heading (how far it turned)'), GR = ('Turn rates and tilt'), GM = ('Magnetometer state and face up'),
+    G9 = ('Raw 9-axis values'), GC = ('Commands');
+  var DEG = ('-32768 ~ 32767 degrees (0 at power-on / zero, bigger turning right, can pass 360)');
+  var FACE = [('+X (X axis up)'), ('+Y (Y axis up)'), ('+Z (flat, face up)'), ('-X (X axis down)'), ('-Y (Y axis down)'), ('-Z (upside down)')];
+  function heading(id, code, name, what, label) {
+    return { id: id, code: code, grp: GH, name: name, kind: 'read', ret: DEG, what: what,
+      body: ['int16_t ' + id + ' = mbcRead(ADDR, ' + code + ');   // ' + name, 'Serial.print(F("' + label + ': "));', 'Serial.println(' + id + ');'],
+      out: function (s) { return label + ': ' + R(s, Number(code)); } };
+  }
+  var FNS = [
+    heading('h3d', '0x01', ('gyro 3D heading'),
+      ('How many degrees the robot has turned; try this one first. The sensor works out how it is mounted, so even a tilted or sideways mount is right. Right is bigger, left smaller; one full turn = 360 and it keeps adding up.'), ('3D heading')),
+    heading('fused', '0x02', ('fused heading'),
+      ('The gyro 3D heading slowly corrected by the magnetometer, so it does not drift on long runs; near motors or iron the correction stops and it just follows the gyro. Tick "Running a long time" below: the 3D heading gains 6°, the fused heading does not.'), ('Fused heading')),
+    heading('h1d', '0x03', ('gyro 1D heading'),
+      ('The classic gyro heading about the turning axis only. On flat ground it is almost the same as the 3D heading; when turning on a slope the 3D one is more accurate.'), ('1D heading')),
+    heading('mag', '0x04', ('magnetic heading'),
+      ('A heading from the magnetometer only, <b>relative</b> (0 when zeroed, not north). It does not drift, but magnetic disturbance throws it off. Tick "Near a motor or iron" below to see it go wrong.'), ('Magnetic heading')),
+    { id: 'heads4', code: '0x01~0x04', grp: GH, name: ('all four headings at once'), kind: 'read', ret: ('4 values: 3D, fused, 1D, magnetic'),
+      what: ('Ids 0x01–0x04 are next to each other, so one <code>mbcReadMany()</code> call reads all 4 from the same moment, handy for comparing. It gives <code>false</code> when the sensor cannot be read.'),
+      body: (['int16_t h[4];                          // h[0] 3D, h[1] fused, h[2] 1D, h[3] magnetic', 'if (mbcReadMany(ADDR, 0x01, 4, h)) {', '  Serial.print(F("3D "));       Serial.print(h[0]);', '  Serial.print(F("  fused "));  Serial.print(h[1]);', '  Serial.print(F("  1D "));     Serial.print(h[2]);', '  Serial.print(F("  mag "));    Serial.println(h[3]);', '} else {', '  Serial.println(F("Cannot read the sensor"));', '}']),
+      out: function (s) { var a = RM(s, 0x01, 4); if (!a) return ('Cannot read the sensor'); return '3D ' + a[0] + ('  fused ') + a[1] + '  1D ' + a[2] + ('  mag ') + a[3]; } },
+    { id: 'turn90', code: '0x01', grp: GH, name: ('past 90° yet?'), kind: 'read', ret: ('yes / no'),
+      what: ('Turning right makes the heading bigger, so "more than 90" means more than 90° to the right; a full turn comes back as 360, not 0. Use it to decide when to stop a spin turn (leave 2° for braking: 88). -32768 means no reading, so check that first.'),
+      body: (['int16_t h = mbcRead(ADDR, 0x01);       // gyro 3D heading', 'if (h == MBC_NONE) {', '  Serial.println(F("Cannot read the sensor"));', '} else if (h > 88) {', '  Serial.println(F("Past 90 degrees right, stop!"));', '} else {', '  Serial.print(F("Turn "));', '  Serial.print(90 - h);', '  Serial.println(F(" more degrees"));', '}']),
+      out: function (s) { var h = R(s, 0x01); if (h === NONE) return ('Cannot read the sensor'); if (h > 88) return ('Past 90 degrees right, stop!'); return ('Turn ') + (90 - h) + (' more degrees'); } },
+    { id: 'yawRate', code: '0x05', grp: GR, name: ('yaw rate'), kind: 'read', ret: ('0.1 °/s (right is positive)'),
+      what: ('How fast it turns right now: degrees per second × 10, positive turning right, negative turning left (same way as the heading). Divide by 10.0 for degrees per second. Tick "Shake the robot" to try it.'),
+      body: (['int16_t yawRate = mbcRead(ADDR, 0x05);  // 0.1 deg/s', 'Serial.print(F("Yaw rate: "));', 'Serial.print(yawRate / 10.0, 1);', 'Serial.println(F(" deg/s"));']),
+      out: function (s) { return ('Yaw rate: ') + d1(R(s, 0x05)) + (' deg/s'); } },
+    { id: 'pitch', code: '0x06', grp: GR, name: ('pitch angle'), kind: 'read', ret: ('-90 ~ +90 degrees (0 when flat)'),
+      what: ('How far the board\'s printed X axis is raised: X up +90, down -90, flat 0. Mount X along the robot\'s nose and it means "how far the nose is up".'),
+      body: (['int16_t pitch = mbcRead(ADDR, 0x06);    // -90 ~ +90 degrees', 'Serial.print(F("Pitch: "));', 'Serial.println(pitch);']),
+      out: function (s) { return ('Pitch: ') + R(s, 0x06); } },
+    { id: 'pitchRate', code: '0x07', grp: GR, name: ('pitch rate'), kind: 'read', ret: ('0.1 °/s'),
+      what: ('How fast it turns about the board\'s printed X axis (degrees per second × 10, counter-clockwise seen from the front of X is positive). Note: it is the gyro X value, <b>not</b> how fast the pitch angle changes.'),
+      body: (['int16_t pitchRate = mbcRead(ADDR, 0x07);  // 0.1 deg/s', 'Serial.print(F("Pitch rate: "));', 'Serial.print(pitchRate / 10.0, 1);', 'Serial.println(F(" deg/s"));']),
+      out: function (s) { return ('Pitch rate: ') + d1(R(s, 0x07)) + (' deg/s'); } },
+    { id: 'rateTilt', code: '0x05~0x07', grp: GR, name: ('rate + tilt at once'), kind: 'read', ret: ('3 values: yaw rate, pitch, pitch rate'),
+      what: ('Ids 0x05–0x07 are next to each other; read all 3 at once.'),
+      body: (['int16_t v[3];                          // v[0] yaw rate, v[1] pitch, v[2] pitch rate', 'if (mbcReadMany(ADDR, 0x05, 3, v)) {', '  Serial.print(F("yaw "));          Serial.print(v[0]);', '  Serial.print(F("  pitch "));      Serial.print(v[1]);', '  Serial.print(F("  pitch rate ")); Serial.println(v[2]);', '} else {', '  Serial.println(F("Cannot read the sensor"));', '}']),
+      out: function (s) { var a = RM(s, 0x05, 3); if (!a) return ('Cannot read the sensor'); return ('yaw ') + a[0] + ('  pitch ') + a[1] + ('  pitch rate ') + a[2]; } },
+    { id: 'magTrust', code: '0x08', grp: GM, name: ('magnetometer trust'), kind: 'read', ret: '0 ~ 255',
+      what: ('How much the fused heading trusts the magnetometer: 255 = fully, 0 = not at all (too much disturbance).'),
+      body: (['int16_t trust = mbcRead(ADDR, 0x08);   // 0 ~ 255', 'Serial.print(F("Magnetometer trust: "));', 'Serial.println(trust);']),
+      out: function (s) { return ('Magnetometer trust: ') + R(s, 0x08); } },
+    { id: 'magDisturb', code: '0x09', grp: GM, name: ('magnetic disturbance'), kind: 'read', ret: ('0 ~ 255 (0.01°)'),
+      what: ('How disturbed the magnetic field is (in 0.01°, up to 255). Over 100 usually means iron, a motor or a speaker nearby.'),
+      body: (['int16_t dist = mbcRead(ADDR, 0x09);    // 0 ~ 255', 'Serial.print(F("Magnetic disturbance: "));', 'Serial.print(dist);', 'if (dist > 100) Serial.print(F(" (strong)"));', 'Serial.println();']),
+      out: function (s) { var v = R(s, 0x09); return ('Magnetic disturbance: ') + v + (v > 100 ? (' (strong)') : ''); } },
+    { id: 'upFace', code: '0x0A', grp: GM, name: ('face up'), kind: 'read', ret: ('0 +X, 1 +Y, 2 +Z, 3 -X, 4 -Y, 5 -Z'),
+      what: ('Which side of the board faces up (the printed axes). Flat = 2 (+Z). Raise the nose past 45° to try it.'),
+      body: (['int16_t face = mbcRead(ADDR, 0x0A);    // 0 ~ 5', 'Serial.print(F("Face up: "));', 'switch (face) {', '  case 0: Serial.println(F("+X (X axis up)")); break;', '  case 1: Serial.println(F("+Y (Y axis up)")); break;', '  case 2: Serial.println(F("+Z (flat, face up)")); break;', '  case 3: Serial.println(F("-X (X axis down)")); break;', '  case 4: Serial.println(F("-Y (Y axis down)")); break;', '  case 5: Serial.println(F("-Z (upside down)")); break;', '  default: Serial.println(face); break;   // -32768 = no reading', '}']),
+      out: function (s) { var v = R(s, 0x0A); return ('Face up: ') + (v >= 0 && v <= 5 ? FACE[v] : v); } },
+    { id: 'gyro', code: '0x10~0x12', grp: G9, name: ('gyro X, Y, Z'), kind: 'read', ret: ('0.1 °/s × 3'),
+      what: ('Raw gyro on three axes (right-hand rule: counter-clockwise seen from the front of that axis is positive). Flat, Z points up, so <b>turning right makes Z negative</b>, the opposite of the heading.'),
+      body: (['int16_t g[3];                          // 0x10 X, 0x11 Y, 0x12 Z', 'if (mbcReadMany(ADDR, 0x10, 3, g)) {', '  Serial.print(F("gyro X ")); Serial.print(g[0]);', '  Serial.print(F("  Y ")); Serial.print(g[1]);', '  Serial.print(F("  Z ")); Serial.println(g[2]);', '} else {', '  Serial.println(F("Cannot read the sensor"));', '}']),
+      out: function (s) { var a = RM(s, 0x10, 3); if (!a) return ('Cannot read the sensor'); return ('gyro X ') + a[0] + '  Y ' + a[1] + '  Z ' + a[2]; } },
+    { id: 'accel', code: '0x13~0x15', grp: G9, name: ('accel X, Y, Z'), kind: 'read', ret: ('mg × 3 (1000 = 1 g)'),
+      what: ('Acceleration on three axes in mg. Flat, Z is about 1000 and X about 0; raise the nose and X grows.'),
+      body: (['int16_t a[3];                          // 0x13 X, 0x14 Y, 0x15 Z', 'if (mbcReadMany(ADDR, 0x13, 3, a)) {', '  Serial.print(F("accel X ")); Serial.print(a[0]);', '  Serial.print(F("  Y ")); Serial.print(a[1]);', '  Serial.print(F("  Z ")); Serial.println(a[2]);', '} else {', '  Serial.println(F("Cannot read the sensor"));', '}']),
+      out: function (s) { var a = RM(s, 0x13, 3); if (!a) return ('Cannot read the sensor'); return ('accel X ') + a[0] + '  Y ' + a[1] + '  Z ' + a[2]; } },
+    { id: 'magXYZ', code: '0x16~0x18', grp: G9, name: ('mag X, Y, Z'), kind: 'read', ret: ('mG × 3 (milligauss)'),
+      what: ('Magnetic field on three axes in mG (calibrated). Turn the robot and X and Y change; near a magnet they jump.'),
+      body: (['int16_t m[3];                          // 0x16 X, 0x17 Y, 0x18 Z', 'if (mbcReadMany(ADDR, 0x16, 3, m)) {', '  Serial.print(F("mag X ")); Serial.print(m[0]);', '  Serial.print(F("  Y ")); Serial.print(m[1]);', '  Serial.print(F("  Z ")); Serial.println(m[2]);', '} else {', '  Serial.println(F("Cannot read the sensor"));', '}']),
+      out: function (s) { var a = RM(s, 0x16, 3); if (!a) return ('Cannot read the sensor'); return ('mag X ') + a[0] + '  Y ' + a[1] + '  Z ' + a[2]; } },
+    { id: 'zero', code: 'E0', grp: GC, name: ('zero heading'), kind: 'cmd', once: true, ret: ('no values'),
+      what: ('Zeroes all four headings (3D, fused, 1D, magnetic) at once: the direction the robot faces now becomes 0. <b>Keep the robot still while zeroing.</b> The simulator\'s "Zero" button is this command; picking this card is like uploading again, so the simulator zeroes once.'),
+      body: (['mbcWrite(ADDR, 0xE0);                  // zero heading', 'delay(50);', 'Serial.print(F("Zeroed, 3D heading: "));', 'Serial.println(mbcRead(ADDR, 0x01));']),
+      out: function (s) { return ('Zeroed, 3D heading: ') + R(s, 0x01); } },
+    { id: 'accelCal', code: 'E1 / E2', grp: GC, name: ('accelerometer calibration'), kind: 'cmd', once: true, ret: ('E1 start, E2 end (saved in the sensor)'),
+      what: ('It is calibrated at the factory; only redo it if the face up or pitch is wrong. Send E1 to start (status bit 4 = 1), <b>lay each of the six sides face up for a few seconds</b>, then send E2 to end: it is saved in the sensor and the headings are zeroed once. The example gives you 30 seconds.'),
+      warn: ('Run it only once when you need it, then delete it.'),
+      body: (['mbcWrite(ADDR, 0xE1);                  // E1 start accelerometer calibration', 'Serial.println(F("Calibrating: lay each of the 6 sides face up for a few seconds (30 s)"));', 'delay(30000);', 'mbcWrite(ADDR, 0xE2);                  // E2 end, saved in the sensor', 'delay(100);', 'Serial.print(F("calibrating bit4 = "));', 'Serial.println((mbcRead(ADDR, 0xF3) >> 4) & 1);   // 0 = done']),
+      out: function (s) { return [('Calibrating: lay each of the 6 sides face up for a few seconds (30 s)'), ('calibrating bit4 = ') + ((R(s, 0xF3) >> 4) & 1)]; } },
+    { id: 'magCal', code: 'E3 / E4', grp: GC, name: ('magnetometer calibration'), kind: 'cmd', once: true, ret: ('E3 start, E4 end (saved in the sensor)'),
+      what: ('Do it when the fused or magnetic heading is off. Send E3 to start (status bit 5 = 1), <b>slowly turn the sensor in every direction, drawing a figure 8, for about 20 s</b>, then send E4 to end and save it. Stay away from motors, speakers and iron tables.'),
+      warn: ('Run it only once when you need it, then delete it.'),
+      body: (['mbcWrite(ADDR, 0xE3);                  // E3 start magnetometer calibration', 'Serial.println(F("Calibrating: slowly draw a figure 8 in every direction (20 s)"));', 'delay(20000);', 'mbcWrite(ADDR, 0xE4);                  // E4 end, saved in the sensor', 'delay(100);', 'Serial.print(F("Magnetometer trust: "));', 'Serial.println(mbcRead(ADDR, 0x08));']),
+      out: function (s) { return [('Calibrating: slowly draw a figure 8 in every direction (20 s)'), ('Magnetometer trust: ') + R(s, 0x08)]; } },
+    { id: 'sensorOk', code: 'MBC_NONE', grp: GI, name: ('is it connected?'), kind: 'read', ret: ('-32768 = not connected'),
+      what: ('Read any id. If you get <code>MBC_NONE</code> (-32768), the sensor is not connected or the address is wrong. Tick "Unplug the sensor" on the right to try it.'),
+      body: (['if (mbcRead(ADDR, 0xF0) == MBC_NONE) {', '  Serial.println(F("Sensor not connected!"));', '} else {', '  Serial.println(F("Sensor OK"));', '}']),
+      out: function (s) { return s.ok ? ('Sensor OK') : ('Sensor not connected!'); } },
+    { id: 'deviceId', code: '0xF0', grp: GI, name: ('device ID'), kind: 'read', once: true, ret: ('low byte = factory address 0x6A, high byte = 1 (IMU)'),
+      what: ('Check which sensor it is: the low byte is the factory address (it stays the same after you change the address), the high byte 1 = IMU gyro.'),
+      body: (['int16_t id = mbcRead(ADDR, 0xF0);', 'Serial.print(F("Factory address 0x"));', 'Serial.print((uint8_t)(id & 0xFF), HEX);', 'Serial.print(F(", model code "));', 'Serial.println((uint8_t)((id >> 8) & 0xFF));']),
+      out: function (s) { var id = R(s, 0xF0); return ('Factory address 0x') + cHex(id & 0xFF) + (', model code ') + ((id >> 8) & 0xFF); } },
+    { id: 'protoVer', code: '0xF1', grp: GI, name: ('protocol version'), kind: 'read', once: true, ret: '2',
+      what: ('These examples follow protocol version 2. You should read 2.'),
+      body: (['Serial.print(F("Protocol version: "));', 'Serial.println(mbcRead(ADDR, 0xF1));']),
+      out: function (s) { return ('Protocol version: ') + R(s, 0xF1); } },
+    { id: 'fwVer', code: '0xF2', grp: GI, name: ('firmware version'), kind: 'read', once: true, ret: ('major × 100 + minor (e.g. 102 = 1.2)'),
+      what: ('The sensor firmware version. Divide by 100 for the major version; the remainder is the minor version.'),
+      body: (['int16_t fw = mbcRead(ADDR, 0xF2);', 'Serial.print(F("Firmware version: "));', 'Serial.print(fw / 100);', "Serial.print('.');", 'Serial.println(fw % 100);']),
+      out: function (s) { var fw = R(s, 0xF2); return ('Firmware version: ') + cDiv(fw, 100) + '.' + (fw % 100); } },
+    { id: 'status', code: '0xF3', grp: GI, name: ('status flags'), kind: 'read', ret: ('8 bits'),
+      what: ('Each bit means one thing; 1 = yes: bit0 ready, <b>bit1 stationary</b>, bit2 mount axis captured, bit3 mount too tilted, bit4 accel calibrating, bit5 mag calibrating, bit6 fusion initialised, bit7 mag auto-cal converged. Tick "Shake the robot" and watch bit 1 go to 0.'),
+      body: (['int16_t st = mbcRead(ADDR, 0xF3);', 'Serial.print(F("ready "));           Serial.print((st >> 0) & 1);', 'Serial.print(F("  still "));        Serial.print((st >> 1) & 1);', 'Serial.print(F("  calibrating ")); Serial.print((st >> 4) & 3);', 'Serial.print(F("  fusion "));       Serial.println((st >> 6) & 1);']),
+      out: function (s) { var st = R(s, 0xF3); return ('ready ') + ((st >> 0) & 1) + ('  still ') + ((st >> 1) & 1) + ('  calibrating ') + ((st >> 4) & 3) + ('  fusion ') + ((st >> 6) & 1); } },
+    { id: 'seq', code: '0xF4', grp: GI, name: ('update counter'), kind: 'read', ret: ('0 ~ 255 (+1 every 10 ms)'),
+      what: ('The sensor adds 1 every 10 ms and wraps from 255 back to 0. If it keeps changing, the sensor is alive; if it stops, the sensor is busy.'),
+      body: (['Serial.print(F("Update counter: "));', 'Serial.println(mbcRead(ADDR, 0xF4));']),
+      out: function (s) { return ('Update counter: ') + R(s, 0xF4); } },
+    { id: 'uptime', code: '0xF5', grp: GI, name: ('uptime seconds'), kind: 'read', ret: ('0 ~ 32767 s'),
+      what: ('How long the sensor has been on. If the number suddenly gets smaller, the sensor restarted (for example, a loose power wire).'),
+      body: (['Serial.print(F("Uptime seconds: "));', 'Serial.println(mbcRead(ADDR, 0xF5));']),
+      out: function (s) { return ('Uptime seconds: ') + R(s, 0xF5); } },
+    { id: 'setAddress', code: 'F8', grp: GI, name: ('change I2C address'), kind: 'cmd', once: true, ret: ('2 values: new address, inverted new address'),
+      what: ('To use two IMUs on one bus, give one of them a new address first (0x08 ~ 0x77). It is saved in the sensor and <b>works after a restart</b>; then change <code>ADDR</code> in your program too. To go back to the factory address, write <code>0x00, 0xFF</code>.'),
+      warn: ('Run it only once when you need it, then delete it.'),
+      body: (['mbcWrite(ADDR, 0xF8, 0x20, (uint8_t)~0x20);      // move to 0x20, works after a restart', '// mbcWrite(ADDR, 0xF8, (uint8_t)0x00, 0xFF);    // back to the factory address', 'Serial.println(F("Sent: after a restart the address is 0x20"));']),
+      out: function (s) { return ('Sent: after a restart the address is 0x20'); } },
+    { id: 'reboot', code: 'EF', grp: GI, name: ('reboot'), kind: 'cmd', once: true, ret: ('1 value: the code 0xA5'),
+      what: ('Restart the sensor (handy after changing the address, so you do not need to unplug the power). Keep the robot still while it restarts; the headings start again from 0, and uptime 0xF5 starts again from 0.'),
+      body: (['mbcWrite(ADDR, 0xEF, 0xA5);            // reboot', 'delay(500);', 'mbcWaitReady(ADDR, 3000);              // wait until it is ready again', 'Serial.print(F("Restarted, uptime seconds: "));', 'Serial.println(mbcRead(ADDR, 0xF5));']),
+      out: function (s) { return ('Restarted, uptime seconds: ') + (s.ok ? 1 : NONE); } }
+  ];
+  function regs(v) {
+    var r = {};
+    r[0x01] = v.h3d; r[0x02] = v.fused; r[0x03] = v.h1d; r[0x04] = v.mag; r[0x05] = v.yawRate; r[0x06] = v.pitch; r[0x07] = v.pitchRate;
+    r[0x08] = v.trust; r[0x09] = v.disturb; r[0x0A] = v.upFace;
+    r[0x10] = v.gx; r[0x11] = v.gy; r[0x12] = v.gz; r[0x13] = v.ax; r[0x14] = v.ay; r[0x15] = v.az; r[0x16] = v.mx; r[0x17] = v.my; r[0x18] = v.mz;
+    r[0xF0] = v.devId; r[0xF1] = v.proto; r[0xF2] = v.fw; r[0xF3] = v.flags;
+    r[0xF4] = Math.floor((Date.now() - T0) / 10) & 255; r[0xF5] = upSec();
+    return r;
+  }
+  function IMU_UNPLUG_TXT() { return ('Sensor unplugged: the Arduino reads -32768'); }
+  var SIM = {
+    state: function () {
+      imuProgram(S.fn, S.step >= 3 && S.fn === 'zero');   
+      var v = imuVals(); return { ok: !$('unplug').checked, raw: v, r: regs(v) };
+    },
+    draw: function (st) {
+      var v = st.raw;
+      imuDraw(v, !st.ok, st.ok ? [('3D heading ') + v.h3d + '°', ('yaw rate ') + v.yawRate, ('pitch ') + v.pitch + '°', ('pitch rate ') + v.pitchRate] : []);
+    },
+    inputs: ['imu-hd', 'imu-pt', 'imu-shake', 'imu-drift', 'imu-magx', 'unplug']
+  };
+  imuBind(function () { tick(false); }, true);
+  setInterval(imuStep, 600);
+  var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; });
+  if (!BY[S.fn]) S.fn = FNS[0].id;
+  function programLines() {
+    var f = BY[S.fn], L = [];
+    var s1 = S.step === 1, s2 = S.step === 2, s3 = S.step === 3;
+    BASE.top().forEach(function (t) { L.push({ t: t, tag: 1, hl: s1 }); });
+    if (S.step >= 2) {
+      L.push({ t: '' });
+      BASE.decl().forEach(function (t) { L.push({ t: t, tag: 2, hl: s2 }); });
+      if (S.step >= 3 && f.pre) { L.push({ t: '' }); f.pre.forEach(function (t) { L.push({ t: t, tag: 3, hl: s3 }); }); }
+      L.push({ t: '' });
+      BASE.setupOpen().forEach(function (t) { L.push({ t: t, tag: 2, hl: s2 }); });
+      if (S.step >= 3 && f.once) f.body.forEach(function (b) { L.push({ t: '  ' + b, tag: 3, hl: s3 }); });
+      BASE.setupClose().forEach(function (t) { L.push({ t: t, tag: 2, hl: s2 }); });
+      if (S.step >= 3) {
+        L.push({ t: '' });
+        L.push({ t: 'void loop() {', tag: 3, hl: s3 });
+        if (f.once) {
+          L.push({ t: '  ' + ('// done once in setup(), nothing to repeat here'), tag: 3, hl: s3 });
+        } else {
+          (BASE.loopHead ? BASE.loopHead() : []).forEach(function (t) { L.push({ t: '  ' + t, tag: 3, hl: s3 }); });
+          f.body.forEach(function (b) { L.push({ t: '  ' + b, tag: 3, hl: s3 }); });
+          L.push({ t: '  ' + (f.wait || BASE.loopWait), tag: 3, hl: s3 });
+        }
+        L.push({ t: '}', tag: 3, hl: s3 });
+        if (f.post) { L.push({ t: '' }); f.post.forEach(function (t) { L.push({ t: t, tag: 3, hl: s3 }); }); }
+      }
+    }
+    L.push({ t: '' });
+    PROD.helper.forEach(function (t, i) { L.push({ t: t, tag: 1, hl: s1, helper: true, tagHide: i > 0 }); });
+    return L;
+  }
+  var lastKeys = '';
+  function drawMain() {
+    var L = programLines();
+    L.forEach(function (l, k) { l.no = k + 1; });
+    if (!S.showHelper) {
+      var nH = L.filter(function (l) { return l.helper; }).length, seen = false, F = [];
+      L.forEach(function (l) {
+        if (!l.helper) { F.push(l); return; }
+        if (seen) return;
+        seen = true; F.push(l);
+        F.push({ t: ('// ⋯ ' + (nH - 1) + ' more lines (press "Show helper")'), no: '⋮', tag: 1, tagHide: true, hl: l.hl, helper: true });
+      });
+      L = F;
+    }
+    var prev = lastKeys ? lastKeys.split('\n') : [];
+    L.forEach(function (l) { if (l.t && lastKeys && prev.indexOf(l.t) < 0) l.isNew = true; });
+    lastKeys = L.map(function (l) { return l.t; }).join('\n');
+    render($('maincode'), L);
+    var b = $('bubble'); b.querySelector('i').textContent = S.step; b.querySelector('span').textContent = BASE.bubble(S.step, BY[S.fn]);
+    drawMinis();
+  }
+  var miniPrev = {};
+  function drawMinis() {
+    var keep = S.step; S.step = 3; var full = programLines(); S.step = keep;
+    [1, 2, 3].forEach(function (k) {
+      var el = $('mini' + k); if (!el) return;
+      var lines = [], nHelper = 0, total = 0;
+      full.forEach(function (l, i) { if (l.tag === k && l.helper) total++; });
+      full.forEach(function (l, i) {
+        if (l.tag !== k) return;
+        if (l.helper) {
+          nHelper++;
+          if (nHelper <= 2) lines.push({ t: l.t, no: i + 1 });
+          else if (nHelper === 3) lines.push({ t: ('// ⋯ ' + total + ' helper lines in all: press "Show helper" on the right'), no: '⋮' });
+          return;
+        }
+        lines.push({ t: l.t, no: i + 1 });
+      });
+      if (!lines.length) { el.innerHTML = ''; return; }
+      var nums = [], h0 = 0;
+      full.forEach(function (l, i) { if (l.tag !== k) return; if (l.helper) { if (!h0) h0 = i + 1; } else nums.push(i + 1); });
+      var a = nums[0], z = nums[nums.length - 1];
+      var txt = lines.map(function (l) { return l.no + l.t; }).join('\n');
+      var range = ('line ' + a + (z !== a ? '–' + z : ''));
+      if (h0) range += (', plus the helper from line ' + h0 + ' at the bottom');
+      el.innerHTML = '<span>' + ('What this step writes (') + range + (')') + '</span><pre class="code"></pre>';
+      render(el.querySelector('pre'), lines, { noTag: true });
+      if (miniPrev[k] !== undefined && miniPrev[k] !== txt) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      miniPrev[k] = txt;
+    });
+  }
+  function setStep(n) {
+    S.step = Math.max(S.step, n);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    S.viewStep = n;
+    drawMain();
+    $('next2').disabled = !BASE.valid();
+  }
+  var _draw = drawMain;
+  drawMain = function () { var keep = S.step; S.step = S.viewStep || S.step; _draw(); S.step = keep; };
+  function groups() {
+    var g = {}, order = [];
+    FNS.forEach(function (f) { if (!g[f.grp]) { g[f.grp] = []; order.push(f.grp); } g[f.grp].push(f); });
+    return { g: g, order: order };
+  }
+  function drawPicker() {
+    var box = $('picker'), gg = groups(); box.innerHTML = '';
+    gg.order.forEach(function (k) {
+      var wrap = document.createElement('div'); wrap.className = 'fgroup';
+      wrap.innerHTML = '<span>' + k + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      gg.g[k].forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip';
+        b.textContent = f.code + ' ' + f.name; b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.title = f.name;
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      wrap.appendChild(chips); box.appendChild(wrap);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + f.code + (' · ') + f.name + '</b><span>' + f.what + '</span><span class="small">' +
+      (f.kind === 'cmd' ? ('Command: ') : ('Returns: ')) + f.ret + '</span>' + (f.warn ? '<span class="err">' + f.warn + '</span>' : '');
+  }
+  function pick(id) {
+    S.fn = id;
+    setStep(3);
+    drawPicker(); tick(true);
+  }
+  function cardLines(f) {
+    if (f.once) return ['void setup() {', '  ' + BASE.cardOnceHead()].concat(f.body.map(function (b) { return '  ' + b; }), ['}']);
+    var head = (BASE.loopHead ? BASE.loopHead() : []).map(function (b) { return '  ' + b; });
+    return ['void loop() {'].concat(head, f.body.map(function (b) { return '  ' + b; }), ['  ' + (f.wait || BASE.loopWait), '}']);
+  }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    FNS.forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      c.innerHTML =
+        '<div class="card-head"><h3>' + f.code + '<span class="zh">' + f.name + '</span></h3>' +
+        '<span class="badges"><span class="badge yes">' + (f.kind === 'cmd' ? ('command') : ('read')) + '</span>' + (f.badge ? '<span class="badge yes">' + f.badge + '</span>' : '') + '</span></div>' +
+        '<p>' + f.what + '</p>' +
+        '<dl class="meta"><dt>' + (f.kind === 'cmd' ? ('Command') : ('Returns')) + '</dt><dd>' + f.ret + '</dd><dt>' + ('Example') + '</dt><dd>' +
+        (f.once ? ('in setup(), runs once at power-on') : ('in loop(), repeats again and again')) + '</dd></dl>' +
+        '<pre class="code"></pre>' +
+        '<p class="out">' + ('The Serial Monitor shows:') + '<code></code></p>' +
+        '<button type="button" class="try">' + ('Try it') + '</button>';
+      render(c.querySelector('pre'), cardLines(f).map(function (t) { return { t: t }; }), { noTag: true });
+      c.querySelector('.try').addEventListener('click', function () {
+        pick(f.id);
+        var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      });
+      box.appendChild(c);
+    });
+    var cnt = $('fncount'); if (cnt) cnt.textContent = FNS.length;
+  }
+  function outText(f, st) { var o = f.out(st); return Array.isArray(o) ? o.join('\n') : String(o); }
+  function updateCardOutputs(st) {
+    FNS.forEach(function (f) {
+      var el = document.querySelector('#fn-' + f.id + ' .out code');
+      if (el) el.textContent = outText(f, st);
+    });
+  }
+  function exFull(id) {
+    var out = [];
+    EX[id].forEach(function (t) { if (t === '@HELPER') out = out.concat(PROD.helper); else out.push(t); });
+    return out;
+  }
+  function drawExamples() {
+    Object.keys(EX).forEach(function (k) {
+      var el = $('ex-' + k); if (!el) return;
+      var shown = EX[k].map(function (t) { return t === '@HELPER' ? ('// … paste the step-1 helper here ("Copy" adds it for you) …') : t; });
+      render(el, shown.map(function (t) { return { t: t }; }), { noTag: true });
+    });
+  }
+  var log = [], booted = false, halted = false;
+  var WARN = (/-32768|not found|cannot read|not connected|no data/i);
+  function cls(t) { return WARN.test(t) ? 'warnline' : ''; }
+  function pushOut(f, st) { outText(f, st).split('\n').forEach(function (t) { log.push({ c: cls(t), t: t }); }); }
+  function tick(reset) {
+    var st = SIM.state(), f = BY[S.fn];
+    SIM.draw(st);
+    updateCardOutputs(st);
+    if (S.step < 3) {
+      log = [{ c: '', t: ('(Finish step 3 "Use a function" and you will see what the Arduino prints here)') }];
+      booted = false;
+    } else if (reset || !booted) {
+      log = []; booted = true; halted = false;
+      (BASE.bootLines ? BASE.bootLines(st) : []).forEach(function (t) { log.push({ c: '', t: t }); });
+      if (!st.ok) { log.push({ c: 'warnline', t: BASE.bootFail() }); halted = BASE.halts(); }
+      if (halted) log.push({ c: '', t: BASE.haltNote ? BASE.haltNote() : ('(The program is stuck in while (true) {}: plug the sensor back in and press the Arduino reset button. Here: click the function again.)') });
+      else pushOut(f, st);
+    } else if (!f.once && !halted) {
+      pushOut(f, st);
+    }
+    while (log.length > 8) log.shift();
+    $('console').innerHTML = log.map(function (l) { return '<span class="' + l.c + '">' + esc(l.t) + '</span>'; }).join('\n');
+  }
+  $('next1').addEventListener('click', function () { setStep(2); });
+  $('next2').addEventListener('click', function () { if (BASE.valid()) { setStep(3); drawPicker(); tick(true); } });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) {
+    $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } });
+  });
+  BASE.bind(function (rerun) { drawMain(); drawPicker(); $('next2').disabled = !BASE.valid(); if (rerun && S.step >= 3) tick(true); });
+  SIM.inputs.forEach(function (id) {
+    var el = $(id); if (!el) return;
+    el.addEventListener('input', function () { tick(id === 'unplug' && BY[S.fn].once); });
+  });
+  $('helperbtn').addEventListener('click', function (e) {
+    S.showHelper = !S.showHelper;
+    e.currentTarget.textContent = S.showHelper ? ('Hide helper') : ('Show helper');
+    e.currentTarget.setAttribute('aria-pressed', String(!!S.showHelper));
+    drawMain();
+  });
+  $('copymain').addEventListener('click', function (e) { copyText(plain(programLines()), e.currentTarget); });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { copyText(exFull(b.getAttribute('data-copy')).join('\n') + '\n', b); });
+  });
+  drawPicker(); drawCards(); drawExamples(); setStep(1); tick(true);
+  setInterval(function () { if (S.step >= 3 && !BY[S.fn].once) tick(false); }, 600);
+})();
+</script>
+<script>
+(function () {
+  var side = document.querySelector('.side'); if (!side) return;
+  var mq = window.matchMedia('(max-width: 900px)');
+  var home = side.parentNode, homeNext = side.nextSibling;
+  var con = document.getElementById('console'), conP = con && con.closest('.panel');
+  if (conP && conP.parentNode !== side) conP = null;
+  var last = null, ready = false;
+  var STOP = '.step-body, .cards, .ref, .steps, .main, .wrap, body';
+  function anchorOf(el) { var a = el; while (a && a.parentElement && !a.parentElement.matches(STOP)) a = a.parentElement; return a && a.parentElement ? a : null; }
+  function flash(el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  // 把 box 搬到 a 那一塊的後面；a 在畫面上的位置維持不動（點下去時就記住 a：頁面常在點擊後重畫按鈕，按鈕本身會被換掉）
+  function moveAfter(box, a) {
+    if (!a || !a.isConnected || a === box || a.contains(box)) return false;
+    if (a.nextElementSibling === box) return true;
+    var y = a.getBoundingClientRect().top;
+    a.parentNode.insertBefore(box, a.nextSibling); box.classList.add('follow');
+    var d = a.getBoundingClientRect().top - y; if (d) window.scrollBy(0, d);
+    return true;
+  }
+  function inPanel(el) { return side.contains(el) || (conP && conP.contains(el)); }
+  function placeSide(a, scroll) {
+    if (!mq.matches || !a) return;
+    if (conP && conP.parentNode !== side) { conP.classList.remove('follow'); side.appendChild(conP); }
+    if (!moveAfter(side, a)) return;
+    if (scroll) { var r = side.getBoundingClientRect(); if (r.top > window.innerHeight * 0.7) window.scrollBy({ top: r.top - window.innerHeight * 0.3, behavior: 'smooth' }); }
+  }
+  function placeConsole(el) {
+    if (!mq.matches || !conP || inPanel(el)) return;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在「正在操作的那一排」正下方（排＝控制區的直接子元素），
+    // 畫面、那一排、輸出同一屏；控制區很長或那一排在最下面（例如拔線勾選）都不會跑出畫面
+    var sim = el.closest('.sim'), ctrl = null, row = null;
+    if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (ctrl && ctrl !== el) for (var j = 0; j < ctrl.children.length; j++) if (ctrl.children[j].contains(el)) row = ctrl.children[j];
+    if (sim && ctrl) {
+      var box = row ? ctrl : sim, after = row || null;
+      if (after ? after.nextElementSibling === conP : conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var y = el.getBoundingClientRect().top;
+      if (after) box.insertBefore(conP, after.nextSibling); else sim.insertBefore(conP, ctrl);
+      conP.classList.add('follow');
+      var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
+      return;
+    }
+    var a = anchorOf(el); if (a && a.nextElementSibling === side) return; // 程式那格已經緊接在下面，輸出就在它裡面
+    moveAfter(conP, a);
+  }
+  function reset() {
+    if (mq.matches) { var b = document.querySelector('#step1 .step-body button') || document.querySelector('#step1 button'); if (b) placeSide(anchorOf(b), false); return; }
+    if (conP) { conP.classList.remove('follow'); side.appendChild(conP); }
+    side.classList.remove('follow'); home.insertBefore(side, homeNext);
+  }
+  function remember(e) { if (!inPanel(e.target)) last = anchorOf(e.target); }
+  document.addEventListener('pointerdown', remember, true);
+  document.addEventListener('focusin', remember, true);
+  var mo = new MutationObserver(function () { if (ready && mq.matches) { placeSide(last, true); flash(side); } });
+  ['maincode', 'mainblocks'].forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true }); });
+  function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
+  document.addEventListener('input', sim, true);
+  document.addEventListener('change', sim, true);
+  // 模擬器裡的按鈕（掌控者按鍵、色點調色盤…）也算在操作模擬器
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.sim button'); if (b) placeConsole(b); }, true);
+  reset(); setTimeout(function () { ready = true; }, 800);
+  if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
+})();
+</script>
+</body>
+</html>

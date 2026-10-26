@@ -20,26 +20,30 @@ The universal I2C edition of the Laser Ranger 8-ch works with BBC micro:bit V1 /
 
 | Sensor | micro:bit |
 | :--- | :--- |
-| SDA | P20 |
-| SCL | P19 |
-| 5V | external 5 V (or the V2 3V pin, check current) |
+| SDA（RX） | P20 |
+| SCL（TX） | P19 |
+| VCC | **must use external 5 V** (share GND with the micro:bit) |
 | GND | GND |
 
 ## Reporter blocks
 
 | Block | Returns | Id | Meaning |
 | :--- | :--- | :--- | :--- |
-| MBC nearest distance cm | 0~120 cm | [`01`](/en/sensors/tof8/reference.md#v01) | smallest of the 8 distances, 0~120 cm (a failed sensor counts as 120); 120 = nothing around |
-| MBC nearest direction | -8~+8 | [`02`](/en/sensors/tof8/reference.md#v02) | direction of the nearest object: −7 (left) to +7 (right), 0 = straight ahead, negative = left; ±8 = nothing around (keeps the last side) |
-| MBC farthest distance cm | 0~120 cm | [`03`](/en/sensors/tof8/reference.md#v03) | largest of the 8 distances, 0~120 cm (a failed sensor always reads 120 and looks 'farthest') |
-| MBC farthest direction | -7~+7 | [`04`](/en/sensors/tof8/reference.md#v04) | direction of the most open side: −7 to +7, 0 = straight ahead, negative = left; 0 when all 8 read 120 |
-| MBC front distance cm | 0~120 cm | [`05`](/en/sensors/tof8/reference.md#v05) | average of sensors 4 and 5 (both facing forward), 0~120 cm; EV3 mode 3 and SPIKE mode 6 carry the same thing in mm; 0x22 'C' is min(4, 5), not the average (see 10) |
-| MBC nearest distance mm | 0~1200 mm | [`06`](/en/sensors/tof8/reference.md#v06) | smallest of the 8 mm readings, 0~1200 (failed sensor counts as 1200); 1200 = nothing around |
-| MBC init bitmap | 0~255 bit | [`07`](/en/sensors/tof8/reference.md#v07) | bit0 = sensor 1 (left) … bit7 = sensor 8; 1 = initialised at power-on (8 sensors take ~2~4 s, no retry); 255 = all OK |
-| MBC fault bitmap | 0~255 bit | [`08`](/en/sensors/tof8/reference.md#v08) | bit0 = sensor 1 … bit7 = sensor 8; 1 = currently failing (I2C error or no update for 200 ms); its distance reads 120 / 1200 |
-| MBC front distance mm | 0~1200 mm | [`09`](/en/sensors/tof8/reference.md#v09) | average of sensors 4 and 5 (the two facing forward), 0~1200 mm; 1200 = nothing ahead. cm version is 05 |
-| MBC sensor [1~8] distance cm | 0~120 cm | [`10~17`](/en/sensors/tof8/reference.md#v10) | distance of each sensor 1~8, 0~120 cm (1 = far left, 4 and 5 = front, 8 = far right, 30° apart); 120 = nothing that way / sensor failed; ids 10~17 |
-| MBC sensor [1~8] distance mm | 0~1200 mm | [`18~1F`](/en/sensors/tof8/reference.md#v18) | distance of each sensor 1~8, 0~1200 mm; 1200 = nothing that way / sensor failed; ids 18~1F |
+| distance 8-ch nearest ([cm]) | 0~120 cm | [`01`](/en/sensors/tof8/reference.md#v01) | smallest of the 8 distances, 0~120 cm (a failed sensor counts as 120); 120 = nothing around |
+| distance 8-ch nearest direction | -8~+8 | [`02`](/en/sensors/tof8/reference.md#v02) | direction of the nearest object: −7 (left) to +7 (right), 0 = straight ahead, negative = left; ±8 = nothing around (keeps the last side) |
+| distance 8-ch most open (cm) | 0~120 cm | [`03`](/en/sensors/tof8/reference.md#v03) | largest of the 8 distances, 0~120 cm (a failed sensor always reads 120 and looks 'farthest') |
+| distance 8-ch most open direction | -7~+7 | [`04`](/en/sensors/tof8/reference.md#v04) | direction of the most open side: −7 to +7, 0 = straight ahead, negative = left; 0 when all 8 read 120 |
+| distance 8-ch front ([cm]) | 0~120 cm | [`05`](/en/sensors/tof8/reference.md#v05) | average of sensors 4 and 5 (both facing forward), 0~120 cm; EV3 mode 3 and SPIKE mode 6 carry the same thing in mm; 0x22 'C' is min(4, 5), not the average (see 10) |
+| distance 8-ch nearest ([mm]) | 0~1200 mm | [`06`](/en/sensors/tof8/reference.md#v06) | smallest of the 8 mm readings, 0~1200 (failed sensor counts as 1200); 1200 = nothing around |
+| distance 8-ch front ([mm]) | 0~1200 mm | [`09`](/en/sensors/tof8/reference.md#v09) | average of sensors 4 and 5 (the two facing forward), 0~1200 mm; 1200 = nothing ahead. cm version is 05 |
+| distance 8-ch sensor [1~8] ([cm]) | 0~120 cm | [`10~17`](/en/sensors/tof8/reference.md#v10) | distance of each sensor 1~8, 0~120 cm (1 = far left, 4 and 5 = front, 8 = far right, 30° apart); 120 = nothing that way / sensor failed; ids 10~17 |
+| distance 8-ch sensor [1~8] ([mm]) | 0~1200 mm | [`18~1F`](/en/sensors/tof8/reference.md#v18) | distance of each sensor 1~8, 0~1200 mm; 1200 = nothing that way / sensor failed; ids 18~1F |
+
+### More blocks (yes / no, events)
+
+| Block | Related value |
+| :--- | :--- |
+| on distance 8-ch nearer than 10 cm | [`01`](/en/sensors/tof8/reference.md#v01) |
 
 ## Status
 
@@ -51,9 +55,11 @@ The universal I2C edition of the Laser Ranger 8-ch works with BBC micro:bit V1 /
 ## JavaScript
 
 ```typescript
+if (!(mbc.waitReady(0x29, 5000))) {
+    basic.showIcon(IconNames.No)   // nothing answers: check wiring and power
+}
 basic.forever(function () {
-    let nearCm = MBC.readValue(0x29, 0x01)   // nearest distance (cm)
-    basic.showNumber(nearCm)
+    basic.showNumber(mbc.tof8Nearest(MbcDistUnit.Cm))   // nearest distance (cm)
     basic.pause(100)
 })
 ```
@@ -68,4 +74,4 @@ Generated by `_build/gen-reference.mjs` from `_build/protocol/tof8.json` (single
 - 最空曠方向 04 範圍 −7~+7（maxDirection 永遠不會是 0／16，盤點 INO:1086-1088）；最近方向 02 ±8 = 沒目標、沿用上次偏向側，開機預設 −8。
 - 沒有寫入命令；F8 換位址／EF 重開機用共用的。
 - 主對話 2026-10-21：補 09 正前方 mm（定案 §5 只有 05 正前方 cm，但 EV3 模式 3、SPIKE 模式 6 都送 mm，I2C／mBlock 應有同一個值）。
-- The extension reads `Int16LE` and pauses 2 ms after writing the id (D5).
+- The extension reads `Int16LE` and pauses 2 ms after writing the id (D5); with no sensor answering, reporters return 0 and yes / no blocks return false.

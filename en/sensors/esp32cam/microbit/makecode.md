@@ -7,7 +7,7 @@ This page covers **MakeCode (blocks / JavaScript)** only: how to set it up for t
 
 ## Which edition and how to connect
 
-Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `0x4C`. The sensor needs 5 V; use a breakout board with a 5 V output.
+Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `0x4C`. It **must use an external 5 V supply** (ESP32 camera + screen + lights), not the micro:bit 3V pin; share the supply GND with the micro:bit.
 
 <figure class="ref-fig"><img src="/images/figures/esp32cam/wiring-microbit.svg" alt="Sharpshooter Vision (ESP32CAM) × BBC micro:bit V1 / V2" loading="lazy"></figure>
 
@@ -21,7 +21,7 @@ Get the **Universal I2C edition** and connect it to the I2C header of a micro:bi
 
 ## Reading values (School edition)
 
-After adding pxt-mbc-sensors, find the blocks in the MBC category; the JavaScript form is shown too, address `0x4C`.
+After adding pxt-mbc-sensors, find the blocks in the MBC Sensors category; the JavaScript form is shown too, address `0x4C`.
 
 <section id="v01" class="ref-item">
 
@@ -33,13 +33,19 @@ After adding pxt-mbc-sensors, find the blocks in the MBC category; the JavaScrip
 | :--- | :--- |
 | `-1~100` | hue of sample point S1, 0~100 (hue ring 0~240 scaled); −1 = black/white/grey (saturation < 10); 0 when S1 is not set |
 
-<pre class="blocks">(MBC hue :: #E8711E)</pre>
+<pre class="blocks">(camera colour [hue v] :: #00A4E4)</pre>
 
 ```typescript
-let hue = MBC.readValue(0x4C, 0x01)   // hue：-1~100
+let hue = mbc.camColor(MbcCamColor.Hue)   // hue：-1~100
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+**Related block "camera colour is black / white / grey"**
+
+```typescript
+let camIsGrey = mbc.camIsGrey()
+```
+
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -53,13 +59,13 @@ let hue = MBC.readValue(0x4C, 0x01)   // hue：-1~100
 | :--- | :--- |
 | `0~100` | saturation of sample point S1, 0~100 |
 
-<pre class="blocks">(MBC saturation :: #E8711E)</pre>
+<pre class="blocks">(camera colour [saturation v] :: #00A4E4)</pre>
 
 ```typescript
-let saturation = MBC.readValue(0x4C, 0x02)   // saturation：0~100
+let saturation = mbc.camColor(MbcCamColor.Saturation)   // saturation：0~100
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -73,13 +79,13 @@ let saturation = MBC.readValue(0x4C, 0x02)   // saturation：0~100
 | :--- | :--- |
 | `0~100` | brightness (HSV value) of sample point S1, 0~100 |
 
-<pre class="blocks">(MBC brightness :: #E8711E)</pre>
+<pre class="blocks">(camera colour [brightness v] :: #00A4E4)</pre>
 
 ```typescript
-let value = MBC.readValue(0x4C, 0x03)   // brightness：0~100
+let value = mbc.camColor(MbcCamColor.Brightness)   // brightness：0~100
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -93,13 +99,13 @@ let value = MBC.readValue(0x4C, 0x03)   // brightness：0~100
 | :--- | :--- |
 | `0~100` | whole-frame motion 0~100 (more change = larger) |
 
-<pre class="blocks">(MBC motion :: #E8711E)</pre>
+<pre class="blocks">(camera motion :: #00A4E4)</pre>
 
 ```typescript
-let motion = MBC.readValue(0x4C, 0x04)   // motion：0~100
+let motion = mbc.camMotion()   // motion：0~100
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -113,13 +119,13 @@ let motion = MBC.readValue(0x4C, 0x04)   // motion：0~100
 | :--- | :--- |
 | `0~100` | blob centre X 0~100, left = 0; 0 when not found |
 
-<pre class="blocks">(MBC blob X :: #E8711E)</pre>
+<pre class="blocks">(camera blob [X v] :: #00A4E4)</pre>
 
 ```typescript
-let blobX = MBC.readValue(0x4C, 0x05)   // blob X：0~100
+let blobX = mbc.camBlob(MbcCamBlob.X)   // blob X：0~100
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -133,13 +139,13 @@ let blobX = MBC.readValue(0x4C, 0x05)   // blob X：0~100
 | :--- | :--- |
 | `0~75` | blob centre Y 0~75, bottom = 0, top = 75; 0 when not found |
 
-<pre class="blocks">(MBC blob Y :: #E8711E)</pre>
+<pre class="blocks">(camera blob [Y v] :: #00A4E4)</pre>
 
 ```typescript
-let blobY = MBC.readValue(0x4C, 0x06)   // blob Y：0~75
+let blobY = mbc.camBlob(MbcCamBlob.Y)   // blob Y：0~75
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -153,13 +159,13 @@ let blobY = MBC.readValue(0x4C, 0x06)   // blob Y：0~75
 | :--- | :--- |
 | `0~100` | blob width W 0~100; 0 = not found |
 
-<pre class="blocks">(MBC blob width :: #E8711E)</pre>
+<pre class="blocks">(camera blob [width v] :: #00A4E4)</pre>
 
 ```typescript
-let blobW = MBC.readValue(0x4C, 0x07)   // blob width：0~100
+let blobW = mbc.camBlob(MbcCamBlob.Width)   // blob width：0~100
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -173,13 +179,13 @@ let blobW = MBC.readValue(0x4C, 0x07)   // blob width：0~100
 | :--- | :--- |
 | `0~75` | blob height H 0~75; 0 when not found |
 
-<pre class="blocks">(MBC blob height :: #E8711E)</pre>
+<pre class="blocks">(camera blob [height v] :: #00A4E4)</pre>
 
 ```typescript
-let blobH = MBC.readValue(0x4C, 0x08)   // blob height：0~75
+let blobH = mbc.camBlob(MbcCamBlob.Height)   // blob height：0~75
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -193,13 +199,13 @@ let blobH = MBC.readValue(0x4C, 0x08)   // blob height：0~75
 | :--- | :--- |
 | `0~7500` | W×H (0~7500); 0 when not found |
 
-<pre class="blocks">(MBC blob area :: #E8711E)</pre>
+<pre class="blocks">(camera blob [area v] :: #00A4E4)</pre>
 
 ```typescript
-let blobArea = MBC.readValue(0x4C, 0x09)   // blob area：0~7500
+let blobArea = mbc.camBlob(MbcCamBlob.Area)   // blob area：0~7500
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -211,19 +217,26 @@ let blobArea = MBC.readValue(0x4C, 0x09)   // blob area：0~7500
 | :--- | :--- |
 | `0~1` | 1 = a blob of the target colour is in view (W > 0), 0 = none |
 
-<pre class="blocks">(MBC blob found? :: #E8711E)</pre>
+<pre class="blocks"><camera blob is found :: #00A4E4></pre>
 
 ```typescript
-let found = MBC.readValue(0x4C, 0x0A)   // blob found：0~1
+let found = mbc.camFound()   // blob found：0~1
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+**Related block "on camera blob [found]"**
+
+```typescript
+mbc.onCamBlob(MbcCamEvent.Found, function () {
+})
+```
+
+<p class="ref-note">Returns false when the sensor does not answer.</p>
 
 </section>
 
 ## Reading values (WRO edition)
 
-After adding pxt-mbc-sensors, find the blocks in the MBC category; the JavaScript form is shown too, address `0x4C`.
+After adding pxt-mbc-sensors, find the blocks in the MBC Sensors category; the JavaScript form is shown too, address `0x4C`.
 
 <section id="w10" class="ref-item">
 
@@ -235,13 +248,19 @@ After adding pxt-mbc-sensors, find the blocks in the MBC category; the JavaScrip
 | :--- | :--- |
 | `0~255` | 10~1B = colour code of spots S1~S12: 0~239 colour (hue 0~255 scaled to 0~239), 240~245 white (saturation < 30, lower = larger), 246~250 black (value < 30, darker = larger), 255 = spot not enabled |
 
-<pre class="blocks">(MBC spot [1 v] colour code :: #E8711E)</pre>
+<pre class="blocks">(camera spot (1) colour code :: #00A4E4)</pre>
 
 ```typescript
-let spotColor = MBC.readValues(0x4C, 0x10, 12)   // spot 1~12 colour code
+let spotColor = mbc.camSpotColor(1)   // spot 1~12 colour code：0~255 (N = 1~12)
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+**Related block "camera spot [1~12] is [colour]"**
+
+```typescript
+let camSpotIs = mbc.camSpotIs(1, MbcCamSpotKind.Colour)
+```
+
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -255,13 +274,13 @@ let spotColor = MBC.readValues(0x4C, 0x10, 12)   // spot 1~12 colour code
 | :--- | :--- |
 | `0~255` | 20~2B = vividness (saturation) of spots S1~S12, 0~255: black = 1, white/colour = actual saturation; 0 when the spot is not enabled |
 
-<pre class="blocks">(MBC spot [1 v] vividness :: #E8711E)</pre>
+<pre class="blocks">(camera spot (1) vividness :: #00A4E4)</pre>
 
 ```typescript
-let spotVivid = MBC.readValues(0x4C, 0x20, 12)   // spot 1~12 vividness
+let spotVivid = mbc.camSpotVivid(1)   // spot 1~12 vividness：0~255 (N = 1~12)
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 

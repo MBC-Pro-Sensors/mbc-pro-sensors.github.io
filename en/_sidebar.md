@@ -3,7 +3,7 @@
   - [Home](/en/README.md)
   - [🧭 Buying Guide](/en/guide.md)
   - [🚀 Already bought? Find your program](/en/guide.md#start)
-  - [🧩 Interactive tutorials (SPIKE)](/en/learn/index.md)
+  - [🧩 Interactive tutorials](/en/learn/index.md)
   - [🏆 WRO Rules Check](/en/wro-rules.md)
   - [🏁 Competition Guide](/en/competitions.md)
   - [❓ FAQ](/en/faq.md)

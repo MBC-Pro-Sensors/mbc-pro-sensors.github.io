@@ -20,25 +20,32 @@
 
 | 感應器 | micro:bit |
 | :--- | :--- |
-| SDA | P20 |
-| SCL | P19 |
-| 5V | 外接 5 V（或 V2 的 3V 腳，需確認電流） |
+| SDA（RX） | P20 |
+| SCL（TX） | P19 |
+| VCC | **一定要外接 5 V**（GND 要和 micro:bit 共地） |
 | GND | GND |
 
 ## 讀值積木
 
 | 積木 | 傳回 | 編號 | 說明 |
 | :--- | :--- | :--- | :--- |
-| MBC 色相 | -1~100 | [`01`](/sensors/esp32cam/reference.md#v01) | S1 取樣點色相 0~100（色相環 0~240 等比縮放）；−1 = 黑白灰（飽和度 < 10）；S1 沒設定 = 0 |
-| MBC 飽和度 | 0~100 | [`02`](/sensors/esp32cam/reference.md#v02) | S1 取樣點飽和度 0~100 |
-| MBC 明度 | 0~100 | [`03`](/sensors/esp32cam/reference.md#v03) | S1 取樣點明度 0~100 |
-| MBC 動態 | 0~100 | [`04`](/sensors/esp32cam/reference.md#v04) | 全畫面動態量 0~100（畫面變化越多越大） |
-| MBC 色塊 X | 0~100 | [`05`](/sensors/esp32cam/reference.md#v05) | 色塊中心 X 0~100，左 = 0；沒找到 = 0 |
-| MBC 色塊 Y | 0~75 | [`06`](/sensors/esp32cam/reference.md#v06) | 色塊中心 Y 0~75，下 = 0、上 = 75；沒找到 = 0 |
-| MBC 色塊寬 | 0~100 | [`07`](/sensors/esp32cam/reference.md#v07) | 色塊寬 W 0~100；0 = 沒找到 |
-| MBC 色塊高 | 0~75 | [`08`](/sensors/esp32cam/reference.md#v08) | 色塊高 H 0~75；沒找到 = 0 |
-| MBC 色塊面積 | 0~7500 | [`09`](/sensors/esp32cam/reference.md#v09) | W×H（0~7500）；沒找到 = 0 |
-| MBC 有找到色塊？ | 0~1 | [`0A`](/sensors/esp32cam/reference.md#v0a) | 1 = 畫面裡有目標色的色塊（W > 0），0 = 沒有 |
+| 神攝手 顏色 ［色相］ | -1~100 | [`01`](/sensors/esp32cam/reference.md#v01) | S1 取樣點色相 0~100（色相環 0~240 等比縮放）；−1 = 黑白灰（飽和度 < 10）；S1 沒設定 = 0 |
+| 神攝手 顏色 ［飽和度］ | 0~100 | [`02`](/sensors/esp32cam/reference.md#v02) | S1 取樣點飽和度 0~100 |
+| 神攝手 顏色 ［明度］ | 0~100 | [`03`](/sensors/esp32cam/reference.md#v03) | S1 取樣點明度 0~100 |
+| 神攝手 動態 | 0~100 | [`04`](/sensors/esp32cam/reference.md#v04) | 全畫面動態量 0~100（畫面變化越多越大） |
+| 神攝手 色塊 ［X］ | 0~100 | [`05`](/sensors/esp32cam/reference.md#v05) | 色塊中心 X 0~100，左 = 0；沒找到 = 0 |
+| 神攝手 色塊 ［Y］ | 0~75 | [`06`](/sensors/esp32cam/reference.md#v06) | 色塊中心 Y 0~75，下 = 0、上 = 75；沒找到 = 0 |
+| 神攝手 色塊 ［寬］ | 0~100 | [`07`](/sensors/esp32cam/reference.md#v07) | 色塊寬 W 0~100；0 = 沒找到 |
+| 神攝手 色塊 ［高］ | 0~75 | [`08`](/sensors/esp32cam/reference.md#v08) | 色塊高 H 0~75；沒找到 = 0 |
+| 神攝手 色塊 ［面積］ | 0~7500 | [`09`](/sensors/esp32cam/reference.md#v09) | W×H（0~7500）；沒找到 = 0 |
+| 神攝手 有找到色塊？ | 0~1 | [`0A`](/sensors/esp32cam/reference.md#v0a) | 1 = 畫面裡有目標色的色塊（W > 0），0 = 沒有 |
+
+### 其他積木（是／否、事件）
+
+| 積木 | 相關的值 |
+| :--- | :--- |
+| 神攝手 顏色是黑白灰？ | [`01`](/sensors/esp32cam/reference.md#v01) |
+| 當神攝手 色塊 ［找到］ | [`0A`](/sensors/esp32cam/reference.md#v0a) |
 
 ## 狀態
 
@@ -50,9 +57,11 @@
 ## JavaScript 寫法
 
 ```typescript
+if (!(mbc.waitReady(0x4C, 3000))) {
+    basic.showIcon(IconNames.No)   // 讀不到：檢查接線與電源
+}
 basic.forever(function () {
-    let hue = MBC.readValue(0x4C, 0x01)   // 色相
-    basic.showNumber(hue)
+    basic.showNumber(mbc.camColor(MbcCamColor.Hue))   // 色相
     basic.pause(100)
 })
 ```
@@ -70,4 +79,4 @@ basic.forever(function () {
 - 0A 有找到色塊 = W > 0（盤點：W 0 = 沒找到）；F3 b1 同這個值。
 - 值 05~08 的「沒找到 = 0」照盤點 §0；色塊 Y 下 = 0、上 = 75 照盤點（map(bestY,120,0,0,75)）。
 - 沒有寫入命令（韌體無法從程式改目標顏色／補光燈）。
-- 擴充內部用 `Int16LE` 讀、寫完編號 `basic.pause(2)`（D5）。
+- 擴充內部用 `Int16LE` 讀、寫完編號 `basic.pause(2)`（D5）；感應器沒接好時讀值積木回 0、是／否積木回「否」。

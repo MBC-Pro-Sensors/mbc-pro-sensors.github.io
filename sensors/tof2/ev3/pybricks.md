@@ -25,7 +25,7 @@
 
 | 範圍 | 意思 |
 | :--- | :--- |
-| `0~120` cm | 左邊那顆的距離 0~120 cm（站在車後往前看，左 = 第 0 顆），120 = 前面沒東西／那顆失效 |
+| `0~120` cm（EV3 模式 1、模式 2、模式 4 讀到的是換算值：cm×100/120（0~100）） | 左邊那顆的距離 0~120 cm（站在車後往前看，左 = 第 0 顆），120 = 前面沒東西／那顆失效 |
 
 ```python
 from pybricks.iodevices import LUMPDevice
@@ -33,9 +33,9 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
-leftCm = sensor.read(1)[0]   # 左距離 cm：0~120 cm
-leftCm = sensor.read(2)[0]   # 左距離 cm：0~120 cm
-leftCm = sensor.read(4)[0]   # 左距離 cm：0~120 cm
+leftCm = sensor.read(1)[0]   # 左距離 cm：cm×100/120（0~100）
+leftCm = sensor.read(2)[0]   # 左距離 cm：cm×100/120（0~100）
+leftCm = sensor.read(4)[0]   # 左距離 cm：cm×100/120（0~100）
 ```
 
 <p class="ref-note">模式 1 · int8 · #67 新：IR-SEEK 8×int8 = [左, 右, 左, 右, 左, 右, 左, 右]（index 0/2/4/6 = 左；原本 index 2~7 = 0）；模式 2 · int8 · IR-REMOTE [左, 右, 0, 0]（INO:137-139）；模式 4 · int8 · IR-S-ALT 同模式 2（已鎖住的模式，韌體與主機端都不再改）</p>
@@ -50,7 +50,7 @@ leftCm = sensor.read(4)[0]   # 左距離 cm：0~120 cm
 
 | 範圍 | 意思 |
 | :--- | :--- |
-| `0~120` cm | 右邊那顆的距離 0~120 cm（右 = 第 1 顆），120 = 前面沒東西／那顆失效 |
+| `0~120` cm（EV3 模式 1、模式 2、模式 4 讀到的是換算值：cm×100/120（0~100）） | 右邊那顆的距離 0~120 cm（右 = 第 1 顆），120 = 前面沒東西／那顆失效 |
 
 ```python
 from pybricks.iodevices import LUMPDevice
@@ -58,9 +58,9 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
-rightCm = sensor.read(1)[1]   # 右距離 cm：0~120 cm
-rightCm = sensor.read(2)[1]   # 右距離 cm：0~120 cm
-rightCm = sensor.read(4)[1]   # 右距離 cm：0~120 cm
+rightCm = sensor.read(1)[1]   # 右距離 cm：cm×100/120（0~100）
+rightCm = sensor.read(2)[1]   # 右距離 cm：cm×100/120（0~100）
+rightCm = sensor.read(4)[1]   # 右距離 cm：cm×100/120（0~100）
 ```
 
 <p class="ref-note">模式 1 · int8 · #67 新：index 1/3/5/7 = 右；模式 2 · int8；模式 4 · int8（已鎖住的模式，韌體與主機端都不再改）</p>
@@ -121,7 +121,7 @@ rightMm = sensor.read(5)[1]   # 右距離 mm：0~1200 mm
 
 | 範圍 | 意思 |
 | :--- | :--- |
-| `0~1200` mm | (左 mm + 右 mm) / 2，0~1200；跟 EV3 模式 3、SPIKE 模式 6 第 3 個值一致（共識 #8 補上） |
+| `0~1200` mm（EV3 模式 0 讀到的是換算值：cm 平均 ×100/120（0~100）） | (左 mm + 右 mm) / 2，0~1200；跟 EV3 模式 3、SPIKE 模式 6 第 3 個值一致（共識 #8 補上） |
 
 ```python
 from pybricks.iodevices import LUMPDevice
@@ -129,7 +129,7 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
-avgMm = sensor.read(0)[0]   # 左右平均 mm：0~1200 mm
+avgMm = sensor.read(0)[0]   # 左右平均 mm：cm 平均 ×100/120（0~100）
 avgMm = sensor.read(3)[0]   # 左右平均 mm：0~1200 mm
 ```
 

@@ -20,38 +20,46 @@ The universal I2C edition of the IMU Gyro Sensor works with BBC micro:bit V1 / V
 
 | Sensor | micro:bit |
 | :--- | :--- |
-| SDA | P20 |
-| SCL | P19 |
-| 5V | external 5 V (or the V2 3V pin, check current) |
+| SDA（RX） | P20 |
+| SCL（TX） | P19 |
+| VCC | micro:bit 3V (external 5 V recommended on batteries) |
 | GND | GND |
 
 ## Reporter blocks
 
 | Block | Returns | Id | Meaning |
 | :--- | :--- | :--- | :--- |
-| MBC gyro 3D heading | -32768~32767 ° | [`01`](/en/sensors/imu/reference.md#v01) | heading from the 3D quaternion, degrees, 0 at boot/zero, accumulates past 360 (wraps at ±32767, ~91 turns) |
-| MBC fused heading | -32768~32767 ° | [`02`](/en/sensors/imu/reference.md#v02) | 3D gyro heading slowly corrected by the magnetometer, degrees, relative to the zero point; may exceed 360 |
-| MBC gyro 1D heading | -32768~32767 ° | [`03`](/en/sensors/imu/reference.md#v03) | heading integrated about the yaw axis only, degrees, 0 at boot/zero; may exceed 360 |
-| MBC magnetic heading | -32768~32767 ° | [`04`](/en/sensors/imu/reference.md#v04) | tilt-compensated magnetometer heading, degrees, relative to the zero point |
-| MBC yaw rate | -32768~32767 0.1 dps | [`05`](/en/sensors/imu/reference.md#v05) | angular rate about the yaw axis (getYawAxis()), 0.1 deg/s, same sign as the heading |
-| MBC pitch angle | -90~+90 ° | [`06`](/en/sensors/imu/reference.md#v06) | elevation of the board's printed X axis above horizontal: +90 pointing up, −90 pointing down, 0 level (from the gravity vector) |
-| MBC pitch rate | -32768~32767 0.1 dps | [`07`](/en/sensors/imu/reference.md#v07) | angular rate about the board's printed X axis, 0.1 °/s (right-hand rule, CCW seen from +X is positive); this is gyro X, not the derivative of 06 |
-| MBC magnetometer trust | 0~255 | [`08`](/en/sensors/imu/reference.md#v08) | how much the fusion trusts the magnetometer, 0~255 (= 0~1 × 255) |
-| MBC magnetic disturbance | 0~255 0.01° | [`09`](/en/sensors/imu/reference.md#v09) | magnetic disturbance level 0~255 (degrees × 100, capped at 255) |
-| MBC face up | 0~5 | [`0A`](/en/sensors/imu/reference.md#v0a) | which axis points up: 0 +X, 1 +Y, 2 +Z, 3 −X, 4 −Y, 5 −Z (physical axes) |
-| MBC gyro [axis] | -32768~32767 0.1 dps | [`10~12`](/en/sensors/imu/reference.md#v10) | 10 X, 11 Y, 12 Z angular rate, 0.1 deg/s (physical axes, sign-corrected) |
-| MBC accel [axis] | -32768~32767 mg | [`13~15`](/en/sensors/imu/reference.md#v13) | 13 X, 14 Y, 15 Z acceleration, mg (1000 = 1 g) |
-| MBC mag [axis] | -32768~32767 mG | [`16~18`](/en/sensors/imu/reference.md#v16) | 16 X, 17 Y, 18 Z magnetic field, mG (milligauss) |
+| IMU heading [gyro 3D] (°) | -32768~32767 ° | [`01`](/en/sensors/imu/reference.md#v01) | heading from the 3D quaternion, degrees, 0 at boot/zero, accumulates past 360 (wraps at ±32767, ~91 turns) |
+| IMU heading [fused] (°) | -32768~32767 ° | [`02`](/en/sensors/imu/reference.md#v02) | 3D gyro heading slowly corrected by the magnetometer, degrees, relative to the zero point; may exceed 360 |
+| IMU heading [gyro 1D] (°) | -32768~32767 ° | [`03`](/en/sensors/imu/reference.md#v03) | heading integrated about the yaw axis only, degrees, 0 at boot/zero; may exceed 360 |
+| IMU heading [magnetic] (°) | -32768~32767 ° | [`04`](/en/sensors/imu/reference.md#v04) | tilt-compensated magnetometer heading, degrees, relative to the zero point |
+| IMU turn rate (0.1 °/s) | -32768~32767 0.1 dps | [`05`](/en/sensors/imu/reference.md#v05) | angular rate about the yaw axis (getYawAxis()), 0.1 deg/s, same sign as the heading |
+| IMU pitch (°) | -90~+90 ° | [`06`](/en/sensors/imu/reference.md#v06) | elevation of the board's printed X axis above horizontal: +90 pointing up, −90 pointing down, 0 level (from the gravity vector) |
+| IMU pitch rate (0.1 °/s) | -32768~32767 0.1 dps | [`07`](/en/sensors/imu/reference.md#v07) | angular rate about the board's printed X axis, 0.1 °/s (right-hand rule, CCW seen from +X is positive); this is gyro X, not the derivative of 06 |
+| IMU magnetic trust | 0~255 | [`08`](/en/sensors/imu/reference.md#v08) | how much the fusion trusts the magnetometer, 0~255 (= 0~1 × 255) |
+| IMU magnetic disturbance | 0~255 0.01° | [`09`](/en/sensors/imu/reference.md#v09) | magnetic disturbance level 0~255 (degrees × 100, capped at 255) |
+| IMU face up | 0~5 | [`0A`](/en/sensors/imu/reference.md#v0a) | which axis points up: 0 +X, 1 +Y, 2 +Z, 3 −X, 4 −Y, 5 −Z (physical axes) |
+| IMU [gyro (0.1 °/s)] axis [X / Y / Z] | -32768~32767 0.1 dps | [`10~12`](/en/sensors/imu/reference.md#v10) | 10 X, 11 Y, 12 Z angular rate, 0.1 deg/s (physical axes, sign-corrected) |
+| IMU [accelerometer (mg)] axis [X / Y / Z] | -32768~32767 mg | [`13~15`](/en/sensors/imu/reference.md#v13) | 13 X, 14 Y, 15 Z acceleration, mg (1000 = 1 g) |
+| IMU [magnetometer (mG)] axis [X / Y / Z] | -32768~32767 mG | [`16~18`](/en/sensors/imu/reference.md#v16) | 16 X, 17 Y, 18 Z magnetic field, mG (milligauss) |
+
+### More blocks (yes / no, events)
+
+| Block | Related value |
+| :--- | :--- |
+| on IMU turned by 90 ° | [`02`](/en/sensors/imu/reference.md#v02) |
+| IMU is [still] | [`05`](/en/sensors/imu/reference.md#v05) |
+| IMU face up is [+Z] | [`0A`](/en/sensors/imu/reference.md#v0a) |
 
 ## Command blocks
 
 | Block | Id | Meaning |
 | :--- | :--- | :--- |
-| MBC zero heading | [`E0`](/en/sensors/imu/reference.md#ce0) | zero all four headings (zeroHeadings()); EV3 also accepts the stock gyro-reset WRITE 0x11 |
-| MBC start accel calibration | [`E1`](/en/sensors/imu/reference.md#ce1) | start accelerometer calibration (= v1 0x20=0x01); F3 b4 = 1 meanwhile |
-| MBC end accel calibration | [`E2`](/en/sensors/imu/reference.md#ce2) | finish accelerometer calibration and save to EEPROM (= v1 0x20=0x02); headings are zeroed once on success |
-| MBC start mag calibration | [`E3`](/en/sensors/imu/reference.md#ce3) | start magnetometer calibration (= v1 0x20=0x03); F3 b5 = 1 meanwhile |
-| MBC end mag calibration | [`E4`](/en/sensors/imu/reference.md#ce4) | finish magnetometer calibration and save to EEPROM (= v1 0x20=0x04) |
+| IMU zero heading | [`E0`](/en/sensors/imu/reference.md#ce0) | zero all four headings (zeroHeadings()); EV3 also accepts the stock gyro-reset WRITE 0x11 |
+| IMU calibration [accelerometer start] | [`E1`](/en/sensors/imu/reference.md#ce1) | start accelerometer calibration (= v1 0x20=0x01); F3 b4 = 1 meanwhile |
+| IMU calibration [accelerometer end] | [`E2`](/en/sensors/imu/reference.md#ce2) | finish accelerometer calibration and save to EEPROM (= v1 0x20=0x02); headings are zeroed once on success |
+| IMU calibration [magnetometer start] | [`E3`](/en/sensors/imu/reference.md#ce3) | start magnetometer calibration (= v1 0x20=0x03); F3 b5 = 1 meanwhile |
+| IMU calibration [magnetometer end] | [`E4`](/en/sensors/imu/reference.md#ce4) | finish magnetometer calibration and save to EEPROM (= v1 0x20=0x04) |
 
 ## Status
 
@@ -69,9 +77,11 @@ The universal I2C edition of the IMU Gyro Sensor works with BBC micro:bit V1 / V
 ## JavaScript
 
 ```typescript
+if (!(mbc.waitReady(0x6A, 3000))) {
+    basic.showIcon(IconNames.No)   // nothing answers: check wiring and power
+}
 basic.forever(function () {
-    let headingGyro3D = MBC.readValue(0x6A, 0x01)   // gyro 3D heading
-    basic.showNumber(headingGyro3D)
+    basic.showNumber(mbc.imuHeading(MbcImuHeading.Gyro3D))   // gyro 3D heading
     basic.pause(100)
 })
 ```
@@ -89,4 +99,4 @@ Generated by `_build/gen-reference.mjs` from `_build/protocol/imu.json` (single 
 - 磁力信任度 08 = round(trust×255)，磁場干擾度 09 = round(disturbance×100) 上限 255，朝上的面 0A = 軸號 + 3×負向：公式照盤點 I2C v1 0x34~0x36。
 - 角速度 10~12 = round(dps×SIGN×10)、加速度 13~15 = mm/s²×1000/9806.65、磁力 16~18 = raw×SIGN×4/15：公式照盤點 I2C v1 0x22~0x24；mBlock 一併有（I2C 定案 §4 共用值表）。
 - 主對話 2026-10-22：06 俯仰角範圍 −90~+90、07 = gyro X（照字面），取自 F5 韌體實作。
-- The extension reads `Int16LE` and pauses 2 ms after writing the id (D5).
+- The extension reads `Int16LE` and pauses 2 ms after writing the id (D5); with no sensor answering, reporters return 0 and yes / no blocks return false.

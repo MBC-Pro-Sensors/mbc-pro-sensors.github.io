@@ -1,0 +1,1285 @@
+{
+  "_note": "由 _build/sync-microbit.mjs 從 pxt-mbc-sensors 原始碼產生，請勿手改",
+  "extension": "mbc-sensors",
+  "version": "2.0.5",
+  "category": {
+    "en": "MBC Sensors",
+    "zh": "MBC 感應器"
+  },
+  "blocks": {
+    "deviceReady": {
+      "file": "mbc.ts",
+      "blockId": "mbc_device_ready",
+      "kind": "boolean",
+      "params": [
+        "addr"
+      ],
+      "en": "device at %addr is ready",
+      "zh": "位址 %addr 的裝置就緒？",
+      "group": "Device",
+      "advanced": true
+    },
+    "waitReady": {
+      "file": "mbc.ts",
+      "blockId": "mbc_wait_ready",
+      "kind": "boolean",
+      "params": [
+        "addr",
+        "timeout"
+      ],
+      "en": "wait for device at %addr ready, timeout %timeout ms",
+      "zh": "等位址 %addr 的裝置就緒，最多 %timeout 毫秒",
+      "group": "Device",
+      "advanced": true
+    },
+    "deviceId": {
+      "file": "mbc.ts",
+      "blockId": "mbc_device_id",
+      "kind": "reporter",
+      "params": [
+        "addr"
+      ],
+      "en": "device at %addr factory id",
+      "zh": "位址 %addr 的裝置 出廠 ID",
+      "group": "Device",
+      "advanced": true
+    },
+    "deviceKind": {
+      "file": "mbc.ts",
+      "blockId": "mbc_device_kind",
+      "kind": "reporter",
+      "params": [
+        "addr"
+      ],
+      "en": "device at %addr kind",
+      "zh": "位址 %addr 的裝置 類別",
+      "group": "Device",
+      "advanced": true
+    },
+    "protocolVersion": {
+      "file": "mbc.ts",
+      "blockId": "mbc_protocol_version",
+      "kind": "reporter",
+      "params": [
+        "addr"
+      ],
+      "en": "device at %addr protocol version",
+      "zh": "位址 %addr 的裝置 協議版本",
+      "group": "Device",
+      "advanced": true
+    },
+    "firmwareVersion": {
+      "file": "mbc.ts",
+      "blockId": "mbc_firmware_version",
+      "kind": "reporter",
+      "params": [
+        "addr"
+      ],
+      "en": "device at %addr firmware version",
+      "zh": "位址 %addr 的裝置 韌體版本",
+      "group": "Device",
+      "advanced": true
+    },
+    "status": {
+      "file": "mbc.ts",
+      "blockId": "mbc_status",
+      "kind": "reporter",
+      "params": [
+        "addr"
+      ],
+      "en": "device at %addr status flags",
+      "zh": "位址 %addr 的裝置 狀態旗標",
+      "group": "Device",
+      "advanced": true
+    },
+    "statusBit": {
+      "file": "mbc.ts",
+      "blockId": "mbc_status_bit",
+      "kind": "boolean",
+      "params": [
+        "addr",
+        "bit"
+      ],
+      "en": "device at %addr status bit %bit",
+      "zh": "位址 %addr 的裝置 狀態 bit %bit",
+      "group": "Device",
+      "advanced": true
+    },
+    "updateCounter": {
+      "file": "mbc.ts",
+      "blockId": "mbc_update_counter",
+      "kind": "reporter",
+      "params": [
+        "addr"
+      ],
+      "en": "device at %addr update counter",
+      "zh": "位址 %addr 的裝置 更新序號",
+      "group": "Device",
+      "advanced": true
+    },
+    "uptime": {
+      "file": "mbc.ts",
+      "blockId": "mbc_uptime",
+      "kind": "reporter",
+      "params": [
+        "addr"
+      ],
+      "en": "device at %addr uptime (s)",
+      "zh": "位址 %addr 的裝置 開機秒數",
+      "group": "Device",
+      "advanced": true
+    },
+    "changeAddress": {
+      "file": "mbc.ts",
+      "blockId": "mbc_change_address",
+      "kind": "command",
+      "params": [
+        "addr",
+        "newAddr"
+      ],
+      "en": "change device at %addr to address %newAddr",
+      "zh": "把位址 %addr 的裝置 改成位址 %newAddr",
+      "group": "Device",
+      "advanced": true
+    },
+    "resetAddress": {
+      "file": "mbc.ts",
+      "blockId": "mbc_reset_address",
+      "kind": "command",
+      "params": [
+        "addr"
+      ],
+      "en": "restore factory address of device at %addr",
+      "zh": "位址 %addr 的裝置 回出廠位址",
+      "group": "Device",
+      "advanced": true
+    },
+    "reboot": {
+      "file": "mbc.ts",
+      "blockId": "mbc_reboot",
+      "kind": "command",
+      "params": [
+        "addr"
+      ],
+      "en": "reboot device at %addr",
+      "zh": "位址 %addr 的裝置 重新開機",
+      "group": "Device",
+      "advanced": true
+    },
+    "lineUseAddress": {
+      "file": "line.ts",
+      "blockId": "mbc_line_use_address",
+      "kind": "command",
+      "params": [
+        "addr"
+      ],
+      "en": "line follower use address %addr",
+      "zh": "循行者 改用位址 %addr",
+      "group": "Line",
+      "advanced": true
+    },
+    "linePosition": {
+      "file": "line.ts",
+      "blockId": "mbc_line_position",
+      "kind": "reporter",
+      "params": [],
+      "en": "line position",
+      "zh": "循行者 線位置",
+      "group": "Line",
+      "advanced": false
+    },
+    "linePositionFine": {
+      "file": "line.ts",
+      "blockId": "mbc_line_position_fine",
+      "kind": "reporter",
+      "params": [],
+      "en": "fine line position",
+      "zh": "循行者 細位置",
+      "group": "Line",
+      "advanced": false
+    },
+    "lineSeen": {
+      "file": "line.ts",
+      "blockId": "mbc_line_seen",
+      "kind": "boolean",
+      "params": [],
+      "en": "line is seen",
+      "zh": "循行者 看到線？",
+      "group": "Line",
+      "advanced": false
+    },
+    "lineWidth": {
+      "file": "line.ts",
+      "blockId": "mbc_line_width",
+      "kind": "reporter",
+      "params": [],
+      "en": "line width",
+      "zh": "循行者 線寬",
+      "group": "Line",
+      "advanced": false
+    },
+    "lineSegments": {
+      "file": "line.ts",
+      "blockId": "mbc_line_segments",
+      "kind": "reporter",
+      "params": [],
+      "en": "line segments",
+      "zh": "循行者 線段數",
+      "group": "Line",
+      "advanced": false
+    },
+    "lineBitmap": {
+      "file": "line.ts",
+      "blockId": "mbc_line_bitmap",
+      "kind": "reporter",
+      "params": [],
+      "en": "line bitmap",
+      "zh": "循行者 壓線位元圖",
+      "group": "Line",
+      "advanced": false
+    },
+    "lineChannelOnLine": {
+      "file": "line.ts",
+      "blockId": "mbc_line_channel_on_line",
+      "kind": "boolean",
+      "params": [
+        "n"
+      ],
+      "en": "channel %n is on the line",
+      "zh": "循行者 第 %n 路在線上？",
+      "group": "Line",
+      "advanced": false
+    },
+    "lineChannel": {
+      "file": "line.ts",
+      "blockId": "mbc_line_channel",
+      "kind": "reporter",
+      "params": [
+        "n"
+      ],
+      "en": "channel %n reflect",
+      "zh": "循行者 第 %n 路光值",
+      "group": "Line",
+      "advanced": false
+    },
+    "lineLastDirection": {
+      "file": "line.ts",
+      "blockId": "mbc_line_last_dir",
+      "kind": "reporter",
+      "params": [],
+      "en": "last exit direction",
+      "zh": "循行者 最後離線方向",
+      "group": "Line",
+      "advanced": false
+    },
+    "lineThreshold": {
+      "file": "line.ts",
+      "blockId": "mbc_line_threshold",
+      "kind": "reporter",
+      "params": [],
+      "en": "line threshold",
+      "zh": "循行者 門檻",
+      "group": "Line",
+      "advanced": false
+    },
+    "lineCalibrationCount": {
+      "file": "line.ts",
+      "blockId": "mbc_line_calib_count",
+      "kind": "reporter",
+      "params": [],
+      "en": "line calibration count",
+      "zh": "循行者 校準次數",
+      "group": "Line",
+      "advanced": true
+    },
+    "lineCalibrating": {
+      "file": "line.ts",
+      "blockId": "mbc_line_calibrating",
+      "kind": "boolean",
+      "params": [],
+      "en": "line follower is calibrating",
+      "zh": "循行者 校準中？",
+      "group": "Line",
+      "advanced": true
+    },
+    "lineSetColor": {
+      "file": "line.ts",
+      "blockId": "mbc_line_set_color",
+      "kind": "command",
+      "params": [
+        "color"
+      ],
+      "en": "line follower follow %color line",
+      "zh": "循行者 循 %color 線",
+      "group": "Line",
+      "advanced": false
+    },
+    "lineCalibrate": {
+      "file": "line.ts",
+      "blockId": "mbc_line_calibrate",
+      "kind": "command",
+      "params": [
+        "mode"
+      ],
+      "en": "line follower calibrate %mode",
+      "zh": "循行者 校準 %mode",
+      "group": "Line",
+      "advanced": false
+    },
+    "lineSetThreshold": {
+      "file": "line.ts",
+      "blockId": "mbc_line_set_threshold",
+      "kind": "command",
+      "params": [
+        "threshold"
+      ],
+      "en": "line follower set threshold %threshold",
+      "zh": "循行者 門檻設為 %threshold",
+      "group": "Line",
+      "advanced": false
+    },
+    "onLineEvent": {
+      "file": "line.ts",
+      "blockId": "mbc_line_on_event",
+      "kind": "event",
+      "params": [
+        "event",
+        "handler"
+      ],
+      "en": "on line %event",
+      "zh": "當循行者 %event",
+      "group": "Line",
+      "advanced": false
+    },
+    "tof2UseAddress": {
+      "file": "tof2.ts",
+      "blockId": "mbc_tof2_use_address",
+      "kind": "command",
+      "params": [
+        "addr"
+      ],
+      "en": "distance 2-ch use address %addr",
+      "zh": "測距者 2 路 改用位址 %addr",
+      "group": "Distance",
+      "advanced": true
+    },
+    "tof2Distance": {
+      "file": "tof2.ts",
+      "blockId": "mbc_tof2_distance",
+      "kind": "reporter",
+      "params": [
+        "side",
+        "unit"
+      ],
+      "en": "distance 2-ch %side (%unit)",
+      "zh": "測距者 2 路 %side 距離（%unit）",
+      "group": "Distance",
+      "advanced": false
+    },
+    "tof2NearestCm": {
+      "file": "tof2.ts",
+      "blockId": "mbc_tof2_nearest_cm",
+      "kind": "reporter",
+      "params": [],
+      "en": "distance 2-ch nearest (cm)",
+      "zh": "測距者 2 路 較近距離（公分）",
+      "group": "Distance",
+      "advanced": false
+    },
+    "tof2AverageMm": {
+      "file": "tof2.ts",
+      "blockId": "mbc_tof2_average_mm",
+      "kind": "reporter",
+      "params": [],
+      "en": "distance 2-ch average (mm)",
+      "zh": "測距者 2 路 平均距離（公釐）",
+      "group": "Distance",
+      "advanced": false
+    },
+    "tof2SensorOk": {
+      "file": "tof2.ts",
+      "blockId": "mbc_tof2_sensor_ok",
+      "kind": "boolean",
+      "params": [
+        "side"
+      ],
+      "en": "distance 2-ch %side sensor is OK",
+      "zh": "測距者 2 路 %side 感應器正常？",
+      "group": "Distance",
+      "advanced": true
+    },
+    "onTof2Near": {
+      "file": "tof2.ts",
+      "blockId": "mbc_tof2_on_near",
+      "kind": "event",
+      "params": [
+        "cm",
+        "handler"
+      ],
+      "en": "on distance 2-ch nearer than %cm cm",
+      "zh": "當測距者 2 路 距離小於 %cm 公分",
+      "group": "Distance",
+      "advanced": false
+    },
+    "tof8UseAddress": {
+      "file": "tof8.ts",
+      "blockId": "mbc_tof8_use_address",
+      "kind": "command",
+      "params": [
+        "addr"
+      ],
+      "en": "distance 8-ch use address %addr",
+      "zh": "測距者 8 路 改用位址 %addr",
+      "group": "Distance",
+      "advanced": true
+    },
+    "tof8Nearest": {
+      "file": "tof8.ts",
+      "blockId": "mbc_tof8_nearest",
+      "kind": "reporter",
+      "params": [
+        "unit"
+      ],
+      "en": "distance 8-ch nearest (%unit)",
+      "zh": "測距者 8 路 最近距離（%unit）",
+      "group": "Distance",
+      "advanced": false
+    },
+    "tof8NearestDirection": {
+      "file": "tof8.ts",
+      "blockId": "mbc_tof8_nearest_dir",
+      "kind": "reporter",
+      "params": [],
+      "en": "distance 8-ch nearest direction",
+      "zh": "測距者 8 路 最近方向",
+      "group": "Distance",
+      "advanced": false
+    },
+    "tof8OpenCm": {
+      "file": "tof8.ts",
+      "blockId": "mbc_tof8_open_cm",
+      "kind": "reporter",
+      "params": [],
+      "en": "distance 8-ch most open (cm)",
+      "zh": "測距者 8 路 最空曠距離（公分）",
+      "group": "Distance",
+      "advanced": false
+    },
+    "tof8OpenDirection": {
+      "file": "tof8.ts",
+      "blockId": "mbc_tof8_open_dir",
+      "kind": "reporter",
+      "params": [],
+      "en": "distance 8-ch most open direction",
+      "zh": "測距者 8 路 最空曠方向",
+      "group": "Distance",
+      "advanced": false
+    },
+    "tof8Front": {
+      "file": "tof8.ts",
+      "blockId": "mbc_tof8_front",
+      "kind": "reporter",
+      "params": [
+        "unit"
+      ],
+      "en": "distance 8-ch front (%unit)",
+      "zh": "測距者 8 路 正前方距離（%unit）",
+      "group": "Distance",
+      "advanced": false
+    },
+    "tof8Sensor": {
+      "file": "tof8.ts",
+      "blockId": "mbc_tof8_sensor",
+      "kind": "reporter",
+      "params": [
+        "n",
+        "unit"
+      ],
+      "en": "distance 8-ch sensor %n (%unit)",
+      "zh": "測距者 8 路 第 %n 顆距離（%unit）",
+      "group": "Distance",
+      "advanced": false
+    },
+    "tof8SensorOk": {
+      "file": "tof8.ts",
+      "blockId": "mbc_tof8_sensor_ok",
+      "kind": "boolean",
+      "params": [
+        "n"
+      ],
+      "en": "distance 8-ch sensor %n is OK",
+      "zh": "測距者 8 路 第 %n 顆正常？",
+      "group": "Distance",
+      "advanced": true
+    },
+    "onTof8Near": {
+      "file": "tof8.ts",
+      "blockId": "mbc_tof8_on_near",
+      "kind": "event",
+      "params": [
+        "cm",
+        "handler"
+      ],
+      "en": "on distance 8-ch nearer than %cm cm",
+      "zh": "當測距者 8 路 距離小於 %cm 公分",
+      "group": "Distance",
+      "advanced": false
+    },
+    "padUseAddress": {
+      "file": "pad.ts",
+      "blockId": "mbc_pad_use_address",
+      "kind": "command",
+      "params": [
+        "addr"
+      ],
+      "en": "gamepad use address %addr",
+      "zh": "掌控者 改用位址 %addr",
+      "group": "Gamepad",
+      "advanced": true
+    },
+    "padButtonPressed": {
+      "file": "pad.ts",
+      "blockId": "mbc_pad_button_pressed",
+      "kind": "boolean",
+      "params": [
+        "button"
+      ],
+      "en": "gamepad button %button is pressed",
+      "zh": "掌控者 按鈕 %button 被按住？",
+      "group": "Gamepad",
+      "advanced": false
+    },
+    "padButtons": {
+      "file": "pad.ts",
+      "blockId": "mbc_pad_buttons",
+      "kind": "reporter",
+      "params": [],
+      "en": "gamepad buttons bit mask",
+      "zh": "掌控者 十六鍵位元圖",
+      "group": "Gamepad",
+      "advanced": true
+    },
+    "padGroup": {
+      "file": "pad.ts",
+      "blockId": "mbc_pad_group",
+      "kind": "reporter",
+      "params": [
+        "group"
+      ],
+      "en": "gamepad %group buttons (0-15)",
+      "zh": "掌控者 %group（0~15）",
+      "group": "Gamepad",
+      "advanced": true
+    },
+    "padStick": {
+      "file": "pad.ts",
+      "blockId": "mbc_pad_stick",
+      "kind": "reporter",
+      "params": [
+        "axis"
+      ],
+      "en": "gamepad joystick %axis",
+      "zh": "掌控者 搖桿 %axis",
+      "group": "Gamepad",
+      "advanced": false
+    },
+    "padTrigger": {
+      "file": "pad.ts",
+      "blockId": "mbc_pad_trigger",
+      "kind": "reporter",
+      "params": [
+        "trigger"
+      ],
+      "en": "gamepad trigger %trigger analog",
+      "zh": "掌控者 扳機 %trigger 類比值",
+      "group": "Gamepad",
+      "advanced": false
+    },
+    "padConnected": {
+      "file": "pad.ts",
+      "blockId": "mbc_pad_connected",
+      "kind": "boolean",
+      "params": [],
+      "en": "gamepad is connected",
+      "zh": "掌控者 手把已連線？",
+      "group": "Gamepad",
+      "advanced": false
+    },
+    "padBattery": {
+      "file": "pad.ts",
+      "blockId": "mbc_pad_battery",
+      "kind": "reporter",
+      "params": [],
+      "en": "gamepad battery percent",
+      "zh": "掌控者 電量（百分比）",
+      "group": "Gamepad",
+      "advanced": false
+    },
+    "padSystemButtonPressed": {
+      "file": "pad.ts",
+      "blockId": "mbc_pad_system_button",
+      "kind": "boolean",
+      "params": [
+        "button"
+      ],
+      "en": "gamepad system button %button is pressed",
+      "zh": "掌控者 系統鍵 %button 被按住？",
+      "group": "Gamepad",
+      "advanced": true
+    },
+    "padType": {
+      "file": "pad.ts",
+      "blockId": "mbc_pad_type",
+      "kind": "reporter",
+      "params": [],
+      "en": "gamepad type",
+      "zh": "掌控者 手把類型",
+      "group": "Gamepad",
+      "advanced": true
+    },
+    "padRumble": {
+      "file": "pad.ts",
+      "blockId": "mbc_pad_rumble",
+      "kind": "command",
+      "params": [
+        "strength"
+      ],
+      "en": "gamepad rumble strength %strength",
+      "zh": "掌控者 震動 強度 %strength",
+      "group": "Gamepad",
+      "advanced": false
+    },
+    "padLight": {
+      "file": "pad.ts",
+      "blockId": "mbc_pad_light",
+      "kind": "command",
+      "params": [
+        "color"
+      ],
+      "en": "gamepad light bar colour %color",
+      "zh": "掌控者 燈條顏色 %color",
+      "group": "Gamepad",
+      "advanced": false
+    },
+    "onPadButton": {
+      "file": "pad.ts",
+      "blockId": "mbc_pad_on_button",
+      "kind": "event",
+      "params": [
+        "button",
+        "event",
+        "handler"
+      ],
+      "en": "on gamepad button %button %event",
+      "zh": "當掌控者 按鈕 %button %event",
+      "group": "Gamepad",
+      "advanced": false
+    },
+    "imuUseAddress": {
+      "file": "imu.ts",
+      "blockId": "mbc_imu_use_address",
+      "kind": "command",
+      "params": [
+        "addr"
+      ],
+      "en": "IMU use address %addr",
+      "zh": "陀螺儀 改用位址 %addr",
+      "group": "IMU",
+      "advanced": true
+    },
+    "imuHeading": {
+      "file": "imu.ts",
+      "blockId": "mbc_imu_heading",
+      "kind": "reporter",
+      "params": [
+        "kind"
+      ],
+      "en": "IMU heading %kind (°)",
+      "zh": "陀螺儀 %kind 航向（°）",
+      "group": "IMU",
+      "advanced": false
+    },
+    "imuYawRate": {
+      "file": "imu.ts",
+      "blockId": "mbc_imu_yaw_rate",
+      "kind": "reporter",
+      "params": [],
+      "en": "IMU turn rate (0.1 °/s)",
+      "zh": "陀螺儀 轉向角速度（0.1 °/s）",
+      "group": "IMU",
+      "advanced": false
+    },
+    "imuPitch": {
+      "file": "imu.ts",
+      "blockId": "mbc_imu_pitch",
+      "kind": "reporter",
+      "params": [],
+      "en": "IMU pitch (°)",
+      "zh": "陀螺儀 俯仰角（°）",
+      "group": "IMU",
+      "advanced": false
+    },
+    "imuPitchRate": {
+      "file": "imu.ts",
+      "blockId": "mbc_imu_pitch_rate",
+      "kind": "reporter",
+      "params": [],
+      "en": "IMU pitch rate (0.1 °/s)",
+      "zh": "陀螺儀 俯仰角速度（0.1 °/s）",
+      "group": "IMU",
+      "advanced": false
+    },
+    "imuAxis": {
+      "file": "imu.ts",
+      "blockId": "mbc_imu_axis",
+      "kind": "reporter",
+      "params": [
+        "sensor",
+        "axis"
+      ],
+      "en": "IMU %sensor axis %axis",
+      "zh": "陀螺儀 %sensor %axis 軸",
+      "group": "IMU",
+      "advanced": false
+    },
+    "imuFaceUp": {
+      "file": "imu.ts",
+      "blockId": "mbc_imu_face_up",
+      "kind": "reporter",
+      "params": [],
+      "en": "IMU face up",
+      "zh": "陀螺儀 朝上的面",
+      "group": "IMU",
+      "advanced": false
+    },
+    "imuFaceUpIs": {
+      "file": "imu.ts",
+      "blockId": "mbc_imu_face_up_is",
+      "kind": "boolean",
+      "params": [
+        "face"
+      ],
+      "en": "IMU face up is %face",
+      "zh": "陀螺儀 朝上的面是 %face？",
+      "group": "IMU",
+      "advanced": false
+    },
+    "imuMagTrust": {
+      "file": "imu.ts",
+      "blockId": "mbc_imu_mag_trust",
+      "kind": "reporter",
+      "params": [],
+      "en": "IMU magnetic trust",
+      "zh": "陀螺儀 磁力信任度",
+      "group": "IMU",
+      "advanced": true
+    },
+    "imuMagDisturbance": {
+      "file": "imu.ts",
+      "blockId": "mbc_imu_mag_disturbance",
+      "kind": "reporter",
+      "params": [],
+      "en": "IMU magnetic disturbance",
+      "zh": "陀螺儀 磁場干擾度",
+      "group": "IMU",
+      "advanced": true
+    },
+    "imuFlag": {
+      "file": "imu.ts",
+      "blockId": "mbc_imu_flag",
+      "kind": "boolean",
+      "params": [
+        "flag"
+      ],
+      "en": "IMU is %flag",
+      "zh": "陀螺儀 %flag？",
+      "group": "IMU",
+      "advanced": false
+    },
+    "imuZeroHeading": {
+      "file": "imu.ts",
+      "blockId": "mbc_imu_zero_heading",
+      "kind": "command",
+      "params": [],
+      "en": "IMU zero heading",
+      "zh": "陀螺儀 航向歸零",
+      "group": "IMU",
+      "advanced": false
+    },
+    "imuCalibrate": {
+      "file": "imu.ts",
+      "blockId": "mbc_imu_calibrate",
+      "kind": "command",
+      "params": [
+        "step"
+      ],
+      "en": "IMU calibration %step",
+      "zh": "陀螺儀 校準 %step",
+      "group": "IMU",
+      "advanced": true
+    },
+    "onImuTurned": {
+      "file": "imu.ts",
+      "blockId": "mbc_imu_on_turned",
+      "kind": "event",
+      "params": [
+        "degrees",
+        "handler"
+      ],
+      "en": "on IMU turned by %degrees °",
+      "zh": "當陀螺儀 轉了 %degrees °",
+      "group": "IMU",
+      "advanced": false
+    },
+    "camUseAddress": {
+      "file": "cam.ts",
+      "blockId": "mbc_cam_use_address",
+      "kind": "command",
+      "params": [
+        "addr"
+      ],
+      "en": "camera use address %addr",
+      "zh": "神攝手 改用位址 %addr",
+      "group": "Camera",
+      "advanced": true
+    },
+    "camFound": {
+      "file": "cam.ts",
+      "blockId": "mbc_cam_found",
+      "kind": "boolean",
+      "params": [],
+      "en": "camera blob is found",
+      "zh": "神攝手 有找到色塊？",
+      "group": "Camera",
+      "advanced": false
+    },
+    "camBlob": {
+      "file": "cam.ts",
+      "blockId": "mbc_cam_blob",
+      "kind": "reporter",
+      "params": [
+        "what"
+      ],
+      "en": "camera blob %what",
+      "zh": "神攝手 色塊 %what",
+      "group": "Camera",
+      "advanced": false
+    },
+    "camColor": {
+      "file": "cam.ts",
+      "blockId": "mbc_cam_color",
+      "kind": "reporter",
+      "params": [
+        "what"
+      ],
+      "en": "camera colour %what",
+      "zh": "神攝手 顏色 %what",
+      "group": "Camera",
+      "advanced": false
+    },
+    "camIsGrey": {
+      "file": "cam.ts",
+      "blockId": "mbc_cam_is_grey",
+      "kind": "boolean",
+      "params": [],
+      "en": "camera colour is black / white / grey",
+      "zh": "神攝手 顏色是黑白灰？",
+      "group": "Camera",
+      "advanced": false
+    },
+    "camMotion": {
+      "file": "cam.ts",
+      "blockId": "mbc_cam_motion",
+      "kind": "reporter",
+      "params": [],
+      "en": "camera motion",
+      "zh": "神攝手 動態",
+      "group": "Camera",
+      "advanced": false
+    },
+    "camSpotColor": {
+      "file": "cam.ts",
+      "blockId": "mbc_cam_spot_color",
+      "kind": "reporter",
+      "params": [
+        "n"
+      ],
+      "en": "camera spot %n colour code",
+      "zh": "神攝手 色點 %n 顏色碼",
+      "group": "Camera",
+      "advanced": false
+    },
+    "camSpotVivid": {
+      "file": "cam.ts",
+      "blockId": "mbc_cam_spot_vivid",
+      "kind": "reporter",
+      "params": [
+        "n"
+      ],
+      "en": "camera spot %n vividness",
+      "zh": "神攝手 色點 %n 鮮豔度",
+      "group": "Camera",
+      "advanced": false
+    },
+    "camSpotIs": {
+      "file": "cam.ts",
+      "blockId": "mbc_cam_spot_is",
+      "kind": "boolean",
+      "params": [
+        "n",
+        "kind"
+      ],
+      "en": "camera spot %n is %kind",
+      "zh": "神攝手 色點 %n 是 %kind？",
+      "group": "Camera",
+      "advanced": false
+    },
+    "onCamBlob": {
+      "file": "cam.ts",
+      "blockId": "mbc_cam_on_blob",
+      "kind": "event",
+      "params": [
+        "event",
+        "handler"
+      ],
+      "en": "on camera blob %event",
+      "zh": "當神攝手 色塊 %event",
+      "group": "Camera",
+      "advanced": false
+    }
+  },
+  "enums": {
+    "MbcLineColor.Black": {
+      "en": "black",
+      "zh": "黑"
+    },
+    "MbcLineColor.White": {
+      "en": "white",
+      "zh": "白"
+    },
+    "MbcLineCalib.Black": {
+      "en": "current reading is black",
+      "zh": "目前讀值記為黑"
+    },
+    "MbcLineCalib.White": {
+      "en": "current reading is white",
+      "zh": "目前讀值記為白"
+    },
+    "MbcLineCalib.Auto": {
+      "en": "auto (sweep for 5 s)",
+      "zh": "自動（來回掃 5 秒）"
+    },
+    "MbcLineEvent.Lost": {
+      "en": "lost",
+      "zh": "丟線"
+    },
+    "MbcLineEvent.Found": {
+      "en": "found",
+      "zh": "找回線"
+    },
+    "MbcLineEvent.Fork": {
+      "en": "fork",
+      "zh": "分岔"
+    },
+    "MbcTofSide.Left": {
+      "en": "left",
+      "zh": "左"
+    },
+    "MbcTofSide.Right": {
+      "en": "right",
+      "zh": "右"
+    },
+    "MbcDistUnit.Cm": {
+      "en": "cm",
+      "zh": "公分"
+    },
+    "MbcDistUnit.Mm": {
+      "en": "mm",
+      "zh": "公釐"
+    },
+    "MbcPadButton.Select": {
+      "en": "select / share",
+      "zh": "SELECT／SHARE"
+    },
+    "MbcPadButton.L3": {
+      "en": "L3",
+      "zh": "L3"
+    },
+    "MbcPadButton.R3": {
+      "en": "R3",
+      "zh": "R3"
+    },
+    "MbcPadButton.Start": {
+      "en": "start / options",
+      "zh": "START／OPTIONS"
+    },
+    "MbcPadButton.Up": {
+      "en": "up",
+      "zh": "上"
+    },
+    "MbcPadButton.Right": {
+      "en": "right",
+      "zh": "右"
+    },
+    "MbcPadButton.Down": {
+      "en": "down",
+      "zh": "下"
+    },
+    "MbcPadButton.Left": {
+      "en": "left",
+      "zh": "左"
+    },
+    "MbcPadButton.L2": {
+      "en": "L2",
+      "zh": "L2"
+    },
+    "MbcPadButton.R2": {
+      "en": "R2",
+      "zh": "R2"
+    },
+    "MbcPadButton.L1": {
+      "en": "L1",
+      "zh": "L1"
+    },
+    "MbcPadButton.R1": {
+      "en": "R1",
+      "zh": "R1"
+    },
+    "MbcPadButton.Triangle": {
+      "en": "triangle",
+      "zh": "△"
+    },
+    "MbcPadButton.Circle": {
+      "en": "circle",
+      "zh": "○"
+    },
+    "MbcPadButton.Cross": {
+      "en": "cross",
+      "zh": "✕"
+    },
+    "MbcPadButton.Square": {
+      "en": "square",
+      "zh": "□"
+    },
+    "MbcPadAxis.LeftX": {
+      "en": "left X",
+      "zh": "左搖桿 X"
+    },
+    "MbcPadAxis.LeftY": {
+      "en": "left Y",
+      "zh": "左搖桿 Y"
+    },
+    "MbcPadAxis.RightX": {
+      "en": "right X",
+      "zh": "右搖桿 X"
+    },
+    "MbcPadAxis.RightY": {
+      "en": "right Y",
+      "zh": "右搖桿 Y"
+    },
+    "MbcPadTrigger.L2": {
+      "en": "L2",
+      "zh": "L2"
+    },
+    "MbcPadTrigger.R2": {
+      "en": "R2",
+      "zh": "R2"
+    },
+    "MbcPadGroup.Dpad": {
+      "en": "d-pad",
+      "zh": "方向鍵"
+    },
+    "MbcPadGroup.Shapes": {
+      "en": "shapes",
+      "zh": "形狀鍵"
+    },
+    "MbcPadGroup.Shoulders": {
+      "en": "shoulders",
+      "zh": "肩鍵"
+    },
+    "MbcPadGroup.Functions": {
+      "en": "functions",
+      "zh": "功能鍵"
+    },
+    "MbcPadSystemButton.Ps": {
+      "en": "PS",
+      "zh": "PS"
+    },
+    "MbcPadSystemButton.Capture": {
+      "en": "capture",
+      "zh": "擷取"
+    },
+    "MbcPadButtonEvent.Pressed": {
+      "en": "pressed",
+      "zh": "按下"
+    },
+    "MbcPadButtonEvent.Released": {
+      "en": "released",
+      "zh": "放開"
+    },
+    "MbcImuHeading.Fused": {
+      "en": "fused",
+      "zh": "融合"
+    },
+    "MbcImuHeading.Gyro3D": {
+      "en": "gyro 3D",
+      "zh": "陀螺 3D"
+    },
+    "MbcImuHeading.Gyro1D": {
+      "en": "gyro 1D",
+      "zh": "陀螺 1D"
+    },
+    "MbcImuHeading.Magnetic": {
+      "en": "magnetic",
+      "zh": "磁力計"
+    },
+    "MbcImuSensor.Gyro": {
+      "en": "gyro (0.1 °/s)",
+      "zh": "角速度（0.1 °/s）"
+    },
+    "MbcImuSensor.Accel": {
+      "en": "accelerometer (mg)",
+      "zh": "加速度（mg）"
+    },
+    "MbcImuSensor.Mag": {
+      "en": "magnetometer (mG)",
+      "zh": "磁力（mG）"
+    },
+    "MbcAxis.X": {
+      "en": "X",
+      "zh": "X"
+    },
+    "MbcAxis.Y": {
+      "en": "Y",
+      "zh": "Y"
+    },
+    "MbcAxis.Z": {
+      "en": "Z",
+      "zh": "Z"
+    },
+    "MbcImuFace.PlusX": {
+      "en": "+X",
+      "zh": "+X"
+    },
+    "MbcImuFace.PlusY": {
+      "en": "+Y",
+      "zh": "+Y"
+    },
+    "MbcImuFace.PlusZ": {
+      "en": "+Z",
+      "zh": "+Z"
+    },
+    "MbcImuFace.MinusX": {
+      "en": "-X",
+      "zh": "−X"
+    },
+    "MbcImuFace.MinusY": {
+      "en": "-Y",
+      "zh": "−Y"
+    },
+    "MbcImuFace.MinusZ": {
+      "en": "-Z",
+      "zh": "−Z"
+    },
+    "MbcImuCalib.AccelStart": {
+      "en": "accelerometer start",
+      "zh": "加速度計 開始"
+    },
+    "MbcImuCalib.AccelEnd": {
+      "en": "accelerometer end",
+      "zh": "加速度計 結束"
+    },
+    "MbcImuCalib.MagStart": {
+      "en": "magnetometer start",
+      "zh": "磁力計 開始"
+    },
+    "MbcImuCalib.MagEnd": {
+      "en": "magnetometer end",
+      "zh": "磁力計 結束"
+    },
+    "MbcImuFlag.Still": {
+      "en": "still",
+      "zh": "靜止"
+    },
+    "MbcImuFlag.AxisCaptured": {
+      "en": "mounting axis captured",
+      "zh": "已擷取安裝軸"
+    },
+    "MbcImuFlag.TooTilted": {
+      "en": "mounted too tilted",
+      "zh": "安裝過歪"
+    },
+    "MbcImuFlag.AccelCalibrating": {
+      "en": "accelerometer calibrating",
+      "zh": "加速度計校準中"
+    },
+    "MbcImuFlag.MagCalibrating": {
+      "en": "magnetometer calibrating",
+      "zh": "磁力計校準中"
+    },
+    "MbcImuFlag.MagFusionReady": {
+      "en": "magnetic fusion ready",
+      "zh": "磁力融合已初始化"
+    },
+    "MbcImuFlag.MagConverged": {
+      "en": "magnetic auto-calibration converged",
+      "zh": "磁力自動校準已收斂"
+    },
+    "MbcCamColor.Hue": {
+      "en": "hue",
+      "zh": "色相"
+    },
+    "MbcCamColor.Saturation": {
+      "en": "saturation",
+      "zh": "飽和度"
+    },
+    "MbcCamColor.Brightness": {
+      "en": "brightness",
+      "zh": "明度"
+    },
+    "MbcCamBlob.X": {
+      "en": "X",
+      "zh": "X"
+    },
+    "MbcCamBlob.Y": {
+      "en": "Y",
+      "zh": "Y"
+    },
+    "MbcCamBlob.Width": {
+      "en": "width",
+      "zh": "寬"
+    },
+    "MbcCamBlob.Height": {
+      "en": "height",
+      "zh": "高"
+    },
+    "MbcCamBlob.Area": {
+      "en": "area",
+      "zh": "面積"
+    },
+    "MbcCamSpotKind.Colour": {
+      "en": "colour",
+      "zh": "彩色"
+    },
+    "MbcCamSpotKind.White": {
+      "en": "white",
+      "zh": "白"
+    },
+    "MbcCamSpotKind.Black": {
+      "en": "black",
+      "zh": "黑"
+    },
+    "MbcCamSpotKind.Off": {
+      "en": "off",
+      "zh": "未啟用"
+    },
+    "MbcCamEvent.Found": {
+      "en": "found",
+      "zh": "找到"
+    },
+    "MbcCamEvent.Lost": {
+      "en": "lost",
+      "zh": "不見"
+    }
+  }
+}

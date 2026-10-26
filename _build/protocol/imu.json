@@ -71,10 +71,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "陀螺 3D 航向",
-          "en": "gyro 3D heading"
-        }
+        "js": "mbc.imuHeading(MbcImuHeading.Gyro3D)"
       },
       "examples": [],
       "locked": true
@@ -119,10 +116,10 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "融合航向",
-          "en": "fused heading"
-        }
+        "js": "mbc.imuHeading(MbcImuHeading.Fused)",
+        "also": [
+          "mbc.onImuTurned(90)"
+        ]
       },
       "examples": [],
       "locked": true
@@ -167,10 +164,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "陀螺 1D 航向",
-          "en": "gyro 1D heading"
-        }
+        "js": "mbc.imuHeading(MbcImuHeading.Gyro1D)"
       },
       "examples": [],
       "locked": true
@@ -209,10 +203,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "磁力航向",
-          "en": "magnetic heading"
-        }
+        "js": "mbc.imuHeading(MbcImuHeading.Magnetic)"
       },
       "examples": [],
       "locked": true
@@ -257,10 +248,10 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "轉向角速度",
-          "en": "yaw rate"
-        }
+        "js": "mbc.imuYawRate()",
+        "also": [
+          "mbc.imuFlag(MbcImuFlag.Still)"
+        ]
       },
       "examples": []
     },
@@ -304,10 +295,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "俯仰角",
-          "en": "pitch angle"
-        }
+        "js": "mbc.imuPitch()"
       },
       "examples": [],
       "min": -90,
@@ -353,10 +341,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "俯仰角速度",
-          "en": "pitch rate"
-        }
+        "js": "mbc.imuPitchRate()"
       },
       "examples": []
     },
@@ -394,10 +379,7 @@
       "matrix": null,
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "磁力信任度",
-          "en": "magnetometer trust"
-        }
+        "js": "mbc.imuMagTrust()"
       },
       "examples": []
     },
@@ -435,10 +417,7 @@
       "matrix": null,
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "磁場干擾度",
-          "en": "magnetic disturbance"
-        }
+        "js": "mbc.imuMagDisturbance()"
       },
       "examples": []
     },
@@ -473,10 +452,10 @@
       "matrix": null,
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "朝上的面",
-          "en": "face up"
-        }
+        "js": "mbc.imuFaceUp()",
+        "also": [
+          "mbc.imuFaceUpIs(MbcImuFace.PlusZ)"
+        ]
       },
       "examples": []
     },
@@ -512,10 +491,11 @@
       "matrix": null,
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "角速度 [軸]",
-          "en": "gyro [axis]"
-        }
+        "js": [
+          "mbc.imuAxis(MbcImuSensor.Gyro, MbcAxis.X)",
+          "mbc.imuAxis(MbcImuSensor.Gyro, MbcAxis.Y)",
+          "mbc.imuAxis(MbcImuSensor.Gyro, MbcAxis.Z)"
+        ]
       },
       "examples": []
     },
@@ -551,10 +531,11 @@
       "matrix": null,
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "加速度 [軸]",
-          "en": "accel [axis]"
-        }
+        "js": [
+          "mbc.imuAxis(MbcImuSensor.Accel, MbcAxis.X)",
+          "mbc.imuAxis(MbcImuSensor.Accel, MbcAxis.Y)",
+          "mbc.imuAxis(MbcImuSensor.Accel, MbcAxis.Z)"
+        ]
       },
       "examples": []
     },
@@ -590,10 +571,11 @@
       "matrix": null,
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "磁力 [軸]",
-          "en": "mag [axis]"
-        }
+        "js": [
+          "mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.X)",
+          "mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.Y)",
+          "mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.Z)"
+        ]
       },
       "examples": []
     }
@@ -614,10 +596,7 @@
       "i2c": true,
       "mblock": true,
       "microbit": {
-        "block": {
-          "zh": "航向歸零",
-          "en": "zero heading"
-        }
+        "js": "mbc.imuZeroHeading()"
       },
       "busyFlag": null
     },
@@ -637,10 +616,7 @@
       "mblock": true,
       "matrix": null,
       "microbit": {
-        "block": {
-          "zh": "加速度計校準開始",
-          "en": "start accel calibration"
-        }
+        "js": "mbc.imuCalibrate(MbcImuCalib.AccelStart)"
       },
       "busyFlag": 4
     },
@@ -660,10 +636,7 @@
       "mblock": true,
       "matrix": null,
       "microbit": {
-        "block": {
-          "zh": "加速度計校準結束",
-          "en": "end accel calibration"
-        }
+        "js": "mbc.imuCalibrate(MbcImuCalib.AccelEnd)"
       },
       "busyFlag": null
     },
@@ -683,10 +656,7 @@
       "mblock": true,
       "matrix": null,
       "microbit": {
-        "block": {
-          "zh": "磁力計校準開始",
-          "en": "start mag calibration"
-        }
+        "js": "mbc.imuCalibrate(MbcImuCalib.MagStart)"
       },
       "busyFlag": 5
     },
@@ -706,10 +676,7 @@
       "mblock": true,
       "matrix": null,
       "microbit": {
-        "block": {
-          "zh": "磁力計校準結束",
-          "en": "end mag calibration"
-        }
+        "js": "mbc.imuCalibrate(MbcImuCalib.MagEnd)"
       },
       "busyFlag": null
     }

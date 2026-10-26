@@ -89,9 +89,9 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # sensor on port 1
 
-leftCm = sensor.read(1)[0]   # left distance (cm)：0~120 cm
-leftCm = sensor.read(2)[0]   # left distance (cm)：0~120 cm
-leftCm = sensor.read(4)[0]   # left distance (cm)：0~120 cm
+leftCm = sensor.read(1)[0]   # left distance (cm)：cm×100/120 (0~100)
+leftCm = sensor.read(2)[0]   # left distance (cm)：cm×100/120 (0~100)
+leftCm = sensor.read(4)[0]   # left distance (cm)：cm×100/120 (0~100)
 ```
 
 ```basic
@@ -141,12 +141,12 @@ int leftCm = MiniR4.I2C1.MXColor.getColor(R);
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC left distance cm :: #E8711E)</pre>
+<pre class="blocks">(distance 2-ch [left v] \([cm v]\) :: #00A4E4)</pre>
 
 ```typescript
-let leftCm = MBC.readValue(0x29, 0x01)   // left distance (cm)：0~120 cm
+let leftCm = mbc.tof2Distance(MbcTofSide.Left, MbcDistUnit.Cm)   // left distance (cm)：0~120 cm
 ```
 
 </details>
@@ -206,9 +206,9 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # sensor on port 1
 
-rightCm = sensor.read(1)[1]   # right distance (cm)：0~120 cm
-rightCm = sensor.read(2)[1]   # right distance (cm)：0~120 cm
-rightCm = sensor.read(4)[1]   # right distance (cm)：0~120 cm
+rightCm = sensor.read(1)[1]   # right distance (cm)：cm×100/120 (0~100)
+rightCm = sensor.read(2)[1]   # right distance (cm)：cm×100/120 (0~100)
+rightCm = sensor.read(4)[1]   # right distance (cm)：cm×100/120 (0~100)
 ```
 
 ```basic
@@ -258,12 +258,12 @@ int rightCm = MiniR4.I2C1.MXColor.getColor(G);
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC right distance cm :: #E8711E)</pre>
+<pre class="blocks">(distance 2-ch [right v] \([cm v]\) :: #00A4E4)</pre>
 
 ```typescript
-let rightCm = MBC.readValue(0x29, 0x02)   // right distance (cm)：0~120 cm
+let rightCm = mbc.tof2Distance(MbcTofSide.Right, MbcDistUnit.Cm)   // right distance (cm)：0~120 cm
 ```
 
 </details>
@@ -334,12 +334,19 @@ int nearCm = MiniR4.I2C1.MXColor.getColor(B);
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC nearer distance cm :: #E8711E)</pre>
+<pre class="blocks">(distance 2-ch nearest \(cm\) :: #00A4E4)</pre>
 
 ```typescript
-let nearCm = MBC.readValue(0x29, 0x03)   // nearer distance (cm)：0~120 cm
+let nearCm = mbc.tof2NearestCm()   // nearer distance (cm)：0~120 cm
+```
+
+**Related block "on distance 2-ch nearer than 10 cm"**
+
+```typescript
+mbc.onTof2Near(10, function () {
+})
 ```
 
 </details>
@@ -438,12 +445,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC left distance mm :: #E8711E)</pre>
+<pre class="blocks">(distance 2-ch [left v] \([mm v]\) :: #00A4E4)</pre>
 
 ```typescript
-let leftMm = MBC.readValue(0x29, 0x04)   // left distance (mm)：0~1200 mm
+let leftMm = mbc.tof2Distance(MbcTofSide.Left, MbcDistUnit.Mm)   // left distance (mm)：0~1200 mm
 ```
 
 </details>
@@ -542,12 +549,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC right distance mm :: #E8711E)</pre>
+<pre class="blocks">(distance 2-ch [right v] \([mm v]\) :: #00A4E4)</pre>
 
 ```typescript
-let rightMm = MBC.readValue(0x29, 0x05)   // right distance (mm)：0~1200 mm
+let rightMm = mbc.tof2Distance(MbcTofSide.Right, MbcDistUnit.Mm)   // right distance (mm)：0~1200 mm
 ```
 
 </details>
@@ -633,12 +640,10 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
-
-<pre class="blocks">(MBC init bitmap :: #E8711E)</pre>
+No dedicated block; in JavaScript read it with `mbc.readValue(address, id)` (−32768 when nothing answers). Related block: "distance 2-ch [left] sensor is OK".
 
 ```typescript
-let initOk = MBC.readValue(0x29, 0x06)   // init bitmap：0~3 bit
+let initOk = mbc.readValue(0x29, 0x06)   // init bitmap：0~3 bit
 ```
 
 </details>
@@ -724,12 +729,10 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
-
-<pre class="blocks">(MBC fault bitmap :: #E8711E)</pre>
+No dedicated block; in JavaScript read it with `mbc.readValue(address, id)` (−32768 when nothing answers). Related block: "distance 2-ch [left] sensor is OK".
 
 ```typescript
-let fault = MBC.readValue(0x29, 0x07)   // fault bitmap：0~3 bit
+let fault = mbc.readValue(0x29, 0x07)   // fault bitmap：0~3 bit
 ```
 
 </details>
@@ -787,7 +790,7 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # sensor on port 1
 
-avgMm = sensor.read(0)[0]   # average distance (mm)：0~1200 mm
+avgMm = sensor.read(0)[0]   # average distance (mm)：cm average ×100/120 (0~100)
 avgMm = sensor.read(3)[0]   # average distance (mm)：0~1200 mm
 ```
 
@@ -831,12 +834,12 @@ Not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC average distance mm :: #E8711E)</pre>
+<pre class="blocks">(distance 2-ch average \(mm\) :: #00A4E4)</pre>
 
 ```typescript
-let avgMm = MBC.readValue(0x29, 0x08)   // average distance (mm)：0~1200 mm
+let avgMm = mbc.tof2AverageMm()   // average distance (mm)：0~1200 mm
 ```
 
 </details>
@@ -920,11 +923,11 @@ The status flags are not available with the stock MATRIX 0x22 blocks.
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks"><MBC device ready :: #E8711E></pre>
+<pre class="blocks"><device at (0x29 v) is ready :: #00A4E4></pre>
 
 ```typescript
-let st = MBC.status(0x29)   // F3
-let ready = (st & 1) != 0
+let ready = mbc.deviceReady(0x29)   // F3 bit0; false when nothing answers
+let st = mbc.status(0x29)   // F3
 ```
 
 </details>

@@ -6,7 +6,7 @@
 - **Extension**: **pxt-mbc-sensors v2** (MIT, nothing to download, just paste the URL).
 
 > [!IMPORTANT]
-> **Bench test pending**: extension v2.0.4 compiles in MakeCode (V1 + V2) but has not yet been checked block by block on real hardware. Block names follow the [GitHub release](https://github.com/contactmbcrobot/pxt-mbc-sensors).
+> **Bench test pending**: extension v2.0.5 compiles in MakeCode (V1 + V2) but has not yet been checked block by block on real hardware. Block names follow the [GitHub release](https://github.com/contactmbcrobot/pxt-mbc-sensors).
 
 ### Install the software
 
@@ -21,7 +21,7 @@
 4. To use an example: switch to **JavaScript** at the top right → paste the example → download the `.hex` and drag it onto the **MICROBIT** drive.
 
 > [!TIP]
-> No approval, no download: teachers just hand the URL to students. To pin a version, paste `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.4`.
+> No approval, no download: teachers just hand the URL to students. To pin a version, paste `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.5`.
 
 ### Wiring
 
@@ -46,7 +46,7 @@ The micro:bit I2C pins are fixed: **P19 = SCL, P20 = SDA** (on the edge connecto
 
 ### FAQ
 
-- **Values are always 0?** With no device connected the reporter blocks return **0** (the internal −32768 is filtered) and never throw. Check in order: wiring (SDA = P20, SCL = P19) → external power on → "device at … is ready" is true.
+- **Values are always 0?** With no device connected the reporter blocks return **0** (the internal −32768 is filtered), every yes / no block returns false, and nothing throws. Check in order: wiring (SDA = P20, SCL = P19) → external power on → "device at … is ready" is true.
 - **On a V1, the compass and accelerometer stop working too?** On V1 the external I2C bus is shared with the onboard accelerometer, so a sensor holding SDA low also kills them. V2 has a separate external bus.
 - **Works on and off?** STM32 products (Pathfinder, Ranger, PS2, IMU) clock-stretch, and the nRF52 on the V2 has a known clock-stretching issue (errata 219), so V1 and V2 both need a bench test. ESP32 products (PS4, Sharpshooter) do not stretch; the extension already waits 2 ms after writing the value id.
 - **Two products of the same kind?** They share an address: first change one with "Device → change device at … to address …" (applied after reboot), then tell the extension with that product's "use address" block.

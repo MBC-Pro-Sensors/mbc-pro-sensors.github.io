@@ -79,7 +79,7 @@ headingGyro3D = Sensor.ReadRawValue(1, 0)
 <details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
-讀不到（沒接、位址錯）時回 `MBC_NONE`（−32768）。
+這個值本身就可能是 −32768（最高位元 = 1，例如 `0x8000`），跟讀不到時回的 `MBC_NONE` 一樣，不要拿 −32768 判斷有沒有讀到：要分辨就改用 `mbcReadMany(0x6A, 0x01, 1, &headingGyro3D)`，回傳 `false` 才是讀不到。
 
 ```cpp
 int16_t headingGyro3D = mbcRead(0x6A, 0x01);   // 陀螺 3D 航向：-32768~32767 °
@@ -111,12 +111,12 @@ int raw = MiniR4.I2C1.MXColor.getColor(R);   // 第 1 組
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 陀螺 3D 航向 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 [陀螺 3D v] 航向（°） :: #00A4E4)</pre>
 
 ```typescript
-let headingGyro3D = MBC.readValue(0x6A, 0x01)   // 陀螺 3D 航向：-32768~32767 °
+let headingGyro3D = mbc.imuHeading(MbcImuHeading.Gyro3D)   // 陀螺 3D 航向：-32768~32767 °
 ```
 
 </details>
@@ -161,7 +161,7 @@ headingFused = Sensor.ReadRawValue(1, 0)
 <details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
-讀不到（沒接、位址錯）時回 `MBC_NONE`（−32768）。
+這個值本身就可能是 −32768（最高位元 = 1，例如 `0x8000`），跟讀不到時回的 `MBC_NONE` 一樣，不要拿 −32768 判斷有沒有讀到：要分辨就改用 `mbcReadMany(0x6A, 0x02, 1, &headingFused)`，回傳 `false` 才是讀不到。
 
 ```cpp
 int16_t headingFused = mbcRead(0x6A, 0x02);   // 融合航向：-32768~32767 °
@@ -193,12 +193,19 @@ int raw = MiniR4.I2C1.MXColor.getColor(B);   // 第 1 組
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 融合航向 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 [融合 v] 航向（°） :: #00A4E4)</pre>
 
 ```typescript
-let headingFused = MBC.readValue(0x6A, 0x02)   // 融合航向：-32768~32767 °
+let headingFused = mbc.imuHeading(MbcImuHeading.Fused)   // 融合航向：-32768~32767 °
+```
+
+**相關積木「當陀螺儀 轉了 90 °」**
+
+```typescript
+mbc.onImuTurned(90, function () {
+})
 ```
 
 </details>
@@ -243,7 +250,7 @@ headingGyro1D = Sensor.ReadRawValue(1, 0)
 <details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
-讀不到（沒接、位址錯）時回 `MBC_NONE`（−32768）。
+這個值本身就可能是 −32768（最高位元 = 1，例如 `0x8000`），跟讀不到時回的 `MBC_NONE` 一樣，不要拿 −32768 判斷有沒有讀到：要分辨就改用 `mbcReadMany(0x6A, 0x03, 1, &headingGyro1D)`，回傳 `false` 才是讀不到。
 
 ```cpp
 int16_t headingGyro1D = mbcRead(0x6A, 0x03);   // 陀螺 1D 航向：-32768~32767 °
@@ -275,12 +282,12 @@ int raw = MiniR4.I2C1.MXColor.getColor(M);   // 第 1 組
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 陀螺 1D 航向 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 [陀螺 1D v] 航向（°） :: #00A4E4)</pre>
 
 ```typescript
-let headingGyro1D = MBC.readValue(0x6A, 0x03)   // 陀螺 1D 航向：-32768~32767 °
+let headingGyro1D = mbc.imuHeading(MbcImuHeading.Gyro1D)   // 陀螺 1D 航向：-32768~32767 °
 ```
 
 </details>
@@ -325,7 +332,7 @@ headingMag = Sensor.ReadRawValue(1, 1)
 <details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
-讀不到（沒接、位址錯）時回 `MBC_NONE`（−32768）。
+這個值本身就可能是 −32768（最高位元 = 1，例如 `0x8000`），跟讀不到時回的 `MBC_NONE` 一樣，不要拿 −32768 判斷有沒有讀到：要分辨就改用 `mbcReadMany(0x6A, 0x04, 1, &headingMag)`，回傳 `false` 才是讀不到。
 
 ```cpp
 int16_t headingMag = mbcRead(0x6A, 0x04);   // 磁力航向：-32768~32767 °
@@ -352,12 +359,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 磁力航向 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 [磁力計 v] 航向（°） :: #00A4E4)</pre>
 
 ```typescript
-let headingMag = MBC.readValue(0x6A, 0x04)   // 磁力航向：-32768~32767 °
+let headingMag = mbc.imuHeading(MbcImuHeading.Magnetic)   // 磁力航向：-32768~32767 °
 ```
 
 </details>
@@ -403,7 +410,7 @@ yawRate = Sensor.ReadRawValue(1, 0)
 <details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
-讀不到（沒接、位址錯）時回 `MBC_NONE`（−32768）。
+這個值本身就可能是 −32768（最高位元 = 1，例如 `0x8000`），跟讀不到時回的 `MBC_NONE` 一樣，不要拿 −32768 判斷有沒有讀到：要分辨就改用 `mbcReadMany(0x6A, 0x05, 1, &yawRate)`，回傳 `false` 才是讀不到。
 
 ```cpp
 int16_t yawRate = mbcRead(0x6A, 0x05);   // 轉向軸角速度：-32768~32767 0.1 dps
@@ -430,12 +437,18 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 轉向角速度 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 轉向角速度（0.1 °/s） :: #00A4E4)</pre>
 
 ```typescript
-let yawRate = MBC.readValue(0x6A, 0x05)   // 轉向軸角速度：-32768~32767 0.1 dps
+let yawRate = mbc.imuYawRate()   // 轉向軸角速度：-32768~32767 0.1 dps
+```
+
+**相關積木「陀螺儀 ［靜止］？」**
+
+```typescript
+let imuFlag = mbc.imuFlag(MbcImuFlag.Still)
 ```
 
 </details>
@@ -508,12 +521,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 俯仰角 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 俯仰角（°） :: #00A4E4)</pre>
 
 ```typescript
-let pitch = MBC.readValue(0x6A, 0x06)   // 俯仰角：-90~+90 °
+let pitch = mbc.imuPitch()   // 俯仰角：-90~+90 °
 ```
 
 </details>
@@ -559,7 +572,7 @@ pitchRate = Sensor.ReadRawValue(1, 0)
 <details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
-讀不到（沒接、位址錯）時回 `MBC_NONE`（−32768）。
+這個值本身就可能是 −32768（最高位元 = 1，例如 `0x8000`），跟讀不到時回的 `MBC_NONE` 一樣，不要拿 −32768 判斷有沒有讀到：要分辨就改用 `mbcReadMany(0x6A, 0x07, 1, &pitchRate)`，回傳 `false` 才是讀不到。
 
 ```cpp
 int16_t pitchRate = mbcRead(0x6A, 0x07);   // 俯仰角速度：-32768~32767 0.1 dps
@@ -586,12 +599,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 俯仰角速度 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 俯仰角速度（0.1 °/s） :: #00A4E4)</pre>
 
 ```typescript
-let pitchRate = MBC.readValue(0x6A, 0x07)   // 俯仰角速度：-32768~32767 0.1 dps
+let pitchRate = mbc.imuPitchRate()   // 俯仰角速度：-32768~32767 0.1 dps
 ```
 
 </details>
@@ -649,12 +662,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 磁力信任度 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 磁力信任度 :: #00A4E4)</pre>
 
 ```typescript
-let magTrust = MBC.readValue(0x6A, 0x08)   // 磁力信任度：0~255
+let magTrust = mbc.imuMagTrust()   // 磁力信任度：0~255
 ```
 
 </details>
@@ -712,12 +725,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 磁場干擾度 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 磁場干擾度 :: #00A4E4)</pre>
 
 ```typescript
-let magDisturb = MBC.readValue(0x6A, 0x09)   // 磁場干擾度：0~255 0.01°
+let magDisturb = mbc.imuMagDisturbance()   // 磁場干擾度：0~255 0.01°
 ```
 
 </details>
@@ -775,12 +788,18 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 朝上的面 :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 朝上的面 :: #00A4E4)</pre>
 
 ```typescript
-let upFace = MBC.readValue(0x6A, 0x0A)   // 朝上的面：0~5
+let upFace = mbc.imuFaceUp()   // 朝上的面：0~5
+```
+
+**相關積木「陀螺儀 朝上的面是 ［+Z］？」**
+
+```typescript
+let imuFaceUpIs = mbc.imuFaceUpIs(MbcImuFace.PlusZ)
 ```
 
 </details>
@@ -841,12 +860,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 角速度 [軸] :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 [角速度（0.1 °/s） v] [X v] 軸 :: #00A4E4)</pre>
 
 ```typescript
-let gyro = MBC.readValues(0x6A, 0x10, 3)   // 角速度 1~3 軸
+let gyro = [mbc.imuAxis(MbcImuSensor.Gyro, MbcAxis.X), mbc.imuAxis(MbcImuSensor.Gyro, MbcAxis.Y), mbc.imuAxis(MbcImuSensor.Gyro, MbcAxis.Z)]   // 角速度 1~3 軸：-32768~32767 0.1 dps
 ```
 
 </details>
@@ -907,12 +926,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 加速度 [軸] :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 [加速度（mg） v] [X v] 軸 :: #00A4E4)</pre>
 
 ```typescript
-let accel = MBC.readValues(0x6A, 0x13, 3)   // 加速度 1~3 軸
+let accel = [mbc.imuAxis(MbcImuSensor.Accel, MbcAxis.X), mbc.imuAxis(MbcImuSensor.Accel, MbcAxis.Y), mbc.imuAxis(MbcImuSensor.Accel, MbcAxis.Z)]   // 加速度 1~3 軸：-32768~32767 mg
 ```
 
 </details>
@@ -973,12 +992,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 磁力 [軸] :: #E8711E)</pre>
+<pre class="blocks">(陀螺儀 [磁力（mG） v] [X v] 軸 :: #00A4E4)</pre>
 
 ```typescript
-let mag = MBC.readValues(0x6A, 0x16, 3)   // 磁力 1~3 軸
+let mag = [mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.X), mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.Y), mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.Z)]   // 磁力 1~3 軸：-32768~32767 mG
 ```
 
 </details>
@@ -1036,10 +1055,10 @@ MATRIX 原廠 0x22 積木沒有這個命令。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC 航向歸零 :: #E8711E</pre>
+<pre class="blocks">陀螺儀 航向歸零 :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE0)   // 航向歸零
+mbc.imuZeroHeading()   // 航向歸零
 ```
 
 </details>
@@ -1070,7 +1089,7 @@ EV3 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduin
 
 ```cpp
 mbcWrite(0x6A, 0xE1);   // 加速度計校準開始
-while (mbcRead(0x6A, 0xF3) & (1 << 4)) delay(10);   // 等 F3 bit4 歸零 = 做完
+// 校準中 F3 bit4 = 1。照產品說明做完動作後送「加速度計校準結束」：mbcWrite(0x6A, 0xE2); bit4 才會變 0
 ```
 
 </details>
@@ -1094,10 +1113,10 @@ MATRIX 原廠 0x22 積木沒有這個命令。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC 加速度計校準開始 :: #E8711E</pre>
+<pre class="blocks">陀螺儀 校準 [加速度計 開始 v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE1)   // 加速度計校準開始
+mbc.imuCalibrate(MbcImuCalib.AccelStart)   // 加速度計校準開始
 ```
 
 </details>
@@ -1151,10 +1170,10 @@ MATRIX 原廠 0x22 積木沒有這個命令。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC 加速度計校準結束 :: #E8711E</pre>
+<pre class="blocks">陀螺儀 校準 [加速度計 結束 v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE2)   // 加速度計校準結束
+mbc.imuCalibrate(MbcImuCalib.AccelEnd)   // 加速度計校準結束
 ```
 
 </details>
@@ -1185,7 +1204,7 @@ EV3 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduin
 
 ```cpp
 mbcWrite(0x6A, 0xE3);   // 磁力計校準開始
-while (mbcRead(0x6A, 0xF3) & (1 << 5)) delay(10);   // 等 F3 bit5 歸零 = 做完
+// 校準中 F3 bit5 = 1。照產品說明做完動作後送「磁力計校準結束」：mbcWrite(0x6A, 0xE4); bit5 才會變 0
 ```
 
 </details>
@@ -1209,10 +1228,10 @@ MATRIX 原廠 0x22 積木沒有這個命令。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC 磁力計校準開始 :: #E8711E</pre>
+<pre class="blocks">陀螺儀 校準 [磁力計 開始 v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE3)   // 磁力計校準開始
+mbc.imuCalibrate(MbcImuCalib.MagStart)   // 磁力計校準開始
 ```
 
 </details>
@@ -1266,10 +1285,10 @@ MATRIX 原廠 0x22 積木沒有這個命令。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC 磁力計校準結束 :: #E8711E</pre>
+<pre class="blocks">陀螺儀 校準 [磁力計 結束 v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x6A, 0xE4)   // 磁力計校準結束
+mbc.imuCalibrate(MbcImuCalib.MagEnd)   // 磁力計校準結束
 ```
 
 </details>
@@ -1347,11 +1366,11 @@ MATRIX 原廠 0x22 積木讀不到狀態旗標。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks"><MBC 裝置就緒 :: #E8711E></pre>
+<pre class="blocks"><位址 (0x6A v) 的裝置就緒？ :: #00A4E4></pre>
 
 ```typescript
-let st = MBC.status(0x6A)   // F3
-let ready = (st & 1) != 0
+let ready = mbc.deviceReady(0x6A)   // F3 bit0；沒接 = false
+let st = mbc.status(0x6A)   // F3
 ```
 
 </details>

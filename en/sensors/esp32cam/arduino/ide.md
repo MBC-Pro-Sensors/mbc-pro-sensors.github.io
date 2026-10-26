@@ -21,16 +21,22 @@ Get the **Universal I2C edition** (4 pins: 5V, GND, SDA, SCL), factory I2C addre
 
 ## Reading values (School edition)
 
-Every snippet uses the `mbcRead()` helper (expand "Helper code" and paste it at the bottom of your sketch); address `0x4C`.
+Every snippet uses the `mbcRead()` helper: expand "Helper code", put part ① (2 lines) at the top of your sketch and paste part ② at the bottom; address `0x4C`.
 
 <details class="helper">
-<summary>Helper code (paste at the bottom of your sketch)</summary>
+<summary>Helper code (① at the top, ② at the bottom)</summary>
+
+**① At the top of your sketch** (before `setup()`)
 
 ```cpp
 #include <Wire.h>
 
 const int16_t MBC_NONE = -32768;   // no answer / undefined id
+```
 
+**② At the bottom of your sketch** (after `loop()`)
+
+```cpp
 // read k consecutive values (k ≤ 16) starting at id, int16 little-endian
 bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
   Wire.beginTransmission(addr);
@@ -52,6 +58,7 @@ int16_t mbcRead(uint8_t addr, uint8_t id) {
 }
 
 // write a command (0~3 parameters)
+// with 2 parameters whose first is 0, write (uint8_t)0, e.g. mbcWrite(ADDR, 0xF8, (uint8_t)0x00, 0xFF); otherwise it clashes with the array form below and will not compile
 void mbcWrite(uint8_t addr, uint8_t id, const uint8_t *args, uint8_t n) {
   Wire.beginTransmission(addr);
   Wire.write(id);
@@ -257,16 +264,22 @@ int16_t found = mbcRead(0x4C, 0x0A);   // blob found：0~1
 
 ## Reading values (WRO edition)
 
-Every snippet uses the `mbcRead()` helper (expand "Helper code" and paste it at the bottom of your sketch); address `0x4C`.
+Every snippet uses the `mbcRead()` helper: expand "Helper code", put part ① (2 lines) at the top of your sketch and paste part ② at the bottom; address `0x4C`.
 
 <details class="helper">
-<summary>Helper code (paste at the bottom of your sketch)</summary>
+<summary>Helper code (① at the top, ② at the bottom)</summary>
+
+**① At the top of your sketch** (before `setup()`)
 
 ```cpp
 #include <Wire.h>
 
 const int16_t MBC_NONE = -32768;   // no answer / undefined id
+```
 
+**② At the bottom of your sketch** (after `loop()`)
+
+```cpp
 // read k consecutive values (k ≤ 16) starting at id, int16 little-endian
 bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
   Wire.beginTransmission(addr);
@@ -288,6 +301,7 @@ int16_t mbcRead(uint8_t addr, uint8_t id) {
 }
 
 // write a command (0~3 parameters)
+// with 2 parameters whose first is 0, write (uint8_t)0, e.g. mbcWrite(ADDR, 0xF8, (uint8_t)0x00, 0xFF); otherwise it clashes with the array form below and will not compile
 void mbcWrite(uint8_t addr, uint8_t id, const uint8_t *args, uint8_t n) {
   Wire.beginTransmission(addr);
   Wire.write(id);

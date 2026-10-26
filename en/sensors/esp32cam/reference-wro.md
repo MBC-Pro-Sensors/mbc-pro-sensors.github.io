@@ -120,12 +120,18 @@ Block returns spot 1~12 colour code（0~255）。Host sends `[10]` → reply `[l
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC spot [1 v] colour code :: #E8711E)</pre>
+<pre class="blocks">(camera spot (1) colour code :: #00A4E4)</pre>
 
 ```typescript
-let spotColor = MBC.readValues(0x4C, 0x10, 12)   // spot 1~12 colour code
+let spotColor = mbc.camSpotColor(1)   // spot 1~12 colour code：0~255 (N = 1~12)
+```
+
+**Related block "camera spot [1~12] is [colour]"**
+
+```typescript
+let camSpotIs = mbc.camSpotIs(1, MbcCamSpotKind.Colour)
 ```
 
 </details>
@@ -222,12 +228,12 @@ Block returns spot 1~12 vividness（0~255）。Host sends `[20]` → reply `[lo]
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC spot [1 v] vividness :: #E8711E)</pre>
+<pre class="blocks">(camera spot (1) vividness :: #00A4E4)</pre>
 
 ```typescript
-let spotVivid = MBC.readValues(0x4C, 0x20, 12)   // spot 1~12 vividness
+let spotVivid = mbc.camSpotVivid(1)   // spot 1~12 vividness：0~255 (N = 1~12)
 ```
 
 </details>
@@ -302,11 +308,11 @@ The extension splits status flags F3 into boolean blocks (ready, calibrating, �
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks"><MBC device ready :: #E8711E></pre>
+<pre class="blocks"><device at (0x4C v) is ready :: #00A4E4></pre>
 
 ```typescript
-let st = MBC.status(0x4C)   // F3
-let ready = (st & 1) != 0
+let ready = mbc.deviceReady(0x4C)   // F3 bit0; false when nothing answers
+let st = mbc.status(0x4C)   // F3
 ```
 
 </details>

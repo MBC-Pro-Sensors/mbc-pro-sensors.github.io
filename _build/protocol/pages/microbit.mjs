@@ -17,12 +17,14 @@ export function render(product, common, ctx, lang) {
 
   out.push(`## ${T(lang, '接線', 'Wiring')}`, '');
   out.push(figureFile(ctx, `images/figures/${key}/wiring-microbit.svg`, `${name} × micro:bit`));
-  out.push('', table([T(lang, '感應器', 'Sensor'), 'micro:bit'], [['SDA', 'P20'], ['SCL', 'P19'], ['5V', T(lang, '外接 5 V（或 V2 的 3V 腳，需確認電流）', 'external 5 V (or the V2 3V pin, check current)')], ['GND', 'GND']]));
+  out.push('', table([T(lang, '感應器', 'Sensor'), 'micro:bit'], [['SDA（RX）', 'P20'], ['SCL（TX）', 'P19'], ['VCC', mb.powerText(product, lang)], ['GND', 'GND']]));
 
   out.push('', `## ${T(lang, '讀值積木', 'Reporter blocks')}`, '');
   out.push(table([T(lang, '積木', 'Block'), T(lang, '傳回', 'Returns'), T(lang, '編號', 'Id'), T(lang, '說明', 'Meaning')],
-    product.values.filter((v) => v.microbit && v.microbit.block).map((v) => [mb.blockText(product, v, lang), `${v.range}${v.unit ? ' ' + v.unit : ''}`, `[\`${valueIdRange(v)}\`](${ref}#v${v.id.toLowerCase()})`, L(v.desc, lang)])));
-  const cmds = (product.commands || []).filter((c) => c.microbit && c.microbit.block);
+    product.values.filter((v) => mb.blockText(product, v, lang)).map((v) => [mb.blockText(product, v, lang), `${v.range}${v.unit ? ' ' + v.unit : ''}`, `[\`${valueIdRange(v)}\`](${ref}#v${v.id.toLowerCase()})`, L(v.desc, lang)])));
+  const more = product.values.flatMap((v) => mb.alsoText(product, v, lang).map((t) => [t, `[\`${valueIdRange(v)}\`](${ref}#v${v.id.toLowerCase()})`]));
+  if (more.length) out.push('', `### ${T(lang, '其他積木（是／否、事件）', 'More blocks (yes / no, events)')}`, '', table([T(lang, '積木', 'Block'), T(lang, '相關的值', 'Related value')], more));
+  const cmds = (product.commands || []).filter((c) => mb.commandText(product, c, lang));
   if (cmds.length) {
     out.push('', `## ${T(lang, '命令積木', 'Command blocks')}`, '');
     out.push(table([T(lang, '積木', 'Block'), T(lang, '編號', 'Id'), T(lang, '說明', 'Meaning')],
@@ -31,8 +33,7 @@ export function render(product, common, ctx, lang) {
   out.push('', `## ${T(lang, '狀態', 'Status')}`, '', flagsTable(product, lang));
 
   out.push('', `## ${T(lang, 'JavaScript 寫法', 'JavaScript')}`, '');
-  const first = product.values.find((v) => v.i2c && !v.count);
-  out.push(fence(`basic.forever(function () {\n    let ${first ? first.key : 'v'} = MBC.readValue(${product.addr}, ${hex(first ? first.id : '01')})   // ${first ? valueName(first, lang) : ''}\n    basic.showNumber(${first ? first.key : 'v'})\n    basic.pause(100)\n})`, 'typescript'));
-  out.push('', assumptions(product, lang, [T(lang, '擴充內部用 `Int16LE` 讀、寫完編號 `basic.pause(2)`（D5）。', 'The extension reads `Int16LE` and pauses 2 ms after writing the id (D5).')]));
+  out.push(fence(mb.firstExample(product, lang), 'typescript'));
+  out.push('', assumptions(product, lang, [T(lang, '擴充內部用 `Int16LE` 讀、寫完編號 `basic.pause(2)`（D5）；感應器沒接好時讀值積木回 0、是／否積木回「否」。', 'The extension reads `Int16LE` and pauses 2 ms after writing the id (D5); with no sensor answering, reporters return 0 and yes / no blocks return false.')]));
   return out.join('\n') + '\n';
 }

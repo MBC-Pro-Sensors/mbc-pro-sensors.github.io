@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="clev3r（EV3 BASIC）程式照這個順序：先建立專案、選孔位，再設定陀螺儀的模式，最後才讀值、顯示在 EV3 螢幕上。左邊一步一步做，右邊的程式會跟著長出來；轉動、抬高、搖晃模擬器裡的車子，就能看到 EV3 螢幕會顯示什麼。">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/imu/clev3r.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/imu/clev3r.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/imu/clev3r.html">
+<title>IMU 陀螺儀 EV3 clev3r 教學 | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* 版面：左邊是照順序走的教學步驟，右邊固定「你的程式＋模擬感應器」；下面是 16 個功能的範例卡 */
+:root {
+  --bg: #f3f6f5;          /* 場地墊的淺色 */
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;      /* MBC 青綠 */
+  --accent-soft: #dff1ef;
+  --tape: #121212;        /* 黑膠帶線 */
+  --ir: #e04a3b;          /* 感應器紅外燈 */
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* 頁首 */
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+/* 主區：左教學、右程式 */
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+/* 右邊：程式＋模擬 */
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+/* 右邊固定區只放程式和輸出，高度不超過一個畫面，往下捲時一直看得到 */
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+/* 每一步卡片裡的「這一步寫的程式」：設定一改就更新並閃一下 */
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+/* 功能範例卡 */
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+/* 完整範例與注意事項 */
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+[hidden] { display: none !important; }  /* 頁面用 hidden 切換「積木／程式」，.ws{display:grid} 會蓋掉它 */
+.learn-nav .tabs .tl { color: var(--muted, #666); font-size: 0.8rem; align-self: center; }
+.learn-nav .tabs .tsep { flex-basis: 100%; height: 0; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
+   排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
+@media (max-width: 900px) {
+  .learn-nav { position: static; width: 100vw; margin: -24px 0 14px calc(50% - 50vw); }
+  .learn-nav .in { padding: 6px 12px 8px; gap: 4px 14px; font-size: 0.85rem; }
+  .learn-nav .in > a { min-height: 36px; display: inline-flex; align-items: center; }
+  .learn-nav .tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .learn-nav .tabs::-webkit-scrollbar { display: none; }
+  .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
+  body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
+  .panel.follow { margin: 12px 0 16px; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow, .ctrl > .panel.follow { grid-column: 1 / -1; }
+  .flash { animation: followFlash 1.2s ease-out; }
+  @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
+  /* 點選目標放大：選項、勾選框、拉桿 */
+  .wrap > *, .main > *, .steps > *, .step-body > * { min-width: 0; }
+  label:has(input[type=radio]), label:has(input[type=checkbox]) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  button.copy, .viewtabs button { min-height: 36px; }
+  label:has(select) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  label select { min-height: 36px; }
+  input[type=radio], input[type=checkbox] { width: 20px; height: 20px; flex: none; }
+  input[type=range] { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/learn/">全部互動教學</a><a class="back" href="/sensors/imu/ev3/">← 陀螺儀 IMU EV3 說明</a><a class="lang" href="/en/learn/imu/clev3r.html" hreflang="en">EN</a><div class="tabs"><span class="tl">主機</span><a href="/learn/imu/ev3-pybricks.html" aria-current="page">EV3</a><a href="/learn/imu/arduino.html">Arduino</a><a href="/learn/imu/mblock.html">mBlock</a><a href="/learn/imu/matrix.html">MATRIX</a><a href="/learn/imu/makecode.html">micro:bit</a><span class="tsep"></span><a href="/learn/imu/ev3-pybricks.html">Pybricks／EV3 MicroPython</a><a href="/learn/imu/clev3r.html" aria-current="page">clev3r</a><a href="/learn/imu/ev3-classroom.html">EV3 Classroom</a><a href="/learn/imu/ev3g.html">EV3-G 官方軟體</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC IMU 陀螺儀 × EV3 clev3r</span>
+    <h1>三個步驟用 clev3r 讀陀螺儀</h1>
+    <p class="lead">clev3r（EV3 BASIC）程式照這個順序：先<b>建立專案、選孔位</b>，再<b>設定陀螺儀的模式</b>，最後才<b>讀值、顯示在 EV3 螢幕上</b>。左邊一步一步做，右邊的程式會跟著長出來；轉動、抬高、搖晃模擬器裡的車子，就能看到 EV3 螢幕會顯示什麼。</p>
+  </header>
+
+  <section class="main" aria-label="教學">
+    <div class="steps">
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>建立專案、選孔位</h2></div>
+        <div class="step-body">
+          <p class="why">clev3r 不用裝擴充，也不用匯入檔案：陀螺儀在 EV3 上會模擬成樂高原廠陀螺儀（類型 32），直接用 <code>Sensor</code> 指令讀。第一行 <code>folder</code> 決定程式放在 EV3 的哪個資料夾。</p>
+          <ol class="howto">
+            <li>安裝 clev3r（本站測試的版本是 v1.7.1.0）。</li>
+            <li>EV3 先開機，再把陀螺儀插進下面選的孔（那一下車子要靜止）。</li>
+            <li>新增一個程式，寫下面這幾行。</li>
+            <li>寫好按「編譯並下載」，到 EV3 的檔案選單找 <code>MBC_</code> 開頭的資料夾執行。</li>
+          </ol>
+          <div class="row">
+            <span class="small">陀螺儀插在哪個孔？</span>
+            <div class="ports" id="ports" role="group" aria-label="孔位"></div>
+          </div>
+          <p class="small">程式裡的第 1 個數字（例如 <code>Sensor.SetMode(<b class="portnum">1</b>, 0)</code>）就是孔位，1~4 對應 EV3 的 1~4 號孔。</p>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">寫好了，下一步</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>設定模式</h2></div>
+        <div class="step-body">
+          <p class="why">陀螺儀有 7 種「模式」，每種模式送回 1～4 個數字。<code>Sensor.SetMode(孔, 模式)</code> 選一種。<b>一個程式只用一種模式</b>：EV3 每換一次模式要等約 0.5 秒。</p>
+          <p class="small">選一種模式（第 3 步選到別的模式的讀值，這裡會跟著換）：</p>
+          <div class="choice" id="modes" role="group" aria-label="模式"></div>
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2">設定好了，下一步</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>讀值、顯示在螢幕上</h2></div>
+        <div class="step-body">
+          <p class="why"><code>Sensor.ReadRawValue(孔, 第幾個)</code> 拿目前模式的第幾個數字（從 0 開始數），<code>LCD.Text</code> 把它寫在 EV3 螢幕上。EV3 螢幕只能顯示英文和數字，所以標籤用英文縮寫。點一個讀值，程式和螢幕會換成它的範例。</p>
+          <div id="picker" class="ref"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+          <div class="sim-box">
+            <style>.imu-btns { display: flex; flex-wrap: wrap; gap: 6px; } .imu-btns button { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; padding: 4px 12px; font-weight: 700; min-height: 36px; } .imu-btns button.zero { border-color: var(--accent); }</style>
+            <div class="sim-title">模擬感應器：左邊從上面看（航向），右邊從側面看（俯仰）。拖動拉桿、按按鈕，看右邊的輸出怎麼變</div>
+            <div class="sim">
+              <svg id="field" viewBox="0 0 460 200" role="img" aria-label="車子從上面看與從側面看的示意圖"></svg>
+              <div class="ctrl">
+                <label class="f" for="imu-hd"><span>車頭方向（用手把車子轉過去）：<b id="imu-hdv">0</b>° （往右轉是正）</span>
+                  <input autocomplete="off" type="range" id="imu-hd" min="-720" max="720" step="5" value="0">
+                </label>
+                <div class="imu-btns">
+                  <button type="button" id="imu-l90">↺ 左轉 90°</button>
+                  <button type="button" id="imu-r90">↻ 右轉 90°</button>
+                  <button type="button" id="imu-zero" class="zero">歸零（現在的方向變 0）</button>
+                </div>
+                <label class="f" for="imu-pt"><span>車頭抬高或壓低（俯仰）：<b id="imu-ptv">0</b>°</span>
+                  <input autocomplete="off" type="range" id="imu-pt" min="-90" max="90" step="1" value="0">
+                </label>
+                <div class="toggles">
+                  <label><input autocomplete="off" type="checkbox" id="imu-shake"> 搖晃車子（會有角速度）</label>
+                  <label><input autocomplete="off" type="checkbox" id="imu-drift"> 開很久了（陀螺累積誤差 6°）</label>
+                  <label><input autocomplete="off" type="checkbox" id="imu-magx"> 靠近馬達或鐵（磁場干擾）</label>
+                  <label><input autocomplete="off" type="checkbox" id="unplug"> 拔掉感應器</label>
+                </div>
+              </div>
+              <p class="note">模擬畫面是示意：數值用畫面上車子的方向和角度換算，不是感應器裡面的演算法。「歸零」按鈕 = 送 0x11 給感應器（陀螺儀歸零那張卡）；選那張卡的時候模擬器會先歸零一次（就像程式剛開始）。韌體版本 400 是示意值。</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">每個讀值的範例</h2>
+        <p class="ref-intro" id="refintro"></p>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="你的程式">
+      <div class="panel">
+        <div class="panel-head"><span>你的程式</span><button type="button" class="copy" id="copymain">複製程式</button></div>
+        <pre class="code" id="maincode" aria-live="polite"></pre>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>EV3 螢幕上看到的（每 0.1 秒更新）</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="ref" aria-labelledby="fullh">
+    <h2 id="fullh">完整範例</h2>
+    <div class="full">
+      <div class="panel" id="exp0">
+        <div class="panel-head"><span id="ext0"></span><button type="button" class="copy" data-copy="0">複製</button></div>
+        <pre class="code" id="ex0"></pre>
+        <p class="bubble"><i>!</i><span id="exb0"></span></p>
+      </div>
+      <div class="panel" id="exp1">
+        <div class="panel-head"><span id="ext1"></span><button type="button" class="copy" data-copy="1">複製</button></div>
+        <pre class="code" id="ex1"></pre>
+        <p class="bubble"><i>!</i><span id="exb1"></span></p>
+      </div>
+      <div class="panel" id="exp2">
+        <div class="panel-head"><span id="ext2"></span><button type="button" class="copy" data-copy="2">複製</button></div>
+        <pre class="code" id="ex2"></pre>
+        <p class="bubble"><i>!</i><span id="exb2"></span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">使用注意</h2>
+    <ol>
+      <li><b>拔線時讀到 0：</b>clev3r 讀不到感應器時 <code>Sensor.ReadRawValue</code> 回傳 0，程式不會停，所以「航向 0」也可能是沒接好。先用「感應器有接好嗎」那張卡（<code>Sensor.GetType</code> = 32）確認。</li>
+      <li><b>一個程式只用一種模式：</b>EV3 每換一次模式要等約 0.5 秒。轉彎用模式 0，上坡判斷用模式 6。</li>
+      <li><b>歸零：</b>送 0x11 給感應器（<code>Sensor.SendUARTData</code>）四個航向都歸零，跟 EV3-G「陀螺儀 重置」一樣；歸零那一下車子要靜止。右轉航向變大，轉一圈 = 360，會一直累加。</li>
+      <li><b>EV3 螢幕只能顯示英文和數字</b>，所以標籤用英文縮寫（ANGLE、FUSED、RATE、TILT…）。模式 2～6 要感應器韌體 v4.0 以上。</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function pyDiv10(n) { var x = n / 10; return Number.isInteger(x) ? x.toFixed(1) : String(x); }
+  function A(n) { return n; }
+  function copyText(text, btn) {
+    var done = function () { var o = btn.textContent; btn.textContent = '已複製'; setTimeout(function () { btn.textContent = o; }, 1400); };
+    try { navigator.clipboard.writeText(text).then(done, function () { fallback(text); }); } catch (e) { fallback(text); }
+    function fallback(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e2) { btn.textContent = '請手動選取複製'; }
+      document.body.removeChild(ta);
+    }
+  }
+  function plain(lines) { return lines.map(function (l) { return l.t; }).join('\n') + '\n'; }
+  function render(el, lines, opts) {
+    opts = opts || {};
+    el.innerHTML = lines.map(function (l, k) {
+      var cls = 'ln' + (l.hl ? ' hl' : '') + (l.isNew ? ' new' : '');
+      var tag = opts.noTag ? '' : '<span class="tag">' + (l.tag ? '<i>' + l.tag + '</i>' : '') + '</span>';
+      return '<span class="' + cls + '"><span class="no">' + (l.no || k + 1) + '</span>' + tag + '<span>' + (l.t ? HI(l.t) : ' ') + '</span></span>';
+    }).join('');
+  }
+  var KW = /^(from|import|while|True|False|None|if|else|elif|not|and|or|for|in|return|abs|print)$/;
+  function hiPy(line) {
+    var out = '', i = 0;
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest[0] === '#') { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if ((m = rest.match(/^("[^"]*"|'[^']*')/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (KW.test(w) && w !== 'abs' && w !== 'print') out += '<span class="tk-kw">' + w + '</span>';
+        else if (after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^\d+/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  var BKW = /^(While|EndWhile|If|Then|Else|ElseIf|EndIf|For|To|Step|EndFor|And|Or|folder)$/;
+  function hiBas(line) {
+    var out = '', i = 0;
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest[0] === "'") { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if ((m = rest.match(/^"[^"]*"/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)?/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (BKW.test(w)) out += '<span class="tk-kw">' + w + '</span>';
+        else if (after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^\d+/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  var miniPrev = {};
+  function drawMinis() {
+    var keep = S.step; S.step = 3; var full = programLines(); S.step = keep;
+    [1, 2, 3].forEach(function (k) {
+      var el = $('mini' + k); if (!el) return;
+      var lines = [];
+      full.forEach(function (l, i) { if (l.tag === k) lines.push({ t: l.t, no: i + 1 }); });
+      while (lines.length && !lines[0].t) lines.shift();
+      if (!lines.length) { el.innerHTML = ''; return; }
+      var txt = lines.map(function (l) { return l.no + l.t; }).join('\n');
+      var a = lines[0].no, z = lines[lines.length - 1].no;
+      el.innerHTML = '<span>' + (z !== a ? '這一步寫的程式（第 ' + a + '～' + z + ' 行）' : '這一步寫的程式（第 ' + a + ' 行）') + '</span><pre class="code"></pre>';
+      render(el.querySelector('pre'), lines, { noTag: true });
+      if (miniPrev[k] !== undefined && miniPrev[k] !== txt) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      miniPrev[k] = txt;
+    });
+  }
+  var lastKeys = '';
+  function drawMain() {
+    var keep = S.step; S.step = S.view; var L = programLines(); S.step = keep;
+    var keys = L.map(function (l) { return l.t; }), prev = lastKeys ? lastKeys.split('\n') : [];
+    L.forEach(function (l) { if (l.t && prev.indexOf(l.t) < 0 && lastKeys) l.isNew = true; });
+    lastKeys = keys.join('\n');
+    render($('maincode'), L);
+    var b = $('bubble'); b.querySelector('i').textContent = S.view; b.querySelector('span').textContent = bubble(S.view);
+    drawMinis();
+  }
+  function setStep(n) {
+    S.step = Math.max(S.step, n); S.view = n;
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    drawMain();
+  }
+  function drawPorts() {
+    var box = $('ports'); box.innerHTML = '';
+    [1, 2, 3, 4].forEach(function (p) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = PORTLAB(p);
+      b.setAttribute('aria-pressed', String(S.port === p)); b.setAttribute('aria-label', '孔 ' + p);
+      b.addEventListener('click', function () { S.port = p; drawPorts(); drawMain(); drawPicker(); drawCards(); tick(true); });
+      box.appendChild(b);
+    });
+    document.querySelectorAll('.portnum').forEach(function (e) { e.textContent = S.port; });
+  }
+  function drawPicker() {
+    var g = {}, order = []; LIST().forEach(function (f) { if (!g[f.grp]) { g[f.grp] = []; order.push(f.grp); } g[f.grp].push(f); });
+    var box = $('picker'); box.innerHTML = '';
+    order.forEach(function (k) {
+      var w = document.createElement('div'); w.className = 'fgroup'; w.innerHTML = '<span>' + k + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      g[k].forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = f.name;
+        b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      w.appendChild(chips); box.appendChild(w);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + f.name + '</b><span>' + f.what + '</span><span class="small">回傳：' + f.ret + (badge(f) ? '　｜　' + badge(f) : '') + '</span>';
+  }
+  function pick(id) { S.fn = id; setStep(3); drawPicker(); tick(true); }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    LIST().forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      c.innerHTML = '<div class="card-head"><h3>' + f.name + '</h3><span class="badges">' + (badge(f) ? '<span class="badge yes">' + badge(f) + '</span>' : '') + '</span></div>' +
+        '<p>' + f.what + '</p><dl class="meta"><dt>回傳</dt><dd>' + f.ret + '</dd><dt>範例</dt><dd>' + (f.once ? ONCE : INLOOP) + '</dd></dl>' +
+        '<pre class="code"></pre><p class="out">' + OUTLAB + '<code></code></p><button type="button" class="try">試試看</button>';
+      render(c.querySelector('pre'), cardLines(f).map(function (t) { return { t: t }; }), { noTag: true });
+      c.querySelector('.try').addEventListener('click', function () { pick(f.id); var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ block: 'start' }); });
+      box.appendChild(c);
+    });
+    $('refintro').textContent = REFINTRO.replace('{n}', LIST().length);
+  }
+  var EXC = {};
+  function drawExamples() {
+    var list = EXLIST();
+    [0, 1, 2].forEach(function (k) {
+      var e = list[k]; $('exp' + k).hidden = !e; if (!e) return;
+      EXC[k] = e.code; $('ext' + k).textContent = e.title; $('exb' + k).innerHTML = e.tip;
+      render($('ex' + k), e.code.map(function (t) { return { t: t }; }), { noTag: true });
+    });
+  }
+
+
+  var IMU = { base: 0, t: 0, cal: { acc: false, mag: false }, lastProg: null, fw: 400 };
+  var IMU_W = 2 * Math.PI / 1.7;
+  function imuRound(v) { return v >= 0 ? Math.floor(v + 0.5) : -Math.floor(-v + 0.5); }
+  function imuI16(v) { v = imuRound(v); return ((v + 32768) % 65536 + 65536) % 65536 - 32768; }
+  function imuWorld() {
+    var hd = Number($('imu-hd').value), pt = Number($('imu-pt').value), sh = $('imu-shake').checked, ph = IMU.t * IMU_W;
+    return {
+      hd: hd + (sh ? 8 * Math.sin(ph) : 0), slider: hd, pt: pt, sh: sh,
+      yawDps: sh ? 8 * IMU_W * Math.cos(ph) : 0,
+      xDps: sh ? 6 * IMU_W * Math.cos(ph + 1.1) : 0,
+      drift: $('imu-drift').checked, magx: $('imu-magx').checked
+    };
+  }
+
+  function imuVals() {
+    var w = imuWorld(), rel = w.hd - IMU.base, g = rel + (w.drift ? 6 : 0);
+    var p = w.pt * Math.PI / 180, th = w.hd * Math.PI / 180;
+    var yr = imuRound(w.yawDps * 10), xr = imuRound(w.xDps * 10);
+    var flags = 1 | (w.sh ? 0 : 2) | 4 | (IMU.cal.acc ? 16 : 0) | (IMU.cal.mag ? 32 : 0) | 64 | 128;
+    return {
+      h3d: imuI16(g),
+      fused: imuI16(w.magx ? g : rel),
+      h1d: imuI16(g),
+      mag: imuI16(rel + (w.magx ? 35 : 0)),
+      yawRate: yr,
+      pitch: imuRound(w.pt),
+      pitchRate: xr,
+      trust: w.magx ? 0 : 230, disturb: w.magx ? 255 : 4,
+      upFace: w.pt > 45 ? 0 : w.pt < -45 ? 3 : 2,
+      gx: xr, gy: 0, gz: -yr,
+      ax: imuRound(1000 * Math.sin(p)), ay: 0, az: imuRound(1000 * Math.cos(p)),
+      mx: imuRound(350 * Math.cos(th)) + (w.magx ? 400 : 0), my: imuRound(-350 * Math.sin(th)), mz: -300,
+      flags: flags, devId: 362, proto: 2, fw: IMU.fw
+    };
+  }
+
+  function imuZero() { IMU.base = imuWorld().hd; $('imu-drift').checked = false; }
+  function imuStep() { IMU.t += 0.6; }
+
+  function imuProgram(id, zeroAtStart) { if (IMU.lastProg !== id) { IMU.lastProg = id; if (zeroAtStart) imuZero(); } }
+  function imuDraw(v, unplug, info) {
+    var w = imuWorld(), ir = getComputedStyle(document.documentElement).getPropertyValue('--ir').trim() || '#e04a3b';
+    var cx = 112, cy = 112, r = 62;
+    var h = '<rect x="0" y="0" width="460" height="200" fill="#f7f7f2"/>';
+    h += '<text x="' + cx + '" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="#3d4a47">從上面看（航向）</text>';
+    h += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#cfd6d3" stroke-width="2" stroke-dasharray="5 5"/>';
+
+    var b = IMU.base * Math.PI / 180;
+    h += '<line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + Math.sin(b) * (r + 8)).toFixed(1) + '" y2="' + (cy - Math.cos(b) * (r + 8)).toFixed(1) + '" stroke="#8a9a96" stroke-width="2" stroke-dasharray="4 3"/>';
+    h += '<text x="' + (cx + Math.sin(b) * (r + 18)).toFixed(1) + '" y="' + (cy - Math.cos(b) * (r + 18) + 4).toFixed(1) + '" text-anchor="middle" font-size="11" fill="#6b7875">0°</text>';
+    if (w.magx) h += '<rect x="8" y="150" width="40" height="22" rx="4" fill="#b03a2e"/><text x="28" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">磁鐵</text>';
+    h += '<g transform="rotate(' + w.hd.toFixed(1) + ' ' + cx + ' ' + cy + ')">';
+    h += '<rect x="' + (cx - 20) + '" y="' + (cy - 30) + '" width="40" height="60" rx="7" fill="#1b2422"/>';
+    h += '<polygon points="' + cx + ',' + (cy - 44) + ' ' + (cx - 12) + ',' + (cy - 30) + ' ' + (cx + 12) + ',' + (cy - 30) + '" fill="' + ir + '"/>';
+    h += '<rect x="' + (cx - 27) + '" y="' + (cy - 18) + '" width="7" height="22" rx="2" fill="#5b6b67"/><rect x="' + (cx + 20) + '" y="' + (cy - 18) + '" width="7" height="22" rx="2" fill="#5b6b67"/>';
+    h += '<rect x="' + (cx - 9) + '" y="' + (cy - 6) + '" width="18" height="18" rx="3" fill="' + (unplug ? '#7d918c' : '#2f9e8f') + '"/>';
+    h += '</g>';
+    if (w.sh) h += '<text x="' + (cx + 58) + '" y="40" text-anchor="start" font-size="11" fill="' + ir + '">～ 搖晃中</text>';
+
+    var sx = 345, sy = 132;
+    h += '<text x="' + sx + '" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="#3d4a47">從側面看（俯仰）</text>';
+    h += '<line x1="245" y1="' + (sy + 22) + '" x2="450" y2="' + (sy + 22) + '" stroke="#b7c0bd" stroke-width="2"/>';
+    h += '<g transform="rotate(' + (-w.pt) + ' ' + sx + ' ' + sy + ')">';
+    h += '<rect x="' + (sx - 46) + '" y="' + (sy - 14) + '" width="92" height="26" rx="6" fill="#1b2422"/>';
+    h += '<circle cx="' + (sx - 28) + '" cy="' + (sy + 14) + '" r="9" fill="#5b6b67"/><circle cx="' + (sx + 28) + '" cy="' + (sy + 14) + '" r="9" fill="#5b6b67"/>';
+    h += '<rect x="' + (sx - 9) + '" y="' + (sy - 22) + '" width="18" height="8" rx="2" fill="' + (unplug ? '#7d918c' : '#2f9e8f') + '"/>';
+    h += '<line x1="' + (sx + 10) + '" y1="' + (sy - 18) + '" x2="' + (sx + 64) + '" y2="' + (sy - 18) + '" stroke="' + ir + '" stroke-width="2.5"/>';
+    h += '<polygon points="' + (sx + 70) + ',' + (sy - 18) + ' ' + (sx + 61) + ',' + (sy - 23) + ' ' + (sx + 61) + ',' + (sy - 13) + '" fill="' + ir + '"/>';
+    h += '<text x="' + (sx + 66) + '" y="' + (sy - 26) + '" font-size="11" font-weight="700" fill="' + ir + '">X</text>';
+    h += '</g>';
+    h += '<text x="446" y="' + (sy + 16) + '" text-anchor="end" font-size="11" fill="#6b7875">車頭 →</text>';
+    if (info) {
+      info.forEach(function (t, i) { h += '<text x="' + (i < 2 ? 14 : 446) + '" y="' + (i % 2 ? 196 : 180) + '" text-anchor="' + (i < 2 ? 'start' : 'end') + '" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#16201e">' + t + '</text>'; });
+    }
+    if (unplug) h += '<text x="230" y="64" text-anchor="middle" font-size="15" font-weight="700" fill="' + ir + '" stroke="#fff" stroke-width="4" paint-order="stroke">' + (typeof IMU_UNPLUG_TXT === 'function' ? IMU_UNPLUG_TXT() : '感應器拔掉了') + '</text>';
+    $('field').innerHTML = h;
+    $('imu-hdv').textContent = $('imu-hd').value; $('imu-ptv').textContent = $('imu-pt').value;
+  }
+
+  function imuBind(changed, skipInputs) {
+    function nudge(d) { var e = $('imu-hd'); e.value = Math.max(-720, Math.min(720, Number(e.value) + d)); changed(); }
+    $('imu-l90').addEventListener('click', function () { nudge(-90); });
+    $('imu-r90').addEventListener('click', function () { nudge(90); });
+    $('imu-zero').addEventListener('click', function () { imuZero(); changed(); });
+    if (!skipInputs) ['imu-hd', 'imu-pt', 'imu-shake', 'imu-drift', 'imu-magx'].forEach(function (id) { $(id).addEventListener('input', changed); });
+  }
+
+  var S = { port: 1, step: 1, view: 1, fn: 'h3d', mode: 0 };
+  function HI(l) { return hiBas(l); }
+  function PORTLAB(p) { return String(p); }
+  var MODE_NAMES = {"0":"GYRO-ANG","1":"GYRO-RATE","2":"GYRO-FAS","3":"GYRO-G&A","4":"GYRO-CAL","5":"TILT-RATE","6":"TILT-ANG"};
+  var READS = [{ "id": "h3d", "mode": 0, "idx": 0, "grp": "航向（轉了幾度）", "name": "陀螺 3D 航向", "ret": "-32768 ~ 32767 度（開機／歸零 = 0，右轉變大）", "lab": "ANGLE", "what": "機器人轉了幾度，最推薦先用這個（EV3-G、Classroom 的陀螺儀「角度」就是它）：感應器自己判斷怎麼裝的，斜著裝也算得對。右轉變大、左轉變小，轉一圈 = 360，會一直累加。", out: function (v) { return '3D 航向: ' + v.h3d; }, val: function (v) { return v.h3d; }, "cl": ["h3d = Sensor.ReadRawValue({p}, 0)","LCD.Text(1, 0, 0, 1, \"ANGLE \" + h3d + \"      \")"] },
+    { "id": "fused", "mode": 1, "idx": 0, "grp": "航向（轉了幾度）", "name": "融合航向", "ret": "-32768 ~ 32767 度（開機／歸零 = 0，右轉變大）", "lab": "FUSED", "what": "陀螺 3D 航向再用磁力計慢慢修正，開很久也不會飄走（EV3-G、Classroom 的陀螺儀「速率」讀到的就是它，<b>不是</b>每秒幾度）。附近有馬達、鐵製場地時修正會自動停掉。勾「開很久了」看 3D 航向多了 6 度、融合航向沒有。", out: function (v) { return '融合航向: ' + v.fused; }, val: function (v) { return v.fused; }, "cl": ["fused = Sensor.ReadRawValue({p}, 0)","LCD.Text(1, 0, 0, 1, \"FUSED \" + fused + \"      \")"] },
+    { "id": "h1d", "mode": 3, "idx": 0, "grp": "航向（轉了幾度）", "name": "陀螺 1D 航向", "ret": "-32768 ~ 32767 度（開機／歸零 = 0，右轉變大）", "lab": "G1D", "what": "只算轉向軸的傳統陀螺航向，平地上跟 3D 航向幾乎一樣。模式 3 一次送回 2 個數：[0] 陀螺 1D、[1] 磁力航向。", out: function (v) { return '1D 航向: ' + v.h1d; }, val: function (v) { return v.h1d; }, "cl": ["h1d = Sensor.ReadRawValue({p}, 0)","LCD.Text(1, 0, 0, 1, \"G1D \" + h1d + \"      \")"] },
+    { "id": "mag", "mode": 3, "idx": 1, "grp": "航向（轉了幾度）", "name": "磁力航向", "ret": "-32768 ~ 32767 度（開機／歸零 = 0，右轉變大）", "lab": "MAG", "what": "只用磁力計算的航向，相對值（歸零時 = 0，不是指北）。不會累積誤差，但很怕磁場干擾。勾「靠近馬達或鐵」看它偏掉。", out: function (v) { return '磁力航向: ' + v.mag; }, val: function (v) { return v.mag; }, "cl": ["mag = Sensor.ReadRawValue({p}, 1)","LCD.Text(1, 0, 0, 1, \"MAG \" + mag + \"      \")"] },
+    { "id": "both3", "mode": 3, "idx": null, "grp": "航向（轉了幾度）", "name": "模式 3 兩個一起讀", "ret": "2 個數：[陀螺 1D, 磁力航向]", "lab": null, "what": "一次讀回模式 3 的 2 個數，再用 [0]、[1] 拿出來，比讀兩次快，也保證是同一瞬間的資料。", out: function (v) { return '1D: ' + v.h1d + ' MAG: ' + v.mag; }, "cl": ["g1d = Sensor.ReadRawValue({p}, 0)","mag = Sensor.ReadRawValue({p}, 1)","LCD.Text(1, 0, 0, 1, \"G1D \" + g1d + \"      \")","LCD.Text(1, 0, 16, 1, \"MAG \" + mag + \"      \")"], clOut: function (v, A) { return ['G1D ' + A(v.h1d), 'MAG ' + A(v.mag)]; } },
+    { "id": "yawRate", "mode": 2, "idx": 0, "grp": "角速度與傾斜", "name": "轉向角速度", "ret": "每秒幾度 × 10（右轉為正）", "lab": "RATE", "what": "現在轉得多快：每秒幾度 × 10，右轉是正、左轉是負。除以 10 就是每秒幾度（900 = 每秒 90 度）。勾「搖晃車子」試試看。", out: function (v) { return '每秒幾度: ' + pyDiv10(v.yawRate); }, val: function (v) { return v.yawRate; }, "cl": ["yawRate = Sensor.ReadRawValue({p}, 0)","LCD.Text(1, 0, 0, 1, \"RATE \" + yawRate + \"      \")"] },
+    { "id": "pitch", "mode": 6, "idx": 0, "grp": "角速度與傾斜", "name": "俯仰角", "ret": "-90 ~ +90 度（平放 = 0）", "lab": "TILT", "what": "板子絲印 X 軸抬高幾度：X 軸朝上 +90、朝下 -90、平放 0。X 軸裝成跟車頭同方向，就是「車頭抬高幾度」。", out: function (v) { return '俯仰角: ' + v.pitch; }, val: function (v) { return v.pitch; }, "cl": ["pitch = Sensor.ReadRawValue({p}, 0)","LCD.Text(1, 0, 0, 1, \"TILT \" + pitch + \"      \")"] },
+    { "id": "pitchRate", "mode": 5, "idx": 0, "grp": "角速度與傾斜", "name": "俯仰角速度", "ret": "每秒幾度 × 10", "lab": "TRATE", "what": "繞板子絲印 X 軸轉得多快（每秒幾度 × 10，從 X 軸前端看逆時針為正）。注意：它是 X 軸的陀螺值，不是俯仰角變多快。", out: function (v) { return '俯仰角速度: ' + v.pitchRate; }, val: function (v) { return v.pitchRate; }, "cl": ["pitchRate = Sensor.ReadRawValue({p}, 0)","LCD.Text(1, 0, 0, 1, \"TRATE \" + pitchRate + \"      \")"] },
+    { "id": "devId", "mode": 4, "idx": null, "grp": "感應器資訊", "once": true, "name": "裝置 ID 與韌體版本", "ret": "4 個數：[362, 韌體, 0, 0]", "lab": null, "what": "模式 4 送回 4 個數：[0] 裝置 ID（低 8 位元 = 出廠 I2C 位址 0x6A、高 8 位元 = 1 = IMU，所以是 362）、[1] 韌體版本（主版 × 100 ＋ 次版，例 400 = v4.0）、後兩個是 0。模式 2～6 要韌體 v4.0 以上。讀一次就好。", out: function (v) { return 'ID: ' + v.devId + ' FW: ' + v.fw; }, "cl": ["id = Sensor.ReadRawValue({p}, 0)","fw = Sensor.ReadRawValue({p}, 1)","LCD.Text(1, 0, 0, 1, \"ID \" + id + \"      \")","LCD.Text(1, 0, 16, 1, \"FW \" + fw + \"      \")"], clOut: function (v, A) { return ['ID ' + A(v.devId), 'FW ' + A(v.fw)]; } },
+    { "id": "zero", "mode": 0, "idx": 0, "grp": "歸零", "once": true, "name": "陀螺儀歸零（送 0x11）", "ret": "四個航向都變 0", "lab": "ANGLE", val: function (v) { return v.h3d; }, "what": "送 0x11 給感應器，四個航向都歸零（跟 EV3-G「陀螺儀 重置」一樣），寫法照網站 EV3 新手範例：先把 17（= 0x11）放進陣列，再用 <code>Sensor.SendUARTData</code> 送出。放在迴圈前面，開始時做一次；那一下車子要靜止。選這張卡等於重新執行程式，模擬器會先歸零一次。", "cl": ["gyroReset[0] = 17","Sensor.SendUARTData({p}, 1, gyroReset)","Program.Delay(100)","While \"True\"","  LCD.Text(1, 0, 0, 1, \"ANGLE \" + Sensor.ReadRawValue({p}, 0) + \"      \")","  Program.Delay(100)","EndWhile"], "tip": "第 3 步：gyroReset[0] = 17 把 0x11 放進陣列，SendUARTData 送給感應器（四個航向都歸零），之後的迴圈顯示 3D 航向。", clOut: function (v, A) { return ['ANGLE ' + A(v.h3d)]; } },
+    { "id": "type", "mode": null, "idx": null, "grp": "感應器資訊", "once": true, "name": "感應器有接好嗎", "ret": "\"SENSOR OK\" 或 \"NO SENSOR\"", "lab": null, "what": "用 <code>Sensor.GetType</code> 看孔上是不是陀螺儀：接好時類型是 32（EV3 原廠陀螺儀）。拔掉時類型就變了，螢幕顯示 NO SENSOR。到右邊勾「拔掉感應器」試試看。", "cl": ["If Sensor.GetType({p}) = 32 Then","  LCD.Text(1, 0, 0, 1, \"SENSOR OK     \")","Else","  LCD.Text(1, 0, 0, 1, \"NO SENSOR     \")","EndIf"], "tip": "第 3 步：Sensor.GetType 回傳孔上感應器的類型編號；陀螺儀接好時是 32，拔掉就不是。這個讀法不用換模式。" }];
+  var BY = {}; READS.forEach(function (f) { BY[f.id] = f; });
+  function LIST() { return READS; }
+  var ONCE = '讀一次，不用迴圈', INLOOP = '放在 While 迴圈裡', OUTLAB = 'EV3 螢幕上會顯示：';
+  var REFINTRO = '{n} 個範例，每個都含設定模式那一行。按「試試看」會切到第 3 步，右邊的程式和 EV3 螢幕會換成這個範例。';
+  var EXS = [{"title":"原地右轉 90 度（陀螺儀 1 號孔、左輪 B、右輪 C）","code":["folder \"prjs\" \"MBC_imu_turn\"","Sensor.SetMode(1, 0)","gyroReset[0] = 17","Sensor.SendUARTData(1, 1, gyroReset)","Program.Delay(100)","Motor.StartPower(\"B\", 20)","Motor.StartPower(\"C\", -20)","While Sensor.ReadRawValue(1, 0) < 88","  Program.Delay(10)","EndWhile","Motor.Stop(\"BC\", \"True\")","LCD.Clear()","LCD.Text(1, 0, 0, 1, \"ANGLE \" + Sensor.ReadRawValue(1, 0))","Program.Delay(2000)"],"tip":"先送 0x11 歸零，再原地右轉，航向到 88 度（留 2 度給煞車）就停。"},{"title":"上坡就減速（俯仰角，模式 6）","code":["folder \"prjs\" \"MBC_imu_slope\"","Sensor.SetMode(1, 6)","LCD.Clear()","While \"True\"","  tilt = Sensor.ReadRawValue(1, 0)","  LCD.Text(1, 0, 0, 1, \"TILT \" + tilt + \"      \")","  If Math.Abs(tilt) > 8 Then","    Motor.StartPower(\"B\", 20)","    Motor.StartPower(\"C\", 20)","  Else","    Motor.StartPower(\"B\", 50)","    Motor.StartPower(\"C\", 50)","  EndIf","  Program.Delay(20)","EndWhile"],"tip":"照網站 EV3 新手範例 6：平地用 50 跑，坡度超過 8 度放慢到 20。"},{"title":"轉太快就嗶一聲（轉向角速度，模式 2）","code":["folder \"prjs\" \"MBC_imu_rate\"","Sensor.SetMode(1, 2)","LCD.Clear()","While \"True\"","  rate = Sensor.ReadRawValue(1, 0)","  LCD.Text(1, 0, 0, 1, \"RATE \" + rate + \"      \")","  If Math.Abs(rate) > 900 Then","    Speaker.Tone(100, 880, 100)","  EndIf","  Program.Delay(100)","EndWhile"],"tip":"角速度是每秒幾度 × 10，900 = 每秒 90 度。"}];
+  function EXLIST() { return EXS; }
+  function badge(f) { return f.mode === null || f.mode === undefined ? '任何模式' : '模式 ' + f.mode; }
+  function clLines(f, p) { return f.cl.map(function (t) { return t.split('{p}').join(p); }); }
+  function cardLines(f) {
+    var pre = f.mode === null || f.mode === undefined ? [] : ['Sensor.SetMode(1, ' + f.mode + ')'];
+    var b = clLines(f, 1);
+    if (f.once) return pre.concat(b);
+    return pre.concat(['While "True"'], b.map(function (t) { return '  ' + t; }), ['  Program.Delay(100)', 'EndWhile']);
+  }
+  function curMode() { var f = BY[S.fn]; return f.mode === null || f.mode === undefined ? S.mode : f.mode; }
+  function programLines() {
+    var p = S.port, L = [], f = BY[S.fn], m = curMode(), s1 = S.step === 1, s2 = S.step === 2, s3 = S.step === 3;
+    L.push({ t: "' 程式放在 EV3 的這個資料夾", tag: 1, hl: s1 });
+    L.push({ t: 'folder "prjs" "MBC_imu"', tag: 1, hl: s1 });
+    L.push({ t: 'LCD.Clear()', tag: 1, hl: s1 });
+    if (S.step >= 2) {
+      L.push({ t: '' });
+      L.push({ t: "' 陀螺儀插 " + p + " 號孔，使用模式 " + m, tag: 2, hl: s2 });
+      L.push({ t: 'Sensor.SetMode(' + p + ', ' + m + ')', tag: 2, hl: s2 });
+    }
+    if (S.step >= 3) {
+      L.push({ t: '' });
+      var b = clLines(f, p);
+      if (f.once) b.forEach(function (t) { L.push({ t: t, tag: 3, hl: s3 }); });
+      else ['While "True"'].concat(b.map(function (t) { return '  ' + t; }), ['  Program.Delay(100)', 'EndWhile']).forEach(function (t) { L.push({ t: t, tag: 3, hl: s3 }); });
+    }
+    return L;
+  }
+  function bubble(k) {
+    var f = BY[S.fn];
+    if (k === 1) return '第 1 步：folder 那行決定程式在 EV3 上的資料夾名稱；LCD.Clear() 先把螢幕清乾淨。';
+    if (k === 2) return '第 2 步：Sensor.SetMode(' + S.port + ', ' + curMode() + ') 把陀螺儀切到模式 ' + curMode() + '。SetMode 會等模式換好才往下跑。';
+    return f.tip || ('第 3 步：ReadRawValue(' + S.port + ', ' + (f.idx || 0) + ') 拿目前模式的第 ' + ((f.idx || 0) + 1) + ' 個數字，LCD.Text 寫在螢幕上，Program.Delay(100) 等 0.1 秒。');
+  }
+  function drawModes() {
+    var box = $('modes'); box.innerHTML = '';
+    [0, 1, 2, 3, 4, 5, 6].forEach(function (m) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'opt';
+      b.innerHTML = '<b>模式 ' + m + '（' + MODE_NAMES[m] + '）</b><small>' + MODE_DESC[m] + '</small>';
+      b.setAttribute('aria-pressed', String(curMode() === m));
+      b.addEventListener('click', function () { S.mode = m; var f = BY[S.fn]; if (f.mode !== null && f.mode !== undefined && f.mode !== m) { for (var i = 0; i < READS.length; i++) if (READS[i].mode === m) { S.fn = READS[i].id; break; } } drawModes(); drawPicker(); drawMain(); tick(true); });
+      box.appendChild(b);
+    });
+  }
+  var MODE_DESC = ['陀螺 3D 航向', '融合航向', '轉向角速度', '陀螺 1D 航向、磁力航向', '裝置 ID、韌體版本', '俯仰角速度', '俯仰角'];
+  function screen(f, v, unplug) {
+    if (f.id === 'type') return [unplug ? 'NO SENSOR' : 'SENSOR OK'];
+    var A = function (n) { return unplug ? 0 : n; };
+    if (f.clOut) return f.clOut(v, A);
+    return [f.lab + ' ' + A(f.val(v))];
+  }
+  function state() { var v = imuVals(); return { v: v, unplug: $('unplug').checked }; }
+  function updateCardOutputs(st) { READS.forEach(function (f) { var el = document.querySelector('#fn-' + f.id + ' .out code'); if (el) el.textContent = screen(f, st.v, st.unplug).join(' / '); }); }
+  function IMU_UNPLUG_TXT() { return '感應器拔掉了：讀到的數字都是 0'; }
+  function tick(reset) {
+    if (S.step >= 3 && IMU.lastProg !== S.fn) { imuProgram(S.fn, S.fn === 'zero' && !$('unplug').checked); }
+    var st = state(), f = BY[S.fn];
+    imuDraw(st.v, st.unplug, st.unplug ? [] : ['ANGLE ' + st.v.h3d, 'RATE ' + st.v.yawRate, 'TILT ' + st.v.pitch, 'TRATE ' + st.v.pitchRate]);
+    updateCardOutputs(st);
+    var lines = S.step < 3 ? ['（做完第 3 步，這裡會出現 EV3 螢幕上的字）'] : screen(f, st.v, st.unplug);
+    $('console').innerHTML = lines.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('\n');
+  }
+  $('next1').addEventListener('click', function () { setStep(2); drawModes(); });
+  $('next2').addEventListener('click', function () { setStep(3); drawPicker(); tick(true); });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) { $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } }); });
+  $('copymain').addEventListener('click', function (e) { copyText(plain(programLines()).replace(/\n/g, '\r\n'), e.currentTarget); });
+  document.querySelectorAll('[data-copy]').forEach(function (b) { b.addEventListener('click', function () { copyText(EXC[b.getAttribute('data-copy')].join('\r\n') + '\r\n', b); }); });
+  $('unplug').addEventListener('input', function () { tick(false); });
+  imuBind(function () { tick(false); });
+  var _pick = pick; pick = function (id) { _pick(id); drawModes(); };
+  drawPorts(); drawModes(); drawPicker(); drawCards(); drawExamples(); setStep(1); tick(true);
+  setInterval(function () { imuStep(); tick(false); }, 600);
+
+})();
+</script>
+<script>
+(function () {
+  var side = document.querySelector('.side'); if (!side) return;
+  var mq = window.matchMedia('(max-width: 900px)');
+  var home = side.parentNode, homeNext = side.nextSibling;
+  var con = document.getElementById('console'), conP = con && con.closest('.panel');
+  if (conP && conP.parentNode !== side) conP = null;
+  var last = null, ready = false;
+  var STOP = '.step-body, .cards, .ref, .steps, .main, .wrap, body';
+  function anchorOf(el) { var a = el; while (a && a.parentElement && !a.parentElement.matches(STOP)) a = a.parentElement; return a && a.parentElement ? a : null; }
+  function flash(el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  // 把 box 搬到 a 那一塊的後面；a 在畫面上的位置維持不動（點下去時就記住 a：頁面常在點擊後重畫按鈕，按鈕本身會被換掉）
+  function moveAfter(box, a) {
+    if (!a || !a.isConnected || a === box || a.contains(box)) return false;
+    if (a.nextElementSibling === box) return true;
+    var y = a.getBoundingClientRect().top;
+    a.parentNode.insertBefore(box, a.nextSibling); box.classList.add('follow');
+    var d = a.getBoundingClientRect().top - y; if (d) window.scrollBy(0, d);
+    return true;
+  }
+  function inPanel(el) { return side.contains(el) || (conP && conP.contains(el)); }
+  function placeSide(a, scroll) {
+    if (!mq.matches || !a) return;
+    if (conP && conP.parentNode !== side) { conP.classList.remove('follow'); side.appendChild(conP); }
+    if (!moveAfter(side, a)) return;
+    if (scroll) { var r = side.getBoundingClientRect(); if (r.top > window.innerHeight * 0.7) window.scrollBy({ top: r.top - window.innerHeight * 0.3, behavior: 'smooth' }); }
+  }
+  function placeConsole(el) {
+    if (!mq.matches || !conP || inPanel(el)) return;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在「正在操作的那一排」正下方（排＝控制區的直接子元素），
+    // 畫面、那一排、輸出同一屏；控制區很長或那一排在最下面（例如拔線勾選）都不會跑出畫面
+    var sim = el.closest('.sim'), ctrl = null, row = null;
+    if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (ctrl && ctrl !== el) for (var j = 0; j < ctrl.children.length; j++) if (ctrl.children[j].contains(el)) row = ctrl.children[j];
+    if (sim && ctrl) {
+      var box = row ? ctrl : sim, after = row || null;
+      if (after ? after.nextElementSibling === conP : conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var y = el.getBoundingClientRect().top;
+      if (after) box.insertBefore(conP, after.nextSibling); else sim.insertBefore(conP, ctrl);
+      conP.classList.add('follow');
+      var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
+      return;
+    }
+    var a = anchorOf(el); if (a && a.nextElementSibling === side) return; // 程式那格已經緊接在下面，輸出就在它裡面
+    moveAfter(conP, a);
+  }
+  function reset() {
+    if (mq.matches) { var b = document.querySelector('#step1 .step-body button') || document.querySelector('#step1 button'); if (b) placeSide(anchorOf(b), false); return; }
+    if (conP) { conP.classList.remove('follow'); side.appendChild(conP); }
+    side.classList.remove('follow'); home.insertBefore(side, homeNext);
+  }
+  function remember(e) { if (!inPanel(e.target)) last = anchorOf(e.target); }
+  document.addEventListener('pointerdown', remember, true);
+  document.addEventListener('focusin', remember, true);
+  var mo = new MutationObserver(function () { if (ready && mq.matches) { placeSide(last, true); flash(side); } });
+  ['maincode', 'mainblocks'].forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true }); });
+  function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
+  document.addEventListener('input', sim, true);
+  document.addEventListener('change', sim, true);
+  // 模擬器裡的按鈕（掌控者按鍵、色點調色盤…）也算在操作模擬器
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.sim button'); if (b) placeConsole(b); }, true);
+  reset(); setTimeout(function () { ready = true; }, 800);
+  if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
+})();
+</script>
+</body>
+</html>

@@ -25,7 +25,7 @@ Code assumes port 1 and reads raw modes with `LUMPDevice`; EV3 MicroPython v2 wo
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~120` cm | smallest of the 8 distances, 0~120 cm (a failed sensor counts as 120); 120 = nothing around |
+| `0~120` cm (EV3 mode 2 gives a scaled value: cm×100/120 (0~100)) | smallest of the 8 distances, 0~120 cm (a failed sensor counts as 120); 120 = nothing around |
 
 ```python
 from pybricks.iodevices import LUMPDevice
@@ -33,7 +33,7 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # sensor on port 1
 
-nearCm = sensor.read(2)[1]   # nearest distance (cm)：0~120 cm
+nearCm = sensor.read(2)[1]   # nearest distance (cm)：cm×100/120 (0~100)
 ```
 
 <p class="ref-note">mode 2 · int8 · IR-REMOTE [最近方向−8, 最近', 最空曠方向−8, 最空曠']（INO:154-159） (locked mode: firmware and hosts will not change it)</p>
@@ -72,7 +72,7 @@ nearDir = sensor.read(5)[1]   # nearest direction：-8~+8
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~120` cm | largest of the 8 distances, 0~120 cm (a failed sensor always reads 120 and looks 'farthest') |
+| `0~120` cm (EV3 mode 2 gives a scaled value: cm×100/120 (0~100)) | largest of the 8 distances, 0~120 cm (a failed sensor always reads 120 and looks 'farthest') |
 
 ```python
 from pybricks.iodevices import LUMPDevice
@@ -80,7 +80,7 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # sensor on port 1
 
-farCm = sensor.read(2)[3]   # farthest distance (cm)：0~120 cm
+farCm = sensor.read(2)[3]   # farthest distance (cm)：cm×100/120 (0~100)
 ```
 
 <p class="ref-note">mode 2 · int8 (locked mode: firmware and hosts will not change it)</p>
@@ -118,7 +118,7 @@ farDir = sensor.read(2)[2]   # farthest direction：-7~+7
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~120` cm | average of sensors 4 and 5 (both facing forward), 0~120 cm; EV3 mode 3 and SPIKE mode 6 carry the same thing in mm; 0x22 'C' is min(4, 5), not the average (see 10) |
+| `0~120` cm (EV3 mode 0 gives a scaled value: cm×100/120 (0~100)) | average of sensors 4 and 5 (both facing forward), 0~120 cm; EV3 mode 3 and SPIKE mode 6 carry the same thing in mm; 0x22 'C' is min(4, 5), not the average (see 10) |
 
 ```python
 from pybricks.iodevices import LUMPDevice
@@ -126,7 +126,7 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # sensor on port 1
 
-frontCm = sensor.read(0)[0]   # front distance (cm)：0~120 cm
+frontCm = sensor.read(0)[0]   # front distance (cm)：cm×100/120 (0~100)
 ```
 
 <p class="ref-note">mode 0 · int8 · IR-PROX = (第 4'+第 5')>>1（鎖住，INO:148-150） (locked mode: firmware and hosts will not change it)</p>
@@ -164,7 +164,7 @@ nearMm = sensor.read(5)[0]   # nearest distance (mm)：0~1200 mm
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~1200` mm | average of sensors 4 and 5 (the two facing forward), 0~1200 mm; 1200 = nothing ahead. cm version is 05 |
+| `0~1200` mm (EV3 mode 3 gives a scaled value: mm (0~1200)) | average of sensors 4 and 5 (the two facing forward), 0~1200 mm; 1200 = nothing ahead. cm version is 05 |
 
 ```python
 from pybricks.iodevices import LUMPDevice
@@ -172,7 +172,7 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # sensor on port 1
 
-frontMm = sensor.read(3)[0]   # front distance (mm)：0~1200 mm
+frontMm = sensor.read(3)[0]   # front distance (mm)：mm (0~1200)
 ```
 
 <p class="ref-note">mode 3 · int16 · #67 新：IR-REM-A 1×int16 = 正前方（第 4、5 顆平均）mm（原本 = 第 1 顆 0~100）</p>
@@ -187,7 +187,7 @@ frontMm = sensor.read(3)[0]   # front distance (mm)：0~1200 mm
 
 | Range | Meaning |
 | :--- | :--- |
-| `0~120` cm | distance of each sensor 1~8, 0~120 cm (1 = far left, 4 and 5 = front, 8 = far right, 30° apart); 120 = nothing that way / sensor failed; ids 10~17 |
+| `0~120` cm (EV3 mode 1, mode 4 give a scaled value: cm×100/120 (0~100)) | distance of each sensor 1~8, 0~120 cm (1 = far left, 4 and 5 = front, 8 = far right, 30° apart); 120 = nothing that way / sensor failed; ids 10~17 |
 
 ```python
 from pybricks.iodevices import LUMPDevice

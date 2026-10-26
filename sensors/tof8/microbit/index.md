@@ -10,7 +10,7 @@
 
 ## 要買哪個版本
 
-買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `0x29`。感應器要 5 V 供電，micro:bit 本身只有 3.3 V，請用有 5 V 輸出的擴充板。
+買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `0x29`。**一定要外接 5 V 供電**（8 顆雷射同時量測，電流超過 micro:bit 3V 腳能給的），不能吃 micro:bit 的 3V 腳；外部電源的 GND 要和 micro:bit 共地。
 
 ## 怎麼接
 

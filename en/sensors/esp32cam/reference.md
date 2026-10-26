@@ -137,12 +137,18 @@ Block returns hue（-1~100）。Host sends `[01]` → reply `[lo][hi][01 ^ lo ^ 
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC hue :: #E8711E)</pre>
+<pre class="blocks">(camera colour [hue v] :: #00A4E4)</pre>
 
 ```typescript
-let hue = MBC.readValue(0x4C, 0x01)   // hue：-1~100
+let hue = mbc.camColor(MbcCamColor.Hue)   // hue：-1~100
+```
+
+**Related block "camera colour is black / white / grey"**
+
+```typescript
+let camIsGrey = mbc.camIsGrey()
 ```
 
 </details>
@@ -242,12 +248,12 @@ Block returns saturation（0~100）。Host sends `[02]` → reply `[lo][hi][02 ^
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC saturation :: #E8711E)</pre>
+<pre class="blocks">(camera colour [saturation v] :: #00A4E4)</pre>
 
 ```typescript
-let saturation = MBC.readValue(0x4C, 0x02)   // saturation：0~100
+let saturation = mbc.camColor(MbcCamColor.Saturation)   // saturation：0~100
 ```
 
 </details>
@@ -344,12 +350,12 @@ Block returns brightness（0~100）。Host sends `[03]` → reply `[lo][hi][03 ^
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC brightness :: #E8711E)</pre>
+<pre class="blocks">(camera colour [brightness v] :: #00A4E4)</pre>
 
 ```typescript
-let value = MBC.readValue(0x4C, 0x03)   // brightness：0~100
+let value = mbc.camColor(MbcCamColor.Brightness)   // brightness：0~100
 ```
 
 </details>
@@ -446,12 +452,12 @@ Block returns motion（0~100）。Host sends `[04]` → reply `[lo][hi][04 ^ lo 
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC motion :: #E8711E)</pre>
+<pre class="blocks">(camera motion :: #00A4E4)</pre>
 
 ```typescript
-let motion = MBC.readValue(0x4C, 0x04)   // motion：0~100
+let motion = mbc.camMotion()   // motion：0~100
 ```
 
 </details>
@@ -548,12 +554,12 @@ Block returns blob X（0~100）。Host sends `[05]` → reply `[lo][hi][05 ^ lo 
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC blob X :: #E8711E)</pre>
+<pre class="blocks">(camera blob [X v] :: #00A4E4)</pre>
 
 ```typescript
-let blobX = MBC.readValue(0x4C, 0x05)   // blob X：0~100
+let blobX = mbc.camBlob(MbcCamBlob.X)   // blob X：0~100
 ```
 
 </details>
@@ -650,12 +656,12 @@ Block returns blob Y（0~75）。Host sends `[06]` → reply `[lo][hi][06 ^ lo ^
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC blob Y :: #E8711E)</pre>
+<pre class="blocks">(camera blob [Y v] :: #00A4E4)</pre>
 
 ```typescript
-let blobY = MBC.readValue(0x4C, 0x06)   // blob Y：0~75
+let blobY = mbc.camBlob(MbcCamBlob.Y)   // blob Y：0~75
 ```
 
 </details>
@@ -752,12 +758,12 @@ Block returns blob width（0~100）。Host sends `[07]` → reply `[lo][hi][07 ^
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC blob width :: #E8711E)</pre>
+<pre class="blocks">(camera blob [width v] :: #00A4E4)</pre>
 
 ```typescript
-let blobW = MBC.readValue(0x4C, 0x07)   // blob width：0~100
+let blobW = mbc.camBlob(MbcCamBlob.Width)   // blob width：0~100
 ```
 
 </details>
@@ -854,12 +860,12 @@ Block returns blob height（0~75）。Host sends `[08]` → reply `[lo][hi][08 ^
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC blob height :: #E8711E)</pre>
+<pre class="blocks">(camera blob [height v] :: #00A4E4)</pre>
 
 ```typescript
-let blobH = MBC.readValue(0x4C, 0x08)   // blob height：0~75
+let blobH = mbc.camBlob(MbcCamBlob.Height)   // blob height：0~75
 ```
 
 </details>
@@ -936,12 +942,12 @@ Block returns blob area（0~7500）。Host sends `[09]` → reply `[lo][hi][09 ^
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns 0 when the sensor does not answer; check with "device at … is ready" first.
 
-<pre class="blocks">(MBC blob area :: #E8711E)</pre>
+<pre class="blocks">(camera blob [area v] :: #00A4E4)</pre>
 
 ```typescript
-let blobArea = MBC.readValue(0x4C, 0x09)   // blob area：0~7500
+let blobArea = mbc.camBlob(MbcCamBlob.Area)   // blob area：0~7500
 ```
 
 </details>
@@ -997,12 +1003,19 @@ Block returns blob found（0~1）。Host sends `[0A]` → reply `[lo][hi][0A ^ l
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-The extension reads 2 bytes as `Int16LE` and pauses 2 ms after writing the id.
+Returns false when the sensor does not answer.
 
-<pre class="blocks">(MBC blob found? :: #E8711E)</pre>
+<pre class="blocks"><camera blob is found :: #00A4E4></pre>
 
 ```typescript
-let found = MBC.readValue(0x4C, 0x0A)   // blob found：0~1
+let found = mbc.camFound()   // blob found：0~1
+```
+
+**Related block "on camera blob [found]"**
+
+```typescript
+mbc.onCamBlob(MbcCamEvent.Found, function () {
+})
 ```
 
 </details>
@@ -1079,11 +1092,11 @@ The extension splits status flags F3 into boolean blocks (ready, calibrating, �
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks"><MBC device ready :: #E8711E></pre>
+<pre class="blocks"><device at (0x4C v) is ready :: #00A4E4></pre>
 
 ```typescript
-let st = MBC.status(0x4C)   // F3
-let ready = (st & 1) != 0
+let ready = mbc.deviceReady(0x4C)   // F3 bit0; false when nothing answers
+let st = mbc.status(0x4C)   // F3
 ```
 
 </details>

@@ -1000,3 +1000,6 @@ iframe.yt-on { display: block; width: 100%; aspect-ratio: 16 / 9; height: auto; 
 .markdown-section .learn-card div a { min-height: 40px; padding: 0 14px; font-size: 0.92rem; }
 .markdown-section .learn-card div a.lc-guide { background: #fff; color: var(--ink-2); border: 1px solid #cfd8de; }
 @media (max-width: 480px) { .markdown-section .learn-card { grid-template-columns: 56px 1fr; } .markdown-section .learn-card > img, .markdown-section .learn-card > .ft-noimg { width: 56px; height: 56px; } }
+.markdown-section .learn-card .lc-row { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0; }
+.markdown-section .learn-card .lc-host { min-width: 5.2em; font-size: 0.85rem; font-weight: 700; color: var(--ink-2); }
+.markdown-section .learn-box .lb-links + .lb-links { margin-top: 6px; }

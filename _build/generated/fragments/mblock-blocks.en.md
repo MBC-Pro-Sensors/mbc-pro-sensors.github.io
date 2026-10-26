@@ -10,8 +10,10 @@
 | Vision port [port] blob height | 0~75 | [Vision Sensor (School Edition)](/en/sensors/esp32cam/mblock.md) | blob height H 0~75; 0 when not found |
 | Vision port [port] blob area | 0~7500 | [Vision Sensor (School Edition)](/en/sensors/esp32cam/mblock.md) | W×H (0~7500); 0 when not found |
 | Vision port [port] blob found? | 0~1 | [Vision Sensor (School Edition)](/en/sensors/esp32cam/mblock.md) | 1 = a blob of the target colour is in view (W > 0), 0 = none |
+| Vision port [port] update all values | — | [Vision Sensor (School Edition)](/en/sensors/esp32cam/mblock.md) | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 | Vision WRO port [port] spot [1~12] colour code | 0~255 | [Vision Sensor (WRO Edition, HUE12)](/en/sensors/esp32cam/mblock-wro.md) | 10~1B = colour code of spots S1~S12: 0~239 colour (hue 0~255 scaled to 0~239), 240~245 white (saturation < 30, lower = larger), 246~250 black (value < 30, darker = larger), 255 = spot not enabled |
 | Vision WRO port [port] spot [1~12] vividness | 0~255 | [Vision Sensor (WRO Edition, HUE12)](/en/sensors/esp32cam/mblock-wro.md) | 20~2B = vividness (saturation) of spots S1~S12, 0~255: black = 1, white/colour = actual saturation; 0 when the spot is not enabled |
+| Vision WRO port [port] update all values | — | [Vision Sensor (WRO Edition, HUE12)](/en/sensors/esp32cam/mblock-wro.md) | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 | IMU Gyro port [port] gyro 3D heading | -32768~32767 ° | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | heading from the 3D quaternion, degrees, 0 at boot/zero, accumulates past 360 (wraps at ±32767, ~91 turns) |
 | IMU Gyro port [port] fused heading | -32768~32767 ° | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | 3D gyro heading slowly corrected by the magnetometer, degrees, relative to the zero point; may exceed 360 |
 | IMU Gyro port [port] gyro 1D heading | -32768~32767 ° | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | heading integrated about the yaw axis only, degrees, 0 at boot/zero; may exceed 360 |
@@ -30,6 +32,7 @@
 | IMU Gyro port [port] end accelerometer calibration | — | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | finish accelerometer calibration and save to EEPROM (= v1 0x20=0x02); headings are zeroed once on success |
 | IMU Gyro port [port] start magnetometer calibration | — | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | start magnetometer calibration (= v1 0x20=0x03); F3 b5 = 1 meanwhile |
 | IMU Gyro port [port] end magnetometer calibration | — | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | finish magnetometer calibration and save to EEPROM (= v1 0x20=0x04) |
+| IMU Gyro port [port] update all values | — | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 | Pathfinder port [port] line position | -16~+16 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | which channel the line is under: −16 (far left) to +16 (far right), 0 = centre; seen from behind the robot, negative = left (normally ±15; ±16 only for 200 ms after the line leaves the outermost channel) |
 | Pathfinder port [port] fine line position | -100~+100 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | sub-channel position: −100 to +100, 0 = centre, negative = left (same sign as line position) |
 | Pathfinder port [port] line width | 0~16 路 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | number of channels on the line, 0~16; 0 = no line |
@@ -39,12 +42,14 @@
 | Pathfinder port [port] threshold | 1~99 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | reflect threshold for 'on line', 1~99, default 50; set with E4 |
 | Pathfinder port [port] calibration count | 0~255 次 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | number of calibrations completed since power-on (button calibrations included) |
 | Pathfinder port [port] channel [1~16] reflect | 0~100 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | calibrated reflect of channel 1~16, 0~100 (channel 1 = left); ids 10~1F |
+| Pathfinder port [port] channel [1~16] on line? | true/false | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | bit N−1 of line bitmap 05 (channel 1 = bit0, leftmost): true when that channel sees the line |
 | Pathfinder port [port] black line mode | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | follow a black line (default) |
 | Pathfinder port [port] white line mode | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | follow a white line (F3 b1 = 1) |
 | Pathfinder port [port] calibrate black | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM |
 | Pathfinder port [port] calibrate white | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM |
 | Pathfinder port [port] set threshold [threshold] | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | threshold 1~99 (RAM only, back to 50 after reboot) |
 | Pathfinder port [port] 5-second auto calibration | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile |
+| Pathfinder port [port] update all values | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 | Pathfinder port [port] line position | -8~+8 | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | which channel the line is under: −8 (far left) to +8 (far right), 0 = centre; seen from behind the robot, negative = left |
 | Pathfinder port [port] fine line position | -100~+100 | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | sub-channel position: −100 to +100, 0 = centre, negative = left (same sign as line position) |
 | Pathfinder port [port] line width | 0~8 路 | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | number of channels on the line, 0~8; 0 = no line |
@@ -54,12 +59,14 @@
 | Pathfinder port [port] threshold | 1~99 | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | reflect threshold for 'on line', 1~99, default 50; set with E4 |
 | Pathfinder port [port] calibration count | 0~255 次 | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | number of calibrations completed since power-on (button calibrations included) |
 | Pathfinder port [port] channel [1~8] reflect | 0~100 | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | calibrated reflect of channel 1~8, 0~100 (channel 1 = left); ids 10~17 |
+| Pathfinder port [port] channel [1~8] on line? | true/false | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | bit N−1 of line bitmap 05 (channel 1 = bit0, leftmost): true when that channel sees the line |
 | Pathfinder port [port] black line mode | — | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | follow a black line (default) |
 | Pathfinder port [port] white line mode | — | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | follow a white line (F3 b1 = 1) |
 | Pathfinder port [port] calibrate black | — | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM |
 | Pathfinder port [port] calibrate white | — | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM |
 | Pathfinder port [port] set threshold [threshold] | — | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | threshold 1~99 (RAM only, back to 50 after reboot) |
 | Pathfinder port [port] 5-second auto calibration | — | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile |
+| Pathfinder port [port] update all values | — | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 | Controller port [port] 16 buttons | 0~65535 bit | [PS2 Gamepad Receiver](/en/sensors/ps2/mblock.md) | all 16 buttons in one word (PSX order, 1 = pressed): bit0 SELECT, 1 L3, 2 R3, 3 START, 4 Up, 5 Right, 6 Down, 7 Left, 8 L2, 9 R2, 10 L1, 11 R1, 12 Triangle, 13 Circle, 14 Cross, 15 Square; 0 when not connected |
 | Controller port [port] d-pad | 0~15 bit | [PS2 Gamepad Receiver](/en/sensors/ps2/mblock.md) | Up 1, Right 2, Down 4, Left 8 (added when pressed together), 0~15; 0 when not connected |
 | Controller port [port] shape buttons | 0~15 bit | [PS2 Gamepad Receiver](/en/sensors/ps2/mblock.md) | Triangle 1, Circle 2, Cross 4, Square 8 (added when pressed together), 0~15; 0 when not connected; high nibble of 0x22 'R' |
@@ -72,8 +79,10 @@
 | Controller port [port] system keys | 0 bit | [PS2 Gamepad Receiver](/en/sensors/ps2/mblock.md) | b0 PS button, b1 capture button; PS2 pads have none → always 0 (PS4 only) |
 | Controller port [port] gamepad type | 0~2 | [PS2 Gamepad Receiver](/en/sensors/ps2/mblock.md) | 0 none, 1 PS2 digital mode, 2 PS2 analog mode (3 PS4 / 4 PS5 only appear on the PS4 receiver) |
 | Controller port [port] stick [LX/LY/RX/RY] | -100~+100 | [PS2 Gamepad Receiver](/en/sensors/ps2/mblock.md) | 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right / up positive (raw 0~255 with ±7 dead zone); 0 when not connected. EV3 / SPIKE / MATRIX carry 0~99 (50 = centre) or 1~9 (5 = centre), see each platform |
+| Controller port [port] [button] pressed? | true/false | [PS2 Gamepad Receiver](/en/sensors/ps2/mblock.md) | one button split out of 16 buttons 01 (PSX order); menu: ✕ ● ▲ ■ up down left right L1 R1 L2 R2 L3 R3 SELECT START |
 | Controller port [port] rumble [strength] | — | [PS2 Gamepad Receiver](/en/sensors/ps2/mblock.md) | [strength 0~255], 0 = stop; the PS2 receiver ACKs and ignores it (pad rumble disabled since 250614), effective on PS4 only |
 | Controller port [port] light bar colour [red] [green] [blue] | — | [PS2 Gamepad Receiver](/en/sensors/ps2/mblock.md) | [R][G][B] 0~255 each; PS2 pads have no light bar, the receiver ACKs and ignores it, effective on PS4 only |
+| Controller port [port] update all values | — | [PS2 Gamepad Receiver](/en/sensors/ps2/mblock.md) | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 | Controller port [port] 16 buttons | 0~65535 bit | [Gamepad Receiver PS4/PS5](/en/sensors/ps4/mblock.md) | all buttons in one 16-bit word (PSX layout): bit0 SELECT(SHARE), 1 L3, 2 R3, 3 START(OPTIONS), 4 up, 5 right, 6 down, 7 left, 8 L2, 9 R2, 10 L1, 11 R1, 12 triangle, 13 circle, 14 cross, 15 square; 1 = pressed; 0 when not connected |
 | Controller port [port] D-pad | 0~15 bit | [Gamepad Receiver PS4/PS5](/en/sensors/ps4/mblock.md) | up 1, right 2, down 4, left 8, added when pressed together (0~15) |
 | Controller port [port] shape buttons | 0~15 bit | [Gamepad Receiver PS4/PS5](/en/sensors/ps4/mblock.md) | triangle 1, circle 2, cross 4, square 8, added when pressed together (0~15) |
@@ -86,8 +95,10 @@
 | Controller port [port] system buttons | 0~3 bit | [Gamepad Receiver PS4/PS5](/en/sensors/ps4/mblock.md) | b0 PS button, b1 capture (PS5 mute) button; 0 when not connected (always 0 on PS2) |
 | Controller port [port] gamepad type | 0~4 | [Gamepad Receiver PS4/PS5](/en/sensors/ps4/mblock.md) | 0 none, 1 PS2 digital, 2 PS2 analog, 3 PS4, 4 PS5 (or other) |
 | Controller port [port] stick [axis] | -100~+100 | [Gamepad Receiver PS4/PS5](/en/sensors/ps4/mblock.md) | 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right/up positive; 0 when not connected |
+| Controller port [port] [button] pressed? | true/false | [Gamepad Receiver PS4/PS5](/en/sensors/ps4/mblock.md) | one button split out of 16 buttons 01 (PSX order); menu: ✕ ● ▲ ■ up down left right L1 R1 L2 R2 L3 R3 SELECT START |
 | Controller port [port] rumble [strength] | — | [Gamepad Receiver PS4/PS5](/en/sensors/ps4/mblock.md) | [strength 0~255], 0 = stop; 200 ms per call (ignored by PS2) |
 | Controller port [port] light bar colour [R] [G] [B] | — | [Gamepad Receiver PS4/PS5](/en/sensors/ps4/mblock.md) | [R][G][B] each 0~255, exactly 3 bytes; remembered until connected; default blue (0,0,255) (ignored by PS2) |
+| Controller port [port] update all values | — | [Gamepad Receiver PS4/PS5](/en/sensors/ps4/mblock.md) | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 | Ranger 2 port [port] left distance cm | 0~120 cm | [Laser Ranger 2-ch](/en/sensors/tof2/mblock.md) | distance from the left sensor, 0~120 cm (left = sensor 0 seen from behind the robot); 120 = nothing in range / sensor failed |
 | Ranger 2 port [port] right distance cm | 0~120 cm | [Laser Ranger 2-ch](/en/sensors/tof2/mblock.md) | distance from the right sensor, 0~120 cm (right = sensor 1); 120 = nothing in range / sensor failed |
 | Ranger 2 port [port] nearer distance cm | 0~120 cm | [Laser Ranger 2-ch](/en/sensors/tof2/mblock.md) | the smaller of left and right, 0~120 cm |
@@ -96,6 +107,7 @@
 | Ranger 2 port [port] init bitmap | 0~3 bit | [Laser Ranger 2-ch](/en/sensors/tof2/mblock.md) | bit0 = left, bit1 = right; 1 = that sensor initialised at power-on (no retry); 3 = both OK |
 | Ranger 2 port [port] fault bitmap | 0~3 bit | [Laser Ranger 2-ch](/en/sensors/tof2/mblock.md) | bit0 = left, bit1 = right; 1 = that sensor is currently failing (I2C error or no update for 200 ms); its distance reads 120 / 1200 |
 | Ranger 2 port [port] average distance mm | 0~1200 mm | [Laser Ranger 2-ch](/en/sensors/tof2/mblock.md) | (left mm + right mm) / 2, 0~1200; same number as EV3 mode 3 and the 3rd value of SPIKE mode 6 |
+| Ranger 2 port [port] update all values | — | [Laser Ranger 2-ch](/en/sensors/tof2/mblock.md) | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 | Ranger 8 port [port] nearest distance cm | 0~120 cm | [Laser Ranger 8-ch](/en/sensors/tof8/mblock.md) | smallest of the 8 distances, 0~120 cm (a failed sensor counts as 120); 120 = nothing around |
 | Ranger 8 port [port] nearest direction | -8~+8 | [Laser Ranger 8-ch](/en/sensors/tof8/mblock.md) | direction of the nearest object: −7 (left) to +7 (right), 0 = straight ahead, negative = left; ±8 = nothing around (keeps the last side) |
 | Ranger 8 port [port] farthest distance cm | 0~120 cm | [Laser Ranger 8-ch](/en/sensors/tof8/mblock.md) | largest of the 8 distances, 0~120 cm (a failed sensor always reads 120 and looks 'farthest') |
@@ -107,3 +119,4 @@
 | Ranger 8 port [port] front distance mm | 0~1200 mm | [Laser Ranger 8-ch](/en/sensors/tof8/mblock.md) | average of sensors 4 and 5 (the two facing forward), 0~1200 mm; 1200 = nothing ahead. cm version is 05 |
 | Ranger 8 port [port] sensor [1~8] distance cm | 0~120 cm | [Laser Ranger 8-ch](/en/sensors/tof8/mblock.md) | distance of each sensor 1~8, 0~120 cm (1 = far left, 4 and 5 = front, 8 = far right, 30° apart); 120 = nothing that way / sensor failed; ids 10~17 |
 | Ranger 8 port [port] sensor [1~8] distance mm | 0~1200 mm | [Laser Ranger 8-ch](/en/sensors/tof8/mblock.md) | distance of each sensor 1~8, 0~1200 mm; 1200 = nothing that way / sensor failed; ids 18~1F |
+| Ranger 8 port [port] update all values | — | [Laser Ranger 8-ch](/en/sensors/tof8/mblock.md) | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |

@@ -87,13 +87,19 @@ Each id returns one int16; click an id for the six-host reading and figure.
 
 ## Single-file helper functions
 
-Paste this at the bottom of every sketch; no library to install:
+No library to install. Paste it in two parts: part ① (2 lines) at the top of the sketch, part ② at the bottom. `#include <Wire.h>` and `MBC_NONE` must appear before `setup()` uses them; pasting everything at the bottom will not compile.
+
+**① At the top of your sketch** (before `setup()`)
 
 ```cpp
 #include <Wire.h>
 
 const int16_t MBC_NONE = -32768;   // no answer / undefined id
+```
 
+**② At the bottom of your sketch** (after `loop()`)
+
+```cpp
 // read k consecutive values (k ≤ 16) starting at id, int16 little-endian
 bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
   Wire.beginTransmission(addr);
@@ -115,6 +121,7 @@ int16_t mbcRead(uint8_t addr, uint8_t id) {
 }
 
 // write a command (0~3 parameters)
+// with 2 parameters whose first is 0, write (uint8_t)0, e.g. mbcWrite(ADDR, 0xF8, (uint8_t)0x00, 0xFF); otherwise it clashes with the array form below and will not compile
 void mbcWrite(uint8_t addr, uint8_t id, const uint8_t *args, uint8_t n) {
   Wire.beginTransmission(addr);
   Wire.write(id);
@@ -141,6 +148,11 @@ bool mbcWaitReady(uint8_t addr, unsigned long ms) {
 ## Example: print the whole value table
 
 ```cpp
+// helper part ①
+#include <Wire.h>
+
+const int16_t MBC_NONE = -32768;   // no answer / undefined id
+
 const uint8_t ADDR = 0x42;
 
 void setup() {
@@ -171,7 +183,7 @@ void loop() {
   delay(200);
 }
 
-// paste the helper functions below
+// paste part ② of the helper functions below
 ```
 
 ## Sources and assumptions

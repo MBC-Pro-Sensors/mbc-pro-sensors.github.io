@@ -4,7 +4,7 @@
 The universal I2C editions of the Pathfinder, Ranger, Controller, IMU gyro and Sharpshooter all work with BBC micro:bit V1 / V2: add one MakeCode extension, **pxt-mbc-sensors v2**, and an "MBC Sensors" category appears with one block per value. Under the hood it speaks the [MBC universal I2C protocol v2](/en/i2c-protocol.md).
 
 > [!IMPORTANT]
-> **Bench test pending**: extension v2.0.4 compiles in MakeCode for V1 and V2, but the blocks have not yet been checked against real sensors one by one. Block names follow the GitHub release: <https://github.com/contactmbcrobot/pxt-mbc-sensors>. This page will be updated after testing.
+> **Bench test pending**: extension v2.0.5 compiles in MakeCode for V1 and V2, but the blocks have not yet been checked against real sensors one by one. Block names follow the GitHub release: <https://github.com/contactmbcrobot/pxt-mbc-sensors>. This page will be updated after testing.
 
 ---
 
@@ -17,7 +17,7 @@ The universal I2C editions of the Pathfinder, Ranger, Controller, IMU gyro and S
 5. Traditional Chinese block names are included: switch the editor language to 繁體中文 if you prefer.
 
 > [!TIP]
-> No approval, no download: teachers just hand the URL to students. To pin a version, paste `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.4`.
+> No approval, no download: teachers just hand the URL to students. To pin a version, paste `https://github.com/contactmbcrobot/pxt-mbc-sensors#v2.0.5`.
 
 ## 🔌 Wiring
 
@@ -49,7 +49,7 @@ Several products can share the same P19 / P20 bus as long as their I2C addresses
 | **Clock stretching** | STM32 products (Pathfinder, Ranger, PS2, IMU) hold SCL while preparing data; the nRF52 on the V2 has a known clock-stretching issue (errata 219), so **V1 and V2 both need a bench test** — if unstable, the firmware will be switched to no-stretch. ESP32 products (PS4, Sharpshooter) do not stretch; the extension already waits 2 ms after writing the value id. |
 | **Pull-ups** | The micro:bit has 4.7 kΩ pull-ups on board; sensor boards with their own pull-ups add in parallel, which is normally still fine. |
 | **Same address, same bus** | Pathfinder 8 and 16 are both `0x16`, Ranger 2 and 8 both `0x29`, PS2 and PS4 both `0x42`. To use two of a kind together, first change one with the "Device → change device at … to address …" block (saved in the sensor, applied after reboot), then tell the extension with the "… use address" block of that product. |
-| **Sensor not connected** | Reporter blocks return **0** (the internal −32768 is filtered) and never throw; use "Device → wait for device at … ready" to confirm the wiring first. |
+| **Sensor not connected** | Reporter blocks return **0** (the internal −32768 is filtered) and every yes / no block returns **false**; nothing throws or stops. 0 can also be a real reading (line in the centre, object touching the sensor, hue red), so confirm the wiring first with "Device → wait for device at … ready" or "device at … is ready". |
 
 ## 🧩 Block list (83 blocks)
 
@@ -211,5 +211,5 @@ Advanced: `mbc.readValue(address, id)` reads any I2C v2 value (int16 little-endi
 
 ## 📦 Download and source
 
-- Extension repo (MIT): <https://github.com/contactmbcrobot/pxt-mbc-sensors> (v2.0.4, 2026-10)
+- Extension repo (MIT): <https://github.com/contactmbcrobot/pxt-mbc-sensors> (v2.0.5, 2026-10)
 - Libraries and examples for the other platforms: [Downloads](/en/downloads.md)

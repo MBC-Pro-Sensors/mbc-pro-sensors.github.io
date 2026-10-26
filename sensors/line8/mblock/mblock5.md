@@ -161,6 +161,18 @@
 
 </section>
 
+<section id="vx-online" class="ref-item">
+
+### 第 N 路在線上？ <small>onLine</small>
+
+| 範圍 | 意思 |
+| :--- | :--- |
+| 是／否 | 壓線位元圖 05 的第 N 個 bit（第 1 路 = bit0，最左）：那一路壓到線 = 是 |
+
+<pre class="blocks"><循行者 連接埠 [1 v] 第 [1 v] 路在線上？ :: sensing></pre>
+
+</section>
+
 ## 命令
 
 <section id="ce0" class="ref-item ref-cmd">
@@ -232,6 +244,16 @@
 <pre class="blocks">循行者 連接埠 [1 v] 5 秒動態校準 :: sensing</pre>
 
 <p class="ref-note">主機送 <code>[E7]</code> → 感應器回 <code>[00][00][E7]</code>（收到了）再執行；執行期間 F3 bit2 = 1。</p>
+
+</section>
+
+<section id="cx-readall" class="ref-item ref-cmd">
+
+### 更新全部數值 <small>readAll</small>
+
+一次讀整張值表進快取（FD 整包）；接下來 10 ms 內的讀值積木直接用快取，不再逐一詢問
+
+<pre class="blocks">循行者 連接埠 [1 v] 更新全部數值 :: sensing</pre>
 
 </section>
 

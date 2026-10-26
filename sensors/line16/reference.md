@@ -30,7 +30,7 @@
 | [`05`](#v05) | [壓線位元圖](#v05) | 0~65535 bit | ✓ | ✓ | ✓ | ✓ | — | ✓ |
 | [`06`](#v06) | [最後離線方向](#v06) | -16~+16 | — | — | ✓ | ✓ | — | ✓ |
 | [`07`](#v07) | [二值化門檻](#v07) | 1~99 | — | — | ✓ | ✓ | — | ✓ |
-| [`08`](#v08) | [校準完成次數](#v08) | 0~255 次 | — | — | ✓ | ✓ | — | — |
+| [`08`](#v08) | [校準完成次數](#v08) | 0~255 次 | — | — | ✓ | ✓ | — | ✓ |
 | [`10~1F`](#v10) | [第 1~16 路光值](#v10) | 0~100 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 
 ✓ = 這個平台有這個值；— = 沒有（表格裡的平台欄位只列產品支援的平台）。
@@ -136,12 +136,12 @@ int linePos = MiniR4.I2C1.MXColor.getColor(R) - 16;
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 線的位置 :: #E8711E)</pre>
+<pre class="blocks">(循行者 線位置 :: #00A4E4)</pre>
 
 ```typescript
-let linePos = MBC.readValue(0x16, 0x01)   // 線位置：-16~+16
+let linePos = mbc.linePosition()   // 線位置：-16~+16
 ```
 
 </details>
@@ -250,12 +250,12 @@ int linePosFine = MiniR4.I2C1.MXColor.getColor(B) - 100;
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 線的細位置 :: #E8711E)</pre>
+<pre class="blocks">(循行者 細位置 :: #00A4E4)</pre>
 
 ```typescript
-let linePosFine = MBC.readValue(0x16, 0x02)   // 細位置：-100~+100
+let linePosFine = mbc.linePositionFine()   // 細位置：-100~+100
 ```
 
 </details>
@@ -364,12 +364,12 @@ int lineWidth = MiniR4.I2C1.MXColor.getColor(G);
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 線寬 :: #E8711E)</pre>
+<pre class="blocks">(循行者 線寬 :: #00A4E4)</pre>
 
 ```typescript
-let lineWidth = MBC.readValue(0x16, 0x03)   // 線寬：0~16 路
+let lineWidth = mbc.lineWidth()   // 線寬：0~16 路
 ```
 
 </details>
@@ -454,12 +454,25 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 線段數 :: #E8711E)</pre>
+<pre class="blocks">(循行者 線段數 :: #00A4E4)</pre>
 
 ```typescript
-let groupCount = MBC.readValue(0x16, 0x04)   // 線段數：0~8
+let groupCount = mbc.lineSegments()   // 線段數：0~8
+```
+
+**相關積木「循行者 看到線？」**
+
+```typescript
+let lineSeen = mbc.lineSeen()
+```
+
+**相關積木「當循行者 ［丟線］」**
+
+```typescript
+mbc.onLineEvent(MbcLineEvent.Lost, function () {
+})
 ```
 
 </details>
@@ -531,7 +544,7 @@ bitmap = Sensor.ReadRawValue(1, 0)
 <details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
-讀不到（沒接、位址錯）時回 `MBC_NONE`（−32768）。
+這個值本身就可能是 −32768（最高位元 = 1，例如 `0x8000`），跟讀不到時回的 `MBC_NONE` 一樣，不要拿 −32768 判斷有沒有讀到：要分辨就改用 `mbcReadMany(0x16, 0x05, 1, &bitmap)`，回傳 `false` 才是讀不到。
 
 ```cpp
 int16_t bitmap = mbcRead(0x16, 0x05);   // 壓線位元圖：0~65535 bit
@@ -558,12 +571,18 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 壓線位元圖 :: #E8711E)</pre>
+<pre class="blocks">(循行者 壓線位元圖 :: #00A4E4)</pre>
 
 ```typescript
-let bitmap = MBC.readValue(0x16, 0x05)   // 壓線位元圖：0~65535 bit
+let bitmap = mbc.lineBitmap()   // 壓線位元圖：0~65535 bit
+```
+
+**相關積木「循行者 第 1 路在線上？」**
+
+```typescript
+let lineChannelOnLine = mbc.lineChannelOnLine(1)
 ```
 
 </details>
@@ -626,12 +645,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 最後離線方向 :: #E8711E)</pre>
+<pre class="blocks">(循行者 最後離線方向 :: #00A4E4)</pre>
 
 ```typescript
-let lastDir = MBC.readValue(0x16, 0x06)   // 最後離線方向：-16~+16
+let lastDir = mbc.lineLastDirection()   // 最後離線方向：-16~+16
 ```
 
 </details>
@@ -694,12 +713,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 門檻 :: #E8711E)</pre>
+<pre class="blocks">(循行者 門檻 :: #00A4E4)</pre>
 
 ```typescript
-let threshold = MBC.readValue(0x16, 0x07)   // 二值化門檻：1~99
+let threshold = mbc.lineThreshold()   // 二值化門檻：1~99
 ```
 
 </details>
@@ -762,7 +781,19 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-micro:bit 擴充沒有這顆積木（可用 `MBC.readValue(位址, 編號)` 通用積木讀）。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
+
+<pre class="blocks">(循行者 校準次數 :: #00A4E4)</pre>
+
+```typescript
+let calibCount = mbc.lineCalibrationCount()   // 校準完成次數：0~255 次
+```
+
+**相關積木「循行者 校準中？」**
+
+```typescript
+let lineCalibrating = mbc.lineCalibrating()
+```
 
 </details>
 
@@ -879,12 +910,12 @@ int raw = MiniR4.I2C1.MXColor.getColor(C);   // 第 1 組
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 第 [1 v] 路光值 :: #E8711E)</pre>
+<pre class="blocks">(循行者 第 (1) 路光值 :: #00A4E4)</pre>
 
 ```typescript
-let light = MBC.readValues(0x16, 0x10, 16)   // 第 1~16 路光值
+let light = mbc.lineChannel(1)   // 第 1~16 路光值：0~100（N = 1~16）
 ```
 
 </details>
@@ -949,10 +980,10 @@ MATRIX 原廠 0x22 積木沒有這個命令。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC 切換為黑線 :: #E8711E</pre>
+<pre class="blocks">循行者 循 [黑 v] 線 :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE0)   // 切黑線
+mbc.lineSetColor(MbcLineColor.Black)   // 切黑線
 ```
 
 </details>
@@ -1013,10 +1044,10 @@ MATRIX 原廠 0x22 積木沒有這個命令。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC 切換為白線 :: #E8711E</pre>
+<pre class="blocks">循行者 循 [白 v] 線 :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE1)   // 切白線
+mbc.lineSetColor(MbcLineColor.White)   // 切白線
 ```
 
 </details>
@@ -1078,10 +1109,10 @@ MATRIX 原廠 0x22 積木沒有這個命令。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC 黑色校準 :: #E8711E</pre>
+<pre class="blocks">循行者 校準 [目前讀值記為黑 v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE2)   // 黑色校準
+mbc.lineCalibrate(MbcLineCalib.Black)   // 黑色校準
 ```
 
 </details>
@@ -1143,10 +1174,10 @@ MATRIX 原廠 0x22 積木沒有這個命令。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC 白色校準 :: #E8711E</pre>
+<pre class="blocks">循行者 校準 [目前讀值記為白 v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE3)   // 白色校準
+mbc.lineCalibrate(MbcLineCalib.White)   // 白色校準
 ```
 
 </details>
@@ -1207,10 +1238,10 @@ MATRIX 原廠 0x22 積木沒有這個命令。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC 門檻設為 (50) :: #E8711E</pre>
+<pre class="blocks">循行者 門檻設為 (50) :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE4, [50])   // 設定門檻
+mbc.lineSetThreshold(50)   // 設定門檻
 ```
 
 </details>
@@ -1272,10 +1303,10 @@ MATRIX 原廠 0x22 積木沒有這個命令。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC 5 秒動態校準 :: #E8711E</pre>
+<pre class="blocks">循行者 校準 [自動（來回掃 5 秒） v] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x16, 0xE7)   // 5 秒動態校準
+mbc.lineCalibrate(MbcLineCalib.Auto)   // 5 秒動態校準
 ```
 
 </details>
@@ -1365,11 +1396,11 @@ MATRIX 原廠 0x22 積木讀不到狀態旗標。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks"><MBC 裝置就緒 :: #E8711E></pre>
+<pre class="blocks"><位址 (0x16 v) 的裝置就緒？ :: #00A4E4></pre>
 
 ```typescript
-let st = MBC.status(0x16)   // F3
-let ready = (st & 1) != 0
+let ready = mbc.deviceReady(0x16)   // F3 bit0；沒接 = false
+let st = mbc.status(0x16)   // F3
 ```
 
 </details>

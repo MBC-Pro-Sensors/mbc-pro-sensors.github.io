@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="In EV3 Classroom, the IMU gyro shows up as a LEGO Gyro Sensor. So you do not import a library or add an extension: you read it with the Gyro Sensor blocks. Work">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/imu/ev3-classroom.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/imu/ev3-classroom.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/imu/ev3-classroom.html">
+<title>IMU Gyro EV3 Classroom Tutorial | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+
+:root {
+  --bg: #f3f6f5;          
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;      
+  --accent-soft: #dff1ef;
+  --tape: #121212;        
+  --ir: #e04a3b;          
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+/* ───── EV3 Classroom block pictures (SVG straight from EV3 Classroom 1.5.3) ───── */
+.ws { background-color: #f5f6f8; background-image: radial-gradient(#d8dce2 1.1px, transparent 1.2px); background-size: 22px 22px; padding: 14px; overflow-x: auto; display: grid; gap: 22px; justify-items: start; }
+.mini .ws, .card .ws { border-radius: 8px; padding: 10px; border: 1px solid var(--rule); }
+svg.lego { display: block; overflow: visible; max-width: none; }
+svg.lego .blocklyText { fill: #fff; font-family: Chalet, "Arial Rounded MT Bold", Arial, sans-serif; font-size: 12pt; font-weight: 700; }
+svg.lego .blocklyNonEditableText > text, svg.lego .blocklyEditableText > text { fill: #575E75; }
+svg.lego .blocklyEditableText > .blocklyEditableLabel { fill: #fff; }
+svg.lego .blocklyDropdownText { fill: #fff !important; }
+img.shot { display: block; max-width: none; height: auto; background: #fff; border-radius: 4px; }
+.blk-wrap.flash { animation: flash 0.9s ease-out; border-radius: 8px; }
+@media (prefers-reduced-motion: reduce) { .blk-wrap.flash { animation: none; } }
+.stepmark { font-size: 0.78rem; font-weight: 700; color: var(--muted); letter-spacing: 0.04em; margin-bottom: 4px; }
+.conv { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+.conv th, .conv td { border: 1px solid var(--rule); padding: 6px 8px; text-align: left; vertical-align: top; }
+.conv th { background: var(--accent-soft); }
+.cant { font-size: 0.92rem; }
+.tbl-wrap { overflow-x: auto; }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+[hidden] { display: none !important; }  /* 頁面用 hidden 切換「積木／程式」，.ws{display:grid} 會蓋掉它 */
+.learn-nav .tabs .tl { color: var(--muted, #666); font-size: 0.8rem; align-self: center; }
+.learn-nav .tabs .tsep { flex-basis: 100%; height: 0; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
+   排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
+@media (max-width: 900px) {
+  .learn-nav { position: static; width: 100vw; margin: -24px 0 14px calc(50% - 50vw); }
+  .learn-nav .in { padding: 6px 12px 8px; gap: 4px 14px; font-size: 0.85rem; }
+  .learn-nav .in > a { min-height: 36px; display: inline-flex; align-items: center; }
+  .learn-nav .tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .learn-nav .tabs::-webkit-scrollbar { display: none; }
+  .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
+  body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
+  .panel.follow { margin: 12px 0 16px; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow, .ctrl > .panel.follow { grid-column: 1 / -1; }
+  .flash { animation: followFlash 1.2s ease-out; }
+  @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
+  /* 點選目標放大：選項、勾選框、拉桿 */
+  .wrap > *, .main > *, .steps > *, .step-body > * { min-width: 0; }
+  label:has(input[type=radio]), label:has(input[type=checkbox]) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  button.copy, .viewtabs button { min-height: 36px; }
+  label:has(select) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  label select { min-height: 36px; }
+  input[type=radio], input[type=checkbox] { width: 20px; height: 20px; flex: none; }
+  input[type=range] { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/imu/ev3/">← IMU EV3 guide</a><a class="lang" href="/learn/imu/ev3-classroom.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/imu/ev3-pybricks.html" aria-current="page">EV3</a><a href="/en/learn/imu/arduino.html">Arduino</a><a href="/en/learn/imu/mblock.html">mBlock</a><a href="/en/learn/imu/matrix.html">MATRIX</a><a href="/en/learn/imu/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/imu/ev3-pybricks.html">Pybricks / EV3 MicroPython</a><a href="/en/learn/imu/clev3r.html">clev3r</a><a href="/en/learn/imu/ev3-classroom.html" aria-current="page">EV3 Classroom</a><a href="/en/learn/imu/ev3g.html">EV3-G (LEGO software)</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC IMU Gyro × EV3 Classroom</span>
+    <h1>Read the IMU gyro with EV3 Classroom in three steps</h1>
+    <p class="lead">In EV3 Classroom, the IMU gyro shows up as a LEGO <b>Gyro Sensor</b>. So you do not import a library or add an extension: you read it with the Gyro Sensor blocks. Work through the steps on the left and the blocks on the right grow with you. These block pictures were built in EV3 Classroom 1.5.3 and exported straight from the software, so they look exactly like it.</p>
+  </header>
+
+  <section class="main" aria-label="Tutorial">
+    <div class="steps">
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>Start: program start + repeat forever</h2></div>
+        <div class="step-body">
+          <p class="why">You need to read the sensor again and again. A new project already has the yellow "when program starts" block. Attach "forever" under it and put "wait 0.1 seconds" inside, so it reads every 0.1 seconds.</p>
+          <ol class="howto">
+            <li>Open EV3 Classroom and press "New Project".</li>
+            <li>Drag "forever" from "Control" and attach it under "when program starts".</li>
+            <li>Drag a "wait 1 seconds" block into forever and change the number to <b>0.1</b>.</li>
+          </ol>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">Done, next step</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>Meet the reading blocks (Gyro Sensor)</h2></div>
+        <div class="step-body">
+          <p class="why">On the EV3, the IMU gyro shows up as a LEGO <b>Gyro Sensor</b> (not an infrared sensor), so you read it with the Gyro Sensor blocks in "Sensors"; no extension needed. The number at the front of each block is the port: choose <b>1</b> (the sensor is in port 1). The blocks mean something different from the stock gyro:</p>
+          <div class="tbl-wrap"><table class="conv">
+            <tr><th>Block</th><th>What you get</th><th>Range</th></tr>
+            <tr><td>"angle"</td><td>gyro 3D heading (how far it turned)</td><td>-32768 ~ 32767 degrees (0 at power-on / reset, bigger turning right)</td></tr>
+            <tr><td>"rate"</td><td>fused heading (not degrees per second)</td><td>-32768 ~ 32767 degrees (0 at power-on / reset, bigger turning right)</td></tr>
+            <tr><td>"reset angle"</td><td>zero all four headings</td><td>—</td></tr>
+          </table></div>
+          <p class="small">Use blocks of only one mode in a program. Every mode change makes the EV3 pause for about 0.5 seconds.</p>
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2">Got it, next step</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>Show it on the EV3 screen</h2></div>
+        <div class="step-body">
+          <p class="why">Put the reading block into "write … at line …" from "Display", use "join" from "Operators" to put a name in front (for example ANGLE), and start the program with "clear display". Click a function and the blocks and result change to its example.</p>
+          <div id="picker" class="ref"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+          <div class="sim-box">
+            <style>.imu-btns { display: flex; flex-wrap: wrap; gap: 6px; } .imu-btns button { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; padding: 4px 12px; font-weight: 700; min-height: 36px; } .imu-btns button.zero { border-color: var(--accent); }</style>
+            <div class="sim-title">Sensor simulator: the left picture is seen from above (heading), the right one from the side (pitch). Drag the sliders and press the buttons, and watch the output change</div>
+            <div class="sim">
+              <svg id="field" viewBox="0 0 460 200" role="img" aria-label="The robot seen from above and from the side"></svg>
+              <div class="ctrl">
+                <label class="f" for="imu-hd"><span>Robot direction (turn it by hand): <b id="imu-hdv">0</b>° (turning right is positive)</span>
+                  <input autocomplete="off" type="range" id="imu-hd" min="-720" max="720" step="5" value="0">
+                </label>
+                <div class="imu-btns">
+                  <button type="button" id="imu-l90">↺ Turn left 90°</button>
+                  <button type="button" id="imu-r90">↻ Turn right 90°</button>
+                  <button type="button" id="imu-zero" class="zero">Zero (this direction becomes 0)</button>
+                </div>
+                <label class="f" for="imu-pt"><span>Nose up or down (pitch): <b id="imu-ptv">0</b>°</span>
+                  <input autocomplete="off" type="range" id="imu-pt" min="-90" max="90" step="1" value="0">
+                </label>
+                <div class="toggles">
+                  <label><input autocomplete="off" type="checkbox" id="imu-shake"> Shake the robot (gives turn rates)</label>
+                  <label><input autocomplete="off" type="checkbox" id="imu-drift"> Running a long time (6° gyro drift)</label>
+                  <label><input autocomplete="off" type="checkbox" id="imu-magx"> Near a motor or iron (magnetic disturbance)</label>
+                  <label><input autocomplete="off" type="checkbox" id="unplug"> Unplug the sensor</label>
+                </div>
+              </div>
+              <p class="note">The simulator is only a picture: values come from the robot's direction and angle on screen, not the sensor's own algorithm. The "Zero" button = the gyro "reset"; the pitch slider and the shaking rates cannot be read in this software (use Pybricks / clev3r).</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">Block example for each function</h2>
+        <p class="ref-intro">Every value EV3 Classroom can read has a small program you can copy (sensor in port 1). Press "Try it" to jump to step 3.</p>
+        <div class="cards" id="cards"></div>
+        <p class="cant"><b>What EV3 Classroom cannot read:</b> the gyro 1D and magnetic headings (Classroom has no "angle and rate" block), the yaw rate, pitch and pitch rate (modes 2, 5 and 6, added in firmware v4.0). For these, use <a href="/en/learn/imu/ev3-pybricks.html">Pybricks</a> or <a href="/en/learn/imu/clev3r.html">clev3r</a>. Magnetometer trust, face up, raw 9-axis values and the calibration commands cannot be read on the EV3 at all (use Arduino, mBlock or micro:bit).</p>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="Your blocks and result">
+      <div class="panel">
+        <div class="panel-head"><span>Your blocks</span></div>
+        <div class="ws" id="mainblocks" aria-live="polite"></div>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>What the EV3 screen shows (updated every 0.6 seconds)</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">Things to know</h2>
+    <ol>
+      <li><b>Plug the sensor into port 1.</b> If you use another port, change the port number on the block. <b>Switch the EV3 on first, then plug in the sensor</b> (keep the robot still then); if the number never changes, unplug it and plug it in again.</li>
+      <li><b>"rate" is not degrees per second:</b> this gyro puts the fused heading (the heading that does not drift) in "rate". For degrees per second, read mode 2 with Pybricks / clev3r.</li>
+      <li><b>Use one mode per program.</b> Each mode change makes the EV3 pause for about 0.5 seconds, and a racing robot can lose control; "reset" needs no mode change.</li>
+      <li><b>When the sensor is unplugged:</b> the EV3 cannot read it, the number becomes "not a number" and the screen shows <code>----</code>. Each reading also waits about 1.2 seconds. The program does not stop, and it works again when you plug the sensor back in.</li>
+      <li><b>Direction:</b> turning right makes the heading bigger, left smaller; one turn = 360 and it keeps adding up. If right makes it smaller, the sensor is mounted upside down.</li>
+      <li><b>English blocks:</b> EV3 Classroom has only English and Simplified Chinese interfaces; this page uses English.</li>
+      <li><b>For complete projects</b> (turning 90°, a square, driving straight …) see the <a href="/en/sensors/imu/ev3-examples.html">EV3 examples page</a>; the first 5 examples have an EV3 Classroom file to download.</li>
+    </ol>
+  </section>
+</div>
+<script>
+var BLK = {"kind":"svg","img":["data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDIxLjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9InJlcGVhdCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCgkgdmlld0JveD0iMCAwIDI0IDI0IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAyNCAyNDsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOiNDRjhCMTc7fQoJLnN0MXtmaWxsOiNGRkZGRkY7fQo8L3N0eWxlPgo8dGl0bGU+cmVwZWF0PC90aXRsZT4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTIzLjMsMTFjLTAuMywwLjYtMC45LDEtMS41LDFoLTEuNmMtMC4xLDEuMy0wLjUsMi41LTEuMSwzLjZjLTAuOSwxLjctMi4zLDMuMi00LjEsNC4xCgljLTEuNywwLjktMy42LDEuMi01LjUsMC45Yy0xLjgtMC4zLTMuNS0xLjEtNC45LTIuM2MtMC43LTAuNy0wLjctMS45LDAtMi42YzAuNi0wLjYsMS42LTAuNywyLjMtMC4ySDdjMC45LDAuNiwxLjksMC45LDIuOSwwLjkKCXMxLjktMC4zLDIuNy0wLjljMS4xLTAuOCwxLjgtMi4xLDEuOC0zLjVoLTEuNWMtMC45LDAtMS43LTAuNy0xLjctMS43YzAtMC40LDAuMi0wLjksMC41LTEuMmw0LjQtNC40YzAuNy0wLjYsMS43LTAuNiwyLjQsMEwyMyw5LjIKCUMyMy41LDkuNywyMy42LDEwLjQsMjMuMywxMXoiLz4KPHBhdGggY2xhc3M9InN0MSIgZD0iTTIxLjgsMTFoLTIuNmMwLDEuNS0wLjMsMi45LTEsNC4yYy0wLjgsMS42LTIuMSwyLjgtMy43LDMuNmMtMS41LDAuOC0zLjMsMS4xLTQuOSwwLjhjLTEuNi0wLjItMy4yLTEtNC40LTIuMQoJYy0wLjQtMC4zLTAuNC0wLjktMC4xLTEuMmMwLjMtMC40LDAuOS0wLjQsMS4yLTAuMWwwLDBjMSwwLjcsMi4yLDEuMSwzLjQsMS4xczIuMy0wLjMsMy4zLTFjMC45LTAuNiwxLjYtMS41LDItMi42CgljMC4zLTAuOSwwLjQtMS44LDAuMi0yLjhoLTIuNGMtMC40LDAtMC43LTAuMy0wLjctMC43YzAtMC4yLDAuMS0wLjMsMC4yLTAuNGw0LjQtNC40YzAuMy0wLjMsMC43LTAuMywwLjksMEwyMiw5LjgKCWMwLjMsMC4zLDAuNCwwLjYsMC4zLDAuOVMyMiwxMSwyMS44LDExeiIvPgo8L3N2Zz4K","data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGcgaWQ9Ikljb24vNDgvcGxheS1ibG9jayIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PHBhdGggaWQ9IkNvbWJpbmVkLVNoYXBlIiBmaWxsPSIjRkZGRkZGIiBkPSJNMzMuNjggMjQuNUwxNS4zMiAxMi4wOHYyNC44NHoiLz48L2c+PC9zdmc+","data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMi43MSIgaGVpZ2h0PSI4Ljc5IiB2aWV3Qm94PSIwIDAgMTIuNzEgOC43OSI+PHRpdGxlPmRyb3Bkb3duLWFycm93PC90aXRsZT48ZyBvcGFjaXR5PSIwLjEiPjxwYXRoIGQ9Ik0xMi43MSwyLjQ0QTIuNDEsMi40MSwwLDAsMSwxMiw0LjE2TDguMDgsOC4wOGEyLjQ1LDIuNDUsMCwwLDEtMy40NSwwTDAuNzIsNC4xNkEyLjQyLDIuNDIsMCwwLDEsMCwyLjQ0LDIuNDgsMi40OCwwLDAsMSwuNzEuNzFDMSwwLjQ3LDEuNDMsMCw2LjM2LDBTMTEuNzUsMC40NiwxMiwuNzFBMi40NCwyLjQ0LDAsMCwxLDEyLjcxLDIuNDRaIiBmaWxsPSIjMjMxZjIwIi8+PC9nPjxwYXRoIGQ9Ik02LjM2LDcuNzlhMS40MywxLjQzLDAsMCwxLTEtLjQyTDEuNDIsMy40NWExLjQ0LDEuNDQsMCwwLDEsMC0yYzAuNTYtLjU2LDkuMzEtMC41Niw5Ljg3LDBhMS40NCwxLjQ0LDAsMCwxLDAsMkw3LjM3LDcuMzdBMS40MywxLjQzLDAsMCwxLDYuMzYsNy43OVoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=","data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PGcgaWQ9Ikljb24vNDgvZ3lybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PHBhdGggZD0iTTM4IDUuNWMyLjQ4MSAwIDQuNSAyLjAxOSA0LjUgNC41djI4YzAgMi40ODEtMi4wMTkgNC41LTQuNSA0LjVIMTBBNC41MDUgNC41MDUgMCAwIDEgNS41IDM4VjEwYzAtMi40ODEgMi4wMTktNC41IDQuNS00LjVoMjgiIGlkPSJCZyIgZmlsbD0iI0ZGRiIvPjxwYXRoIGQ9Ik0zOCA0YTYgNiAwIDAgMSA2IDZ2MjhhNiA2IDAgMCAxLTYgNkgxMGE2IDYgMCAwIDEtNi02VjEwYTYgNiAwIDAgMSA2LTZoMjh6bTAgMS41SDEwQTQuNTA1IDQuNTA1IDAgMCAwIDUuNSAxMHYyOGMwIDIuNDgxIDIuMDE5IDQuNSA0LjUgNC41aDI4YzIuNDgxIDAgNC41LTIuMDE5IDQuNS00LjVWMTBjMC0yLjQ4MS0yLjAxOS00LjUtNC41LTQuNXptLTQuNjEzIDguMTEzQTEzLjk2NSAxMy45NjUgMCAwIDEgMzggMjRjMCA0LjM3NS0yLjAwNyA4LjI4Mi01LjE1MSAxMC44NDlMMzAgMzJhOS45ODUgOS45ODUgMCAwIDAgNC04IDkuOTc3IDkuOTc3IDAgMCAwLTMuNDQ3LTcuNTUzTDI5IDE4di02aDZsLTEuNjEzIDEuNjEzem0tMTguNzc0IDBMMTMgMTJoNnY2bC0xLjU1My0xLjU1M0E5Ljk3NyA5Ljk3NyAwIDAgMCAxNCAyNGE5Ljk4NSA5Ljk4NSAwIDAgMCA0IDhMMTUuMTUgMzQuODVBMTMuOTczIDEzLjk3MyAwIDAgMSAxMCAyNGMwLTQuMTIgMS43OC03LjgyNSA0LjYxMy0xMC4zODd6TTI5IDI0YTUgNSAwIDEgMS0xMCAwIDUgNSAwIDAgMSAxMCAweiIgaWQ9IkNvbWJpbmVkLVNoYXBlIiBmaWxsPSIjMDBBOEM5Ii8+PC9nPjwvc3ZnPg==","data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2aWV3Qm94PSIwIDAgNDggNDgiPjxkZWZzPjxyZWN0IGlkPSJwYXRoLTEiIHg9IjAiIHk9IjAiIHdpZHRoPSIyNiIgaGVpZ2h0PSIzNCIgcng9IjQiLz48L2RlZnM+PGcgaWQ9Ikljb24vNDgvbWluZHN0b3Jtcy1odWIiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxyZWN0IGlkPSJCZyIgZmlsbD0iI0ZGRiIgeD0iMTEiIHk9IjciIHdpZHRoPSIyNiIgaGVpZ2h0PSIzNCIgcng9IjQiLz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMSA3KSIgaWQ9Ikdyb3VwIj48bWFzayBpZD0ibWFzay0yIiBmaWxsPSIjZmZmIj48dXNlIHhsaW5rOmhyZWY9IiNwYXRoLTEiLz48L21hc2s+PHJlY3Qgc3Ryb2tlPSIjNjkxRkYwIiBzdHJva2Utd2lkdGg9IjEuNSIgeD0iLjc1IiB5PSIuNzUiIHdpZHRoPSIyNC41IiBoZWlnaHQ9IjMyLjUiIHJ4PSI0Ii8+PHJlY3QgaWQ9IlJlY3RhbmdsZSIgZmlsbD0iIzY5MUZGMCIgbWFzaz0idXJsKCNtYXNrLTIpIiB4PSI0IiB5PSI0IiB3aWR0aD0iMTgiIGhlaWdodD0iOSIgcng9IjIiLz48cGF0aCBkPSJNMTggMjFhMSAxIDAgMSAxIDAgMmgtM3YtMmgzek04IDIzYTEgMSAwIDEgMSAwLTJoM3YySDh6bTQgMHYtMmgydjJoLTJ6bTIuNjEyLTVjLjQ0MyAwIC44NDYuMjE0IDEuMDQ0LjU1M0wxNi41IDIwaC03bC44NDUtMS40NDdjLjE5Ny0uMzM5LjYtLjU1MyAxLjA0My0uNTUzaDMuMjI0em0tMy4yMjQgOGMtLjQ0MyAwLS44NDYtLjIxNC0xLjA0NC0uNTUzTDkuNSAyNGg3bC0uODQ1IDEuNDQ3Yy0uMTk3LjMzOS0uNi41NTMtMS4wNDMuNTUzaC0zLjIyNHoiIGlkPSJDb21iaW5lZC1TaGFwZSIgZmlsbD0iIzY5MUZGMCIgbWFzaz0idXJsKCNtYXNrLTIpIi8+PC9nPjwvZz48L3N2Zz4="],"pics":{"step1":{"vb":"-3 197.5 236.6 200.5","w":237,"h":201,"g":"<g transform=\"translate(0,217)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#B89A00\" fill=\"#F5C400\" d=\"m 0,0 c 25,-22 71,-22 96,0 H 226.5 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 64 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 h -8 a 4,4 0 0,0 -4,4 v 40 a 4,4 0 0,0 4,4 h 8 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 H 156 a 4,4 0 0,1 4,4 v 24 a 4,4 0 0,1 -4,4 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(16,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 164.3 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(48,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24.5 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.2\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">0.1</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"15.4\" transform=\"translate(8, 24) \">wait</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#C18401\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"31.8\" transform=\"translate(96.5, 24) \">seconds</text></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"26.2\" transform=\"translate(8, 24) \">forever</text><g transform=\"translate(128, 100) \"><image height=\"24px\" width=\"24px\" xlink:href=\"§0\"></image></g></g><g transform=\"translate(8, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§1\"></image></g><g transform=\"translate(56, 4) \"><line stroke=\"#D9B100\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"36\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"78.7\" transform=\"translate(65, 24) \">when&nbsp;program&nbsp;starts</text></g>"},"reps":{"vb":"-3 -3 267.3 212","w":268,"h":212,"g":"<g transform=\"translate(0,0)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,0 m 24,0 H 159.5 a 24 24 0 0 1 0 48 H 24 a 24 24 0 0 1 0 -48 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(73,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g transform=\"translate(16, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(64, 4) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"20.9\" transform=\"translate(129.7, 24) \">angle</text></g><g transform=\"translate(0,70)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,0 m 24,0 H 237.3 a 24 24 0 0 1 0 48 H 24 a 24 24 0 0 1 0 -48 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(73,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g transform=\"translate(16, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(64, 4) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"59.7\" transform=\"translate(129.7, 24) \">angular&nbsp;velocity</text></g><g transform=\"translate(0,140)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 210.4 a 4,4 0 0,1 4,4 v 48 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(65,12)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g transform=\"translate(8, 12) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(56, 8) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"42.3\" transform=\"translate(121.7, 28) \">reset&nbsp;angle</text></g>"},"h3d":{"vb":"-3 197.5 663.9 328.5","w":664,"h":329,"g":"<g transform=\"translate(0,217)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#B89A00\" fill=\"#F5C400\" d=\"m 0,0 c 25,-22 71,-22 96,0 H 226.5 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 165.7 a 4,4 0 0,1 4,4 v 48 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,56)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 64 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 h -8 a 4,4 0 0,0 -4,4 v 112 a 4,4 0 0,0 4,4 h 8 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 H 156 a 4,4 0 0,1 4,4 v 24 a 4,4 0 0,1 -4,4 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(16,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 637.8 a 4,4 0 0,1 4,4 v 64 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(593.8,20)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text></g></g><g transform=\"translate(110.1,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 32,0 H 389.6 a 32 32 0 0 1 0 64 H 32 a 32 32 0 0 1 0 -64 z\"></path><g data-argument-type=\"text\" transform=\"translate(46.4,16)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 63.4 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"31.7\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">ANGLE&nbsp;</text></g></g><g transform=\"translate(133.9,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 28,0 H 255.7 a 28 28 0 0 1 0 56 H 28 a 28 28 0 0 1 0 -56 z\"></path><g transform=\"translate(46.4,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,0 m 24,0 H 159.5 a 24 24 0 0 1 0 48 H 24 a 24 24 0 0 1 0 -48 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(73,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g transform=\"translate(16, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(64, 4) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"20.9\" transform=\"translate(129.7, 24) \">angle</text></g><g data-argument-type=\"text\" transform=\"translate(237.9,12)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 25.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.8\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">&nbsp;&nbsp;&nbsp;&nbsp;</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 28) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 32) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><g transform=\"translate(0,72)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 164.3 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(48,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24.5 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.2\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">0.1</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"15.4\" transform=\"translate(8, 24) \">wait</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#C18401\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"31.8\" transform=\"translate(96.5, 24) \">seconds</text></g><g transform=\"translate(8, 20) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 16) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"18.5\" transform=\"translate(65, 36) \">write</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"23.0\" transform=\"translate(539.7, 36) \">at&nbsp;line</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"26.2\" transform=\"translate(8, 24) \">forever</text><g transform=\"translate(128, 172) \"><image height=\"24px\" width=\"24px\" xlink:href=\"§0\"></image></g></g><g transform=\"translate(8, 12) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 8) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"48.3\" transform=\"translate(65, 28) \">clear&nbsp;display</text></g><g transform=\"translate(8, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§1\"></image></g><g transform=\"translate(56, 4) \"><line stroke=\"#D9B100\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"36\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"78.7\" transform=\"translate(65, 24) \">when&nbsp;program&nbsp;starts</text></g>"},"fused":{"vb":"-3 197.5 739.5 328.5","w":740,"h":329,"g":"<g transform=\"translate(0,217)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#B89A00\" fill=\"#F5C400\" d=\"m 0,0 c 25,-22 71,-22 96,0 H 226.5 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 165.7 a 4,4 0 0,1 4,4 v 48 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,56)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 64 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 h -8 a 4,4 0 0,0 -4,4 v 112 a 4,4 0 0,0 4,4 h 8 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 H 156 a 4,4 0 0,1 4,4 v 24 a 4,4 0 0,1 -4,4 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(16,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 713.5 a 4,4 0 0,1 4,4 v 64 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(669.5,20)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text></g></g><g transform=\"translate(110.1,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 32,0 H 465.3 a 32 32 0 0 1 0 64 H 32 a 32 32 0 0 1 0 -64 z\"></path><g data-argument-type=\"text\" transform=\"translate(46.4,16)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 61.3 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"30.6\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">FUSED&nbsp;</text></g></g><g transform=\"translate(131.8,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 28,0 H 333.4 a 28 28 0 0 1 0 56 H 28 a 28 28 0 0 1 0 -56 z\"></path><g transform=\"translate(46.4,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,0 m 24,0 H 237.3 a 24 24 0 0 1 0 48 H 24 a 24 24 0 0 1 0 -48 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(73,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g transform=\"translate(16, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(64, 4) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"59.7\" transform=\"translate(129.7, 24) \">angular&nbsp;velocity</text></g><g data-argument-type=\"text\" transform=\"translate(315.7,12)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 25.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.8\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">&nbsp;&nbsp;&nbsp;&nbsp;</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 28) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 32) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><g transform=\"translate(0,72)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 164.3 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(48,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24.5 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.2\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">0.1</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"15.4\" transform=\"translate(8, 24) \">wait</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#C18401\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"31.8\" transform=\"translate(96.5, 24) \">seconds</text></g><g transform=\"translate(8, 20) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 16) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"18.5\" transform=\"translate(65, 36) \">write</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"23.0\" transform=\"translate(615.4, 36) \">at&nbsp;line</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"26.2\" transform=\"translate(8, 24) \">forever</text><g transform=\"translate(128, 172) \"><image height=\"24px\" width=\"24px\" xlink:href=\"§0\"></image></g></g><g transform=\"translate(8, 12) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 8) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"48.3\" transform=\"translate(65, 28) \">clear&nbsp;display</text></g><g transform=\"translate(8, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§1\"></image></g><g transform=\"translate(56, 4) \"><line stroke=\"#D9B100\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"36\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"78.7\" transform=\"translate(65, 24) \">when&nbsp;program&nbsp;starts</text></g>"},"zero":{"vb":"-3 197.5 663.9 384.5","w":664,"h":385,"g":"<g transform=\"translate(0,217)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#B89A00\" fill=\"#F5C400\" d=\"m 0,0 c 25,-22 71,-22 96,0 H 226.5 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 165.7 a 4,4 0 0,1 4,4 v 48 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(0,56)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 210.4 a 4,4 0 0,1 4,4 v 48 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(65,12)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g transform=\"translate(0,56)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 64 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 h -8 a 4,4 0 0,0 -4,4 v 112 a 4,4 0 0,0 4,4 h 8 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 156 H 156 a 4,4 0 0,1 4,4 v 24 a 4,4 0 0,1 -4,4 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g transform=\"translate(16,48)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#935DF5\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 637.8 a 4,4 0 0,1 4,4 v 64 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(593.8,20)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#4A00D0\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text></g></g><g transform=\"translate(110.1,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 32,0 H 389.6 a 32 32 0 0 1 0 64 H 32 a 32 32 0 0 1 0 -64 z\"></path><g data-argument-type=\"text\" transform=\"translate(46.4,16)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 63.4 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"31.7\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">ANGLE&nbsp;</text></g></g><g transform=\"translate(133.9,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#00B94D\" d=\"m 0,0 m 28,0 H 255.7 a 28 28 0 0 1 0 56 H 28 a 28 28 0 0 1 0 -56 z\"></path><g transform=\"translate(46.4,4)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#1DCCF0\" d=\"m 0,0 m 24,0 H 159.5 a 24 24 0 0 1 0 48 H 24 a 24 24 0 0 1 0 -48 z\"></path><g data-argument-type=\"dropdown\" transform=\"translate(73,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#008AA6\" fill=\"#00A8C9\" d=\"m 0,0 m 16,0 H 32.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText blocklyDropdownText\" x=\"6.3\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">1</text><image height=\"12px\" width=\"12px\" xlink:href=\"§2\" transform=\"translate(16.7,11)\"></image></g></g><g transform=\"translate(16, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(64, 4) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"20.9\" transform=\"translate(129.7, 24) \">angle</text></g><g data-argument-type=\"text\" transform=\"translate(237.9,12)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#00722F\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 25.7 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.8\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">&nbsp;&nbsp;&nbsp;&nbsp;</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 28) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"13.2\" transform=\"translate(12, 32) \">join</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#00722F\"></path></g><g transform=\"translate(0,72)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFB515\" d=\"m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 164.3 a 4,4 0 0,1 4,4 v 40 a 4,4 0 0,1 -4,4 H 48 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z\"></path><g data-argument-type=\"text number\" transform=\"translate(48,8)\"><path class=\"blocklyPath blocklyBlockBackground\" stroke=\"#C18401\" fill=\"#FFFFFF\" d=\"m 0,0 m 16,0 H 24.5 a 16 16 0 0 1 0 32 H 16 a 16 16 0 0 1 0 -32 z\"></path><g class=\"blocklyEditableText\" transform=\"translate(8, 0) \"><text class=\"blocklyText\" x=\"12.2\" y=\"18\" dominant-baseline=\"middle\" dy=\"0\" text-anchor=\"middle\">0.1</text></g></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"15.4\" transform=\"translate(8, 24) \">wait</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#C18401\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"31.8\" transform=\"translate(96.5, 24) \">seconds</text></g><g transform=\"translate(8, 20) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 16) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"18.5\" transform=\"translate(65, 36) \">write</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"23.0\" transform=\"translate(539.7, 36) \">at&nbsp;line</text><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#4A00D0\"></path></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"26.2\" transform=\"translate(8, 24) \">forever</text><g transform=\"translate(128, 172) \"><image height=\"24px\" width=\"24px\" xlink:href=\"§0\"></image></g></g><g transform=\"translate(8, 12) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§3\"></image></g><g transform=\"translate(56, 8) \"><line stroke=\"#00A8C9\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><path class=\"blocklyPath\" style=\"visibility: hidden\" d=\"\" fill=\"#008AA6\"></path><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"42.3\" transform=\"translate(121.7, 28) \">reset&nbsp;angle</text></g><g transform=\"translate(8, 12) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§4\"></image></g><g transform=\"translate(56, 8) \"><line stroke=\"#691FF0\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"40\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"48.3\" transform=\"translate(65, 28) \">clear&nbsp;display</text></g><g transform=\"translate(8, 4) \"><image height=\"40px\" width=\"40px\" xlink:href=\"§1\"></image></g><g transform=\"translate(56, 4) \"><line stroke=\"#D9B100\" stroke-linecap=\"round\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"36\"></line></g><text class=\"blocklyText\" y=\"2\" text-anchor=\"middle\" dominant-baseline=\"middle\" dy=\"0\" x=\"78.7\" transform=\"translate(65, 24) \">when&nbsp;program&nbsp;starts</text></g>"}}};
+(function () {
+
+
+  var IMU = { base: 0, t: 0, cal: { acc: false, mag: false }, lastProg: null, fw: 400 };
+  var IMU_W = 2 * Math.PI / 1.7;
+  function imuRound(v) { return v >= 0 ? Math.floor(v + 0.5) : -Math.floor(-v + 0.5); }
+  function imuI16(v) { v = imuRound(v); return ((v + 32768) % 65536 + 65536) % 65536 - 32768; }
+  function imuWorld() {
+    var hd = Number($('imu-hd').value), pt = Number($('imu-pt').value), sh = $('imu-shake').checked, ph = IMU.t * IMU_W;
+    return {
+      hd: hd + (sh ? 8 * Math.sin(ph) : 0), slider: hd, pt: pt, sh: sh,
+      yawDps: sh ? 8 * IMU_W * Math.cos(ph) : 0,
+      xDps: sh ? 6 * IMU_W * Math.cos(ph + 1.1) : 0,
+      drift: $('imu-drift').checked, magx: $('imu-magx').checked
+    };
+  }
+
+  function imuVals() {
+    var w = imuWorld(), rel = w.hd - IMU.base, g = rel + (w.drift ? 6 : 0);
+    var p = w.pt * Math.PI / 180, th = w.hd * Math.PI / 180;
+    var yr = imuRound(w.yawDps * 10), xr = imuRound(w.xDps * 10);
+    var flags = 1 | (w.sh ? 0 : 2) | 4 | (IMU.cal.acc ? 16 : 0) | (IMU.cal.mag ? 32 : 0) | 64 | 128;
+    return {
+      h3d: imuI16(g),
+      fused: imuI16(w.magx ? g : rel),
+      h1d: imuI16(g),
+      mag: imuI16(rel + (w.magx ? 35 : 0)),
+      yawRate: yr,
+      pitch: imuRound(w.pt),
+      pitchRate: xr,
+      trust: w.magx ? 0 : 230, disturb: w.magx ? 255 : 4,
+      upFace: w.pt > 45 ? 0 : w.pt < -45 ? 3 : 2,
+      gx: xr, gy: 0, gz: -yr,
+      ax: imuRound(1000 * Math.sin(p)), ay: 0, az: imuRound(1000 * Math.cos(p)),
+      mx: imuRound(350 * Math.cos(th)) + (w.magx ? 400 : 0), my: imuRound(-350 * Math.sin(th)), mz: -300,
+      flags: flags, devId: 362, proto: 2, fw: IMU.fw
+    };
+  }
+
+  function imuZero() { IMU.base = imuWorld().hd; $('imu-drift').checked = false; }
+  function imuStep() { IMU.t += 0.6; }
+
+  function imuProgram(id, zeroAtStart) { if (IMU.lastProg !== id) { IMU.lastProg = id; if (zeroAtStart) imuZero(); } }
+  function imuDraw(v, unplug, info) {
+    var w = imuWorld(), ir = getComputedStyle(document.documentElement).getPropertyValue('--ir').trim() || '#e04a3b';
+    var cx = 112, cy = 112, r = 62;
+    var h = '<rect x="0" y="0" width="460" height="200" fill="#f7f7f2"/>';
+    h += '<text x="' + cx + '" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="#3d4a47">Seen from above (heading)</text>';
+    h += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#cfd6d3" stroke-width="2" stroke-dasharray="5 5"/>';
+
+    var b = IMU.base * Math.PI / 180;
+    h += '<line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + Math.sin(b) * (r + 8)).toFixed(1) + '" y2="' + (cy - Math.cos(b) * (r + 8)).toFixed(1) + '" stroke="#8a9a96" stroke-width="2" stroke-dasharray="4 3"/>';
+    h += '<text x="' + (cx + Math.sin(b) * (r + 18)).toFixed(1) + '" y="' + (cy - Math.cos(b) * (r + 18) + 4).toFixed(1) + '" text-anchor="middle" font-size="11" fill="#6b7875">0°</text>';
+    if (w.magx) h += '<rect x="8" y="150" width="40" height="22" rx="4" fill="#b03a2e"/><text x="28" y="165" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">magnet</text>';
+    h += '<g transform="rotate(' + w.hd.toFixed(1) + ' ' + cx + ' ' + cy + ')">';
+    h += '<rect x="' + (cx - 20) + '" y="' + (cy - 30) + '" width="40" height="60" rx="7" fill="#1b2422"/>';
+    h += '<polygon points="' + cx + ',' + (cy - 44) + ' ' + (cx - 12) + ',' + (cy - 30) + ' ' + (cx + 12) + ',' + (cy - 30) + '" fill="' + ir + '"/>';
+    h += '<rect x="' + (cx - 27) + '" y="' + (cy - 18) + '" width="7" height="22" rx="2" fill="#5b6b67"/><rect x="' + (cx + 20) + '" y="' + (cy - 18) + '" width="7" height="22" rx="2" fill="#5b6b67"/>';
+    h += '<rect x="' + (cx - 9) + '" y="' + (cy - 6) + '" width="18" height="18" rx="3" fill="' + (unplug ? '#7d918c' : '#2f9e8f') + '"/>';
+    h += '</g>';
+    if (w.sh) h += '<text x="' + (cx + 58) + '" y="40" text-anchor="start" font-size="11" fill="' + ir + '">~ shaking</text>';
+
+    var sx = 345, sy = 132;
+    h += '<text x="' + sx + '" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="#3d4a47">Seen from the side (pitch)</text>';
+    h += '<line x1="245" y1="' + (sy + 22) + '" x2="450" y2="' + (sy + 22) + '" stroke="#b7c0bd" stroke-width="2"/>';
+    h += '<g transform="rotate(' + (-w.pt) + ' ' + sx + ' ' + sy + ')">';
+    h += '<rect x="' + (sx - 46) + '" y="' + (sy - 14) + '" width="92" height="26" rx="6" fill="#1b2422"/>';
+    h += '<circle cx="' + (sx - 28) + '" cy="' + (sy + 14) + '" r="9" fill="#5b6b67"/><circle cx="' + (sx + 28) + '" cy="' + (sy + 14) + '" r="9" fill="#5b6b67"/>';
+    h += '<rect x="' + (sx - 9) + '" y="' + (sy - 22) + '" width="18" height="8" rx="2" fill="' + (unplug ? '#7d918c' : '#2f9e8f') + '"/>';
+    h += '<line x1="' + (sx + 10) + '" y1="' + (sy - 18) + '" x2="' + (sx + 64) + '" y2="' + (sy - 18) + '" stroke="' + ir + '" stroke-width="2.5"/>';
+    h += '<polygon points="' + (sx + 70) + ',' + (sy - 18) + ' ' + (sx + 61) + ',' + (sy - 23) + ' ' + (sx + 61) + ',' + (sy - 13) + '" fill="' + ir + '"/>';
+    h += '<text x="' + (sx + 66) + '" y="' + (sy - 26) + '" font-size="11" font-weight="700" fill="' + ir + '">X</text>';
+    h += '</g>';
+    h += '<text x="446" y="' + (sy + 16) + '" text-anchor="end" font-size="11" fill="#6b7875">front →</text>';
+    if (info) {
+      info.forEach(function (t, i) { h += '<text x="' + (i < 2 ? 14 : 446) + '" y="' + (i % 2 ? 196 : 180) + '" text-anchor="' + (i < 2 ? 'start' : 'end') + '" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#16201e">' + t + '</text>'; });
+    }
+    if (unplug) h += '<text x="230" y="64" text-anchor="middle" font-size="15" font-weight="700" fill="' + ir + '" stroke="#fff" stroke-width="4" paint-order="stroke">' + (typeof IMU_UNPLUG_TXT === 'function' ? IMU_UNPLUG_TXT() : 'Sensor unplugged') + '</text>';
+    $('field').innerHTML = h;
+    $('imu-hdv').textContent = $('imu-hd').value; $('imu-ptv').textContent = $('imu-pt').value;
+  }
+
+  function imuBind(changed, skipInputs) {
+    function nudge(d) { var e = $('imu-hd'); e.value = Math.max(-720, Math.min(720, Number(e.value) + d)); changed(); }
+    $('imu-l90').addEventListener('click', function () { nudge(-90); });
+    $('imu-r90').addEventListener('click', function () { nudge(90); });
+    $('imu-zero').addEventListener('click', function () { imuZero(); changed(); });
+    if (!skipInputs) ['imu-hd', 'imu-pt', 'imu-shake', 'imu-drift', 'imu-magx'].forEach(function (id) { $(id).addEventListener('input', changed); });
+  }
+
+
+  var S = { step: 1, view: 1, fn: "h3d" };
+  var SCALE = 0.72;
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function pic(k, scale) {
+    var d = BLK.pics[k], s = scale || (BLK.kind === 'img' && k === 'reps' ? 0.9 : SCALE);
+    if (BLK.kind === 'svg') {
+      var g = d.g.replace(/§(\d+)/g, function (m, i) { return BLK.img[+i]; });
+      return '<svg class="lego" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="' + d.vb + '" width="' + Math.round(d.w * s) + '" height="' + Math.round(d.h * s) + '" role="img"><g>' + g + '</g></svg>';
+    }
+    return '<img class="shot" src="' + BLK.img[d.i] + '" width="' + Math.round(d.w * s) + '" height="' + Math.round(d.h * s) + '" alt="EV3-G program screenshot">';
+  }
+  var FNS = [{"id":"h3d","name":"angle (gyro 3D heading)","grp":"Heading (how far it turned)","ret":"-32768 ~ 32767 degrees (0 at power-on / reset, bigger turning right)","what":"The gyro \"angle\" reads the <b>gyro 3D heading</b>; try this one first. The sensor works out how it is mounted, so even a tilted mount is right. Right is bigger, left smaller; one full turn = 360 and it keeps adding up (it does not go back to 0).","lab":"ANGLE","v":"h3d"},{"id":"fused","name":"rate (fused heading)","grp":"Heading (how far it turned)","ret":"-32768 ~ 32767 degrees (0 at power-on / reset, bigger turning right)","what":"The gyro \"rate\" reads the <b>fused heading</b>, <b>not degrees per second</b>: the gyro 3D heading slowly corrected by the magnetometer, so it does not drift on long runs. Near motors or an iron field the correction stops by itself. Tick \"Running a long time\" below: the angle gains 6°, the rate (fused heading) does not.","lab":"FUSED","v":"fused"},{"id":"zero","name":"reset angle (zero all four headings)","grp":"Zeroing","ret":"all four headings become 0","what":"The gyro \"reset\" makes the sensor <b>zero all four headings (3D, fused, 1D, magnetic) at once</b>: the direction the robot faces now becomes 0. Put it before the loop to do it once at the start, and keep the robot still then. Picking this card is like running the program again, so the simulator zeroes once (the simulator's \"Zero\" button is the same thing).","lab":"ANGLE","v":"h3d"}];
+  var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; });
+  function screenRows(id, v, u) { var f = BY[id]; return [f.lab + ' ' + (u ? '----' : v[f.v])]; }
+  var lastKey = {};
+  function setHTML(el, key, html) {
+    if (lastKey[el.id] === key) return;
+    var changed = lastKey[el.id] !== undefined;
+    lastKey[el.id] = key; el.innerHTML = html;
+    if (changed) { var w = el.querySelector('.blk-wrap:last-child') || el; w.classList.remove('flash'); void w.offsetWidth; w.classList.add('flash'); }
+  }
+  function wrap(label, inner) { return '<div class="blk-wrap">' + (label ? '<div class="stepmark">' + label + '</div>' : '') + inner + '</div>'; }
+  function drawBlocks() {
+    var parts = [];
+    if (S.view === 1) parts.push(wrap('Step 1', pic('step1')));
+    else if (S.view === 2) parts.push(wrap('Step 1', pic('step1')), wrap('Step 2: reading blocks', pic('reps')));
+    else parts.push(wrap('Steps 1 to 3', pic(S.fn)));
+    setHTML($('mainblocks'), [S.view, S.fn].join(), parts.join(''));
+    setHTML($('miniws1'), 'step1', wrap('', pic('step1')));
+    setHTML($('miniws2'), 'reps', wrap('', pic('reps')));
+    setHTML($('miniws3'), S.fn, wrap('', pic(S.fn)));
+  }
+  function makeMini(k) { $('mini' + k).innerHTML = '<span>Blocks for this step</span><div class="ws" id="miniws' + k + '"></div>'; }
+  var TIPS = ["Step 1: attach \"forever\" under \"when program starts\" and put \"wait 0.1 seconds\" inside.","Step 2: Gyro Sensor blocks, port 1.","Step 3: put the reading block in \"write … at line …\", inside forever, above wait; \"reset angle\" goes before forever."];
+  function drawAll() { drawBlocks(); var b = $('bubble'); b.querySelector('i').textContent = S.view; b.querySelector('span').textContent = TIPS[S.view - 1]; }
+  function setStep(n) {
+    S.step = Math.max(S.step, n); S.view = n;
+    [1, 2, 3].forEach(function (k) { var el = $('step' + k); el.classList.toggle('current', k === n); el.classList.toggle('done', k < S.step && k !== n); el.classList.toggle('locked', k > S.step); });
+    drawAll();
+  }
+  function drawPicker() {
+    var g = {}, order = []; FNS.forEach(function (f) { if (!g[f.grp]) { g[f.grp] = []; order.push(f.grp); } g[f.grp].push(f); });
+    var box = $('picker'); box.innerHTML = '';
+    order.forEach(function (k) {
+      var w = document.createElement('div'); w.className = 'fgroup'; w.innerHTML = '<span>' + k + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      g[k].forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = f.name; b.title = f.id;
+        b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      w.appendChild(chips); box.appendChild(w);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + f.name + '</b><span>' + f.what + '</span><span class="small">Range: ' + esc(f.ret) + '</span>';
+  }
+  function pick(id) { S.fn = id; setStep(3); drawPicker(); tick(true); }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    FNS.forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      c.innerHTML = '<div class="card-head"><h3>' + f.name + '</h3></div><p>' + f.what + '</p>' +
+        '<dl class="meta"><dt>Range</dt><dd>' + esc(f.ret) + '</dd></dl>' +
+        '<div class="ws">' + pic(f.id, 0.62) + '</div><p class="out">The simulator shows: <code></code></p><button type="button" class="try">Try it</button>';
+      c.querySelector('.try').addEventListener('click', function () { pick(f.id); var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ block: 'start' }); });
+      box.appendChild(c);
+    });
+  }
+  function IMU_UNPLUG_TXT() { return 'Sensor unplugged: the EV3 cannot read it and shows ----'; }
+  function tick(reset) {
+    if (S.step >= 3 && IMU.lastProg !== S.fn) imuProgram(S.fn, S.fn === 'zero' && !$('unplug').checked);
+    var v = imuVals(), u = $('unplug').checked;
+    imuDraw(v, u, u ? [] : ['ANGLE ' + v.h3d, 'FUSED ' + v.fused, 'G1D ' + v.h1d, 'MAG ' + v.mag]);
+    FNS.forEach(function (g) { var el = document.querySelector('#fn-' + g.id + ' .out code'); if (el) el.textContent = screenRows(g.id, v, u).join(' / '); });
+    if (S.step < 3) { $('console').innerHTML = esc('(Finish step 3 and the EV3 screen text appears here)'); return; }
+    var lines = screenRows(S.fn, v, u).map(function (t) { return '<span>' + esc(t) + '</span>'; });
+    if (u) lines.push('<span class="warnline">' + esc('(note) The EV3 cannot read the sensor: the number becomes ----, each reading waits about 1.2 s; plug it back in and it recovers') + '</span>');
+    $('console').innerHTML = lines.join('\n');
+  }
+  $('next1').addEventListener('click', function () { setStep(2); });
+  $('next2').addEventListener('click', function () { setStep(3); drawPicker(); tick(true); });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) { $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } }); });
+  $('unplug').addEventListener('input', function () { tick(false); });
+  imuBind(function () { tick(false); });
+  [1, 2, 3].forEach(makeMini);
+  drawPicker(); drawCards(); drawAll(); tick(true);
+  setInterval(function () { imuStep(); tick(false); }, 600);
+
+})();
+</script>
+<script>
+(function () {
+  var side = document.querySelector('.side'); if (!side) return;
+  var mq = window.matchMedia('(max-width: 900px)');
+  var home = side.parentNode, homeNext = side.nextSibling;
+  var con = document.getElementById('console'), conP = con && con.closest('.panel');
+  if (conP && conP.parentNode !== side) conP = null;
+  var last = null, ready = false;
+  var STOP = '.step-body, .cards, .ref, .steps, .main, .wrap, body';
+  function anchorOf(el) { var a = el; while (a && a.parentElement && !a.parentElement.matches(STOP)) a = a.parentElement; return a && a.parentElement ? a : null; }
+  function flash(el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  // 把 box 搬到 a 那一塊的後面；a 在畫面上的位置維持不動（點下去時就記住 a：頁面常在點擊後重畫按鈕，按鈕本身會被換掉）
+  function moveAfter(box, a) {
+    if (!a || !a.isConnected || a === box || a.contains(box)) return false;
+    if (a.nextElementSibling === box) return true;
+    var y = a.getBoundingClientRect().top;
+    a.parentNode.insertBefore(box, a.nextSibling); box.classList.add('follow');
+    var d = a.getBoundingClientRect().top - y; if (d) window.scrollBy(0, d);
+    return true;
+  }
+  function inPanel(el) { return side.contains(el) || (conP && conP.contains(el)); }
+  function placeSide(a, scroll) {
+    if (!mq.matches || !a) return;
+    if (conP && conP.parentNode !== side) { conP.classList.remove('follow'); side.appendChild(conP); }
+    if (!moveAfter(side, a)) return;
+    if (scroll) { var r = side.getBoundingClientRect(); if (r.top > window.innerHeight * 0.7) window.scrollBy({ top: r.top - window.innerHeight * 0.3, behavior: 'smooth' }); }
+  }
+  function placeConsole(el) {
+    if (!mq.matches || !conP || inPanel(el)) return;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在「正在操作的那一排」正下方（排＝控制區的直接子元素），
+    // 畫面、那一排、輸出同一屏；控制區很長或那一排在最下面（例如拔線勾選）都不會跑出畫面
+    var sim = el.closest('.sim'), ctrl = null, row = null;
+    if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (ctrl && ctrl !== el) for (var j = 0; j < ctrl.children.length; j++) if (ctrl.children[j].contains(el)) row = ctrl.children[j];
+    if (sim && ctrl) {
+      var box = row ? ctrl : sim, after = row || null;
+      if (after ? after.nextElementSibling === conP : conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var y = el.getBoundingClientRect().top;
+      if (after) box.insertBefore(conP, after.nextSibling); else sim.insertBefore(conP, ctrl);
+      conP.classList.add('follow');
+      var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
+      return;
+    }
+    var a = anchorOf(el); if (a && a.nextElementSibling === side) return; // 程式那格已經緊接在下面，輸出就在它裡面
+    moveAfter(conP, a);
+  }
+  function reset() {
+    if (mq.matches) { var b = document.querySelector('#step1 .step-body button') || document.querySelector('#step1 button'); if (b) placeSide(anchorOf(b), false); return; }
+    if (conP) { conP.classList.remove('follow'); side.appendChild(conP); }
+    side.classList.remove('follow'); home.insertBefore(side, homeNext);
+  }
+  function remember(e) { if (!inPanel(e.target)) last = anchorOf(e.target); }
+  document.addEventListener('pointerdown', remember, true);
+  document.addEventListener('focusin', remember, true);
+  var mo = new MutationObserver(function () { if (ready && mq.matches) { placeSide(last, true); flash(side); } });
+  ['maincode', 'mainblocks'].forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true }); });
+  function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
+  document.addEventListener('input', sim, true);
+  document.addEventListener('change', sim, true);
+  // 模擬器裡的按鈕（掌控者按鍵、色點調色盤…）也算在操作模擬器
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.sim button'); if (b) placeConsole(b); }, true);
+  reset(); setTimeout(function () { ready = true; }, 800);
+  if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
+})();
+</script>
+</body>
+</html>

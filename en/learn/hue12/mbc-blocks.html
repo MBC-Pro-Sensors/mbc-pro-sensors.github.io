@@ -219,6 +219,9 @@ svg.blk .blocklyIconSymbol { fill: #fff; }
 .learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
 .learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
 .learn-nav .lang { font-weight: 700; }
+[hidden] { display: none !important; }  /* 頁面用 hidden 切換「積木／程式」，.ws{display:grid} 會蓋掉它 */
+.learn-nav .tabs .tl { color: var(--muted, #666); font-size: 0.8rem; align-self: center; }
+.learn-nav .tabs .tsep { flex-basis: 100%; height: 0; }
 @media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
 /* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
    排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
@@ -231,7 +234,7 @@ svg.blk .blocklyIconSymbol { fill: #fff; }
   .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
   body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
   .panel.follow { margin: 12px 0 16px; }
-  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow { grid-column: 1 / -1; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow, .ctrl > .panel.follow { grid-column: 1 / -1; }
   .flash { animation: followFlash 1.2s ease-out; }
   @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
   /* 點選目標放大：選項、勾選框、拉桿 */
@@ -247,7 +250,7 @@ svg.blk .blocklyIconSymbol { fill: #fff; }
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/esp32cam/spike/">← Sharpshooter Vision WRO SPIKE guide</a><a class="lang" href="/learn/hue12/mbc-blocks.html" hreflang="zh-Hant">中文</a><div class="tabs"><a href="/en/learn/hue12/micropython.html">MicroPython (Pybricks)</a><a href="/en/learn/hue12/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/hue12/mbc-blocks.html" aria-current="page">MBC Blocks website</a><a href="/en/learn/hue12/spike-app.html">LEGO SPIKE App</a></div></div></nav>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/esp32cam/spike/">← Sharpshooter Vision WRO SPIKE guide</a><a class="lang" href="/learn/hue12/mbc-blocks.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/hue12/micropython.html" aria-current="page">SPIKE</a><a href="/en/learn/hue12/ev3-pybricks.html">EV3</a><a href="/en/learn/hue12/arduino.html">Arduino</a><a href="/en/learn/hue12/mblock.html">mBlock</a><a href="/en/learn/hue12/matrix.html">MATRIX</a><a href="/en/learn/hue12/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/hue12/micropython.html">MicroPython (Pybricks)</a><a href="/en/learn/hue12/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/hue12/mbc-blocks.html" aria-current="page">MBC Blocks website</a><a href="/en/learn/hue12/spike-app.html">LEGO SPIKE App</a></div></div></nav>
 <div class="wrap">
   <header class="top">
     <span class="eyebrow">MBC Sharpshooter Vision WRO edition (HUE12) × MBC SPIKE Blocks website</span>
@@ -619,13 +622,17 @@ var BLK = {"img":["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAKCAQAAAA
   }
   function placeConsole(el) {
     if (!mq.matches || !conP || inPanel(el)) return;
-    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在畫面和控制區中間，拖拉桿時畫面、輸出、拉桿同一屏
-    var sim = el.closest('.sim'), ctrl = null;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在「正在操作的那一排」正下方（排＝控制區的直接子元素），
+    // 畫面、那一排、輸出同一屏；控制區很長或那一排在最下面（例如拔線勾選）都不會跑出畫面
+    var sim = el.closest('.sim'), ctrl = null, row = null;
     if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (ctrl && ctrl !== el) for (var j = 0; j < ctrl.children.length; j++) if (ctrl.children[j].contains(el)) row = ctrl.children[j];
     if (sim && ctrl) {
-      if (conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var box = row ? ctrl : sim, after = row || null;
+      if (after ? after.nextElementSibling === conP : conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
       var y = el.getBoundingClientRect().top;
-      sim.insertBefore(conP, ctrl); conP.classList.add('follow');
+      if (after) box.insertBefore(conP, after.nextSibling); else sim.insertBefore(conP, ctrl);
+      conP.classList.add('follow');
       var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
       return;
     }
@@ -645,6 +652,8 @@ var BLK = {"img":["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAKCAQAAAA
   function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
   document.addEventListener('input', sim, true);
   document.addEventListener('change', sim, true);
+  // 模擬器裡的按鈕（掌控者按鍵、色點調色盤…）也算在操作模擬器
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.sim button'); if (b) placeConsole(b); }, true);
   reset(); setTimeout(function () { ready = true; }, 800);
   if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
 })();

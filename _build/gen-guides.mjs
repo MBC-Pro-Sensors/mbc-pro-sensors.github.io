@@ -192,12 +192,12 @@ function readIntro(host, sw, p, lang) {
     'ev3/classroom': T(lang, '感應器在 EV3 會顯示成樂高原廠感應器，用 Classroom 的原廠感應器積木讀（Classroom 沒有繁中介面，積木名稱用英文）。', 'The EV3 sees a stock LEGO sensor; read it with the stock Classroom sensor blocks.'),
     'ev3/pybricks': T(lang, '程式假設感應器插 1 號孔，用 `LUMPDevice` 讀原始模式；EV3 MicroPython v2 寫法相同。', 'Code assumes port 1 and reads raw modes with `LUMPDevice`; EV3 MicroPython v2 works the same way.'),
     'ev3/clev3r': T(lang, '程式假設感應器插 1 號孔：`Sensor.SetMode` 選模式、`Sensor.ReadRawValue` 讀第幾個值。', 'Code assumes port 1: `Sensor.SetMode` picks the mode, `Sensor.ReadRawValue` reads the n-th value.'),
-    'arduino/ide': T(lang, `下面的寫法都用到 \`mbcRead()\` 小幫手（展開「小幫手程式」貼在程式最下面），位址 \`${p.addr}\`。`, `Every snippet uses the \`mbcRead()\` helper (expand "Helper code" and paste it at the bottom of your sketch); address \`${p.addr}\`.`),
+    'arduino/ide': T(lang, `下面的寫法都用到 \`mbcRead()\` 小幫手：展開「小幫手程式」，第 ① 段（2 行）放在程式最上面、第 ② 段貼在程式最下面，位址 \`${p.addr}\`。`, `Every snippet uses the \`mbcRead()\` helper: expand "Helper code", put part ① (2 lines) at the top of your sketch and paste part ② at the bottom; address \`${p.addr}\`.`),
     'mblock/mblock5': T(lang, `裝好 MBC Pro Sensors 擴展後，在「${cat}」分類找積木，連接埠選感應器實際插的孔。`, `After adding the MBC Pro Sensors extension, find the blocks in the "${cat}" category and pick the port the sensor is plugged into.`),
     'matrix/matrixblock': T(lang, '用 MATRIXblock 原廠「顏色感應器」積木的 R／G／B／C／M／Y／K 讀（不要用 H／S／V 與顏色辨識積木）；Arduino 模式寫法一併列出。', 'Use the stock MATRIXblock colour-sensor R / G / B / C / M / Y / K blocks (not H / S / V or colour ID); the Arduino-mode line is shown too.'),
     'matrix/bigchannel': T(lang, '換上大通道函式庫後，用下面的 `bigU8()`／`bigU16()` 小幫手讀第幾個 byte（展開「小幫手程式」）。', 'With the big-channel library installed, read byte n with the `bigU8()` / `bigU16()` helpers (expand "Helper code").'),
     'matrix/mvision': T(lang, '神攝手在 MATRIX 走串口，用 MATRIXblock 內建的 mVision 攝影機積木讀，不用 I2C。', 'On MATRIX the camera talks serial; read it with the built-in mVision camera blocks, not I2C.'),
-    'microbit/makecode': T(lang, `MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC」分類找積木；JavaScript 寫法一併列出，位址 \`${p.addr}\`。`, `After adding pxt-mbc-sensors, find the blocks in the MBC category; the JavaScript form is shown too, address \`${p.addr}\`.`),
+    'microbit/makecode': T(lang, `MakeCode 加入 pxt-mbc-sensors 擴充後，在「MBC 感應器」分類找積木；JavaScript 寫法一併列出，位址 \`${p.addr}\`。`, `After adding pxt-mbc-sensors, find the blocks in the MBC Sensors category; the JavaScript form is shown too, address \`${p.addr}\`.`),
   };
   return M[`${host}/${sw}`] || '';
 }
@@ -222,7 +222,7 @@ function readingsBlock(key, host, sw, p, lang, sp, avail, heading, idPre) {
   out.push(`## ${heading}`, '');
   const intro = readIntro(host, sw, p, lang);
   if (intro) out.push(intro, '');
-  if (host === 'arduino') out.push(`<details class="helper">\n<summary>${T(lang, '小幫手程式（貼在程式最下面）', 'Helper code (paste at the bottom of your sketch)')}</summary>\n\n${fence(i2c.helpers(p, lang), 'cpp')}\n\n</details>`, '');
+  if (host === 'arduino') out.push(`<details class="helper">\n<summary>${T(lang, '小幫手程式（① 放最上面、② 貼最下面）', 'Helper code (① at the top, ② at the bottom)')}</summary>\n\n${i2c.helperParts(p, lang)}\n\n</details>`, '');
   if (host === 'matrix' && sw === 'bigchannel') out.push(`<details class="helper">\n<summary>${T(lang, '小幫手程式', 'Helper code')}</summary>\n\n${fence(matrix.bigHelpers(lang), 'cpp')}\n\n</details>`, '');
   const missing = [];
   for (const v of p.values) {
@@ -232,8 +232,17 @@ function readingsBlock(key, host, sw, p, lang, sp, avail, heading, idPre) {
     out.push(`### ${valueName(v, lang)} <small>${v.key}</small>`, '');
     const rel = `images/figures/${key}/value-${v.key}.svg`;
     if (v.figure && v.figure.tpl && exists(rel)) out.push(`<figure class="ref-fig"><img src="/${rel}" alt="${valueName(v, lang)}" loading="lazy"></figure>`, '');
-    out.push(table([T(lang, '範圍', 'Range'), T(lang, '意思', 'Meaning')], [[`\`${v.range}\`${v.unit ? ` ${v.unit}` : ''}`, L(v.desc, lang)]]), '');
+    // EV3 有些模式送的是換算值（protocol scale），範圍欄要講清楚，不然會照值本身的範圍去用
+    const sc = host === 'ev3' ? (v.ev3 || []).filter((e) => e.scale) : [];
+    const scNote = sc.length ? T(lang, `（EV3 ${sc.map((e) => `模式 ${e.mode}`).join('、')} 讀到的是換算值：${sc[0].scale}）`, ` (EV3 ${sc.map((e) => `mode ${e.mode}`).join(', ')} ${sc.length > 1 ? 'give' : 'gives'} a scaled value: ${ev3.scaleText(sc[0].scale, 'en')})`) : '';
+    out.push(table([T(lang, '範圍', 'Range'), T(lang, '意思', 'Meaning')], [[`\`${v.range}\`${v.unit ? ` ${v.unit}` : ''}${scNote}`, L(v.desc, lang)]]), '');
     out.push(renderResult(r), '', '</section>', '');
+  }
+  // mBlock 擴展另外做的布林積木（循行者第 N 路在線上？、掌控者按鈕被按下？），不在值表裡
+  if (host === 'mblock') for (const x of mblock.extraReporters(p, lang)) {
+    out.push(`<section id="${idPre}x-${x.key.toLowerCase()}" class="ref-item">`, '', `### ${x.name} <small>${x.key}</small>`, '');
+    out.push(table([T(lang, '範圍', 'Range'), T(lang, '意思', 'Meaning')], [[T(lang, '是／否', 'true/false'), x.desc]]), '');
+    out.push(x.html, '', '</section>', '');
   }
   if (missing.length) {
     // 改用：同平台讀得到的其他軟體；都沒有就建議 Arduino I2C／mBlock／micro:bit（這款有的）
@@ -245,10 +254,11 @@ function readingsBlock(key, host, sw, p, lang, sp, avail, heading, idPre) {
   }
   // 命令
   const cmds = p.commands || [];
-  if (cmds.length) {
+  const extraCmds = host === 'mblock' ? mblock.extraCommands(p, lang) : [];   // mBlock 每類一顆「更新全部數值」
+  if (cmds.length || extraCmds.length) {
     out.push(`## ${T(lang, '命令', 'Commands')}${idPre === 'w' ? T(lang, '（WRO 版）', ' (WRO edition)') : ''}`, '');
     const ok = cmds.map((c) => [c, cmdOf(host, sw, p, c, lang)]).filter(([, r]) => r);
-    if (!ok.length) {
+    if (!ok.length && !extraCmds.length) {
       out.push(host === 'spike' || host === 'ev3'
         ? T(lang, `${hName} 接頭是唯讀的，這個軟體不能送命令：校準用感應器上的按鈕，切黑白線、門檻等設定改用 Arduino I2C、mBlock 或 micro:bit。`, `The ${hName} port is read-only, so this software cannot send commands: calibrate with the button on the sensor and change settings over Arduino I2C, mBlock or micro:bit.`)
         : T(lang, '這個軟體不能送命令；需要時改用 Arduino I2C、mBlock 或 micro:bit。', 'This software cannot send commands; use Arduino I2C, mBlock or micro:bit if you need them.'), '');
@@ -257,6 +267,10 @@ function readingsBlock(key, host, sw, p, lang, sp, avail, heading, idPre) {
         out.push(`<section id="${idPre === 'w' ? 'wc' : 'c'}${c.id.toLowerCase()}" class="ref-item ref-cmd">`, '');
         out.push(`### ${L(c.name, lang)} <small>${c.key}</small>`, '', L(c.desc, lang), '');
         out.push(renderResult(r), '', '</section>', '');
+      }
+      for (const x of extraCmds) {
+        out.push(`<section id="${idPre === 'w' ? 'wc' : 'c'}x-${x.key.toLowerCase()}" class="ref-item ref-cmd">`, '');
+        out.push(`### ${x.name} <small>${x.key}</small>`, '', x.desc, '', x.html, '', '</section>', '');
       }
       const no = cmds.filter((c) => !ok.some(([x]) => x === c));
       if (no.length) out.push(`<p class="ref-missing"><b>${T(lang, '這個軟體送不了', 'Not available here')}</b>：${no.map((c) => L(c.name, lang)).join(T(lang, '、', ', '))}</p>`, '');

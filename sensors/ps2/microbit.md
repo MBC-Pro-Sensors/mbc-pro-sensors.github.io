@@ -20,34 +20,40 @@
 
 | 感應器 | micro:bit |
 | :--- | :--- |
-| SDA | P20 |
-| SCL | P19 |
-| 5V | 外接 5 V（或 V2 的 3V 腳，需確認電流） |
+| SDA（RX） | P20 |
+| SCL（TX） | P19 |
+| VCC | micro:bit 3V（電池供電時建議外接 5 V） |
 | GND | GND |
 
 ## 讀值積木
 
 | 積木 | 傳回 | 編號 | 說明 |
 | :--- | :--- | :--- | :--- |
-| MBC 十六鍵 | 0~65535 bit | [`01`](/sensors/ps2/reference.md#v01) | 16 個按鍵合成一個數（PSX 排列，1 = 按下）：bit0 SELECT、1 L3、2 R3、3 START、4 上、5 右、6 下、7 左、8 L2、9 R2、10 L1、11 R1、12 ▲、13 ●、14 ✕、15 ■；未連線 = 0 |
-| MBC 方向鍵 | 0~15 bit | [`02`](/sensors/ps2/reference.md#v02) | 上 1、右 2、下 4、左 8（同時按相加），0~15；未連線 = 0 |
-| MBC 形狀鍵 | 0~15 bit | [`03`](/sensors/ps2/reference.md#v03) | ▲ 1、● 2、✕ 4、■ 8（同時按相加），0~15；未連線 = 0；0x22 的 R 高 4 bit |
-| MBC 肩鍵 | 0~15 bit | [`04`](/sensors/ps2/reference.md#v04) | L2 1、R2 2、L1 4、R1 8（同時按相加），0~15；未連線 = 0 |
-| MBC 功能鍵 | 0~15 bit | [`05`](/sensors/ps2/reference.md#v05) | SELECT 1、L3 2、R3 4、START 8（同時按相加），0~15；未連線 = 0；0x22 的 G 高 4 bit |
-| MBC 手把已連線？ | 0~1 | [`06`](/sensors/ps2/reference.md#v06) | 1 = 手把已連線（psx.read() 成功），0 = 沒有；未連線時所有按鍵 0、搖桿回中 |
-| MBC 電量 | 0 % | [`07`](/sensors/ps2/reference.md#v07) | 0~100；PS2 手把沒有電量 → 恆 0（PS4 才有） |
-| MBC L2 類比 | 0~255 | [`08`](/sensors/ps2/reference.md#v08) | L2 壓力 0~255（DualShock 2 類比模式才有壓力值；手把沒有壓力值時按下 = 255、放開 = 0）；未連線 = 0 |
-| MBC R2 類比 | 0~255 | [`09`](/sensors/ps2/reference.md#v09) | R2 壓力 0~255（同 08）；未連線 = 0 |
-| MBC 系統鍵 | 0 bit | [`0A`](/sensors/ps2/reference.md#v0a) | b0 PS 鍵、b1 擷取鍵；PS2 手把沒有 → 恆 0（PS4 才有） |
-| MBC 手把類型 | 0~2 | [`0B`](/sensors/ps2/reference.md#v0b) | 0 沒有手把、1 PS2 數位模式、2 PS2 類比模式（3 PS4、4 PS5 只有 PS4 接收器會出現） |
-| MBC 搖桿 [LX/LY/RX/RY] | -100~+100 | [`10~13`](/sensors/ps2/reference.md#v10) | 10 LX、11 LY、12 RX、13 RY：−100 ~ +100，0 = 中間，右／上為正（原始 0~255 死區 ±7 吸成中心）；未連線 = 0。EV3／SPIKE／MATRIX 送的是 0~99（50 = 中間）或 1~9（5 = 中間），見各平台欄 |
+| 掌控者 十六鍵位元圖 | 0~65535 bit | [`01`](/sensors/ps2/reference.md#v01) | 16 個按鍵合成一個數（PSX 排列，1 = 按下）：bit0 SELECT、1 L3、2 R3、3 START、4 上、5 右、6 下、7 左、8 L2、9 R2、10 L1、11 R1、12 ▲、13 ●、14 ✕、15 ■；未連線 = 0 |
+| 掌控者 ［方向鍵］（0~15） | 0~15 bit | [`02`](/sensors/ps2/reference.md#v02) | 上 1、右 2、下 4、左 8（同時按相加），0~15；未連線 = 0 |
+| 掌控者 ［形狀鍵］（0~15） | 0~15 bit | [`03`](/sensors/ps2/reference.md#v03) | ▲ 1、● 2、✕ 4、■ 8（同時按相加），0~15；未連線 = 0；0x22 的 R 高 4 bit |
+| 掌控者 ［肩鍵］（0~15） | 0~15 bit | [`04`](/sensors/ps2/reference.md#v04) | L2 1、R2 2、L1 4、R1 8（同時按相加），0~15；未連線 = 0 |
+| 掌控者 ［功能鍵］（0~15） | 0~15 bit | [`05`](/sensors/ps2/reference.md#v05) | SELECT 1、L3 2、R3 4、START 8（同時按相加），0~15；未連線 = 0；0x22 的 G 高 4 bit |
+| 掌控者 手把已連線？ | 0~1 | [`06`](/sensors/ps2/reference.md#v06) | 1 = 手把已連線（psx.read() 成功），0 = 沒有；未連線時所有按鍵 0、搖桿回中 |
+| 掌控者 電量（百分比） | 0 % | [`07`](/sensors/ps2/reference.md#v07) | 0~100；PS2 手把沒有電量 → 恆 0（PS4 才有） |
+| 掌控者 扳機 ［L2］ 類比值 | 0~255 | [`08`](/sensors/ps2/reference.md#v08) | L2 壓力 0~255（DualShock 2 類比模式才有壓力值；手把沒有壓力值時按下 = 255、放開 = 0）；未連線 = 0 |
+| 掌控者 扳機 ［R2］ 類比值 | 0~255 | [`09`](/sensors/ps2/reference.md#v09) | R2 壓力 0~255（同 08）；未連線 = 0 |
+| 掌控者 手把類型 | 0~2 | [`0B`](/sensors/ps2/reference.md#v0b) | 0 沒有手把、1 PS2 數位模式、2 PS2 類比模式（3 PS4、4 PS5 只有 PS4 接收器會出現） |
+| 掌控者 搖桿 ［左搖桿 X／左搖桿 Y／右搖桿 X／右搖桿 Y］ | -100~+100 | [`10~13`](/sensors/ps2/reference.md#v10) | 10 LX、11 LY、12 RX、13 RY：−100 ~ +100，0 = 中間，右／上為正（原始 0~255 死區 ±7 吸成中心）；未連線 = 0。EV3／SPIKE／MATRIX 送的是 0~99（50 = 中間）或 1~9（5 = 中間），見各平台欄 |
+
+### 其他積木（是／否、事件）
+
+| 積木 | 相關的值 |
+| :--- | :--- |
+| 掌控者 按鈕 ［✕］ 被按住？ | [`01`](/sensors/ps2/reference.md#v01) |
+| 當掌控者 按鈕 ［✕］ ［按下］ | [`01`](/sensors/ps2/reference.md#v01) |
 
 ## 命令積木
 
 | 積木 | 編號 | 說明 |
 | :--- | :--- | :--- |
-| MBC 震動強度 [n] | [`E5`](/sensors/ps2/reference.md#ce5) | [強度 0~255]，0 = 停；PS2 接收器收到後回 ACK 但忽略（250614 已關手把震動），PS4 才有作用 |
-| MBC 燈條顏色 R[r] G[g] B[b] | [`E6`](/sensors/ps2/reference.md#ce6) | [R][G][B] 各 0~255；PS2 手把沒有燈條，接收器收到後回 ACK 但忽略，PS4 才有作用 |
+| 掌控者 震動 強度 200 | [`E5`](/sensors/ps2/reference.md#ce5) | [強度 0~255]，0 = 停；PS2 接收器收到後回 ACK 但忽略（250614 已關手把震動），PS4 才有作用 |
+| 掌控者 燈條顏色 #ff0000 | [`E6`](/sensors/ps2/reference.md#ce6) | [R][G][B] 各 0~255；PS2 手把沒有燈條，接收器收到後回 ACK 但忽略，PS4 才有作用 |
 
 ## 狀態
 
@@ -59,9 +65,11 @@
 ## JavaScript 寫法
 
 ```typescript
+if (!(mbc.waitReady(0x42, 3000))) {
+    basic.showIcon(IconNames.No)   // 讀不到：檢查接線與電源
+}
 basic.forever(function () {
-    let buttons16 = MBC.readValue(0x42, 0x01)   // 十六鍵
-    basic.showNumber(buttons16)
+    basic.showNumber(mbc.padButtons())   // 十六鍵
     basic.pause(100)
 })
 ```
@@ -77,4 +85,4 @@ basic.forever(function () {
 - EV3：模式 0、1、2、4 鎖住（照盤點）；模式 3 改 方向|形狀<<4|已連線<<8（原本沒有 bit8）；模式 5 改成 ID 格式 B（原本 = 按鍵／搖桿合併版）。
 - SPIKE：0/5/7/9 鎖住，1、2、4、6 維持不動；模式 3 改 [已連線, 電量(0), 0]（原本 = 4 組按鍵）；模式 8 改 v[0] = ID|hw[0]<<8（原本 = 搖桿）。模式 9 v[6] button16 = PSX 排列（D3）。
 - SPIKE 模式 5 只容得下 11 鍵（L2、R2、L3、R3、START 讀不到），鎖住不改。
-- 擴充內部用 `Int16LE` 讀、寫完編號 `basic.pause(2)`（D5）。
+- 擴充內部用 `Int16LE` 讀、寫完編號 `basic.pause(2)`（D5）；感應器沒接好時讀值積木回 0、是／否積木回「否」。

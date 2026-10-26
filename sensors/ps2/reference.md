@@ -92,7 +92,7 @@ EV3 模式沒有送這個值（EV3 封包以已鎖住的模式為準）。需要
 <details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
-讀不到（沒接、位址錯）時回 `MBC_NONE`（−32768）。
+這個值本身就可能是 −32768（最高位元 = 1，例如 `0x8000`），跟讀不到時回的 `MBC_NONE` 一樣，不要拿 −32768 判斷有沒有讀到：要分辨就改用 `mbcReadMany(0x42, 0x01, 1, &buttons16)`，回傳 `false` 才是讀不到。
 
 ```cpp
 int16_t buttons16 = mbcRead(0x42, 0x01);   // 十六鍵：0~65535 bit
@@ -119,12 +119,25 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 十六鍵 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 十六鍵位元圖 :: #00A4E4)</pre>
 
 ```typescript
-let buttons16 = MBC.readValue(0x42, 0x01)   // 十六鍵：0~65535 bit
+let buttons16 = mbc.padButtons()   // 十六鍵：0~65535 bit
+```
+
+**相關積木「掌控者 按鈕 ［✕］ 被按住？」**
+
+```typescript
+let padButtonPressed = mbc.padButtonPressed(MbcPadButton.Cross)
+```
+
+**相關積木「當掌控者 按鈕 ［✕］ ［按下］」**
+
+```typescript
+mbc.onPadButton(MbcPadButton.Cross, MbcPadButtonEvent.Pressed, function () {
+})
 ```
 
 </details>
@@ -239,12 +252,12 @@ int dpad = MiniR4.I2C1.MXColor.getColor(R);
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 方向鍵 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 [方向鍵 v]（0~15） :: #00A4E4)</pre>
 
 ```typescript
-let dpad = MBC.readValue(0x42, 0x02)   // 方向鍵：0~15 bit
+let dpad = mbc.padGroup(MbcPadGroup.Dpad)   // 方向鍵：0~15 bit
 ```
 
 </details>
@@ -351,12 +364,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 形狀鍵 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 [形狀鍵 v]（0~15） :: #00A4E4)</pre>
 
 ```typescript
-let shape = MBC.readValue(0x42, 0x03)   // 形狀鍵：0~15 bit
+let shape = mbc.padGroup(MbcPadGroup.Shapes)   // 形狀鍵：0~15 bit
 ```
 
 </details>
@@ -462,12 +475,12 @@ int shoulder = MiniR4.I2C1.MXColor.getColor(G);
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 肩鍵 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 [肩鍵 v]（0~15） :: #00A4E4)</pre>
 
 ```typescript
-let shoulder = MBC.readValue(0x42, 0x04)   // 肩鍵：0~15 bit
+let shoulder = mbc.padGroup(MbcPadGroup.Shoulders)   // 肩鍵：0~15 bit
 ```
 
 </details>
@@ -568,12 +581,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 功能鍵 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 [功能鍵 v]（0~15） :: #00A4E4)</pre>
 
 ```typescript
-let func = MBC.readValue(0x42, 0x05)   // 功能鍵：0~15 bit
+let func = mbc.padGroup(MbcPadGroup.Functions)   // 功能鍵：0~15 bit
 ```
 
 </details>
@@ -676,12 +689,12 @@ int connected = MiniR4.I2C1.MXColor.getColor(K);
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回「否」。
 
-<pre class="blocks">(MBC 手把已連線？ :: #E8711E)</pre>
+<pre class="blocks"><掌控者 手把已連線？ :: #00A4E4></pre>
 
 ```typescript
-let connected = MBC.readValue(0x42, 0x06)   // 已連線：0~1
+let connected = mbc.padConnected()   // 已連線：0~1
 ```
 
 </details>
@@ -764,12 +777,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 電量 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 電量（百分比） :: #00A4E4)</pre>
 
 ```typescript
-let battery = MBC.readValue(0x42, 0x07)   // 電量：0 %
+let battery = mbc.padBattery()   // 電量：0 %
 ```
 
 </details>
@@ -832,12 +845,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC L2 類比 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 扳機 [L2 v] 類比值 :: #00A4E4)</pre>
 
 ```typescript
-let l2Analog = MBC.readValue(0x42, 0x08)   // L2 類比：0~255
+let l2Analog = mbc.padTrigger(MbcPadTrigger.L2)   // L2 類比：0~255
 ```
 
 </details>
@@ -900,12 +913,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC R2 類比 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 扳機 [R2 v] 類比值 :: #00A4E4)</pre>
 
 ```typescript
-let r2Analog = MBC.readValue(0x42, 0x09)   // R2 類比：0~255
+let r2Analog = mbc.padTrigger(MbcPadTrigger.R2)   // R2 類比：0~255
 ```
 
 </details>
@@ -968,12 +981,10 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
-
-<pre class="blocks">(MBC 系統鍵 :: #E8711E)</pre>
+擴充沒有這顆積木；在 JavaScript 用 `mbc.readValue(位址, 編號)` 讀（讀不到 = −32768）。相關積木：「掌控者 系統鍵 ［PS］ 被按住？」。
 
 ```typescript
-let sysKeys = MBC.readValue(0x42, 0x0A)   // 系統鍵：0 bit
+let sysKeys = mbc.readValue(0x42, 0x0A)   // 系統鍵：0 bit
 ```
 
 </details>
@@ -1036,12 +1047,12 @@ MATRIX 原廠 0x22 積木沒有這個值。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 手把類型 :: #E8711E)</pre>
+<pre class="blocks">(掌控者 手把類型 :: #00A4E4)</pre>
 
 ```typescript
-let padType = MBC.readValue(0x42, 0x0B)   // 手把類型：0~2
+let padType = mbc.padType()   // 手把類型：0~2
 ```
 
 </details>
@@ -1160,12 +1171,12 @@ int raw = MiniR4.I2C1.MXColor.getColor(B);   // 第 1 組
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-擴充內部用 `Int16LE` 讀 2 byte；寫完編號 `basic.pause(2)` 再讀。
+感應器沒接好（讀不到）時回 0，先用「位址 … 的裝置就緒？」確認接線。
 
-<pre class="blocks">(MBC 搖桿 [LX/LY/RX/RY] :: #E8711E)</pre>
+<pre class="blocks">(掌控者 搖桿 [左搖桿 X v] :: #00A4E4)</pre>
 
 ```typescript
-let stick = MBC.readValues(0x42, 0x10, 4)   // 搖桿 LX／LY／RX／RY
+let stick = [mbc.padStick(MbcPadAxis.LeftX), mbc.padStick(MbcPadAxis.LeftY), mbc.padStick(MbcPadAxis.RightX), mbc.padStick(MbcPadAxis.RightY)]   // 搖桿 LX／LY／RX／RY：-100~+100
 ```
 
 </details>
@@ -1230,10 +1241,10 @@ MATRIX 原廠 0x22 積木沒有這個命令。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC 震動強度 (50) :: #E8711E</pre>
+<pre class="blocks">掌控者 震動 強度 (200) :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x42, 0xE5, [50])   // 震動
+mbc.padRumble(200)   // 震動
 ```
 
 </details>
@@ -1294,10 +1305,10 @@ MATRIX 原廠 0x22 積木沒有這個命令。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks">MBC 燈條顏色 R[r] G[g] B[b] :: #E8711E</pre>
+<pre class="blocks">掌控者 燈條顏色 [#ff0000] :: #00A4E4</pre>
 
 ```typescript
-MBC.writeCmd(0x42, 0xE6, [50, 50, 50])   // 燈條顏色
+mbc.padLight(0xff0000)   // 燈條顏色
 ```
 
 </details>
@@ -1381,11 +1392,11 @@ MATRIX 原廠 0x22 積木讀不到狀態旗標。
 <details class="plat plat-microbit" data-host="microbit">
 <summary><span class="plat-dot"></span>micro:bit</summary>
 
-<pre class="blocks"><MBC 裝置就緒 :: #E8711E></pre>
+<pre class="blocks"><位址 (0x42 v) 的裝置就緒？ :: #00A4E4></pre>
 
 ```typescript
-let st = MBC.status(0x42)   // F3
-let ready = (st & 1) != 0
+let ready = mbc.deviceReady(0x42)   // F3 bit0；沒接 = false
+let st = mbc.status(0x42)   // F3
 ```
 
 </details>

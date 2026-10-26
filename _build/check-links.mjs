@@ -45,6 +45,8 @@ for (const file of htmlFiles) {
   for (const m of html.matchAll(/\b(?:href|src)="([^"]*)"/g)) {
     let u = m[1].trim();
     if (!u || u.startsWith('javascript:') || u.startsWith('data:')) continue;
+    // 互動教學頁的 <script> 用字串拼 src（例如 src="' + BLK.img[i] + '"），不是真的連結
+    if (/'\s*\+|\+\s*'/.test(u)) continue;
     if (/^(https?:)?\/\//.test(u) || /^(mailto|tel|line):/.test(u)) { external.add(u); continue; }
     checked++;
     // 拆成路徑＋錨點（去掉 ?query）

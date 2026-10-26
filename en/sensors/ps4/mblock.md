@@ -33,6 +33,7 @@ Sensor → mBot adapter → RJ25 port on the board (S1 = host TX, S2 = host RX).
 | Controller port [port] system buttons | 0~3 bit | [`0A`](/en/sensors/ps4/reference.md#v0a) | b0 PS button, b1 capture (PS5 mute) button; 0 when not connected (always 0 on PS2) |
 | Controller port [port] gamepad type | 0~4 | [`0B`](/en/sensors/ps4/reference.md#v0b) | 0 none, 1 PS2 digital, 2 PS2 analog, 3 PS4, 4 PS5 (or other) |
 | Controller port [port] stick [axis] | -100~+100 | [`10~13`](/en/sensors/ps4/reference.md#v10) | 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right/up positive; 0 when not connected |
+| Controller port [port] [button] pressed? | true/false | [`01`](/en/sensors/ps4/reference.md#v01) | one button split out of 16 buttons 01 (PSX order); menu: ✕ ● ▲ ■ up down left right L1 R1 L2 R2 L3 R3 SELECT START |
 
 ## Command blocks
 
@@ -40,6 +41,7 @@ Sensor → mBot adapter → RJ25 port on the board (S1 = host TX, S2 = host RX).
 | :--- | :--- | :--- |
 | Controller port [port] rumble [strength] | [`E5`](/en/sensors/ps4/reference.md#ce5) | [strength 0~255], 0 = stop; 200 ms per call (ignored by PS2) |
 | Controller port [port] light bar colour [R] [G] [B] | [`E6`](/en/sensors/ps4/reference.md#ce6) | [R][G][B] each 0~255, exactly 3 bytes; remembered until connected; default blue (0,0,255) (ignored by PS2) |
+| Controller port [port] update all values | `FD` | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 
 ## Status blocks
 

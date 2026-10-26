@@ -32,6 +32,12 @@ Sensor → mBot adapter → RJ25 port on the board (S1 = host TX, S2 = host RX).
 | Vision port [port] blob area | 0~7500 | [`09`](/en/sensors/esp32cam/reference.md#v09) | W×H (0~7500); 0 when not found |
 | Vision port [port] blob found? | 0~1 | [`0A`](/en/sensors/esp32cam/reference.md#v0a) | 1 = a blob of the target colour is in view (W > 0), 0 = none |
 
+## Command blocks
+
+| Block | Id | Meaning |
+| :--- | :--- | :--- |
+| Vision port [port] update all values | `FD` | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
+
 ## Status blocks
 
 The extension exposes each `F3` bit as a boolean block:

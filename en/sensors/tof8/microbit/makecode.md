@@ -7,7 +7,7 @@ This page covers **MakeCode (blocks / JavaScript)** only: how to set it up for t
 
 ## Which edition and how to connect
 
-Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `0x29`. The sensor needs 5 V; use a breakout board with a 5 V output.
+Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `0x29`. It **must use an external 5 V supply** (8 lasers measure at once, more current than the micro:bit 3V pin can supply), not the micro:bit 3V pin; share the supply GND with the micro:bit.
 
 <figure class="ref-fig"><img src="/images/figures/tof8/wiring-microbit.svg" alt="Ranger 8-Way (TOF8) × BBC micro:bit V1 / V2" loading="lazy"></figure>
 
@@ -21,7 +21,7 @@ Get the **Universal I2C edition** and connect it to the I2C header of a micro:bi
 
 ## Reading values
 
-After adding pxt-mbc-sensors, find the blocks in the MBC category; the JavaScript form is shown too, address `0x29`.
+After adding pxt-mbc-sensors, find the blocks in the MBC Sensors category; the JavaScript form is shown too, address `0x29`.
 
 <section id="v01" class="ref-item">
 
@@ -33,13 +33,20 @@ After adding pxt-mbc-sensors, find the blocks in the MBC category; the JavaScrip
 | :--- | :--- |
 | `0~120` cm | smallest of the 8 distances, 0~120 cm (a failed sensor counts as 120); 120 = nothing around |
 
-<pre class="blocks">(MBC nearest distance cm :: #E8711E)</pre>
+<pre class="blocks">(distance 8-ch nearest \([cm v]\) :: #00A4E4)</pre>
 
 ```typescript
-let nearCm = MBC.readValue(0x29, 0x01)   // nearest distance (cm)：0~120 cm
+let nearCm = mbc.tof8Nearest(MbcDistUnit.Cm)   // nearest distance (cm)：0~120 cm
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+**Related block "on distance 8-ch nearer than 10 cm"**
+
+```typescript
+mbc.onTof8Near(10, function () {
+})
+```
+
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -53,13 +60,13 @@ let nearCm = MBC.readValue(0x29, 0x01)   // nearest distance (cm)：0~120 cm
 | :--- | :--- |
 | `-8~+8` | direction of the nearest object: −7 (left) to +7 (right), 0 = straight ahead, negative = left; ±8 = nothing around (keeps the last side) |
 
-<pre class="blocks">(MBC nearest direction :: #E8711E)</pre>
+<pre class="blocks">(distance 8-ch nearest direction :: #00A4E4)</pre>
 
 ```typescript
-let nearDir = MBC.readValue(0x29, 0x02)   // nearest direction：-8~+8
+let nearDir = mbc.tof8NearestDirection()   // nearest direction：-8~+8
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -73,13 +80,13 @@ let nearDir = MBC.readValue(0x29, 0x02)   // nearest direction：-8~+8
 | :--- | :--- |
 | `0~120` cm | largest of the 8 distances, 0~120 cm (a failed sensor always reads 120 and looks 'farthest') |
 
-<pre class="blocks">(MBC farthest distance cm :: #E8711E)</pre>
+<pre class="blocks">(distance 8-ch most open \(cm\) :: #00A4E4)</pre>
 
 ```typescript
-let farCm = MBC.readValue(0x29, 0x03)   // farthest distance (cm)：0~120 cm
+let farCm = mbc.tof8OpenCm()   // farthest distance (cm)：0~120 cm
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -93,13 +100,13 @@ let farCm = MBC.readValue(0x29, 0x03)   // farthest distance (cm)：0~120 cm
 | :--- | :--- |
 | `-7~+7` | direction of the most open side: −7 to +7, 0 = straight ahead, negative = left; 0 when all 8 read 120 |
 
-<pre class="blocks">(MBC farthest direction :: #E8711E)</pre>
+<pre class="blocks">(distance 8-ch most open direction :: #00A4E4)</pre>
 
 ```typescript
-let farDir = MBC.readValue(0x29, 0x04)   // farthest direction：-7~+7
+let farDir = mbc.tof8OpenDirection()   // farthest direction：-7~+7
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -113,13 +120,13 @@ let farDir = MBC.readValue(0x29, 0x04)   // farthest direction：-7~+7
 | :--- | :--- |
 | `0~120` cm | average of sensors 4 and 5 (both facing forward), 0~120 cm; EV3 mode 3 and SPIKE mode 6 carry the same thing in mm; 0x22 'C' is min(4, 5), not the average (see 10) |
 
-<pre class="blocks">(MBC front distance cm :: #E8711E)</pre>
+<pre class="blocks">(distance 8-ch front \([cm v]\) :: #00A4E4)</pre>
 
 ```typescript
-let frontCm = MBC.readValue(0x29, 0x05)   // front distance (cm)：0~120 cm
+let frontCm = mbc.tof8Front(MbcDistUnit.Cm)   // front distance (cm)：0~120 cm
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -133,13 +140,13 @@ let frontCm = MBC.readValue(0x29, 0x05)   // front distance (cm)：0~120 cm
 | :--- | :--- |
 | `0~1200` mm | smallest of the 8 mm readings, 0~1200 (failed sensor counts as 1200); 1200 = nothing around |
 
-<pre class="blocks">(MBC nearest distance mm :: #E8711E)</pre>
+<pre class="blocks">(distance 8-ch nearest \([mm v]\) :: #00A4E4)</pre>
 
 ```typescript
-let nearMm = MBC.readValue(0x29, 0x06)   // nearest distance (mm)：0~1200 mm
+let nearMm = mbc.tof8Nearest(MbcDistUnit.Mm)   // nearest distance (mm)：0~1200 mm
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -153,13 +160,11 @@ let nearMm = MBC.readValue(0x29, 0x06)   // nearest distance (mm)：0~1200 mm
 | :--- | :--- |
 | `0~255` bit | bit0 = sensor 1 (left) … bit7 = sensor 8; 1 = initialised at power-on (8 sensors take ~2~4 s, no retry); 255 = all OK |
 
-<pre class="blocks">(MBC init bitmap :: #E8711E)</pre>
+No dedicated block; in JavaScript read it with `mbc.readValue(address, id)` (−32768 when nothing answers). Related block: "distance 8-ch sensor 1 is OK".
 
 ```typescript
-let initOk = MBC.readValue(0x29, 0x07)   // init bitmap：0~255 bit
+let initOk = mbc.readValue(0x29, 0x07)   // init bitmap：0~255 bit
 ```
-
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
 
 </section>
 
@@ -173,13 +178,11 @@ let initOk = MBC.readValue(0x29, 0x07)   // init bitmap：0~255 bit
 | :--- | :--- |
 | `0~255` bit | bit0 = sensor 1 … bit7 = sensor 8; 1 = currently failing (I2C error or no update for 200 ms); its distance reads 120 / 1200 |
 
-<pre class="blocks">(MBC fault bitmap :: #E8711E)</pre>
+No dedicated block; in JavaScript read it with `mbc.readValue(address, id)` (−32768 when nothing answers). Related block: "distance 8-ch sensor 1 is OK".
 
 ```typescript
-let fault = MBC.readValue(0x29, 0x08)   // fault bitmap：0~255 bit
+let fault = mbc.readValue(0x29, 0x08)   // fault bitmap：0~255 bit
 ```
-
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
 
 </section>
 
@@ -193,13 +196,13 @@ let fault = MBC.readValue(0x29, 0x08)   // fault bitmap：0~255 bit
 | :--- | :--- |
 | `0~1200` mm | average of sensors 4 and 5 (the two facing forward), 0~1200 mm; 1200 = nothing ahead. cm version is 05 |
 
-<pre class="blocks">(MBC front distance mm :: #E8711E)</pre>
+<pre class="blocks">(distance 8-ch front \([mm v]\) :: #00A4E4)</pre>
 
 ```typescript
-let frontMm = MBC.readValue(0x29, 0x09)   // front distance (mm)：0~1200 mm
+let frontMm = mbc.tof8Front(MbcDistUnit.Mm)   // front distance (mm)：0~1200 mm
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -213,13 +216,13 @@ let frontMm = MBC.readValue(0x29, 0x09)   // front distance (mm)：0~1200 mm
 | :--- | :--- |
 | `0~120` cm | distance of each sensor 1~8, 0~120 cm (1 = far left, 4 and 5 = front, 8 = far right, 30° apart); 120 = nothing that way / sensor failed; ids 10~17 |
 
-<pre class="blocks">(MBC sensor [1 v] distance cm :: #E8711E)</pre>
+<pre class="blocks">(distance 8-ch sensor (1) \([cm v]\) :: #00A4E4)</pre>
 
 ```typescript
-let distCm = MBC.readValues(0x29, 0x10, 8)   // sensor 1~8 distance (cm)
+let distCm = mbc.tof8Sensor(1, MbcDistUnit.Cm)   // sensor 1~8 distance (cm)：0~120 cm (N = 1~8)
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 
@@ -233,13 +236,13 @@ let distCm = MBC.readValues(0x29, 0x10, 8)   // sensor 1~8 distance (cm)
 | :--- | :--- |
 | `0~1200` mm | distance of each sensor 1~8, 0~1200 mm; 1200 = nothing that way / sensor failed; ids 18~1F |
 
-<pre class="blocks">(MBC sensor [1 v] distance mm :: #E8711E)</pre>
+<pre class="blocks">(distance 8-ch sensor (1) \([mm v]\) :: #00A4E4)</pre>
 
 ```typescript
-let distMm = MBC.readValues(0x29, 0x18, 8)   // sensor 1~8 distance (mm)
+let distMm = mbc.tof8Sensor(1, MbcDistUnit.Mm)   // sensor 1~8 distance (mm)：0~1200 mm (N = 1~8)
 ```
 
-<p class="ref-note">The extension reads 2 bytes as <code>Int16LE</code> and pauses 2 ms after writing the id.</p>
+<p class="ref-note">Returns 0 when the sensor does not answer; check with "device at … is ready" first.</p>
 
 </section>
 

@@ -156,10 +156,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "左距離 cm",
-          "en": "left distance cm"
-        }
+        "js": "mbc.tof2Distance(MbcTofSide.Left, MbcDistUnit.Cm)"
       },
       "examples": [],
       "locked": true
@@ -262,10 +259,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "右距離 cm",
-          "en": "right distance cm"
-        }
+        "js": "mbc.tof2Distance(MbcTofSide.Right, MbcDistUnit.Cm)"
       },
       "examples": [],
       "locked": true
@@ -309,10 +303,10 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "較近距離 cm",
-          "en": "nearer distance cm"
-        }
+        "js": "mbc.tof2NearestCm()",
+        "also": [
+          "mbc.onTof2Near(10)"
+        ]
       },
       "examples": [],
       "locked": true
@@ -365,10 +359,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "左距離 mm",
-          "en": "left distance mm"
-        }
+        "js": "mbc.tof2Distance(MbcTofSide.Left, MbcDistUnit.Mm)"
       },
       "examples": []
     },
@@ -420,10 +411,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "右距離 mm",
-          "en": "right distance mm"
-        }
+        "js": "mbc.tof2Distance(MbcTofSide.Right, MbcDistUnit.Mm)"
       },
       "examples": []
     },
@@ -468,10 +456,8 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "初始化位元圖",
-          "en": "init bitmap"
-        }
+        "js": null,
+        "see": "mbc.tof2SensorOk(MbcTofSide.Left)"
       },
       "examples": [],
       "locked": true
@@ -517,10 +503,8 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "故障位元圖",
-          "en": "fault bitmap"
-        }
+        "js": null,
+        "see": "mbc.tof2SensorOk(MbcTofSide.Left)"
       },
       "examples": [],
       "locked": true
@@ -584,10 +568,7 @@
       "matrix": null,
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "左右平均 mm",
-          "en": "average distance mm"
-        }
+        "js": "mbc.tof2AverageMm()"
       },
       "examples": []
     }

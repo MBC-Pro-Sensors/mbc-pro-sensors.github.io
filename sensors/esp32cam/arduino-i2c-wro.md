@@ -69,13 +69,19 @@
 
 ## 單檔小幫手函式
 
-每支範例底部都貼這一段，不需要安裝函式庫：
+不需要安裝函式庫。分兩段貼：第 ① 段（2 行）放程式最上面，第 ② 段貼程式最下面。`#include <Wire.h>` 和 `MBC_NONE` 一定要在 `setup()` 用到之前出現，整段放最下面會編不過。
+
+**① 放在程式最上面**（`setup()` 前面）
 
 ```cpp
 #include <Wire.h>
 
 const int16_t MBC_NONE = -32768;   // 讀不到／空號
+```
 
+**② 貼在程式最下面**（`loop()` 後面）
+
+```cpp
 // 從編號 id 起連續讀 k 個值（k ≤ 16），int16 小端
 bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
   Wire.beginTransmission(addr);
@@ -97,6 +103,7 @@ int16_t mbcRead(uint8_t addr, uint8_t id) {
 }
 
 // 寫入命令（0~3 個參數）
+// 2 個參數、第 1 個是 0 時要寫 (uint8_t)0，例如 mbcWrite(ADDR, 0xF8, (uint8_t)0x00, 0xFF)，不然會跟下面陣列版的 mbcWrite 分不清而編不過
 void mbcWrite(uint8_t addr, uint8_t id, const uint8_t *args, uint8_t n) {
   Wire.beginTransmission(addr);
   Wire.write(id);
@@ -123,6 +130,11 @@ bool mbcWaitReady(uint8_t addr, unsigned long ms) {
 ## 範例：整張值表逐行印
 
 ```cpp
+// 小幫手第 ① 段
+#include <Wire.h>
+
+const int16_t MBC_NONE = -32768;   // 讀不到／空號
+
 const uint8_t ADDR = 0x4C;
 
 void setup() {
@@ -143,7 +155,7 @@ void loop() {
   delay(200);
 }
 
-// 下面貼上「單檔小幫手函式」
+// 下面貼上「單檔小幫手函式」第 ② 段
 ```
 
 ## 本頁依據與假設

@@ -13,3 +13,6 @@
 
 > [!TIP]
 > At a competition, pair at your own table so no other team's gamepad is in pairing mode during the 30 seconds. Paired the wrong one? Press Reset and pair again.
+
+> [!WARNING]
+> **With only ■ pressed, 16 buttons (id `01`) = `0x8000` = -32768**, exactly the same as `MBC_NONE` for no answer. To detect "no answer", use the true / false returned by `mbcReadMany`, not a test for -32768: `int16_t b; if (mbcReadMany(0x42, 0x01, 1, &b)) { … }`; true means it was read, then use `(uint16_t)b` as the 16 buttons.

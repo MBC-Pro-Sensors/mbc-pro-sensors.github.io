@@ -20,17 +20,23 @@
 
 | 感應器 | micro:bit |
 | :--- | :--- |
-| SDA | P20 |
-| SCL | P19 |
-| 5V | 外接 5 V（或 V2 的 3V 腳，需確認電流） |
+| SDA（RX） | P20 |
+| SCL（TX） | P19 |
+| VCC | **一定要外接 5 V**（GND 要和 micro:bit 共地） |
 | GND | GND |
 
 ## 讀值積木
 
 | 積木 | 傳回 | 編號 | 說明 |
 | :--- | :--- | :--- | :--- |
-| MBC 色點 ［1~12］ 顏色碼 | 0~255 | [`10~1B`](/sensors/esp32cam/reference-wro.md#v10) | 10~1B = S1~S12 顏色碼：0~239 彩色（色相 0~255 等比縮成 0~239）、240~245 白（飽和度 < 30，越低越大）、246~250 黑（明度 < 30，越暗越大）、255 = 色點沒開 |
-| MBC 色點 ［1~12］ 鮮豔度 | 0~255 | [`20~2B`](/sensors/esp32cam/reference-wro.md#v20) | 20~2B = S1~S12 鮮豔度（飽和度）0~255：黑 = 1、白／彩色 = 實際飽和度；色點沒開 = 0 |
+| 神攝手 色點 ［1~12］ 顏色碼 | 0~255 | [`10~1B`](/sensors/esp32cam/reference-wro.md#v10) | 10~1B = S1~S12 顏色碼：0~239 彩色（色相 0~255 等比縮成 0~239）、240~245 白（飽和度 < 30，越低越大）、246~250 黑（明度 < 30，越暗越大）、255 = 色點沒開 |
+| 神攝手 色點 ［1~12］ 鮮豔度 | 0~255 | [`20~2B`](/sensors/esp32cam/reference-wro.md#v20) | 20~2B = S1~S12 鮮豔度（飽和度）0~255：黑 = 1、白／彩色 = 實際飽和度；色點沒開 = 0 |
+
+### 其他積木（是／否、事件）
+
+| 積木 | 相關的值 |
+| :--- | :--- |
+| 神攝手 色點 ［1~12］ 是 ［彩色］？ | [`10~1B`](/sensors/esp32cam/reference-wro.md#v10) |
 
 ## 狀態
 
@@ -41,9 +47,11 @@
 ## JavaScript 寫法
 
 ```typescript
+if (!(mbc.waitReady(0x4C, 3000))) {
+    basic.showIcon(IconNames.No)   // 讀不到：檢查接線與電源
+}
 basic.forever(function () {
-    let v = MBC.readValue(0x4C, 0x01)   // 
-    basic.showNumber(v)
+    basic.showNumber(mbc.camSpotColor(1))   // 色點 1~12 顏色碼
     basic.pause(100)
 })
 ```
@@ -60,4 +68,4 @@ basic.forever(function () {
 - mVision 的鮮豔度是 S>>4（0~15），值表 20~2B 是完整 0~255；兩者不同是既有設計，不改。
 - 顏色碼 255 只代表「色點沒開」，不代表「沒找到」（沒抓到時仍回種子點顏色，盤點 §0-1）。
 - 不做 0x22（hosts.matrix = false）；沒有寫入命令；F3 只有 b0。
-- 擴充內部用 `Int16LE` 讀、寫完編號 `basic.pause(2)`（D5）。
+- 擴充內部用 `Int16LE` 讀、寫完編號 `basic.pause(2)`（D5）；感應器沒接好時讀值積木回 0、是／否積木回「否」。

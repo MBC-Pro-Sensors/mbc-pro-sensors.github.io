@@ -125,10 +125,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "線的位置",
-          "en": "line position"
-        }
+        "js": "mbc.linePosition()"
       },
       "examples": [],
       "locked": true
@@ -229,10 +226,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "線的細位置",
-          "en": "fine line position"
-        }
+        "js": "mbc.linePositionFine()"
       },
       "examples": [],
       "locked": true
@@ -319,10 +313,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "線寬",
-          "en": "line width"
-        }
+        "js": "mbc.lineWidth()"
       },
       "examples": [],
       "locked": true
@@ -368,10 +359,11 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "線段數",
-          "en": "line segments"
-        }
+        "js": "mbc.lineSegments()",
+        "also": [
+          "mbc.lineSeen()",
+          "mbc.onLineEvent(MbcLineEvent.Lost)"
+        ]
       },
       "examples": []
     },
@@ -428,10 +420,10 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "壓線位元圖",
-          "en": "line bitmap"
-        }
+        "js": "mbc.lineBitmap()",
+        "also": [
+          "mbc.lineChannelOnLine(1)"
+        ]
       },
       "examples": []
     },
@@ -463,10 +455,7 @@
       "matrix": null,
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "最後離線方向",
-          "en": "last exit direction"
-        }
+        "js": "mbc.lineLastDirection()"
       },
       "examples": []
     },
@@ -498,10 +487,7 @@
       "matrix": null,
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "門檻",
-          "en": "threshold"
-        }
+        "js": "mbc.lineThreshold()"
       },
       "examples": []
     },
@@ -532,7 +518,12 @@
       "spike": [],
       "matrix": null,
       "mvision": null,
-      "microbit": false,
+      "microbit": {
+        "js": "mbc.lineCalibrationCount()",
+        "also": [
+          "mbc.lineCalibrating()"
+        ]
+      },
       "examples": []
     },
     {
@@ -637,10 +628,7 @@
       },
       "mvision": null,
       "microbit": {
-        "block": {
-          "zh": "第 [N] 路光值",
-          "en": "channel [N] reflect"
-        }
+        "js": "mbc.lineChannel(N)"
       },
       "examples": [],
       "locked": true
@@ -663,10 +651,7 @@
       "mblock": true,
       "matrix": null,
       "microbit": {
-        "block": {
-          "zh": "切換為黑線",
-          "en": "set black line"
-        }
+        "js": "mbc.lineSetColor(MbcLineColor.Black)"
       },
       "busyFlag": null
     },
@@ -686,10 +671,7 @@
       "mblock": true,
       "matrix": null,
       "microbit": {
-        "block": {
-          "zh": "切換為白線",
-          "en": "set white line"
-        }
+        "js": "mbc.lineSetColor(MbcLineColor.White)"
       },
       "busyFlag": null
     },
@@ -708,10 +690,7 @@
       "i2c": true,
       "mblock": true,
       "microbit": {
-        "block": {
-          "zh": "黑色校準",
-          "en": "calibrate black"
-        }
+        "js": "mbc.lineCalibrate(MbcLineCalib.Black)"
       },
       "busyFlag": 2
     },
@@ -730,10 +709,7 @@
       "i2c": true,
       "mblock": true,
       "microbit": {
-        "block": {
-          "zh": "白色校準",
-          "en": "calibrate white"
-        }
+        "js": "mbc.lineCalibrate(MbcLineCalib.White)"
       },
       "busyFlag": 2
     },
@@ -762,10 +738,7 @@
       "mblock": true,
       "matrix": null,
       "microbit": {
-        "block": {
-          "zh": "門檻設為 [n]",
-          "en": "set threshold [n]"
-        }
+        "js": "mbc.lineSetThreshold(50)"
       },
       "busyFlag": null
     },
@@ -785,10 +758,7 @@
       "mblock": true,
       "matrix": null,
       "microbit": {
-        "block": {
-          "zh": "5 秒動態校準",
-          "en": "auto calibrate (5 s)"
-        }
+        "js": "mbc.lineCalibrate(MbcLineCalib.Auto)"
       },
       "busyFlag": 2
     }
