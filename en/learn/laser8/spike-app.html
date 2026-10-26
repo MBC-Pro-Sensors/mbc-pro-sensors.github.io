@@ -220,8 +220,8 @@ svg.lego .blocklyDropdownText { fill: #fff !important; }
 .learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
 .learn-nav .lang { font-weight: 700; }
 @media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
-/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」改成底部抽屜（程式一變就自動拉開） */
-.sheet-bar { display: none; }
+/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
+   排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
 @media (max-width: 900px) {
   .learn-nav { position: static; width: 100vw; margin: -24px 0 14px calc(50% - 50vw); }
   .learn-nav .in { padding: 6px 12px 8px; gap: 4px 14px; font-size: 0.85rem; }
@@ -229,20 +229,11 @@ svg.lego .blocklyDropdownText { fill: #fff !important; }
   .learn-nav .tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
   .learn-nav .tabs::-webkit-scrollbar { display: none; }
   .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
-  body { padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important; }
-  body .side { position: fixed; left: 0; right: 0; bottom: 0; top: auto; z-index: 40; margin: 0; max-height: none; overflow: visible;
-    display: flex; flex-direction: column; gap: 10px; padding: 0 12px calc(10px + env(safe-area-inset-bottom));
-    background: var(--surface, #fff); border-top: 1px solid var(--rule, #ddd); border-radius: 16px 16px 0 0; box-shadow: 0 -6px 24px rgba(0,0,0,.18); }
-  body .side.open { max-height: 55vh; overflow-y: auto; overscroll-behavior: contain; }
-  body .side:not(.open) > :not(.sheet-bar) { display: none; }
-  .sheet-bar { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 10px; width: calc(100% + 24px); margin: 0 -12px; min-height: 56px; padding: 0 16px;
-    border: 0; border-radius: 16px 16px 0 0; background: var(--surface, #fff); color: var(--ink, #16201e); font: inherit; font-weight: 700; text-align: left; cursor: pointer; }
-  .sheet-bar::before { content: ""; position: absolute; top: 6px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 2px; background: var(--rule, #ccc); }
-  .sheet-bar .sb-t { flex: 1; }
-  .sheet-bar .sb-h { font-weight: 400; font-size: 0.85rem; color: var(--muted, #666); }
-  .sheet-bar .sb-a { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: var(--accent, #0a7c78); color: var(--on-accent, #fff); font-size: 0.8rem; }
-  .sheet-bar.new .sb-a { animation: sbPulse 0.9s ease-out 2; }
-  @keyframes sbPulse { 0% { box-shadow: 0 0 0 0 rgba(10,124,120,.6); } 100% { box-shadow: 0 0 0 12px rgba(10,124,120,0); } }
+  body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
+  .panel.follow { margin: 12px 0 16px; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow { grid-column: 1 / -1; }
+  .flash { animation: followFlash 1.2s ease-out; }
+  @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
   /* 點選目標放大：選項、勾選框、拉桿 */
   .wrap > *, .main > *, .steps > *, .step-body > * { min-width: 0; }
   label:has(input[type=radio]), label:has(input[type=checkbox]) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
@@ -252,7 +243,7 @@ svg.lego .blocklyDropdownText { fill: #fff !important; }
   input[type=radio], input[type=checkbox] { width: 20px; height: 20px; flex: none; }
   input[type=range] { height: 36px; }
 }
-@media (max-width: 900px) and (prefers-reduced-motion: reduce) { .sheet-bar.new .sb-a { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
 </style>
 </head>
 <body>
@@ -536,34 +527,59 @@ var BLK = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
 (function () {
   var side = document.querySelector('.side'); if (!side) return;
   var mq = window.matchMedia('(max-width: 900px)');
-  var bar = document.createElement('button'); bar.type = 'button'; bar.className = 'sheet-bar'; bar.setAttribute('aria-expanded', 'false');
-  bar.innerHTML = '<span class="sb-t"></span><span class="sb-h"></span><span class="sb-a" aria-hidden="true"></span>';
-  side.insertBefore(bar, side.firstChild);
-  function set(open) {
-    side.classList.toggle('open', open); bar.setAttribute('aria-expanded', String(open));
-    bar.querySelector('.sb-t').textContent = "Your code and result";
-    bar.querySelector('.sb-h').textContent = open ? "Close" : "Tap to open";
-    bar.querySelector('.sb-a').textContent = open ? '\u25BC' : '\u25B2';
-    if (!open) bar.classList.remove('new');
+  var home = side.parentNode, homeNext = side.nextSibling;
+  var con = document.getElementById('console'), conP = con && con.closest('.panel');
+  if (conP && conP.parentNode !== side) conP = null;
+  var last = null, ready = false;
+  var STOP = '.step-body, .cards, .ref, .steps, .main, .wrap, body';
+  function anchorOf(el) { var a = el; while (a && a.parentElement && !a.parentElement.matches(STOP)) a = a.parentElement; return a && a.parentElement ? a : null; }
+  function flash(el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  // 把 box 搬到 a 那一塊的後面；a 在畫面上的位置維持不動（點下去時就記住 a：頁面常在點擊後重畫按鈕，按鈕本身會被換掉）
+  function moveAfter(box, a) {
+    if (!a || !a.isConnected || a === box || a.contains(box)) return false;
+    if (a.nextElementSibling === box) return true;
+    var y = a.getBoundingClientRect().top;
+    a.parentNode.insertBefore(box, a.nextSibling); box.classList.add('follow');
+    var d = a.getBoundingClientRect().top - y; if (d) window.scrollBy(0, d);
+    return true;
   }
-  set(false);
-  bar.addEventListener('click', function () { set(!side.classList.contains('open')); });
-  var ready = false; setTimeout(function () { ready = true; }, 1000);
-  var mo = new MutationObserver(function () {
-    if (!ready || !mq.matches) return;
-    if (!side.classList.contains('open')) { bar.classList.remove('new'); void bar.offsetWidth; bar.classList.add('new'); set(true); side.scrollTop = 0; }
-  });
-  // 拖模擬感應器（拉桿、勾選）→ 抽屜拉開並捲到「輸出」那一格
-  function toConsole(e) {
-    var t = e.target;
-    if (!mq.matches || side.contains(t) || !/^(range|checkbox|radio)$/.test(t.type || '')) return;
-    if (!side.classList.contains('open')) set(true);
-    var con = document.getElementById('console'), box = con && (con.closest('.panel') || con);
-    if (box) side.scrollTop = box.offsetTop - bar.offsetHeight - 8;
+  function inPanel(el) { return side.contains(el) || (conP && conP.contains(el)); }
+  function placeSide(a, scroll) {
+    if (!mq.matches || !a) return;
+    if (conP && conP.parentNode !== side) { conP.classList.remove('follow'); side.appendChild(conP); }
+    if (!moveAfter(side, a)) return;
+    if (scroll) { var r = side.getBoundingClientRect(); if (r.top > window.innerHeight * 0.7) window.scrollBy({ top: r.top - window.innerHeight * 0.3, behavior: 'smooth' }); }
   }
-  document.addEventListener('input', toConsole, true);
-  document.addEventListener('change', toConsole, true);
+  function placeConsole(el) {
+    if (!mq.matches || !conP || inPanel(el)) return;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在畫面和控制區中間，拖拉桿時畫面、輸出、拉桿同一屏
+    var sim = el.closest('.sim'), ctrl = null;
+    if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (sim && ctrl) {
+      if (conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var y = el.getBoundingClientRect().top;
+      sim.insertBefore(conP, ctrl); conP.classList.add('follow');
+      var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
+      return;
+    }
+    var a = anchorOf(el); if (a && a.nextElementSibling === side) return; // 程式那格已經緊接在下面，輸出就在它裡面
+    moveAfter(conP, a);
+  }
+  function reset() {
+    if (mq.matches) { var b = document.querySelector('#step1 .step-body button') || document.querySelector('#step1 button'); if (b) placeSide(anchorOf(b), false); return; }
+    if (conP) { conP.classList.remove('follow'); side.appendChild(conP); }
+    side.classList.remove('follow'); home.insertBefore(side, homeNext);
+  }
+  function remember(e) { if (!inPanel(e.target)) last = anchorOf(e.target); }
+  document.addEventListener('pointerdown', remember, true);
+  document.addEventListener('focusin', remember, true);
+  var mo = new MutationObserver(function () { if (ready && mq.matches) { placeSide(last, true); flash(side); } });
   ['maincode', 'mainblocks'].forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true }); });
+  function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
+  document.addEventListener('input', sim, true);
+  document.addEventListener('change', sim, true);
+  reset(); setTimeout(function () { ready = true; }, 800);
+  if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
 })();
 </script>
 </body>
