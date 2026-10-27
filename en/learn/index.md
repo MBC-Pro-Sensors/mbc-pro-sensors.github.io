@@ -3,7 +3,10 @@
 
 No hub and no software to install: open a tutorial and learn in your browser. Pick a function on the left and watch the code or blocks build up on the right. Drag the simulated sensor to see the values your program reads. When you are ready, follow the product guide to connect your hub.
 
-**Find your hub, then pick the way your class programs it:**
+<!-- layout: wide -->
+<!-- learn-hub -->
+
+**Ways to program on each hub:**
 
 | Hub / board | Ways to program |
 |---|---|
@@ -14,8 +17,6 @@ No hub and no software to install: open a tutorial and learn in your browser. Pi
 | MATRIX Mini R4 | MATRIXblock |
 | micro:bit | MakeCode |
 
-<!-- layout: wide -->
-<!-- learn-hub -->
 
 > [!TIP]
 > No sensor yet? Compare them in the [Buying Guide](/en/guide.md), or go back to the [home page](/en/README.md) and pick a product, host and software to find the code.

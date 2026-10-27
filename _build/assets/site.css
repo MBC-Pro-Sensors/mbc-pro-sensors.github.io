@@ -1003,8 +1003,16 @@ iframe.yt-on { display: block; width: 100%; aspect-ratio: 16 / 9; height: auto; 
 .markdown-section .lh-f select:focus-visible { outline: 3px solid color-mix(in srgb, var(--brand) 45%, transparent); outline-offset: 1px; }
 .markdown-section .lh-arrow { display: none; }
 .markdown-section .lh-ks { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.markdown-section .lh .lh-ks a { display: inline-flex; align-items: center; min-height: 42px; padding: 0 11px; border-radius: 21px; background: #10212b; color: #fff; font-size: 0.88rem; font-weight: 700; text-decoration: none; white-space: nowrap; }
-.markdown-section .lh .lh-ks a:hover { background: #24404f; color: #fff; text-decoration: none; }
+/* 寫法按鈕＝開始教學的行動按鈕：品牌綠底＋播放三角形＋箭頭，出現時閃三下光圈（換產品／主機時會重畫、再閃一次） */
+.markdown-section .lh-go { display: grid; gap: 4px; }
+.markdown-section .lh-go-l { font-size: 0.82rem; font-weight: 700; color: var(--brand-ink); }
+.markdown-section .lh .lh-ks a { display: inline-flex; align-items: center; gap: 7px; min-height: 42px; padding: 0 12px 0 11px; border-radius: 21px; background: var(--brand-ink); color: #fff; font-size: 0.88rem; font-weight: 700; text-decoration: none; white-space: nowrap; box-shadow: 0 2px 6px rgba(10,124,120,.28); transition: transform .15s, box-shadow .15s, background .15s; animation: lhPulse 1.4s ease-out 3; }
+.markdown-section .lh .lh-ks a::before { content: ""; width: 0; height: 0; border-left: 8px solid currentColor; border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+.markdown-section .lh .lh-ks a::after { content: "→"; font-weight: 400; }
+.markdown-section .lh .lh-ks a:hover { background: #075f5b; color: #fff; text-decoration: none; transform: translateY(-2px); box-shadow: 0 6px 14px rgba(10,124,120,.35); }
+.markdown-section .lh .lh-ks a:focus-visible { outline: 3px solid #10212b; outline-offset: 2px; }
+@keyframes lhPulse { 0% { box-shadow: 0 0 0 0 rgba(10,124,120,.55); } 100% { box-shadow: 0 0 0 12px rgba(10,124,120,0); } }
+@media (prefers-reduced-motion: reduce) { .markdown-section .lh .lh-ks a { animation: none; transition: none; } .markdown-section .lh .lh-ks a:hover { transform: none; } }
 /* 寬螢幕：右邊是空的，整列可以往右延伸到放得下為止（不換行） */
 @media (min-width: 1200px) { .markdown-section .lh-bar { flex-wrap: nowrap; width: max-content; max-width: none; } .markdown-section .lh-bar.lh-wrap { flex-wrap: wrap; width: auto; } }
 .markdown-section .lh-guide { margin: 4px 0 18px; }
