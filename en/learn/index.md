@@ -14,6 +14,7 @@ No hub and no software to install: open a tutorial and learn in your browser. Pi
 | MATRIX Mini R4 | MATRIXblock |
 | micro:bit | MakeCode |
 
+<!-- layout: wide -->
 <!-- learn-hub -->
 
 > [!TIP]

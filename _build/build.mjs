@@ -848,7 +848,7 @@ function topNav(lang, langHref, docs = false) {
     `${quoteLink(lang, 'tn-line', u.line)}</nav></header>`;
 }
 
-function page({ lang, url, title, description, ogImage, alternates, jsonLd, extraHead = '', sidebar, body, langHref, layout = 'docs', noindex = false, toc = '', canonical = null }) {
+function page({ lang, url, title, description, ogImage, alternates, jsonLd, extraHead = '', sidebar, body, langHref, layout = 'docs', noindex = false, toc = '', canonical = null, wide = false }) {
   const htmlLang = lang === 'en' ? 'en' : 'zh-TW';
   const abs = SITE + url;
   const alt = alternates.map((a) => `<link rel="alternate" hreflang="${a.hreflang}" href="${SITE + a.url}">`).join('\n  ');
@@ -899,7 +899,7 @@ ${topNav(lang, langHref, true)}
 <h1 class="app-name"><a class="app-name-link" href="${lang === 'en' ? '/en/' : '/'}">MBC-Pro-Sensors</a></h1>
 <div class="sidebar-nav">${sidebar}</div>
 </aside>
-<section class="content"><div class="doc-wrap${toc ? ' has-toc' : ''}"><article class="markdown-section" id="main">
+<section class="content"><div class="doc-wrap${toc ? ' has-toc' : ''}${wide ? ' wide' : ''}"><article class="markdown-section" id="main">
 ${withToc(body, toc)}
 </article></div>${footerHtml(lang)}</section>
 </main>`}
@@ -1051,7 +1051,7 @@ for (const file of pages) {
   const out = page({
     lang, url, title, description, ogImage: ogImageFor(product), alternates, jsonLd,
     extraHead: home && home.keywords ? `<meta name="keywords" content="${escAttr(home.keywords)}">` : '',
-    sidebar: renderSidebar(lang, url, guide || (isProductIndex ? { key: product, host: null } : null)), body: html, langHref, layout, noindex, toc,
+    sidebar: renderSidebar(lang, url, guide || (isProductIndex ? { key: product, host: null } : null)), body: html, langHref, layout, noindex, toc, wide: src.includes('<!-- layout: wide -->'),
     canonical: movedUrl ? movedUrl.replace(/#.*$/, '') : null,
   });
   const outFile = path.join(OUT, url.endsWith('/') ? url + 'index.html' : url);

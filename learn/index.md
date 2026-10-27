@@ -14,6 +14,7 @@
 | MATRIX Mini R4 | MATRIXblock |
 | micro:bit | MakeCode |
 
+<!-- layout: wide -->
 <!-- learn-hub -->
 
 > [!TIP]

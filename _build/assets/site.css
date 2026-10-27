@@ -1026,3 +1026,8 @@ iframe.yt-on { display: block; width: 100%; aspect-ratio: 16 / 9; height: auto; 
   .markdown-section .lh-ks { flex-basis: 100%; }
   .markdown-section .lh-row p { grid-template-columns: 1fr; gap: 0; }
 }
+/* <!-- layout: wide -->（互動教學總覽）：沒有右側目錄、內容以表格和選單為主 → 用滿側欄右邊的寬度，不再左右各留一大片空白；一般段落維持好讀的行寬 */
+body.docs .doc-wrap.wide { max-width: 1240px; margin: 0; padding: 0 32px; }
+body.docs .doc-wrap.wide > .markdown-section > p, body.docs .doc-wrap.wide > .markdown-section > blockquote { max-width: var(--measure); }
+@media (min-width: 1200px) { body.docs .doc-wrap.wide .lh-bar { width: max-content; max-width: 100%; } }
+@media (max-width: 768px) { body.docs .doc-wrap.wide { padding: 0; } }
