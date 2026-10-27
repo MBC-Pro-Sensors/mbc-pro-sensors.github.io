@@ -445,13 +445,13 @@ const LEARN_KINDS = {
 const LEARN_HOST_NAME = { spike: 'SPIKE', ev3: 'EV3', arduino: 'Arduino', mblock: 'mBlock', matrix: 'MATRIX', microbit: 'micro:bit' };
 const LK = {
   zh: { title: '互動教學', sub: '不用接主機，先在網頁上點點看：左邊選功能，右邊的程式或積木跟著長出來，還能拖拉模擬感應器看數值。',
-    swSub: '第一次用？先跟著互動教學在網頁上做一遍，再照下面的步驟接主機。', all: '全部產品的互動教學', guide: '產品說明',
+    swSub: '第一次用？先跟著互動教學在網頁上做一遍，再照下面的步驟接主機。', all: '全部產品的互動教學', guide: '產品說明', product: '產品', host: '主機', allList: '全部產品一覽', short: { 'spike-app': '官方 SPIKE App', 'ev3-pybricks': 'Pybricks', 'ev3-classroom': 'Classroom', ev3g: 'EV3-G', micropython: 'MicroPython' },
     kinds: { micropython: 'MicroPython（Pybricks）', 'pybricks-blocks': 'Pybricks 積木', 'mbc-blocks': 'MBC 積木網站', 'spike-app': '樂高官方 SPIKE App',
       'ev3-pybricks': 'Pybricks／EV3 MicroPython', clev3r: 'clev3r', 'ev3-classroom': 'EV3 Classroom', ev3g: 'EV3-G 官方軟體',
       arduino: 'Arduino IDE', mblock: 'mBlock 5', matrix: 'MATRIXblock', makecode: 'MakeCode' },
     eds: { cam_school: '學校版', hue12: 'WRO 版' }, gamepad: '掌控者 PS2／PS4' },
   en: { title: 'Interactive tutorial', sub: 'No hub needed: click through it in your browser. Pick a function on the left, watch the code or blocks build up on the right, and drag the simulated sensor to see the values.',
-    swSub: 'First time? Try the interactive tutorial in your browser first, then follow the steps below with your hub.', all: 'Interactive tutorials for all products', guide: 'Product guide',
+    swSub: 'First time? Try the interactive tutorial in your browser first, then follow the steps below with your hub.', all: 'Interactive tutorials for all products', guide: 'Product guide', product: 'Product', host: 'Host', allList: 'All products at a glance', short: { 'spike-app': 'SPIKE App', 'ev3-pybricks': 'Pybricks', 'ev3-classroom': 'Classroom', ev3g: 'EV3-G', micropython: 'MicroPython' },
     kinds: { micropython: 'MicroPython (Pybricks)', 'pybricks-blocks': 'Pybricks blocks', 'mbc-blocks': 'MBC Blocks website', 'spike-app': 'LEGO SPIKE App',
       'ev3-pybricks': 'Pybricks / EV3 MicroPython', clev3r: 'clev3r', 'ev3-classroom': 'EV3 Classroom', ev3g: 'EV3-G (LEGO software)',
       arduino: 'Arduino IDE', mblock: 'mBlock 5', matrix: 'MATRIXblock', makecode: 'MakeCode' },
@@ -486,22 +486,31 @@ function learnBox(lang, key, host, sws, mode) {
     `<p class="lb-sub">${mode === 'sw' ? K.swSub : K.sub}</p>${learnLinks(lang, groups, !host)}` +
     (mode === 'sw' ? '' : `<p class="lb-all"><a href="${learnHub(lang)}">${K.all} →</a></p>`) + `</div>`;
 }
-// learn/index.md 的 <!-- learn-hub -->：每款產品一張卡（PS2／PS4 合一張），卡內每個主機一排
+// learn/index.md 的 <!-- learn-hub -->：一橫列「產品 ▾ ＋ 主機 ▾ → 寫法按鈕」（site.js 切換，記住上次選的）；
+// 下面摺疊的「全部產品一覽」放全部連結（沒有 JS、搜尋引擎也找得到）。PS2／PS4 合一個選項。
 function learnHubHtml(lang) {
-  const K = LK[lang], seen = new Set(), cards = [];
+  const K = LK[lang], seen = new Set(), items = [];
   for (const [k, p] of Object.entries(GI.products)) {
     for (const t of LEARN[k] || []) {
       if (seen.has(t)) continue;
       seen.add(t);
       const groups = learnOf(lang, k, null, null).filter((g) => g.t === t);
       if (!groups.length) continue;
-      const name = t === 'gamepad' ? K.gamepad : escAttr(L_(p.short, lang)) + (K.eds[t] ? ` ${K.eds[t]}` : '');
-      cards.push(`<div class="learn-card" id="${t}" style="--pc:${p.color}">${p.image ? `<img src="${p.image}" alt="" loading="lazy">` : '<span class="ft-noimg"></span>'}` +
-        `<div><h3>${name}</h3>${groups.map((g) => `<p class="lc-row"><span class="lc-host">${LEARN_HOST_NAME[g.host]}</span>${g.items.map((x) => `<a href="${x.url}">${K.kinds[x.kind]}</a>`).join('')}</p>`).join('')}` +
-        `<a class="lc-guide" href="${gProductUrl(lang, k)}">${K.guide} →</a></div></div>`);
+      // 選單要短：神攝手兩版拿掉「ESP32CAM」，只留版本
+      items.push({ t, name: t === 'gamepad' ? K.gamepad : L_(p.short, lang).replace(/\s*ESP32CAM/i, '') + (K.eds[t] ? ` ${K.eds[t]}` : ''),
+        sites: Object.keys(LEARN).filter((s) => LEARN[s].includes(t)), img: p.image || '', guide: gProductUrl(lang, k),
+        hosts: groups.map((g) => ({ h: g.host, name: LEARN_HOST_NAME[g.host], ks: g.items.map((x) => ({ n: K.kinds[x.kind], s: K.short[x.kind] || K.kinds[x.kind], u: x.url })) })) });
     }
   }
-  return `<div class="learn-hub">${cards.join('')}</div>`;
+  const first = items[0], btns = (h) => h.ks.map((x) => `<a href="${x.u}" title="${x.n}">${x.s}</a>`).join('');
+  const bar = `<div class="lh-bar">${first.img ? `<img class="lh-img" src="${first.img}" alt="">` : '<img class="lh-img" alt="" hidden>'}` +
+    `<label class="lh-f"><span>${K.product}</span><select id="lh-p">${items.map((x) => `<option value="${x.t}">${escAttr(x.name.replace(/^SPIKE\s+/, ''))}</option>`).join('')}</select></label>` +
+    `<label class="lh-f"><span>${K.host}</span><select id="lh-h">${first.hosts.map((h) => `<option value="${h.h}">${h.name}</option>`).join('')}</select></label>` +
+    `<span class="lh-arrow" aria-hidden="true">→</span><div class="lh-ks" aria-live="polite">${btns(first.hosts[0])}</div></div>` +
+    `<p class="lh-guide"><a href="${first.guide}">${K.guide} →</a></p>`;
+  const list = items.map((x) => `<div class="lh-row" id="${x.t}"><b>${escAttr(x.name)}</b>${x.hosts.map((h) => `<p><span class="lc-host">${h.name}</span><span class="lh-ls">${h.ks.map((k) => `<a href="${k.u}">${k.n}</a>`).join('')}</span></p>`).join('')}</div>`).join('');
+  return `<div class="lh" id="learn-hub-box">${bar}<details class="lh-all"><summary>${K.allList}</summary><div class="lh-list">${list}</div></details>` +
+    `<script type="application/json" id="learn-hub-data">${JSON.stringify(items).replace(/</g, '\\u003c')}</script></div>`;
 }
 
 // 第 2、3 層頁面頂端的切換列：產品 ▾ › 主機 ▾ › 軟體 ▾（<details> 下拉：不用 JS 也能用、鍵盤可操作；連結在建站時算好）

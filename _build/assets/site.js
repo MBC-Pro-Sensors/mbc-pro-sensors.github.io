@@ -165,6 +165,45 @@
     d.addEventListener('toggle', function () { if (d.open) { try { localStorage.setItem('mbc-host', d.dataset.host); } catch (e) {} } });
   });
 
+  // --- 互動教學總覽：產品 ▾ ＋ 主機 ▾ → 寫法按鈕（網址 #教學 先選那款；否則用上次選的 mbc.learn，或首頁選過的產品／主機） ---
+  var lhData = document.getElementById('learn-hub-data');
+  if (lhData) {
+    var LH = JSON.parse(lhData.textContent), lhBox = document.getElementById('learn-hub-box');
+    var lhP = document.getElementById('lh-p'), lhH = document.getElementById('lh-h');
+    var lhKs = lhBox.querySelector('.lh-ks'), lhImg = lhBox.querySelector('.lh-img'), lhGuide = lhBox.querySelector('.lh-guide a');
+    var lhProd = function () { return LH[lhP.selectedIndex]; };
+    var lhDraw = function () {
+      var p = lhProd(), h = p.hosts[lhH.selectedIndex];
+      lhKs.textContent = '';
+      h.ks.forEach(function (k) { var a = document.createElement('a'); a.href = k.u; a.title = k.n; a.textContent = k.s; lhKs.appendChild(a); });
+      if (p.img) { lhImg.src = p.img; lhImg.hidden = false; } else lhImg.hidden = true;
+      lhGuide.href = p.guide;
+      try { localStorage.setItem('mbc.learn', p.t + '|' + h.h); } catch (e) {}
+      lhFit();
+    };
+    // 一橫列放不下（超出視窗右緣）就改成換行
+    var lhBar = lhBox.querySelector('.lh-bar');
+    var lhFit = function () { lhBar.classList.remove('lh-wrap'); if (lhBar.getBoundingClientRect().right > document.documentElement.clientWidth - 16) lhBar.classList.add('lh-wrap'); };
+    window.addEventListener('resize', lhFit);
+    var lhHosts = function (keep) {
+      var p = lhProd(), at = 0;
+      lhH.textContent = '';
+      p.hosts.forEach(function (h, i) { var o = document.createElement('option'); o.value = h.h; o.textContent = h.name; lhH.appendChild(o); if (h.h === keep) at = i; });
+      lhH.selectedIndex = at;
+      lhDraw();
+    };
+    var lhPick = function (t, host) {
+      for (var i = 0; i < LH.length; i++) if (LH[i].t === t || LH[i].sites.indexOf(t) > -1) { lhP.selectedIndex = i; lhHosts(host); return true; }
+      return false;
+    };
+    var saved = '', site = '', siteHost = '';
+    try { saved = localStorage.getItem('mbc.learn') || ''; site = localStorage.getItem('mbc.product') || ''; siteHost = localStorage.getItem('mbc.host') || ''; } catch (e) {}
+    var hashT = location.hash.slice(1);
+    if (!(hashT && lhPick(hashT, saved.split('|')[1])) && !(saved && lhPick(saved.split('|')[0], saved.split('|')[1])) && !(site && lhPick(site, siteHost))) lhHosts(lhH.value);
+    lhP.addEventListener('change', function () { lhHosts(lhH.value); });
+    lhH.addEventListener('change', lhDraw);
+  }
+
   // --- 首頁三步選擇器：產品 → 主機 → 軟體 → 直接到軟體頁（記住 mbc.product／mbc.host／mbc.sw） ---
   var finder = document.getElementById('finder-box');
   var dataEl = document.getElementById('finder-data');
