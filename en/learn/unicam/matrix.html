@@ -231,6 +231,9 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 @media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
 </style>
 <style>
+/* functions of another camera mode: dashed + dimmed (not line-through, which reads as "not available"); clicking switches the mode */
+.chip.other-mode { border-style: dashed; border-color: var(--ink); opacity: 0.7; }
+.chip.other-mode:hover, .chip.other-mode:focus-visible { opacity: 1; }
 .v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
 .v1warn b { white-space: nowrap; }
 /* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
@@ -282,7 +285,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <article class="step locked" id="step3">
         <div class="step-head"><span class="num">3</span><h2>Read and decode a packet in loop()</h2></div>
         <div class="step-body">
-          <p class="why">Each loop reads one packet with <code>SmartCamReader(CamData)</code> (waits up to 0.5 s) and decodes it only if one arrived. Functions are grouped by camera mode; grey ones need another mode (clicking switches it, <code>MODE</code> follows, and so must the camera menu).</p>
+          <p class="why">Each loop reads one packet with <code>SmartCamReader(CamData)</code> (waits up to 0.5 s) and decodes it only if one arrived. Functions are grouped by camera mode; dashed ones belong to another mode (clicking switches it, <code>MODE</code> follows, and so must the camera menu).</p>
           <div id="picker" class="ucpick"></div>
           <div class="explain" id="explain" aria-live="polite"></div>
           <div class="mini" id="mini3" aria-live="polite"></div>
@@ -1175,9 +1178,9 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       w.innerHTML = '<span>' + GROUPS[g].name + (GROUPS[g].modes ? (' (mode ') + GROUPS[g].modes.join((', ')) + (')') : '') + '</span>';
       var chips = document.createElement('div'); chips.className = 'chips';
       list.forEach(function (f) {
-        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (fnOk(f, S.mode) ? '' : ' no-ev3');
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (fnOk(f, S.mode) ? '' : ' other-mode');
         b.textContent = f.label; b.setAttribute('aria-pressed', String(S.fn === f.id));
-        b.title = f.name + (fnOk(f, S.mode) ? '' : (' (needs ') + modeList(f.modes) + (')'));
+        b.title = f.name + (fnOk(f, S.mode) ? '' : (' (click to switch to ') + modeList(f.modes) + (')'));
         b.addEventListener('click', function () { pick(f.id); });
         chips.appendChild(b);
       });

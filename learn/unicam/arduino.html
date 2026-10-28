@@ -231,6 +231,9 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 @media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
 </style>
 <style>
+/* functions of another camera mode: dashed + dimmed (not line-through, which reads as "not available"); clicking switches the mode */
+.chip.other-mode { border-style: dashed; border-color: var(--ink); opacity: 0.7; }
+.chip.other-mode:hover, .chip.other-mode:focus-visible { opacity: 1; }
 .v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
 .v1warn b { white-space: nowrap; }
 /* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
@@ -287,7 +290,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <article class="step locked" id="step3">
         <div class="step-head"><span class="num">3</span><h2>在 loop() 讀值</h2></div>
         <div class="step-body">
-          <p class="why">功能依相機模式分組，灰色的功能要換模式才能用（點下去會幫你換，程式的 <code>MODE</code> 跟著改）。點一個功能，右邊的程式和輸出會換成它的範例。</p>
+          <p class="why">功能依相機模式分組，虛線框的功能是別的模式用的，要換模式才能用（點下去會幫你換，程式的 <code>MODE</code> 跟著改）。點一個功能，右邊的程式和輸出會換成它的範例。</p>
           <div id="picker" class="ucpick"></div>
           <div class="explain" id="explain" aria-live="polite"></div>
           <div class="mini" id="mini3" aria-live="polite"></div>
@@ -1384,9 +1387,9 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       w.innerHTML = '<span>' + GROUPS[g].name + (GROUPS[g].modes ? ('（模式 ') + GROUPS[g].modes.join(('、')) + ('）') : '') + '</span>';
       var chips = document.createElement('div'); chips.className = 'chips';
       list.forEach(function (f) {
-        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (fnOk(f, S.mode) ? '' : ' no-ev3');
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (fnOk(f, S.mode) ? '' : ' other-mode');
         b.textContent = f.label; b.setAttribute('aria-pressed', String(S.fn === f.id));
-        b.title = f.name + (fnOk(f, S.mode) ? '' : ('（要切到') + modeList(f.modes) + ('）'));
+        b.title = f.name + (fnOk(f, S.mode) ? '' : ('（點了會切到') + modeList(f.modes) + ('）'));
         b.addEventListener('click', function () { pick(f.id); });
         chips.appendChild(b);
       });
