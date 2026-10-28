@@ -876,6 +876,7 @@
       "zh": "神攝手 ESP32CAM",
       "en": "Sharpshooter Vision (ESP32CAM)"
     },
+    "legacy": true,
     "routes": {
       "spike": {
         "start": "/sensors/esp32cam/index.md",
@@ -924,7 +925,7 @@
           ],
           [
             "狀態",
-            "v1 尚未上機驗證，數值排法已定案"
+            "韌體 v1 尚未上機驗證，數值排法已定案"
           ]
         ]
       },
@@ -941,7 +942,7 @@
           ],
           [
             "Status",
-            "v1 not yet hardware-verified; value layout is final"
+            "Firmware v1 not yet hardware-verified; value layout is final"
           ]
         ]
       }
@@ -952,7 +953,7 @@
       "en": "WRO RoboMission: allowed for Junior and Senior (cameras are not allowed in Elementary)"
     },
     "zh": {
-      "badge": "UNI-CAM · 開發中",
+      "badge": "CAM-VIS · 開發中",
       "pitch": "一台相機四種用法：顏色追蹤（最多 16 色）、座標取色、照順序給色號、循線，在相機選單切換；SPIKE、EV3、MATRIX、Arduino、micro:bit、mBlock 都讀得到。",
       "stats": [
         [
@@ -992,7 +993,7 @@
       ]
     },
     "en": {
-      "badge": "UNI-CAM · IN DEVELOPMENT",
+      "badge": "CAM-VIS · IN DEVELOPMENT",
       "pitch": "One camera, four jobs: color tracking (up to 16 colors), color at points, color order and line following, switched in the camera menu; SPIKE, EV3, MATRIX, Arduino, micro:bit and mBlock can all read it.",
       "stats": [
         [
@@ -1032,8 +1033,8 @@
       ]
     },
     "name": {
-      "zh": "神攝手通用版 v1",
-      "en": "Sharpshooter Vision Universal v1"
+      "zh": "神攝手",
+      "en": "Sharpshooter Vision"
     },
     "routes": {
       "spike": {

@@ -3,9 +3,9 @@
 # Value reference: slot by slot
 
 > [!WARNING]
-> **v1 not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
+> **Firmware v1 not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
 
-What the Sharpshooter Vision Universal v1 sends on each host for each "camera mode · sub-option", and in which slot. Pick the mode on the camera first (see the [product page](/en/sensors/unicam/index.md)), then find your host below and open the matching table. For code on each host see [SPIKE](/en/sensors/unicam/spike/index.md), [EV3](/en/sensors/unicam/ev3/index.md), [MATRIX](/en/sensors/unicam/matrix/mvision.md), [Arduino](/en/sensors/unicam/arduino/index.md) and [micro:bit](/en/sensors/unicam/microbit/index.md).
+What the Sharpshooter Vision sends on each host for each "camera mode · sub-option", and in which slot. Pick the mode on the camera first (see the [product page](/en/sensors/unicam/index.md)), then find your host below and open the matching table. For code on each host see [SPIKE](/en/sensors/unicam/spike/index.md), [EV3](/en/sensors/unicam/ev3/index.md), [MATRIX](/en/sensors/unicam/matrix/mvision.md), [Arduino](/en/sensors/unicam/arduino/index.md) and [micro:bit](/en/sensors/unicam/microbit/index.md).
 
 ## How to read the tables
 
@@ -38,7 +38,7 @@ Click a number to jump to its table. Sub-option = level: the finer the level, th
 
 ## Pybricks library (SPIKE, modes 9 / 6)
 
-With the MBC Pybricks library the hub reads mode 9: 7 int16 = 14 bytes, one value per byte. Coordinates are 160×120 pixels (Y: small at top), 0 = no target; values that can be negative (line offsets, angle, edges) are signed bytes (two's complement). In the Max-colors level each color is one byte = cell number 1~192 on a 16×12 grid, split into X and Y by the library; counts for the Max and Multi levels are in mode 6 (read only when needed); mode 8 is the device ID. The Universal edition's mode 9 layout differs from the Kito edition, so the Kito camLibForKitoMode9 cannot be reused.
+With the MBC Pybricks library the hub reads mode 9: 7 int16 = 14 bytes, one value per byte. Coordinates are 160×120 pixels (Y: small at top), 0 = no target; values that can be negative (line offsets, angle, edges) are signed bytes (two's complement). In the Max-colors level each color is one byte = cell number 1~192 on a 16×12 grid, split into X and Y by the library; counts for the Max and Multi levels are in mode 6 (read only when needed); mode 8 is the device ID. This generation's mode 9 layout differs from the Kito edition, so the Kito camLibForKitoMode9 cannot be reused.
 
 <details class="plat pg-spike" id="pyb-11">
 <summary><span class="plat-dot"></span>Camera mode 1 Color tracking ① Max colors: 14 colors</summary>

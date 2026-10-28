@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/unicam/micropython.html">
 <link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/unicam/micropython.html">
 <link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/unicam/micropython.html">
-<title>神攝手通用版 v1 Pybricks 教學 | MBC-Pro Sensors</title>
+<title>神攝手 Pybricks 教學 | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -241,11 +241,11 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/learn/">全部互動教學</a><a class="back" href="/sensors/unicam/spike/">← 神攝手通用版 v1 SPIKE 說明</a><a class="lang" href="/en/learn/unicam/micropython.html" hreflang="en">EN</a><div class="tabs"><span class="tl">主機</span><a href="/learn/unicam/micropython.html" aria-current="page">SPIKE</a><a href="/learn/unicam/ev3-pybricks.html">EV3</a><a href="/learn/unicam/arduino.html">Arduino</a><a href="/learn/unicam/mblock.html">mBlock</a><a href="/learn/unicam/matrix.html">MATRIX</a><a href="/learn/unicam/makecode.html">micro:bit</a><span class="tsep"></span><a href="/learn/unicam/micropython.html" aria-current="page">MicroPython（Pybricks）</a></div></div></nav>
+<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/learn/">全部互動教學</a><a class="back" href="/sensors/unicam/spike/">← 神攝手 SPIKE 說明</a><a class="lang" href="/en/learn/unicam/micropython.html" hreflang="en">EN</a><div class="tabs"><span class="tl">主機</span><a href="/learn/unicam/micropython.html" aria-current="page">SPIKE</a><a href="/learn/unicam/ev3-pybricks.html">EV3</a><a href="/learn/unicam/arduino.html">Arduino</a><a href="/learn/unicam/mblock.html">mBlock</a><a href="/learn/unicam/matrix.html">MATRIX</a><a href="/learn/unicam/makecode.html">micro:bit</a><span class="tsep"></span><a href="/learn/unicam/micropython.html" aria-current="page">MicroPython（Pybricks）</a></div></div></nav>
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">MBC 神攝手通用版 v1 × Pybricks（SPIKE）</span>
-    <h1>三個步驟用 MicroPython 讀神攝手通用版</h1>
+    <span class="eyebrow">MBC 神攝手 × Pybricks（SPIKE）</span>
+    <h1>三個步驟用 MicroPython 讀神攝手</h1>
     <p class="lead">寫程式一定照這個順序：先<b>匯入函式庫、選好相機模式</b>，再<b>建立物件、幫相機取名字</b>，最後用這個名字去<b>呼叫功能</b>。左邊一步一步做，右邊的程式會跟著長出來；在模擬的相機畫面裡拖色塊、色紙、積木或線，就能看到程式會印出什麼。</p>
     <p class="v1warn" role="note"><b>v1 尚未上機驗證</b><span>數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。</span></p>
   </header>
@@ -255,7 +255,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <article class="step current" id="step1">
         <div class="step-head"><span class="num">1</span><h2>匯入函式庫、選相機模式</h2></div>
         <div class="step-body">
-          <p class="why">程式的<b>第一件事</b>是告訴主機「我要用神攝手通用版的函式庫」。沒有這行，後面寫的 <code>UniCam</code> 主機看不懂，會出現 <code>NameError</code>。</p>
+          <p class="why">程式的<b>第一件事</b>是告訴主機「我要用神攝手的函式庫」。沒有這行，後面寫的 <code>UniCam</code> 主機看不懂，會出現 <code>NameError</code>。</p>
           <ol class="howto">
             <li>下載函式庫（存成檔案，檔名不要改）：<a href="/examples/unicam/pybricks/MBC_UniCam.py" download>MBC_UniCam.py</a>。</li>
             <li>在 Pybricks Code 左邊檔案區按「Import a file」，把它匯入<b>同一個專案</b>，不要放進子資料夾。</li>
@@ -728,13 +728,13 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
           body: (EV3 ? ['{n}.device_id()    # ' + ('EV3：先讀一次值，sensor_ok() 看的是最近一次讀值')] : []).concat(['if {n}.sensor_ok():', '    print("' + ('相機正常') + '")', 'else:', '    print("' + ('相機沒接好！') + '")']),
           out: function (V) { if (EV3) V.device_id(); return V.sensor_ok() ? ('相機正常') : ('相機沒接好！'); } },
         { id: 'device_id', label: 'device_id()', name: ('感應器身分'), grp: 'info', modes: null, once: true,
-          what: ('(位址 76＝0x4C, 型號 3＝通用版, 韌體版 100＝1.0)。學校版型號是 1、WRO 版是 2。') + (EV3 ? ('EV3 讀紅外線模式 5。') : ('讀模式 8，放迴圈外面。')),
+          what: ('(位址 76＝0x4C, 型號 3＝目前的神攝手, 韌體版 100＝1.0)。學校版型號是 1、WRO 版是 2。') + (EV3 ? ('EV3 讀紅外線模式 5。') : ('讀模式 8，放迴圈外面。')),
           ret: ('(位址, 型號, 韌體版)'), body: ['print({n}.device_id())'], out: function (V) { return py(V.device_id()); } },
-        { id: 'is_unicam', label: 'is_unicam()', name: ('是不是通用版'), grp: 'info', modes: null, once: true,
-          what: ('接的是不是神攝手通用版（型號 3）。學校版、WRO 版要用它們自己的函式庫。'),
+        { id: 'is_unicam', label: 'is_unicam()', name: ('是不是目前的神攝手'), grp: 'info', modes: null, once: true,
+          what: ('接的是不是目前的神攝手（型號 3）。學校版、WRO 版要用它們自己的函式庫。'),
           ret: ('True／False'),
-          body: ['if {n}.is_unicam():', '    print("' + ('是神攝手通用版') + '")', 'else:', '    print("' + ('不是通用版') + '")'],
-          out: function (V) { return V.is_unicam() ? ('是神攝手通用版') : ('不是通用版'); } });
+          body: ['if {n}.is_unicam():', '    print("' + ('是目前的神攝手') + '")', 'else:', '    print("' + ('不是目前的神攝手') + '")'],
+          out: function (V) { return V.is_unicam() ? ('是目前的神攝手') : ('不是目前的神攝手'); } });
       if (!EV3) FNS.push({ id: 'firmware_version', label: 'firmware_version()', name: ('韌體版本'), grp: 'info', modes: null, once: true,
         what: ('相機韌體版本 (主版, 次版)，例如 (1, 0)＝1.0。讀模式 8，放迴圈外面。'),
         ret: ('(主版, 次版)'), body: ['print({n}.firmware_version())'], out: function (V) { return py(V.firmware_version()); } });

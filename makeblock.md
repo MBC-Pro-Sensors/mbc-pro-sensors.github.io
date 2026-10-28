@@ -13,7 +13,7 @@
 
 <div style="background: rgba(0,210,255,0.05); border: 1px solid rgba(0,210,255,0.3); border-radius: 12px; padding: 22px; margin: 20px 0;">
 <p style="margin-top: 0;"><b>MBC Pro Sensors 擴展 v2.0.0</b>：循行者、測距者、掌控者、IMU 陀螺儀、神攝手共 95 個積木，搭配 2026-10 之後出貨（協定 v2）的 MakeBlock 版感應器。</p>
-<p><b>開發中</b>：新版擴展還沒在 Makeblock 擴展平台上架，正式上架後在 mBlock 5「擴展中心」搜尋「MBC」即可加入。v2.1.0 另加「神攝手通用版」分類（22 顆積木，搭配開發中的 <a href="/sensors/unicam/mblock/index.md">神攝手通用版 v1</a>，尚未上機驗證），匯入檔：<a href="/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext"><code>mbc_pro_sensors_2.1.0_import.mext</code></a>。</p>
+<p><b>開發中</b>：新版擴展還沒在 Makeblock 擴展平台上架，正式上架後在 mBlock 5「擴展中心」搜尋「MBC」即可加入。v2.1.0 另加「神攝手通用版」分類（22 顆積木，搭配開發中的 <a href="/sensors/unicam/mblock/index.md">神攝手</a>，韌體 v1 尚未上機驗證），匯入檔：<a href="/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext"><code>mbc_pro_sensors_2.1.0_import.mext</code></a>。</p>
 <p style="margin-bottom: 0;">等不及的進階使用者：到 <a href="https://ext.mblock.cc">ext.mblock.cc</a> 登入自己的 Makeblock 帳號 → 我的擴展 → 匯入資料，上傳 <a href="/downloads/MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext"><code>mbc_pro_sensors_2.0.0_import.mext</code></a>（匯入約 1 分鐘），再按「下載」取得可拖進 mBlock 的 <code>.mext</code>。</p>
 </div>
 
@@ -60,8 +60,8 @@ mBot2（CyberPi）沒有 RJ25 連接埠，不支援。
 <!-- gen:mblock-products -->
 | 產品 | 積木分類 | 積木 | 舊版擴展 |
 | :--- | :--- | :--- | :--- |
-| [神攝手 學校版](/sensors/esp32cam/mblock.md) | 神攝手 | 色相、飽和度、明度、動態、色塊 X、色塊 Y、色塊寬、色塊高、色塊面積、有找到色塊？ | — |
-| [神攝手 WRO 版（HUE12）](/sensors/esp32cam/mblock-wro.md) | 神攝手 WRO | 色點 N 顏色碼、色點 N 鮮豔度 | — |
+| [神攝手 學校版（舊版，停止支援）](/sensors/esp32cam/mblock.md) | 神攝手 | 色相、飽和度、明度、動態、色塊 X、色塊 Y、色塊寬、色塊高、色塊面積、有找到色塊？ | — |
+| [神攝手 WRO 版（HUE12）（舊版，停止支援）](/sensors/esp32cam/mblock-wro.md) | 神攝手 WRO | 色點 N 顏色碼、色點 N 鮮豔度 | — |
 | [IMU 陀螺儀](/sensors/imu/mblock.md) | IMU 陀螺儀 | 陀螺 3D 航向、融合航向、陀螺 1D 航向、磁力航向、轉向角速度、俯仰角、俯仰角速度、磁力信任度、磁場干擾度、朝上的面、角速度 [軸]、加速度 [軸]、磁力 [軸] | — |
 | [循行者 16 路](/sensors/line16/mblock.md) | 循行者 | 線的位置、線的細位置、線寬、線段數、壓線位元圖、最後離線方向、門檻、校準次數、第 N 路光值、第 N 路在線上？ | v1.0.0 可用（2026-10 前韌體） |
 | [循行者 8 路](/sensors/line8/mblock.md) | 循行者 | 線的位置、線的細位置、線寬、線段數、壓線位元圖、最後離線方向、門檻、校準次數、第 N 路光值、第 N 路在線上？ | v1.0.0 可用（2026-10 前韌體） |
@@ -72,7 +72,7 @@ mBot2（CyberPi）沒有 RJ25 連接埠，不支援。
 <!-- /gen -->
 
 > [!NOTE]
-> IMU 陀螺儀與神攝手的 MakeBlock 版是 2026 年 10 月新增，訂購前請先 [LINE 詢問](https://line.me/R/ti/p/@692vcvuk)確認出貨版本。神攝手接 mBot 走 IO1／IO3 串口，上機驗證中。
+> IMU 陀螺儀的 MakeBlock 版是 2026 年 10 月新增，訂購前請先 [LINE 詢問](https://line.me/R/ti/p/@692vcvuk)確認出貨版本。[神攝手](/sensors/unicam/mblock/index.md)的 mBlock 版用 v2.1.0 的「神攝手通用版」分類，還在開發，韌體 v1 尚未上機驗證；擴展裡的「神攝手」「神攝手 WRO」分類是給[舊版神攝手](/sensors/esp32cam/index.md)用的（停止支援）。
 
 ---
 
@@ -93,20 +93,20 @@ mBot2（CyberPi）沒有 RJ25 連接埠，不支援。
 <!-- gen:mblock-blocks -->
 | 積木 | 傳回 | 產品 | 說明 |
 | :--- | :--- | :--- | :--- |
-| 神攝手 連接埠 ［埠］ 色相 | -1~100 | [神攝手 學校版](/sensors/esp32cam/mblock.md) | S1 取樣點色相 0~100（色相環 0~240 等比縮放）；−1 = 黑白灰（飽和度 < 10）；S1 沒設定 = 0 |
-| 神攝手 連接埠 ［埠］ 飽和度 | 0~100 | [神攝手 學校版](/sensors/esp32cam/mblock.md) | S1 取樣點飽和度 0~100 |
-| 神攝手 連接埠 ［埠］ 明度 | 0~100 | [神攝手 學校版](/sensors/esp32cam/mblock.md) | S1 取樣點明度 0~100 |
-| 神攝手 連接埠 ［埠］ 動態 | 0~100 | [神攝手 學校版](/sensors/esp32cam/mblock.md) | 全畫面動態量 0~100（畫面變化越多越大） |
-| 神攝手 連接埠 ［埠］ 色塊 X | 0~100 | [神攝手 學校版](/sensors/esp32cam/mblock.md) | 色塊中心 X 0~100，左 = 0；沒找到 = 0 |
-| 神攝手 連接埠 ［埠］ 色塊 Y | 0~75 | [神攝手 學校版](/sensors/esp32cam/mblock.md) | 色塊中心 Y 0~75，下 = 0、上 = 75；沒找到 = 0 |
-| 神攝手 連接埠 ［埠］ 色塊寬 | 0~100 | [神攝手 學校版](/sensors/esp32cam/mblock.md) | 色塊寬 W 0~100；0 = 沒找到 |
-| 神攝手 連接埠 ［埠］ 色塊高 | 0~75 | [神攝手 學校版](/sensors/esp32cam/mblock.md) | 色塊高 H 0~75；沒找到 = 0 |
-| 神攝手 連接埠 ［埠］ 色塊面積 | 0~7500 | [神攝手 學校版](/sensors/esp32cam/mblock.md) | W×H（0~7500）；沒找到 = 0 |
-| 神攝手 連接埠 ［埠］ 有找到色塊？ | 0~1 | [神攝手 學校版](/sensors/esp32cam/mblock.md) | 1 = 畫面裡有目標色的色塊（W > 0），0 = 沒有 |
-| 神攝手 連接埠 ［埠］ 更新全部數值 | — | [神攝手 學校版](/sensors/esp32cam/mblock.md) | 一次讀整張值表進快取（FD 整包）；接下來 10 ms 內的讀值積木直接用快取，不再逐一詢問 |
-| 神攝手 WRO 連接埠 ［埠］ 色點 ［1~12］ 顏色碼 | 0~255 | [神攝手 WRO 版（HUE12）](/sensors/esp32cam/mblock-wro.md) | 10~1B = S1~S12 顏色碼：0~239 彩色（色相 0~255 等比縮成 0~239）、240~245 白（飽和度 < 30，越低越大）、246~250 黑（明度 < 30，越暗越大）、255 = 色點沒開 |
-| 神攝手 WRO 連接埠 ［埠］ 色點 ［1~12］ 鮮豔度 | 0~255 | [神攝手 WRO 版（HUE12）](/sensors/esp32cam/mblock-wro.md) | 20~2B = S1~S12 鮮豔度（飽和度）0~255：黑 = 1、白／彩色 = 實際飽和度；色點沒開 = 0 |
-| 神攝手 WRO 連接埠 ［埠］ 更新全部數值 | — | [神攝手 WRO 版（HUE12）](/sensors/esp32cam/mblock-wro.md) | 一次讀整張值表進快取（FD 整包）；接下來 10 ms 內的讀值積木直接用快取，不再逐一詢問 |
+| 神攝手 連接埠 ［埠］ 色相 | -1~100 | [神攝手 學校版（舊版）](/sensors/esp32cam/mblock.md) | S1 取樣點色相 0~100（色相環 0~240 等比縮放）；−1 = 黑白灰（飽和度 < 10）；S1 沒設定 = 0 |
+| 神攝手 連接埠 ［埠］ 飽和度 | 0~100 | [神攝手 學校版（舊版）](/sensors/esp32cam/mblock.md) | S1 取樣點飽和度 0~100 |
+| 神攝手 連接埠 ［埠］ 明度 | 0~100 | [神攝手 學校版（舊版）](/sensors/esp32cam/mblock.md) | S1 取樣點明度 0~100 |
+| 神攝手 連接埠 ［埠］ 動態 | 0~100 | [神攝手 學校版（舊版）](/sensors/esp32cam/mblock.md) | 全畫面動態量 0~100（畫面變化越多越大） |
+| 神攝手 連接埠 ［埠］ 色塊 X | 0~100 | [神攝手 學校版（舊版）](/sensors/esp32cam/mblock.md) | 色塊中心 X 0~100，左 = 0；沒找到 = 0 |
+| 神攝手 連接埠 ［埠］ 色塊 Y | 0~75 | [神攝手 學校版（舊版）](/sensors/esp32cam/mblock.md) | 色塊中心 Y 0~75，下 = 0、上 = 75；沒找到 = 0 |
+| 神攝手 連接埠 ［埠］ 色塊寬 | 0~100 | [神攝手 學校版（舊版）](/sensors/esp32cam/mblock.md) | 色塊寬 W 0~100；0 = 沒找到 |
+| 神攝手 連接埠 ［埠］ 色塊高 | 0~75 | [神攝手 學校版（舊版）](/sensors/esp32cam/mblock.md) | 色塊高 H 0~75；沒找到 = 0 |
+| 神攝手 連接埠 ［埠］ 色塊面積 | 0~7500 | [神攝手 學校版（舊版）](/sensors/esp32cam/mblock.md) | W×H（0~7500）；沒找到 = 0 |
+| 神攝手 連接埠 ［埠］ 有找到色塊？ | 0~1 | [神攝手 學校版（舊版）](/sensors/esp32cam/mblock.md) | 1 = 畫面裡有目標色的色塊（W > 0），0 = 沒有 |
+| 神攝手 連接埠 ［埠］ 更新全部數值 | — | [神攝手 學校版（舊版）](/sensors/esp32cam/mblock.md) | 一次讀整張值表進快取（FD 整包）；接下來 10 ms 內的讀值積木直接用快取，不再逐一詢問 |
+| 神攝手 WRO 連接埠 ［埠］ 色點 ［1~12］ 顏色碼 | 0~255 | [神攝手 WRO 版（HUE12）（舊版）](/sensors/esp32cam/mblock-wro.md) | 10~1B = S1~S12 顏色碼：0~239 彩色（色相 0~255 等比縮成 0~239）、240~245 白（飽和度 < 30，越低越大）、246~250 黑（明度 < 30，越暗越大）、255 = 色點沒開 |
+| 神攝手 WRO 連接埠 ［埠］ 色點 ［1~12］ 鮮豔度 | 0~255 | [神攝手 WRO 版（HUE12）（舊版）](/sensors/esp32cam/mblock-wro.md) | 20~2B = S1~S12 鮮豔度（飽和度）0~255：黑 = 1、白／彩色 = 實際飽和度；色點沒開 = 0 |
+| 神攝手 WRO 連接埠 ［埠］ 更新全部數值 | — | [神攝手 WRO 版（HUE12）（舊版）](/sensors/esp32cam/mblock-wro.md) | 一次讀整張值表進快取（FD 整包）；接下來 10 ms 內的讀值積木直接用快取，不再逐一詢問 |
 | IMU 陀螺儀 連接埠 ［埠］ 陀螺 3D 航向 | -32768~32767 ° | [IMU 陀螺儀](/sensors/imu/mblock.md) | 四元數算出的航向，度，開機／歸零 = 0，連續累積可超過 360（int16 到 ±32767 繞回，約 91 圈） |
 | IMU 陀螺儀 連接埠 ［埠］ 融合航向 | -32768~32767 ° | [IMU 陀螺儀](/sensors/imu/mblock.md) | 陀螺 3D 加磁力計慢修正的航向，度，減去相對零點；可超過 360 |
 | IMU 陀螺儀 連接埠 ［埠］ 陀螺 1D 航向 | -32768~32767 ° | [IMU 陀螺儀](/sensors/imu/mblock.md) | 只繞轉向軸積分的航向，度，開機／歸零 = 0；可超過 360 |

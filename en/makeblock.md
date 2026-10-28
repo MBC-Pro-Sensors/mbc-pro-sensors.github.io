@@ -13,7 +13,7 @@ Software: **mBlock 5 for PC** (Upload mode — the program is flashed to the boa
 
 <div style="background: rgba(0,210,255,0.05); border: 1px solid rgba(0,210,255,0.3); border-radius: 12px; padding: 22px; margin: 20px 0;">
 <p style="margin-top: 0;"><b>MBC Pro Sensors extension v2.0.0</b>: 95 blocks for Pathfinder, Ranger, Controller, IMU gyro and Vision sensor, for MakeBlock-edition sensors shipped from October 2026 (protocol v2).</p>
-<p><b>In development</b>: the new extension is not listed on the Makeblock extension platform yet. Once it is listed, search "MBC" in the mBlock 5 Extension Center. v2.1.0 also adds a "Vision Universal" category (22 blocks, for the <a href="/en/sensors/unicam/mblock/index.md">Sharpshooter Vision Universal v1</a>, still in development and not yet hardware-verified); import file: <a href="/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext"><code>mbc_pro_sensors_2.1.0_import.mext</code></a>.</p>
+<p><b>In development</b>: the new extension is not listed on the Makeblock extension platform yet. Once it is listed, search "MBC" in the mBlock 5 Extension Center. v2.1.0 also adds a "Vision Universal" category (22 blocks, for the <a href="/en/sensors/unicam/mblock/index.md">Sharpshooter Vision</a>, still in development, firmware v1 not yet hardware-verified); import file: <a href="/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext"><code>mbc_pro_sensors_2.1.0_import.mext</code></a>.</p>
 <p style="margin-bottom: 0;">Advanced users who cannot wait: sign in to <a href="https://ext.mblock.cc">ext.mblock.cc</a> with your own Makeblock account → My extensions → Import data, upload <a href="/downloads/MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext"><code>mbc_pro_sensors_2.0.0_import.mext</code></a> (about 1 minute), then click "Download" to get a <code>.mext</code> you can drop into mBlock.</p>
 </div>
 
@@ -63,8 +63,8 @@ mBot2 (CyberPi) has no RJ25 ports and is not supported.
 <!-- gen:mblock-products -->
 | Product | Category | Blocks | Legacy ext. |
 | :--- | :--- | :--- | :--- |
-| [Vision Sensor (School Edition)](/en/sensors/esp32cam/mblock.md) | Vision | hue, saturation, brightness, motion, blob X, blob Y, blob width, blob height, blob area, blob found? | — |
-| [Vision Sensor (WRO Edition, HUE12)](/en/sensors/esp32cam/mblock-wro.md) | Vision WRO | spot N colour code, spot N vividness | — |
+| [Vision Sensor (School Edition) (legacy, no longer supported)](/en/sensors/esp32cam/mblock.md) | Vision | hue, saturation, brightness, motion, blob X, blob Y, blob width, blob height, blob area, blob found? | — |
+| [Vision Sensor (WRO Edition, HUE12) (legacy, no longer supported)](/en/sensors/esp32cam/mblock-wro.md) | Vision WRO | spot N colour code, spot N vividness | — |
 | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | IMU Gyro | gyro 3D heading, fused heading, gyro 1D heading, magnetic heading, yaw rate, pitch angle, pitch rate, magnetometer trust, magnetic disturbance, face up, gyro [axis], accel [axis], mag [axis] | — |
 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | Pathfinder | line position, fine line position, line width, line segments, line bitmap, last exit direction, threshold, calibration count, channel N reflect, channel N on line? | v1.0.0 works (pre-2026-10 firmware) |
 | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | Pathfinder | line position, fine line position, line width, line segments, line bitmap, last exit direction, threshold, calibration count, channel N reflect, channel N on line? | v1.0.0 works (pre-2026-10 firmware) |
@@ -75,7 +75,7 @@ mBot2 (CyberPi) has no RJ25 ports and is not supported.
 <!-- /gen -->
 
 > [!NOTE]
-> The MakeBlock editions of the IMU gyro and the Vision sensor are new (October 2026). Please [contact us](/en/contact.md) before ordering to confirm the edition. The Vision sensor talks to mBot over its IO1/IO3 serial port; bench testing is in progress. The PS2 controller is sold in Taiwan only.
+> The MakeBlock edition of the IMU gyro is new (October 2026). Please [contact us](/en/contact.md) before ordering to confirm the edition. The [Sharpshooter Vision](/en/sensors/unicam/mblock/index.md) uses the "Vision Universal" category of v2.1.0, still in development (firmware v1 not yet hardware-verified); the "Vision" and "Vision WRO" categories in the extension are for the [legacy Sharpshooter Vision](/en/sensors/esp32cam/index.md) (no longer supported). The PS2 controller is sold in Taiwan only.
 
 ---
 
@@ -96,20 +96,20 @@ One block per value, returning the number you want (int16); command blocks get a
 <!-- gen:mblock-blocks -->
 | Block | Returns | Product | Meaning |
 | :--- | :--- | :--- | :--- |
-| Vision port [port] hue | -1~100 | [Vision Sensor (School Edition)](/en/sensors/esp32cam/mblock.md) | hue of sample point S1, 0~100 (hue ring 0~240 scaled); −1 = black/white/grey (saturation < 10); 0 when S1 is not set |
-| Vision port [port] saturation | 0~100 | [Vision Sensor (School Edition)](/en/sensors/esp32cam/mblock.md) | saturation of sample point S1, 0~100 |
-| Vision port [port] brightness | 0~100 | [Vision Sensor (School Edition)](/en/sensors/esp32cam/mblock.md) | brightness (HSV value) of sample point S1, 0~100 |
-| Vision port [port] motion | 0~100 | [Vision Sensor (School Edition)](/en/sensors/esp32cam/mblock.md) | whole-frame motion 0~100 (more change = larger) |
-| Vision port [port] blob X | 0~100 | [Vision Sensor (School Edition)](/en/sensors/esp32cam/mblock.md) | blob centre X 0~100, left = 0; 0 when not found |
-| Vision port [port] blob Y | 0~75 | [Vision Sensor (School Edition)](/en/sensors/esp32cam/mblock.md) | blob centre Y 0~75, bottom = 0, top = 75; 0 when not found |
-| Vision port [port] blob width | 0~100 | [Vision Sensor (School Edition)](/en/sensors/esp32cam/mblock.md) | blob width W 0~100; 0 = not found |
-| Vision port [port] blob height | 0~75 | [Vision Sensor (School Edition)](/en/sensors/esp32cam/mblock.md) | blob height H 0~75; 0 when not found |
-| Vision port [port] blob area | 0~7500 | [Vision Sensor (School Edition)](/en/sensors/esp32cam/mblock.md) | W×H (0~7500); 0 when not found |
-| Vision port [port] blob found? | 0~1 | [Vision Sensor (School Edition)](/en/sensors/esp32cam/mblock.md) | 1 = a blob of the target colour is in view (W > 0), 0 = none |
-| Vision port [port] update all values | — | [Vision Sensor (School Edition)](/en/sensors/esp32cam/mblock.md) | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
-| Vision WRO port [port] spot [1~12] colour code | 0~255 | [Vision Sensor (WRO Edition, HUE12)](/en/sensors/esp32cam/mblock-wro.md) | 10~1B = colour code of spots S1~S12: 0~239 colour (hue 0~255 scaled to 0~239), 240~245 white (saturation < 30, lower = larger), 246~250 black (value < 30, darker = larger), 255 = spot not enabled |
-| Vision WRO port [port] spot [1~12] vividness | 0~255 | [Vision Sensor (WRO Edition, HUE12)](/en/sensors/esp32cam/mblock-wro.md) | 20~2B = vividness (saturation) of spots S1~S12, 0~255: black = 1, white/colour = actual saturation; 0 when the spot is not enabled |
-| Vision WRO port [port] update all values | — | [Vision Sensor (WRO Edition, HUE12)](/en/sensors/esp32cam/mblock-wro.md) | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
+| Vision port [port] hue | -1~100 | [Vision Sensor (School Edition) (legacy)](/en/sensors/esp32cam/mblock.md) | hue of sample point S1, 0~100 (hue ring 0~240 scaled); −1 = black/white/grey (saturation < 10); 0 when S1 is not set |
+| Vision port [port] saturation | 0~100 | [Vision Sensor (School Edition) (legacy)](/en/sensors/esp32cam/mblock.md) | saturation of sample point S1, 0~100 |
+| Vision port [port] brightness | 0~100 | [Vision Sensor (School Edition) (legacy)](/en/sensors/esp32cam/mblock.md) | brightness (HSV value) of sample point S1, 0~100 |
+| Vision port [port] motion | 0~100 | [Vision Sensor (School Edition) (legacy)](/en/sensors/esp32cam/mblock.md) | whole-frame motion 0~100 (more change = larger) |
+| Vision port [port] blob X | 0~100 | [Vision Sensor (School Edition) (legacy)](/en/sensors/esp32cam/mblock.md) | blob centre X 0~100, left = 0; 0 when not found |
+| Vision port [port] blob Y | 0~75 | [Vision Sensor (School Edition) (legacy)](/en/sensors/esp32cam/mblock.md) | blob centre Y 0~75, bottom = 0, top = 75; 0 when not found |
+| Vision port [port] blob width | 0~100 | [Vision Sensor (School Edition) (legacy)](/en/sensors/esp32cam/mblock.md) | blob width W 0~100; 0 = not found |
+| Vision port [port] blob height | 0~75 | [Vision Sensor (School Edition) (legacy)](/en/sensors/esp32cam/mblock.md) | blob height H 0~75; 0 when not found |
+| Vision port [port] blob area | 0~7500 | [Vision Sensor (School Edition) (legacy)](/en/sensors/esp32cam/mblock.md) | W×H (0~7500); 0 when not found |
+| Vision port [port] blob found? | 0~1 | [Vision Sensor (School Edition) (legacy)](/en/sensors/esp32cam/mblock.md) | 1 = a blob of the target colour is in view (W > 0), 0 = none |
+| Vision port [port] update all values | — | [Vision Sensor (School Edition) (legacy)](/en/sensors/esp32cam/mblock.md) | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
+| Vision WRO port [port] spot [1~12] colour code | 0~255 | [Vision Sensor (WRO Edition, HUE12) (legacy)](/en/sensors/esp32cam/mblock-wro.md) | 10~1B = colour code of spots S1~S12: 0~239 colour (hue 0~255 scaled to 0~239), 240~245 white (saturation < 30, lower = larger), 246~250 black (value < 30, darker = larger), 255 = spot not enabled |
+| Vision WRO port [port] spot [1~12] vividness | 0~255 | [Vision Sensor (WRO Edition, HUE12) (legacy)](/en/sensors/esp32cam/mblock-wro.md) | 20~2B = vividness (saturation) of spots S1~S12, 0~255: black = 1, white/colour = actual saturation; 0 when the spot is not enabled |
+| Vision WRO port [port] update all values | — | [Vision Sensor (WRO Edition, HUE12) (legacy)](/en/sensors/esp32cam/mblock-wro.md) | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 | IMU Gyro port [port] gyro 3D heading | -32768~32767 ° | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | heading from the 3D quaternion, degrees, 0 at boot/zero, accumulates past 360 (wraps at ±32767, ~91 turns) |
 | IMU Gyro port [port] fused heading | -32768~32767 ° | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | 3D gyro heading slowly corrected by the magnetometer, degrees, relative to the zero point; may exceed 360 |
 | IMU Gyro port [port] gyro 1D heading | -32768~32767 ° | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | heading integrated about the yaw axis only, degrees, 0 at boot/zero; may exceed 360 |

@@ -4,7 +4,7 @@
 > [!WARNING]
 > **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
 
-神攝手通用版 v1（通用 I2C 版）跟 Arduino 用同一套 I2C 讀法，micro:bit V1／V2 在 MakeCode 用內建的 I2C 指令就能讀，位址 **`0x4C`**。值表、命令跟 [Arduino 讀值教學](/sensors/unicam/arduino/index.md) 一樣；每一格的完整對照在 [讀值參考：I2C](/sensors/unicam/reference.md#host-i2c)，整支範例在 [micro:bit 範例](/sensors/unicam/microbit-examples.md)。
+神攝手（通用 I2C 版）跟 Arduino 用同一套 I2C 讀法，micro:bit V1／V2 在 MakeCode 用內建的 I2C 指令就能讀，位址 **`0x4C`**。值表、命令跟 [Arduino 讀值教學](/sensors/unicam/arduino/index.md) 一樣；每一格的完整對照在 [讀值參考：I2C](/sensors/unicam/reference.md#host-i2c)，整支範例在 [micro:bit 範例](/sensors/unicam/microbit-examples.md)。
 
 ## 接線
 
@@ -48,7 +48,7 @@ basic.forever(function () {
 })
 ```
 
-貼到 MakeCode 的 JavaScript 分頁就能用；切回積木分頁會看到對應的積木。MBC 的 MakeCode 擴充（pxt-mbc-sensors）還沒有通用版的積木。
+貼到 MakeCode 的 JavaScript 分頁就能用；切回積木分頁會看到對應的積木。MBC 的 MakeCode 擴充（pxt-mbc-sensors）還沒有這一代神攝手的積木。
 
 ## 逐格對照與範例
 

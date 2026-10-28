@@ -1,11 +1,11 @@
-# 神攝手通用版 v1 × 樂高官方 SPIKE App（教育版 Python）範例 1：跟著色塊轉
-# Sharpshooter Vision Universal v1 × LEGO SPIKE App (Education, Python) example 1: turn to follow a colour blob
+# 神攝手 × 樂高官方 SPIKE App（教育版 Python）範例 1：跟著色塊轉
+# Sharpshooter Vision × LEGO SPIKE App (Education, Python) example 1: turn to follow a colour blob
 # 需要把相機選單切到 相機模式 1 顏色追蹤 ・子選項 ③ 標準（XY＋面積）＝模式編號 13
 # Camera menu: camera mode 1 Colour tracking, option 3 Standard (XY + area) = mode number 13
 # 準備：先在相機上教「目標 1」的顏色 / teach "target 1" on the camera first
 # 接線 Wiring：相機 → C 孔；左輪 E、右輪 F（驅動底座）/ camera → port C; left wheel E, right wheel F
 # 用法：SPIKE App 新增「Python」專案，整支貼上 / new Python project in the SPIKE App, paste all of this
-# ===== 神攝手通用版 讀值小工具（樂高官方 SPIKE App 3 教育版 Python，照抄就好、不用改）=====
+# ===== 神攝手 讀值小工具（樂高官方 SPIKE App 3 教育版 Python，照抄就好、不用改）=====
 # ===== UniCam reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
 # 相機在 SPIKE App 裡是「顏色感應器」：顏色、反射光、原始紅／綠／藍 這 5 個數字（byte 0~7）積木與 Python 都讀得到。
 # byte 8~15 只有 App Python 的 device.data() 可能讀得到，還沒上機確認（任務 #77），這個小工具不用它。

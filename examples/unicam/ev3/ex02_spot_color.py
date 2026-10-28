@@ -1,6 +1,6 @@
 #!/usr/bin/env pybricks-micropython
-# 神攝手通用版 v1 × EV3 範例 2：座標取色判斷顏色
-# Sharpshooter Vision Universal v1 × EV3 example 2: what colour is at the spot?
+# 神攝手 × EV3 範例 2：座標取色判斷顏色
+# Sharpshooter Vision × EV3 example 2: what colour is at the spot?
 # 需要把相機選單切到 相機模式 2 座標取色 ・子選項 ③ 色相＋飽和＋明度 ＝模式編號 23（EV3 給 2 點，原始值）
 # Camera menu: camera mode 2 Spot colour, option 3 Hue + sat + value = mode number 23 (2 spots, exact values)
 # 軟體 Software：Pybricks v4 或 樂高官方 EV3 MicroPython v2

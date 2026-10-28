@@ -1,10 +1,10 @@
 /*
- * 神攝手通用版 v1 × Arduino　範例 1：接好了嗎？
+ * 神攝手 × Arduino　範例 1：接好了嗎？
  * ------------------------------------------------------------
  * 需要把相機選單切到：相機模式 1 顏色追蹤 ・子選項 ③ 標準（程式開頭也會用 E0 自動切）
  *
  * 這個範例會做什麼？
- *   1. 讀 F0 裝置 ID：低位元組 = 0x4C（位址）、高位元組 hw0 = 3 就是「通用版」
+ *   1. 讀 F0 裝置 ID：低位元組 = 0x4C（位址）、高位元組 hw0 = 3 就是「目前的神攝手」
  *      （hw0 = 1 是學校版、2 是 WRO 版，讀法不一樣，要用各自的範例）
  *   2. 讀 F2 韌體版本（100 = 1.0）
  *   3. 用 E0 命令把相機切到「模式 13」，再讀 0x01 確認相機真的換過去
@@ -13,7 +13,7 @@
  * 模式編號 = 相機模式 × 10 + 子選項：
  *   11~14 顏色追蹤、21~23 座標取色、30 照順序給色號、41~43 循線
  *
- * 你需要：神攝手通用版 v1（I2C 版韌體）、Arduino UNO／Nano／UNO R4 或 ESP32。
+ * 你需要：神攝手（I2C 版韌體）、Arduino UNO／Nano／UNO R4 或 ESP32。
  *
  * 接線（I2C 腳位是暫定，等上機確認）：
  *   神攝手 5V  → 外接 5V（2 A 以上的行動電源或變壓器；不要從 Arduino 的 5V 腳拉大電流）
@@ -47,7 +47,7 @@ void setup() {
   mbcBegin();
   delay(500);
   if (!mbcWaitReady(ADDR, 8000)) {        // 最多等 8 秒讓相機開機
-    Serial.println(F("找不到神攝手通用版！請檢查："));
+    Serial.println(F("找不到神攝手！請檢查："));
     Serial.println(F(" 1. 相機有接外接 5V、GND 有跟 Arduino 接在一起"));
     Serial.println(F(" 2. IO3 接 SDA、IO1 接 SCL（接反了就對調）"));
     Serial.println(F(" 3. 相機燒的是「I2C 版」韌體"));
@@ -58,10 +58,10 @@ void setup() {
   int16_t id[4];
   if (!mbcReadMany(ADDR, 0xF0, 4, id)) { Serial.println(F("讀不到 F0~F3")); while (true) {} }
   uint8_t addrLow = id[0] & 0xFF;        // 低位元組：出廠位址
-  uint8_t hw0 = (id[0] >> 8) & 0xFF;     // 高位元組：哪一版（3 = 通用版）
+  uint8_t hw0 = (id[0] >> 8) & 0xFF;     // 高位元組：哪一版（3 = 目前的神攝手）
   Serial.print(F("位址 0x")); Serial.print(addrLow, HEX);
   Serial.print(F("  hw0=")); Serial.print(hw0);
-  if (addrLow == 0x4C && hw0 == 3) Serial.println(F("  → 是神攝手通用版 ✔"));
+  if (addrLow == 0x4C && hw0 == 3) Serial.println(F("  → 是目前的神攝手 ✔"));
   else if (hw0 == 1) Serial.println(F("  → 這是學校版，請改用學校版的範例"));
   else if (hw0 == 2) Serial.println(F("  → 這是 WRO 版（HUE12），請改用 WRO 版的範例"));
   else Serial.println(F("  → 不認得的版本"));
@@ -92,7 +92,7 @@ void loop() {
 
 // ==== MBC_UNICAM_HELPERS_BEGIN ====
 // ============================================================
-// 以下是「通訊小幫手」（MBC I2C 協議 v2）＋「神攝手通用版小幫手」。所有範例都一樣，不用改。
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）＋「神攝手小幫手」。所有範例都一樣，不用改。
 //   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
 // ============================================================
 
@@ -147,7 +147,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- 神攝手通用版 ----------
+// ---------- 神攝手 ----------
 
 // 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）。會存進相機
 bool ucSetMode(uint8_t camMode, uint8_t sub) {

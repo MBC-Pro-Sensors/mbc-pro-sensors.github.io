@@ -16,7 +16,7 @@ MBC-Pro Sensors are sold through authorized distributors and directly by us. Fin
 
 | Store | MBC products | Website |
 | :--- | :--- | :--- |
-| **AXIONE** (Taiwan) | Pathfinder 8-Way, Pathfinder 16-Way, Sharpshooter ESP32CAM (sold by AXIONE as "HUE12 Sensor") | [axione.shop](https://www.axione.shop/) |
+| **AXIONE** (Taiwan) | Pathfinder 8-Way, Pathfinder 16-Way, legacy Sharpshooter WRO edition ([no longer supported](/en/sensors/esp32cam/index.md), sold by AXIONE as "HUE12 Sensor") | [axione.shop](https://www.axione.shop/) |
 
 AXIONE is an authorized distributor with an English online store, checkout and worldwide shipping, a convenient option for individual buyers outside Taiwan. Prices and shipping are set by AXIONE.
 

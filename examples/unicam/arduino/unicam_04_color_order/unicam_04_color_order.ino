@@ -1,5 +1,5 @@
 /*
- * 神攝手通用版 v1 × Arduino　範例 4：顏色順序（WRO 任務賽）
+ * 神攝手 × Arduino　範例 4：顏色順序（WRO 任務賽）
  * ------------------------------------------------------------
  * 需要把相機選單切到：相機模式 3 照順序給色號（沒有子選項；程式開頭也會用 E0 自動切）
  *
@@ -44,7 +44,7 @@ void setup() {
   mbcBegin();
   delay(500);
   if (!mbcWaitReady(ADDR, 8000)) {        // 最多等 8 秒讓相機開機
-    Serial.println(F("找不到神攝手通用版！請檢查："));
+    Serial.println(F("找不到神攝手！請檢查："));
     Serial.println(F(" 1. 相機有接外接 5V、GND 有跟 Arduino 接在一起"));
     Serial.println(F(" 2. IO3 接 SDA、IO1 接 SCL（接反了就對調）"));
     Serial.println(F(" 3. 相機燒的是「I2C 版」韌體"));
@@ -90,7 +90,7 @@ void printColorName(uint8_t code) {
 
 // ==== MBC_UNICAM_HELPERS_BEGIN ====
 // ============================================================
-// 以下是「通訊小幫手」（MBC I2C 協議 v2）＋「神攝手通用版小幫手」。所有範例都一樣，不用改。
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）＋「神攝手小幫手」。所有範例都一樣，不用改。
 //   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
 // ============================================================
 
@@ -145,7 +145,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- 神攝手通用版 ----------
+// ---------- 神攝手 ----------
 
 // 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）。會存進相機
 bool ucSetMode(uint8_t camMode, uint8_t sub) {

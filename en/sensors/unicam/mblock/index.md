@@ -4,7 +4,7 @@
 > [!WARNING]
 > **v1 not yet hardware-verified**: the value layout is final and passes desktop tests; real-world numbers (fps, line thresholds) may change after hardware testing. The mBlock edition has only been tested on a PC (replies for every value id, E0/E1, time-outs) and **has not been tried on an mBot yet**.
 
-The **mBlock edition firmware** of the Vision Universal v1 lets mBot, mBot Ranger, Orion and MegaPi read the camera with mBlock 5 blocks: the MBC Pro Sensors extension **v2.1.0** adds a "Vision Universal" category (22 blocks). The value table is exactly the one of the [Arduino I2C edition](/en/sensors/unicam/arduino/index.md), carried over the RJ25 serial link instead; the blocks first ask the camera which mode it is in, then read the right value.
+The **mBlock edition firmware** of the Sharpshooter Vision lets mBot, mBot Ranger, Orion and MegaPi read the camera with mBlock 5 blocks: the MBC Pro Sensors extension **v2.1.0** adds a "Vision Universal" category (22 blocks). The value table is exactly the one of the [Arduino I2C edition](/en/sensors/unicam/arduino/index.md), carried over the RJ25 serial link instead; the blocks first ask the camera which mode it is in, then read the right value.
 
 ## Wiring
 
@@ -81,7 +81,7 @@ Pick the port the sensor is actually plugged into. **Colour c** = target c on th
 | Vision Universal port [1] line seen? | true/false | line follow (41~43) | `0x15` | line flags (near 1 + middle 2 + far 4) is not 0 |
 | Vision Universal port [1] value (number) | number | all | `0x10~0x7F` | "value N" of the spec table = id 0x10 + N − 1 (N 1~112); accepts a variable |
 | Vision Universal port [1] read value id (number) | number | all | `0x00~0xFF` | reads one value id directly (decimal, e.g. 16 = 0x10, 240 = 0xF0) |
-| Vision Universal port [1] sensor OK? | true/false | all | `0xF0` | replies and the device id is the Vision Universal (F0 = 0x034C) |
+| Vision Universal port [1] sensor OK? | true/false | all | `0xF0` | replies and the device id is the current Sharpshooter Vision (F0 = 0x034C) |
 
 - **−32768** means: no reply (time-out, checksum error, unplugged) or the current mode / sub-option has no such value (e.g. 1 max colours has no width / height). Booleans are false then.
 - Slot order inside one colour: 1 X Y; 2 X Y count; 3 X Y area count; 4 X Y width height count area (the order of [value reference: I2C](/en/sensors/unicam/reference.md#host-i2c)).
@@ -132,7 +132,7 @@ end</pre>
 <summary>🔧 Equivalent Arduino sketch (mBot)</summary>
 
 ```cpp
-// Vision Universal × mBot: smallest reading sketch (does what the blocks above do, Arduino IDE version)
+// Sharpshooter Vision × mBot: smallest reading sketch (does what the blocks above do, Arduino IDE version)
 // Needs the Makeblock library + MBC_Sensors v2.1.0 (the four files in src/ of the extension .mext, in Documents/Arduino/libraries/MBC_Sensors/)
 #include <MeMCore.h>
 #include <SoftwareSerial.h>
@@ -168,7 +168,7 @@ More examples (hear the colour, follow a blob, stop when close, follow a black l
 The `MBC_Sensors` library inside the extension also works in the Arduino IDE: unzip the `.mext`, put the four files of `src/` (MBC_Sensors.h/.cpp, mbc_proto.h, mbc_ids.h) into `Documents/Arduino/libraries/MBC_Sensors/`, and give `MBCPort` any serial port with `begin(serial)`. The functions match the blocks one to one (`ucSetMode`, `ucBlob`, `ucFound`, `ucSpot`, `ucOrderHue`, `ucLine`, `ucValue`, `ucOk`…). For Arduino without mBlock, the [I2C edition](/en/sensors/unicam/arduino/index.md) is faster (16 values per burst read).
 
 ```cpp
-// Vision Universal (mBlock firmware) on a plain Arduino serial port (no mBot): prints line near offset and angle
+// Sharpshooter Vision (mBlock firmware) on a plain Arduino serial port (no mBot): prints line near offset and angle
 // Needs MBC_Sensors v2.1.0 (as above; no Makeblock library). UNO uses software serial D10/D11; Mega uses Serial1 (D19 RX, D18 TX)
 #include <SoftwareSerial.h>
 #include <MBC_Sensors.h>
@@ -186,7 +186,7 @@ void setup() {
   CAM_SERIAL.begin(38400);
   cam.begin(CAM_SERIAL);
   delay(2000);
-  Serial.println(ucOk(cam) ? "Vision Universal OK" : "No reply: check wiring and that the firmware is the mBlock edition");
+  Serial.println(ucOk(cam) ? "Sharpshooter Vision OK" : "No reply: check wiring and that the firmware is the mBlock edition");
   ucSetMode(cam, 41);           // line follow 1 black line
 }
 
@@ -211,7 +211,7 @@ void loop() {
 
 ## More
 
-- [Sharpshooter Vision Universal v1 product page](/en/sensors/unicam/index.md)
+- [Sharpshooter Vision product page](/en/sensors/unicam/index.md)
 - [Value reference: I2C (the same table as mBlock)](/en/sensors/unicam/reference.md#host-i2c)
 - [mBlock beginner examples](/en/sensors/unicam/mblock-examples.md)
 - [MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext)

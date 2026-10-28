@@ -40,6 +40,11 @@ export const siteKey = (product) => SITE_KEY[product.id] || product.id;
 // 同一個網站資料夾裡的第二款（神攝手 WRO 版）：頁面檔名加字尾，不互相覆蓋
 export const SITE_SUFFIX = { cam_wro: '-wro' };
 export const pageFile = (product, base) => `/sensors/${siteKey(product)}/${base}${SITE_SUFFIX[product.id] || ''}.md`;
+// 停止支援的舊版（products.json 的 legacy: true，例：神攝手學校版／WRO 版）：全站表格不列或標「舊版」
+let siteCache = null;
+export const isLegacy = (key) => !!((siteCache || (siteCache = loadSiteProducts()))[key] || {}).legacy;
+// short：表格每一列都要標時用短的「（舊版）」
+export const legacyName = (product, lang, short) => L(product.name, lang) + (!isLegacy(siteKey(product)) ? '' : short ? T(lang, '（舊版）', ' (legacy)') : T(lang, '（舊版，停止支援）', ' (legacy, no longer supported)'));
 
 // ---------------------------------------------------------------- 文字
 export const L = (obj, lang) => (obj && typeof obj === 'object' ? (obj[lang] ?? obj.zh ?? '') : (obj ?? ''));

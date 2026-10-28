@@ -4,7 +4,7 @@
 > [!WARNING]
 > **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
 
-神攝手通用版 v1 用在 SPIKE Prime（黃色主機）與 Robot Inventor（藍綠色主機）。SPIKE 版韌體會自己認出主機跑的是官方 App 還是 Pybricks，不用換韌體。這一頁講四種讀法怎麼選、最小的讀值程式；每一格的完整對照在 [讀值參考](/sensors/unicam/reference.md)，整支範例在 [SPIKE 範例](/sensors/unicam/spike-examples.md)。
+神攝手用在 SPIKE Prime（黃色主機）與 Robot Inventor（藍綠色主機）。SPIKE 版韌體會自己認出主機跑的是官方 App 還是 Pybricks，不用換韌體。這一頁講四種讀法怎麼選、最小的讀值程式；每一格的完整對照在 [讀值參考](/sensors/unicam/reference.md)，整支範例在 [SPIKE 範例](/sensors/unicam/spike-examples.md)。
 
 ## 先選讀法
 
@@ -29,7 +29,7 @@
 模式 9 一次讀 7 個 int16＝14 byte，一個 byte 一個值；座標是 160×120 像素（Y 上＝小），0＝沒有目標。MBC 函式庫會照模式編號自動拆好（14 色的格號拆成 X、Y、數量從模式 6 讀），函式庫下載和整支範例在 [SPIKE 範例](/sensors/unicam/spike-examples.md)。
 
 > [!IMPORTANT]
-> 通用版的模式 9 排法**跟學校版／Kito 版不同**，Kito 的 `camLibForKitoMode9` 不能直接拿來用。
+> 這一代神攝手的模式 9 排法**跟舊版學校版／Kito 版不同**，Kito 的 `camLibForKitoMode9` 不能直接拿來用。
 
 不裝函式庫也能讀：用 Pybricks 內建的 `PUPDevice` 讀模式 9，自己拆成 byte。下面是相機設成**顏色追蹤 ③ 標準**（模式編號 13）時讀色 1：
 
@@ -141,4 +141,4 @@ while True:
 
 - **螢幕左上角一直是紅色？** 主機還沒連上：拔掉重插、等 2 秒，或換一個孔。
 - **讀到的值跟表上對不起來？** 先確認相機右上角的「模式-子選項」（例 1-3）跟你程式用的一樣。
-- **學校版的程式可以直接用嗎？** 不行，通用版的排法不同；學校版請照 [學校版說明](/sensors/esp32cam/index.md)。
+- **舊版（學校版）的程式可以直接用嗎？** 不行，排法不同；舊版說明保留在 [神攝手舊版（停止支援）](/sensors/esp32cam/index.md) 供參考。

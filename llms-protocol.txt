@@ -11,7 +11,7 @@ mBlock: UART 38400; send [id] -> [lo][hi][id^lo^hi]; commands E0~EE ack [00][00]
   F8 setAddress: [F8][新位址 0x08~0x77][新位址取反]，存 EEPROM，重開機後生效；[F8][0x00][0xFF] = 回出廠位址（共識 B-5） / [F8][new 0x08~0x77][~new], saved to EEPROM, takes effect after reboot; [F8][0x00][0xFF] = back to factory address
   EF reboot: [EF][0xA5]；mBlock 先回 ACK 再重開 / [EF][0xA5]; mBlock sends ACK first, then reboots
 
-## 神攝手 學校版 / Vision Sensor (School Edition) (id cam_school, I2C 0x4C, hw0 1, model CAMSCH)
+## 神攝手 學校版（舊版，停止支援） / Vision Sensor (School Edition) (legacy, no longer supported) (id cam_school, I2C 0x4C, hw0 1, model CAMSCH)
 hosts: ev3, spike, i2c, mblock, mvision, microbit
 values:
   01 hue: 色相 / hue; range -1~100; S1 取樣點色相 0~100（色相環 0~240 等比縮放）；−1 = 黑白灰（飽和度 < 10）；S1 沒設定 = 0 / hue of sample point S1, 0~100 (hue ring 0~240 scaled); −1 = black/white/grey (saturation < 10); 0 when S1 is not set; EV3 mode0[0],mode1[0],mode2[0],mode3[0],mode5[0]; SPIKE mode0 b0,mode0 b1,mode5 v0,mode9 v0lo; mVision slot0
@@ -38,7 +38,7 @@ assumptions:
   - 值 05~08 的「沒找到 = 0」照盤點 §0；色塊 Y 下 = 0、上 = 75 照盤點（map(bestY,120,0,0,75)）。
   - 沒有寫入命令（韌體無法從程式改目標顏色／補光燈）。
 
-## 神攝手 WRO 版（HUE12） / Vision Sensor (WRO Edition, HUE12) (id cam_wro, I2C 0x4C, hw0 2, model HUE12)
+## 神攝手 WRO 版（HUE12）（舊版，停止支援） / Vision Sensor (WRO Edition, HUE12) (legacy, no longer supported) (id cam_wro, I2C 0x4C, hw0 2, model HUE12)
 hosts: ev3, spike, i2c, mblock, mvision, microbit
 values:
   10~1B spotColor: 色點 1~12 顏色碼 / spot 1~12 colour code; range 0~255; 10~1B = S1~S12 顏色碼：0~239 彩色（色相 0~255 等比縮成 0~239）、240~245 白（飽和度 < 30，越低越大）、246~250 黑（明度 < 30，越暗越大）、255 = 色點沒開 / 10~1B = colour code of spots S1~S12: 0~239 colour (hue 0~255 scaled to 0~239), 240~245 white (saturation < 30, lower = larger), 246~250 black (value < 30, darker = larger), 255 = spot not enabled; EV3 mode0[0]; SPIKE mode0 b0; mVision slot0

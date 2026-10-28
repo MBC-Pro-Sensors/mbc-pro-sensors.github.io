@@ -19,8 +19,7 @@
 | [測距者 8 路 (TOF8)](/sensors/tof8/index.md) | [樂高官方 App](/sensors/tof8/spike/official.md)・[MBC 積木網站](/sensors/tof8/spike/mbcblocks.md)・[Pybricks](/sensors/tof8/spike/pybricks.md) | [EV3-G 官方軟體](/sensors/tof8/ev3/ev3g.md)・[EV3 Classroom](/sensors/tof8/ev3/classroom.md)・[Pybricks](/sensors/tof8/ev3/pybricks.md)・[clev3r](/sensors/tof8/ev3/clev3r.md) | [Arduino IDE](/sensors/tof8/arduino/ide.md) | [mBlock 5](/sensors/tof8/mblock/mblock5.md) | [MATRIXblock 原廠積木](/sensors/tof8/matrix/matrixblock.md) | [MakeCode](/sensors/tof8/microbit/makecode.md) |
 | [掌控者 PS2 (PS2)](/sensors/ps2/index.md) | [樂高官方 App](/sensors/ps2/spike/official.md)・[MBC 積木網站](/sensors/ps2/spike/mbcblocks.md)・[Pybricks](/sensors/ps2/spike/pybricks.md) | [EV3-G 官方軟體](/sensors/ps2/ev3/ev3g.md)・[EV3 Classroom](/sensors/ps2/ev3/classroom.md)・[Pybricks](/sensors/ps2/ev3/pybricks.md)・[clev3r](/sensors/ps2/ev3/clev3r.md) | [Arduino IDE](/sensors/ps2/arduino/ide.md) | [mBlock 5](/sensors/ps2/mblock/mblock5.md) | [MATRIXblock 原廠積木](/sensors/ps2/matrix/matrixblock.md) | [MakeCode](/sensors/ps2/microbit/makecode.md) |
 | [掌控者 PS4/PS5](/sensors/ps4/index.md) | [樂高官方 App](/sensors/ps4/spike/official.md)・[MBC 積木網站](/sensors/ps4/spike/mbcblocks.md)・[Pybricks](/sensors/ps4/spike/pybricks.md) | [EV3-G 官方軟體](/sensors/ps4/ev3/ev3g.md)・[EV3 Classroom](/sensors/ps4/ev3/classroom.md)・[Pybricks](/sensors/ps4/ev3/pybricks.md)・[clev3r](/sensors/ps4/ev3/clev3r.md) | [Arduino IDE](/sensors/ps4/arduino/ide.md) | [mBlock 5](/sensors/ps4/mblock/mblock5.md) | [MATRIXblock 原廠積木](/sensors/ps4/matrix/matrixblock.md) | [MakeCode](/sensors/ps4/microbit/makecode.md) |
-| [神攝手 ESP32CAM](/sensors/esp32cam/index.md) | [樂高官方 App](/sensors/esp32cam/spike/official.md)・[MBC 積木網站](/sensors/esp32cam/spike/mbcblocks.md)・[Pybricks](/sensors/esp32cam/spike/pybricks.md) | [EV3-G 官方軟體](/sensors/esp32cam/ev3/ev3g.md)・[EV3 Classroom](/sensors/esp32cam/ev3/classroom.md)・[Pybricks](/sensors/esp32cam/ev3/pybricks.md)・[clev3r](/sensors/esp32cam/ev3/clev3r.md) | [Arduino IDE](/sensors/esp32cam/arduino/ide.md) | [mBlock 5](/sensors/esp32cam/mblock/mblock5.md) | [mVision 積木](/sensors/esp32cam/matrix/mvision.md) | [MakeCode](/sensors/esp32cam/microbit/makecode.md) |
-| [神攝手通用版 v1](/sensors/unicam/index.md) | [讀值教學](/sensors/unicam/spike/index.md) | [讀值教學](/sensors/unicam/ev3/index.md) | [讀值教學](/sensors/unicam/arduino/index.md) | [讀值教學](/sensors/unicam/mblock/index.md) | [讀值教學](/sensors/unicam/matrix/mvision.md) | [讀值教學](/sensors/unicam/microbit/index.md) |
+| [神攝手](/sensors/unicam/index.md) | [讀值教學](/sensors/unicam/spike/index.md) | [讀值教學](/sensors/unicam/ev3/index.md) | [讀值教學](/sensors/unicam/arduino/index.md) | [讀值教學](/sensors/unicam/mblock/index.md) | [讀值教學](/sensors/unicam/matrix/mvision.md) | [讀值教學](/sensors/unicam/microbit/index.md) |
 | [SPIKE 6 路擴充器 (EXP6)](/sensors/exp6/index.md) | [樂高官方 App](/sensors/exp6/spike/official.md)・[MBC 積木網站](/sensors/exp6/spike/mbcblocks.md)・[Pybricks](/sensors/exp6/spike/pybricks.md) | — | [Arduino IDE](/sensors/exp6/arduino/ide.md) | — | — | — |
 | [陀螺儀 IMU 九軸](/sensors/imu/index.md) | — | [EV3-G 官方軟體](/sensors/imu/ev3/ev3g.md)・[EV3 Classroom](/sensors/imu/ev3/classroom.md)・[Pybricks](/sensors/imu/ev3/pybricks.md)・[clev3r](/sensors/imu/ev3/clev3r.md) | [Arduino IDE](/sensors/imu/arduino/ide.md) | [mBlock 5](/sensors/imu/mblock/mblock5.md) | [MATRIXblock 原廠積木](/sensors/imu/matrix/matrixblock.md) | [MakeCode](/sensors/imu/microbit/makecode.md) |
 | [SPIKE 6 路舵機擴充器 (Servo6)](/sensors/servo6/index.md) | [樂高官方 App](/sensors/servo6/spike/official.md)・[Pybricks](/sensors/servo6/spike/pybricks.md) | — | — | — | — | — |
@@ -52,8 +51,7 @@
 | [SPIKE 6 路舵機擴充器](/sensors/servo6/index.md)（即將推出） | 機器人要用舵機（夾爪、轉盤、擺臂） | **僅限 SPIKE Prime**；舵機電源由主機供給，不用電池 |
 | [掌控者 PS4/PS5](/sensors/ps4/index.md) | 藍牙手把遙控 | 大型比賽場地推薦 |
 | [掌控者 PS2](/sensors/ps2/index.md) | 2.4G 手把遙控 | 教學、專題 |
-| [神攝手 ESP32CAM](/sensors/esp32cam/index.md) | 顏色追蹤、視覺 | |
-| [神攝手通用版 v1](/sensors/unicam/index.md)（開發中） | 多色追蹤、座標取色、照順序給色號、循線 | 官方 App、Pybricks |
+| [神攝手](/sensors/unicam/index.md)（開發中） | 多色追蹤、座標取色、照順序給色號、循線 | 官方 App、Pybricks |
 | [陀螺儀 IMU](/sensors/imu/index.md) | 航向、轉角度 | 即將推出 |
 
 <h3 id="ev3">🧱 LEGO MINDSTORMS EV3</h3>
@@ -66,8 +64,7 @@
 | [測距者 8 路](/sensors/tof8/index.md) | 180° 避障、相撲 | |
 | [掌控者 PS4/PS5](/sensors/ps4/index.md) | 藍牙手把遙控 | |
 | [掌控者 PS2](/sensors/ps2/index.md) | 2.4G 手把遙控 | |
-| [神攝手 ESP32CAM](/sensors/esp32cam/index.md) | 顏色追蹤、視覺 | |
-| [神攝手通用版 v1](/sensors/unicam/index.md)（開發中） | 多色追蹤、座標取色、照順序給色號、循線 | EV3-G、EV3 Classroom、Pybricks |
+| [神攝手](/sensors/unicam/index.md)（開發中） | 多色追蹤、座標取色、照順序給色號、循線 | EV3-G、EV3 Classroom、Pybricks |
 | [陀螺儀 IMU](/sensors/imu/index.md) | 航向、轉角度 | 直接用原廠陀螺儀積木；即將推出 |
 
 <h3 id="arduino">∿ Arduino / ESP32 / 樹莓派（通用 I2C 版）</h3>
@@ -83,7 +80,7 @@
 | [掌控者 PS4/PS5](/sensors/ps4/index.md) | 藍牙手把遙控 | `0x42` |
 | [掌控者 PS2](/sensors/ps2/index.md) | 2.4G 手把遙控 | `0x42` |
 | [陀螺儀 IMU](/sensors/imu/index.md) | 航向、九軸資料 | `0x6A` |
-| [神攝手通用版 v1](/sensors/unicam/arduino/index.md)（開發中） | 多色追蹤、座標取色、循線（micro:bit 也能用） | `0x4C` |
+| [神攝手](/sensors/unicam/arduino/index.md)（開發中） | 多色追蹤、座標取色、循線（micro:bit 也能用） | `0x4C` |
 
 <h3 id="matrix">🤖 MATRIX Mini R4</h3>
 
@@ -92,8 +89,7 @@
 | [循行者 8 路](/sensors/line8/index.md) | 循線 |
 | [循行者 16 路](/sensors/line16/index.md) | 高速循線、十字路口 |
 | [測距者 8 路](/sensors/tof8/index.md) | 180° 避障 |
-| [神攝手 ESP32CAM](/sensors/esp32cam/index.md) | 顏色追蹤、視覺 |
-| [神攝手通用版 v1](/sensors/unicam/matrix/mvision.md)（開發中） | 多色追蹤、座標取色、照順序給色號、循線 |
+| [神攝手](/sensors/unicam/matrix/mvision.md)（開發中） | 多色追蹤、座標取色、照順序給色號、循線 |
 | [陀螺儀 IMU](/sensors/imu/index.md) | 航向、轉角度（即將推出） |
 
 <h3 id="makeblock">🤖 MakeBlock</h3>
@@ -121,8 +117,7 @@ mBot、mBot Ranger、Orion、Ultimate 2.0（MegaPi）都能用。感應器選 Ma
 | 想在 SPIKE 上用舵機 | [SPIKE 6 路舵機擴充器](/sensors/servo6/index.md) | 一個孔接 6 顆舵機，主機供電（即將推出） |
 | 比賽用遙控，現場隊伍多 | [掌控者 PS4/PS5](/sensors/ps4/index.md) | 只綁定自己的手把，斷訊自動停車 |
 | 教學或專題用遙控，預算有限 | [掌控者 PS2](/sensors/ps2/index.md) | 2.4G 手把，最划算 |
-| 追顏色、找物體位置 | [神攝手 ESP32CAM](/sensors/esp32cam/index.md) | 機身螢幕直接設定，色塊位置一次輸出 |
-| 一台相機追多色、取色點、排順序、循線 | [神攝手通用版 v1](/sensors/unicam/index.md) | 相機選單切換 4 種模式，六種主機（SPIKE、EV3、Arduino、mBlock、MATRIX、micro:bit）都讀得到（開發中） |
+| 追顏色、找物體位置、取色點、排順序、循線 | [神攝手](/sensors/unicam/index.md) | 相機選單切換 4 種模式，六種主機（SPIKE、EV3、Arduino、mBlock、MATRIX、micro:bit）都讀得到（開發中） |
 | 走直線、轉精準角度 | [陀螺儀 IMU](/sensors/imu/index.md) | 任意角度安裝，磁力計融合不飄移（即將推出） |
 
 <div class="lp-final">

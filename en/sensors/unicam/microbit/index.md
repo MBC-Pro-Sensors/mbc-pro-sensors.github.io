@@ -4,7 +4,7 @@
 > [!WARNING]
 > **v1 not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
 
-The Sharpshooter Vision Universal v1 (Universal I2C edition) is read over I2C exactly like on Arduino; a micro:bit V1 / V2 reads it with the built-in MakeCode I2C functions at address **`0x4C`**. Value numbers and commands are the same as in [Reading it on Arduino](/en/sensors/unicam/arduino/index.md); every slot is in the [value reference: I2C](/en/sensors/unicam/reference.md#host-i2c), full programs in the [micro:bit examples](/en/sensors/unicam/microbit-examples.md).
+The Sharpshooter Vision (Universal I2C edition) is read over I2C exactly like on Arduino; a micro:bit V1 / V2 reads it with the built-in MakeCode I2C functions at address **`0x4C`**. Value numbers and commands are the same as in [Reading it on Arduino](/en/sensors/unicam/arduino/index.md); every slot is in the [value reference: I2C](/en/sensors/unicam/reference.md#host-i2c), full programs in the [micro:bit examples](/en/sensors/unicam/microbit-examples.md).
 
 ## Wiring
 
@@ -48,7 +48,7 @@ basic.forever(function () {
 })
 ```
 
-Paste it into the MakeCode JavaScript tab; switch back to Blocks to see the matching blocks. The MBC MakeCode extension (pxt-mbc-sensors) has no Universal-edition blocks yet.
+Paste it into the MakeCode JavaScript tab; switch back to Blocks to see the matching blocks. The MBC MakeCode extension (pxt-mbc-sensors) has no Sharpshooter Vision blocks yet.
 
 ## Slot tables and examples
 

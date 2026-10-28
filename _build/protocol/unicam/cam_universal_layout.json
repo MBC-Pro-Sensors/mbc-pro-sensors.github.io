@@ -1,5 +1,5 @@
 {
- "_說明": "神攝手通用版 v1 逐格對照（網站的單一來源）。複製自相機韌體資料夾 tests\\spec_layout.json（說明網頁第 39 版匯出，規格定案 2026-10-28）。不要手改：規格改了先在相機那邊重新匯出，再跑 node _build/gen-unicam.mjs --sync。",
+ "_說明": "神攝手（韌體 v1）逐格對照（網站的單一來源）。複製自相機韌體資料夾 tests\\spec_layout.json（說明網頁第 39 版匯出，規格定案 2026-10-28）。不要手改：規格改了先在相機那邊重新匯出，再跑 node _build/gen-unicam.mjs --sync。",
  "source": "D:\\AI_Agent_AI助理\\02_MBC產品開發\\02_相機感應器\\06_通用版\\通用版v1\\tests\\spec_layout.json",
  "copied": "2026-10-28",
  "entries": [

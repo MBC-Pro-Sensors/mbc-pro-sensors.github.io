@@ -28,7 +28,7 @@ Not every robotics competition allows third-party sensors. This page lists compe
 
 ¹ One camera per robot　² Cameras in Junior and Senior only　³ For remote-control events　Servo6 = SPIKE 6-Port Servo Expander (coming soon; treated like EXP6: a programmable expansion device, servos count as motors)　⁴ Ranger 8-Way: Elementary and Junior teams should check with the organizer first
 
-Pathfinder = 8 / 16-way line sensor, Ranger = 2 / 8-way laser ranging, Vision = Sharpshooter Vision (ESP32CAM), EXP6 = SPIKE 6-Way Expander (SPIKE™ Prime only), Controller = PS4/PS5 receiver.
+Pathfinder = 8 / 16-way line sensor, Ranger = 2 / 8-way laser ranging, Vision = Sharpshooter Vision camera sensor (in development), EXP6 = SPIKE 6-Way Expander (SPIKE™ Prime only), Controller = PS4/PS5 receiver.
 
 ## Worldwide
 

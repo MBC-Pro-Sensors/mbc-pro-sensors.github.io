@@ -922,6 +922,15 @@ body.docs .product-hero + .pick, body.docs .pick { color: var(--ink); }
 .markdown-section .moved-bar { display: flex; align-items: center; gap: 10px; margin: 0 0 18px; padding: 12px 16px; border-radius: 12px; background: #fff7d6; border: 1px solid #f0d36b; color: #4a3b00; font-weight: 700; }
 .markdown-section .moved-bar a { color: #6b5400; text-decoration: underline; }
 .markdown-section .moved-bar svg { flex: none; }
+/* 舊版（停止支援）頁頂提示：build.mjs 的 legacyBar；舊版總覽頁的大按鈕也用 .lgb-go */
+.markdown-section .legacy-bar { margin: 0 0 18px; padding: 12px 16px; border-radius: 12px; background: #fff7d6; border: 1px solid #f0d36b; color: #4a3b00; line-height: 1.6; }
+.markdown-section .legacy-bar p { margin: 0; }
+.markdown-section .legacy-bar .lgb-links { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-top: 10px; }
+.markdown-section .legacy-bar a { color: #6b5400; }
+.markdown-section a.lgb-go { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 18px; border-radius: 10px; background: var(--brand-ink, #0a7c78); color: #fff !important; font-weight: 800; text-decoration: none; }
+.markdown-section a.lgb-go:hover { background: #086663; }
+.markdown-section .lgb-hero { margin: 0 0 20px; }
+.markdown-section .lgb-hero a.lgb-go { font-size: 1.1rem; padding: 14px 24px; min-height: 56px; }
 
 /* 軟體頁：讀值段 */
 .markdown-section p.ref-note { font-size: 0.85rem; color: var(--ink-mute); margin: 6px 0 0; }

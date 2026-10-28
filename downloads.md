@@ -32,7 +32,7 @@ MBC 全系列的函式庫、積木擴充、範例程式與型錄，集中在這�
 
 | 檔案 | 狀態 | 說明 |
 | :--- | :--- | :--- |
-| [MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext) | **開發中：自行匯入（進階）** | v2.1.0＝v2.0.0 全部積木＋「神攝手通用版」分類 22 顆（搭配開發中的 [神攝手通用版 v1](/sensors/unicam/mblock/index.md)，尚未上機驗證）。匯入方式同下一列 |
+| [MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext) | **開發中：自行匯入（進階）** | v2.1.0＝v2.0.0 全部積木＋「神攝手通用版」分類 22 顆（搭配開發中的 [神攝手](/sensors/unicam/mblock/index.md)，韌體 v1 尚未上機驗證）。匯入方式同下一列 |
 | [MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext) | **開發中：自行匯入（進階）** | v2.0.0，95 顆積木（循行者、測距者、掌控者、IMU、神攝手、MBC 共用），搭配協定 v2 韌體。這是「匯入檔」：到 [ext.mblock.cc](https://ext.mblock.cc) 登入 → 我的擴展 → 匯入資料 → 上傳 → 下載正式 `.mext`。正式上架後在 mBlock 擴展中心搜「MBC」即可，不用自己匯入 |
 | [MBC_Pro_Sensors_mBlock5_v1.0.0.mext](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | 舊版 | v1.0.0，15 顆積木，搭配 2026-10 以前韌體；可直接拖進 mBlock |
 
@@ -66,11 +66,11 @@ MATRIX 用原廠顏色感應器積木（0x22）讀，不用下載任何東西。
 | 掌控者 PS2 | [ps2_arduino_examples.zip](/examples/ps2/arduino/ps2_arduino_examples.zip) | [ps2_arduino_examples_en.zip](/examples/ps2/arduino-en/ps2_arduino_examples_en.zip) |
 | 掌控者 PS4／PS5 | [ps4_arduino_examples.zip](/examples/ps4/arduino/ps4_arduino_examples.zip) | [ps4_arduino_examples_en.zip](/examples/ps4/arduino-en/ps4_arduino_examples_en.zip) |
 | IMU 陀螺儀 | [imu_arduino_examples.zip](/examples/imu/arduino/imu_arduino_examples.zip) | [imu_arduino_examples_en.zip](/examples/imu/arduino-en/imu_arduino_examples_en.zip) |
-| 神攝手 ESP32CAM（I2C，上機待測） | [esp32cam_arduino_examples.zip](/examples/esp32cam/arduino/esp32cam_arduino_examples.zip) | [esp32cam_arduino_examples_en.zip](/examples/esp32cam/arduino-en/esp32cam_arduino_examples_en.zip) |
+| 神攝手（I2C，韌體 v1 尚未上機驗證） | [unicam_arduino_examples.zip](/examples/unicam/arduino/unicam_arduino_examples.zip) | [unicam_arduino_examples_en.zip](/examples/unicam/arduino-en/unicam_arduino_examples_en.zip) |
 | SPIKE 6 路擴充器 EXP6（UART） | [exp6_arduino_examples.zip](/examples/exp6/arduino/exp6_arduino_examples.zip) | [exp6_arduino_examples_en.zip](/examples/exp6/arduino-en/exp6_arduino_examples_en.zip) |
 | 通用 I2C 小工具（掃位址、讀版本） | [i2c_arduino_examples.zip](/examples/i2c/arduino/i2c_arduino_examples.zip) | — |
 
-每支範例的逐行說明在各產品的「Arduino 範例」頁，從 [🔰 第一次用 Arduino](/sensors/arduino-start.md) 開始。
+每支範例的逐行說明在各產品的「Arduino 範例」頁，從 [🔰 第一次用 Arduino](/sensors/arduino-start.md) 開始。[神攝手舊版（停止支援）](/sensors/esp32cam/index.md)的範例與函式庫集中在舊版總覽頁。
 
 ## 🧱 SPIKE／EV3 Pybricks 範例（.zip）
 
@@ -113,7 +113,7 @@ SPIKE 官方 App（.llsp3）、MBC 積木網站（.abp）與 EV3 官方軟體（
 | 掌控者 PS2 | [頁面](/sensors/ps2/spike-examples.md) | [頁面](/sensors/ps2/ev3-examples.md) |
 | 掌控者 PS4／PS5 | [頁面](/sensors/ps4/spike-examples.md) | [頁面](/sensors/ps4/ev3-examples.md) |
 | IMU 陀螺儀 | — | [頁面](/sensors/imu/ev3-examples.md) |
-| 神攝手 ESP32CAM | [學校版](/sensors/esp32cam/spike-examples.md)・[WRO 版](/sensors/esp32cam/spike-examples-wro.md) | [學校版](/sensors/esp32cam/ev3-examples.md)・[WRO 版](/sensors/esp32cam/ev3-examples-wro.md) |
+| 神攝手 | [頁面](/sensors/unicam/spike-examples.md) | [頁面](/sensors/unicam/ev3-examples.md) |
 | SPIKE 6 路擴充器 EXP6 | [頁面](/sensors/exp6/spike-examples.md) | — |
 
 ## 📄 型錄與說明書

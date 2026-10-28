@@ -1,4 +1,4 @@
-// 神攝手通用版 v1 × micro:bit 範例 1：色塊在哪邊（箭頭）
+// 神攝手 × micro:bit 範例 1：色塊在哪邊（箭頭）
 // ★ 需要把相機選單切到 相機模式 1 顏色追蹤 ・子選項 ③ 標準（模式編號 13）（程式開頭也會用 E0 自動切）
 // 做什麼：色 1（相機教的第 1 個顏色）在畫面左邊 → 往左箭頭、中間 → 向上箭頭、右邊 → 往右箭頭；沒找到 → 問號。按 A 顯示面積 %。
 // 接線：相機 SDA → P20、SCL → P19、VCC → 外接 5 V（不要從 micro:bit 3V 取電）、GND → GND 共地。
@@ -50,7 +50,7 @@ input.onButtonPressed(Button.A, function () {
 })
 
 // ==== MBC_UNICAM_MB_HELPERS_BEGIN ====
-// ===== 神攝手通用版 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====
+// ===== 神攝手 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====
 // ===== UniCam helpers (MBC common I2C protocol v2): same in every example, no need to change =====
 const UC_ADDR = 0x4C                     // 相機的 I2C 位址 / camera I2C address
 const UC_NONE = -32768                   // 讀不到 / no value

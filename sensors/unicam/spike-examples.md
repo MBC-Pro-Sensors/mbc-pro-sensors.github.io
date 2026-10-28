@@ -1,9 +1,9 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 02_相機感應器\06_通用版\通用版v1\上位機函式庫\tools\gen_pages.py 產生（範本 tools\pages\spike-examples.zh.md）；程式碼區塊＝上位機函式庫 正本的原文，改程式請改正本後重跑 -->
 
-# 🧱 SPIKE 範例：神攝手通用版 v1
+# 🧱 SPIKE 範例：神攝手
 
-[🔙 回到神攝手通用版 v1](/sensors/unicam/index.md)　｜　[SPIKE 讀法說明](/sensors/unicam/spike/index.md)　｜　[📋 讀值參考](/sensors/unicam/reference.md)
+[🔙 回到神攝手](/sensors/unicam/index.md)　｜　[SPIKE 讀法說明](/sensors/unicam/spike/index.md)　｜　[📋 讀值參考](/sensors/unicam/reference.md)
 
 > [!WARNING]
 > **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
@@ -82,8 +82,8 @@
 <summary>🐍 Pybricks 程式碼</summary>
 
 ```python
-# 神攝手通用版 v1 × Pybricks（SPIKE）範例 1：跟著色塊轉
-# Sharpshooter Vision Universal v1 × Pybricks (SPIKE) example 1: turn to follow a colour blob
+# 神攝手 × Pybricks（SPIKE）範例 1：跟著色塊轉
+# Sharpshooter Vision × Pybricks (SPIKE) example 1: turn to follow a colour blob
 # 需要把相機選單切到 相機模式 1 顏色追蹤 ・子選項 ③ 標準（XY＋面積）＝模式編號 13
 # Camera menu: camera mode 1 Colour tracking, option 3 Standard (XY + area) = mode number 13
 # 準備：先在相機上教「目標 1」的顏色 / Teach "target 1" on the camera first
@@ -154,8 +154,8 @@ while True:
 <summary>🐍 Pybricks 程式碼</summary>
 
 ```python
-# 神攝手通用版 v1 × Pybricks（SPIKE）範例 2：多色找位置
-# Sharpshooter Vision Universal v1 × Pybricks (SPIKE) example 2: where are my colours?
+# 神攝手 × Pybricks（SPIKE）範例 2：多色找位置
+# Sharpshooter Vision × Pybricks (SPIKE) example 2: where are my colours?
 # 需要把相機選單切到 相機模式 1 顏色追蹤 ・子選項 ② 多色 ＝模式編號 12（SPIKE 給 7 色的 X、Y）
 # Camera menu: camera mode 1 Colour tracking, option 2 Multi = mode number 12 (7 colours, X and Y)
 # 準備：在相機上教目標 1～7 的顏色（教幾色都可以）/ teach targets 1~7 (any number)
@@ -221,8 +221,8 @@ while True:
 <summary>🐍 Pybricks 程式碼</summary>
 
 ```python
-# 神攝手通用版 v1 × Pybricks（SPIKE）範例 3：座標取色判斷顏色
-# Sharpshooter Vision Universal v1 × Pybricks (SPIKE) example 3: what colour is at the spot?
+# 神攝手 × Pybricks（SPIKE）範例 3：座標取色判斷顏色
+# Sharpshooter Vision × Pybricks (SPIKE) example 3: what colour is at the spot?
 # 需要把相機選單切到 相機模式 2 座標取色 ・子選項 ② 色相＋飽和 ＝模式編號 22（SPIKE 給 7 點）
 # Camera menu: camera mode 2 Spot colour, option 2 Hue + saturation = mode number 22 (7 spots)
 # 準備：取樣點 S1 的位置看相機螢幕上標 1 的十字 / spot S1 is the cross marked 1 on the camera screen
@@ -286,8 +286,8 @@ while True:
 <summary>🐍 Pybricks 程式碼</summary>
 
 ```python
-# 神攝手通用版 v1 × Pybricks（SPIKE）範例 4：照順序給色號（WRO 任務：記下積木的顏色順序）
-# Sharpshooter Vision Universal v1 × Pybricks (SPIKE) example 4: colour order (WRO: remember the order)
+# 神攝手 × Pybricks（SPIKE）範例 4：照順序給色號（WRO 任務：記下積木的顏色順序）
+# Sharpshooter Vision × Pybricks (SPIKE) example 4: colour order (WRO: remember the order)
 # 需要把相機選單切到 相機模式 3 照順序給色號（沒有子選項）＝模式編號 30
 # Camera menu: camera mode 3 Colour order (no option) = mode number 30
 # 準備：在相機上教會場地上會出現的每一種顏色 / teach every colour that can appear on the field
@@ -355,8 +355,8 @@ hub.display.off()
 <summary>🐍 Pybricks 程式碼</summary>
 
 ```python
-# 神攝手通用版 v1 × Pybricks（SPIKE）範例 5：PD 循線＋路口停車
-# Sharpshooter Vision Universal v1 × Pybricks (SPIKE) example 5: PD line following + stop at a junction
+# 神攝手 × Pybricks（SPIKE）範例 5：PD 循線＋路口停車
+# Sharpshooter Vision × Pybricks (SPIKE) example 5: PD line following + stop at a junction
 # 需要把相機選單切到 相機模式 4 循線 ・子選項 ① 黑線 ＝模式編號 41（白線 42、色線 43 寫法一樣，改 mode）
 # Camera menu: camera mode 4 Line, option 1 Black line = mode number 41 (42 white / 43 colour line: change mode)
 # 準備：相機裝在車頭、斜斜往前下方看線 / mount the camera at the front, looking down and forward
@@ -441,14 +441,14 @@ while True:
 <summary>🟨 官方 App Python 程式碼</summary>
 
 ```python
-# 神攝手通用版 v1 × 樂高官方 SPIKE App（教育版 Python）範例 1：跟著色塊轉
-# Sharpshooter Vision Universal v1 × LEGO SPIKE App (Education, Python) example 1: turn to follow a colour blob
+# 神攝手 × 樂高官方 SPIKE App（教育版 Python）範例 1：跟著色塊轉
+# Sharpshooter Vision × LEGO SPIKE App (Education, Python) example 1: turn to follow a colour blob
 # 需要把相機選單切到 相機模式 1 顏色追蹤 ・子選項 ③ 標準（XY＋面積）＝模式編號 13
 # Camera menu: camera mode 1 Colour tracking, option 3 Standard (XY + area) = mode number 13
 # 準備：先在相機上教「目標 1」的顏色 / teach "target 1" on the camera first
 # 接線 Wiring：相機 → C 孔；左輪 E、右輪 F（驅動底座）/ camera → port C; left wheel E, right wheel F
 # 用法：SPIKE App 新增「Python」專案，整支貼上 / new Python project in the SPIKE App, paste all of this
-# ===== 神攝手通用版 讀值小工具（樂高官方 SPIKE App 3 教育版 Python，照抄就好、不用改）=====
+# ===== 神攝手 讀值小工具（樂高官方 SPIKE App 3 教育版 Python，照抄就好、不用改）=====
 # ===== UniCam reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
 # 相機在 SPIKE App 裡是「顏色感應器」：顏色、反射光、原始紅／綠／藍 這 5 個數字（byte 0~7）積木與 Python 都讀得到。
 # byte 8~15 只有 App Python 的 device.data() 可能讀得到，還沒上機確認（任務 #77），這個小工具不用它。
@@ -590,14 +590,14 @@ runloop.run(main())
 <summary>🟨 官方 App Python 程式碼</summary>
 
 ```python
-# 神攝手通用版 v1 × 樂高官方 SPIKE App（教育版 Python）範例 2：PD 循線＋路口停車
-# Sharpshooter Vision Universal v1 × LEGO SPIKE App (Education, Python) example 2: PD line following + stop at a junction
+# 神攝手 × 樂高官方 SPIKE App（教育版 Python）範例 2：PD 循線＋路口停車
+# Sharpshooter Vision × LEGO SPIKE App (Education, Python) example 2: PD line following + stop at a junction
 # 需要把相機選單切到 相機模式 4 循線 ・子選項 ① 黑線 ＝模式編號 41（白線 42、色線 43 也一樣）
 # Camera menu: camera mode 4 Line, option 1 Black line = mode number 41 (42 / 43 work the same)
 # 準備：相機裝在車頭、斜斜往前下方看線 / camera at the front, looking down and forward
 # 接線 Wiring：相機 → C 孔；左輪 E、右輪 F / camera → port C; left wheel E, right wheel F
 # 方向：站在車後往前看，線在左＝負 / standing behind the robot: line on the left = negative
-# ===== 神攝手通用版 讀值小工具（樂高官方 SPIKE App 3 教育版 Python，照抄就好、不用改）=====
+# ===== 神攝手 讀值小工具（樂高官方 SPIKE App 3 教育版 Python，照抄就好、不用改）=====
 # ===== UniCam reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
 # 相機在 SPIKE App 裡是「顏色感應器」：顏色、反射光、原始紅／綠／藍 這 5 個數字（byte 0~7）積木與 Python 都讀得到。
 # byte 8~15 只有 App Python 的 device.data() 可能讀得到，還沒上機確認（任務 #77），這個小工具不用它。

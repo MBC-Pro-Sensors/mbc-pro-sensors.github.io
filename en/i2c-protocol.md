@@ -18,8 +18,8 @@ Hosts: **Arduino UNO / Nano / Mega / R4, ESP32, micro:bit, Raspberry Pi** and an
 <!-- gen:i2c-addr-table -->
 | Product | I2C address | hw[0] | Model | Value table | Reference | Examples |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Vision Sensor (School Edition) | `0x4C` | `1` | `CAMSCH` | [I2C](/en/sensors/esp32cam/arduino-i2c.md) | [Reference](/en/sensors/esp32cam/reference.md) | [Arduino](/en/sensors/esp32cam/arduino-examples.md) |
-| Vision Sensor (WRO Edition, HUE12) | `0x4C` | `2` | `HUE12` | [I2C](/en/sensors/esp32cam/arduino-i2c-wro.md) | [Reference](/en/sensors/esp32cam/reference-wro.md) | [Arduino](/en/sensors/esp32cam/arduino-examples.md) |
+| Vision Sensor (School Edition) (legacy, no longer supported) | `0x4C` | `1` | `CAMSCH` | [I2C](/en/sensors/esp32cam/arduino-i2c.md) | [Reference](/en/sensors/esp32cam/reference.md) | [Arduino](/en/sensors/esp32cam/arduino-examples.md) |
+| Vision Sensor (WRO Edition, HUE12) (legacy, no longer supported) | `0x4C` | `2` | `HUE12` | [I2C](/en/sensors/esp32cam/arduino-i2c-wro.md) | [Reference](/en/sensors/esp32cam/reference-wro.md) | [Arduino](/en/sensors/esp32cam/arduino-examples.md) |
 | IMU Gyro Sensor | `0x6A` | `1` | `IMU` | [I2C](/en/sensors/imu/arduino-i2c.md) | [Reference](/en/sensors/imu/reference.md) | [Arduino](/en/sensors/imu/arduino-examples.md) |
 | Line Follower 16-ch | `0x16` | `16` | `LINE16` | [I2C](/en/sensors/line16/arduino-i2c.md) | [Reference](/en/sensors/line16/reference.md) | [Arduino](/en/sensors/line16/arduino-examples.md) |
 | Line Follower 8-ch | `0x16` | `8` | `LINE8` | [I2C](/en/sensors/line8/arduino-i2c.md) | [Reference](/en/sensors/line8/reference.md) | [Arduino](/en/sensors/line8/arduino-examples.md) |
@@ -30,9 +30,10 @@ Hosts: **Arduino UNO / Nano / Mega / R4, ESP32, micro:bit, Raspberry Pi** and an
 <!-- /gen -->
 
 > [!NOTE]
+> - **The current [Sharpshooter Vision](/en/sensors/unicam/arduino/index.md)** is also `0x4C`, hw0 = `3`; for which value sits in which slot see the [Sharpshooter Vision value reference](/en/sensors/unicam/reference.md). The School / WRO editions marked "legacy" above are no longer supported.
 > - **The SPIKE 6-Port Expander (EXP6) does not use I2C**: its hub connector is isolated, so Arduino talks to it over UART. See [EXP6 Arduino examples](/en/sensors/exp6/arduino-examples.md).
-> - Products with the **same address cannot share one SDA/SCL bus** (Line8 + Line16, TOF2 + TOF8, PS2 + PS4, the two camera firmwares). Re-address one of them with `F8` first.
-> - Products of one family share an address; tell the variant apart with the high byte of `F0` (hw0): Line 8/16, TOF 2/8, PS2 = 1 / PS4 = 2, camera school = 1 / WRO = 2.
+> - Products with the **same address cannot share one SDA/SCL bus** (Line8 + Line16, TOF2 + TOF8, PS2 + PS4, the current and the legacy Sharpshooter Vision). Re-address one of them with `F8` first.
+> - Products of one family share an address; tell the variant apart with the high byte of `F0` (hw0): Line 8/16, TOF 2/8, PS2 = 1 / PS4 = 2, Sharpshooter Vision = 3 (legacy school = 1 / WRO = 2).
 
 ---
 

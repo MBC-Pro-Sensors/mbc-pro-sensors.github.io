@@ -1,13 +1,13 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 程式碼區塊＝examples/unicam/matrix/*/*.ino 原文（解碼小幫手正本：02_相機感應器\06_通用版\通用版v1\上位機函式庫\matrix\MBC_UniCam_MATRIX.h）；拆法表依規格定案第 5 節（spec_layout.json host mx） -->
-# 🟩 MATRIX 範例：神攝手通用版 v1 × MATRIX Mini R4
+# 🟩 MATRIX 範例：神攝手 × MATRIX Mini R4
 
-[🔙 回到神攝手通用版 v1 產品頁](/sensors/unicam/index.md)　｜　[MATRIX mVision 讀值教學](/sensors/unicam/matrix/mvision.md)　｜　[📋 讀值參考（MATRIX）](/sensors/unicam/reference.md#host-mx)
+[🔙 回到神攝手產品頁](/sensors/unicam/index.md)　｜　[MATRIX mVision 讀值教學](/sensors/unicam/matrix/mvision.md)　｜　[📋 讀值參考（MATRIX）](/sensors/unicam/reference.md#host-mx)
 
 > [!WARNING]
 > **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
 
-神攝手通用版 v1（MATRIX 版韌體）對 MATRIX Mini R4 來說就是一台 **mVision 攝影機**：相機每 **20 ms** 送一包 10 格資料，走 **Serial1 115200**，MATRIXblock 的「mVision」積木就能讀，不用裝函式庫、不走 I2C。
+神攝手（MATRIX 版韌體）對 MATRIX Mini R4 來說就是一台 **mVision 攝影機**：相機每 **20 ms** 送一包 10 格資料，走 **Serial1 115200**，MATRIXblock 的「mVision」積木就能讀，不用裝函式庫、不走 I2C。
 
 這一頁有兩部分：
 1. **只用 MATRIXblock 積木**：下面的「積木怎麼拆」表，告訴你每個模式的「mVision 資料 0～9」各放了什麼、要怎麼算出來。
@@ -81,7 +81,7 @@
 
 **要準備什麼**
 - MATRIX Mini R4＋兩顆 DC 馬達的小車（左輪 M1、右輪 M2）＋電池
-- 神攝手通用版 v1（MATRIX 版韌體）
+- 神攝手（MATRIX 版韌體）
 - 一顆顏色鮮豔的球或積木
 
 **相機設定**：教好「目標 1」；相機模式 **1 顏色追蹤 ・子選項 ③ 標準**（模式編號 13）。
@@ -94,8 +94,8 @@
 
 ```cpp
 /*
- * 神攝手通用版 v1 × MATRIX Mini R4　範例 1：跟著色塊轉
- * Sharpshooter Vision Universal v1 × MATRIX Mini R4  example 1: follow the colour blob
+ * 神攝手 × MATRIX Mini R4　範例 1：跟著色塊轉
+ * Sharpshooter Vision × MATRIX Mini R4  example 1: follow the colour blob
  * ------------------------------------------------------------
  * ★ 需要把相機選單切到 相機模式 1 顏色追蹤 ・子選項 ③ 標準（模式編號 13）
  *   Set the camera menu to camera mode 1 colour tracking · option ③ standard (mode number 13)
@@ -179,7 +179,7 @@ void loop() {
 
 // ==== MBC_UNICAM_MX_HELPERS_BEGIN ====
 // ============================================================
-// 以下是「神攝手通用版 × mVision 解碼小幫手」，所有 MATRIX 範例都一樣，不用改。
+// 以下是「神攝手 × mVision 解碼小幫手」，所有 MATRIX 範例都一樣，不用改。
 // 每格 = 低 byte ＋ 高 byte × 256（模式 11 是 A × 100 ＋ B）
 // ============================================================
 
@@ -311,8 +311,8 @@ uint8_t ucColorCode(int h) {
 
 ```cpp
 /*
- * 神攝手通用版 v1 × MATRIX Mini R4　範例 2：循線小車（近／遠偏移 PD 循線，遇到路口停車）
- * Sharpshooter Vision Universal v1 × MATRIX Mini R4  example 2: line follower (near/far offset PD, stop at a junction)
+ * 神攝手 × MATRIX Mini R4　範例 2：循線小車（近／遠偏移 PD 循線，遇到路口停車）
+ * Sharpshooter Vision × MATRIX Mini R4  example 2: line follower (near/far offset PD, stop at a junction)
  * ------------------------------------------------------------
  * ★ 需要把相機選單切到 相機模式 4 循線 ・子選項 ① 黑線（模式編號 41；白線 ②、色線 ③ 也能用）
  *   Set the camera menu to camera mode 4 line following · option ① black line (mode number 41; ② white, ③ colour also work)
@@ -397,7 +397,7 @@ void loop() {
 
 // ==== MBC_UNICAM_MX_HELPERS_BEGIN ====
 // ============================================================
-// 以下是「神攝手通用版 × mVision 解碼小幫手」，所有 MATRIX 範例都一樣，不用改。
+// 以下是「神攝手 × mVision 解碼小幫手」，所有 MATRIX 範例都一樣，不用改。
 // 每格 = 低 byte ＋ 高 byte × 256（模式 11 是 A × 100 ＋ B）
 // ============================================================
 
@@ -516,4 +516,4 @@ uint8_t ucColorCode(int h) {
 
 - 每一格的完整對照：[讀值參考（MATRIX）](/sensors/unicam/reference.md#host-mx)
 - 解碼小幫手正本與其他平台：[下載中心](/downloads.md)
-- 產品頁與相機選單操作：[神攝手通用版 v1](/sensors/unicam/index.md)
+- 產品頁與相機選單操作：[神攝手](/sensors/unicam/index.md)

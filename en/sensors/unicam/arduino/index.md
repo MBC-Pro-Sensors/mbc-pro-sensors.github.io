@@ -4,7 +4,7 @@
 > [!WARNING]
 > **v1 not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
 
-The Sharpshooter Vision Universal v1 (Universal I2C edition) uses the MBC universal I2C protocol v2, so Arduino UNO, Nano, UNO R4 and ESP32 can all read it at address **`0x4C`**. Over I2C every level gives 16 colors / 16 points, values are pixels sent as they are, and there are no grid cells to split. Every slot is in the [value reference: I2C](/en/sensors/unicam/reference.md#host-i2c), full programs in the [Arduino examples](/en/sensors/unicam/arduino-examples.md).
+The Sharpshooter Vision (Universal I2C edition) uses the MBC universal I2C protocol v2, so Arduino UNO, Nano, UNO R4 and ESP32 can all read it at address **`0x4C`**. Over I2C every level gives 16 colors / 16 points, values are pixels sent as they are, and there are no grid cells to split. Every slot is in the [value reference: I2C](/en/sensors/unicam/reference.md#host-i2c), full programs in the [Arduino examples](/en/sensors/unicam/arduino-examples.md).
 
 ## Wiring
 
@@ -32,7 +32,7 @@ The Sharpshooter Vision Universal v1 (Universal I2C edition) uses the MBC univer
 | `0x03` | Number of taught colors |
 | `0x04` | How many this level gives (colors / points / blocks) |
 | `0x10` on | "Value 1" in the I2C table of the value reference = `0x10`, "value 2" = `0x11` … (Color tracking ④ uses `0x10`~`0x70`) |
-| `0xF0` | Device ID = `0x4C` \| 3<<8 (high byte 3 = Universal; School 1, WRO 2) |
+| `0xF0` | Device ID = `0x4C` \| 3<<8 (high byte 3 = current Sharpshooter Vision; School 1, WRO 2) |
 | `0xF1`~`0xF5` | Protocol version 2, firmware version 100 (1.0), status flags, update counter, uptime seconds |
 
 | Command | Content |

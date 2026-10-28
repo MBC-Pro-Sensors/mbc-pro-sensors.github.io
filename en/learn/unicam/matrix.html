@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/unicam/matrix.html">
 <link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/unicam/matrix.html">
 <link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/unicam/matrix.html">
-<title>Sharpshooter Vision Universal v1 MATRIX Mini R4 tutorial | MBC-Pro Sensors</title>
+<title>Sharpshooter Vision MATRIX Mini R4 tutorial | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -241,11 +241,11 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/unicam/matrix/mvision.html">← Sharpshooter Vision Universal v1 MATRIX guide</a><a class="lang" href="/learn/unicam/matrix.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/unicam/micropython.html">SPIKE</a><a href="/en/learn/unicam/ev3-pybricks.html">EV3</a><a href="/en/learn/unicam/arduino.html">Arduino</a><a href="/en/learn/unicam/mblock.html">mBlock</a><a href="/en/learn/unicam/matrix.html" aria-current="page">MATRIX</a><a href="/en/learn/unicam/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/unicam/matrix.html" aria-current="page">MATRIXblock</a></div></div></nav>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/unicam/matrix/mvision.html">← Sharpshooter Vision MATRIX guide</a><a class="lang" href="/learn/unicam/matrix.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/unicam/micropython.html">SPIKE</a><a href="/en/learn/unicam/ev3-pybricks.html">EV3</a><a href="/en/learn/unicam/arduino.html">Arduino</a><a href="/en/learn/unicam/mblock.html">mBlock</a><a href="/en/learn/unicam/matrix.html" aria-current="page">MATRIX</a><a href="/en/learn/unicam/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/unicam/matrix.html" aria-current="page">MATRIXblock</a></div></div></nav>
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">MBC Sharpshooter Vision Universal v1 × MATRIX Mini R4 (Arduino IDE)</span>
-    <h1>Read Sharpshooter Vision Universal with MATRIX Mini R4 in three steps</h1>
+    <span class="eyebrow">MBC Sharpshooter Vision × MATRIX Mini R4 (Arduino IDE)</span>
+    <h1>Read Sharpshooter Vision with MATRIX Mini R4 in three steps</h1>
     <p class="lead">To the MATRIX Mini R4 this camera is an <b>mVision camera</b>: each packet has <b>10 cells</b> (<code>CamData[0]</code>–<code>CamData[9]</code>), and the "decode helper" turns them into blob positions, hues and line values. This page writes text code in the <b>Arduino IDE</b>. In order: <b>wire it, paste the helper and pick the camera mode</b>; then start mVision in <b>setup()</b>; then read and decode a packet in <b>loop()</b>.</p>
     <p class="v1warn" role="note"><b>v1 not yet hardware-verified</b><span>The value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after hardware testing.</span></p>
   </header>

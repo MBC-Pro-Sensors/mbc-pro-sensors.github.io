@@ -1,5 +1,5 @@
-# MBC 神攝手通用版 v1：EV3 函式庫（Pybricks v4 與 樂高官方 EV3 MicroPython v2 共用）
-# MBC Sharpshooter Vision Universal v1: EV3 library (Pybricks v4 and LEGO EV3 MicroPython v2)
+# MBC 神攝手（韌體 v1）：EV3 函式庫（Pybricks v4 與 樂高官方 EV3 MicroPython v2 共用）
+# MBC Sharpshooter Vision (firmware v1): EV3 library (Pybricks v4 and LEGO EV3 MicroPython v2)
 # 作者 Author：MBC Robot　日期 Date：2026-10-28　版本 Version：v1.0（v1 尚未上機驗證 / not yet hardware-verified）
 #
 # ！！把 MBC_UniCam_EV3.py 跟你的程式放在同一個資料夾！！ / put this file next to your program
@@ -82,7 +82,7 @@ def _d8(v):
 
 
 class UniCam:
-    """神攝手通用版 v1（EV3）：cam = UniCam(port, mode=None)"""
+    """神攝手（韌體 v1，EV3）：cam = UniCam(port, mode=None)"""
 
     def __init__(self, port, mode=None):
         if isinstance(port, int):
@@ -148,12 +148,12 @@ class UniCam:
         return self._ok
 
     def device_id(self):
-        """模式 5：(位址 0x4C, hw0, 韌體版字)，通用版 hw0＝3 / mode 5: (0x4C, hw0, firmware word)"""
+        """模式 5：(位址 0x4C, hw0, 韌體版字)，目前的神攝手 hw0＝3 / mode 5: (0x4C, hw0, firmware word)"""
         v = self._rd(5)
         return None if v is None else (v[0] & 0xFF, (v[0] >> 8) & 0xFF, v[1] & 0xFFFF)
 
     def is_unicam(self):
-        """是不是通用版（hw0＝3）/ is this the universal version"""
+        """是不是目前的神攝手（hw0＝3）/ is this the current Sharpshooter Vision"""
         d = self.device_id()
         return d is not None and d[0] == 0x4C and d[1] == 3
 

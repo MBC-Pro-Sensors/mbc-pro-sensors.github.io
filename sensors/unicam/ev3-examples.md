@@ -1,9 +1,9 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 02_相機感應器\06_通用版\通用版v1\上位機函式庫\tools\gen_pages.py 產生（範本 tools\pages\ev3-examples.zh.md）；程式碼區塊＝上位機函式庫 正本的原文，改程式請改正本後重跑 -->
 
-# 🤖 EV3 範例：神攝手通用版 v1
+# 🤖 EV3 範例：神攝手
 
-[🔙 回到神攝手通用版 v1](/sensors/unicam/index.md)　｜　[EV3 讀法說明](/sensors/unicam/ev3/index.md)　｜　[📋 讀值參考：EV3](/sensors/unicam/reference.md#host-ev3)
+[🔙 回到神攝手](/sensors/unicam/index.md)　｜　[EV3 讀法說明](/sensors/unicam/ev3/index.md)　｜　[📋 讀值參考：EV3](/sensors/unicam/reference.md#host-ev3)
 
 > [!WARNING]
 > **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
@@ -78,8 +78,8 @@
 
 ```python
 #!/usr/bin/env pybricks-micropython
-# 神攝手通用版 v1 × EV3 範例 1：跟著色塊轉
-# Sharpshooter Vision Universal v1 × EV3 example 1: turn to follow a colour blob
+# 神攝手 × EV3 範例 1：跟著色塊轉
+# Sharpshooter Vision × EV3 example 1: turn to follow a colour blob
 # 需要把相機選單切到 相機模式 1 顏色追蹤 ・子選項 ③ 標準（XY＋面積）＝模式編號 13
 # Camera menu: camera mode 1 Colour tracking, option 3 Standard (XY + area) = mode number 13
 # 軟體 Software：Pybricks v4（code.pybricks.com）或 樂高官方 EV3 MicroPython v2（同一支程式都能跑）
@@ -151,8 +151,8 @@ while True:
 
 ```python
 #!/usr/bin/env pybricks-micropython
-# 神攝手通用版 v1 × EV3 範例 2：座標取色判斷顏色
-# Sharpshooter Vision Universal v1 × EV3 example 2: what colour is at the spot?
+# 神攝手 × EV3 範例 2：座標取色判斷顏色
+# Sharpshooter Vision × EV3 example 2: what colour is at the spot?
 # 需要把相機選單切到 相機模式 2 座標取色 ・子選項 ③ 色相＋飽和＋明度 ＝模式編號 23（EV3 給 2 點，原始值）
 # Camera menu: camera mode 2 Spot colour, option 3 Hue + sat + value = mode number 23 (2 spots, exact values)
 # 軟體 Software：Pybricks v4 或 樂高官方 EV3 MicroPython v2
@@ -222,8 +222,8 @@ while True:
 
 ```python
 #!/usr/bin/env pybricks-micropython
-# 神攝手通用版 v1 × EV3 範例 3：PD 循線＋路口停車
-# Sharpshooter Vision Universal v1 × EV3 example 3: PD line following + stop at a junction
+# 神攝手 × EV3 範例 3：PD 循線＋路口停車
+# Sharpshooter Vision × EV3 example 3: PD line following + stop at a junction
 # 需要把相機選單切到 相機模式 4 循線 ・子選項 ① 黑線 ＝模式編號 41（白線 42、色線 43 也可以）
 # Camera menu: camera mode 4 Line, option 1 Black line = mode number 41 (42 / 43 also work)
 # 軟體 Software：Pybricks v4 或 樂高官方 EV3 MicroPython v2

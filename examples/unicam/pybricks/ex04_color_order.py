@@ -1,5 +1,5 @@
-# 神攝手通用版 v1 × Pybricks（SPIKE）範例 4：照順序給色號（WRO 任務：記下積木的顏色順序）
-# Sharpshooter Vision Universal v1 × Pybricks (SPIKE) example 4: colour order (WRO: remember the order)
+# 神攝手 × Pybricks（SPIKE）範例 4：照順序給色號（WRO 任務：記下積木的顏色順序）
+# Sharpshooter Vision × Pybricks (SPIKE) example 4: colour order (WRO: remember the order)
 # 需要把相機選單切到 相機模式 3 照順序給色號（沒有子選項）＝模式編號 30
 # Camera menu: camera mode 3 Colour order (no option) = mode number 30
 # 準備：在相機上教會場地上會出現的每一種顏色 / teach every colour that can appear on the field

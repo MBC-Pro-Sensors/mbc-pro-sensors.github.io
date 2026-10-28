@@ -272,14 +272,16 @@ function sidebarTree(src, lang, g) {
   const gp = g && GI.products[g.key];
   if (!gp) return src;
   const pre = lang === 'en' ? '/en' : '';
+  const re = new RegExp(`^(\\s+- \\[[^\\]]+\\]\\(${pre}/sensors/${g.key}/index\\.md\\))[ \\t]*$`, 'm');
+  // 子樹縮排跟著產品那一行（舊版神攝手放在新版底下一層，縮排 4 格）
+  const ind = ' '.repeat(((src.match(re) || ['', ''])[1].match(/^\s*/) || [''])[0].length + 2);
   const kids = [];
   for (const ah of gp.hosts) {
     const h = GHOST[ah.id];
     const one = ah.sws.length === 1;
-    kids.push(`    - [${h.name[lang]}](${one ? `${pre}/sensors/${g.key}/${ah.id}/${ah.sws[0]}.md` : `${pre}/sensors/${g.key}/${ah.id}/index.md`})`);
-    if (!one && ah.id === g.host) for (const sw of ah.sws) kids.push(`      - [${L_(gSw(ah.id, sw).name, lang)}](${pre}/sensors/${g.key}/${ah.id}/${sw}.md)`);
+    kids.push(`${ind}- [${h.name[lang]}](${one ? `${pre}/sensors/${g.key}/${ah.id}/${ah.sws[0]}.md` : `${pre}/sensors/${g.key}/${ah.id}/index.md`})`);
+    if (!one && ah.id === g.host) for (const sw of ah.sws) kids.push(`${ind}  - [${L_(gSw(ah.id, sw).name, lang)}](${pre}/sensors/${g.key}/${ah.id}/${sw}.md)`);
   }
-  const re = new RegExp(`^(\\s+- \\[[^\\]]+\\]\\(${pre}/sensors/${g.key}/index\\.md\\))[ \\t]*$`, 'm');
   return src.replace(re, (a) => `${a}\n${kids.join('\n')}`);
 }
 function renderSidebar(lang, currentUrl, g = null) {
@@ -365,6 +367,19 @@ const NO_EDITION_PICK = new Set(['exp6']);
 
 // Sales block at the top of each product page, generated from _build/products.json
 const PRODUCT_DATA = JSON.parse(fs.readFileSync(path.join(BUILD, 'products.json'), 'utf8'));
+// 停止支援的舊版（products.json 的 legacy: true，神攝手學校版／WRO 版 = esp32cam）：頁面保留，但不進首頁選擇器、切換列、互動教學總覽
+const isLegacy = (k) => !!(PRODUCT_DATA[k] && PRODUCT_DATA[k].legacy);
+// 舊版頁頂的提示（/sensors/esp32cam/ 子頁、learn/cam_school、learn/hue12）；舊版總覽頁 sensors/esp32cam/index.md 自己寫
+const LEGACY_NOTE = {
+  zh: { b: '神攝手舊版已停止支援', t: '2026-10 以前出貨的神攝手（學校版／WRO 版）已停止支援，說明與範例保留供參考。需要升級成目前的神攝手：請聯繫原購買的經銷商寄回，<b>韌體更新免費</b>，來回運費由買家負擔。', a: '你要找的是目前的神攝手 →', href: '/sensors/unicam/', all: '舊版總覽', allHref: '/sensors/esp32cam/' },
+  en: { b: 'Legacy edition, no longer supported', t: 'Sharpshooter Vision units shipped before 2026-10 (School and WRO editions) are no longer supported; their guides and examples stay here for reference. To upgrade to the current Sharpshooter Vision, contact the distributor you bought it from and send it back: <b>the firmware update is free</b>, and the buyer pays shipping both ways.', a: 'Looking for the current Sharpshooter Vision? →', href: '/en/sensors/unicam/', all: 'Legacy overview', allHref: '/en/sensors/esp32cam/' },
+};
+const legacyBar = (lang) => { const N = LEGACY_NOTE[lang]; return `<div class="legacy-bar" role="note"><p><b>${N.b}</b>${lang === 'en' ? ': ' : '：'}${N.t}</p><p class="lgb-links"><a class="lgb-go" href="${N.href}">${N.a}</a><a href="${N.allHref}">${N.all}</a></p></div>`; };
+// 互動教學頁不是 build.mjs 排版的，提示用行內樣式（插在頂部導覽列後面）
+const legacyLearnBar = (lang) => { const N = LEGACY_NOTE[lang]; return `<div class="legacy-learn" role="note" style="margin:0 0 14px;padding:10px 14px;border-radius:10px;background:#fff7d6;border:1px solid #f0d36b;color:#4a3b00;font-size:0.92rem;line-height:1.55"><b>${N.b}</b>${lang === 'en' ? ': ' : '：'}${N.t} <a href="${N.href}" style="color:#6b5400;font-weight:700;text-decoration:underline">${N.a}</a></div>`; };
+const LEARN_LEGACY = /^(en\/)?learn\/(cam_school|hue12)\/[^/]+\.html$/;
+// 還沒進三層導覽（guides-index）但要放進首頁選擇器與切換列的產品：每個主機連到 products.json routes 的 start（手寫的平台頁）
+const NAV_EXTRA = ['unicam'];
 function productHero(key, lang, file, name) {
   const p = PRODUCT_DATA[key];
   if (!p) return '';
@@ -490,9 +505,9 @@ function learnBox(lang, key, host, sws, mode) {
 // 下面摺疊的「全部產品一覽」放全部連結（沒有 JS、搜尋引擎也找得到）。PS2／PS4 合一個選項。
 function learnHubHtml(lang) {
   const K = LK[lang], seen = new Set(), items = [];
-  // 還沒進三層導覽（guides-index）的產品（神攝手通用版 v1）：名稱用側欄的產品名、拿掉「（開發中）」
-  const extra = Object.keys(LEARN).filter((k) => !GI.products[k]).map((k) => [k, { short: { zh: (PRODUCTS.zh[k] || k).replace(/（[^）]*）$/, ''), en: (PRODUCTS.en[k] || k).replace(/\s*\([^)]*\)$/, '') } }]);
-  for (const [k, p] of Object.entries(GI.products).concat(extra)) {
+  // 還沒進三層導覽（guides-index）的產品（神攝手）：名稱用側欄的產品名、拿掉「（開發中）」；順序照 products.json，舊版（legacy）不列
+  const extra = (k) => ({ short: { zh: (PRODUCTS.zh[k] || k).replace(/（[^）]*）$/, ''), en: (PRODUCTS.en[k] || k).replace(/\s*\([^)]*\)$/, '') } });
+  for (const [k, p] of Object.keys(PRODUCT_DATA).filter((k) => LEARN[k] && !isLegacy(k)).map((k) => [k, GI.products[k] || extra(k)])) {
     for (const t of LEARN[k] || []) {
       if (seen.has(t)) continue;
       seen.add(t);
@@ -515,6 +530,19 @@ function learnHubHtml(lang) {
     `<script type="application/json" id="learn-hub-data">${JSON.stringify(items).replace(/</g, '\\u003c')}</script></div>`;
 }
 
+// 首頁選擇器與切換列的產品：三層導覽的產品＋NAV_EXTRA，照 products.json 順序；舊版不列（keep＝目前頁面的產品，舊版頁自己的切換列照樣列）
+// NAV_EXTRA 的產品沒有軟體頁：每個主機只有一個「讀值教學」選項，連到 routes 的 start
+const GUIDE_SW = 'guide';
+const GUIDE_LABEL = { zh: { name: '讀值教學', tag: '這款在這個主機的說明頁' }, en: { name: 'Guide', tag: 'The page for this product on this host' } };
+function navProducts(lang, keep) {
+  return Object.keys(PRODUCT_DATA).filter((k) => (!isLegacy(k) || k === keep) && (GI.products[k] || NAV_EXTRA.includes(k))).map((k) => {
+    if (GI.products[k]) return [k, GI.products[k]];
+    const sp = PRODUCT_DATA[k];
+    const extra = GI.hosts.map((h) => sp.routes[h.id] && `${gpre(lang)}${sp.routes[h.id].start}`).map((md, i) => md && fileOk(md) && { id: GI.hosts[i].id, url: mapHref(md, 'README.md') }).filter(Boolean);
+    return [k, { short: sp.name, color: sp.color, image: sp.image || null, extra }];
+  });
+}
+
 // 第 2、3 層頁面頂端的切換列：產品 ▾ › 主機 ▾ › 軟體 ▾（<details> 下拉：不用 JS 也能用、鍵盤可操作；連結在建站時算好）
 function switcherHtml(lang, g) {
   const T_ = GL[lang];
@@ -522,7 +550,11 @@ function switcherHtml(lang, g) {
   const curHost = gHostOf(g.key, g.host);
   const seg = (cls, k, v, items) => `<details class="gsw-seg ${cls}"><summary><span class="gsw-k">${k}</span><span class="gsw-v">${v}</span></summary><ul class="gsw-menu">${items.map(([href, text, on, sub]) =>
     `<li><a href="${href}"${on ? ' aria-current="page"' : ''}>${text}${sub ? `<small>${sub}</small>` : ''}</a></li>`).join('')}</ul></details>`;
-  const prodItems = Object.entries(GI.products).map(([k, p]) => {
+  const prodItems = navProducts(lang, g.key).map(([k, p]) => {
+    if (p.extra) {
+      const x = p.extra.find((e) => e.id === g.host);
+      return [x ? x.url : gProductUrl(lang, k), escAttr(L_(p.short, lang)), false, x ? '' : T_.none(GHOST[g.host].name[lang])];
+    }
     const has = gHostOf(k, g.host);
     const href = !has ? gProductUrl(lang, k) : g.sw ? gEnter(lang, k, g.host, g.sw) : gHostUrl(lang, k, g.host);
     return [href, escAttr(L_(p.short, lang)), k === g.key, has ? '' : T_.none(GHOST[g.host].name[lang])];
@@ -569,13 +601,16 @@ function platformGrid(key, lang) {
 // 首頁 <!-- finder -->：三步（產品 → 主機 → 軟體）直接到軟體頁；沒有 JS 時是對照表
 function finderHtml(lang) {
   const T_ = GL[lang];
-  const prods = Object.entries(GI.products);
+  const prods = navProducts(lang);
   const data = { labels: { go: T_.go, result: T_.result, noHost: T_.noHost }, hosts: {}, products: {} };
   for (const h of GI.hosts) data.hosts[h.id] = { name: h.name[lang], sws: Object.fromEntries(h.software.map((s) => [s.id, { name: L_(s.name, lang), tag: L_(s.tagline, lang) }])) };
-  for (const [k, p] of prods) data.products[k] = { name: L_(p.short, lang), hosts: Object.fromEntries(p.hosts.map((ah) => [ah.id, { url: gEnter(lang, k, ah.id), sws: Object.fromEntries(ah.sws.map((s) => [s, gSwUrl(lang, k, ah.id, s)])) }])) };
+  if (prods.some(([, p]) => p.extra)) for (const h of GI.hosts) data.hosts[h.id].sws[GUIDE_SW] = GUIDE_LABEL[lang];
+  for (const [k, p] of prods) data.products[k] = p.extra ? { name: L_(p.short, lang), hosts: Object.fromEntries(p.extra.map((x) => [x.id, { url: x.url, sws: { [GUIDE_SW]: x.url } }])) }
+    : { name: L_(p.short, lang), hosts: Object.fromEntries(p.hosts.map((ah) => [ah.id, { url: gEnter(lang, k, ah.id), sws: Object.fromEntries(ah.sws.map((s) => [s, gSwUrl(lang, k, ah.id, s)])) }])) };
   const prodTiles = prods.map(([k, p]) => `<button type="button" role="radio" aria-checked="false" data-key="${k}" style="--pc:${p.color}">${p.image ? `<img src="${p.image}" alt="" loading="lazy">` : '<span class="ft-noimg"></span>'}<span>${escAttr(L_(p.short, lang))}</span></button>`).join('');
   const hostTiles = GI.hosts.map((h) => `<button type="button" role="radio" aria-checked="false" data-host="${h.id}" class="ft-${h.id}" disabled><span>${h.name[lang]}</span></button>`).join('');
   const rows = prods.map(([k, p]) => `<tr><td><a href="${gProductUrl(lang, k)}">${escAttr(L_(p.short, lang))}</a></td>${GI.hosts.map((h) => {
+    if (p.extra) { const x = p.extra.find((e) => e.id === h.id); return `<td>${x ? `<a href="${x.url}">${GUIDE_LABEL[lang].name}</a>` : '—'}</td>`; }
     const ah = gHostOf(k, h.id);
     return `<td>${ah ? ah.sws.map((s) => `<a href="${gSwUrl(lang, k, h.id, s)}">${L_(gSw(h.id, s).name, lang)}</a>`).join('<br>') : '—'}</td>`;
   }).join('')}</tr>`).join('');
@@ -799,7 +834,7 @@ function collapseSections(html, file) {
 // schema.org Product + Offer for product index pages (TWD on zh pages, USD on en pages)
 function productLd(key, lang, url, name, description) {
   const p = PRODUCT_DATA[key];
-  if (!p || !p.msrp) return null;
+  if (!p || !p.msrp || p.legacy) return null; // 舊版不再販售：不標價格與庫存
   const en = lang === 'en';
   if (en && !p.msrp.usd) return null; // Taiwan-only product: no USD offer
   return {
@@ -927,6 +962,14 @@ for (const f of tracked) {
   if (!fs.existsSync(src)) continue;
   const dst = path.join(OUT, f);
   fs.mkdirSync(path.dirname(dst), { recursive: true });
+  // 舊版神攝手的互動教學：頂部導覽列後面插停止支援提示
+  if (LEARN_LEGACY.test(f)) {
+    const t = fs.readFileSync(src, 'utf8');
+    const i = t.indexOf('</nav>');
+    if (i < 0) console.warn(`WARN ${f}: 找不到 </nav>，沒插舊版提示`);
+    fs.writeFileSync(dst, i < 0 ? t : t.slice(0, i + 6) + legacyLearnBar(f.startsWith('en/') ? 'en' : 'zh') + t.slice(i + 6));
+    continue;
+  }
   fs.copyFileSync(src, dst);
 }
 fs.cpSync(path.join(BUILD, 'assets'), path.join(OUT, 'assets'), { recursive: true });
@@ -954,6 +997,9 @@ for (const file of pages) {
     html = html.replace(/<p class="moved-note">[\s\S]*?<\/p>\s*/, '');
     html = `<div class="moved-bar" role="note">${icon('arrow-right')}<span>${GL[lang].moved}<a href="${movedUrl}">${escAttr(movedLabel(movedMd))}</a></span></div>` + html;
   }
+  // 舊版（legacy）產品的子頁：最上面放停止支援提示（產品首頁＝舊版總覽，自己寫）
+  const legacyM = file.match(/^(?:en\/)?sensors\/([^/]+)\/(.+)$/);
+  if (legacyM && isLegacy(legacyM[1]) && legacyM[2] !== 'index.md') html = legacyBar(lang) + html;
   for (const tag of ['div', 'section']) {
     const open = (html.match(new RegExp(`<${tag}[\\s>]`, 'g')) || []).length;
     const close = (html.match(new RegExp(`</${tag}>`, 'g')) || []).length;
@@ -982,7 +1028,7 @@ for (const file of pages) {
   const home = homeHead[url];
   // 第 2、3 層頁面的 H1 已經含產品名，不再重複
   let title = home ? home.title : `${h1Text}${productName && !isProductIndex && !h1Text.includes(productName) ? ' – ' + productName : ''} | MBC-Pro Sensors`;
-  const pitch = isProductIndex && PRODUCT_DATA[product] && PRODUCT_DATA[product][lang].pitch;
+  const pitch = isProductIndex && PRODUCT_DATA[product] && !isLegacy(product) && PRODUCT_DATA[product][lang].pitch;
   let description = home ? home.description : pitch || describe(html) || homeHead[lang === 'en' ? '/en/' : '/'].description;
   // product sub-pages (setup guides) share opening text across products: lead with the product name so each is unique
   if (product && !isProductIndex && productName && !description.includes(productName)) {
@@ -1004,7 +1050,7 @@ for (const file of pages) {
     html = html.replace('<!-- product-hero -->', productHero(product, lang, file, h1Text));
     html = html.replace('<!-- platform-grid -->', platformGrid(product, lang));
     html = collapseSections(html, file);
-    html += ctaHtml(lang);
+    if (!isLegacy(product)) html += ctaHtml(lang);
   }
   if (html.includes('<!-- learn-hub -->')) html = html.replace('<!-- learn-hub -->', learnHubHtml(lang));
   if (html.includes('<!-- finder -->')) html = html.replace('<!-- finder -->', finderHtml(lang));

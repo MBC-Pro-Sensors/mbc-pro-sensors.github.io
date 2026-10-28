@@ -1,4 +1,4 @@
-// Sharpshooter Vision Universal v1 × micro:bit example 2: what colour does the spot see
+// Sharpshooter Vision × micro:bit example 2: what colour does the spot see
 // ★ Set the camera menu to camera mode 2 spot colour · option ① hue (mode number 21) (the program also switches it with E0 at start)
 // What it does: the LEDs show a letter for the colour seen by spot S1: R red, O orange, Y yellow, G green, C cyan, B blue, P purple, W white/grey, K black.
 //               Press A: the E1 command moves S1 to the centre of the picture (X 80, Y 60); press B: show the hue code number (0~255).
@@ -55,7 +55,7 @@ input.onButtonPressed(Button.B, function () {
 })
 
 // ==== MBC_UNICAM_MB_HELPERS_BEGIN ====
-// ===== 神攝手通用版 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====
+// ===== 神攝手 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====
 // ===== UniCam helpers (MBC common I2C protocol v2): same in every example, no need to change =====
 const UC_ADDR = 0x4C                     // 相機的 I2C 位址 / camera I2C address
 const UC_NONE = -32768                   // 讀不到 / no value

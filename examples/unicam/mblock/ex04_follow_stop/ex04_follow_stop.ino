@@ -1,5 +1,5 @@
-// 神攝手通用版 v1 × mBlock 5　範例 4：追色塊、靠近就停＋燈號（mBot 等價 Arduino 程式）
-// 接線：神攝手通用版 → mBot 插座片 → mBot 連接埠 1。鏡頭朝前、裝在車頭。先照上面「開始之前」在相機上教好目標 1 的顏色。
+// 神攝手 × mBlock 5　範例 4：追色塊、靠近就停＋燈號（mBot 等價 Arduino 程式）
+// 接線：神攝手 → mBot 插座片 → mBot 連接埠 1。鏡頭朝前、裝在車頭。先照上面「開始之前」在相機上教好目標 1 的顏色。
 // 跟 mBlock 積木範例做的事完全一樣，給想看「積木背後長什麼樣」或用 Arduino IDE 的人。
 // 需要的函式庫：
 //   1. Makeblock（Arduino IDE「函式庫管理員」搜尋 Makeblock，或 mBlock 5 安裝資料夾裡的 Makeblock 函式庫）

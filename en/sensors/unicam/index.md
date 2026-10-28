@@ -1,8 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-# Sharpshooter Vision Universal v1 (In Development)
+# Sharpshooter Vision Camera Sensor (In Development)
 
 > [!WARNING]
-> **v1 not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
+> **Firmware v1 not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
 
 > [!TIP]
 > **New to it? Try the interactive tutorial first**: no hub needed. Drag blobs, sample points and lines in your browser and watch the code build up. Six ways to write it: Pybricks (SPIKE), EV3, Arduino, mBlock, MATRIX, micro:bit → [Start the tutorial](/en/learn/index.md#unicam)
@@ -10,7 +10,7 @@
 <!-- product-hero -->
 
 <!-- platform-grid -->
-<!-- 通用版還沒進 _build/guides.json 三層導覽（gen-guides 會改寫 reference.md 與範例頁），上面的 platform-grid 目前是空的；主機格子由 _build/gen-unicam.mjs 產生在下面。以後整合進三層導覽時，刪掉 gen:unicam-hosts 這一段。 -->
+<!-- 神攝手（unicam）還沒進 _build/guides.json 三層導覽（gen-guides 會改寫 reference.md 與範例頁），上面的 platform-grid 目前是空的；主機格子由 _build/gen-unicam.mjs 產生在下面。以後整合進三層導覽時，刪掉 gen:unicam-hosts 這一段。 -->
 <!-- gen:unicam-hosts -->
 <div class="pick" id="pick-host"><h2 class="pick-title">① Pick your host</h2><p class="pick-sub">One page per host: wiring, reading and the smallest working code. The slot-by-slot layout is on the value reference page.</p>
 <div class="pick-grid pick-hosts">
@@ -109,7 +109,7 @@ The back of the camera has a 1.8" color screen and 4 buttons; everything is set 
 3. **OK on MODE**: left / right picks camera mode 1~4 → OK → pick a sub-option → OK. Sub-option names show **what the current host actually gets** (e.g. EV3 "8 XY", Pybricks library "7 XY"); before a SPIKE hub has read the camera they show the level names (Max / Multi / Std / Fine, H / HS / HSV). Modes with one sub-option skip that step. In menus the side button goes back one level.
 4. **OK on SET**: camera menu (brightness, contrast, saturation, white balance, white calibration, self-test, defaults).
 5. **Screen**: top left is the host name (green = connected, red = disconnected); top right shows "mode-sub-option" (e.g. 1-3) and the target number (from 1, the same color number the host receives); the bottom bar shows, per mode: color tracking = X Y W H count of the current target, color at points = H S V of S1, color order = number of blocks, line following = near / far offset, angle, junction type. Color at points draws the sample crosses and numbers, color order labels the blocks, line following draws the three scan rows and the line it found.
-6. **Kept after power-off**: target colors (16), camera settings, camera mode and each mode's sub-option, sample-point positions changed over I2C. The first time the Universal firmware is flashed everything resets to defaults (Color tracking ③ Standard).
+6. **Kept after power-off**: target colors (16), camera settings, camera mode and each mode's sub-option, sample-point positions changed over I2C. The first time this generation's firmware is flashed everything resets to defaults (Color tracking ③ Standard).
 
 > [!NOTE]
 > A SPIKE hub cannot read which mode the camera is in, so your program must match the camera setting (pass the mode number when you create the Pybricks library object, e.g. `mode=13`). On EV3 read mode 0; over I2C read `0x01`, or switch from your program with command `E0`.
@@ -151,21 +151,20 @@ Hosts with little room shrink pixel coordinates into grid cells:
 
 On EV3, Y is **small at the bottom**: (119−Y)÷20+1; the SPIKE family follows Kito (small at the top). Width / height: 8×6 is W÷20+1, H÷20+1; 16×12 is W÷10+1, H÷10+1; 40×30 is W÷4, H÷4.
 
-## 🔀 School / WRO edition or Universal?
+## 🔀 How it differs from the legacy editions (School / WRO)
 
-The Universal edition is a separate firmware; **the School, WRO (HUE12) and Kito editions are unchanged** and keep their own guides.
+Sharpshooter Vision units shipped before October 2026 (School and WRO editions) are no longer supported; their guides and examples stay online for reference in [Sharpshooter Vision legacy editions (no longer supported)](/en/sensors/esp32cam/index.md). To upgrade one to the current Sharpshooter Vision, contact the dealer you bought it from and send it back: **the firmware update is free**, and the buyer pays shipping both ways.
 
-| | School edition | WRO edition (HUE12) | Universal v1 |
+| | Legacy: School edition | Legacy: WRO edition (HUE12) | Current Sharpshooter Vision |
 | :--- | :--- | :--- | :--- |
 | Main features | Pick point + blob tracking + motion | Color code and vividness of 12 spots | Color tracking (up to 16 colors), color at points, color order, line following |
 | Switch jobs on the camera | — | — | 4 camera modes + sub-options |
 | Hosts | SPIKE, EV3, MATRIX, Arduino and more | SPIKE, EV3, MATRIX | SPIKE, EV3, MATRIX, Arduino, micro:bit, mBlock |
-| Status | Shipping | Shipping | **In development, not yet hardware-verified** |
-| Guide | [School / WRO home](/en/sensors/esp32cam/index.md) | [WRO values](/en/sensors/esp32cam/reference-wro.md) | This page |
+| Status | No longer supported | No longer supported | **Firmware v1 in development, not yet hardware-verified** |
+| Guide | [Legacy overview](/en/sensors/esp32cam/index.md) | [Legacy overview](/en/sensors/esp32cam/index.md) | This page |
 
-- Already teaching, competing or coding with the School or WRO edition? **Keep using it**; nothing changes.
-- Want one camera that tracks many colors, samples points, reads sequences and follows lines, or full values on Arduino / micro:bit? Choose Universal.
-- To try the Universal edition early, [contact us](/en/contact.md).
+- Programs written for a legacy edition do not run as-is on the current Sharpshooter Vision: the value layout is different, so rewrite them with the host guides on this page.
+- To try the current Sharpshooter Vision early, [contact us](/en/contact.md).
 
 ## 🧩 Supported hosts
 
@@ -182,7 +181,7 @@ Example programs: [SPIKE](/en/sensors/unicam/spike-examples.md) · [EV3](/en/sen
 
 ## ⚠️ Known limits, to be tested on hardware
 
-v1 has not been run on real hardware yet; these may change after testing:
+Firmware v1 has not been run on real hardware yet; these may change after testing:
 
 1. **fps**: the 16-color lookup and blob labelling do more work than 4 colors; real fps still has to be measured (Kito with 4 colors runs about 50 fps).
 2. **I2C pins**: SDA = IO3, SCL = IO1 is provisional; whether the ESP32 can be an I2C target on IO1 / IO3 has to be tested with an Arduino. The **mBlock edition** still has to be tried on an mBot (only the transport layer was tested on a PC).

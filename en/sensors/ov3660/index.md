@@ -41,4 +41,4 @@ The **Long-Range Colour Sensor OV3660** uses a 3-megapixel image sensor and **re
 | Launch date, price | TBD |
 
 > [!TIP]
-> Need colour vision now? The [Sharpshooter ESP32CAM](/en/sensors/esp32cam/index.md) is available today: set the colour to track on its own screen and get blob position and size.
+> Need colour vision now? The [Sharpshooter Vision](/en/sensors/unicam/index.md) camera sensor lets you set the colour to track on its own screen and gives blob position and area, plus colour at points and line following (in development).

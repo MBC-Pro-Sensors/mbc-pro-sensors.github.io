@@ -1,9 +1,9 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 程式碼區塊來自 examples/unicam/arduino/*/*.ino，由 node _build/sync-arduino-examples.mjs 填入；改程式請改 .ino 後重跑 -->
 
-# 🧪 神攝手通用版 v1 × Arduino 範例
+# 🧪 神攝手 × Arduino 範例
 
-[🔙 回到神攝手通用版首頁](/sensors/unicam/index.md)　｜　[📡 MBC 通用 I2C 協議 v2（進階）](/i2c-protocol.md)
+[🔙 回到神攝手首頁](/sensors/unicam/index.md)　｜　[📡 MBC 通用 I2C 協議 v2（進階）](/i2c-protocol.md)
 
 > [!WARNING]
 > **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
@@ -21,7 +21,7 @@
 
 ## 🔌 接線（所有範例都一樣）
 
-| 神攝手通用版（產品端） | Arduino UNO / Nano | Arduino UNO R4 | ESP32 |
+| 神攝手（產品端） | Arduino UNO / Nano | Arduino UNO R4 | ESP32 |
 | :---: | :---: | :---: | :---: |
 | 5V | **外接 5V**（行動電源／變壓器 2 A 以上） | 外接 5V | 外接 5V |
 | GND | GND（外接電源的 GND 也接這裡） | GND | GND |
@@ -64,7 +64,7 @@
 | `03` | 已教幾色 | 0～16 | |
 | `04` | 這一層給幾個值 | | 例：模式 13 給 65 個（16 色 × 4 ＋ 找到幾色） |
 | `10` 起 | 這個模式的值 | | 依模式排（見下表）；沒有的編號回 `-32768` |
-| `F0` | 裝置 ID | | 低 byte＝`0x4C`、高 byte **hw0＝3（通用版）**；學校版 1、WRO 版 2 |
+| `F0` | 裝置 ID | | 低 byte＝`0x4C`、高 byte **hw0＝3（目前的神攝手）**；學校版 1、WRO 版 2 |
 | `F1` | 協議版本 | 2 | |
 | `F2` | 韌體版本 | 100 | 主 × 100 ＋ 次（100 ＝ 1.0） |
 | `F3` | 狀態旗標 | bit | bit0＝準備好（`mbcWaitReady` 用它） |
@@ -123,7 +123,7 @@
 
 | # | 範例 | 相機模式・子選項 | 學會什麼 | 另外要準備 |
 | :---: | :--- | :--- | :--- | :--- |
-| 1 | [接好了嗎？](#ex1) | 1 顏色追蹤 ③（13） | 讀裝置 ID 確認通用版、韌體版、用 E0 切模式 | 無 |
+| 1 | [接好了嗎？](#ex1) | 1 顏色追蹤 ③（13） | 讀裝置 ID 確認是目前的神攝手、韌體版、用 E0 切模式 | 無 |
 | 2 | [色塊在哪裡？](#ex2) | 1 顏色追蹤 ③（13） | 4 色的 X／Y／面積／數量 | 教過顏色的物品 |
 | 3 | [這是什麼顏色？](#ex3) | 2 座標取色 ③（23） | E1 移動取樣點、色相碼 → 顏色名稱 | 幾塊彩色積木 |
 | 4 | [顏色順序（WRO）](#ex4) | 3 照順序給色號（30） | 由左到右每塊的顏色＋總塊數 | 一排顏色方塊 |
@@ -138,7 +138,7 @@
 
 **需要的相機模式：** 相機模式 1 顏色追蹤・子選項 ③ 標準（程式開頭會用 E0 自動切）
 
-**做什麼：** 讀 `F0` 裝置 ID，確認低 byte 是 `0x4C`、高 byte（hw0）是 **3＝通用版**；印出協議版、韌體版；用 `ucSetMode(1, 3)` 把相機切到模式 13，再讀 `01` 確認真的換過去。之後每秒印一次目前的模式編號，你在相機選單換模式，這裡也會跟著變。每次接新的相機，都先跑這一個。
+**做什麼：** 讀 `F0` 裝置 ID，確認低 byte 是 `0x4C`、高 byte（hw0）是 **3＝目前的神攝手**；印出協議版、韌體版；用 `ucSetMode(1, 3)` 把相機切到模式 13，再讀 `01` 確認真的換過去。之後每秒印一次目前的模式編號，你在相機選單換模式，這裡也會跟著變。每次接新的相機，都先跑這一個。
 
 **步驟：**
 1. 照上面的表格接好 4 條線，外接 5V 打開、USB 插上電腦。
@@ -150,12 +150,12 @@
 <!-- ino: examples/unicam/arduino/unicam_01_hello/unicam_01_hello.ino -->
 ```cpp
 /*
- * 神攝手通用版 v1 × Arduino　範例 1：接好了嗎？
+ * 神攝手 × Arduino　範例 1：接好了嗎？
  * ------------------------------------------------------------
  * 需要把相機選單切到：相機模式 1 顏色追蹤 ・子選項 ③ 標準（程式開頭也會用 E0 自動切）
  *
  * 這個範例會做什麼？
- *   1. 讀 F0 裝置 ID：低位元組 = 0x4C（位址）、高位元組 hw0 = 3 就是「通用版」
+ *   1. 讀 F0 裝置 ID：低位元組 = 0x4C（位址）、高位元組 hw0 = 3 就是「目前的神攝手」
  *      （hw0 = 1 是學校版、2 是 WRO 版，讀法不一樣，要用各自的範例）
  *   2. 讀 F2 韌體版本（100 = 1.0）
  *   3. 用 E0 命令把相機切到「模式 13」，再讀 0x01 確認相機真的換過去
@@ -164,7 +164,7 @@
  * 模式編號 = 相機模式 × 10 + 子選項：
  *   11~14 顏色追蹤、21~23 座標取色、30 照順序給色號、41~43 循線
  *
- * 你需要：神攝手通用版 v1（I2C 版韌體）、Arduino UNO／Nano／UNO R4 或 ESP32。
+ * 你需要：神攝手（I2C 版韌體）、Arduino UNO／Nano／UNO R4 或 ESP32。
  *
  * 接線（I2C 腳位是暫定，等上機確認）：
  *   神攝手 5V  → 外接 5V（2 A 以上的行動電源或變壓器；不要從 Arduino 的 5V 腳拉大電流）
@@ -198,7 +198,7 @@ void setup() {
   mbcBegin();
   delay(500);
   if (!mbcWaitReady(ADDR, 8000)) {        // 最多等 8 秒讓相機開機
-    Serial.println(F("找不到神攝手通用版！請檢查："));
+    Serial.println(F("找不到神攝手！請檢查："));
     Serial.println(F(" 1. 相機有接外接 5V、GND 有跟 Arduino 接在一起"));
     Serial.println(F(" 2. IO3 接 SDA、IO1 接 SCL（接反了就對調）"));
     Serial.println(F(" 3. 相機燒的是「I2C 版」韌體"));
@@ -209,10 +209,10 @@ void setup() {
   int16_t id[4];
   if (!mbcReadMany(ADDR, 0xF0, 4, id)) { Serial.println(F("讀不到 F0~F3")); while (true) {} }
   uint8_t addrLow = id[0] & 0xFF;        // 低位元組：出廠位址
-  uint8_t hw0 = (id[0] >> 8) & 0xFF;     // 高位元組：哪一版（3 = 通用版）
+  uint8_t hw0 = (id[0] >> 8) & 0xFF;     // 高位元組：哪一版（3 = 目前的神攝手）
   Serial.print(F("位址 0x")); Serial.print(addrLow, HEX);
   Serial.print(F("  hw0=")); Serial.print(hw0);
-  if (addrLow == 0x4C && hw0 == 3) Serial.println(F("  → 是神攝手通用版 ✔"));
+  if (addrLow == 0x4C && hw0 == 3) Serial.println(F("  → 是目前的神攝手 ✔"));
   else if (hw0 == 1) Serial.println(F("  → 這是學校版，請改用學校版的範例"));
   else if (hw0 == 2) Serial.println(F("  → 這是 WRO 版（HUE12），請改用 WRO 版的範例"));
   else Serial.println(F("  → 不認得的版本"));
@@ -243,7 +243,7 @@ void loop() {
 
 // ==== MBC_UNICAM_HELPERS_BEGIN ====
 // ============================================================
-// 以下是「通訊小幫手」（MBC I2C 協議 v2）＋「神攝手通用版小幫手」。所有範例都一樣，不用改。
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）＋「神攝手小幫手」。所有範例都一樣，不用改。
 //   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
 // ============================================================
 
@@ -298,7 +298,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- 神攝手通用版 ----------
+// ---------- 神攝手 ----------
 
 // 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）。會存進相機
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
@@ -401,7 +401,7 @@ uint8_t ucColorCode(int16_t h) {
 **你會看到：**
 
 ```text
-位址 0x4C  hw0=3  → 是神攝手通用版 ✔
+位址 0x4C  hw0=3  → 是目前的神攝手 ✔
 協議版 2  韌體版 1.0
 切換後的模式編號：13
 模式編號 13  子選項 3  已教 2 色  這一層給 65
@@ -428,7 +428,7 @@ uint8_t ucColorCode(int16_t h) {
 <!-- ino: examples/unicam/arduino/unicam_02_track/unicam_02_track.ino -->
 ```cpp
 /*
- * 神攝手通用版 v1 × Arduino　範例 2：色塊在哪裡？（顏色追蹤）
+ * 神攝手 × Arduino　範例 2：色塊在哪裡？（顏色追蹤）
  * ------------------------------------------------------------
  * 需要把相機選單切到：相機模式 1 顏色追蹤 ・子選項 ③ 標準（程式開頭也會用 E0 自動切）
  *
@@ -473,7 +473,7 @@ void setup() {
   mbcBegin();
   delay(500);
   if (!mbcWaitReady(ADDR, 8000)) {        // 最多等 8 秒讓相機開機
-    Serial.println(F("找不到神攝手通用版！請檢查："));
+    Serial.println(F("找不到神攝手！請檢查："));
     Serial.println(F(" 1. 相機有接外接 5V、GND 有跟 Arduino 接在一起"));
     Serial.println(F(" 2. IO3 接 SDA、IO1 接 SCL（接反了就對調）"));
     Serial.println(F(" 3. 相機燒的是「I2C 版」韌體"));
@@ -512,7 +512,7 @@ void loop() {
 
 // ==== MBC_UNICAM_HELPERS_BEGIN ====
 // ============================================================
-// 以下是「通訊小幫手」（MBC I2C 協議 v2）＋「神攝手通用版小幫手」。所有範例都一樣，不用改。
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）＋「神攝手小幫手」。所有範例都一樣，不用改。
 //   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
 // ============================================================
 
@@ -567,7 +567,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- 神攝手通用版 ----------
+// ---------- 神攝手 ----------
 
 // 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）。會存進相機
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
@@ -692,7 +692,7 @@ uint8_t ucColorCode(int16_t h) {
 <!-- ino: examples/unicam/arduino/unicam_03_spot_color/unicam_03_spot_color.ino -->
 ```cpp
 /*
- * 神攝手通用版 v1 × Arduino　範例 3：這是什麼顏色？（座標取色）
+ * 神攝手 × Arduino　範例 3：這是什麼顏色？（座標取色）
  * ------------------------------------------------------------
  * 需要把相機選單切到：相機模式 2 座標取色 ・子選項 ③ 色相＋飽和＋明度（程式開頭也會用 E0 自動切）
  *
@@ -735,7 +735,7 @@ void setup() {
   mbcBegin();
   delay(500);
   if (!mbcWaitReady(ADDR, 8000)) {        // 最多等 8 秒讓相機開機
-    Serial.println(F("找不到神攝手通用版！請檢查："));
+    Serial.println(F("找不到神攝手！請檢查："));
     Serial.println(F(" 1. 相機有接外接 5V、GND 有跟 Arduino 接在一起"));
     Serial.println(F(" 2. IO3 接 SDA、IO1 接 SCL（接反了就對調）"));
     Serial.println(F(" 3. 相機燒的是「I2C 版」韌體"));
@@ -783,7 +783,7 @@ void printColorName(uint8_t code) {
 
 // ==== MBC_UNICAM_HELPERS_BEGIN ====
 // ============================================================
-// 以下是「通訊小幫手」（MBC I2C 協議 v2）＋「神攝手通用版小幫手」。所有範例都一樣，不用改。
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）＋「神攝手小幫手」。所有範例都一樣，不用改。
 //   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
 // ============================================================
 
@@ -838,7 +838,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- 神攝手通用版 ----------
+// ---------- 神攝手 ----------
 
 // 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）。會存進相機
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
@@ -964,7 +964,7 @@ uint8_t ucColorCode(int16_t h) {
 <!-- ino: examples/unicam/arduino/unicam_04_color_order/unicam_04_color_order.ino -->
 ```cpp
 /*
- * 神攝手通用版 v1 × Arduino　範例 4：顏色順序（WRO 任務賽）
+ * 神攝手 × Arduino　範例 4：顏色順序（WRO 任務賽）
  * ------------------------------------------------------------
  * 需要把相機選單切到：相機模式 3 照順序給色號（沒有子選項；程式開頭也會用 E0 自動切）
  *
@@ -1009,7 +1009,7 @@ void setup() {
   mbcBegin();
   delay(500);
   if (!mbcWaitReady(ADDR, 8000)) {        // 最多等 8 秒讓相機開機
-    Serial.println(F("找不到神攝手通用版！請檢查："));
+    Serial.println(F("找不到神攝手！請檢查："));
     Serial.println(F(" 1. 相機有接外接 5V、GND 有跟 Arduino 接在一起"));
     Serial.println(F(" 2. IO3 接 SDA、IO1 接 SCL（接反了就對調）"));
     Serial.println(F(" 3. 相機燒的是「I2C 版」韌體"));
@@ -1055,7 +1055,7 @@ void printColorName(uint8_t code) {
 
 // ==== MBC_UNICAM_HELPERS_BEGIN ====
 // ============================================================
-// 以下是「通訊小幫手」（MBC I2C 協議 v2）＋「神攝手通用版小幫手」。所有範例都一樣，不用改。
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）＋「神攝手小幫手」。所有範例都一樣，不用改。
 //   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
 // ============================================================
 
@@ -1110,7 +1110,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- 神攝手通用版 ----------
+// ---------- 神攝手 ----------
 
 // 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）。會存進相機
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
@@ -1246,7 +1246,7 @@ uint8_t ucColorCode(int16_t h) {
 <!-- ino: examples/unicam/arduino/unicam_05_line_follow/unicam_05_line_follow.ino -->
 ```cpp
 /*
- * 神攝手通用版 v1 × Arduino　範例 5（進階）：看前方的循線小車
+ * 神攝手 × Arduino　範例 5（進階）：看前方的循線小車
  * ------------------------------------------------------------
  * 需要把相機選單切到：相機模式 4 循線 ・子選項 ① 黑線（程式開頭也會用 E0 自動切）
  *
@@ -1319,7 +1319,7 @@ void setup() {
   mbcBegin();
   delay(500);
   if (!mbcWaitReady(ADDR, 8000)) {        // 最多等 8 秒讓相機開機
-    Serial.println(F("找不到神攝手通用版！請檢查："));
+    Serial.println(F("找不到神攝手！請檢查："));
     Serial.println(F(" 1. 相機有接外接 5V、GND 有跟 Arduino 接在一起"));
     Serial.println(F(" 2. IO3 接 SDA、IO1 接 SCL（接反了就對調）"));
     Serial.println(F(" 3. 相機燒的是「I2C 版」韌體"));
@@ -1382,7 +1382,7 @@ void setMotor(int en, int inA, int inB, int speed) {
 
 // ==== MBC_UNICAM_HELPERS_BEGIN ====
 // ============================================================
-// 以下是「通訊小幫手」（MBC I2C 協議 v2）＋「神攝手通用版小幫手」。所有範例都一樣，不用改。
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）＋「神攝手小幫手」。所有範例都一樣，不用改。
 //   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
 // ============================================================
 
@@ -1437,7 +1437,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- 神攝手通用版 ----------
+// ---------- 神攝手 ----------
 
 // 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）。會存進相機
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
@@ -1548,14 +1548,14 @@ uint8_t ucColorCode(int16_t h) {
 
 ## ❓ 常見問題
 
-**Q：一直出現「找不到神攝手通用版」？**
+**Q：一直出現「找不到神攝手」？**
 1. SDA／SCL 是暫定接法，先把 IO3、IO1 兩條線**對調**試試看。
 2. 外接 5V 有沒有開？相機螢幕有沒有亮？GND 有沒有跟 Arduino 接在一起？
 3. 相機燒的是 **I2C 版韌體**嗎？EV3／SPIKE／MATRIX 版走串口，接 Arduino 讀不到。
 4. 相機開機要幾秒，範例會等 8 秒；還是不行就按 Arduino 的 RESET 鍵重來。
 
 **Q：範例 1 說是學校版或 WRO 版？**
-那是另一款韌體（讀法不一樣），請改用 [神攝手學校版／WRO 版的 Arduino 範例](/sensors/esp32cam/arduino-examples.md)，或請我們幫你更新成通用版。
+那是舊版韌體（學校版／WRO 版已停止支援，讀法不一樣），舊版範例保留在 [神攝手舊版（停止支援）](/sensors/esp32cam/index.md) 供參考。需要升級成目前的神攝手：請聯繫原購買的經銷商寄回，**韌體更新免費**，來回運費由買家負擔。
 
 **Q：色塊一直「沒看到」？**
 還沒在相機上教色，或教的顏色跟眼前的差太多（燈光不同）。在相機上停在那個目標重新教一次；最小面積（Size）設太大也會看不到小色塊。
@@ -1570,4 +1570,4 @@ uint8_t ucColorCode(int16_t h) {
 Arduino UNO 的 Wire 緩衝區只有 32 byte（16 個 int16）。小幫手已經幫你分好；自己用 `mbcReadMany` 時 k 不要超過 16。
 
 **Q：想知道每一格放什麼？**
-看上面的 [值編號總覽](#cmds)，或 [神攝手通用版首頁](/sensors/unicam/index.md) 的完整規格。
+看上面的 [值編號總覽](#cmds)，或 [神攝手首頁](/sensors/unicam/index.md) 的完整規格。

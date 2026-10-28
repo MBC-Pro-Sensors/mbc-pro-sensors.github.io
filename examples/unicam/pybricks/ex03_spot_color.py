@@ -1,5 +1,5 @@
-# 神攝手通用版 v1 × Pybricks（SPIKE）範例 3：座標取色判斷顏色
-# Sharpshooter Vision Universal v1 × Pybricks (SPIKE) example 3: what colour is at the spot?
+# 神攝手 × Pybricks（SPIKE）範例 3：座標取色判斷顏色
+# Sharpshooter Vision × Pybricks (SPIKE) example 3: what colour is at the spot?
 # 需要把相機選單切到 相機模式 2 座標取色 ・子選項 ② 色相＋飽和 ＝模式編號 22（SPIKE 給 7 點）
 # Camera menu: camera mode 2 Spot colour, option 2 Hue + saturation = mode number 22 (7 spots)
 # 準備：取樣點 S1 的位置看相機螢幕上標 1 的十字 / spot S1 is the cross marked 1 on the camera screen

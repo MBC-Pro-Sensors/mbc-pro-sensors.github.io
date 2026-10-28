@@ -1,4 +1,4 @@
-// Sharpshooter Vision Universal v1 × micro:bit example 3: line-following car (near/far offset PD, stops at a junction)
+// Sharpshooter Vision × micro:bit example 3: line-following car (near/far offset PD, stops at a junction)
 // ★ Set the camera menu to camera mode 4 line following · option ① black line (mode number 41) (the program also switches it with E0 at start; white line = ②, colour line = ③)
 // What it does: press A to follow a black line: line to the left → steer left, to the right → steer right (near + far offsets together, so it reacts to bends earlier);
 //               at a cross or T junction it stops and shows a square; with no line in view it spins toward the side where it last saw the line. Press B to stop.
@@ -82,7 +82,7 @@ basic.forever(function () {
 })
 
 // ==== MBC_UNICAM_MB_HELPERS_BEGIN ====
-// ===== 神攝手通用版 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====
+// ===== 神攝手 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====
 // ===== UniCam helpers (MBC common I2C protocol v2): same in every example, no need to change =====
 const UC_ADDR = 0x4C                     // 相機的 I2C 位址 / camera I2C address
 const UC_NONE = -32768                   // 讀不到 / no value

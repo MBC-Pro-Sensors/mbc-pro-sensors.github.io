@@ -4,7 +4,7 @@
 > [!WARNING]
 > **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
 
-神攝手通用版 v1（通用 I2C 版）用 MBC 通用 I2C 協議 v2，Arduino UNO、Nano、UNO R4、ESP32 都能讀，位址 **`0x4C`**。I2C 版每一層都給 16 色／16 點，數值是像素、照原值送，不用拆格子。每一格的完整對照在 [讀值參考：I2C](/sensors/unicam/reference.md#host-i2c)，整支範例在 [Arduino 範例](/sensors/unicam/arduino-examples.md)。
+神攝手（通用 I2C 版）用 MBC 通用 I2C 協議 v2，Arduino UNO、Nano、UNO R4、ESP32 都能讀，位址 **`0x4C`**。I2C 版每一層都給 16 色／16 點，數值是像素、照原值送，不用拆格子。每一格的完整對照在 [讀值參考：I2C](/sensors/unicam/reference.md#host-i2c)，整支範例在 [Arduino 範例](/sensors/unicam/arduino-examples.md)。
 
 ## 接線
 
@@ -32,7 +32,7 @@
 | `0x03` | 已教幾色 |
 | `0x04` | 這一層給幾個（色數／點數／塊數） |
 | `0x10` 起 | 讀值參考 I2C 表的「值 1」＝`0x10`、「值 2」＝`0x11`…（顏色追蹤 ④ 用到 `0x10`～`0x70`） |
-| `0xF0` | 裝置 ID＝`0x4C`｜3<<8（高 byte 3＝通用版；學校版 1、WRO 版 2） |
+| `0xF0` | 裝置 ID＝`0x4C`｜3<<8（高 byte 3＝目前的神攝手；學校版 1、WRO 版 2） |
 | `0xF1`～`0xF5` | 協議版 2、韌體版 100（1.0）、狀態旗標、更新序號、開機秒數 |
 
 | 命令 | 內容 |

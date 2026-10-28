@@ -13,7 +13,7 @@ MBC 的 MATRIX 版感應器接在 Mini R4 的 **I2C 孔**（位址 `0x22`），�
 | :--- | :--- | :--- | :--- |
 | **A. 原廠積木（0x22）** | 循行者 8／16 路、測距者 2／8 路、IMU、掌控者 PS2／PS4 | 不用裝，MATRIXblock 內建 | R、G、B、C、M、Y、K 七個 0~255 的數 |
 | **B. LauMo 大通道** | 同上 | 換兩個函式庫檔（[下載](/downloads/MiniR4ColorSensorExt_LauMo_v2.zip)） | 一包 30 byte，產品所有數值（含 mm、位元圖、狀態） |
-| **C. mVision（串口）** | 神攝手 學校版／WRO 版 | 不用裝 | 攝影機積木「mVision 資料 0~9」 |
+| **C. mVision（串口）** | 神攝手（舊版學校版／WRO 版也是） | 不用裝 | 攝影機積木「mVision 資料 0~9」 |
 
 > [!IMPORTANT]
 > A 和 B 要裝**不同的函式庫檔**，同一台電腦一次只能用一種；韌體兩種都支援，換用法不用重燒感應器。
@@ -22,7 +22,7 @@ MBC 的 MATRIX 版感應器接在 Mini R4 的 **I2C 孔**（位址 `0x22`），�
 | 用法 | 產品 | 要裝的東西 | 能讀到 |
 | :--- | :--- | :--- | :--- |
 | **A. 原廠積木（0x22）** | 循行者 8／16 路、測距者 2／8 路、IMU、掌控者 PS2／PS4 | 不用裝，MATRIXblock 內建 | R、G、B、C、M、Y、K 七個 0~255 的數 |
-| **B. mVision（串口）** | 神攝手 學校版／WRO 版 | 不用裝 | 攝影機積木「mVision 資料 0~9」 |
+| **B. mVision（串口）** | 神攝手（舊版學校版／WRO 版也是） | 不用裝 | 攝影機積木「mVision 資料 0~9」 |
 <!-- /show -->
 
 ---
@@ -236,7 +236,9 @@ MATRIXblock 的攝影機積木只有 mVision（Serial1 115200）和 HuskyLens，
 > [!WARNING]
 > **資料 10 不要用**：MATRIX 程式只宣告 10 格（資料 0~9），第 10 格讀到的是別的記憶體。
 
-| mVision 資料 | 學校版（2026-10 起） | WRO 版（HUE12，不動） |
+目前的神攝手每一格送什麼，看 [神攝手 × MATRIX（mVision）](/sensors/unicam/matrix/mvision.md)。下表是[舊版](/sensors/esp32cam/index.md)（學校版／WRO 版，停止支援）的排法，留給還在用舊版的隊伍參考。
+
+| mVision 資料 | 舊版學校版 | 舊版 WRO 版（HUE12） |
 | :---: | :--- | :--- |
 | 0 | 色相 0~100（**255 = 黑白灰**） | 維持現有 HUE12 打包（12 色點顏色碼＋鮮豔度），照 `HUE12_AS_mVisionSensor_v1.0.8.mbr4` 範例解碼 |
 | 1 | 飽和度 0~100 | |
@@ -273,6 +275,7 @@ MATRIXblock 的攝影機積木只有 mVision（Serial1 115200）和 HuskyLens，
 | 掌控者 PS2 | [ps2 × MATRIX](/sensors/ps2/matrix.md) |
 | 掌控者 PS4／PS5 | [ps4 × MATRIX](/sensors/ps4/matrix.md) |
 | IMU 陀螺儀 | [imu × MATRIX](/sensors/imu/matrix.md) |
-| 神攝手 ESP32CAM | [esp32cam × MATRIX（mVision）](/sensors/esp32cam/matrix.md) |
+| 神攝手 | [神攝手 × MATRIX（mVision）](/sensors/unicam/matrix/mvision.md) |
+| 神攝手舊版（停止支援） | [esp32cam × MATRIX（mVision）](/sensors/esp32cam/matrix.md) |
 
 EXP6／Servo6 沒有 MATRIX 版。函式庫下載與其他平台的檔案：[下載專區](/downloads.md)。

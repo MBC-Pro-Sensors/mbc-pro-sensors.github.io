@@ -1,5 +1,5 @@
-# 神攝手通用版 v1 × Pybricks（SPIKE）範例 1：跟著色塊轉
-# Sharpshooter Vision Universal v1 × Pybricks (SPIKE) example 1: turn to follow a colour blob
+# 神攝手 × Pybricks（SPIKE）範例 1：跟著色塊轉
+# Sharpshooter Vision × Pybricks (SPIKE) example 1: turn to follow a colour blob
 # 需要把相機選單切到 相機模式 1 顏色追蹤 ・子選項 ③ 標準（XY＋面積）＝模式編號 13
 # Camera menu: camera mode 1 Colour tracking, option 3 Standard (XY + area) = mode number 13
 # 準備：先在相機上教「目標 1」的顏色 / Teach "target 1" on the camera first

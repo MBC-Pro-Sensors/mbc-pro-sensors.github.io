@@ -1,4 +1,4 @@
-// 神攝手通用版 v1（unicam）產生器：讀 _build/protocol/unicam/cam_universal_layout.json（單一來源，複製自相機韌體的 tests\spec_layout.json）
+// 神攝手（unicam，韌體 v1）產生器：讀 _build/protocol/unicam/cam_universal_layout.json（單一來源，複製自相機韌體的 tests\spec_layout.json）
 //   sensors/unicam/reference.md、en/sensors/unicam/reference.md   逐格對照（每個上位機一節、每個「相機模式・子選項」一張摺疊表）
 //   sensors/unicam/index.md（＋en）的標記片段：
 //     <!-- gen:unicam-counts -->…<!-- /gen -->  各上位機給幾色總表
@@ -23,7 +23,7 @@ const w = makeWriter({ check: CHECK, label: 'gen-unicam' });
 
 // ---------------------------------------------------------------- 單一來源
 const wrap = (entries, copied) => JSON.stringify({
-  _說明: '神攝手通用版 v1 逐格對照（網站的單一來源）。複製自相機韌體資料夾 tests\\spec_layout.json（說明網頁第 39 版匯出，規格定案 2026-10-28）。不要手改：規格改了先在相機那邊重新匯出，再跑 node _build/gen-unicam.mjs --sync。',
+  _說明: '神攝手（韌體 v1）逐格對照（網站的單一來源）。複製自相機韌體資料夾 tests\\spec_layout.json（說明網頁第 39 版匯出，規格定案 2026-10-28）。不要手改：規格改了先在相機那邊重新匯出，再跑 node _build/gen-unicam.mjs --sync。',
   source: SRC,
   copied,
   entries,
@@ -49,8 +49,8 @@ const HOSTS = [
     short: { zh: 'Pybricks 函式庫', en: 'Pybricks library' },
     title: { zh: 'Pybricks 函式庫（SPIKE，讀模式 9／6）', en: 'Pybricks library (SPIKE, modes 9 / 6)' },
     note: {
-      zh: '裝 MBC Pybricks 函式庫後讀模式 9：7 個 int16＝14 byte，一個 byte 一個值。座標用 160×120 像素（Y 上＝小），0＝沒有目標；會有負數的值（循線偏移、角度、左右緣）是有號 byte（二補數）。最多色層每色 1 byte＝16×12 格的格號 1～192，函式庫自動拆成 X、Y；最多色、多色兩層的數量放模式 6（要數量時才讀）；模式 8 是裝置 ID。通用版的模式 9 排法跟 Kito 版不同，Kito 的 camLibForKitoMode9 不能直接用。',
-      en: 'With the MBC Pybricks library the hub reads mode 9: 7 int16 = 14 bytes, one value per byte. Coordinates are 160×120 pixels (Y: small at top), 0 = no target; values that can be negative (line offsets, angle, edges) are signed bytes (two\'s complement). In the Max-colors level each color is one byte = cell number 1~192 on a 16×12 grid, split into X and Y by the library; counts for the Max and Multi levels are in mode 6 (read only when needed); mode 8 is the device ID. The Universal edition\'s mode 9 layout differs from the Kito edition, so the Kito camLibForKitoMode9 cannot be reused.' } },
+      zh: '裝 MBC Pybricks 函式庫後讀模式 9：7 個 int16＝14 byte，一個 byte 一個值。座標用 160×120 像素（Y 上＝小），0＝沒有目標；會有負數的值（循線偏移、角度、左右緣）是有號 byte（二補數）。最多色層每色 1 byte＝16×12 格的格號 1～192，函式庫自動拆成 X、Y；最多色、多色兩層的數量放模式 6（要數量時才讀）；模式 8 是裝置 ID。這一代神攝手的模式 9 排法跟 Kito 版不同，Kito 的 camLibForKitoMode9 不能直接用。',
+      en: 'With the MBC Pybricks library the hub reads mode 9: 7 int16 = 14 bytes, one value per byte. Coordinates are 160×120 pixels (Y: small at top), 0 = no target; values that can be negative (line offsets, angle, edges) are signed bytes (two\'s complement). In the Max-colors level each color is one byte = cell number 1~192 on a 16×12 grid, split into X and Y by the library; counts for the Max and Multi levels are in mode 6 (read only when needed); mode 8 is the device ID. This generation\'s mode 9 layout differs from the Kito edition, so the Kito camLibForKitoMode9 cannot be reused.' } },
   { id: 'edu', pg: 'spike', page: 'spike/index.md',
     short: { zh: 'App 教育版', en: 'SPIKE App' },
     title: { zh: 'SPIKE App 教育版（SPIKE Prime 黃色主機）', en: 'SPIKE App (SPIKE Prime, yellow hub)' },
@@ -233,16 +233,16 @@ function countsTable(lang) {
 const AI_NOTE = '<!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->';
 const GEN_NOTE = '<!-- 本頁由 _build/gen-unicam.mjs 從 _build/protocol/unicam/cam_universal_layout.json 產生，請勿手改；規格改了跑 node _build/gen-unicam.mjs --sync -->';
 const notVerified = (lang) => T(lang,
-  '> [!WARNING]\n> **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。',
-  '> [!WARNING]\n> **v1 not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.');
+  '> [!WARNING]\n> **韌體 v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。',
+  '> [!WARNING]\n> **Firmware v1 not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.');
 function referencePage(lang) {
   const P = pre(lang);
   const out = [AI_NOTE, GEN_NOTE];
   out.push(`# ${T(lang, '讀值參考：逐格對照', 'Value reference: slot by slot')}`, '');
   out.push(notVerified(lang), '');
   out.push(T(lang,
-    `神攝手通用版 v1 在每個上位機、每個「相機模式・子選項」送什麼值、放在哪一格。先在相機上選好模式（看 [產品首頁](/sensors/unicam/index.md) 的「相機上的操作」），再到這裡找你的上位機那一節，點開對應的表。各平台怎麼寫程式讀，看 [SPIKE](/sensors/unicam/spike/index.md)、[EV3](/sensors/unicam/ev3/index.md)、[MATRIX](/sensors/unicam/matrix/mvision.md)、[Arduino](/sensors/unicam/arduino/index.md)、[micro:bit](/sensors/unicam/microbit/index.md)。`,
-    `What the Sharpshooter Vision Universal v1 sends on each host for each "camera mode · sub-option", and in which slot. Pick the mode on the camera first (see the [product page](/en/sensors/unicam/index.md)), then find your host below and open the matching table. For code on each host see [SPIKE](/en/sensors/unicam/spike/index.md), [EV3](/en/sensors/unicam/ev3/index.md), [MATRIX](/en/sensors/unicam/matrix/mvision.md), [Arduino](/en/sensors/unicam/arduino/index.md) and [micro:bit](/en/sensors/unicam/microbit/index.md).`), '');
+    `神攝手在每個上位機、每個「相機模式・子選項」送什麼值、放在哪一格。先在相機上選好模式（看 [產品首頁](/sensors/unicam/index.md) 的「相機上的操作」），再到這裡找你的上位機那一節，點開對應的表。各平台怎麼寫程式讀，看 [SPIKE](/sensors/unicam/spike/index.md)、[EV3](/sensors/unicam/ev3/index.md)、[MATRIX](/sensors/unicam/matrix/mvision.md)、[Arduino](/sensors/unicam/arduino/index.md)、[micro:bit](/sensors/unicam/microbit/index.md)。`,
+    `What the Sharpshooter Vision sends on each host for each "camera mode · sub-option", and in which slot. Pick the mode on the camera first (see the [product page](/en/sensors/unicam/index.md)), then find your host below and open the matching table. For code on each host see [SPIKE](/en/sensors/unicam/spike/index.md), [EV3](/en/sensors/unicam/ev3/index.md), [MATRIX](/en/sensors/unicam/matrix/mvision.md), [Arduino](/en/sensors/unicam/arduino/index.md) and [micro:bit](/en/sensors/unicam/microbit/index.md).`), '');
   out.push(`## ${T(lang, '怎麼看這些表', 'How to read the tables')}`, '');
   out.push(T(lang,
     [

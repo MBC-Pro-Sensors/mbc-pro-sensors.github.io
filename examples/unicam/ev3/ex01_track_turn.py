@@ -1,6 +1,6 @@
 #!/usr/bin/env pybricks-micropython
-# 神攝手通用版 v1 × EV3 範例 1：跟著色塊轉
-# Sharpshooter Vision Universal v1 × EV3 example 1: turn to follow a colour blob
+# 神攝手 × EV3 範例 1：跟著色塊轉
+# Sharpshooter Vision × EV3 example 1: turn to follow a colour blob
 # 需要把相機選單切到 相機模式 1 顏色追蹤 ・子選項 ③ 標準（XY＋面積）＝模式編號 13
 # Camera menu: camera mode 1 Colour tracking, option 3 Standard (XY + area) = mode number 13
 # 軟體 Software：Pybricks v4（code.pybricks.com）或 樂高官方 EV3 MicroPython v2（同一支程式都能跑）

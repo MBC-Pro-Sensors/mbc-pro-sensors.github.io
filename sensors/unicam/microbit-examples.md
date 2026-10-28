@@ -1,8 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 程式碼區塊＝examples/unicam/microbit/*.ts 原文（小幫手正本：02_相機感應器\06_通用版\通用版v1\上位機函式庫\microbit\MBC_UniCam_microbit.ts）；改程式請改 .ts 再重貼 -->
-# 🟧 micro:bit 範例：神攝手通用版 v1
+# 🟧 micro:bit 範例：神攝手
 
-[🔙 回到神攝手通用版 v1 產品頁](/sensors/unicam/index.md)　｜　[micro:bit 讀值教學](/sensors/unicam/microbit/index.md)　｜　[📋 讀值參考（I2C）](/sensors/unicam/reference.md#host-i2c)
+[🔙 回到神攝手產品頁](/sensors/unicam/index.md)　｜　[micro:bit 讀值教學](/sensors/unicam/microbit/index.md)　｜　[📋 讀值參考（I2C）](/sensors/unicam/reference.md#host-i2c)
 
 > [!WARNING]
 > **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
@@ -10,7 +10,7 @@
 這一頁是寫給**完全沒寫過程式**的人。3 個範例：**色塊在哪邊**、**取樣點看到什麼顏色**、**循線小車**。全部用 **MakeCode 網頁版**的 JavaScript 寫：切到 JavaScript、把範例整個貼上就能用，也可以切回積木模式看它變成哪些積木。
 
 > [!IMPORTANT]
-> - **不用加擴充**。每支範例最下面都有一段「神攝手通用版 小幫手」，用 micro:bit 內建的 `pins.i2c…` 指令跟相機講話。擴充 **pxt-mbc-sensors** 裡的「神攝手」積木是**學校版**用的，讀不到通用版的值，不要混用。
+> - **不用加擴充**。每支範例最下面都有一段「神攝手 小幫手」，用 micro:bit 內建的 `pins.i2c…` 指令跟相機講話。擴充 **pxt-mbc-sensors** 裡的「神攝手」積木是**學校版**用的，讀不到目前神攝手的值，不要混用。
 > - 請用 **通用 I2C 版**韌體的相機。SPIKE、EV3、MATRIX 版韌體接 micro:bit 讀不到。
 > - 範例都在電腦上用 MakeCode CLI 編譯通過（V1＋V2 各一次），也用假的 I2C 資料跑過邏輯；**還沒接真的相機跑過**。
 
@@ -63,7 +63,7 @@
 | `0x03` | 已教幾色 |
 | `0x04` | 這一層給幾個值 |
 | `0x10` 起 | 這個模式的值（照 [讀值參考](/sensors/unicam/reference.md#host-i2c) 的順序：值 1＝`0x10`、值 2＝`0x11`…） |
-| `0xF0` | 裝置 ID（`0x4C`＋3×256，3＝通用版） |
+| `0xF0` | 裝置 ID（`0x4C`＋3×256，3＝目前的神攝手） |
 | `0xF2` | 韌體版（100＝1.0） |
 | `0xF3` | 狀態（bit0＝準備好） |
 | 寫 `0xE0` | [相機模式, 子選項]：切模式（存進相機） |
@@ -97,7 +97,7 @@
 
 **要準備什麼**
 - micro:bit V1 或 V2＋USB 線
-- 神攝手通用版 v1（通用 I2C 版韌體）＋外接 5 V 電源
+- 神攝手（通用 I2C 版韌體）＋外接 5 V 電源
 - 一塊顏色鮮豔的積木
 
 **相機設定**：在相機上教好「目標 1」（即時畫面停在目標 1 → 按 OK 取色）。相機模式 **1 顏色追蹤 ・子選項 ③ 標準**（模式編號 13）——程式開頭會用 E0 自動切。
@@ -109,7 +109,7 @@
 **程式**
 
 ```typescript
-// 神攝手通用版 v1 × micro:bit 範例 1：色塊在哪邊（箭頭）
+// 神攝手 × micro:bit 範例 1：色塊在哪邊（箭頭）
 // ★ 需要把相機選單切到 相機模式 1 顏色追蹤 ・子選項 ③ 標準（模式編號 13）（程式開頭也會用 E0 自動切）
 // 做什麼：色 1（相機教的第 1 個顏色）在畫面左邊 → 往左箭頭、中間 → 向上箭頭、右邊 → 往右箭頭；沒找到 → 問號。按 A 顯示面積 %。
 // 接線：相機 SDA → P20、SCL → P19、VCC → 外接 5 V（不要從 micro:bit 3V 取電）、GND → GND 共地。
@@ -161,7 +161,7 @@ input.onButtonPressed(Button.A, function () {
 })
 
 // ==== MBC_UNICAM_MB_HELPERS_BEGIN ====
-// ===== 神攝手通用版 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====
+// ===== 神攝手 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====
 // ===== UniCam helpers (MBC common I2C protocol v2): same in every example, no need to change =====
 const UC_ADDR = 0x4C                     // 相機的 I2C 位址 / camera I2C address
 const UC_NONE = -32768                   // 讀不到 / no value
@@ -311,7 +311,7 @@ function ucColorCode(h: number): number {
 **程式**
 
 ```typescript
-// 神攝手通用版 v1 × micro:bit 範例 2：取樣點看到什麼顏色
+// 神攝手 × micro:bit 範例 2：取樣點看到什麼顏色
 // ★ 需要把相機選單切到 相機模式 2 座標取色 ・子選項 ① 色相（模式編號 21）（程式開頭也會用 E0 自動切）
 // 做什麼：LED 顯示取樣點 S1 看到的顏色字母：R 紅、O 橙、Y 黃、G 綠、C 青、B 藍、P 紫、W 白／灰、K 黑。
 //         按 A：用 E1 命令把 S1 移到畫面正中間（X 80、Y 60）；按 B：顯示色相碼數字（0~255）。
@@ -368,7 +368,7 @@ input.onButtonPressed(Button.B, function () {
 })
 
 // ==== MBC_UNICAM_MB_HELPERS_BEGIN ====
-// ===== 神攝手通用版 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====
+// ===== 神攝手 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====
 // ===== UniCam helpers (MBC common I2C protocol v2): same in every example, no need to change =====
 const UC_ADDR = 0x4C                     // 相機的 I2C 位址 / camera I2C address
 const UC_NONE = -32768                   // 讀不到 / no value
@@ -520,7 +520,7 @@ function ucColorCode(h: number): number {
 **程式**
 
 ```typescript
-// 神攝手通用版 v1 × micro:bit 範例 3：循線小車（近／遠偏移 PD 循線，遇到路口停車）
+// 神攝手 × micro:bit 範例 3：循線小車（近／遠偏移 PD 循線，遇到路口停車）
 // ★ 需要把相機選單切到 相機模式 4 循線 ・子選項 ① 黑線（模式編號 41）（程式開頭也會用 E0 自動切；白線改 ②、色線改 ③）
 // 做什麼：按 A 開始沿黑線走：線偏左就往左修、偏右就往右修（近處＋遠處偏移一起看，轉彎比較早反應）；
 //         遇到十字路口或 T 字路口就停車、顯示方塊；看不到線就往最後看到線的那一邊原地轉。按 B 停。
@@ -604,7 +604,7 @@ basic.forever(function () {
 })
 
 // ==== MBC_UNICAM_MB_HELPERS_BEGIN ====
-// ===== 神攝手通用版 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====
+// ===== 神攝手 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====
 // ===== UniCam helpers (MBC common I2C protocol v2): same in every example, no need to change =====
 const UC_ADDR = 0x4C                     // 相機的 I2C 位址 / camera I2C address
 const UC_NONE = -32768                   // 讀不到 / no value
@@ -742,4 +742,4 @@ function ucColorCode(h: number): number {
 
 - 每一個值的完整對照：[讀值參考（I2C）](/sensors/unicam/reference.md#host-i2c)
 - 小幫手的正本、Arduino 版與其他平台：[下載中心](/downloads.md)
-- 產品頁與相機選單操作：[神攝手通用版 v1](/sensors/unicam/index.md)
+- 產品頁與相機選單操作：[神攝手](/sensors/unicam/index.md)

@@ -1,5 +1,5 @@
 /*
- * Sharpshooter Vision Universal v1 x Arduino  Example 3: What colour is this? (spot colour)
+ * Sharpshooter Vision x Arduino  Example 3: What colour is this? (spot colour)
  * ------------------------------------------------------------
  * Camera menu: camera mode 2 Spot colour, option 3 Hue + saturation + value (the sketch also switches it with E0)
  *
@@ -145,7 +145,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- Sharpshooter Vision Universal ----------
+// ---------- Sharpshooter Vision ----------
 
 // Switch camera mode (E0): camMode 1~4, sub = option (0 for colour order). Saved in the camera
 bool ucSetMode(uint8_t camMode, uint8_t sub) {

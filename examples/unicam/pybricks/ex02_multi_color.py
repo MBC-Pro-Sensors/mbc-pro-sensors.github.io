@@ -1,5 +1,5 @@
-# 神攝手通用版 v1 × Pybricks（SPIKE）範例 2：多色找位置
-# Sharpshooter Vision Universal v1 × Pybricks (SPIKE) example 2: where are my colours?
+# 神攝手 × Pybricks（SPIKE）範例 2：多色找位置
+# Sharpshooter Vision × Pybricks (SPIKE) example 2: where are my colours?
 # 需要把相機選單切到 相機模式 1 顏色追蹤 ・子選項 ② 多色 ＝模式編號 12（SPIKE 給 7 色的 X、Y）
 # Camera menu: camera mode 1 Colour tracking, option 2 Multi = mode number 12 (7 colours, X and Y)
 # 準備：在相機上教目標 1～7 的顏色（教幾色都可以）/ teach targets 1~7 (any number)

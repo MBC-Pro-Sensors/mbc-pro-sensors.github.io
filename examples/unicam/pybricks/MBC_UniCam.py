@@ -1,5 +1,5 @@
-# MBC 神攝手通用版 v1：Pybricks 函式庫（SPIKE Prime／Robot Inventor）
-# MBC Sharpshooter Vision Universal v1: Pybricks library (SPIKE Prime / Robot Inventor)
+# MBC 神攝手（韌體 v1）：Pybricks 函式庫（SPIKE Prime／Robot Inventor）
+# MBC Sharpshooter Vision (firmware v1): Pybricks library (SPIKE Prime / Robot Inventor)
 # 作者 Author：MBC Robot　日期 Date：2026-10-28　版本 Version：v1.0（v1 尚未上機驗證 / not yet hardware-verified）
 # 適用 For：Pybricks v4.1（code.pybricks.com）
 #
@@ -173,7 +173,7 @@ def _line(v, m, a):
 
 
 class UniCam:
-    """神攝手通用版 v1 / Sharpshooter Vision Universal v1: cam = UniCam(port, mode=13, multitask=False)"""
+    """神攝手（韌體 v1）/ Sharpshooter Vision (firmware v1): cam = UniCam(port, mode=13, multitask=False)"""
 
     def __init__(self, port, mode=13, multitask=False):
         if mode not in MODES:
@@ -274,11 +274,11 @@ class UniCam:
         return self._r(self._d is not None and not self._bad)
 
     def device_id(self):
-        """模式 8：(位址 0x4C, hw0, 韌體版字)，通用版 hw0＝3 / mode 8: (0x4C, hw0, firmware word); universal hw0 = 3"""
+        """模式 8：(位址 0x4C, hw0, 韌體版字)，目前的神攝手 hw0＝3 / mode 8: (0x4C, hw0, firmware word); current Sharpshooter Vision hw0 = 3"""
         return self._g(8, lambda v, m, a: (int(v[0]) & 0xFF, (int(v[0]) >> 8) & 0xFF, int(v[2]) & 0xFFFF))
 
     def is_unicam(self):
-        """是不是通用版（模式 8 的 hw0＝3）/ is this the universal version (hw0 = 3)"""
+        """是不是目前的神攝手（模式 8 的 hw0＝3）/ is this the current Sharpshooter Vision (hw0 = 3)"""
         return self._g(8, lambda v, m, a: (int(v[0]) & 0xFFFF) == 0x034C)
 
     def firmware_version(self):

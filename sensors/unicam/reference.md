@@ -3,9 +3,9 @@
 # 讀值參考：逐格對照
 
 > [!WARNING]
-> **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
+> **韌體 v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
 
-神攝手通用版 v1 在每個上位機、每個「相機模式・子選項」送什麼值、放在哪一格。先在相機上選好模式（看 [產品首頁](/sensors/unicam/index.md) 的「相機上的操作」），再到這裡找你的上位機那一節，點開對應的表。各平台怎麼寫程式讀，看 [SPIKE](/sensors/unicam/spike/index.md)、[EV3](/sensors/unicam/ev3/index.md)、[MATRIX](/sensors/unicam/matrix/mvision.md)、[Arduino](/sensors/unicam/arduino/index.md)、[micro:bit](/sensors/unicam/microbit/index.md)。
+神攝手在每個上位機、每個「相機模式・子選項」送什麼值、放在哪一格。先在相機上選好模式（看 [產品首頁](/sensors/unicam/index.md) 的「相機上的操作」），再到這裡找你的上位機那一節，點開對應的表。各平台怎麼寫程式讀，看 [SPIKE](/sensors/unicam/spike/index.md)、[EV3](/sensors/unicam/ev3/index.md)、[MATRIX](/sensors/unicam/matrix/mvision.md)、[Arduino](/sensors/unicam/arduino/index.md)、[micro:bit](/sensors/unicam/microbit/index.md)。
 
 ## 怎麼看這些表
 
@@ -38,7 +38,7 @@
 
 ## Pybricks 函式庫（SPIKE，讀模式 9／6）
 
-裝 MBC Pybricks 函式庫後讀模式 9：7 個 int16＝14 byte，一個 byte 一個值。座標用 160×120 像素（Y 上＝小），0＝沒有目標；會有負數的值（循線偏移、角度、左右緣）是有號 byte（二補數）。最多色層每色 1 byte＝16×12 格的格號 1～192，函式庫自動拆成 X、Y；最多色、多色兩層的數量放模式 6（要數量時才讀）；模式 8 是裝置 ID。通用版的模式 9 排法跟 Kito 版不同，Kito 的 camLibForKitoMode9 不能直接用。
+裝 MBC Pybricks 函式庫後讀模式 9：7 個 int16＝14 byte，一個 byte 一個值。座標用 160×120 像素（Y 上＝小），0＝沒有目標；會有負數的值（循線偏移、角度、左右緣）是有號 byte（二補數）。最多色層每色 1 byte＝16×12 格的格號 1～192，函式庫自動拆成 X、Y；最多色、多色兩層的數量放模式 6（要數量時才讀）；模式 8 是裝置 ID。這一代神攝手的模式 9 排法跟 Kito 版不同，Kito 的 camLibForKitoMode9 不能直接用。
 
 <details class="plat pg-spike" id="pyb-11">
 <summary><span class="plat-dot"></span>相機模式 1 顏色追蹤 ① 最多色：14 色</summary>

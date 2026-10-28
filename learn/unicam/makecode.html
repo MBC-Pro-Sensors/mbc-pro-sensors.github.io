@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="micro:bit 用內建的 I2C 指令讀相機，不用加擴充（MBC 擴充還沒有通用版的積木，這一頁用 JavaScript 文字程式）。照順序做：先接線、貼小幫手、選相機模式，再在當啟動時等相機準備好並切模式，最後在重複無限次裡讀值。左邊一步一步做，右邊的程式會跟著長出來；拖模擬相機畫面看會印出什麼。">
+<meta name="description" content="micro:bit 用內建的 I2C 指令讀相機，不用加擴充（MBC 擴充還沒有這一代神攝手的積木，這一頁用 JavaScript 文字程式）。照順序做：先接線、貼小幫手、選相機模式，再在當啟動時等相機準備好並切模式，最後在重複無限次裡讀值。左邊一步一步做，右邊的程式會跟著長出來；拖模擬相機畫面看會印出什麼。">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/unicam/makecode.html">
 <link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/unicam/makecode.html">
 <link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/unicam/makecode.html">
-<title>神攝手通用版 v1 MakeCode 教學 | MBC-Pro Sensors</title>
+<title>神攝手 MakeCode 教學 | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -241,12 +241,12 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/learn/">全部互動教學</a><a class="back" href="/sensors/unicam/microbit/">← 神攝手通用版 v1 micro:bit 說明</a><a class="lang" href="/en/learn/unicam/makecode.html" hreflang="en">EN</a><div class="tabs"><span class="tl">主機</span><a href="/learn/unicam/micropython.html">SPIKE</a><a href="/learn/unicam/ev3-pybricks.html">EV3</a><a href="/learn/unicam/arduino.html">Arduino</a><a href="/learn/unicam/mblock.html">mBlock</a><a href="/learn/unicam/matrix.html">MATRIX</a><a href="/learn/unicam/makecode.html" aria-current="page">micro:bit</a><span class="tsep"></span><a href="/learn/unicam/makecode.html" aria-current="page">MakeCode</a></div></div></nav>
+<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/learn/">全部互動教學</a><a class="back" href="/sensors/unicam/microbit/">← 神攝手 micro:bit 說明</a><a class="lang" href="/en/learn/unicam/makecode.html" hreflang="en">EN</a><div class="tabs"><span class="tl">主機</span><a href="/learn/unicam/micropython.html">SPIKE</a><a href="/learn/unicam/ev3-pybricks.html">EV3</a><a href="/learn/unicam/arduino.html">Arduino</a><a href="/learn/unicam/mblock.html">mBlock</a><a href="/learn/unicam/matrix.html">MATRIX</a><a href="/learn/unicam/makecode.html" aria-current="page">micro:bit</a><span class="tsep"></span><a href="/learn/unicam/makecode.html" aria-current="page">MakeCode</a></div></div></nav>
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">MBC 神攝手通用版 v1 × micro:bit（MakeCode JavaScript）</span>
-    <h1>三個步驟用 MakeCode 讀神攝手通用版</h1>
-    <p class="lead">micro:bit 用內建的 I2C 指令讀相機，<b>不用加擴充</b>（MBC 擴充還沒有通用版的積木，這一頁用 JavaScript 文字程式）。照順序做：先<b>接線、貼小幫手、選相機模式</b>，再在<b>當啟動時</b>等相機準備好並切模式，最後在<b>重複無限次</b>裡讀值。左邊一步一步做，右邊的程式會跟著長出來；拖模擬相機畫面看會印出什麼。</p>
+    <span class="eyebrow">MBC 神攝手 × micro:bit（MakeCode JavaScript）</span>
+    <h1>三個步驟用 MakeCode 讀神攝手</h1>
+    <p class="lead">micro:bit 用內建的 I2C 指令讀相機，<b>不用加擴充</b>（MBC 擴充還沒有這一代神攝手的積木，這一頁用 JavaScript 文字程式）。照順序做：先<b>接線、貼小幫手、選相機模式</b>，再在<b>當啟動時</b>等相機準備好並切模式，最後在<b>重複無限次</b>裡讀值。左邊一步一步做，右邊的程式會跟著長出來；拖模擬相機畫面看會印出什麼。</p>
     <p class="v1warn" role="note"><b>v1 尚未上機驗證</b><span>數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。</span></p>
   </header>
 
@@ -377,7 +377,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <li><b>先判斷有沒有看到。</b>X＝0＝沒看到。紅色的色相碼是 0，所以照順序給色號要看總塊數才知道前幾個有效。</li>
       <li><b>座標方向：</b>X 0～159 左→右、Y 0～119 上→下（上＝小），中間 X＝80。循線偏移：線在左＝負、在右＝正（站在車後面往前看）。</li>
       <li><b>命令會存進相機：</b>E0 切模式、E1 改取樣點位置，下次開機還是這個設定。目標顏色只能在相機上教，v1 沒有寫入顏色的命令。</li>
-      <li><b>MakeCode 擴充（pxt-mbc-sensors）還沒有通用版的積木</b>：這一頁用 JavaScript。貼上後切回積木分頁會看到灰色的 JavaScript 積木，照樣能用。</li>
+      <li><b>MakeCode 擴充（pxt-mbc-sensors）還沒有這一代神攝手的積木</b>：這一頁用 JavaScript。貼上後切回積木分頁會看到灰色的 JavaScript 積木，照樣能用。</li>
     </ol>
   </section>
 </div>
@@ -386,7 +386,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 (function () {
   'use strict';
 var PAGE = {"lang":"zh","code":"ts"};
-var CFG = {"mb":true,"helper":["// ==== MBC_UNICAM_MB_HELPERS_BEGIN ====","// ===== 神攝手通用版 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====","// ===== UniCam helpers (MBC common I2C protocol v2): same in every example, no need to change =====","const UC_ADDR = 0x4C                     // 相機的 I2C 位址 / camera I2C address","const UC_NONE = -32768                   // 讀不到 / no value","","// 從編號 id 起連續讀 k 個 int16（1~16）；讀不到全部是 UC_NONE","function ucReadMany(id: number, k: number): number[] {","    const cmd = pins.createBuffer(1)","    cmd[0] = id","    const r = pins.i2cWriteBuffer(UC_ADDR, cmd, false)","    basic.pause(2)                       // 相機（ESP32）要等 2 ms 再讀","    const out: number[] = []","    if (r) {                             // 實機：非 0 = 沒有回應","        for (let i = 0; i < k; i++) out.push(UC_NONE)","        return out","    }","    const b = pins.i2cReadBuffer(UC_ADDR, 2 * k, false)","    for (let i = 0; i < k; i++) out.push(b.getNumber(NumberFormat.Int16LE, 2 * i))","    return out","}","","// 寫命令 [id][參數…] / write a command","function ucWrite(id: number, params: number[]): void {","    const b = pins.createBuffer(1 + params.length)","    b[0] = id","    for (let i = 0; i < params.length; i++) b[1 + i] = params[i]","    pins.i2cWriteBuffer(UC_ADDR, b, false)","}","","// 相機準備好了嗎（F3 bit0）/ is the camera ready","function ucReady(): boolean {","    const f = ucReadMany(0xF3, 1)[0]","    return f != UC_NONE && (f & 1) == 1","}","","// 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）/ switch camera mode","function ucSetMode(camMode: number, sub: number): void {","    ucWrite(0xE0, [camMode, sub])","    basic.pause(50)","}","","// 改取樣點位置（E1）：n 1~20、x 0~159、y 0~119 / move a sample spot","function ucSetPoint(n: number, x: number, y: number): void {","    ucWrite(0xE1, [n, x, y])","}","","// 相機目前的模式編號（例 13）/ current mode number","function ucModeNumber(): number {","    return ucReadMany(0x01, 1)[0]","}","","// 顏色追蹤每色幾個值 / values per colour (modes 11~14)","function ucStride(mode: number): number {","    if (mode == 11) return 2","    if (mode == 12) return 3","    if (mode == 13) return 4","    if (mode == 14) return 6","    return 0","}","","// 色 color（1~16）的色塊：[x, y, 寬, 高, 塊數, 面積%]，x = 0 = 沒找到；這個模式沒給的是 -1","// blob of colour: [x, y, w, h, count, area%]; x = 0 = not found; -1 = not in this mode","function ucReadBlob(mode: number, color: number): number[] {","    const k = ucStride(mode)","    const d = ucReadMany(0x10 + (color - 1) * k, k)","    if (mode == 11) return [d[0], d[1], -1, -1, -1, -1]","    if (mode == 12) return [d[0], d[1], -1, -1, d[2], -1]","    if (mode == 13) return [d[0], d[1], -1, -1, d[3], d[2]]","    return [d[0], d[1], d[2], d[3], d[4], d[5]]","}","","// 16 個目標色裡找到幾色 / colours found (modes 11~14)","function ucColorsFound(mode: number): number {","    return ucReadMany(0x10 + 16 * ucStride(mode), 1)[0]","}","","// 取樣點 point（1~16）：[色相碼, 飽和度, 明度]；沒給的是 -1 / spot: [hue, sat, val]","function ucReadSpot(mode: number, point: number): number[] {","    const k = mode - 20","    const d = ucReadMany(0x10 + (point - 1) * k, k)","    return [d[0], k >= 2 ? d[1] : -1, k >= 3 ? d[2] : -1]","}","","// 照順序給色號：由左到右每塊的色相碼（最多 16 塊）/ hue codes left to right","function ucReadOrder(): number[] {","    const total = ucReadMany(0x20, 1)[0]","    const d = ucReadMany(0x10, 16)","    if (total == UC_NONE) return []","    return d.slice(0, Math.min(16, total))","}","","// 總塊數 / total blocks (mode 30)","function ucOrderTotal(): number {","    return ucReadMany(0x20, 1)[0]","}","","// 循線 14 個值：[近, 中, 遠偏移, 角度, 線寬, 有線旗標, 路口類型, 路口距離, 左緣, 右緣, 遠線寬, 標記色號, 標記條數, 離線方向]","// line values (near/mid/far offset: line on the left = negative)","function ucReadLine(): number[] {","    return ucReadMany(0x10, 14)","}","","// 色相碼 → 顏色代號：1 紅 2 橙 3 黃 4 綠 5 青 6 藍 7 紫 8 白／灰 9 黑","function ucColorCode(h: number): number {","    if (h > 248) return 9","    if (h > 240) return 8","    if (h < 12 || h >= 220) return 1","    if (h < 28) return 2","    if (h < 56) return 3","    if (h < 100) return 4","    if (h < 140) return 5","    if (h < 180) return 6","    return 7","}","// ==== MBC_UNICAM_MB_HELPERS_END ===="]};
+var CFG = {"mb":true,"helper":["// ==== MBC_UNICAM_MB_HELPERS_BEGIN ====","// ===== 神攝手 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====","// ===== UniCam helpers (MBC common I2C protocol v2): same in every example, no need to change =====","const UC_ADDR = 0x4C                     // 相機的 I2C 位址 / camera I2C address","const UC_NONE = -32768                   // 讀不到 / no value","","// 從編號 id 起連續讀 k 個 int16（1~16）；讀不到全部是 UC_NONE","function ucReadMany(id: number, k: number): number[] {","    const cmd = pins.createBuffer(1)","    cmd[0] = id","    const r = pins.i2cWriteBuffer(UC_ADDR, cmd, false)","    basic.pause(2)                       // 相機（ESP32）要等 2 ms 再讀","    const out: number[] = []","    if (r) {                             // 實機：非 0 = 沒有回應","        for (let i = 0; i < k; i++) out.push(UC_NONE)","        return out","    }","    const b = pins.i2cReadBuffer(UC_ADDR, 2 * k, false)","    for (let i = 0; i < k; i++) out.push(b.getNumber(NumberFormat.Int16LE, 2 * i))","    return out","}","","// 寫命令 [id][參數…] / write a command","function ucWrite(id: number, params: number[]): void {","    const b = pins.createBuffer(1 + params.length)","    b[0] = id","    for (let i = 0; i < params.length; i++) b[1 + i] = params[i]","    pins.i2cWriteBuffer(UC_ADDR, b, false)","}","","// 相機準備好了嗎（F3 bit0）/ is the camera ready","function ucReady(): boolean {","    const f = ucReadMany(0xF3, 1)[0]","    return f != UC_NONE && (f & 1) == 1","}","","// 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）/ switch camera mode","function ucSetMode(camMode: number, sub: number): void {","    ucWrite(0xE0, [camMode, sub])","    basic.pause(50)","}","","// 改取樣點位置（E1）：n 1~20、x 0~159、y 0~119 / move a sample spot","function ucSetPoint(n: number, x: number, y: number): void {","    ucWrite(0xE1, [n, x, y])","}","","// 相機目前的模式編號（例 13）/ current mode number","function ucModeNumber(): number {","    return ucReadMany(0x01, 1)[0]","}","","// 顏色追蹤每色幾個值 / values per colour (modes 11~14)","function ucStride(mode: number): number {","    if (mode == 11) return 2","    if (mode == 12) return 3","    if (mode == 13) return 4","    if (mode == 14) return 6","    return 0","}","","// 色 color（1~16）的色塊：[x, y, 寬, 高, 塊數, 面積%]，x = 0 = 沒找到；這個模式沒給的是 -1","// blob of colour: [x, y, w, h, count, area%]; x = 0 = not found; -1 = not in this mode","function ucReadBlob(mode: number, color: number): number[] {","    const k = ucStride(mode)","    const d = ucReadMany(0x10 + (color - 1) * k, k)","    if (mode == 11) return [d[0], d[1], -1, -1, -1, -1]","    if (mode == 12) return [d[0], d[1], -1, -1, d[2], -1]","    if (mode == 13) return [d[0], d[1], -1, -1, d[3], d[2]]","    return [d[0], d[1], d[2], d[3], d[4], d[5]]","}","","// 16 個目標色裡找到幾色 / colours found (modes 11~14)","function ucColorsFound(mode: number): number {","    return ucReadMany(0x10 + 16 * ucStride(mode), 1)[0]","}","","// 取樣點 point（1~16）：[色相碼, 飽和度, 明度]；沒給的是 -1 / spot: [hue, sat, val]","function ucReadSpot(mode: number, point: number): number[] {","    const k = mode - 20","    const d = ucReadMany(0x10 + (point - 1) * k, k)","    return [d[0], k >= 2 ? d[1] : -1, k >= 3 ? d[2] : -1]","}","","// 照順序給色號：由左到右每塊的色相碼（最多 16 塊）/ hue codes left to right","function ucReadOrder(): number[] {","    const total = ucReadMany(0x20, 1)[0]","    const d = ucReadMany(0x10, 16)","    if (total == UC_NONE) return []","    return d.slice(0, Math.min(16, total))","}","","// 總塊數 / total blocks (mode 30)","function ucOrderTotal(): number {","    return ucReadMany(0x20, 1)[0]","}","","// 循線 14 個值：[近, 中, 遠偏移, 角度, 線寬, 有線旗標, 路口類型, 路口距離, 左緣, 右緣, 遠線寬, 標記色號, 標記條數, 離線方向]","// line values (near/mid/far offset: line on the left = negative)","function ucReadLine(): number[] {","    return ucReadMany(0x10, 14)","}","","// 色相碼 → 顏色代號：1 紅 2 橙 3 黃 4 綠 5 青 6 藍 7 紫 8 白／灰 9 黑","function ucColorCode(h: number): number {","    if (h > 248) return 9","    if (h > 240) return 8","    if (h < 12 || h >= 220) return 1","    if (h < 28) return 2","    if (h < 56) return 3","    if (h < 100) return 4","    if (h < 140) return 5","    if (h < 180) return 6","    return 7","}","// ==== MBC_UNICAM_MB_HELPERS_END ===="]};
 function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
 
   function $(id) { return document.getElementById(id); }
@@ -671,7 +671,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         what: ('讀 0x01：相機現在是哪個模式（例 13）。I2C 讀得到，可以確認相機選單跟程式一致。'), ret: ('11～43'),
         body: [out([('相機模式編號: '), v('ucModeNumber()')])], out: function (V) { return ('相機模式編號: ') + V.read(0x01); } });
       add({ id: 'devid', grp: 'info', modes: null, label: MB ? 'ucReadMany(0xF0, 1)' : 'mbcRead(ADDR, 0xF0)', name: ('感應器身分'), once: true,
-        what: ('F0＝裝置 ID：0x34C（低 byte 0x4C＝位址、高 byte 3＝通用版；學校版 1、WRO 版 2）。'), ret: MB ? ('844（＝0x34C）') : '0x34C',
+        what: ('F0＝裝置 ID：0x34C（低 byte 0x4C＝位址、高 byte 3＝目前的神攝手；學校版 1、WRO 版 2）。'), ret: MB ? ('844（＝0x34C）') : '0x34C',
         body: MB ? [out([('裝置 ID: '), v('ucReadMany(0xF0, 1)[0]')])] : [out([('裝置 ID: 0x'), v('mbcRead(ADDR, 0xF0)', true)])],
         out: function (V) { var x = V.read(0xF0); return MB ? ('裝置 ID: ') + x : ('裝置 ID: 0x') + cHex(x); } });
       add({ id: 'fw', grp: 'info', modes: null, label: MB ? 'ucReadMany(0xF2, 1)' : 'mbcRead(ADDR, 0xF2)', name: ('韌體版本'), once: true,
@@ -725,7 +725,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
               L.push({ t: '  mbcBegin();', tag: 2 });
               L.push({ t: '  delay(500);', tag: 2 });
               L.push({ t: '  if (!mbcWaitReady(ADDR, 8000)) {       // ' + ('最多等 8 秒讓相機開機'), tag: 2 });
-              L.push({ t: '    Serial.println(F("' + ('找不到神攝手通用版！檢查接線、5V、I2C 版韌體') + '"));', tag: 2 });
+              L.push({ t: '    Serial.println(F("' + ('找不到神攝手！檢查接線、5V、I2C 版韌體') + '"));', tag: 2 });
               L.push({ t: '    while (true) {}                      // ' + ('停在這裡'), tag: 2 });
               L.push({ t: '  }', tag: 2 });
               if (S.setMode) L.push({ t: '  ' + setModeLine(), tag: 2 });
@@ -769,7 +769,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         boot: function (st) {
           if (st.ok) return { lines: MB ? [] : [('準備好了！')] };
           return MB ? { lines: [('（相機沒回應：程式一直等在 while (!ucReady())，LED 顯示小菱形。接好線後按 micro:bit 背面的重置鈕；這裡是再點一次功能）')], halt: true }
-            : { lines: [('找不到神攝手通用版！檢查接線、5V、I2C 版韌體'), ('（程式停在 while (true) {}：接好線後按 Arduino 的重置鍵；這裡是再點一次功能）')], halt: true };
+            : { lines: [('找不到神攝手！檢查接線、5V、I2C 版韌體'), ('（程式停在 while (true) {}：接好線後按 Arduino 的重置鍵；這裡是再點一次功能）')], halt: true };
         },
         bind: function (cb) {
           function set(on) { S.setMode = on; $('sm-on').setAttribute('aria-pressed', String(on)); $('sm-off').setAttribute('aria-pressed', String(!on)); var m = $('modenow'); if (m) m.querySelector('.err').textContent = HOST.modeWarn(S.mode); cb(true); }
@@ -820,7 +820,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       } else {
         EX.track = ['#include <Wire.h>'].concat(CFG.top, ['const uint8_t MODE = 13;                // ' + ('顏色追蹤 ③ 標準'), '',
           'void setup() {', '  Serial.begin(115200);', '  mbcBegin();', '  delay(500);',
-          '  if (!mbcWaitReady(ADDR, 8000)) { Serial.println(F("' + ('找不到神攝手通用版！') + '")); while (true) {} }',
+          '  if (!mbcWaitReady(ADDR, 8000)) { Serial.println(F("' + ('找不到神攝手！') + '")); while (true) {} }',
           '  ucSetMode(1, 3);', '}', '',
           'void loop() {', '  for (uint8_t c = 1; c <= 4; c++) {', '    UcBlob b;',
           '    if (!ucReadBlob(MODE, c, b)) { Serial.println(F("' + NOREAD + '")); break; }',
@@ -831,7 +831,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
           '  }', '  delay(500);', '}', '', '@HELPER']);
         EX.line = ['#include <Wire.h>'].concat(CFG.top, ['const uint8_t MODE = 41;                // ' + ('循線 ① 黑線'), '',
           'void setup() {', '  Serial.begin(115200);', '  mbcBegin();', '  delay(500);',
-          '  if (!mbcWaitReady(ADDR, 8000)) { Serial.println(F("' + ('找不到神攝手通用版！') + '")); while (true) {} }',
+          '  if (!mbcWaitReady(ADDR, 8000)) { Serial.println(F("' + ('找不到神攝手！') + '")); while (true) {} }',
           '  ucSetMode(4, 1);', '}', '',
           'void loop() {', '  UcLine l;',
           '  if (!ucReadLine(l)) {', '    Serial.println(F("' + NOREAD + '"));',

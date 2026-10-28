@@ -18,8 +18,8 @@ MBC-Pro 全系列的「通用 I2C 版」感應器都用同一套規則：**暫�
 <!-- gen:i2c-addr-table -->
 | 產品 | I2C 位址 | hw[0] | 型號 | 值表 | 指令參考 | 新手範例 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 神攝手 學校版 | `0x4C` | `1` | `CAMSCH` | [I2C](/sensors/esp32cam/arduino-i2c.md) | [參考](/sensors/esp32cam/reference.md) | [Arduino](/sensors/esp32cam/arduino-examples.md) |
-| 神攝手 WRO 版（HUE12） | `0x4C` | `2` | `HUE12` | [I2C](/sensors/esp32cam/arduino-i2c-wro.md) | [參考](/sensors/esp32cam/reference-wro.md) | [Arduino](/sensors/esp32cam/arduino-examples.md) |
+| 神攝手 學校版（舊版，停止支援） | `0x4C` | `1` | `CAMSCH` | [I2C](/sensors/esp32cam/arduino-i2c.md) | [參考](/sensors/esp32cam/reference.md) | [Arduino](/sensors/esp32cam/arduino-examples.md) |
+| 神攝手 WRO 版（HUE12）（舊版，停止支援） | `0x4C` | `2` | `HUE12` | [I2C](/sensors/esp32cam/arduino-i2c-wro.md) | [參考](/sensors/esp32cam/reference-wro.md) | [Arduino](/sensors/esp32cam/arduino-examples.md) |
 | IMU 陀螺儀 | `0x6A` | `1` | `IMU` | [I2C](/sensors/imu/arduino-i2c.md) | [參考](/sensors/imu/reference.md) | [Arduino](/sensors/imu/arduino-examples.md) |
 | 循行者 16 路 | `0x16` | `16` | `LINE16` | [I2C](/sensors/line16/arduino-i2c.md) | [參考](/sensors/line16/reference.md) | [Arduino](/sensors/line16/arduino-examples.md) |
 | 循行者 8 路 | `0x16` | `8` | `LINE8` | [I2C](/sensors/line8/arduino-i2c.md) | [參考](/sensors/line8/reference.md) | [Arduino](/sensors/line8/arduino-examples.md) |
@@ -30,9 +30,10 @@ MBC-Pro 全系列的「通用 I2C 版」感應器都用同一套規則：**暫�
 <!-- /gen -->
 
 > [!NOTE]
+> - **目前的[神攝手](/sensors/unicam/arduino/index.md)** 也是 `0x4C`，hw0＝`3`，每個值放哪一格看 [神攝手讀值參考](/sensors/unicam/reference.md)。上表標「舊版」的學校版／WRO 版已停止支援。
 > - **SPIKE 6 路擴充器（EXP6）不走 I2C**：主機接頭有隔離保護，Arduino 要用序列埠（UART）控制，請看 [EXP6 Arduino 範例](/sensors/exp6/arduino-examples.md)。
-> - 同一條 SDA／SCL 上，**位址相同的產品不能同時接**（循行者 8 路和 16 路、測距者 2 路和 8 路、PS2 和 PS4、神攝手兩版）。要同時接就先用 `F8` 把其中一台換位址。
-> - 同一類產品共用一個位址，用 `F0` 的高位元組（hw0）分辨款式：循行者 8／16、測距者 2／8、PS2＝1／PS4＝2、神攝手學校版＝1／WRO 版＝2。
+> - 同一條 SDA／SCL 上，**位址相同的產品不能同時接**（循行者 8 路和 16 路、測距者 2 路和 8 路、PS2 和 PS4、神攝手與舊版神攝手）。要同時接就先用 `F8` 把其中一台換位址。
+> - 同一類產品共用一個位址，用 `F0` 的高位元組（hw0）分辨款式：循行者 8／16、測距者 2／8、PS2＝1／PS4＝2、神攝手＝3（舊版學校版＝1／WRO 版＝2）。
 
 ---
 

@@ -1,10 +1,10 @@
 /*
- * Sharpshooter Vision Universal v1 x Arduino  Example 1: Is it connected?
+ * Sharpshooter Vision x Arduino  Example 1: Is it connected?
  * ------------------------------------------------------------
  * Camera menu: camera mode 1 Colour tracking, option 3 Standard (the sketch also switches it with E0)
  *
  * What does this example do?
- *   1. Read F0 device ID: low byte = 0x4C (address), high byte hw0 = 3 means "Universal"
+ *   1. Read F0 device ID: low byte = 0x4C (address), high byte hw0 = 3 means "current Sharpshooter Vision"
  *      (hw0 = 1 is the School version, 2 is the WRO version; they read differently)
  *   2. Read F2 firmware version (100 = 1.0)
  *   3. Switch the camera to "mode 13" with the E0 command, then read 0x01 to confirm
@@ -13,7 +13,7 @@
  * Mode number = camera mode x 10 + option:
  *   11~14 colour tracking, 21~23 spot colour, 30 colour order, 41~43 line following
  *
- * You need: Sharpshooter Vision Universal v1 (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
+ * You need: Sharpshooter Vision (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
  *
  * Wiring (the I2C pins are provisional until bench testing):
  *   camera 5V  -> external 5V (power bank or adapter, 2 A or more; do not draw it from the Arduino 5V pin)
@@ -58,10 +58,10 @@ void setup() {
   int16_t id[4];
   if (!mbcReadMany(ADDR, 0xF0, 4, id)) { Serial.println(F("Cannot read F0~F3")); while (true) {} }
   uint8_t addrLow = id[0] & 0xFF;        // low byte: factory address
-  uint8_t hw0 = (id[0] >> 8) & 0xFF;     // high byte: which version (3 = Universal)
+  uint8_t hw0 = (id[0] >> 8) & 0xFF;     // high byte: which version (3 = current Sharpshooter Vision)
   Serial.print(F("Address 0x")); Serial.print(addrLow, HEX);
   Serial.print(F("  hw0=")); Serial.print(hw0);
-  if (addrLow == 0x4C && hw0 == 3) Serial.println(F("  -> Sharpshooter Vision Universal OK"));
+  if (addrLow == 0x4C && hw0 == 3) Serial.println(F("  -> Sharpshooter Vision OK"));
   else if (hw0 == 1) Serial.println(F("  -> this is the School version, use the School examples"));
   else if (hw0 == 2) Serial.println(F("  -> this is the WRO version (HUE12), use the WRO examples"));
   else Serial.println(F("  -> unknown version"));
@@ -147,7 +147,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- Sharpshooter Vision Universal ----------
+// ---------- Sharpshooter Vision ----------
 
 // Switch camera mode (E0): camMode 1~4, sub = option (0 for colour order). Saved in the camera
 bool ucSetMode(uint8_t camMode, uint8_t sub) {

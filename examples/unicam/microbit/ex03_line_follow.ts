@@ -1,4 +1,4 @@
-// 神攝手通用版 v1 × micro:bit 範例 3：循線小車（近／遠偏移 PD 循線，遇到路口停車）
+// 神攝手 × micro:bit 範例 3：循線小車（近／遠偏移 PD 循線，遇到路口停車）
 // ★ 需要把相機選單切到 相機模式 4 循線 ・子選項 ① 黑線（模式編號 41）（程式開頭也會用 E0 自動切；白線改 ②、色線改 ③）
 // 做什麼：按 A 開始沿黑線走：線偏左就往左修、偏右就往右修（近處＋遠處偏移一起看，轉彎比較早反應）；
 //         遇到十字路口或 T 字路口就停車、顯示方塊；看不到線就往最後看到線的那一邊原地轉。按 B 停。
@@ -82,7 +82,7 @@ basic.forever(function () {
 })
 
 // ==== MBC_UNICAM_MB_HELPERS_BEGIN ====
-// ===== 神攝手通用版 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====
+// ===== 神攝手 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====
 // ===== UniCam helpers (MBC common I2C protocol v2): same in every example, no need to change =====
 const UC_ADDR = 0x4C                     // 相機的 I2C 位址 / camera I2C address
 const UC_NONE = -32768                   // 讀不到 / no value

@@ -22,7 +22,7 @@ MBC-Pro Sensors 透過各國授權經銷商與我們直接銷售。請依你所�
 
 | 商店 | 販售的 MBC 產品 | 網址 |
 | :--- | :--- | :--- |
-| **AXIONE**（台灣） | 循行者 8 路、循行者 16 路、神攝手 ESP32CAM（AXIONE 品名：HUE12 Sensor） | [axione.shop](https://www.axione.shop/) |
+| **AXIONE**（台灣） | 循行者 8 路、循行者 16 路、神攝手舊版 WRO 版（[停止支援](/sensors/esp32cam/index.md)，AXIONE 品名：HUE12 Sensor） | [axione.shop](https://www.axione.shop/) |
 
 AXIONE 是授權經銷商，英文介面、可線上下單、全球出貨，適合海外個人買家。售價與運費以 AXIONE 網站為準。
 

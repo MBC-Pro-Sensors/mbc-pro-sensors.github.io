@@ -4,7 +4,7 @@
 > [!WARNING]
 > **v1 not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
 
-On the EV3 the Sharpshooter Vision Universal v1 (EV3 edition) shows up as a **stock LEGO Infrared Sensor**, so EV3-G, EV3 Classroom and EV3 MicroPython (Pybricks) read it with the infrared sensor blocks or modes; no extension needed. Every slot is in the [value reference: EV3](/en/sensors/unicam/reference.md#host-ev3), full programs in the [EV3 examples](/en/sensors/unicam/ev3-examples.md).
+On the EV3 the Sharpshooter Vision (EV3 edition) shows up as a **stock LEGO Infrared Sensor**, so EV3-G, EV3 Classroom and EV3 MicroPython (Pybricks) read it with the infrared sensor blocks or modes; no extension needed. Every slot is in the [value reference: EV3](/en/sensors/unicam/reference.md#host-ev3), full programs in the [EV3 examples](/en/sensors/unicam/ev3-examples.md).
 
 ## Wiring
 

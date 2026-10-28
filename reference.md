@@ -12,8 +12,7 @@
 | [測距者 8 路 (TOF8)](/sensors/tof8/reference.md) | `0x29` | [SPIKE](/sensors/tof8/reference.md) | [EV3](/sensors/tof8/reference.md) | [Arduino I2C](/sensors/tof8/arduino-i2c.md) | [mBlock](/sensors/tof8/mblock.md) | [MATRIX](/sensors/tof8/matrix.md) | [micro:bit](/sensors/tof8/microbit.md) |
 | [掌控者 PS2 (PS2)](/sensors/ps2/reference.md) | `0x42` | [SPIKE](/sensors/ps2/reference.md) | [EV3](/sensors/ps2/reference.md) | [Arduino I2C](/sensors/ps2/arduino-i2c.md) | [mBlock](/sensors/ps2/mblock.md) | [MATRIX](/sensors/ps2/matrix.md) | [micro:bit](/sensors/ps2/microbit.md) |
 | [掌控者 PS4/PS5](/sensors/ps4/reference.md) | `0x42` | [SPIKE](/sensors/ps4/reference.md) | [EV3](/sensors/ps4/reference.md) | [Arduino I2C](/sensors/ps4/arduino-i2c.md) | [mBlock](/sensors/ps4/mblock.md) | [MATRIX](/sensors/ps4/matrix.md) | [micro:bit](/sensors/ps4/microbit.md) |
-| [神攝手 ESP32CAM](/sensors/esp32cam/reference.md) | `0x4C` | [SPIKE](/sensors/esp32cam/reference.md) | [EV3](/sensors/esp32cam/reference.md) | [Arduino I2C](/sensors/esp32cam/arduino-i2c.md) | [mBlock](/sensors/esp32cam/mblock.md) | [MATRIX](/sensors/esp32cam/matrix.md) | [micro:bit](/sensors/esp32cam/microbit.md) |
-| [神攝手通用版 v1](/sensors/unicam/index.md) | — | [SPIKE](/sensors/unicam/reference.md) | [EV3](/sensors/unicam/reference.md) | [Arduino I2C](/sensors/unicam/reference.md) | [mBlock](/sensors/unicam/reference.md) | [MATRIX](/sensors/unicam/reference.md) | [micro:bit](/sensors/unicam/reference.md) |
+| [神攝手](/sensors/unicam/reference.md) | — | [SPIKE](/sensors/unicam/reference.md) | [EV3](/sensors/unicam/reference.md) | [Arduino I2C](/sensors/unicam/reference.md) | [mBlock](/sensors/unicam/reference.md) | [MATRIX](/sensors/unicam/reference.md) | [micro:bit](/sensors/unicam/reference.md) |
 | [SPIKE 6 路擴充器 (EXP6)](/sensors/exp6/index.md) | — | [SPIKE](/sensors/exp6/spike-pybricks.md) | — | [Arduino I2C](/sensors/exp6/arduino-examples.md) | — | — | — |
 | [陀螺儀 IMU 九軸](/sensors/imu/reference.md) | `0x6A` | — | [EV3](/sensors/imu/reference.md) | [Arduino I2C](/sensors/imu/arduino-i2c.md) | [mBlock](/sensors/imu/mblock.md) | [MATRIX](/sensors/imu/matrix.md) | [micro:bit](/sensors/imu/microbit.md) |
 | [SPIKE 6 路舵機擴充器 (Servo6)](/sensors/servo6/index.md) | — | [SPIKE](/sensors/servo6/spike-pybricks.md) | — | — | — | — | — |
@@ -27,8 +26,6 @@
 
 ## 已產生指令參考的產品
 
-- [神攝手 學校版](/sensors/esp32cam/reference.md)：10 個值、0 個命令
-- [神攝手 WRO 版（HUE12）](/sensors/esp32cam/reference-wro.md)：2 個值、0 個命令
 - [IMU 陀螺儀](/sensors/imu/reference.md)：13 個值、5 個命令
 - [循行者 16 路](/sensors/line16/reference.md)：9 個值、6 個命令
 - [循行者 8 路](/sensors/line8/reference.md)：9 個值、6 個命令

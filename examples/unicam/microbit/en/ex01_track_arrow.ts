@@ -1,4 +1,4 @@
-// Sharpshooter Vision Universal v1 × micro:bit example 1: which side is the blob (arrow)
+// Sharpshooter Vision × micro:bit example 1: which side is the blob (arrow)
 // ★ Set the camera menu to camera mode 1 colour tracking · option ③ standard (mode number 13) (the program also switches it with E0 at start)
 // What it does: colour 1 (the first colour taught to the camera) on the left → left arrow, middle → up arrow, right → right arrow; not found → question mark. Press A to show the area %.
 // Wiring: camera SDA → P20, SCL → P19, VCC → external 5 V (do not power it from the micro:bit 3V pin), GND → GND (common ground).
@@ -50,7 +50,7 @@ input.onButtonPressed(Button.A, function () {
 })
 
 // ==== MBC_UNICAM_MB_HELPERS_BEGIN ====
-// ===== 神攝手通用版 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====
+// ===== 神攝手 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====
 // ===== UniCam helpers (MBC common I2C protocol v2): same in every example, no need to change =====
 const UC_ADDR = 0x4C                     // 相機的 I2C 位址 / camera I2C address
 const UC_NONE = -32768                   // 讀不到 / no value

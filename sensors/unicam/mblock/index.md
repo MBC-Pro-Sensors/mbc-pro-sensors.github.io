@@ -4,7 +4,7 @@
 > [!WARNING]
 > **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻）上機後可能調整；mBlock 版只在電腦上測過傳輸（每個值編號的回應、E0／E1、逾時），**還沒接 mBot 實測**。
 
-神攝手通用版 v1 的 **mBlock 版韌體**讓 mBot、mBot Ranger、Orion、MegaPi 用 mBlock 5 的積木讀相機：MBC 感應器擴展 **v2.1.0** 多了一個「神攝手通用版」分類（22 顆積木）。值表跟 [Arduino I2C 版](/sensors/unicam/arduino/index.md) 完全相同，只是改走 RJ25 串口；積木會自己先問相機目前的模式，再讀對的值。
+神攝手的 **mBlock 版韌體**讓 mBot、mBot Ranger、Orion、MegaPi 用 mBlock 5 的積木讀相機：MBC 感應器擴展 **v2.1.0** 多了一個「神攝手通用版」分類（22 顆積木）。值表跟 [Arduino I2C 版](/sensors/unicam/arduino/index.md) 完全相同，只是改走 RJ25 串口；積木會自己先問相機目前的模式，再讀對的值。
 
 ## 接線
 
@@ -81,7 +81,7 @@
 | 神攝手通用版 連接埠［1］ 看到線？ | 是／否 | 循線（41~43） | `0x15` | 有線旗標（近 1＋中 2＋遠 4）不是 0 |
 | 神攝手通用版 連接埠［1］ 第 （數字） 個值 | 數字 | 全部 | `0x10~0x7F` | 規格值表的「值 N」＝編號 0x10＋N−1（N 1~112），可以放變數 |
 | 神攝手通用版 連接埠［1］ 讀值編號 （數字） | 數字 | 全部 | `0x00~0xFF` | 直接讀一個值編號（十進位，例 16 = 0x10、240 = 0xF0） |
-| 神攝手通用版 連接埠［1］ 感應器正常？ | 是／否 | 全部 | `0xF0` | 有回應而且裝置 ID 是神攝手通用版（F0 = 0x034C） |
+| 神攝手通用版 連接埠［1］ 感應器正常？ | 是／否 | 全部 | `0xF0` | 有回應而且裝置 ID 是目前的神攝手（F0 = 0x034C） |
 
 - 傳回 **−32768**：讀不到（逾時、檢查碼錯、沒接）或這個模式／子選項沒有這個值（例：① 最多色沒有寬、高）。布林積木這時是「否」。
 - 每色裡的位置：① X Y；② X Y 數量；③ X Y 面積 數量；④ X Y 寬 高 數量 面積（跟 [讀值參考：I2C](/sensors/unicam/reference.md#host-i2c) 的順序一樣）。
@@ -132,7 +132,7 @@ end</pre>
 <summary>🔧 等價 Arduino 程式（mBot）</summary>
 
 ```cpp
-// 神攝手通用版 × mBot：最小讀值程式（跟上面的積木做一樣的事，Arduino IDE 版）
+// 神攝手 × mBot：最小讀值程式（跟上面的積木做一樣的事，Arduino IDE 版）
 // 需要 Makeblock 函式庫＋MBC_Sensors v2.1.0（擴展 .mext 解壓後 src/ 的四個檔放進 文件/Arduino/libraries/MBC_Sensors/）
 #include <MeMCore.h>
 #include <SoftwareSerial.h>
@@ -168,7 +168,7 @@ void loop() {}
 擴展裡的 `MBC_Sensors` 函式庫也能直接在 Arduino IDE 用：把 `.mext` 解壓後 `src/` 的四個檔（MBC_Sensors.h/.cpp、mbc_proto.h、mbc_ids.h）放進 `文件/Arduino/libraries/MBC_Sensors/`，`MBCPort` 用 `begin(串口)` 接任何串口。函式名稱跟積木一一對應（`ucSetMode`、`ucBlob`、`ucFound`、`ucSpot`、`ucOrderHue`、`ucLine`、`ucValue`、`ucOk`…）。要接 Arduino 又不需要 mBlock 的話，[I2C 版](/sensors/unicam/arduino/index.md) 一次可以連續讀 16 個值，比較快。
 
 ```cpp
-// 神攝手通用版（mBlock 版韌體）接一般 Arduino 板的串口（不經 mBot）：印出循線的近處偏移與角度
+// 神攝手（mBlock 版韌體）接一般 Arduino 板的串口（不經 mBot）：印出循線的近處偏移與角度
 // 需要 MBC_Sensors v2.1.0（同上，不需要 Makeblock 函式庫）。UNO 用軟體串口 D10／D11；Mega 用 Serial1（D19 RX、D18 TX）
 #include <SoftwareSerial.h>
 #include <MBC_Sensors.h>
@@ -186,7 +186,7 @@ void setup() {
   CAM_SERIAL.begin(38400);
   cam.begin(CAM_SERIAL);
   delay(2000);
-  Serial.println(ucOk(cam) ? "神攝手通用版 OK" : "沒有回應：檢查接線、韌體是不是 mBlock 版");
+  Serial.println(ucOk(cam) ? "神攝手 OK" : "沒有回應：檢查接線、韌體是不是 mBlock 版");
   ucSetMode(cam, 41);           // 循線 ① 黑線
 }
 
@@ -211,7 +211,7 @@ void loop() {
 
 ## 其他資料
 
-- [神攝手通用版 v1 產品首頁](/sensors/unicam/index.md)
+- [神攝手產品首頁](/sensors/unicam/index.md)
 - [讀值參考：I2C（mBlock 同一張表）](/sensors/unicam/reference.md#host-i2c)
 - [mBlock 新手範例](/sensors/unicam/mblock-examples.md)
 - [MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext)

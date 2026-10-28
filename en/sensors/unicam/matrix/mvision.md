@@ -4,7 +4,7 @@
 > [!WARNING]
 > **v1 not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
 
-To a MATRIX Mini R4 the Sharpshooter Vision Universal v1 (MATRIX edition) is an **mVision camera**: read it with the built-in MATRIXblock mVision blocks, **no library to install**, no I2C. Every slot is in the [value reference: MATRIX](/en/sensors/unicam/reference.md#host-mx), full programs in the [MATRIX examples](/en/sensors/unicam/matrix-examples.md).
+To a MATRIX Mini R4 the Sharpshooter Vision (MATRIX edition) is an **mVision camera**: read it with the built-in MATRIXblock mVision blocks, **no library to install**, no I2C. Every slot is in the [value reference: MATRIX](/en/sensors/unicam/reference.md#host-mx), full programs in the [MATRIX examples](/en/sensors/unicam/matrix-examples.md).
 
 ## Wiring
 

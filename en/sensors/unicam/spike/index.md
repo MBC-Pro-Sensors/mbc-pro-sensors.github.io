@@ -4,7 +4,7 @@
 > [!WARNING]
 > **v1 not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
 
-The Sharpshooter Vision Universal v1 works with SPIKE Prime (yellow hub) and Robot Inventor (teal hub). The SPIKE edition firmware detects by itself whether the hub runs the official app or Pybricks, so there is nothing to reflash. This page helps you pick one of the four ways to read it and shows the smallest working code; every slot is listed in the [value reference](/en/sensors/unicam/reference.md), full programs are in the [SPIKE examples](/en/sensors/unicam/spike-examples.md).
+The Sharpshooter Vision works with SPIKE Prime (yellow hub) and Robot Inventor (teal hub). The SPIKE edition firmware detects by itself whether the hub runs the official app or Pybricks, so there is nothing to reflash. This page helps you pick one of the four ways to read it and shows the smallest working code; every slot is listed in the [value reference](/en/sensors/unicam/reference.md), full programs are in the [SPIKE examples](/en/sensors/unicam/spike-examples.md).
 
 ## Pick a way to read it
 
@@ -29,7 +29,7 @@ How many colors each way gets in the other camera modes: see [colors per host](/
 Mode 9 reads 7 int16 = 14 bytes at once, one value per byte; coordinates are 160×120 pixels (Y: small at top), 0 = no target. The MBC library decodes everything from the mode number (it splits the 14-color cell numbers into X, Y and reads counts from mode 6); the library download and full programs are in the [SPIKE examples](/en/sensors/unicam/spike-examples.md).
 
 > [!IMPORTANT]
-> The Universal edition's mode 9 layout is **different from the School / Kito edition**; the Kito `camLibForKitoMode9` cannot be reused.
+> This generation's mode 9 layout is **different from the legacy School / Kito edition**; the Kito `camLibForKitoMode9` cannot be reused.
 
 You can also read it without the library: use the Pybricks built-in `PUPDevice`, read mode 9 and split it into bytes. With the camera set to **Color tracking ③ Standard** (mode number 13), this reads color 1:
 
@@ -141,4 +141,4 @@ Every slot of the other camera modes: [value reference: Education](/en/sensors/u
 
 - **Top-left corner stays red?** The hub has not connected yet: unplug and replug, wait 2 s, or try another port.
 - **Values don't match the tables?** Check that the "mode-sub-option" in the top-right corner of the camera (e.g. 1-3) is the one your program expects.
-- **Can I reuse my School edition program?** No, the Universal layout is different; for the School edition see the [School edition guide](/en/sensors/esp32cam/index.md).
+- **Can I reuse a legacy School edition program?** No, the layout is different; the legacy guides stay online for reference in [Sharpshooter Vision legacy editions (no longer supported)](/en/sensors/esp32cam/index.md).

@@ -1,5 +1,5 @@
-// 神攝手通用版 v1 × mBlock 5　範例 1：聽見顏色（mBot 等價 Arduino 程式）
-// 接線：神攝手通用版 → mBot 插座片 → mBot 連接埠 1。鏡頭朝前、裝在車頭。這個範例不用教顏色；取樣點 1 的位置看相機螢幕上的十字「1」。
+// 神攝手 × mBlock 5　範例 1：聽見顏色（mBot 等價 Arduino 程式）
+// 接線：神攝手 → mBot 插座片 → mBot 連接埠 1。鏡頭朝前、裝在車頭。這個範例不用教顏色；取樣點 1 的位置看相機螢幕上的十字「1」。
 // 跟 mBlock 積木範例做的事完全一樣，給想看「積木背後長什麼樣」或用 Arduino IDE 的人。
 // 需要的函式庫：
 //   1. Makeblock（Arduino IDE「函式庫管理員」搜尋 Makeblock，或 mBlock 5 安裝資料夾裡的 Makeblock 函式庫）

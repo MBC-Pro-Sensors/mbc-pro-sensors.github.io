@@ -49,9 +49,10 @@
 - **主要用途**：手動遙控競賽、現場展示操控、多自由度機械手臂手動微調。
 - **特點**：直接接入主機連接埠，相容 PS2 2.4G 無線手把與 PS4 / PS5 藍牙手把；PS4/PS5 版本具備配對記憶、只綁定自己的手把（比賽現場不會連到別隊）、斷訊 0.3 秒輸出自動歸零，比賽場地內穩定連線（空曠實測 100 公尺）。
 
-### 2.7 神攝手 ESP32CAM (視覺感測器)
-- **類型**：AI 機器人視覺攝影機模組
-- **主要用途**：色塊識別追蹤、目標物座標與面積即時輸出、動態偵測。
+### 2.7 神攝手（攝影機感應器，開發中）
+- **類型**：機器人視覺攝影機感應器（OV3660 鏡頭、1.8 吋彩色螢幕＋4 顆按鍵）
+- **主要用途**：在相機選單切換 4 種模式：顏色追蹤（最多 16 色）、座標取色、照順序給色號、循線；SPIKE、EV3、MATRIX、Arduino、micro:bit、mBlock 都讀得到。韌體 v1 尚未上機驗證。網址：https://mbc-pro-sensors.github.io/sensors/unicam/
+- **舊版**：2026-10 以前出貨的神攝手 ESP32CAM（學校版、WRO 版 HUE12）已停止支援，說明與範例保留在 https://mbc-pro-sensors.github.io/sensors/esp32cam/ 。升級成目前的神攝手：請聯繫原購買的經銷商寄回，韌體更新免費，來回運費由買家負擔。
 
 ---
 
@@ -89,13 +90,13 @@
 **A**: 感應器上有專用校準按鍵。按住按鈕 0.5 秒，綠燈亮起後 5 秒內將感應器在賽道的白色區域與黑色線條上方來回滑動，綠燈熄滅即自動儲存（不用再按），關機後校準數據仍保存在感應器內部。
 
 ### Q5: MBC 產品可以用在 WRO 嗎？
-**A**: 可以。WRO 從 2025 年起開放 RoboMission 使用任何品牌的器材，但有組別限制：相機（神攝手 ESP32CAM）只限國中組與高中組；比賽中禁止遙控，所以掌控者 PS2／PS4 不能用於 RoboMission；雷射需護眼安全證明，測距者使用 Class 1 雷射（IEC 60825-1:2014），證明文件可向我們索取。測距者 8 路是 8 顆固定方向的單點 ToF 測距器，不是旋轉掃描式光達，建議國小、國中組賽前向主辦單位確認歸類。完整對照：https://mbc-pro-sensors.github.io/wro-rules.html
+**A**: 可以。WRO 從 2025 年起開放 RoboMission 使用任何品牌的器材，但有組別限制：相機（神攝手）只限國中組與高中組；比賽中禁止遙控，所以掌控者 PS2／PS4 不能用於 RoboMission；雷射需護眼安全證明，測距者使用 Class 1 雷射（IEC 60825-1:2014），證明文件可向我們索取。測距者 8 路是 8 顆固定方向的單點 ToF 測距器，不是旋轉掃描式光達，建議國小、國中組賽前向主辦單位確認歸類。完整對照：https://mbc-pro-sensors.github.io/wro-rules.html
 
 ### Q6: 可以用在 FLL 嗎？
 **A**: FIRST® LEGO® League Challenge 正式比賽只允許 LEGO 原廠零件，MBC 產品不適用；平時教學、練習與其他開放規則的賽事可以使用。
 
 ### Q7: 售價多少？
-**A**: 建議售價：循行者 8 路 NT$2,500／US$100、循行者 16 路 NT$3,000／US$120、測距者 2 路 NT$1,500／US$60、測距者 8 路 NT$3,000／US$120、神攝手 ESP32CAM NT$3,000／US$120、EXP6 NT$3,600／US$145、掌控者 PS2 NT$2,000（僅限台灣販售）、掌控者 PS4/PS5 NT$2,500／US$100、陀螺儀 IMU（即將推出）NT$2,500／US$100。美金價格不含運費。購買或經銷洽詢：contactmbcrobot@gmail.com、LINE @692vcvuk。
+**A**: 建議售價：循行者 8 路 NT$2,500／US$100、循行者 16 路 NT$3,000／US$120、測距者 2 路 NT$1,500／US$60、測距者 8 路 NT$3,000／US$120、EXP6 NT$3,600／US$145、掌控者 PS2 NT$2,000（僅限台灣販售）、掌控者 PS4/PS5 NT$2,500／US$100、陀螺儀 IMU（即將推出）NT$2,500／US$100；神攝手（開發中）價格洽詢。美金價格不含運費。購買或經銷洽詢：contactmbcrobot@gmail.com、LINE @692vcvuk。
 
 ---
 
@@ -124,7 +125,7 @@ mBlock: UART 38400; send [id] -> [lo][hi][id^lo^hi]; commands E0~EE ack [00][00]
   F8 setAddress: [F8][新位址 0x08~0x77][新位址取反]，存 EEPROM，重開機後生效；[F8][0x00][0xFF] = 回出廠位址（共識 B-5） / [F8][new 0x08~0x77][~new], saved to EEPROM, takes effect after reboot; [F8][0x00][0xFF] = back to factory address
   EF reboot: [EF][0xA5]；mBlock 先回 ACK 再重開 / [EF][0xA5]; mBlock sends ACK first, then reboots
 
-## 神攝手 學校版 / Vision Sensor (School Edition) (id cam_school, I2C 0x4C, hw0 1, model CAMSCH)
+## 神攝手 學校版（舊版，停止支援） / Vision Sensor (School Edition) (legacy, no longer supported) (id cam_school, I2C 0x4C, hw0 1, model CAMSCH)
 hosts: ev3, spike, i2c, mblock, mvision, microbit
 values:
   01 hue: 色相 / hue; range -1~100; S1 取樣點色相 0~100（色相環 0~240 等比縮放）；−1 = 黑白灰（飽和度 < 10）；S1 沒設定 = 0 / hue of sample point S1, 0~100 (hue ring 0~240 scaled); −1 = black/white/grey (saturation < 10); 0 when S1 is not set; EV3 mode0[0],mode1[0],mode2[0],mode3[0],mode5[0]; SPIKE mode0 b0,mode0 b1,mode5 v0,mode9 v0lo; mVision slot0
@@ -151,7 +152,7 @@ assumptions:
   - 值 05~08 的「沒找到 = 0」照盤點 §0；色塊 Y 下 = 0、上 = 75 照盤點（map(bestY,120,0,0,75)）。
   - 沒有寫入命令（韌體無法從程式改目標顏色／補光燈）。
 
-## 神攝手 WRO 版（HUE12） / Vision Sensor (WRO Edition, HUE12) (id cam_wro, I2C 0x4C, hw0 2, model HUE12)
+## 神攝手 WRO 版（HUE12）（舊版，停止支援） / Vision Sensor (WRO Edition, HUE12) (legacy, no longer supported) (id cam_wro, I2C 0x4C, hw0 2, model HUE12)
 hosts: ev3, spike, i2c, mblock, mvision, microbit
 values:
   10~1B spotColor: 色點 1~12 顏色碼 / spot 1~12 colour code; range 0~255; 10~1B = S1~S12 顏色碼：0~239 彩色（色相 0~255 等比縮成 0~239）、240~245 白（飽和度 < 30，越低越大）、246~250 黑（明度 < 30，越暗越大）、255 = 色點沒開 / 10~1B = colour code of spots S1~S12: 0~239 colour (hue 0~255 scaled to 0~239), 240~245 white (saturation < 30, lower = larger), 246~250 black (value < 30, darker = larger), 255 = spot not enabled; EV3 mode0[0]; SPIKE mode0 b0; mVision slot0

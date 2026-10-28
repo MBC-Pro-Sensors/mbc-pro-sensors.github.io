@@ -1,9 +1,9 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- Code blocks come from examples/unicam/arduino-en/*/*.ino and are filled in by node _build/sync-arduino-examples.mjs; edit the .ino and re-run -->
 
-# 🧪 Sharpshooter Vision Universal v1 × Arduino examples
+# 🧪 Sharpshooter Vision × Arduino examples
 
-[🔙 Back to Sharpshooter Vision Universal](/en/sensors/unicam/index.md)　｜　[📡 MBC common I2C protocol v2 (advanced)](/en/i2c-protocol.md)
+[🔙 Back to Sharpshooter Vision](/en/sensors/unicam/index.md)　｜　[📡 MBC common I2C protocol v2 (advanced)](/en/i2c-protocol.md)
 
 > [!WARNING]
 > **v1 not yet hardware-verified**: the value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after bench testing.
@@ -64,7 +64,7 @@ The camera is like a row of numbered "boxes", each holding one number (int16). W
 | `03` | Colours taught | 0–16 | |
 | `04` | Values in this layer | | e.g. mode 13 gives 65 (16 colours × 4 + colours found) |
 | `10` up | Values of this mode | | layout per mode (table below); undefined ids read `-32768` |
-| `F0` | Device ID | | low byte = `0x4C`, high byte **hw0 = 3 (Universal)**; School version 1, WRO version 2 |
+| `F0` | Device ID | | low byte = `0x4C`, high byte **hw0 = 3 (current Sharpshooter Vision)**; School version 1, WRO version 2 |
 | `F1` | Protocol version | 2 | |
 | `F2` | Firmware version | 100 | major × 100 + minor (100 = 1.0) |
 | `F3` | Status flags | bit | bit0 = ready (used by `mbcWaitReady`) |
@@ -138,7 +138,7 @@ Every example has the same code at the top and at the bottom (between `MBC_UNICA
 
 **Camera mode needed:** camera mode 1 Colour tracking, option ③ Standard (the sketch switches it with E0)
 
-**What it does:** reads the `F0` device ID and checks that the low byte is `0x4C` and the high byte (hw0) is **3 = Universal**; prints the protocol and firmware versions; switches the camera to mode 13 with `ucSetMode(1, 3)` and reads `01` to confirm. Then it prints the current mode number every second — change the mode in the camera menu and it follows. Run this first every time you connect a camera.
+**What it does:** reads the `F0` device ID and checks that the low byte is `0x4C` and the high byte (hw0) is **3 = current Sharpshooter Vision**; prints the protocol and firmware versions; switches the camera to mode 13 with `ucSetMode(1, 3)` and reads `01` to confirm. Then it prints the current mode number every second — change the mode in the camera menu and it follows. Run this first every time you connect a camera.
 
 **Steps:**
 1. Connect the 4 wires as in the table, switch on the external 5V, plug USB into the computer.
@@ -150,12 +150,12 @@ Every example has the same code at the top and at the bottom (between `MBC_UNICA
 <!-- ino: examples/unicam/arduino-en/unicam_01_hello/unicam_01_hello.ino -->
 ```cpp
 /*
- * Sharpshooter Vision Universal v1 x Arduino  Example 1: Is it connected?
+ * Sharpshooter Vision x Arduino  Example 1: Is it connected?
  * ------------------------------------------------------------
  * Camera menu: camera mode 1 Colour tracking, option 3 Standard (the sketch also switches it with E0)
  *
  * What does this example do?
- *   1. Read F0 device ID: low byte = 0x4C (address), high byte hw0 = 3 means "Universal"
+ *   1. Read F0 device ID: low byte = 0x4C (address), high byte hw0 = 3 means "current Sharpshooter Vision"
  *      (hw0 = 1 is the School version, 2 is the WRO version; they read differently)
  *   2. Read F2 firmware version (100 = 1.0)
  *   3. Switch the camera to "mode 13" with the E0 command, then read 0x01 to confirm
@@ -164,7 +164,7 @@ Every example has the same code at the top and at the bottom (between `MBC_UNICA
  * Mode number = camera mode x 10 + option:
  *   11~14 colour tracking, 21~23 spot colour, 30 colour order, 41~43 line following
  *
- * You need: Sharpshooter Vision Universal v1 (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
+ * You need: Sharpshooter Vision (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
  *
  * Wiring (the I2C pins are provisional until bench testing):
  *   camera 5V  -> external 5V (power bank or adapter, 2 A or more; do not draw it from the Arduino 5V pin)
@@ -209,10 +209,10 @@ void setup() {
   int16_t id[4];
   if (!mbcReadMany(ADDR, 0xF0, 4, id)) { Serial.println(F("Cannot read F0~F3")); while (true) {} }
   uint8_t addrLow = id[0] & 0xFF;        // low byte: factory address
-  uint8_t hw0 = (id[0] >> 8) & 0xFF;     // high byte: which version (3 = Universal)
+  uint8_t hw0 = (id[0] >> 8) & 0xFF;     // high byte: which version (3 = current Sharpshooter Vision)
   Serial.print(F("Address 0x")); Serial.print(addrLow, HEX);
   Serial.print(F("  hw0=")); Serial.print(hw0);
-  if (addrLow == 0x4C && hw0 == 3) Serial.println(F("  -> Sharpshooter Vision Universal OK"));
+  if (addrLow == 0x4C && hw0 == 3) Serial.println(F("  -> Sharpshooter Vision OK"));
   else if (hw0 == 1) Serial.println(F("  -> this is the School version, use the School examples"));
   else if (hw0 == 2) Serial.println(F("  -> this is the WRO version (HUE12), use the WRO examples"));
   else Serial.println(F("  -> unknown version"));
@@ -298,7 +298,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- Sharpshooter Vision Universal ----------
+// ---------- Sharpshooter Vision ----------
 
 // Switch camera mode (E0): camMode 1~4, sub = option (0 for colour order). Saved in the camera
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
@@ -401,7 +401,7 @@ uint8_t ucColorCode(int16_t h) {
 **You will see:**
 
 ```text
-Address 0x4C  hw0=3  -> Sharpshooter Vision Universal OK
+Address 0x4C  hw0=3  -> Sharpshooter Vision OK
 Protocol version 2  Firmware 1.0
 Mode number after switching: 13
 Mode number 13  option 3  taught 2 colours  values in this layer 65
@@ -428,7 +428,7 @@ Mode number 13  option 3  taught 2 colours  values in this layer 65
 <!-- ino: examples/unicam/arduino-en/unicam_02_track/unicam_02_track.ino -->
 ```cpp
 /*
- * Sharpshooter Vision Universal v1 x Arduino  Example 2: Where is the blob? (colour tracking)
+ * Sharpshooter Vision x Arduino  Example 2: Where is the blob? (colour tracking)
  * ------------------------------------------------------------
  * Camera menu: camera mode 1 Colour tracking, option 3 Standard (the sketch also switches it with E0)
  *
@@ -567,7 +567,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- Sharpshooter Vision Universal ----------
+// ---------- Sharpshooter Vision ----------
 
 // Switch camera mode (E0): camMode 1~4, sub = option (0 for colour order). Saved in the camera
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
@@ -692,7 +692,7 @@ Colour 1: left-top X=30 Y=25 area4% x1 blobs  Colour 2: not seen      Colour 3: 
 <!-- ino: examples/unicam/arduino-en/unicam_03_spot_color/unicam_03_spot_color.ino -->
 ```cpp
 /*
- * Sharpshooter Vision Universal v1 x Arduino  Example 3: What colour is this? (spot colour)
+ * Sharpshooter Vision x Arduino  Example 3: What colour is this? (spot colour)
  * ------------------------------------------------------------
  * Camera menu: camera mode 2 Spot colour, option 3 Hue + saturation + value (the sketch also switches it with E0)
  *
@@ -838,7 +838,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- Sharpshooter Vision Universal ----------
+// ---------- Sharpshooter Vision ----------
 
 // Switch camera mode (E0): camMode 1~4, sub = option (0 for colour order). Saved in the camera
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
@@ -964,7 +964,7 @@ Spot 1: red (H3 S78 V65)   Spot 2: green (H84 S60 V52)   Spot 3: white/grey (H24
 <!-- ino: examples/unicam/arduino-en/unicam_04_color_order/unicam_04_color_order.ino -->
 ```cpp
 /*
- * Sharpshooter Vision Universal v1 x Arduino  Example 4: Colour order (WRO mission)
+ * Sharpshooter Vision x Arduino  Example 4: Colour order (WRO mission)
  * ------------------------------------------------------------
  * Camera menu: camera mode 3 Colour order (no option; the sketch also switches it with E0)
  *
@@ -1110,7 +1110,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- Sharpshooter Vision Universal ----------
+// ---------- Sharpshooter Vision ----------
 
 // Switch camera mode (E0): camMode 1~4, sub = option (0 for colour order). Saved in the camera
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
@@ -1246,7 +1246,7 @@ uint8_t ucColorCode(int16_t h) {
 <!-- ino: examples/unicam/arduino-en/unicam_05_line_follow/unicam_05_line_follow.ino -->
 ```cpp
 /*
- * Sharpshooter Vision Universal v1 x Arduino  Example 5 (advanced): line follower that looks ahead
+ * Sharpshooter Vision x Arduino  Example 5 (advanced): line follower that looks ahead
  * ------------------------------------------------------------
  * Camera menu: camera mode 4 Line following, option 1 Black line (the sketch also switches it with E0)
  *
@@ -1437,7 +1437,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- Sharpshooter Vision Universal ----------
+// ---------- Sharpshooter Vision ----------
 
 // Switch camera mode (E0): camMode 1~4, sub = option (0 for colour order). Saved in the camera
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
@@ -1555,7 +1555,7 @@ uint8_t ucColorCode(int16_t h) {
 4. The camera takes a few seconds to boot; the examples wait 8 s. If it still fails, press the Arduino RESET button.
 
 **Q: Example 1 says School version or WRO version?**
-That is a different firmware (read differently). Use the [Sharpshooter Vision School / WRO Arduino examples](/en/sensors/esp32cam/arduino-examples.md), or ask us to update it to the Universal firmware.
+That is a legacy firmware (the School / WRO editions are no longer supported and read differently); the legacy examples stay online for reference in [Sharpshooter Vision legacy editions (no longer supported)](/en/sensors/esp32cam/index.md). To upgrade to the current Sharpshooter Vision, contact the dealer you bought it from and send it back: **the firmware update is free**, and the buyer pays shipping both ways.
 
 **Q: A colour is always "not seen"?**
 The colour has not been taught yet, or the taught colour is too different from what the camera sees now (different light). Stop on that target on the camera and teach it again; a minimum area (Size) that is too big also hides small blobs.
@@ -1570,4 +1570,4 @@ No. The camera is an ESP32 slave and cannot hold the I2C clock while it prepares
 The Arduino UNO Wire buffer is 32 bytes (16 int16 values). The helpers already split it for you; when you use `mbcReadMany` yourself, keep k at 16 or less.
 
 **Q: What is in every box?**
-See the [value ids](#cmds) above, or the full spec on the [Sharpshooter Vision Universal page](/en/sensors/unicam/index.md).
+See the [value ids](#cmds) above, or the full spec on the [Sharpshooter Vision page](/en/sensors/unicam/index.md).

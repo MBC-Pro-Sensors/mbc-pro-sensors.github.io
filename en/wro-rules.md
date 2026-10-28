@@ -16,7 +16,7 @@ For other competitions (Robofest, RoboCupJunior, AERC, GRG and more), see the [C
 | [IMU 9-Axis Gyro](/en/sensors/imu/index.md) | ✅ | ✅ | ✅ | Coming soon |
 | [Ranger 2-Way (TOF2)](/en/sensors/tof2/index.md) | ✅ | ✅ | ✅ | Laser eye-safety proof required (see point 3) |
 | [Ranger 8-Way (TOF8)](/en/sensors/tof8/index.md) | ✅* | ✅* | ✅ | *Eight fixed single-point ToF sensors, not a rotating LIDAR scanner. Confirm with your National Organizer before the event (see point 2) |
-| [Sharpshooter Vision (ESP32CAM)](/en/sensors/esp32cam/index.md) | ❌ | ✅ | ✅ | Cameras are limited to Junior and Senior |
+| [Sharpshooter Vision](/en/sensors/unicam/index.md) | ❌ | ✅ | ✅ | Cameras are limited to Junior and Senior (the [legacy editions](/en/sensors/esp32cam/index.md) too) |
 | [SPIKE 6-Way Expander (EXP6)](/en/sensors/exp6/index.md) | ✅ | ✅ | ✅ | Motors on the expander count toward your age group's motor limit; the external battery must meet the power rules |
 | [Controller 2.4G (PS2)](/en/sensors/ps2/index.md) / [PS4/PS5](/en/sensors/ps4/index.md) | ❌ | ❌ | ❌ | Remote control is not allowed during RoboMission runs. Use them for events that allow remote control, classes and demos |
 
@@ -29,7 +29,7 @@ Teams may build their robot from any materials and components, as long as the we
 ### 2. Sensors: cameras and LIDAR are limited by age group (5.2.6)
 
 - In general there is no limit on the type or number of sensors.
-- **Cameras may only be used in the Junior and Senior age groups**, so the ESP32CAM cannot be used in Elementary.
+- **Cameras may only be used in the Junior and Senior age groups**, so the Sharpshooter Vision (legacy editions included) cannot be used in Elementary.
 - **LIDAR and other 3D scanners may only be used in the Senior age group.**
 
 The Ranger 8-Way (TOF8) consists of eight **fixed-direction** single-point ToF laser distance sensors (from -90° to +90°, each measuring one direction). It does not rotate or scan and does not produce a 3D point cloud; it works like an ordinary distance sensor. The final classification is up to the judges and organizers, so **Elementary and Junior teams should confirm with their National Organizer before the event.**
@@ -47,7 +47,7 @@ The ToF laser ranging components in both Ranger sensors are specified by their m
 
 | Product | Wireless status |
 | :--- | :--- |
-| Sharpshooter Vision (ESP32CAM) | The factory firmware contains **no Wi-Fi or Bluetooth code**, so the radio is never turned on. It connects to the hub by cable |
+| Sharpshooter Vision | Its firmware (current firmware v1 and the legacy school / WRO editions) contains **no Wi-Fi or Bluetooth code**, so the radio is never turned on. It connects to the hub by cable |
 | Controller PS2 / PS4/PS5 | These are remote-control receivers and **cannot be used in RoboMission** |
 | All other products | Connected to the hub by cable, no wireless function |
 

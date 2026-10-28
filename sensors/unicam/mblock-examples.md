@@ -1,39 +1,39 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 95_產品網站\mBlock範例產生器（node build.js）產生：改內容請改產生器的 sets/<產品>.js 再重建，不要手改本檔 -->
-# 🧱 mBlock 新手範例：神攝手通用版 v1
+# 🧱 mBlock 新手範例：神攝手
 
-[🔙 回到神攝手通用版 v1產品頁](/sensors/unicam/index.md)
+[🔙 回到神攝手產品頁](/sensors/unicam/index.md)
 
-這一頁是寫給**完全沒寫過程式**的人：用 mBlock 5 的積木在 **mBot** 上讀神攝手通用版 v1。5 個範例從「把數字變成聲音」開始，一步一步做到會自己跑的車子。每個範例都有積木圖、可下載的專案檔，還有一支做同樣事情的 Arduino 程式。
+這一頁是寫給**完全沒寫過程式**的人：用 mBlock 5 的積木在 **mBot** 上讀神攝手。5 個範例從「把數字變成聲音」開始，一步一步做到會自己跑的車子。每個範例都有積木圖、可下載的專案檔，還有一支做同樣事情的 Arduino 程式。
 
 | 寫法 | 適合誰 | 怎麼打開範例檔 |
 |---|---|---|
 | 🟧 **mBlock 5 電腦版**（積木，上傳模式）＋ **MBC 感應器擴展 v2.1.0** | 學校、第一次用 mBot 的人 | 下載 `.mblock` → 打開 mBlock 5 → 「檔案 → 從電腦打開」→ 選檔案 → 右下切到「上傳」→ 按「上傳」 |
-| 🔧 **Arduino IDE**（文字程式） | 想看積木背後長什麼樣、或自己寫程式的人 | 下載 `.ino` → 裝好 Makeblock 與 MBC_Sensors 函式庫（見 [神攝手通用版 mBlock 教學](/sensors/unicam/mblock/index.md)）→ 主板選 Arduino Uno → 上傳 |
+| 🔧 **Arduino IDE**（文字程式） | 想看積木背後長什麼樣、或自己寫程式的人 | 下載 `.ino` → 裝好 Makeblock 與 MBC_Sensors 函式庫（見 [神攝手 mBlock 教學](/sensors/unicam/mblock/index.md)）→ 主板選 Arduino Uno → 上傳 |
 
 > [!WARNING]
 > **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻）上機後可能調整；mBlock 版還沒接 mBot 實測。
 
 > [!IMPORTANT]
-> - 感應器要燒 **神攝手通用版 v1 的 mBlock 版韌體**，經 **mBot 插座片**接 RJ25 連接埠；擴展要用 **MBC 感應器 v2.1.0**（擴展新版開發中，正式上架前可先下載 [匯入檔](/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext) 試用，尚未上機驗證；做法見 [mBlock 教學](/sensors/unicam/mblock/index.md)）。
+> - 感應器要燒 **神攝手的 mBlock 版韌體**，經 **mBot 插座片**接 RJ25 連接埠；擴展要用 **MBC 感應器 v2.1.0**（擴展新版開發中，正式上架前可先下載 [匯入檔](/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext) 試用，尚未上機驗證；做法見 [mBlock 教學](/sensors/unicam/mblock/index.md)）。
 > - 主板是 **mBot（mCore）**。mBot Ranger、Orion、MegaPi 也能用，但要把「當 mBot 啟動時」換成那塊主板的起始積木、連接埠改成它能用的號碼（見 [mBlock 教學](/sensors/unicam/mblock/index.md)）；mBot2（CyberPi）沒有 RJ25，不支援。
 > - 積木圖裡的控制與運算積木（forever、if…then…else、wait、set…to）以英文顯示，在 mBlock 的中文介面就是「重複無限次」「如果…那麼…否則」「等待…秒」「變數設為」。
 
 ## 開始之前
 
-<figure class="ref-fig"><img src="/images/sensors/unicam/color-track.svg" alt="神攝手通用版 顏色追蹤：X 0~159 左→右、Y 0~119 上→下" loading="lazy"></figure>
+<figure class="ref-fig"><img src="/images/sensors/unicam/color-track.svg" alt="神攝手顏色追蹤：X 0~159 左→右、Y 0~119 上→下" loading="lazy"></figure>
 
 感應器 → mBot 插座片 → 主板 RJ25 連接埠（UART 38400；相機 RX＝IO3、TX＝IO1，跟主機交叉接）。畫面座標：X 0～159 左→右、Y 0～119 上→下，0＝沒有目標。
 
-1. **裝擴展**：照 [神攝手通用版 mBlock 教學](/sensors/unicam/mblock/index.md) 載入 **MBC 感應器 v2.1.0** 擴展；左下「設備」加入 **mBot**，右下切到「上傳」。
-2. **接線**：神攝手通用版 → mBot 插座片 → mBot **連接埠 1**（這頁所有範例都接這一埠；換埠就把積木上的連接埠數字改掉）。
+1. **裝擴展**：照 [神攝手 mBlock 教學](/sensors/unicam/mblock/index.md) 載入 **MBC 感應器 v2.1.0** 擴展；左下「設備」加入 **mBot**，右下切到「上傳」。
+2. **接線**：神攝手 → mBot 插座片 → mBot **連接埠 1**（這頁所有範例都接這一埠；換埠就把積木上的連接埠數字改掉）。
 3. **先開機再讀**：每個範例一開始都「等待 2 秒」讓相機開機；太早讀會讀到 -32768（還沒收到）。
 4. **程式會自己切相機模式**：每個範例第二顆積木是「設定模式」（例：顏色追蹤 ③ 標準），會存進相機。讀值積木會先問相機目前是什麼模式，再決定讀哪個值；模式不對時讀到 -32768。
 5. **先在相機上教顏色**（顏色追蹤用，程式改不了）：即時畫面用左右鍵停在「目標 1」→ 按 OK → 用左右鍵把十字移到積木上（先調 X、再調 Y，各按一次 OK）→ 最後按 OK 取色（按住 OK 0.8 秒可直接完成）。範例 2～4 追的是**目標 1**。
 
 ## 這頁會用到的積木
 
-每顆讀值積木會先讀相機的「模式編號」（值 0x01），再讀這個模式下對應的值編號（跟 Arduino I2C 版同一張值表）；完整積木表與值編號在 [神攝手通用版 mBlock 教學](/sensors/unicam/mblock/index.md)。
+每顆讀值積木會先讀相機的「模式編號」（值 0x01），再讀這個模式下對應的值編號（跟 Arduino I2C 版同一張值表）；完整積木表與值編號在 [神攝手 mBlock 教學](/sensors/unicam/mblock/index.md)。
 
 | 積木 | 傳回 | 意思 |
 |---|---|---|
@@ -64,10 +64,10 @@
 
 **要準備什麼**
 - mBot（mCore 主板）＋ mBlock 5 電腦版
-- 神攝手通用版 v1（MakeBlock 版）＋ mBot 插座片
+- 神攝手（MakeBlock 版）＋ mBot 插座片
 - 一塊顏色鮮豔的積木（紅、綠、藍都可以）
 
-**怎麼接**：神攝手通用版 → mBot 插座片 → mBot **連接埠 1**。鏡頭朝前、裝在車頭。這個範例不用教顏色；取樣點 1 的位置看相機螢幕上的十字「1」。
+**怎麼接**：神攝手 → mBot 插座片 → mBot **連接埠 1**。鏡頭朝前、裝在車頭。這個範例不用教顏色；取樣點 1 的位置看相機螢幕上的十字「1」。
 
 **下載程式**
 
@@ -91,8 +91,8 @@ end</pre>
 <summary>🔧 等價 Arduino 程式（mBot）</summary>
 
 ```cpp
-// 神攝手通用版 v1 × mBlock 5　範例 1：聽見顏色（mBot 等價 Arduino 程式）
-// 接線：神攝手通用版 → mBot 插座片 → mBot 連接埠 1。鏡頭朝前、裝在車頭。這個範例不用教顏色；取樣點 1 的位置看相機螢幕上的十字「1」。
+// 神攝手 × mBlock 5　範例 1：聽見顏色（mBot 等價 Arduino 程式）
+// 接線：神攝手 → mBot 插座片 → mBot 連接埠 1。鏡頭朝前、裝在車頭。這個範例不用教顏色；取樣點 1 的位置看相機螢幕上的十字「1」。
 // 跟 mBlock 積木範例做的事完全一樣，給想看「積木背後長什麼樣」或用 Arduino IDE 的人。
 // 需要的函式庫：
 //   1. Makeblock（Arduino IDE「函式庫管理員」搜尋 Makeblock，或 mBlock 5 安裝資料夾裡的 Makeblock 函式庫）
@@ -153,10 +153,10 @@ void loop() {}   // 這裡什麼都沒有：上面的積木不會結束
 
 **要準備什麼**
 - mBot（mCore 主板）＋ mBlock 5 電腦版
-- 神攝手通用版 v1（MakeBlock 版）＋ mBot 插座片
+- 神攝手（MakeBlock 版）＋ mBot 插座片
 - 一塊顏色鮮豔的積木（紅、綠、藍都可以）
 
-**怎麼接**：神攝手通用版 → mBot 插座片 → mBot **連接埠 1**。鏡頭朝前、裝在車頭。先照上面「開始之前」在相機上教好目標 1 的顏色。
+**怎麼接**：神攝手 → mBot 插座片 → mBot **連接埠 1**。鏡頭朝前、裝在車頭。先照上面「開始之前」在相機上教好目標 1 的顏色。
 
 **下載程式**
 
@@ -184,8 +184,8 @@ end</pre>
 <summary>🔧 等價 Arduino 程式（mBot）</summary>
 
 ```cpp
-// 神攝手通用版 v1 × mBlock 5　範例 2：找到目標色亮綠燈（mBot 等價 Arduino 程式）
-// 接線：神攝手通用版 → mBot 插座片 → mBot 連接埠 1。鏡頭朝前、裝在車頭。先照上面「開始之前」在相機上教好目標 1 的顏色。
+// 神攝手 × mBlock 5　範例 2：找到目標色亮綠燈（mBot 等價 Arduino 程式）
+// 接線：神攝手 → mBot 插座片 → mBot 連接埠 1。鏡頭朝前、裝在車頭。先照上面「開始之前」在相機上教好目標 1 的顏色。
 // 跟 mBlock 積木範例做的事完全一樣，給想看「積木背後長什麼樣」或用 Arduino IDE 的人。
 // 需要的函式庫：
 //   1. Makeblock（Arduino IDE「函式庫管理員」搜尋 Makeblock，或 mBlock 5 安裝資料夾裡的 Makeblock 函式庫）
@@ -253,10 +253,10 @@ void loop() {}   // 這裡什麼都沒有：上面的積木不會結束
 **要準備什麼**
 - mBot（mCore 主板）＋ mBlock 5 電腦版
 - mBot 兩輪小車（左輪接 M1、右輪接 M2，出廠就是這樣接）
-- 神攝手通用版 v1（MakeBlock 版）＋ mBot 插座片
+- 神攝手（MakeBlock 版）＋ mBot 插座片
 - 一塊顏色鮮豔的積木（紅、綠、藍都可以）
 
-**怎麼接**：神攝手通用版 → mBot 插座片 → mBot **連接埠 1**。鏡頭朝前、裝在車頭。先照上面「開始之前」在相機上教好目標 1 的顏色。
+**怎麼接**：神攝手 → mBot 插座片 → mBot **連接埠 1**。鏡頭朝前、裝在車頭。先照上面「開始之前」在相機上教好目標 1 的顏色。
 
 **下載程式**
 
@@ -284,8 +284,8 @@ end</pre>
 <summary>🔧 等價 Arduino 程式（mBot）</summary>
 
 ```cpp
-// 神攝手通用版 v1 × mBlock 5　範例 3：一個輪子轉向色塊（mBot 等價 Arduino 程式）
-// 接線：神攝手通用版 → mBot 插座片 → mBot 連接埠 1。鏡頭朝前、裝在車頭。先照上面「開始之前」在相機上教好目標 1 的顏色。
+// 神攝手 × mBlock 5　範例 3：一個輪子轉向色塊（mBot 等價 Arduino 程式）
+// 接線：神攝手 → mBot 插座片 → mBot 連接埠 1。鏡頭朝前、裝在車頭。先照上面「開始之前」在相機上教好目標 1 的顏色。
 // 跟 mBlock 積木範例做的事完全一樣，給想看「積木背後長什麼樣」或用 Arduino IDE 的人。
 // 需要的函式庫：
 //   1. Makeblock（Arduino IDE「函式庫管理員」搜尋 Makeblock，或 mBlock 5 安裝資料夾裡的 Makeblock 函式庫）
@@ -355,10 +355,10 @@ void loop() {}   // 這裡什麼都沒有：上面的積木不會結束
 **要準備什麼**
 - mBot（mCore 主板）＋ mBlock 5 電腦版
 - mBot 兩輪小車（左輪接 M1、右輪接 M2，出廠就是這樣接）
-- 神攝手通用版 v1（MakeBlock 版）＋ mBot 插座片
+- 神攝手（MakeBlock 版）＋ mBot 插座片
 - 一塊顏色鮮豔的積木（紅、綠、藍都可以）
 
-**怎麼接**：神攝手通用版 → mBot 插座片 → mBot **連接埠 1**。鏡頭朝前、裝在車頭。先照上面「開始之前」在相機上教好目標 1 的顏色。
+**怎麼接**：神攝手 → mBot 插座片 → mBot **連接埠 1**。鏡頭朝前、裝在車頭。先照上面「開始之前」在相機上教好目標 1 的顏色。
 
 **下載程式**
 
@@ -395,8 +395,8 @@ end</pre>
 <summary>🔧 等價 Arduino 程式（mBot）</summary>
 
 ```cpp
-// 神攝手通用版 v1 × mBlock 5　範例 4：追色塊、靠近就停＋燈號（mBot 等價 Arduino 程式）
-// 接線：神攝手通用版 → mBot 插座片 → mBot 連接埠 1。鏡頭朝前、裝在車頭。先照上面「開始之前」在相機上教好目標 1 的顏色。
+// 神攝手 × mBlock 5　範例 4：追色塊、靠近就停＋燈號（mBot 等價 Arduino 程式）
+// 接線：神攝手 → mBot 插座片 → mBot 連接埠 1。鏡頭朝前、裝在車頭。先照上面「開始之前」在相機上教好目標 1 的顏色。
 // 跟 mBlock 積木範例做的事完全一樣，給想看「積木背後長什麼樣」或用 Arduino IDE 的人。
 // 需要的函式庫：
 //   1. Makeblock（Arduino IDE「函式庫管理員」搜尋 Makeblock，或 mBlock 5 安裝資料夾裡的 Makeblock 函式庫）
@@ -484,10 +484,10 @@ void loop() {}   // 這裡什麼都沒有：上面的積木不會結束
 **要準備什麼**
 - mBot（mCore 主板）＋ mBlock 5 電腦版
 - mBot 兩輪小車（左輪接 M1、右輪接 M2，出廠就是這樣接）
-- 神攝手通用版 v1（MakeBlock 版）＋ mBot 插座片
+- 神攝手（MakeBlock 版）＋ mBot 插座片
 - 白色地面上貼一條黑色膠帶（寬 2～3 公分）
 
-**怎麼接**：神攝手通用版 → mBot 插座片 → mBot **連接埠 1**。鏡頭裝在車頭、斜斜往前下方看地面（看得到車前 10～30 公分的線）。
+**怎麼接**：神攝手 → mBot 插座片 → mBot **連接埠 1**。鏡頭裝在車頭、斜斜往前下方看地面（看得到車前 10～30 公分的線）。
 
 **下載程式**
 
@@ -518,8 +518,8 @@ end</pre>
 <summary>🔧 等價 Arduino 程式（mBot）</summary>
 
 ```cpp
-// 神攝手通用版 v1 × mBlock 5　範例 5：看著黑線走（mBot 等價 Arduino 程式）
-// 接線：神攝手通用版 → mBot 插座片 → mBot 連接埠 1。鏡頭裝在車頭、斜斜往前下方看地面（看得到車前 10～30 公分的線）。
+// 神攝手 × mBlock 5　範例 5：看著黑線走（mBot 等價 Arduino 程式）
+// 接線：神攝手 → mBot 插座片 → mBot 連接埠 1。鏡頭裝在車頭、斜斜往前下方看地面（看得到車前 10～30 公分的線）。
 // 跟 mBlock 積木範例做的事完全一樣，給想看「積木背後長什麼樣」或用 Arduino IDE 的人。
 // 需要的函式庫：
 //   1. Makeblock（Arduino IDE「函式庫管理員」搜尋 Makeblock，或 mBlock 5 安裝資料夾裡的 Makeblock 函式庫）
@@ -591,6 +591,6 @@ void loop() {}   // 這裡什麼都沒有：上面的積木不會結束
 
 ## 下一步
 
-- 全部積木、值編號、各主板可用的連接埠：[神攝手通用版 v1 mBlock 教學](/sensors/unicam/mblock/index.md)
+- 全部積木、值編號、各主板可用的連接埠：[神攝手 mBlock 教學](/sensors/unicam/mblock/index.md)
 - 同樣的相機模式在樂高上怎麼用：[SPIKE 範例](/sensors/unicam/spike-examples.md)、[EV3 範例](/sensors/unicam/ev3-examples.md)
 - 想用 Arduino 直接接感應器（I2C 版，不經 mBot）：[Arduino 範例](/sensors/unicam/arduino-examples.md)

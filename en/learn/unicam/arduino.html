@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/unicam/arduino.html">
 <link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/unicam/arduino.html">
 <link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/unicam/arduino.html">
-<title>Sharpshooter Vision Universal v1 Arduino tutorial | MBC-Pro Sensors</title>
+<title>Sharpshooter Vision Arduino tutorial | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -241,11 +241,11 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/unicam/arduino/">← Sharpshooter Vision Universal v1 Arduino guide</a><a class="lang" href="/learn/unicam/arduino.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/unicam/micropython.html">SPIKE</a><a href="/en/learn/unicam/ev3-pybricks.html">EV3</a><a href="/en/learn/unicam/arduino.html" aria-current="page">Arduino</a><a href="/en/learn/unicam/mblock.html">mBlock</a><a href="/en/learn/unicam/matrix.html">MATRIX</a><a href="/en/learn/unicam/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/unicam/arduino.html" aria-current="page">Arduino IDE</a></div></div></nav>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/unicam/arduino/">← Sharpshooter Vision Arduino guide</a><a class="lang" href="/learn/unicam/arduino.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/unicam/micropython.html">SPIKE</a><a href="/en/learn/unicam/ev3-pybricks.html">EV3</a><a href="/en/learn/unicam/arduino.html" aria-current="page">Arduino</a><a href="/en/learn/unicam/mblock.html">mBlock</a><a href="/en/learn/unicam/matrix.html">MATRIX</a><a href="/en/learn/unicam/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/unicam/arduino.html" aria-current="page">Arduino IDE</a></div></div></nav>
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">MBC Sharpshooter Vision Universal v1 × Arduino (I2C 0x4C)</span>
-    <h1>Read Sharpshooter Vision Universal with Arduino in three steps</h1>
+    <span class="eyebrow">MBC Sharpshooter Vision × Arduino (I2C 0x4C)</span>
+    <h1>Read Sharpshooter Vision with Arduino in three steps</h1>
     <p class="lead">Arduino reads the camera over I2C at address <b>0x4C</b>; UNO, Nano, UNO R4 and ESP32 all work. In order: <b>wire it, paste the helper and pick the camera mode</b>; then in <b>setup()</b> start I2C, wait for the camera and switch the mode; then read values in <b>loop()</b>. Work down the steps on the left and watch the program grow on the right; drag things in the simulated camera view to see what the Serial Monitor prints.</p>
     <p class="v1warn" role="note"><b>v1 not yet hardware-verified</b><span>The value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after hardware testing.</span></p>
   </header>
@@ -653,7 +653,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         what: ('Reads 0x01: the camera\'s current mode (e.g. 13). Use it to check that the camera menu matches the program.'), ret: ('11–43'),
         body: [out([('camera mode number: '), v('ucModeNumber()')])], out: function (V) { return ('camera mode number: ') + V.read(0x01); } });
       add({ id: 'devid', grp: 'info', modes: null, label: MB ? 'ucReadMany(0xF0, 1)' : 'mbcRead(ADDR, 0xF0)', name: ('Device ID'), once: true,
-        what: ('F0 = device ID: 0x34C (low byte 0x4C = address, high byte 3 = Universal; school 1, WRO 2).'), ret: MB ? ('844 (= 0x34C)') : '0x34C',
+        what: ('F0 = device ID: 0x34C (low byte 0x4C = address, high byte 3 = current Sharpshooter Vision; school 1, WRO 2).'), ret: MB ? ('844 (= 0x34C)') : '0x34C',
         body: MB ? [out([('device ID: '), v('ucReadMany(0xF0, 1)[0]')])] : [out([('device ID: 0x'), v('mbcRead(ADDR, 0xF0)', true)])],
         out: function (V) { var x = V.read(0xF0); return MB ? ('device ID: ') + x : ('device ID: 0x') + cHex(x); } });
       add({ id: 'fw', grp: 'info', modes: null, label: MB ? 'ucReadMany(0xF2, 1)' : 'mbcRead(ADDR, 0xF2)', name: ('Firmware version'), once: true,

@@ -46,9 +46,9 @@ WRO Future Engineers and Robofest allow any platform, and in Taiwan so do AERC (
 
 Yes. The laser ranging components in both Ranger sensors (TOF2 and TOF8) are Class 1 laser devices compliant with IEC 60825-1:2014. WRO asks for proof of eye safety at inspection; see the [WRO Rules Check](/en/wro-rules.md#_3-laser-safety-proof-of-eye-safety-is-required-5218) for what to show.
 
-### Does the Sharpshooter Vision (ESP32CAM) use Wi-Fi?
+### Does the Sharpshooter Vision use Wi-Fi?
 
-No. The factory firmware contains no Wi-Fi or Bluetooth code, so the radio is never turned on. The camera talks to your hub by cable.
+No. Its firmware (the current firmware v1 and the legacy School / WRO editions) contains no Wi-Fi or Bluetooth code, so the radio is never turned on. The camera talks to your hub by cable.
 
 ## Choosing a Product
 
@@ -68,6 +68,10 @@ From 0 to 1,200 mm, across 180° in front of the robot (90° to each side). A re
 
 No. The receiver bonds only to your own controller, so it will not pick up other teams' gamepads at a busy event. If the signal is lost, its outputs return to zero within 0.3 seconds. In open-field tests it held a stable connection at 100 m.
 
+### Is the legacy Sharpshooter Vision (School / WRO edition) still supported? Can I upgrade it?
+
+Sharpshooter Vision units shipped before 2026-10 (School and WRO editions) are no longer supported; their guides and examples stay for reference on the [legacy editions page](/en/sensors/esp32cam/index.md). To upgrade to the current [Sharpshooter Vision](/en/sensors/unicam/index.md), contact the distributor you bought it from and send it back: **the firmware update is free**, and the buyer pays shipping both ways.
+
 ## Pricing and Ordering
 
 ### How much do MBC sensors cost?
@@ -80,7 +84,7 @@ Manufacturer's suggested retail prices (MSRP) in US dollars, shipping not includ
 | Pathfinder 16-Way (Line16) | 120 |
 | Ranger 2-Way (TOF2) | 60 |
 | Ranger 8-Way (TOF8) | 120 |
-| Sharpshooter Vision (ESP32CAM) | 120 |
+| Sharpshooter Vision (in development) | Ask for a quote |
 | SPIKE 6-Way Expander (EXP6) | 145 |
 | Controller PS4/PS5 | 100 |
 | IMU 9-Axis Gyro (coming soon) | 100 |

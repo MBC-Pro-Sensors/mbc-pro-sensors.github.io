@@ -35,7 +35,7 @@ micro:bit 的 I2C 腳位是固定的：**P19 = SCL、P20 = SDA**（金手指邊�
 | 循行者 8／16 路、測距者 2 路、掌控者 PS2、IMU 陀螺儀 | micro:bit 3V 可用（電池供電時建議外部 5 V） | STM32 產品，耗電小 |
 | **測距者 8 路** | **一定要外部 5 V** | 8 顆雷射同時量測，電流超過 3V 腳能給的 |
 | **掌控者 PS4／PS5** | **一定要外部 5 V** | ESP32 藍牙接收，瞬間電流大 |
-| **神攝手 ESP32CAM** | **一定要外部 5 V** | ESP32 相機＋螢幕＋補光燈 |
+| **神攝手**（含舊版） | **一定要外部 5 V** | ESP32 相機＋螢幕 |
 
 多個產品可以串在同一組 P19／P20 上，只要 I2C 位址不同（出廠位址：循行者 `0x16`、測距者 `0x29`、掌控者 `0x42`、陀螺儀 `0x6A`、神攝手 `0x4C`）。
 
@@ -62,7 +62,7 @@ micro:bit 的 I2C 腳位是固定的：**P19 = SCL、P20 = SDA**（金手指邊�
 | 位址 … 的裝置就緒？ ｜ device at … is ready | 裝置有回應且 F3 bit0 = 1 | 是／否 |
 | 等位址 … 的裝置就緒，最多 … 毫秒 ｜ wait for device at … ready, timeout … ms | 等到就緒或逾時 | 0 ~ 60000 ms，預設 5000 |
 | 位址 … 的裝置 出廠 ID ｜ device at … factory id | F0 低 byte：出廠位址（改位址後不變） | 0x16／0x29／0x42／0x6A／0x4C |
-| 位址 … 的裝置 類別 ｜ device at … kind | F0 高 byte：循行者路數 8／16、測距者顆數 2／8、掌控者 1＝PS2／2＝PS4、陀螺儀 1、神攝手 1＝學校版／2＝WRO 版 | 0 ~ 255 |
+| 位址 … 的裝置 類別 ｜ device at … kind | F0 高 byte：循行者路數 8／16、測距者顆數 2／8、掌控者 1＝PS2／2＝PS4、陀螺儀 1、神攝手 3＝目前的神攝手（1＝舊版學校版／2＝舊版 WRO 版） | 0 ~ 255 |
 | 位址 … 的裝置 協議版本 ｜ device at … protocol version | F1，這個擴充要 2 | 2 |
 | 位址 … 的裝置 韌體版本 ｜ device at … firmware version | F2 換成「主.次」字串 | 例 "4.0" |
 | 位址 … 的裝置 狀態旗標 ｜ device at … status flags | F3 整個 byte | 0 ~ 255 |
@@ -159,7 +159,9 @@ micro:bit 的 I2C 腳位是固定的：**P19 = SCL、P20 = SDA**（金手指邊�
 | 當陀螺儀 轉了 … ° ｜ on IMU turned by … ° | 融合航向每變化指定角度觸發一次 | 例 90 |
 | 陀螺儀 改用位址 … ｜ IMU use address …（進階） | 位址改過時告訴擴充 | 0x08 ~ 0x77 |
 
-### 神攝手（學校版／WRO 版，`0x4C`）
+### 神攝手舊版（學校版／WRO 版，`0x4C`，停止支援）
+
+這一組積木給[舊版神攝手](/sensors/esp32cam/index.md)用。目前的神攝手在擴充裡還沒有積木，用 MakeCode 的 JavaScript 讀，看 [神攝手 × micro:bit](/sensors/unicam/microbit/index.md)。
 
 | 積木 | 功能 | 範圍 |
 | :--- | :--- | :--- |
@@ -174,7 +176,7 @@ micro:bit 的 I2C 腳位是固定的：**P19 = SCL、P20 = SDA**（金手指邊�
 | 當神攝手 色塊 … ｜ on camera blob … | 學校版事件：找到／丟失 | 2 種 |
 | 神攝手 改用位址 … ｜ camera use address …（進階） | 位址改過時告訴擴充 | 0x08 ~ 0x77 |
 
-神攝手的 I2C 用 **SDA = IO3、SCL = IO1**（2026-10-21 定案），接上 I2C 後 USB 序列監看就沒了；硬體已確認可做，**上機待測**。
+舊版神攝手的 I2C 用 **SDA = IO3、SCL = IO1**（2026-10-21 定案），接上 I2C 後 USB 序列監看就沒了；硬體已確認可做，**上機待測**。
 
 ## 📖 各產品的 micro:bit 頁與範例
 
@@ -189,7 +191,8 @@ micro:bit 的 I2C 腳位是固定的：**P19 = SCL、P20 = SDA**（金手指邊�
 | 掌控者 PS2 | [ps2 × micro:bit](/sensors/ps2/microbit.md) | [範例](/sensors/ps2/microbit-examples.md) |
 | 掌控者 PS4／PS5 | [ps4 × micro:bit](/sensors/ps4/microbit.md) | [範例](/sensors/ps4/microbit-examples.md) |
 | IMU 陀螺儀 | [imu × micro:bit](/sensors/imu/microbit.md) | [範例](/sensors/imu/microbit-examples.md) |
-| 神攝手 ESP32CAM | [esp32cam × micro:bit](/sensors/esp32cam/microbit.md) | [範例](/sensors/esp32cam/microbit-examples.md) |
+| 神攝手 | [神攝手 × micro:bit](/sensors/unicam/microbit/index.md) | [範例](/sensors/unicam/microbit-examples.md) |
+| 神攝手舊版（停止支援） | [esp32cam × micro:bit](/sensors/esp32cam/microbit.md) | [範例](/sensors/esp32cam/microbit-examples.md) |
 
 > [!NOTE]
 > SPIKE 6 路擴充器（EXP6）走 UART，不在這個擴充裡；Servo6 沒有 micro:bit 版。

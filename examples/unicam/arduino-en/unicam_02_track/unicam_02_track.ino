@@ -1,5 +1,5 @@
 /*
- * Sharpshooter Vision Universal v1 x Arduino  Example 2: Where is the blob? (colour tracking)
+ * Sharpshooter Vision x Arduino  Example 2: Where is the blob? (colour tracking)
  * ------------------------------------------------------------
  * Camera menu: camera mode 1 Colour tracking, option 3 Standard (the sketch also switches it with E0)
  *
@@ -138,7 +138,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- Sharpshooter Vision Universal ----------
+// ---------- Sharpshooter Vision ----------
 
 // Switch camera mode (E0): camMode 1~4, sub = option (0 for colour order). Saved in the camera
 bool ucSetMode(uint8_t camMode, uint8_t sub) {

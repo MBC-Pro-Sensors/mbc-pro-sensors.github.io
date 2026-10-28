@@ -150,11 +150,11 @@
     {
       "out": "/downloads/MBC_UniCam_v1_Host_Libraries.zip",
       "label": {
-        "zh": "神攝手通用版 v1：上位機函式庫（Pybricks SPIKE／EV3、SPIKE App、Arduino、micro:bit、MATRIX）＋Python 範例",
-        "en": "Sharpshooter Vision Universal v1: host libraries (Pybricks SPIKE / EV3, SPIKE App, Arduino, micro:bit, MATRIX) + Python examples"
+        "zh": "神攝手（韌體 v1）：上位機函式庫（Pybricks SPIKE／EV3、SPIKE App、Arduino、micro:bit、MATRIX）＋Python 範例",
+        "en": "Sharpshooter Vision (firmware v1): host libraries (Pybricks SPIKE / EV3, SPIKE App, Arduino, micro:bit, MATRIX) + Python examples"
       },
       "version": "1.0",
-      "firmware": "通用版 v1（尚未上機驗證）",
+      "firmware": "韌體 v1（尚未上機驗證）",
       "legacy": false,
       "files": [
         "README.md",
@@ -175,7 +175,7 @@
         "spike_app/examples/ex01_track_turn.py",
         "spike_app/examples/ex02_line_follow.py"
       ],
-      "size": 45990
+      "size": 45832
     },
     {
       "out": "/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext",

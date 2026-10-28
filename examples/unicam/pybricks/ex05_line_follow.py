@@ -1,5 +1,5 @@
-# 神攝手通用版 v1 × Pybricks（SPIKE）範例 5：PD 循線＋路口停車
-# Sharpshooter Vision Universal v1 × Pybricks (SPIKE) example 5: PD line following + stop at a junction
+# 神攝手 × Pybricks（SPIKE）範例 5：PD 循線＋路口停車
+# Sharpshooter Vision × Pybricks (SPIKE) example 5: PD line following + stop at a junction
 # 需要把相機選單切到 相機模式 4 循線 ・子選項 ① 黑線 ＝模式編號 41（白線 42、色線 43 寫法一樣，改 mode）
 # Camera menu: camera mode 4 Line, option 1 Black line = mode number 41 (42 white / 43 colour line: change mode)
 # 準備：相機裝在車頭、斜斜往前下方看線 / mount the camera at the front, looking down and forward

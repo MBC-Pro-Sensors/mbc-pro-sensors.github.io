@@ -4,7 +4,7 @@
 > [!WARNING]
 > **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
 
-神攝手通用版 v1（MATRIX 版）對 MATRIX Mini R4 來說就是一台 **mVision 攝影機**：用 MATRIXblock 內建的 mVision 積木讀，**不用裝函式庫**，也不走 I2C。每一格的完整對照在 [讀值參考：MATRIX](/sensors/unicam/reference.md#host-mx)，整支範例在 [MATRIX 範例](/sensors/unicam/matrix-examples.md)。
+神攝手（MATRIX 版）對 MATRIX Mini R4 來說就是一台 **mVision 攝影機**：用 MATRIXblock 內建的 mVision 積木讀，**不用裝函式庫**，也不走 I2C。每一格的完整對照在 [讀值參考：MATRIX](/sensors/unicam/reference.md#host-mx)，整支範例在 [MATRIX 範例](/sensors/unicam/matrix-examples.md)。
 
 ## 接線
 

@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/unicam/micropython.html">
 <link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/unicam/micropython.html">
 <link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/unicam/micropython.html">
-<title>Sharpshooter Vision Universal v1 Pybricks tutorial | MBC-Pro Sensors</title>
+<title>Sharpshooter Vision Pybricks tutorial | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -241,11 +241,11 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/unicam/spike/">← Sharpshooter Vision Universal v1 SPIKE guide</a><a class="lang" href="/learn/unicam/micropython.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/unicam/micropython.html" aria-current="page">SPIKE</a><a href="/en/learn/unicam/ev3-pybricks.html">EV3</a><a href="/en/learn/unicam/arduino.html">Arduino</a><a href="/en/learn/unicam/mblock.html">mBlock</a><a href="/en/learn/unicam/matrix.html">MATRIX</a><a href="/en/learn/unicam/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/unicam/micropython.html" aria-current="page">MicroPython (Pybricks)</a></div></div></nav>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/unicam/spike/">← Sharpshooter Vision SPIKE guide</a><a class="lang" href="/learn/unicam/micropython.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/unicam/micropython.html" aria-current="page">SPIKE</a><a href="/en/learn/unicam/ev3-pybricks.html">EV3</a><a href="/en/learn/unicam/arduino.html">Arduino</a><a href="/en/learn/unicam/mblock.html">mBlock</a><a href="/en/learn/unicam/matrix.html">MATRIX</a><a href="/en/learn/unicam/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/unicam/micropython.html" aria-current="page">MicroPython (Pybricks)</a></div></div></nav>
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">MBC Sharpshooter Vision Universal v1 × Pybricks (SPIKE)</span>
-    <h1>Read Sharpshooter Vision Universal with MicroPython in three steps</h1>
+    <span class="eyebrow">MBC Sharpshooter Vision × Pybricks (SPIKE)</span>
+    <h1>Read Sharpshooter Vision with MicroPython in three steps</h1>
     <p class="lead">Programs always go in this order: first <b>import the library and pick the camera mode</b>, then <b>create an object and name the camera</b>, then <b>call its functions</b> with that name. Work down the steps on the left and watch the program grow on the right; drag the blobs, papers, blocks or line in the simulated camera view to see what the program prints.</p>
     <p class="v1warn" role="note"><b>v1 not yet hardware-verified</b><span>The value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after hardware testing.</span></p>
   </header>
@@ -255,7 +255,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <article class="step current" id="step1">
         <div class="step-head"><span class="num">1</span><h2>Import the library, pick the camera mode</h2></div>
         <div class="step-body">
-          <p class="why">The <b>first thing</b> in the program tells the hub "I am using the Sharpshooter Vision Universal library". Without it the hub does not know <code>UniCam</code> and stops with <code>NameError</code>.</p>
+          <p class="why">The <b>first thing</b> in the program tells the hub "I am using the Sharpshooter Vision library". Without it the hub does not know <code>UniCam</code> and stops with <code>NameError</code>.</p>
           <ol class="howto">
             <li>Download the library (save the file, keep its name): <a href="/examples/unicam/pybricks/MBC_UniCam.py" download>MBC_UniCam.py</a>.</li>
             <li>In Pybricks Code press "Import a file" in the file list and import it into the <b>same project</b> (not a sub-folder).</li>
@@ -714,13 +714,13 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
           body: (EV3 ? ['{n}.device_id()    # ' + ('EV3: read once first; sensor_ok() reports the last read')] : []).concat(['if {n}.sensor_ok():', '    print("' + ('camera OK') + '")', 'else:', '    print("' + ('camera not connected!') + '")']),
           out: function (V) { if (EV3) V.device_id(); return V.sensor_ok() ? ('camera OK') : ('camera not connected!'); } },
         { id: 'device_id', label: 'device_id()', name: ('Device ID'), grp: 'info', modes: null, once: true,
-          what: ('(address 76 = 0x4C, model 3 = Universal, firmware 100 = 1.0). School version is model 1, WRO version 2.') + (EV3 ? (' The EV3 reads infrared mode 5.') : (' Reads mode 8: keep it outside the loop.')),
+          what: ('(address 76 = 0x4C, model 3 = current Sharpshooter Vision, firmware 100 = 1.0). School version is model 1, WRO version 2.') + (EV3 ? (' The EV3 reads infrared mode 5.') : (' Reads mode 8: keep it outside the loop.')),
           ret: ('(address, model, firmware)'), body: ['print({n}.device_id())'], out: function (V) { return py(V.device_id()); } },
-        { id: 'is_unicam', label: 'is_unicam()', name: ('Is it the Universal version'), grp: 'info', modes: null, once: true,
-          what: ('Is this Sharpshooter Vision Universal (model 3)? School and WRO versions use their own libraries.'),
+        { id: 'is_unicam', label: 'is_unicam()', name: ('Is it the current Sharpshooter Vision'), grp: 'info', modes: null, once: true,
+          what: ('Is this Sharpshooter Vision (model 3)? School and WRO versions use their own libraries.'),
           ret: ('True / False'),
-          body: ['if {n}.is_unicam():', '    print("' + ('Universal version') + '")', 'else:', '    print("' + ('not the Universal version') + '")'],
-          out: function (V) { return V.is_unicam() ? ('Universal version') : ('not the Universal version'); } });
+          body: ['if {n}.is_unicam():', '    print("' + ('current Sharpshooter Vision') + '")', 'else:', '    print("' + ('not the current Sharpshooter Vision') + '")'],
+          out: function (V) { return V.is_unicam() ? ('current Sharpshooter Vision') : ('not the current Sharpshooter Vision'); } });
       if (!EV3) FNS.push({ id: 'firmware_version', label: 'firmware_version()', name: ('Firmware version'), grp: 'info', modes: null, once: true,
         what: ('Camera firmware (major, minor), e.g. (1, 0) = 1.0. Reads mode 8: keep it outside the loop.'),
         ret: ('(major, minor)'), body: ['print({n}.firmware_version())'], out: function (V) { return py(V.firmware_version()); } });

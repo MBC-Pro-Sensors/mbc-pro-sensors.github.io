@@ -1,5 +1,5 @@
 // 標記式片段（<!-- gen:name -->…<!-- /gen -->）與全站索引：i2c-protocol、makeblock、guide#start、llms、reference.md、llms-protocol.txt
-import { PLATFORMS, L, T, hex, table, pageHref, siteKey, pageFile, valueName, valueIdRange } from '../../gen-lib.mjs';
+import { PLATFORMS, L, T, hex, table, pageHref, siteKey, pageFile, valueName, valueIdRange, isLegacy, legacyName } from '../../gen-lib.mjs';
 import { AI_NOTE } from './common.mjs';
 import { HIDE_BIG } from '../../site-flags.mjs';
 import * as mb from '../snippets/mblock.mjs';
@@ -10,7 +10,7 @@ export function i2cAddrTable(products, lang) {
   return table([T(lang, '產品', 'Product'), T(lang, 'I2C 位址', 'I2C address'), 'hw[0]', T(lang, '型號', 'Model'), T(lang, '值表', 'Value table'), T(lang, '指令參考', 'Reference'), T(lang, '新手範例', 'Examples')],
     products.filter((p) => p.hosts && p.hosts.i2c).map((p) => {
       const k = siteKey(p);
-      return [L(p.name, lang), `\`${p.addr}\``, `\`${p.hw0}\``, `\`${p.model}\``, `[I2C](${pageHref(lang, pageFile(p, 'arduino-i2c'))})`, `[${T(lang, '參考', 'Reference')}](${pageHref(lang, pageFile(p, 'reference'))})`, `[Arduino](${pageHref(lang, `/sensors/${k}/arduino-examples.md`)})`];
+      return [legacyName(p, lang), `\`${p.addr}\``, `\`${p.hw0}\``, `\`${p.model}\``, `[I2C](${pageHref(lang, pageFile(p, 'arduino-i2c'))})`, `[${T(lang, '參考', 'Reference')}](${pageHref(lang, pageFile(p, 'reference'))})`, `[Arduino](${pageHref(lang, `/sensors/${k}/arduino-examples.md`)})`];
     }));
 }
 export function i2cCommon(common, lang) {
@@ -26,27 +26,27 @@ export function mblockBlocks(products, lang) {
   const rows = [];
   for (const p of products.filter((p) => p.hosts && p.hosts.mblock)) {
     const k = siteKey(p);
-    for (const v of p.values.filter((v) => v.mblock && v.mblock.block)) rows.push([mb.blockText(p, v, lang), `${v.range}${v.unit ? ' ' + v.unit : ''}`, `[${L(p.name, lang)}](${pageHref(lang, pageFile(p, 'mblock'))})`, L(v.desc, lang)]);
-    for (const x of mb.extraReporters(p, lang)) rows.push([x.text, T(lang, '是／否', 'true/false'), `[${L(p.name, lang)}](${pageHref(lang, pageFile(p, 'mblock'))})`, x.desc]);
-    for (const c of (p.commands || []).filter((c) => c.mblock)) rows.push([mb.commandText(p, c, lang), '—', `[${L(p.name, lang)}](${pageHref(lang, pageFile(p, 'mblock'))})`, L(c.desc, lang)]);
-    for (const x of mb.extraCommands(p, lang)) rows.push([x.text, '—', `[${L(p.name, lang)}](${pageHref(lang, pageFile(p, 'mblock'))})`, x.desc]);
+    for (const v of p.values.filter((v) => v.mblock && v.mblock.block)) rows.push([mb.blockText(p, v, lang), `${v.range}${v.unit ? ' ' + v.unit : ''}`, `[${legacyName(p, lang, true)}](${pageHref(lang, pageFile(p, 'mblock'))})`, L(v.desc, lang)]);
+    for (const x of mb.extraReporters(p, lang)) rows.push([x.text, T(lang, '是／否', 'true/false'), `[${legacyName(p, lang, true)}](${pageHref(lang, pageFile(p, 'mblock'))})`, x.desc]);
+    for (const c of (p.commands || []).filter((c) => c.mblock)) rows.push([mb.commandText(p, c, lang), '—', `[${legacyName(p, lang, true)}](${pageHref(lang, pageFile(p, 'mblock'))})`, L(c.desc, lang)]);
+    for (const x of mb.extraCommands(p, lang)) rows.push([x.text, '—', `[${legacyName(p, lang, true)}](${pageHref(lang, pageFile(p, 'mblock'))})`, x.desc]);
   }
   return table([T(lang, '積木', 'Block'), T(lang, '傳回', 'Returns'), T(lang, '產品', 'Product'), T(lang, '說明', 'Meaning')], rows);
 }
 export function mblockProducts(products, lang) {
   return table([T(lang, '產品', 'Product'), T(lang, '積木分類', 'Category'), T(lang, '積木', 'Blocks'), T(lang, '舊版擴展', 'Legacy ext.')],
-    products.filter((p) => p.hosts && p.hosts.mblock).map((p) => [`[${L(p.name, lang)}](${pageHref(lang, pageFile(p, 'mblock'))})`, mb.category(p, lang),
+    products.filter((p) => p.hosts && p.hosts.mblock).map((p) => [`[${legacyName(p, lang)}](${pageHref(lang, pageFile(p, 'mblock'))})`, mb.category(p, lang),
       [...p.values.filter((v) => v.mblock && v.mblock.block).map((v) => L(v.mblock.block, lang).replace('[N]', 'N')), ...mb.extraReporters(p, lang).map((x) => x.name)].join(T(lang, '、', ', ')),
       p.hosts.mblock.legacy ? T(lang, 'v1.0.0 可用（2026-10 前韌體）', 'v1.0.0 works (pre-2026-10 firmware)') : '—']));
 }
 
 // ---- guide.md#start：每格連到第 3 層軟體頁（平台只有一種軟體）或列出該平台的每個軟體（2026-10-22 三層導覽）
 export function guideStart(siteProducts, lang, avail) {
-  const rows = Object.entries(siteProducts).map(([k, sp]) => {
+  const rows = Object.entries(siteProducts).filter(([, sp]) => !sp.legacy).map(([k, sp]) => {
     const a = (avail && avail[k]) || { hosts: [] };
     return [`[${sp.name ? L(sp.name, lang) : k}](${pageHref(lang, `/sensors/${k}/index.md`)})`, ...PLATFORMS.map((p) => {
       const ah = a.hosts.find((x) => x.id === p.id);
-      // 還沒進三層導覽的產品（神攝手通用版）：照 products.json routes 的 start 連到手寫的平台頁
+      // 還沒進三層導覽的產品（神攝手）：照 products.json routes 的 start 連到手寫的平台頁
       const rt = !(avail && avail[k]) && sp.routes && sp.routes[p.id];
       if (!ah && rt && rt.start) return `[${T(lang, '讀值教學', 'Guide')}](${pageHref(lang, rt.start)})`;
       if (!ah) return '—';
@@ -76,12 +76,12 @@ export function referenceIndex(products, siteProducts, ctx, lang) {
   const out = [AI_NOTE, '<!-- 本頁由 _build/gen-reference.mjs 產生，請勿手改 -->'];
   out.push(`# ${T(lang, '指令參考索引：產品 × 平台', 'Value reference index: product × host')}`, '');
   out.push(T(lang, '每款產品一頁「指令參考」，列出每個值在六個平台各怎麼讀；表格裡每一格連到那個平台的說明頁。', 'Each product has one reference page listing how every value is read on the six hosts; every cell links to that host\'s page.'), '');
-  const rows = Object.entries(siteProducts).map(([k, sp]) => {
+  const rows = Object.entries(siteProducts).filter(([, sp]) => !sp.legacy).map(([k, sp]) => {
     const p = byKey[k];
     const r = sp.routes || {};
     const name = sp.name ? L(sp.name, lang) : k;
     const refMd = `/sensors/${k}/reference.md`;
-    const first = p && ctx.hasFile(refMd.slice(1)) ? `[${name}](${pageHref(lang, refMd)})` : `[${name}](${pageHref(lang, `/sensors/${k}/index.md`)})`;
+    const first = ctx.hasFile(refMd.slice(1)) ? `[${name}](${pageHref(lang, refMd)})` : `[${name}](${pageHref(lang, `/sensors/${k}/index.md`)})`;
     // 平台格：優先 ref，沒有就 start；目標頁還沒產生就留 —（check-links 才不會有斷鏈）
     const cell = (pl) => {
       const rt = r[pl.id];
@@ -97,7 +97,7 @@ export function referenceIndex(products, siteProducts, ctx, lang) {
   out.push(`- [${T(lang, 'mBlock 擴展', 'mBlock extension')}](${pageHref(lang, '/makeblock.md')})`);
   out.push(`- [${T(lang, '協定純文字版（給 AI）', 'Plain-text protocol (for AI)')}](/llms-protocol.txt)`);
   out.push('', `## ${T(lang, '已產生指令參考的產品', 'Products with a generated reference')}`, '');
-  for (const p of products.filter((p) => ctx.hasFile(pageFile(p, 'reference').slice(1)))) out.push(`- [${L(p.name, lang)}](${pageHref(lang, pageFile(p, 'reference'))})：${p.values.length} ${T(lang, '個值', 'values')}、${(p.commands || []).length} ${T(lang, '個命令', 'commands')}`);
+  for (const p of products.filter((p) => !isLegacy(siteKey(p)) && ctx.hasFile(pageFile(p, 'reference').slice(1)))) out.push(`- [${L(p.name, lang)}](${pageHref(lang, pageFile(p, 'reference'))})：${p.values.length} ${T(lang, '個值', 'values')}、${(p.commands || []).length} ${T(lang, '個命令', 'commands')}`);
   return out.join('\n') + '\n';
 }
 
@@ -109,7 +109,7 @@ export function llmsProtocol(products, common) {
   for (const v of common.values) out.push(`  ${v.id} ${v.key}: ${v.desc.zh} / ${v.desc.en}`);
   for (const c of common.commands) out.push(`  ${c.id} ${c.key}: ${c.desc.zh} / ${c.desc.en}`);
   for (const p of products) {
-    out.push('', `## ${p.name.zh} / ${p.name.en} (id ${p.id}, I2C ${p.addr}, hw0 ${p.hw0}, model ${p.model})`);
+    out.push('', `## ${legacyName(p, 'zh')} / ${legacyName(p, 'en')} (id ${p.id}, I2C ${p.addr}, hw0 ${p.hw0}, model ${p.model})`);
     out.push(`hosts: ${Object.entries(p.hosts || {}).filter(([, v]) => v).map(([k]) => k).join(', ')}`);
     out.push('values:');
     for (const v of p.values) {

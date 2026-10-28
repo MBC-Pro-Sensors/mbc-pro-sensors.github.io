@@ -1,5 +1,5 @@
-// MBC 神攝手通用版 v1：Arduino 小幫手（I2C 0x4C，MBC 通用 I2C 協議 v2）
-// MBC Sharpshooter Vision Universal v1: Arduino helpers (I2C 0x4C, MBC common I2C protocol v2)
+// MBC 神攝手（韌體 v1）：Arduino 小幫手（I2C 0x4C，MBC 通用 I2C 協議 v2）
+// MBC Sharpshooter Vision (firmware v1): Arduino helpers (I2C 0x4C, MBC common I2C protocol v2)
 // 版本 v1.0　2026-10-28　（v1 尚未上機驗證 / not yet hardware-verified）
 //
 // 網站上的範例（examples/unicam/arduino/）都是「單一檔案」：這個檔案的內容原封不動貼在每支 .ino 的最下面，
@@ -30,7 +30,7 @@ struct UcLine { int16_t nearOff, midOff, farOff, angle, width, flags, junction, 
 
 // ==== MBC_UNICAM_HELPERS_BEGIN ====
 // ============================================================
-// 以下是「通訊小幫手」（MBC I2C 協議 v2）＋「神攝手通用版小幫手」。所有範例都一樣，不用改。
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）＋「神攝手小幫手」。所有範例都一樣，不用改。
 //   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
 // ============================================================
 
@@ -85,7 +85,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- 神攝手通用版 ----------
+// ---------- 神攝手 ----------
 
 // 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）。會存進相機
 bool ucSetMode(uint8_t camMode, uint8_t sub) {

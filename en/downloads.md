@@ -32,7 +32,7 @@ Every MBC library, block extension, example pack and catalog on one page. Check 
 
 | File | Status | Notes |
 | :--- | :--- | :--- |
-| [MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext) | **In development: import it yourself (advanced)** | v2.1.0 = all v2.0.0 blocks + a "Vision Universal" category of 22 blocks (for the [Sharpshooter Vision Universal v1](/en/sensors/unicam/mblock/index.md), in development, not yet hardware-verified). Import it the same way as the next row |
+| [MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext) | **In development: import it yourself (advanced)** | v2.1.0 = all v2.0.0 blocks + a "Vision Universal" category of 22 blocks (for the [Sharpshooter Vision](/en/sensors/unicam/mblock/index.md), in development, firmware v1 not yet hardware-verified). Import it the same way as the next row |
 | [MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext) | **In development: import it yourself (advanced)** | v2.0.0, 95 blocks (Pathfinder, Ranger, Controller, IMU, Vision, MBC common), for protocol v2 firmware. This is an *import file*: sign in to [ext.mblock.cc](https://ext.mblock.cc) → My extensions → Import data → upload → Download the final `.mext`. Once listed, just search "MBC" in the mBlock Extension Center |
 | [MBC_Pro_Sensors_mBlock5_v1.0.0.mext](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | Legacy | v1.0.0, 15 blocks, for firmware shipped before 2026-10; drop straight into mBlock |
 
@@ -66,11 +66,11 @@ MATRIX uses the stock colour-sensor blocks (0x22): nothing to download. Mapping 
 | Controller PS2 | [ps2_arduino_examples.zip](/examples/ps2/arduino/ps2_arduino_examples.zip) | [ps2_arduino_examples_en.zip](/examples/ps2/arduino-en/ps2_arduino_examples_en.zip) |
 | Controller PS4 / PS5 | [ps4_arduino_examples.zip](/examples/ps4/arduino/ps4_arduino_examples.zip) | [ps4_arduino_examples_en.zip](/examples/ps4/arduino-en/ps4_arduino_examples_en.zip) |
 | IMU gyro | [imu_arduino_examples.zip](/examples/imu/arduino/imu_arduino_examples.zip) | [imu_arduino_examples_en.zip](/examples/imu/arduino-en/imu_arduino_examples_en.zip) |
-| Sharpshooter ESP32CAM (I2C, bench test pending) | [esp32cam_arduino_examples.zip](/examples/esp32cam/arduino/esp32cam_arduino_examples.zip) | [esp32cam_arduino_examples_en.zip](/examples/esp32cam/arduino-en/esp32cam_arduino_examples_en.zip) |
+| Sharpshooter Vision (I2C, firmware v1 not yet hardware-verified) | [unicam_arduino_examples.zip](/examples/unicam/arduino/unicam_arduino_examples.zip) | [unicam_arduino_examples_en.zip](/examples/unicam/arduino-en/unicam_arduino_examples_en.zip) |
 | SPIKE 6-Way Expander EXP6 (UART) | [exp6_arduino_examples.zip](/examples/exp6/arduino/exp6_arduino_examples.zip) | [exp6_arduino_examples_en.zip](/examples/exp6/arduino-en/exp6_arduino_examples_en.zip) |
 | Universal I2C tools (scan, read version) | [i2c_arduino_examples.zip](/examples/i2c/arduino/i2c_arduino_examples.zip) | — |
 
-Line-by-line explanations are on each product's "Arduino Examples" page; start at [First time with Arduino](/en/sensors/arduino-start.md).
+Line-by-line explanations are on each product's "Arduino Examples" page; start at [First time with Arduino](/en/sensors/arduino-start.md). Examples and libraries for the [legacy Sharpshooter Vision (no longer supported)](/en/sensors/esp32cam/index.md) are collected on the legacy overview page.
 
 ## 🧱 SPIKE / EV3 Pybricks examples (.zip)
 
@@ -113,7 +113,7 @@ The beginner examples for the official SPIKE App (.llsp3), the MBC blocks site (
 | Controller PS2 | [page (zh)](/sensors/ps2/spike-examples.md) | [page](/en/sensors/ps2/ev3-examples.md) |
 | Controller PS4 / PS5 | [page (zh)](/sensors/ps4/spike-examples.md) | [page](/en/sensors/ps4/ev3-examples.md) |
 | IMU gyro | — | [page](/en/sensors/imu/ev3-examples.md) |
-| Sharpshooter ESP32CAM | [school (zh)](/sensors/esp32cam/spike-examples.md) · [WRO (zh)](/sensors/esp32cam/spike-examples-wro.md) | [school](/en/sensors/esp32cam/ev3-examples.md) · [WRO](/en/sensors/esp32cam/ev3-examples-wro.md) |
+| Sharpshooter Vision | [page](/en/sensors/unicam/spike-examples.md) | [page](/en/sensors/unicam/ev3-examples.md) |
 | SPIKE 6-Way Expander EXP6 | [page (zh)](/sensors/exp6/spike-examples.md) | — |
 
 ## 📄 Catalog and manuals

@@ -13,7 +13,7 @@ MBC MATRIX-edition sensors plug into a Mini R4 **I2C port** (address `0x22`) and
 | :--- | :--- | :--- | :--- |
 | **A. Stock blocks (0x22)** | Pathfinder 8 / 16, Ranger 2 / 8, IMU, Controller PS2 / PS4 | Nothing, built into MATRIXblock | R, G, B, C, M, Y, K: seven 0~255 numbers |
 | **B. LauMo big channel** | same | Swap two library files ([download](/downloads/MiniR4ColorSensorExt_LauMo_v2.zip)) | one 30-byte packet with every product value (mm, bitmaps, status) |
-| **C. mVision (serial)** | Sharpshooter school / WRO edition | Nothing | camera blocks "mVision data 0~9" |
+| **C. mVision (serial)** | Sharpshooter Vision (also the legacy school / WRO editions) | Nothing | camera blocks "mVision data 0~9" |
 
 > [!IMPORTANT]
 > A and B need **different library files**; one computer can use only one at a time. The firmware supports both, so switching methods never needs a sensor re-flash.
@@ -22,7 +22,7 @@ MBC MATRIX-edition sensors plug into a Mini R4 **I2C port** (address `0x22`) and
 | Method | Products | What to install | What you get |
 | :--- | :--- | :--- | :--- |
 | **A. Stock blocks (0x22)** | Pathfinder 8 / 16, Ranger 2 / 8, IMU, Controller PS2 / PS4 | Nothing, built into MATRIXblock | R, G, B, C, M, Y, K: seven 0~255 numbers |
-| **B. mVision (serial)** | Sharpshooter school / WRO edition | Nothing | camera blocks "mVision data 0~9" |
+| **B. mVision (serial)** | Sharpshooter Vision (also the legacy school / WRO editions) | Nothing | camera blocks "mVision data 0~9" |
 <!-- /show -->
 
 ---
@@ -236,7 +236,9 @@ MATRIXblock's camera blocks are mVision (Serial1 115200) and HuskyLens only — 
 > [!WARNING]
 > **Do not use data 10**: the MATRIX program declares only 10 slots (data 0~9); slot 10 reads unrelated memory.
 
-| mVision data | School edition (from 2026-10) | WRO edition (HUE12, unchanged) |
+For what the current Sharpshooter Vision sends in each slot, see [Sharpshooter Vision × MATRIX (mVision)](/en/sensors/unicam/matrix/mvision.md). The table below is the layout of the [legacy editions](/en/sensors/esp32cam/index.md) (school / WRO, no longer supported), kept for teams still using them.
+
+| mVision data | Legacy school edition | Legacy WRO edition (HUE12) |
 | :---: | :--- | :--- |
 | 0 | hue 0~100 (**255 = black / white / grey**) | keeps the existing HUE12 packing (12 spot colour codes + vividness); decode as in the `HUE12_AS_mVisionSensor_v1.0.8.mbr4` example |
 | 1 | saturation 0~100 | |
@@ -273,6 +275,7 @@ One page per product: wiring figure, the 0x22 seven-slot map (linked to each val
 | Controller PS2 | [ps2 × MATRIX](/en/sensors/ps2/matrix.md) |
 | Controller PS4 / PS5 | [ps4 × MATRIX](/en/sensors/ps4/matrix.md) |
 | IMU gyro | [imu × MATRIX](/en/sensors/imu/matrix.md) |
-| Sharpshooter ESP32CAM | [esp32cam × MATRIX (mVision)](/en/sensors/esp32cam/matrix.md) |
+| Sharpshooter Vision | [Sharpshooter Vision × MATRIX (mVision)](/en/sensors/unicam/matrix/mvision.md) |
+| Sharpshooter Vision legacy (no longer supported) | [esp32cam × MATRIX (mVision)](/en/sensors/esp32cam/matrix.md) |
 
 The EXP6 and Servo6 have no MATRIX edition. Library downloads and files for the other platforms: [Downloads](/en/downloads.md).

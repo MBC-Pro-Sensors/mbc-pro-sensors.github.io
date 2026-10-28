@@ -1,6 +1,6 @@
 #!/usr/bin/env pybricks-micropython
-# 神攝手通用版 v1 × EV3 範例 3：PD 循線＋路口停車
-# Sharpshooter Vision Universal v1 × EV3 example 3: PD line following + stop at a junction
+# 神攝手 × EV3 範例 3：PD 循線＋路口停車
+# Sharpshooter Vision × EV3 example 3: PD line following + stop at a junction
 # 需要把相機選單切到 相機模式 4 循線 ・子選項 ① 黑線 ＝模式編號 41（白線 42、色線 43 也可以）
 # Camera menu: camera mode 4 Line, option 1 Black line = mode number 41 (42 / 43 also work)
 # 軟體 Software：Pybricks v4 或 樂高官方 EV3 MicroPython v2

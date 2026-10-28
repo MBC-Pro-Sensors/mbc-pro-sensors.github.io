@@ -4,7 +4,7 @@
 > [!WARNING]
 > **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
 
-神攝手通用版 v1（EV3 版）在 EV3 上會顯示成**樂高原廠紅外線感應器**，EV3-G、EV3 Classroom、EV3 MicroPython（Pybricks）都用紅外線感應器的積木或模式讀，不用裝擴充。每一格的完整對照在 [讀值參考：EV3](/sensors/unicam/reference.md#host-ev3)，整支範例在 [EV3 範例](/sensors/unicam/ev3-examples.md)。
+神攝手（EV3 版）在 EV3 上會顯示成**樂高原廠紅外線感應器**，EV3-G、EV3 Classroom、EV3 MicroPython（Pybricks）都用紅外線感應器的積木或模式讀，不用裝擴充。每一格的完整對照在 [讀值參考：EV3](/sensors/unicam/reference.md#host-ev3)，整支範例在 [EV3 範例](/sensors/unicam/ev3-examples.md)。
 
 ## 接線
 

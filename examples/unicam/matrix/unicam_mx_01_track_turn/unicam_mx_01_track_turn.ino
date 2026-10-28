@@ -1,6 +1,6 @@
 /*
- * 神攝手通用版 v1 × MATRIX Mini R4　範例 1：跟著色塊轉
- * Sharpshooter Vision Universal v1 × MATRIX Mini R4  example 1: follow the colour blob
+ * 神攝手 × MATRIX Mini R4　範例 1：跟著色塊轉
+ * Sharpshooter Vision × MATRIX Mini R4  example 1: follow the colour blob
  * ------------------------------------------------------------
  * ★ 需要把相機選單切到 相機模式 1 顏色追蹤 ・子選項 ③ 標準（模式編號 13）
  *   Set the camera menu to camera mode 1 colour tracking · option ③ standard (mode number 13)
@@ -84,7 +84,7 @@ void loop() {
 
 // ==== MBC_UNICAM_MX_HELPERS_BEGIN ====
 // ============================================================
-// 以下是「神攝手通用版 × mVision 解碼小幫手」，所有 MATRIX 範例都一樣，不用改。
+// 以下是「神攝手 × mVision 解碼小幫手」，所有 MATRIX 範例都一樣，不用改。
 // 每格 = 低 byte ＋ 高 byte × 256（模式 11 是 A × 100 ＋ B）
 // ============================================================
 
