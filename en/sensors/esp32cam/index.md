@@ -9,6 +9,9 @@
 
 > **Give your LEGO robot real vision: pick the color to track right on the sensor's screen — no image-processing code needed.**
 
+> [!TIP]
+> **There is also a Sharpshooter Vision Universal v1 (in development)**: one camera that switches between color tracking (up to 16 colors), color at points, color order and line following in its menu, readable from SPIKE, EV3, MATRIX, Arduino and micro:bit. The School and WRO editions on this page are unchanged. [See the Universal edition →](/en/sensors/unicam/index.md)
+
 ## 🚀 Product Overview
 
 The official LEGO color sensor only sees a single spot directly underneath it. It cannot track a moving color blob or tell where a target is in the scene.

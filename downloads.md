@@ -32,7 +32,8 @@ MBC 全系列的函式庫、積木擴充、範例程式與型錄，集中在這�
 
 | 檔案 | 狀態 | 說明 |
 | :--- | :--- | :--- |
-| [MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext) | **上架中：自行匯入（進階）** | v2.0.0，95 顆積木（循行者、測距者、掌控者、IMU、神攝手、MBC 共用），搭配協定 v2 韌體。這是「匯入檔」：到 [ext.mblock.cc](https://ext.mblock.cc) 登入 → 我的擴展 → 匯入資料 → 上傳 → 下載正式 `.mext`。上架後在 mBlock 擴展中心搜「MBC」即可，不用自己匯入 |
+| [MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext) | **開發中：自行匯入（進階）** | v2.1.0＝v2.0.0 全部積木＋「神攝手通用版」分類 22 顆（搭配開發中的 [神攝手通用版 v1](/sensors/unicam/mblock/index.md)，尚未上機驗證）。匯入方式同下一列 |
+| [MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext) | **開發中：自行匯入（進階）** | v2.0.0，95 顆積木（循行者、測距者、掌控者、IMU、神攝手、MBC 共用），搭配協定 v2 韌體。這是「匯入檔」：到 [ext.mblock.cc](https://ext.mblock.cc) 登入 → 我的擴展 → 匯入資料 → 上傳 → 下載正式 `.mext`。正式上架後在 mBlock 擴展中心搜「MBC」即可，不用自己匯入 |
 | [MBC_Pro_Sensors_mBlock5_v1.0.0.mext](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | 舊版 | v1.0.0，15 顆積木，搭配 2026-10 以前韌體；可直接拖進 mBlock |
 
 安裝步驟與積木說明：[MakeBlock（mBot）積木擴展](/makeblock.md)。

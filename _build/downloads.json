@@ -170,6 +170,26 @@
       }
     },
     {
+      "out": "downloads/MBC_UniCam_v1_Host_Libraries.zip",
+      "src": "${MBC}/02_相機感應器/06_通用版/通用版v1/上位機函式庫",
+      "include": [
+        "README.md",
+        "pybricks",
+        "ev3",
+        "spike_app",
+        "arduino",
+        "microbit",
+        "matrix"
+      ],
+      "version": "1.0",
+      "firmware": "通用版 v1（尚未上機驗證）",
+      "legacy": false,
+      "label": {
+        "zh": "神攝手通用版 v1：上位機函式庫（Pybricks SPIKE／EV3、SPIKE App、Arduino、micro:bit、MATRIX）＋Python 範例",
+        "en": "Sharpshooter Vision Universal v1: host libraries (Pybricks SPIKE / EV3, SPIKE App, Arduino, micro:bit, MATRIX) + Python examples"
+      }
+    },
+    {
       "out": "downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext",
       "src": null,
       "legacy": true,

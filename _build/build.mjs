@@ -433,7 +433,7 @@ function L_(o, lang) { return (o && (o[lang] || o.zh)) || ''; }
 
 // 互動教學（learn/<教學>/<種類>.html，英文在 en/learn/；由互動教學技能的 wrap_learn.js 產生）
 // 網站產品 → 教學（神攝手分學校版、WRO 版；PS2／PS4 共用一套）；主機 → 軟體 → 教學種類。只列實際有檔的頁。
-const LEARN = { line8: ['line8'], line16: ['line16'], tof2: ['laser2'], tof8: ['laser8'], ps2: ['gamepad'], ps4: ['gamepad'], esp32cam: ['cam_school', 'hue12'], exp6: ['exp6'], servo6: ['servo6'], imu: ['imu'] };
+const LEARN = { line8: ['line8'], line16: ['line16'], tof2: ['laser2'], tof8: ['laser8'], ps2: ['gamepad'], ps4: ['gamepad'], esp32cam: ['cam_school', 'hue12'], exp6: ['exp6'], servo6: ['servo6'], imu: ['imu'], unicam: ['unicam'] };
 const LEARN_KINDS = {
   spike: { pybricks: ['micropython', 'pybricks-blocks'], mbcblocks: ['mbc-blocks'], official: ['spike-app'] },
   ev3: { pybricks: ['ev3-pybricks'], clev3r: ['clev3r'], classroom: ['ev3-classroom'], ev3g: ['ev3g'] },
@@ -490,7 +490,9 @@ function learnBox(lang, key, host, sws, mode) {
 // 下面摺疊的「全部產品一覽」放全部連結（沒有 JS、搜尋引擎也找得到）。PS2／PS4 合一個選項。
 function learnHubHtml(lang) {
   const K = LK[lang], seen = new Set(), items = [];
-  for (const [k, p] of Object.entries(GI.products)) {
+  // 還沒進三層導覽（guides-index）的產品（神攝手通用版 v1）：名稱用側欄的產品名、拿掉「（開發中）」
+  const extra = Object.keys(LEARN).filter((k) => !GI.products[k]).map((k) => [k, { short: { zh: (PRODUCTS.zh[k] || k).replace(/（[^）]*）$/, ''), en: (PRODUCTS.en[k] || k).replace(/\s*\([^)]*\)$/, '') } }]);
+  for (const [k, p] of Object.entries(GI.products).concat(extra)) {
     for (const t of LEARN[k] || []) {
       if (seen.has(t)) continue;
       seen.add(t);

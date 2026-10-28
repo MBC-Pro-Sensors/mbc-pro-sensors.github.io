@@ -32,7 +32,8 @@ Every MBC library, block extension, example pack and catalog on one page. Check 
 
 | File | Status | Notes |
 | :--- | :--- | :--- |
-| [MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext) | **Publishing in progress: import it yourself (advanced)** | v2.0.0, 95 blocks (Pathfinder, Ranger, Controller, IMU, Vision, MBC common), for protocol v2 firmware. This is an *import file*: sign in to [ext.mblock.cc](https://ext.mblock.cc) → My extensions → Import data → upload → Download the final `.mext`. Once listed, just search "MBC" in the mBlock Extension Center |
+| [MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext) | **In development: import it yourself (advanced)** | v2.1.0 = all v2.0.0 blocks + a "Vision Universal" category of 22 blocks (for the [Sharpshooter Vision Universal v1](/en/sensors/unicam/mblock/index.md), in development, not yet hardware-verified). Import it the same way as the next row |
+| [MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext) | **In development: import it yourself (advanced)** | v2.0.0, 95 blocks (Pathfinder, Ranger, Controller, IMU, Vision, MBC common), for protocol v2 firmware. This is an *import file*: sign in to [ext.mblock.cc](https://ext.mblock.cc) → My extensions → Import data → upload → Download the final `.mext`. Once listed, just search "MBC" in the mBlock Extension Center |
 | [MBC_Pro_Sensors_mBlock5_v1.0.0.mext](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">legacy</span> | Legacy | v1.0.0, 15 blocks, for firmware shipped before 2026-10; drop straight into mBlock |
 
 Install steps and block reference: [MakeBlock (mBot) block extension](/en/makeblock.md).

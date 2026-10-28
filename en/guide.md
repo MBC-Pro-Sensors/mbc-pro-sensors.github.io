@@ -20,6 +20,7 @@ Pick your product and controller to go straight to setup steps, blocks and examp
 | [Controller 2.4G (PS2)](/en/sensors/ps2/index.md) | [Official LEGO App](/en/sensors/ps2/spike/official.md)・[MBC Blocks website](/en/sensors/ps2/spike/mbcblocks.md)・[Pybricks](/en/sensors/ps2/spike/pybricks.md) | [EV3-G](/en/sensors/ps2/ev3/ev3g.md)・[EV3 Classroom](/en/sensors/ps2/ev3/classroom.md)・[Pybricks](/en/sensors/ps2/ev3/pybricks.md)・[clev3r](/en/sensors/ps2/ev3/clev3r.md) | [Arduino IDE](/en/sensors/ps2/arduino/ide.md) | [mBlock 5](/en/sensors/ps2/mblock/mblock5.md) | [MATRIXblock stock blocks](/en/sensors/ps2/matrix/matrixblock.md) | [MakeCode](/en/sensors/ps2/microbit/makecode.md) |
 | [Controller PS4/PS5](/en/sensors/ps4/index.md) | [Official LEGO App](/en/sensors/ps4/spike/official.md)・[MBC Blocks website](/en/sensors/ps4/spike/mbcblocks.md)・[Pybricks](/en/sensors/ps4/spike/pybricks.md) | [EV3-G](/en/sensors/ps4/ev3/ev3g.md)・[EV3 Classroom](/en/sensors/ps4/ev3/classroom.md)・[Pybricks](/en/sensors/ps4/ev3/pybricks.md)・[clev3r](/en/sensors/ps4/ev3/clev3r.md) | [Arduino IDE](/en/sensors/ps4/arduino/ide.md) | [mBlock 5](/en/sensors/ps4/mblock/mblock5.md) | [MATRIXblock stock blocks](/en/sensors/ps4/matrix/matrixblock.md) | [MakeCode](/en/sensors/ps4/microbit/makecode.md) |
 | [Sharpshooter Vision (ESP32CAM)](/en/sensors/esp32cam/index.md) | [Official LEGO App](/en/sensors/esp32cam/spike/official.md)・[MBC Blocks website](/en/sensors/esp32cam/spike/mbcblocks.md)・[Pybricks](/en/sensors/esp32cam/spike/pybricks.md) | [EV3-G](/en/sensors/esp32cam/ev3/ev3g.md)・[EV3 Classroom](/en/sensors/esp32cam/ev3/classroom.md)・[Pybricks](/en/sensors/esp32cam/ev3/pybricks.md)・[clev3r](/en/sensors/esp32cam/ev3/clev3r.md) | [Arduino IDE](/en/sensors/esp32cam/arduino/ide.md) | [mBlock 5](/en/sensors/esp32cam/mblock/mblock5.md) | [mVision blocks](/en/sensors/esp32cam/matrix/mvision.md) | [MakeCode](/en/sensors/esp32cam/microbit/makecode.md) |
+| [Sharpshooter Vision Universal v1](/en/sensors/unicam/index.md) | [Guide](/en/sensors/unicam/spike/index.md) | [Guide](/en/sensors/unicam/ev3/index.md) | [Guide](/en/sensors/unicam/arduino/index.md) | [Guide](/en/sensors/unicam/mblock/index.md) | [Guide](/en/sensors/unicam/matrix/mvision.md) | [Guide](/en/sensors/unicam/microbit/index.md) |
 | [SPIKE 6-Way Expander (EXP6)](/en/sensors/exp6/index.md) | [Official LEGO App](/en/sensors/exp6/spike/official.md)・[MBC Blocks website](/en/sensors/exp6/spike/mbcblocks.md)・[Pybricks](/en/sensors/exp6/spike/pybricks.md) | — | [Arduino IDE](/en/sensors/exp6/arduino/ide.md) | — | — | — |
 | [IMU 9-Axis Gyro](/en/sensors/imu/index.md) | — | [EV3-G](/en/sensors/imu/ev3/ev3g.md)・[EV3 Classroom](/en/sensors/imu/ev3/classroom.md)・[Pybricks](/en/sensors/imu/ev3/pybricks.md)・[clev3r](/en/sensors/imu/ev3/clev3r.md) | [Arduino IDE](/en/sensors/imu/arduino/ide.md) | [mBlock 5](/en/sensors/imu/mblock/mblock5.md) | [MATRIXblock stock blocks](/en/sensors/imu/matrix/matrixblock.md) | [MakeCode](/en/sensors/imu/microbit/makecode.md) |
 | [SPIKE 6-Port Servo Expander (Servo6)](/en/sensors/servo6/index.md) | [Official LEGO App](/en/sensors/servo6/spike/official.md)・[Pybricks](/en/sensors/servo6/spike/pybricks.md) | — | — | — | — | — |
@@ -52,6 +53,7 @@ Pick your product and controller to go straight to setup steps, blocks and examp
 | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bluetooth gamepad control | Best for big events |
 | [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad control | Classes, projects |
 | [Sharpshooter ESP32CAM](/en/sensors/esp32cam/index.md) | Color tracking, vision | |
+| [Sharpshooter Vision Universal v1](/en/sensors/unicam/index.md) (in development) | Multi-color tracking, color at points, color order, line following | Official app, Pybricks |
 | [IMU Gyro](/en/sensors/imu/index.md) | Heading, turning | Coming soon |
 
 <h3 id="ev3">🧱 LEGO MINDSTORMS EV3</h3>
@@ -65,6 +67,7 @@ Pick your product and controller to go straight to setup steps, blocks and examp
 | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bluetooth gamepad control | |
 | [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad control | |
 | [Sharpshooter ESP32CAM](/en/sensors/esp32cam/index.md) | Color tracking, vision | |
+| [Sharpshooter Vision Universal v1](/en/sensors/unicam/index.md) (in development) | Multi-color tracking, color at points, color order, line following | EV3-G, EV3 Classroom, Pybricks |
 | [IMU Gyro](/en/sensors/imu/index.md) | Heading, turning | Works with the standard gyro blocks; coming soon |
 
 <h3 id="arduino">∿ Arduino / ESP32 / Raspberry Pi (Universal I2C)</h3>
@@ -80,6 +83,7 @@ The whole family shares one [Universal I2C Protocol](/en/i2c-protocol.md) — le
 | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bluetooth gamepad control | `0x42` |
 | [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad control | `0x42` |
 | [IMU Gyro](/en/sensors/imu/index.md) | Heading, 9-axis data | `0x6A` |
+| [Sharpshooter Vision Universal v1](/en/sensors/unicam/arduino/index.md) (in development) | Multi-color tracking, color at points, line following (micro:bit too) | `0x4C` |
 
 <h3 id="matrix">🤖 MATRIX Mini R4</h3>
 
@@ -89,6 +93,7 @@ The whole family shares one [Universal I2C Protocol](/en/i2c-protocol.md) — le
 | [Pathfinder 16-Way](/en/sensors/line16/index.md) | Fast lines, intersections |
 | [Ranger 8-Way](/en/sensors/tof8/index.md) | 180° avoidance |
 | [Sharpshooter ESP32CAM](/en/sensors/esp32cam/index.md) | Color tracking, vision |
+| [Sharpshooter Vision Universal v1](/en/sensors/unicam/matrix/mvision.md) (in development) | Multi-color tracking, color at points, color order, line following |
 | [IMU Gyro](/en/sensors/imu/index.md) | Heading, turning (coming soon) |
 
 <h3 id="makeblock">🤖 MakeBlock</h3>
@@ -117,6 +122,7 @@ Works with mBot, mBot Ranger, Orion and Ultimate 2.0 (MegaPi). Choose the MakeBl
 | Remote control at crowded events | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bonds to your gamepad only, stops on signal loss |
 | Remote control for classes on a budget | [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad, best value |
 | Track colors and find objects | [Sharpshooter ESP32CAM](/en/sensors/esp32cam/index.md) | Set up on its own screen, blob position out of the box |
+| One camera for many colors, sample points, sequences and lines | [Sharpshooter Vision Universal v1](/en/sensors/unicam/index.md) | 4 camera modes switched in its menu, six host families (SPIKE, EV3, Arduino, mBlock, MATRIX, micro:bit) (in development) |
 | Drive straight, turn precisely | [IMU Gyro](/en/sensors/imu/index.md) | Any mounting angle, compass fusion without drift (coming soon) |
 
 <div class="lp-final">

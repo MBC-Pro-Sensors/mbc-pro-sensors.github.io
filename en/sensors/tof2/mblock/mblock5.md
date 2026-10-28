@@ -176,6 +176,7 @@ Still stuck? [Contact us](/en/contact.md) with your software and a screenshot of
 
 ## Downloads
 
+- [MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext)
 - [MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext)
 - [MBC_Pro_Sensors_mBlock5_v1.0.0.mext (legacy, units shipped before 2026-10)](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext)
 - [Download centre (libraries, firmware, catalogue for every product)](/en/downloads.md)

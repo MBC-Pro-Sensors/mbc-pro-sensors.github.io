@@ -29,6 +29,14 @@
 
 - **👁️ Robot Vision**
   - [Sharpshooter Vision (ESP32CAM)](/en/sensors/esp32cam/index.md)
+  - [Sharpshooter Vision Universal v1 (In Development)](/en/sensors/unicam/index.md)
+    - [Value reference (slot by slot)](/en/sensors/unicam/reference.md)
+    - [SPIKE](/en/sensors/unicam/spike/index.md)
+    - [EV3](/en/sensors/unicam/ev3/index.md)
+    - [MATRIX](/en/sensors/unicam/matrix/mvision.md)
+    - [Arduino](/en/sensors/unicam/arduino/index.md)
+    - [micro:bit](/en/sensors/unicam/microbit/index.md)
+    - [mBlock (not in v1)](/en/sensors/unicam/mblock/index.md)
   - [Long-Range Colour Sensor OV3660 (In Development)](/en/sensors/ov3660/index.md)
 
 - **🧭 Motion Sensing**

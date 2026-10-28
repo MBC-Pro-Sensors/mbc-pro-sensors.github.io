@@ -13,7 +13,7 @@ Software: **mBlock 5 for PC** (Upload mode — the program is flashed to the boa
 
 <div style="background: rgba(0,210,255,0.05); border: 1px solid rgba(0,210,255,0.3); border-radius: 12px; padding: 22px; margin: 20px 0;">
 <p style="margin-top: 0;"><b>MBC Pro Sensors extension v2.0.0</b>: 95 blocks for Pathfinder, Ranger, Controller, IMU gyro and Vision sensor, for MakeBlock-edition sensors shipped from October 2026 (protocol v2).</p>
-<p><b>Publishing in progress</b>: the extension is under review on the Makeblock extension platform. Once listed, search "MBC" in the mBlock 5 Extension Center.</p>
+<p><b>In development</b>: the new extension is not listed on the Makeblock extension platform yet. Once it is listed, search "MBC" in the mBlock 5 Extension Center. v2.1.0 also adds a "Vision Universal" category (22 blocks, for the <a href="/en/sensors/unicam/mblock/index.md">Sharpshooter Vision Universal v1</a>, still in development and not yet hardware-verified); import file: <a href="/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext"><code>mbc_pro_sensors_2.1.0_import.mext</code></a>.</p>
 <p style="margin-bottom: 0;">Advanced users who cannot wait: sign in to <a href="https://ext.mblock.cc">ext.mblock.cc</a> with your own Makeblock account → My extensions → Import data, upload <a href="/downloads/MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext"><code>mbc_pro_sensors_2.0.0_import.mext</code></a> (about 1 minute), then click "Download" to get a <code>.mext</code> you can drop into mBlock.</p>
 </div>
 

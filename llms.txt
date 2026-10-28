@@ -21,6 +21,7 @@ MBC-Pro Sensors 解決了樂高原廠感測器在機器人競賽中的痛點（�
 - [MakeBlock（mBot）積木擴展 v2 (mBlock 5 extension)](https://mbc-pro-sensors.github.io/makeblock.html): mBot、mBot Ranger、Orion、Ultimate 2.0（MegaPi）、MegaPi Pro 用 mBlock 5 積木讀取循行者、測距者、掌控者、陀螺儀、神攝手（95 顆積木，值直接是使用者要的數字），含 .mext 下載、各主板可用連接埠與範例。
 - [選購指南・已經買好？找程式 (Find your program)](https://mbc-pro-sensors.github.io/guide.html#start): 產品 × 主機（SPIKE、EV3、Arduino、mBot）對照表，直接連到該主機的安裝步驟與範例下載。
 - [神攝手 ESP32CAM (Vision AI Camera)](https://mbc-pro-sensors.github.io/sensors/esp32cam/): 機器人視覺鏡頭，支援色塊追蹤與座標定位。
+- [神攝手通用版 v1 (Sharpshooter Vision Universal v1, 開發中)](https://mbc-pro-sensors.github.io/sensors/unicam/): 同一台相機在選單切換 4 種相機模式：顏色追蹤（最多 16 色）、座標取色（色相／飽和／明度）、照順序給色號、循線（近中遠偏移、角度、路口類型）；SPIKE（Pybricks 函式庫模式 9／6、Pybricks 積木模式 5／7、官方 App 模式 0）、EV3（紅外線感應器模式 0／1／2）、MATRIX（mVision 10 格）、I2C 0x4C（Arduino、micro:bit）各給放得下的最多資料；mBlock 5（mBot／Ranger／Orion／MegaPi，RJ25 串口 38400，跟 I2C 同一張值表，MBC 感應器擴展 v2.1.0「神攝手通用版」分類，[mBlock 教學](https://mbc-pro-sensors.github.io/sensors/unicam/mblock/)）；v1 尚未上機驗證。逐格對照：[讀值參考](https://mbc-pro-sensors.github.io/sensors/unicam/reference.html)。
 
 ## 支援平台與軟體 (Platforms & Software)
 

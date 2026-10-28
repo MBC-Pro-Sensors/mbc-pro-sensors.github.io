@@ -13,7 +13,7 @@
 
 <div style="background: rgba(0,210,255,0.05); border: 1px solid rgba(0,210,255,0.3); border-radius: 12px; padding: 22px; margin: 20px 0;">
 <p style="margin-top: 0;"><b>MBC Pro Sensors 擴展 v2.0.0</b>：循行者、測距者、掌控者、IMU 陀螺儀、神攝手共 95 個積木，搭配 2026-10 之後出貨（協定 v2）的 MakeBlock 版感應器。</p>
-<p><b>上架中</b>：正在 Makeblock 擴展平台送審，上架後在 mBlock 5「擴展中心」搜尋「MBC」即可加入。</p>
+<p><b>開發中</b>：新版擴展還沒在 Makeblock 擴展平台上架，正式上架後在 mBlock 5「擴展中心」搜尋「MBC」即可加入。v2.1.0 另加「神攝手通用版」分類（22 顆積木，搭配開發中的 <a href="/sensors/unicam/mblock/index.md">神攝手通用版 v1</a>，尚未上機驗證），匯入檔：<a href="/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext"><code>mbc_pro_sensors_2.1.0_import.mext</code></a>。</p>
 <p style="margin-bottom: 0;">等不及的進階使用者：到 <a href="https://ext.mblock.cc">ext.mblock.cc</a> 登入自己的 Makeblock 帳號 → 我的擴展 → 匯入資料，上傳 <a href="/downloads/MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext"><code>mbc_pro_sensors_2.0.0_import.mext</code></a>（匯入約 1 分鐘），再按「下載」取得可拖進 mBlock 的 <code>.mext</code>。</p>
 </div>
 

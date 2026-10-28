@@ -909,6 +909,165 @@
       }
     }
   },
+  "unicam": {
+    "specs": {
+      "zh": {
+        "power": "SPIKE／EV3／MATRIX／mBlock（RJ25）由主機供電，不需電池；Arduino／micro:bit 要接 5 V",
+        "extra": [
+          [
+            "影像",
+            "OV3660 鏡頭，160×120 分析"
+          ],
+          [
+            "機身",
+            "1.8 吋彩色螢幕＋4 顆按鍵，設定都在相機上做"
+          ],
+          [
+            "狀態",
+            "v1 尚未上機驗證，數值排法已定案"
+          ]
+        ]
+      },
+      "en": {
+        "power": "Powered by SPIKE / EV3 / MATRIX (and mBlock boards over RJ25), no battery; Arduino / micro:bit need 5 V",
+        "extra": [
+          [
+            "Image",
+            "OV3660 camera, 160×120 analysis"
+          ],
+          [
+            "On the camera",
+            "1.8\" color screen + 4 buttons, all settings on the camera"
+          ],
+          [
+            "Status",
+            "v1 not yet hardware-verified; value layout is final"
+          ]
+        ]
+      }
+    },
+    "color": "#00d2ff",
+    "wro": {
+      "zh": "WRO RoboMission：國中、高中組可用（相機不開放國小組）",
+      "en": "WRO RoboMission: allowed for Junior and Senior (cameras are not allowed in Elementary)"
+    },
+    "zh": {
+      "badge": "UNI-CAM · 開發中",
+      "pitch": "一台相機四種用法：顏色追蹤（最多 16 色）、座標取色、照順序給色號、循線，在相機選單切換；SPIKE、EV3、MATRIX、Arduino、micro:bit、mBlock 都讀得到。",
+      "stats": [
+        [
+          "4 種",
+          "相機模式"
+        ],
+        [
+          "16 色",
+          "同時追蹤"
+        ],
+        [
+          "6 種",
+          "主機都能讀"
+        ]
+      ],
+      "editions": [
+        [
+          "SPIKE 版",
+          "/sensors/unicam/spike/index.md"
+        ],
+        [
+          "EV3 版",
+          "/sensors/unicam/ev3/index.md"
+        ],
+        [
+          "MATRIX 版",
+          "/sensors/unicam/matrix/mvision.md"
+        ],
+        [
+          "通用 I2C 版",
+          "/sensors/unicam/arduino/index.md"
+        ],
+        [
+          "mBlock 版",
+          "/sensors/unicam/mblock/index.md"
+        ]
+      ]
+    },
+    "en": {
+      "badge": "UNI-CAM · IN DEVELOPMENT",
+      "pitch": "One camera, four jobs: color tracking (up to 16 colors), color at points, color order and line following, switched in the camera menu; SPIKE, EV3, MATRIX, Arduino, micro:bit and mBlock can all read it.",
+      "stats": [
+        [
+          "4",
+          "camera modes"
+        ],
+        [
+          "16",
+          "colors tracked"
+        ],
+        [
+          "6",
+          "host families"
+        ]
+      ],
+      "editions": [
+        [
+          "SPIKE",
+          "/en/sensors/unicam/spike/index.md"
+        ],
+        [
+          "EV3",
+          "/en/sensors/unicam/ev3/index.md"
+        ],
+        [
+          "MATRIX",
+          "/en/sensors/unicam/matrix/mvision.md"
+        ],
+        [
+          "Universal I2C",
+          "/en/sensors/unicam/arduino/index.md"
+        ],
+        [
+          "mBlock",
+          "/en/sensors/unicam/mblock/index.md"
+        ]
+      ]
+    },
+    "name": {
+      "zh": "神攝手通用版 v1",
+      "en": "Sharpshooter Vision Universal v1"
+    },
+    "routes": {
+      "spike": {
+        "start": "/sensors/unicam/spike/index.md",
+        "ref": "/sensors/unicam/reference.md",
+        "lib": "/sensors/unicam/spike-examples.md"
+      },
+      "ev3": {
+        "start": "/sensors/unicam/ev3/index.md",
+        "ref": "/sensors/unicam/reference.md",
+        "lib": "/sensors/unicam/ev3-examples.md"
+      },
+      "arduino": {
+        "start": "/sensors/unicam/arduino/index.md",
+        "ref": "/sensors/unicam/reference.md",
+        "lib": "/sensors/unicam/arduino-examples.md"
+      },
+      "mblock": {
+        "start": "/sensors/unicam/mblock/index.md",
+        "ref": "/sensors/unicam/reference.md",
+        "lib": "/sensors/unicam/mblock-examples.md"
+      },
+      "matrix": {
+        "start": "/sensors/unicam/matrix/mvision.md",
+        "ref": "/sensors/unicam/reference.md",
+        "lib": "/sensors/unicam/matrix-examples.md"
+      },
+      "microbit": {
+        "start": "/sensors/unicam/microbit/index.md",
+        "ref": "/sensors/unicam/reference.md",
+        "lib": "/sensors/unicam/microbit-examples.md"
+      }
+    }
+  },
   "exp6": {
     "specs": {
       "zh": {

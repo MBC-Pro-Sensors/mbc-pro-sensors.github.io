@@ -46,6 +46,9 @@ export function guideStart(siteProducts, lang, avail) {
     const a = (avail && avail[k]) || { hosts: [] };
     return [`[${sp.name ? L(sp.name, lang) : k}](${pageHref(lang, `/sensors/${k}/index.md`)})`, ...PLATFORMS.map((p) => {
       const ah = a.hosts.find((x) => x.id === p.id);
+      // 還沒進三層導覽的產品（神攝手通用版）：照 products.json routes 的 start 連到手寫的平台頁
+      const rt = !(avail && avail[k]) && sp.routes && sp.routes[p.id];
+      if (!ah && rt && rt.start) return `[${T(lang, '讀值教學', 'Guide')}](${pageHref(lang, rt.start)})`;
       if (!ah) return '—';
       const H = HOST_BY_ID[p.id];
       return ah.sws.map((sw) => `[${L(H.software.find((s) => s.id === sw).name, lang)}](${swMd(lang, k, p.id, sw)})`).join('・');
