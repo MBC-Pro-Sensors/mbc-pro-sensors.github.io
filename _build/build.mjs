@@ -582,7 +582,8 @@ function swGridHtml(lang, key, host) {
 // 產品頁 <!-- platform-grid -->：① 選你的主機（只列可用主機；只有一種軟體的主機直接連軟體頁）＋「繼續用 X › Y →」（site.js 讀 localStorage）
 function platformGrid(key, lang) {
   const gp = GI.products[key];
-  if (!gp) return '';
+  // 還沒進三層導覽的產品（神攝手：主機格子由 gen-unicam.mjs 產生）也要有互動教學入口
+  if (!gp) return LEARN[key] ? learnBox(lang, key, null, null, 'product') : '';
   const T_ = GL[lang];
   const data = {};
   const tiles = gp.hosts.map((ah) => {

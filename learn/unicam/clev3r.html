@@ -1,0 +1,1631 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="clev3r 不用函式庫：神攝手在 EV3 上是一顆樂高原廠紅外線感應器，每個 EV3 模式送回幾個數字（格子），每格放什麼由相機模式決定。照順序做：先建立專案、選好相機模式，再選孔位、設定 EV3 模式，最後讀格子、拆成值、顯示在 EV3 螢幕上。左邊一步一步做，右邊的程式會跟著長出來；在模擬的相機畫面裡拖色塊、色紙">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/unicam/clev3r.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/unicam/clev3r.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/unicam/clev3r.html">
+<title>神攝手 clev3r 教學 | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* 版面：左邊是照順序走的教學步驟，右邊固定「你的程式＋模擬感應器」；下面是 16 個功能的範例卡 */
+:root {
+  --bg: #f3f6f5;          /* 場地墊的淺色 */
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;      /* MBC 青綠 */
+  --accent-soft: #dff1ef;
+  --tape: #121212;        /* 黑膠帶線 */
+  --ir: #e04a3b;          /* 感應器紅外燈 */
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* 頁首 */
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+/* 主區：左教學、右程式 */
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+/* 右邊：程式＋模擬 */
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+/* 右邊固定區只放程式和輸出，高度不超過一個畫面，往下捲時一直看得到 */
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+/* 每一步卡片裡的「這一步寫的程式」：設定一改就更新並閃一下 */
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+/* 功能範例卡 */
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+/* 完整範例與注意事項 */
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+[hidden] { display: none !important; }  /* 頁面用 hidden 切換「積木／程式」，.ws{display:grid} 會蓋掉它 */
+.learn-nav .tabs .tl { color: var(--muted, #666); font-size: 0.8rem; align-self: center; }
+.learn-nav .tabs .tsep { flex-basis: 100%; height: 0; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
+   排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
+@media (max-width: 900px) {
+  .learn-nav { position: static; width: 100vw; margin: -24px 0 14px calc(50% - 50vw); }
+  .learn-nav .in { padding: 6px 12px 8px; gap: 4px 14px; font-size: 0.85rem; }
+  .learn-nav .in > a { min-height: 36px; display: inline-flex; align-items: center; }
+  .learn-nav .tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .learn-nav .tabs::-webkit-scrollbar { display: none; }
+  .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
+  body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
+  .panel.follow { margin: 12px 0 16px; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow, .ctrl > .panel.follow { grid-column: 1 / -1; }
+  .flash { animation: followFlash 1.2s ease-out; }
+  @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
+  /* 點選目標放大：選項、勾選框、拉桿 */
+  .wrap > *, .main > *, .steps > *, .step-body > * { min-width: 0; }
+  label:has(input[type=radio]), label:has(input[type=checkbox]) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  button.copy, .viewtabs button { min-height: 36px; }
+  label:has(select) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  label select { min-height: 36px; }
+  input[type=radio], input[type=checkbox] { width: 20px; height: 20px; flex: none; }
+  input[type=range] { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+</style>
+<style>
+.v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
+.v1warn b { white-space: nowrap; }
+/* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
+.ucpick { display: grid; gap: 14px; }
+#modes { gap: 8px; }
+#modes .chip { font-family: inherit; }
+.ctrl select { font: inherit; padding: 4px 6px; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/learn/">全部互動教學</a><a class="back" href="/sensors/unicam/ev3/">← 神攝手 EV3 說明</a><a class="lang" href="/en/learn/unicam/clev3r.html" hreflang="en">EN</a><div class="tabs"><span class="tl">主機</span><a href="/learn/unicam/micropython.html">SPIKE</a><a href="/learn/unicam/ev3-pybricks.html" aria-current="page">EV3</a><a href="/learn/unicam/arduino.html">Arduino</a><a href="/learn/unicam/mblock.html">mBlock</a><a href="/learn/unicam/matrix.html">MATRIX</a><a href="/learn/unicam/makecode.html">micro:bit</a><span class="tsep"></span><a href="/learn/unicam/ev3-pybricks.html">Pybricks／EV3 MicroPython</a><a href="/learn/unicam/clev3r.html" aria-current="page">clev3r</a><a href="/learn/unicam/ev3-classroom.html">EV3 Classroom</a><a href="/learn/unicam/ev3g.html">EV3-G 官方軟體</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC 神攝手 × EV3 clev3r（EV3 BASIC）</span>
+    <h1>三個步驟用 clev3r 讀神攝手</h1>
+    <p class="lead">clev3r 不用函式庫：神攝手在 EV3 上是一顆<b>樂高原廠紅外線感應器</b>，每個 EV3 模式送回幾個數字（格子），每格放什麼由<b>相機模式</b>決定。照順序做：先<b>建立專案、選好相機模式</b>，再<b>選孔位、設定 EV3 模式</b>，最後<b>讀格子、拆成值、顯示在 EV3 螢幕上</b>。左邊一步一步做，右邊的程式會跟著長出來；在模擬的相機畫面裡拖色塊、色紙、積木、線或形狀，就能看到 EV3 螢幕會顯示什麼。</p>
+    <p class="v1warn" role="note"><b>v1 尚未上機驗證</b><span>數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。</span></p>
+  </header>
+
+  <section class="main" aria-label="教學">
+    <div class="steps">
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>建立專案、選相機模式</h2></div>
+        <div class="step-body">
+          <p class="why">clev3r 不用裝擴充，也不用匯入檔案：神攝手在 EV3 上會模擬成樂高原廠的紅外線感應器（類型 33），直接用 <code>Sensor</code> 指令讀。第一行 <code>folder</code> 決定程式放在 EV3 的哪個資料夾。</p>
+          <ol class="howto">
+            <li>安裝 clev3r（本站測試的版本是 v1.7.1.0），新增一個程式，寫右邊的幾行。</li>
+            <li>相機用 EV3 線插 <b>1～4 號孔</b>，由主機供電；EV3 先開機再插。</li>
+            <li>寫好按「編譯並下載」，到 EV3 的檔案選單找 <code>MBC_unicam</code> 資料夾執行。</li>
+            <li>選相機模式：在相機的 <b>MODE</b> 選單選相機模式和子選項，下面點<b>同一個模式編號</b>（模式編號＝相機模式 ×10＋子選項）。同一個 EV3 格子在不同相機模式放的東西不一樣。</li>
+          </ol>
+          <div id="modes" class="ucpick" role="group" aria-label="相機模式"></div>
+          <div class="explain" id="modenow" aria-live="polite"></div>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">寫好了，下一步</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>選孔位、設定 EV3 模式</h2></div>
+        <div class="step-body">
+          <p class="why"><code>Sensor.SetMode(孔, EV3 模式)</code> 選紅外線感應器的哪一個模式，之後讀到的格子都是這個模式的。這裡的「EV3 模式」跟相機選單的「相機模式」是兩回事：</p>
+          <ul class="howto">
+            <li><b>EV3 模式 0 近距</b>（1 格）：相機現在的模式編號（例 13）。</li>
+            <li><b>EV3 模式 1 信標</b>（8 格，第 0～7 格）：大部分的值都在這裡。</li>
+            <li><b>EV3 模式 2 遙控</b>（4 格，第 0～3 格）：模式 11、21 的第 9～12 色／點、照順序第 9～11 塊和總塊數、循線左右緣、遠處線寬、標記線條數、物體 5 和物體數。</li>
+            <li><b>EV3 模式 3、4</b> 一直送 0（不用）；<b>EV3 模式 5</b>（2 格）：裝置 ID 和韌體版本。</li>
+          </ul>
+          <div class="row">
+            <span class="small">相機插在哪個孔？</span>
+            <div class="ports" id="ports" role="group" aria-label="孔位"></div>
+          </div>
+          <p class="small">程式裡 <code>Sensor.SetMode(<b id="portnum">1</b>, <b id="evnum">1</b>)</code> 的第 1 個數字是孔位（1～4 號孔），第 2 個是 EV3 模式；EV3 模式跟著第 3 步選的讀值走。<b>一個程式盡量只用一種 EV3 模式</b>：每換一次要等約 0.5 秒。</p>
+
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2">寫好了，下一步</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>讀格子、顯示在 EV3 螢幕上</h2></div>
+        <div class="step-body">
+          <p class="why"><code>Sensor.ReadRawValue(孔, 第幾格)</code> 拿目前 EV3 模式的第幾格（從 0 開始數），一格常放兩個數字（例 X×10＋Y），用 <code>Math.Floor(v / 10)</code>、<code>Math.Remainder(v, 10)</code> 拆開；<code>LCD.Text</code> 寫在 EV3 螢幕上。功能依相機模式分組，灰色的要換相機模式才能用（點下去會幫你換）。EV3 螢幕只能顯示英文和數字，所以標籤用英文縮寫。</p>
+          <div id="picker" class="ucpick"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+          <div class="sim-box">
+        <div class="sim-title">模擬相機畫面：拖動畫面裡的東西，看右邊的輸出怎麼變</div>
+        <div class="sim">
+          <svg id="field" viewBox="0 0 460 330" role="img" tabindex="0" aria-label="相機畫面示意：用滑鼠或手指拖動，也可以按方向鍵移動選到的東西"></svg>
+          <div class="ctrl">
+            <label class="f" for="tsize" data-g="track"><span>色塊大小（選到的：<span id="selname">色 1</span>；點色塊可以換選）</span>
+              <input autocomplete="off" type="range" id="tsize" min="8" max="90" value="30">
+            </label>
+            <label class="f" for="tcount" data-g="track"><span>同一色有幾塊（<span id="selname2">色 1</span>）</span>
+              <input autocomplete="off" type="range" id="tcount" min="1" max="3" value="1">
+            </label>
+            <label class="f" for="phue" data-g="spot"><span>色紙 1 的顏色（色相碼 <span id="phueval">0</span>；拖色紙到取樣點上）</span>
+              <input autocomplete="off" type="range" id="phue" min="0" max="239" value="0">
+            </label>
+            <label class="f" for="ocount" data-g="order"><span>畫面裡有幾塊積木（拖積木換順序）</span>
+              <input autocomplete="off" type="range" id="ocount" min="0" max="5" value="4">
+            </label>
+            <label class="f" for="lwidth" data-g="line"><span>線寬（拖綠點讓線彎）</span>
+              <input autocomplete="off" type="range" id="lwidth" min="4" max="60" value="16">
+            </label>
+            <label class="f" for="ljunc" data-g="line"><span>路口</span>
+              <select id="ljunc"><option value="0">0 沒有</option><option value="1">1 十字</option><option value="2">2 T 字</option><option value="3">3 左轉</option><option value="4">4 右轉</option><option value="5">5 盡頭</option></select>
+            </label>
+            <label class="f" for="ljd" data-g="line"><span>路口距離（0＝最下面、100＝最上面）</span>
+              <input autocomplete="off" type="range" id="ljd" min="5" max="95" value="60">
+            </label>
+            <label class="f" for="lmark" data-g="line"><span>現在穿過的彩色標記線</span>
+              <select id="lmark"><option value="0">沒有</option><option value="2">目標色 2（綠）</option><option value="3">目標色 3（藍）</option><option value="4">目標色 4（黃）</option></select>
+            </label>
+            <label class="f" for="jshape" data-g="obj"><span>選到的物體（<span id="jname">追蹤編號 1</span>；點形狀可以換選）的形狀</span>
+              <select id="jshape"><option value="1">1 圓</option><option value="2">2 橢圓</option><option value="3">3 三角</option><option value="4">4 正方</option><option value="5">5 長方</option><option value="6">6 五邊</option><option value="7">7 六邊</option><option value="8">8 星</option><option value="9">9 梯形</option></select>
+            </label>
+            <label class="f" for="jcolor" data-g="obj"><span>顏色（相機上教的目標色 1～8）</span>
+              <select id="jcolor"><option value="1">目標色 1（紅）</option><option value="2">目標色 2（綠）</option><option value="3">目標色 3（藍）</option><option value="4">目標色 4（黃）</option><option value="5">目標色 5（紫）</option><option value="6">目標色 6（橙）</option><option value="7">目標色 7（青）</option><option value="8">目標色 8（粉紅）</option></select>
+            </label>
+            <label class="f" for="jsize" data-g="obj"><span>大小（越近看起來越大）</span>
+              <input autocomplete="off" type="range" id="jsize" min="12" max="70" value="42">
+            </label>
+            <label class="f" for="jrot" data-g="obj"><span>轉角度（0～179 度）</span>
+              <input autocomplete="off" type="range" id="jrot" min="0" max="179" value="0">
+            </label>
+            <div class="toggles">
+              <label data-g="obj"><input autocomplete="off" type="checkbox" id="jgone"> 拿走這個物體（<span id="jname2">追蹤編號 1</span>）</label>
+              <label data-g="track"><input autocomplete="off" type="checkbox" id="tgone"> 拿走<span id="selname3">色 1</span></label>
+              <label data-g="line"><input autocomplete="off" type="checkbox" id="lgone"> 拿走線（車子離開線）</label>
+              <label><input autocomplete="off" type="checkbox" id="unplug"> 拔掉感應器</label>
+            </div>
+          </div>
+          <p class="note">模擬畫面是示意：數值直接用畫面上的位置換算（X 0～159 左→右、Y 0～119 上→下、面積 %＝寬×高÷整個畫面），色相碼是那張色紙／積木本來的顏色（紅 0、黃 40、綠 80、藍 160、紫 200、白桌面 244、黑膠帶 252），不是相機裡面的算法；實際數值會因光線差一些。顏色追蹤假設相機上已經教了 4 色：色 1 紅、色 2 綠、色 3 藍、色 4 黃。物體偵測的形狀是你直接選的（不是相機判斷的），物體 1、2…照面積由大到小排，X、Y 是形狀的質心（白點）、虛線框是外框，角度就是你轉的角度。</p>
+        </div>
+          </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">每個功能的範例</h2>
+        <p class="ref-intro">每個讀值都有一段可以直接放進 clev3r 的範例：先 <code>Sensor.SetMode</code> 選 EV3 模式，再在 <code>While</code> 迴圈裡讀。右上角標它能用的相機模式；同一個值在不同相機模式可能在不同格，範例照目前選的模式寫。按「試試看」會切到第 3 步。</p>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="你的程式與輸出">
+      <div class="panel">
+        <div class="panel-head"><span>你的程式（clev3r）</span><span class="row"><button type="button" class="copy" id="copymain">複製程式</button></span></div>
+        <pre class="code" id="maincode" aria-live="polite"></pre>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>EV3 螢幕上看到的（每 0.6 秒更新）</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="ref" aria-labelledby="fullh">
+    <h2 id="fullh">完整範例</h2>
+    <p class="ref-intro">按「複製」拿到完整程式。更多範例在 <a href="/sensors/unicam/ev3-examples.html">EV3 範例頁</a>（Pybricks 寫法，格子排法一樣）。</p>
+    <div class="full">
+      <div class="panel">
+        <div class="panel-head"><span>跟著色塊轉（模式 13，左輪 B、右輪 C）</span><button type="button" class="copy" data-copy="track">複製</button></div>
+        <pre class="code" id="ex-track"></pre>
+        <p class="bubble"><i>!</i><span>先在相機上教「目標 1」的顏色，相機選單切到模式 13。X 是 8×6 格換成像素（格子中心），色塊在左＝X 小於 80＝往左轉。轉反了就把 <code>0.3</code> 改成 <code>-0.3</code>。</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>循線（模式 41 黑線，左輪 B、右輪 C）</span><button type="button" class="copy" data-copy="line">複製</button></div>
+        <pre class="code" id="ex-line"></pre>
+        <p class="bubble"><i>!</i><span>相機斜看前方地面。第 5 格的個位數是有線旗標，0＝看不到線，就往最後看到的那邊原地轉找線；偏移在左＝負，所以左輪少一點、右輪多一點就往左轉。</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>螢幕列出物體（模式 51）</span><button type="button" class="copy" data-copy="obj">複製</button></div>
+        <pre class="code" id="ex-obj"></pre>
+        <p class="bubble"><i>!</i><span>相機選單切到模式 51，先教目標色 1～8（教色時可以指定形狀）。EV3 模式 1 有物體 1～4 的代碼和格子；物體 5 和物體數在 EV3 模式 2，換模式要多等約 0.5 秒，所以這個範例只讀模式 1。</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">使用注意</h2>
+    <ol>
+      <li><b>拔線時讀到 0，程式不會停。</b>clev3r 的 <code>Sensor.ReadRawValue</code> 拿不到資料時回傳 0：位置 0＝「沒看到」，色相 0 會被當成紅色。要知道有沒有接好，用「感應器有接好嗎」那張卡的 <code>Sensor.GetType</code>（接好是 33）。在右邊勾「拔掉感應器」看看。</li>
+      <li><b>相機選單的模式要跟程式寫的一樣。</b>同一格在不同相機模式放的東西不一樣，不一樣時數字沒有意義。clev3r 可以讀 EV3 模式 0 拿到相機現在的模式編號，先確認再讀（「相機現在是哪個模式」那張卡）。</li>
+      <li><b>EV3 每換一次模式約 0.5 秒。</b>大部分值在 EV3 模式 1；只有模式 11、21 的第 9～12 色／點、照順序第 9～11 塊和總塊數、循線左右緣、遠處線寬、標記線條數、物體 5 和物體數在 EV3 模式 2。同一個迴圈不要一直在兩個模式之間換。EV3 模式 3、4 一直是 0。</li>
+      <li><b>位置是 8×6 格：</b>X×10＋Y，X 1～8 左→右，<b>Y 1～6 下→上（下＝小，跟像素相反）</b>，0＝沒看到。換成像素中心：X＝(格 X−1)×20＋10、Y＝109−(格 Y−1)×20（畫面 160×120，上＝0）。循線偏移：線在左＝負、在右＝正（站在車後面往前看）。</li>
+      <li><b>EV3 一格只能放 −127～100。</b>色相碼 0～240 送成「色相碼×100÷240」（0～100），白／灰／黑送負數 −1～−15；範例換回色相碼（±2）。模式 23 改送原始色相碼兩格（百位、餘數）。物體角度送「(角度＋1)÷2」，乘 2 還原。顏色要在相機上教，程式改不了。</li>
+      <li><b>EV3 螢幕只能顯示英文和數字</b>，所以 <code>LCD.Text</code> 的標籤用英文縮寫，後面補空白蓋掉上一次比較長的字。</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+var PAGE = {"lang":"zh","code":"bas"};
+var CFG = {"lay":{"11":{"0":["fn"],"1":["d8:1","d8:2","d8:3","d8:4","d8:5","d8:6","d8:7","d8:8"],"2":["d8:9","d8:10","d8:11","d8:12"]},"12":{"0":["fn"],"1":["d8:1","d8:2","d8:3","d8:4","d8:5","d8:6","d8:7","d8:8"],"2":[null,null,null,null]},"13":{"0":["fn"],"1":["d8:1","A1","d8:2","A2","d8:3","A3","d8:4","A4"],"2":[null,null,null,null]},"14":{"0":["fn"],"1":["d8:1","wh8:1","N1","A1","d8:2","wh8:2","N2","A2"],"2":[null,null,null,null]},"21":{"0":["fn"],"1":["e100:h1","e100:h2","e100:h3","e100:h4","e100:h5","e100:h6","e100:h7","e100:h8"],"2":["e100:h9","e100:h10","e100:h11","e100:h12"]},"22":{"0":["fn"],"1":["e100:h1","sv:1","e100:h2","sv:2","e100:h3","sv:3","e100:h4","sv:4"],"2":[null,null,null,null]},"23":{"0":["fn"],"1":["hh:h1","hl:h1","t1","v1","hh:h2","hl:h2","t2","v2"],"2":[null,null,null,null]},"30":{"0":["fn"],"1":["e100:o1","e100:o2","e100:o3","e100:o4","e100:o5","e100:o6","e100:o7","e100:o8"],"2":["e100:o9","e100:o10","e100:o11","total"]},"41":{"0":["fn"],"1":["near","mid","far","ang","wid","js","jd","mk"],"2":["le","re","fw","mkn"]},"42":{"0":["fn"],"1":["near","mid","far","ang","wid","js","jd","mk"],"2":["le","re","fw","mkn"]},"43":{"0":["fn"],"1":["near","mid","far","ang","wid","js","jd","mk"],"2":["le","re","fw","mkn"]},"51":{"0":["fn"],"1":["O1","d8:1","O2","d8:2","O3","d8:3","O4","d8:4"],"2":["O5","d8:5",null,"on"]},"52":{"0":["fn"],"1":["O1","d8:1","A1","half:G1","O2","d8:2","A2","half:G2"],"2":[null,null,null,null]}}};
+function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
+
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function idiv(a, b) { return Math.floor(a / b); }
+  // ───── 相機模式（模式編號＝相機模式 ×10＋子選項）─────
+  var MODES = [
+    { n: 11, g: 'track', cm: 1, sub: 1, name: ('① 最多色') },
+    { n: 12, g: 'track', cm: 1, sub: 2, name: ('② 多色') },
+    { n: 13, g: 'track', cm: 1, sub: 3, name: ('③ 標準（XY＋面積）') },
+    { n: 14, g: 'track', cm: 1, sub: 4, name: ('④ 精細（XYWH）') },
+    { n: 21, g: 'spot', cm: 2, sub: 1, name: ('① 色相') },
+    { n: 22, g: 'spot', cm: 2, sub: 2, name: ('② 色相＋飽和') },
+    { n: 23, g: 'spot', cm: 2, sub: 3, name: ('③ 色相＋飽和＋明度') },
+    { n: 30, g: 'order', cm: 3, sub: 0, name: ('（沒有子選項）') },
+    { n: 41, g: 'line', cm: 4, sub: 1, name: ('① 黑線') },
+    { n: 42, g: 'line', cm: 4, sub: 2, name: ('② 白線') },
+    { n: 43, g: 'line', cm: 4, sub: 3, name: ('③ 色線') },
+    { n: 51, g: 'obj', cm: 5, sub: 1, name: ('① 物體清單') },
+    { n: 52, g: 'obj', cm: 5, sub: 2, name: ('② 物體詳細') }
+  ];
+  var GROUPS = {
+    track: { cm: 1, name: ('1 顏色追蹤'), modes: [11, 12, 13, 14] },
+    spot: { cm: 2, name: ('2 座標取色'), modes: [21, 22, 23] },
+    order: { cm: 3, name: ('3 照順序給色號'), modes: [30] },
+    line: { cm: 4, name: ('4 循線'), modes: [41, 42, 43] },
+    obj: { cm: 5, name: ('5 物體偵測'), modes: [51, 52] },
+    info: { cm: 0, name: ('感應器資訊（每個模式都能用）'), modes: null }
+  };
+  var GORDER = ['track', 'spot', 'order', 'line', 'obj', 'info'];
+  function modeOf(n) { for (var i = 0; i < MODES.length; i++) if (MODES[i].n === n) return MODES[i]; return MODES[2]; }
+  function modeTitle(n) { var m = modeOf(n); return n + ' = ' + GROUPS[m.g].name.replace(/^\d /, '') + ' ' + m.name; }
+  function modeList(ms) {
+    if (!ms) return ('每個模式');
+    // 連續的寫成 11～14
+    var out = [], i = 0;
+    while (i < ms.length) {
+      var j = i; while (j + 1 < ms.length && ms[j + 1] === ms[j] + 1) j++;
+      out.push(j - i >= 2 ? ms[i] + ('～') + ms[j] : ms.slice(i, j + 1).join(('、')));
+      i = j + 1;
+    }
+    return ('模式 ') + out.join(('、'));
+  }
+  // 色相碼 → 名稱（跟函式庫 color_name()／ucColorCode() 同一張表）
+  var CNAME = ['', 'red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'white', 'black'];
+  var CNAME_ZH = ['', ('紅'), ('橙'), ('黃'), ('綠'), ('青'), ('藍'), ('紫'), ('白／灰'), ('黑')];
+  function colorCode(h) {
+    if (h > 248) return 9; if (h > 240) return 8;
+    if (h < 12 || h >= 220) return 1; if (h < 28) return 2; if (h < 56) return 3;
+    if (h < 100) return 4; if (h < 140) return 5; if (h < 180) return 6; return 7;
+  }
+  // 物體形狀 0~9（跟函式庫 shape_name()／ucShapeName() 同一張表）
+  var SHAPES = ['other', 'circle', 'ellipse', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon', 'star', 'trapezoid'];
+  var SHAPES_ZH = [('其他'), ('圓'), ('橢圓'), ('三角'), ('正方'), ('長方'), ('五邊'), ('六邊'), ('星'), ('梯形')];
+  // ───── Python 輸出格式 ─────
+  function py(v) {
+    if (v === null || v === undefined) return 'None';
+    if (v === true) return 'True'; if (v === false) return 'False';
+    if (v && v.tuple) return '(' + v.tuple.map(pyIn).join(', ') + (v.tuple.length === 1 ? ',' : '') + ')';
+    if (Array.isArray(v)) return '[' + v.map(pyIn).join(', ') + ']';
+    return String(v);
+  }
+  function pyIn(v) { return typeof v === 'string' ? "'" + v + "'" : py(v); }
+  function tup(a) { return a === null || a === undefined ? null : { tuple: a }; }
+  function pr() { return Array.prototype.slice.call(arguments).map(py).join(' '); }   // print(a, b, …)
+  // 程式出錯：丟這個物件，輸出格印紅字、程式停
+  function PyErr(msg) { this.err = msg; }
+  function cmp(op, a, b) {
+    var nm = { '<': '__lt__', '>': '__gt__', '<=': '__le__', '>=': '__ge__' }[op];
+    if (a === null || b === null || a === undefined || b === undefined) throw new PyErr("TypeError: unsupported types for " + nm + ": '" + (a == null ? 'NoneType' : 'int') + "', '" + (b == null ? 'NoneType' : 'int') + "'");
+    return op === '<' ? a < b : op === '>' ? a > b : op === '<=' ? a <= b : a >= b;
+  }
+  function unpack(v) { if (v === null || v === undefined) throw new PyErr("TypeError: 'NoneType' object isn't iterable"); return v.tuple || v; }
+  function sub(a, b) { if (a === null || a === undefined) throw new PyErr("TypeError: unsupported types for __sub__: 'NoneType', 'int'"); return a - b; }
+
+  // ───── 程式上色 ─────
+  var KWS = {
+    py: /^(from|import|while|True|False|None|if|else|elif|not|and|or|async|def|await|for|in|return|is|break|continue|pass)$/,
+    cpp: /^(void|bool|int|long|unsigned|char|float|double|const|if|else|while|for|return|true|false|switch|case|break|continue|default|static|struct|uint8_t|uint16_t|int16_t|int32_t|byte|auto)$/,
+    ts: /^(const|let|var|function|if|else|while|for|return|true|false|number|boolean|string|break|continue)$/
+  };
+  var LANGC = PAGE.code;
+  function hi(line) {
+    var out = '', i = 0, KW = KWS[LANGC], com = LANGC === 'py' ? '#' : '//';
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest.slice(0, com.length) === com) { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if (LANGC === 'cpp' && (m = rest.match(/^#[a-z]+/))) { out += '<span class="tk-kw">' + m[0] + '</span>'; i += m[0].length; continue; }
+      if (LANGC === 'cpp' && (m = rest.match(/^<[A-Za-z0-9_.\/]+\.h>/)) && /#include\s*$/.test(line.slice(0, i))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (KW.test(w)) out += '<span class="tk-kw">' + w + '</span>';
+        else if (after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^(0[xX][0-9A-Fa-f]+|\d+(\.\d+)?)/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  function render(el, lines, opts) {
+    opts = opts || {};
+    el.innerHTML = lines.map(function (l, k) {
+      var cls = 'ln' + (l.hl ? ' hl' : '') + (l.isNew ? ' new' : '');
+      var tag = opts.noTag ? '' : '<span class="tag">' + (l.tag && !l.tagHide ? '<i>' + l.tag + '</i>' : '') + '</span>';
+      return '<span class="' + cls + '"><span class="no">' + (l.no !== undefined ? l.no : k + 1) + '</span>' + tag + '<span>' + (l.t ? hi(l.t) : ' ') + '</span></span>';
+    }).join('');
+  }
+  function plain(lines) { return lines.map(function (l) { return typeof l === 'string' ? l : l.t; }).join('\n') + '\n'; }
+  function copyText(text, btn) {
+    var done = function () { var o = btn.textContent; btn.textContent = ('已複製'); setTimeout(function () { btn.textContent = o; }, 1400); };
+    try { navigator.clipboard.writeText(text).then(done, function () { fallback(text); }); } catch (e) { fallback(text); }
+    function fallback(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e2) { btn.textContent = ('請手動選取複製'); }
+      document.body.removeChild(ta);
+    }
+  }
+
+
+    var S = { step: 1, viewStep: 1, fn: 'pos', mode: 13, port: 1 };
+    var LAY = CFG.lay;
+    // EV3 BASIC 上色（' 開頭是註解）：同名函式宣告蓋掉共用 PRE 的 hi()，rt.mjs 不用改
+    var BKW = /^(While|EndWhile|If|Then|Else|ElseIf|EndIf|For|To|Step|EndFor|And|Or|folder|Sub|EndSub|Goto)$/;
+    function hi(line) {
+      var out = '', i = 0;
+      while (i < line.length) {
+        var rest = line.slice(i), m;
+        if (rest[0] === "'") { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+        if ((m = rest.match(/^"[^"]*"/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+        if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)?/))) {
+          var w = m[0], after = rest.slice(w.length);
+          if (BKW.test(w)) out += '<span class="tk-kw">' + w + '</span>';
+          else if (after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+          else out += esc(w);
+          i += w.length; continue;
+        }
+        if ((m = rest.match(/^\d+(\.\d+)?/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+        out += esc(rest[0]); i++;
+      }
+      return out;
+    }
+    var NCOL = { 11: 12, 12: 8, 13: 4, 14: 2 }, NPT = { 21: 12, 22: 4, 23: 2 }, NOBJ = { 51: 5, 52: 2 };
+    // ───── EV3 各模式的格子（照 spec_layout.json 的 ev3 排法，從畫面真值算；跟規格測試 oracle 同一套換算）─────
+    function ev3cells(st, m) {
+      var R = { 0: [0], 1: [0, 0, 0, 0, 0, 0, 0, 0], 2: [0, 0, 0, 0], 3: [0, 0, 0], 4: [0, 0, 0], 5: [0, 0] };
+      if (!st.ok || st.none) return R;
+      var objm = idiv(m, 10) === 5, Ln = st.line, hues = st.order.hues;
+      var LK = { near: Ln.near, mid: Ln.mid, far: Ln.far, ang: Ln.angle, wid: Ln.width, st: Ln.flags, jt: Ln.junction, jd: Ln.jdist, le: Ln.left, re: Ln.right, fw: Ln.farw, mk: Ln.marker, mkn: Ln.mcount, lost: Ln.lost };
+      function tgt(c) {
+        if (objm) { var o = st.obj[c - 1]; return o ? { f: 1, px: o[2], py: o[3], w: o[6] - o[4] + 1, h: o[7] - o[5] + 1, n: 0, area: o[8] } : { f: 0, px: 0, py: 0, w: 0, h: 0, n: 0, area: 0 }; }
+        var b = st.blobs[c];
+        return b && b.f ? { f: 1, px: b.x, py: b.y, w: b.w, h: b.h, n: b.n, area: b.ap } : { f: 0, px: 0, py: 0, w: 0, h: 0, n: 0, area: 0 };
+      }
+      function apct(c) { var o = tgt(c); return o.f ? Math.max(1, idiv(o.area * 100 + 9600, 19200)) : 0; }
+      function plain(k) {
+        var i = parseInt(k.slice(1), 10);
+        if (objm) {
+          if (k === 'on') return st.obj.length;
+          if (k[0] === 'A') return apct(i);
+          var o = st.obj[i - 1]; if (!o) return 0;
+          return { O: o[0] * 10 + o[1], K: o[0], S: o[1], G: o[9], V: o[10], I: o[11] }[k[0]];
+        }
+        if (LK.hasOwnProperty(k)) return LK[k];
+        if (k === 'js') return Ln.junction * 10 + Ln.flags;
+        if (k === 'total') return hues.length;
+        if (k[0] === 'h') return st.spot[i].h;
+        if (k[0] === 't') return st.spot[i].s;
+        if (k[0] === 'v') return st.spot[i].v;
+        if (k[0] === 'o') return i <= hues.length ? hues[i - 1] : 0;
+        if (k[0] === 'N') return tgt(i).n;
+        if (k[0] === 'A') return apct(i);
+        throw new Error('EV3 key ' + k);
+      }
+      function val(k) {
+        if (k === null) return 0;
+        if (k === 'fn') return m;
+        if (k.indexOf(':') < 0) return plain(k);
+        var pre = k.split(':')[0], arg = k.split(':')[1], h, o;
+        if (pre === 'e100') { h = plain(arg); return h <= 240 ? idiv(h * 100 + 120, 240) : -(h - 240); }
+        if (pre === 'half') return idiv(plain(arg) + 1, 2);
+        if (pre === 'hh') return idiv(plain(arg), 100);
+        if (pre === 'hl') return plain(arg) % 100;
+        if (pre === 'sv') { var p = st.spot[parseInt(arg, 10)]; return Math.min(9, idiv(p.s, 10)) * 10 + Math.min(9, idiv(p.v, 10)); }
+        o = tgt(parseInt(arg, 10));
+        if (!o.f) return 0;
+        if (pre === 'wh8') return (idiv(o.w, 20) + 1) * 10 + idiv(o.h, 20) + 1;
+        if (pre === 'd8') return (idiv(o.px, 20) + 1) * 10 + idiv(119 - o.py, 20) + 1;
+        throw new Error('EV3 key ' + k);
+      }
+      var lay = LAY[m];
+      [0, 1, 2].forEach(function (e) { R[e] = lay[e].map(function (k) { return clamp(val(k), -127, 100); }); });
+      R[5] = [0x034C, 100];   // 裝置 ID 字（位址 0x4C＋hw0 3×256）、韌體版字（示意 100）
+      return R;
+    }
+    function view(st, m) {
+      var R = ev3cells(st, m);
+      return { r: function (e, i) { return R[e][i]; }, type: function () { return st.ok && !st.none ? 33 : 126; }, cells: R };
+    }
+    // ───── clev3r 程式片段 ─────
+    function RD(p, i) { return 'Sensor.ReadRawValue(' + p + ', ' + i + ')'; }
+    function LT(y, expr) { return 'LCD.Text(1, 0, ' + y + ', 1, ' + expr + ' + "      ")'; }
+    function hueB(p, i) { return ['e = ' + RD(p, i), 'If e < 0 Then', '  h = 240 - e', 'Else', '  h = Math.Floor((e * 240 + 50) / 100)', 'EndIf']; }
+    function hc(e) { return e < 0 ? 240 - e : idiv(e * 240 + 50, 100); }
+    function gx(g) { return idiv(g, 10); }
+    function gy(g) { return g % 10; }
+    function pxX(g) { return (gx(g) - 1) * 20 + 10; }
+    function pxY(g) { return 109 - (gy(g) - 1) * 20; }
+    var CN = ['BLACK', 'WHITE', 'RED', 'ORANGE', 'YELLOW', 'GREEN', 'CYAN', 'BLUE', 'PURPLE'];
+    function cname(h) { return h > 248 ? 'BLACK' : h > 240 ? 'WHITE' : (h < 12 || h >= 220) ? 'RED' : h < 28 ? 'ORANGE' : h < 56 ? 'YELLOW' : h < 100 ? 'GREEN' : h < 140 ? 'CYAN' : h < 180 ? 'BLUE' : 'PURPLE'; }
+    var SHN = ['OTHER', 'CIRCLE', 'ELLIPSE', 'TRIANGLE', 'SQUARE', 'RECT', 'PENTAGON', 'HEXAGON', 'STAR', 'TRAPEZOID'];
+    var SHPRE = SHN.map(function (s, i) { return 'SH[' + i + '] = "' + s + '"'; });
+    var EVN = { 0: ('近距'), 1: ('信標'), 2: ('遙控'), 5: ('裝置 ID') };
+    function evOf(f, m) { return typeof f.ev === 'function' ? f.ev(m) : f.ev; }
+    function fnMode(f) {
+      if (!f.modes || f.modes.indexOf(S.mode) >= 0) return S.mode;
+      var g = modeOf(S.mode).g;
+      for (var i = 0; i < f.modes.length; i++) if (modeOf(f.modes[i]).g === g) return f.modes[i];
+      return f.modes[0];
+    }
+    // 各值在哪一格（隨相機模式不同）
+    var AREA = { 13: 1, 14: 3 };
+    var FNS = [];
+    function add(f) { FNS.push(f); }
+    // ── 顏色追蹤 11～14 ──
+    add({ id: 'pos', grp: 'track', modes: [11, 12, 13, 14], ev: 1, label: ('色 1 在哪一格'), name: ('信標第 0 格：X×10＋Y'),
+      what: ('色 1 在 8×6 格的哪一格：一格放「X×10＋Y」，X 1～8 左→右、<b>Y 1～6 下→上</b>（下＝小）。0＝沒看到。色 1 是相機上教的「目標 1」。每個顏色追蹤模式的色 1 都在第 0 格。拖色塊 1 試試看。'),
+      ret: ('X×10＋Y（0, 11～86）'),
+      body: function (m, p) { return ['g = ' + RD(p, 0), 'If g = 0 Then', '  ' + LT(0, '"C1 NOT SEEN"'), 'Else', '  ' + LT(0, '"C1 X " + Math.Floor(g / 10) + " Y " + Math.Remainder(g, 10)'), 'EndIf']; },
+      out: function (V) { var g = V.r(1, 0); return g === 0 ? 'C1 NOT SEEN' : 'C1 X ' + gx(g) + ' Y ' + gy(g); } });
+    add({ id: 'pix', grp: 'track', modes: [11, 12, 13, 14], ev: 1, label: ('換成像素座標'), name: ('格子 → 像素中心'),
+      what: ('把格子換成 160×120 畫面的像素（格子中心，±10 像素）：X＝(格 X−1)×20＋10、Y＝109−(格 Y−1)×20，換完 Y 就是上＝小。畫面中間 X＝80。'),
+      ret: ('X 10～150、Y 9～109'),
+      body: function (m, p) { return ['g = ' + RD(p, 0), 'If g > 0 Then', '  x = (Math.Floor(g / 10) - 1) * 20 + 10', '  y = 109 - (Math.Remainder(g, 10) - 1) * 20', '  ' + LT(0, '"C1 X " + x + " Y " + y'), 'Else', '  ' + LT(0, '"C1 NOT SEEN"'), 'EndIf']; },
+      out: function (V) { var g = V.r(1, 0); return g > 0 ? 'C1 X ' + pxX(g) + ' Y ' + pxY(g) : 'C1 NOT SEEN'; } });
+    add({ id: 'side', grp: 'track', modes: [11, 12, 13, 14], ev: 1, label: ('左／中／右'), name: ('色塊在左邊還是右邊'),
+      what: ('用格 X 分三段：1～3＝左、6～8＝右、4～5＝中間（跟像素 X 小於 60、大於 100 一樣）。追色塊的車子就照這個轉。'),
+      ret: ('用格 X 判斷'),
+      body: function (m, p) { return ['g = ' + RD(p, 0), 'x = Math.Floor(g / 10)', 'If g = 0 Then', '  ' + LT(0, '"C1 NOT SEEN"'), 'ElseIf x <= 3 Then', '  ' + LT(0, '"C1 LEFT " + x'), 'ElseIf x >= 6 Then', '  ' + LT(0, '"C1 RIGHT " + x'), 'Else', '  ' + LT(0, '"C1 MIDDLE " + x'), 'EndIf']; },
+      out: function (V) { var g = V.r(1, 0), x = gx(g); return g === 0 ? 'C1 NOT SEEN' : x <= 3 ? 'C1 LEFT ' + x : x >= 6 ? 'C1 RIGHT ' + x : 'C1 MIDDLE ' + x; } });
+    add({ id: 'c2', grp: 'track', modes: [11, 12, 13, 14], ev: 1, label: ('色 2 在哪一格'), name: ('第二個顏色在第幾格'),
+      what: ('色 2 的格子在哪一格要看相機模式：模式 11、12 是第 1 格（每格一色）、模式 13 是第 2 格（色、面積輪流）、模式 14 是第 4 格（每色 4 格）。範例照第 1 步選的模式寫。'),
+      ret: ('X×10＋Y（0＝沒看到）'),
+      body: function (m, p) { var i = { 11: 1, 12: 1, 13: 2, 14: 4 }[m]; return ['g = ' + RD(p, i), LT(0, '"C2 X " + Math.Floor(g / 10) + " Y " + Math.Remainder(g, 10)')]; },
+      out: function (V, st) { var g = V.r(1, { 11: 1, 12: 1, 13: 2, 14: 4 }[st.mode]); return 'C2 X ' + gx(g) + ' Y ' + gy(g); } });
+    add({ id: 'area', grp: 'track', modes: [13, 14], ev: 1, label: ('色 1 面積 %'), name: ('佔畫面的幾 %'),
+      what: ('色 1 佔整個畫面的幾 %（0＝沒看到）：模式 13 在第 1 格、模式 14 在第 3 格。越近越大，可以用來「夠近了就停」。把色塊拉大試試看。'),
+      ret: ('0～100'),
+      body: function (m, p) { return ['a = ' + RD(p, AREA[m]), 'If a >= 20 Then', '  ' + LT(0, '"CLOSE! AREA " + a'), 'Else', '  ' + LT(0, '"C1 AREA " + a'), 'EndIf']; },
+      out: function (V, st) { var a = V.r(1, AREA[st.mode]); return a >= 20 ? 'CLOSE! AREA ' + a : 'C1 AREA ' + a; } });
+    add({ id: 'size', grp: 'track', modes: [14], ev: 1, label: ('色 1 寬、高（格）'), name: ('信標第 1 格：W×10＋H'),
+      what: ('模式 14：色 1 的寬、高，也是 20 像素一格：W×10＋H，W＝寬÷20＋1（寬約 W×20−10 像素）。高比寬大很多＝直立的東西。'),
+      ret: ('W×10＋H（0, 11～77）'),
+      body: function (m, p) { return ['s = ' + RD(p, 1), LT(0, '"C1 W " + Math.Floor(s / 10) + " H " + Math.Remainder(s, 10)')]; },
+      out: function (V) { var s = V.r(1, 1); return 'C1 W ' + gx(s) + ' H ' + gy(s); } });
+    add({ id: 'count', grp: 'track', modes: [14], ev: 1, label: ('色 1 有幾塊'), name: ('信標第 2 格：數量'),
+      what: ('模式 14：色 1 在畫面裡有幾塊（0～15）。EV3 只有模式 14 有數量。拉「同一色有幾塊」試試看。'),
+      ret: ('0～15'),
+      body: function (m, p) { return [LT(0, '"C1 COUNT " + ' + RD(p, 2))]; },
+      out: function (V) { return 'C1 COUNT ' + V.r(1, 2); } });
+    add({ id: 'c9', grp: 'track', modes: [11], ev: 2, label: ('色 9～12（EV3 模式 2）'), name: ('遙控第 0～3 格'),
+      what: ('模式 11 給 12 色：色 1～8 在 EV3 模式 1，色 9～12 在 <b>EV3 模式 2</b> 的第 0～3 格。模擬畫面只有 4 色，所以這裡是 0。'),
+      ret: ('X×10＋Y（0＝沒看到）'),
+      body: function (m, p) { return ['g = ' + RD(p, 0), LT(0, '"C9 X " + Math.Floor(g / 10) + " Y " + Math.Remainder(g, 10)')]; },
+      out: function (V) { var g = V.r(2, 0); return 'C9 X ' + gx(g) + ' Y ' + gy(g); } });
+    // ── 座標取色 21～23 ──
+    add({ id: 'ehue', grp: 'spot', modes: [21, 22], ev: 1, label: ('點 1 原始值'), name: ('EV3 色相（0～100，負＝黑白）'),
+      what: ('模式 21、22：取樣點 1 的 EV3 色相值，0～100＝色相碼×100÷240（紅 0、黃 17、綠 33、藍 67、紫 83），−1～−8 白／灰、−9～−15 黑。拖色紙到點 1 上試試看。'),
+      ret: ('−15～100'),
+      body: function (m, p) { return [LT(0, '"S1 RAW " + ' + RD(p, 0))]; },
+      out: function (V) { return 'S1 RAW ' + V.r(1, 0); } });
+    add({ id: 'hue', grp: 'spot', modes: [21, 22, 23], ev: 1, label: ('點 1 色相碼'), name: ('換回 0～255 色相碼'),
+      what: ('取樣點 1 的色相碼 0～255：紅 0、黃 40、綠 80、青 120、藍 160、紫 200；241～248 白／灰、249～255 黑。模式 21、22 從 EV3 色相換回來（±2）；模式 23 送原始色相碼兩格（第 0 格百位＋第 1 格餘數），一點都不差。'),
+      ret: ('0～255'),
+      body: function (m, p) { return (m === 23 ? ['h = ' + RD(p, 0) + ' * 100 + ' + RD(p, 1)] : hueB(p, 0)).concat([LT(0, '"S1 HUE " + h')]); },
+      out: function (V, st) { return 'S1 HUE ' + (st.mode === 23 ? V.r(1, 0) * 100 + V.r(1, 1) : hc(V.r(1, 0))); } });
+    function hueOf(V, st, i) { return st.mode === 23 ? V.r(1, 4 * i) * 100 + V.r(1, 4 * i + 1) : hc(V.r(1, st.mode === 22 ? 2 * i : i)); }
+    add({ id: 'color', grp: 'spot', modes: [21, 22, 23], ev: 1, label: ('點 1 是什麼顏色'), name: ('色相碼 → 顏色名稱'),
+      what: ('把色相碼換成顏色名稱（跟函式庫 color_name() 同一張分界表）：RED ORANGE YELLOW GREEN CYAN BLUE PURPLE WHITE BLACK。紅色在 0 附近和 220 以上。'),
+      ret: ('顏色名稱'),
+      body: function (m, p) {
+        return (m === 23 ? ['h = ' + RD(p, 0) + ' * 100 + ' + RD(p, 1)] : hueB(p, 0)).concat(['If h > 248 Then', '  c = "BLACK"', 'ElseIf h > 240 Then', '  c = "WHITE"', 'ElseIf h < 12 Or h >= 220 Then', '  c = "RED"', 'ElseIf h < 28 Then', '  c = "ORANGE"', 'ElseIf h < 56 Then', '  c = "YELLOW"', 'ElseIf h < 100 Then', '  c = "GREEN"', 'ElseIf h < 140 Then', '  c = "CYAN"', 'ElseIf h < 180 Then', '  c = "BLUE"', 'Else', '  c = "PURPLE"', 'EndIf', LT(0, '"S1 " + c')]);
+      },
+      out: function (V, st) { return 'S1 ' + cname(hueOf(V, st, 0)); } });
+    add({ id: 'sv', grp: 'spot', modes: [22, 23], ev: 1, label: ('點 1 飽和、明度'), name: ('多鮮豔、多亮'),
+      what: ('飽和度（0＝灰灰的、100＝很鮮豔）和明度（0＝很暗、100＝很亮）。模式 22 擠在第 1 格「飽和÷10×10＋明度÷10」，只到十位數；模式 23 在第 2、3 格，原值 0～100。'),
+      ret: ('0～100（模式 22 是十位數）'),
+      body: function (m, p) { return m === 22 ? ['v = ' + RD(p, 1), LT(0, '"S1 SAT " + Math.Floor(v / 10) * 10 + " VAL " + Math.Remainder(v, 10) * 10')] : [LT(0, '"S1 SAT " + ' + RD(p, 2) + ' + " VAL " + ' + RD(p, 3))]; },
+      out: function (V, st) { if (st.mode === 22) { var v = V.r(1, 1); return 'S1 SAT ' + gx(v) * 10 + ' VAL ' + gy(v) * 10; } return 'S1 SAT ' + V.r(1, 2) + ' VAL ' + V.r(1, 3); } });
+    add({ id: 'spot2', grp: 'spot', modes: [21, 22, 23], ev: 1, label: ('點 2 色相碼'), name: ('第二個取樣點在第幾格'),
+      what: ('點 2 在哪一格要看相機模式：模式 21 第 1 格（每格一點）、模式 22 第 2 格（色相、飽和明度輪流）、模式 23 第 4、5 格（每點 4 格）。'),
+      ret: ('0～255'),
+      body: function (m, p) { return (m === 23 ? ['h = ' + RD(p, 4) + ' * 100 + ' + RD(p, 5)] : hueB(p, m === 22 ? 2 : 1)).concat([LT(0, '"S2 HUE " + h')]); },
+      out: function (V, st) { return 'S2 HUE ' + hueOf(V, st, 1); } });
+    add({ id: 'pt9', grp: 'spot', modes: [21], ev: 2, label: ('點 9～12（EV3 模式 2）'), name: ('遙控第 0～3 格'),
+      what: ('模式 21 給 12 點：點 1～8 在 EV3 模式 1，點 9～12 在 <b>EV3 模式 2</b> 的第 0～3 格。12 點排兩列，點 9～12 在下面那一列右邊。'),
+      ret: ('0～255'),
+      body: function (m, p) { return hueB(p, 0).concat([LT(0, '"S9 HUE " + h')]); },
+      out: function (V) { return 'S9 HUE ' + hc(V.r(2, 0)); } });
+    // ── 照順序給色號 30 ──
+    add({ id: 'order', grp: 'order', modes: [30], ev: 1, label: ('左起第 1～4 塊'), name: ('信標第 0～7 格：一格一塊'),
+      what: ('由左到右每塊的顏色：第 0 格＝最左邊那塊，一直到第 7 格（第 9～11 塊在 EV3 模式 2）。範例用 For 迴圈換回色相碼，螢幕上排 4 行。紅色是 0，沒有積木也是 0，所以要看「總共幾塊」。拖積木換順序試試看。'),
+      ret: ('色相碼 0～255'),
+      body: function (m, p) { return ['For i = 0 To 3', '  e = ' + RD(p, 'i'), '  If e < 0 Then', '    h = 240 - e', '  Else', '    h = Math.Floor((e * 240 + 50) / 100)', '  EndIf', '  LCD.Text(1, 0, i * 16, 1, "B" + (i + 1) + " HUE " + h + "      ")', 'EndFor']; },
+      out: function (V) { var a = []; for (var i = 0; i < 4; i++) a.push('B' + (i + 1) + ' HUE ' + hc(V.r(1, i))); return a; } });
+    add({ id: 'total', grp: 'order', modes: [30], ev: 2, label: ('總共幾塊（EV3 模式 2）'), name: ('遙控第 3 格'),
+      what: ('畫面裡總共幾塊（0～18，可能比給色相的 11 塊多），在 <b>EV3 模式 2</b> 的第 3 格；第 0～2 格是第 9～11 塊。拉「畫面裡有幾塊積木」試試看。'),
+      ret: ('0～18'),
+      body: function (m, p) { return ['n = ' + RD(p, 3), 'If n = 0 Then', '  ' + LT(0, '"NO BLOCKS"'), 'Else', '  ' + LT(0, '"TOTAL " + n'), 'EndIf']; },
+      out: function (V) { var n = V.r(2, 3); return n === 0 ? 'NO BLOCKS' : 'TOTAL ' + n; } });
+    // ── 循線 41～43（三種線同一種排法）──
+    function lineAdd(id, ev, label, name, what, ret, body, out) { add({ id: id, grp: 'line', modes: [41, 42, 43], ev: ev, label: label, name: name, what: what, ret: ret, body: body, out: out }); }
+    lineAdd('near', 1, ('近處偏移'), ('信標第 0 格'),
+      ('最下面那條掃描線上，線偏離中間多少：−100～100，<b>線在左＝負、在右＝正</b>。看不到線時也是 0，所以範例先看第 5 格的有線旗標。拖「近」那個綠點試試看。'),
+      ('−100～100'),
+      function (m, p) { return ['js = ' + RD(p, 5), 'e = ' + RD(p, 0), 'If Math.Remainder(js, 10) = 0 Then', '  ' + LT(0, '"NO LINE"'), 'ElseIf e < -10 Then', '  ' + LT(0, '"LINE LEFT " + e'), 'ElseIf e > 10 Then', '  ' + LT(0, '"LINE RIGHT " + e'), 'Else', '  ' + LT(0, '"LINE MIDDLE " + e'), 'EndIf']; },
+      function (V) { var f = V.r(1, 5) % 10, e = V.r(1, 0); return f === 0 ? 'NO LINE' : e < -10 ? 'LINE LEFT ' + e : e > 10 ? 'LINE RIGHT ' + e : 'LINE MIDDLE ' + e; });
+    lineAdd('nmf', 1, ('近／中／遠'), ('信標第 0～2 格'),
+      ('三條掃描線各自的偏移（−100～100）。遠處先偏＝前面要彎了；看不到的那一條是 0。'),
+      ('−100～100'),
+      function (m, p) { return [LT(0, '"NEAR " + ' + RD(p, 0)), LT(16, '"MID " + ' + RD(p, 1)), LT(32, '"FAR " + ' + RD(p, 2))]; },
+      function (V) { return ['NEAR ' + V.r(1, 0), 'MID ' + V.r(1, 1), 'FAR ' + V.r(1, 2)]; });
+    lineAdd('angle', 1, ('線角度'), ('信標第 3 格'),
+      ('線往哪邊斜：−90～90，正＝往右上斜（前面往右彎）。'), ('−90～90'),
+      function (m, p) { return ['a = ' + RD(p, 3), 'If a > 20 Then', '  ' + LT(0, '"BEND RIGHT " + a'), 'ElseIf a < -20 Then', '  ' + LT(0, '"BEND LEFT " + a'), 'Else', '  ' + LT(0, '"STRAIGHT " + a'), 'EndIf']; },
+      function (V) { var a = V.r(1, 3); return a > 20 ? 'BEND RIGHT ' + a : a < -20 ? 'BEND LEFT ' + a : 'STRAIGHT ' + a; });
+    lineAdd('width', 1, ('近處線寬 %'), ('信標第 4 格'),
+      ('近處的線佔畫面寬度的幾 %。突然變很寬＝可能壓到路口或橫線。拉「線寬」試試看。'), ('0～100'),
+      function (m, p) { return [LT(0, '"WIDTH " + ' + RD(p, 4) + ' + " %"')]; },
+      function (V) { return 'WIDTH ' + V.r(1, 4) + ' %'; });
+    lineAdd('flags', 1, ('有沒有看到線'), ('信標第 5 格的個位數'),
+      ('第 5 格＝路口類型×10＋有線旗標；個位數是旗標：近 1＋中 2＋遠 4，7＝都看到、0＝都沒看到。EV3 沒有「最後離線方向」，要自己記最後看到線在哪邊（完整範例的 last）。勾「拿走線」試試看。'),
+      ('0～7'),
+      function (m, p) { return ['f = Math.Remainder(' + RD(p, 5) + ', 10)', 'If f = 0 Then', '  ' + LT(0, '"NO LINE"'), 'ElseIf f = 7 Then', '  ' + LT(0, '"LINE NEAR MID FAR"'), 'Else', '  ' + LT(0, '"FLAGS " + f'), 'EndIf']; },
+      function (V) { var f = V.r(1, 5) % 10; return f === 0 ? 'NO LINE' : f === 7 ? 'LINE NEAR MID FAR' : 'FLAGS ' + f; });
+    lineAdd('junction', 1, ('路口類型與距離'), ('信標第 5 格十位數＋第 6 格'),
+      ('第 5 格的十位數是前面的路口：0 沒有、1 十字、2 T 字、3 左轉、4 右轉、5 盡頭；第 6 格是距離 %（0＝就在車頭、100＝畫面最上面）。在右邊選路口試試看。'),
+      ('類型 0～5、距離 0～100'),
+      function (m, p) { return ['j = Math.Floor(' + RD(p, 5) + ' / 10)', 'd = ' + RD(p, 6), 'If j = 0 Then', '  ' + LT(0, '"NO JUNCTION"'), 'Else', '  ' + LT(0, '"JUNCTION " + j + " AT " + d + " %"'), 'EndIf']; },
+      function (V) { var j = idiv(V.r(1, 5), 10), d = V.r(1, 6); return j === 0 ? 'NO JUNCTION' : 'JUNCTION ' + j + ' AT ' + d + ' %'; });
+    lineAdd('marker', 1, ('標記線色號'), ('信標第 7 格'),
+      ('最近一次穿過的彩色標記線是第幾個目標色（0＝還沒有）。累計條數在 EV3 模式 2 第 3 格（下一張卡）。在右邊換「現在穿過的彩色標記線」。'),
+      ('0, 1～16'),
+      function (m, p) { return [LT(0, '"MARKER " + ' + RD(p, 7))]; },
+      function (V) { return 'MARKER ' + V.r(1, 7); });
+    lineAdd('mcount', 2, ('標記線條數（EV3 模式 2）'), ('遙控第 3 格'),
+      ('到現在總共穿過幾條彩色標記線（0～99，到 99 從 0 再數）。在 <b>EV3 模式 2</b>。'),
+      ('0～99'),
+      function (m, p) { return [LT(0, '"MARKERS " + ' + RD(p, 3))]; },
+      function (V) { return 'MARKERS ' + V.r(2, 3); });
+    lineAdd('edges', 2, ('左右緣（EV3 模式 2）'), ('遙控第 0、1 格'),
+      ('近處線的左緣、右緣（−100～100，左＝負）。兩個相減就是線多寬。在 <b>EV3 模式 2</b>。'),
+      ('−100～100'),
+      function (m, p) { return [LT(0, '"LEFT EDGE " + ' + RD(p, 0)), LT(16, '"RIGHT EDGE " + ' + RD(p, 1))]; },
+      function (V) { return ['LEFT EDGE ' + V.r(2, 0), 'RIGHT EDGE ' + V.r(2, 1)]; });
+    lineAdd('farw', 2, ('遠處線寬（EV3 模式 2）'), ('遙控第 2 格'),
+      ('遠處的線佔畫面寬度的幾 %（看不到遠處＝0）。在 <b>EV3 模式 2</b>。'),
+      ('0～100'),
+      function (m, p) { return [LT(0, '"FAR WIDTH " + ' + RD(p, 2) + ' + " %"')]; },
+      function (V) { return 'FAR WIDTH ' + V.r(2, 2) + ' %'; });
+    // ── 物體偵測 51、52 ──
+    add({ id: 'ocode', grp: 'obj', modes: [51, 52], ev: 1, label: ('物體 1 代碼'), name: ('信標第 0 格：色號×10＋形狀'),
+      what: ('物體 1（面積最大的那個）的代碼＝色號×10＋形狀，例 13＝目標色 1 的三角形；0＝沒有。十位數是相機上教的第幾個目標色（1～8），個位數是形狀 0～9。在右邊換形狀、顏色試試看。'),
+      ret: ('0, 10～89'),
+      body: function (m, p) { return ['o = ' + RD(p, 0), 'If o = 0 Then', '  ' + LT(0, '"NO OBJECT"'), 'Else', '  ' + LT(0, '"O1 COLOR " + Math.Floor(o / 10) + " SHAPE " + Math.Remainder(o, 10)'), 'EndIf']; },
+      out: function (V) { var o = V.r(1, 0); return o === 0 ? 'NO OBJECT' : 'O1 COLOR ' + gx(o) + ' SHAPE ' + gy(o); } });
+    add({ id: 'oshape', grp: 'obj', modes: [51, 52], ev: 1, label: ('物體 1 形狀名稱'), name: ('形狀 0～9 → 英文名'),
+      what: ('用文字陣列把形狀編號換成英文名：0 其他、1 圓、2 橢圓、3 三角、4 正方、5 長方、6 五邊、7 六邊、8 星、9 梯形。陣列放在迴圈外面設一次。'),
+      ret: ('形狀名稱'), pre: SHPRE,
+      body: function (m, p) { return ['o = ' + RD(p, 0), 'If o = 0 Then', '  ' + LT(0, '"NO OBJECT"'), 'Else', '  ' + LT(0, '"O1 " + SH[Math.Remainder(o, 10)]'), 'EndIf']; },
+      out: function (V) { var o = V.r(1, 0); return o === 0 ? 'NO OBJECT' : 'O1 ' + SHN[o % 10]; } });
+    add({ id: 'opos', grp: 'obj', modes: [51, 52], ev: 1, label: ('物體 1 在哪一格'), name: ('信標第 1 格：X×10＋Y（質心）'),
+      what: ('物體 1 的質心（白點）在 8×6 格的哪一格：X×10＋Y，Y 下＝小。質心是形狀的重心，三角形的質心比外框中心偏下。'),
+      ret: ('X×10＋Y（0＝沒有）'),
+      body: function (m, p) { return ['g = ' + RD(p, 1), LT(0, '"O1 X " + Math.Floor(g / 10) + " Y " + Math.Remainder(g, 10)')]; },
+      out: function (V) { var g = V.r(1, 1); return 'O1 X ' + gx(g) + ' Y ' + gy(g); } });
+    add({ id: 'ofind', grp: 'obj', modes: [51, 52], ev: 1, label: ('找紅色三角形'), name: ('找代碼 13 的物體'),
+      what: ('一個一個看 EV3 模式 1 裡的物體，找代碼 13（目標色 1 的三角形）。模式 51 每個物體 2 格（代碼、格子），模式 1 有物體 1～4；模式 52 每個 4 格，只有物體 1、2。把三角形換成別的形狀試試看。'),
+      ret: ('用代碼判斷'),
+      body: function (m, p) {
+        var k = m === 51 ? 2 : 4, n = m === 51 ? 3 : 1;
+        return ['found = 0', 'For i = 0 To ' + n, '  If found = 0 And ' + RD(p, 'i * ' + k) + ' = 13 Then', '    found = i + 1', '  EndIf', 'EndFor', 'If found = 0 Then', '  ' + LT(0, '"NO RED TRIANGLE"'), 'Else', '  g = ' + RD(p, '(found - 1) * ' + k + ' + 1'), '  ' + LT(0, '"TRIANGLE " + found + " X " + Math.Floor(g / 10) + " Y " + Math.Remainder(g, 10)'), 'EndIf'];
+      },
+      out: function (V, st) { var k = st.mode === 51 ? 2 : 4, n = st.mode === 51 ? 4 : 2; for (var i = 0; i < n; i++) if (V.r(1, i * k) === 13) { var g = V.r(1, i * k + 1); return 'TRIANGLE ' + (i + 1) + ' X ' + gx(g) + ' Y ' + gy(g); } return 'NO RED TRIANGLE'; } });
+    add({ id: 'ocount', grp: 'obj', modes: [51], ev: 2, label: ('畫面裡有幾個物體（EV3 模式 2）'), name: ('遙控第 3 格'),
+      what: ('模式 51：畫面裡有幾個物體（0～8，只看目標色 1～8），在 <b>EV3 模式 2</b> 的第 3 格；第 0、1 格是物體 5 的代碼和格子。勾「拿走這個物體」看數字變小。'),
+      ret: ('0～8'),
+      body: function (m, p) { return [LT(0, '"OBJECTS " + ' + RD(p, 3)), LT(16, '"O5 CODE " + ' + RD(p, 0))]; },
+      out: function (V) { return ['OBJECTS ' + V.r(2, 3), 'O5 CODE ' + V.r(2, 0)]; } });
+    add({ id: 'oarea', grp: 'obj', modes: [52], ev: 1, label: ('物體 1 面積 %'), name: ('信標第 2 格'),
+      what: ('模式 52：物體 1 佔畫面的幾 %（0＝沒有）。越近越大。把物體拉大試試看。'),
+      ret: ('0～100'),
+      body: function (m, p) { return ['a = ' + RD(p, 2), 'If a >= 20 Then', '  ' + LT(0, '"CLOSE! AREA " + a'), 'Else', '  ' + LT(0, '"O1 AREA " + a'), 'EndIf']; },
+      out: function (V) { var a = V.r(1, 2); return a >= 20 ? 'CLOSE! AREA ' + a : 'O1 AREA ' + a; } });
+    add({ id: 'oangle', grp: 'obj', modes: [52], ev: 1, label: ('物體 1 角度'), name: ('信標第 3 格 ×2'),
+      what: ('模式 52：物體 1 長邊的角度 0～179 度（往右＝0，往畫面下方轉為正）。EV3 一格放不下 179，送「(角度＋1)÷2」，乘 2 還原（±1 度）。轉轉看物體。'),
+      ret: ('0～179'),
+      body: function (m, p) { return ['a = ' + RD(p, 3) + ' * 2', 'If a > 179 Then', '  a = 179', 'EndIf', LT(0, '"O1 ANGLE " + a')]; },
+      out: function (V) { return 'O1 ANGLE ' + Math.min(179, V.r(1, 3) * 2); } });
+    // ── 感應器資訊（每個相機模式都能用）──
+    add({ id: 'modenum', grp: 'info', modes: null, ev: 0, label: ('相機現在是哪個模式'), name: ('EV3 模式 0 近距'),
+      what: ('EV3 模式 0 只有 1 格：相機現在的模式編號（11～52）。程式開始時先讀它，跟你寫的不一樣就提醒切相機選單。拔線時是 0。'),
+      ret: ('11～52（0＝讀不到）'),
+      body: function (m, p) { return ['n = ' + RD(p, 0), 'If n = ' + m + ' Then', '  ' + LT(0, '"CAM MODE " + n + " OK"'), 'Else', '  ' + LT(0, '"SET CAM TO ' + m + ' NOW " + n'), 'EndIf']; },
+      out: function (V, st) { var n = V.r(0, 0); return n === st.mode ? 'CAM MODE ' + n + ' OK' : 'SET CAM TO ' + st.mode + ' NOW ' + n; } });
+    add({ id: 'devid', grp: 'info', modes: null, ev: 5, label: ('裝置 ID、韌體版本'), name: ('EV3 模式 5（2 格）'),
+      what: ('EV3 模式 5 有 2 格：第 0 格＝位址 76（0x4C）＋硬體代號 3×256＝844，第 1 格＝韌體版字。用來確認接的是神攝手。'),
+      ret: ('ID 76、HW 3、韌體版字'),
+      body: function (m, p) { return ['d = ' + RD(p, 0), LT(0, '"ID " + Math.Remainder(d, 256) + " HW " + Math.Floor(d / 256)'), LT(16, '"FW " + ' + RD(p, 1))]; },
+      out: function (V) { var d = V.r(5, 0); return ['ID ' + d % 256 + ' HW ' + idiv(d, 256), 'FW ' + V.r(5, 1)]; } });
+    add({ id: 'type', grp: 'info', modes: null, ev: 1, label: ('感應器有接好嗎'), name: ('Sensor.GetType = 33'),
+      what: ('<code>Sensor.GetType(孔)</code> 是 33（紅外線感應器）＝相機接好了；拔掉時不是 33。拔線時 <code>ReadRawValue</code> 只會讀到 0，所以重要的程式先用它判斷。勾「拔掉感應器」試試看。'),
+      ret: ('33＝接好'),
+      body: function (m, p) { return ['If Sensor.GetType(' + p + ') = 33 Then', '  ' + LT(0, '"SENSOR OK"'), 'Else', '  ' + LT(0, '"NO SENSOR"'), 'EndIf']; },
+      out: function (V) { return V.type() === 33 ? 'SENSOR OK' : 'NO SENSOR'; } });
+    // ───── 程式組裝 ─────
+    function curF() { for (var i = 0; i < FNS.length; i++) if (FNS[i].id === S.fn) return FNS[i]; return FNS[0]; }
+    function loopLines(f, m, p) { return (f.pre || []).concat(['While "True"'], f.body(m, p).map(function (t) { return '  ' + t; }), ['  Program.Delay(100)', 'EndWhile']); }
+    var HOST = {
+      counts: function (m) { return { col: NCOL[m], pt: NPT[m], order: 11, line: 13, obj: NOBJ[m] }; },
+      cmt: function (s) { return "' " + s; },
+      lines: function (f) {
+        var L = [], mi = modeOf(S.mode), m = fnMode(f), ev = evOf(f, m), p = S.port;
+        L.push({ t: "' " + ('程式放在 EV3 的這個資料夾'), tag: 1 });
+        L.push({ t: 'folder "prjs" "MBC_unicam"', tag: 1 });
+        L.push({ t: 'LCD.Clear()', tag: 1 });
+        L.push({ t: "' " + ('相機選單切到 模式 ') + S.mode + ' = ' + GROUPS[mi.g].name.replace(/^\d /, '') + (mi.sub ? ' ' + mi.name : ''), tag: 1 });
+        if (S.step >= 2) {
+          L.push({ t: '' });
+          L.push({ t: "' " + ('相機插 ' + p + ' 號孔，EV3 模式 ' + ev + '（' + EVN[ev] + '）'), tag: 2 });
+          L.push({ t: 'Sensor.SetMode(' + p + ', ' + ev + ')', tag: 2 });
+        }
+        if (S.step >= 3) {
+          L.push({ t: '' });
+          loopLines(f, m, p).forEach(function (t) { L.push({ t: t, tag: 3 }); });
+        }
+        if ($('portnum')) $('portnum').textContent = p;
+        if ($('evnum')) $('evnum').textContent = ev;
+        return L;
+      },
+      card: function (f) { var m = fnMode(f); return ['Sensor.SetMode(' + S.port + ', ' + evOf(f, m) + ')'].concat(loopLines(f, m, S.port)); },
+      place: function (f) { var ev = evOf(f, fnMode(f)); return ('EV3 模式 ' + ev + '（' + EVN[ev] + '），放在 While 迴圈裡'); },
+      outLabel: ('EV3 螢幕會顯示：'),
+      bubble: function (step, f) {
+        var m = fnMode(f), ev = evOf(f, m);
+        if (step === 1) return ('第 1 步：folder 決定程式放在 EV3 的哪個資料夾，LCD.Clear() 清掉螢幕；最後一行註解提醒相機選單切到模式 ') + S.mode + ('。不用匯入任何檔案。');
+        if (step === 2) return ('第 2 步：Sensor.SetMode(' + S.port + ', ' + ev + ') 把 ' + S.port + ' 號孔的感應器設成 EV3 模式 ' + ev + '（' + EVN[ev] + '）。');
+        return ('第 3 步：While "True" 一直重複，ReadRawValue 讀 EV3 模式 ' + ev + ' 的格子，LCD.Text 寫在螢幕上，Program.Delay(100) 讓它每 0.1 秒讀一次。');
+      },
+      valid: function () { return true; },
+      modeWarn: function (m) { return ('相機選單也要切到模式 ' + m + '。clev3r 可以讀 EV3 模式 0 確認相機現在的模式（「相機現在是哪個模式」那張卡）。'); },
+      view: view,
+      bind: function (cb) {
+        function drawPorts() {
+          var box = $('ports'); box.innerHTML = '';
+          [1, 2, 3, 4].forEach(function (n) {
+            var b = document.createElement('button'); b.type = 'button'; b.textContent = n;
+            b.setAttribute('aria-pressed', String(S.port === n)); b.setAttribute('aria-label', (n + ' 號孔'));
+            b.addEventListener('click', function () { S.port = n; drawPorts(); drawCards(); cb(false); });
+            box.appendChild(b);
+          });
+        }
+        drawPorts();
+      }
+    };
+    window.__ucCl = { view: view, HOST: HOST, FNS: FNS };   // 測試用（cl_dump.cjs 對照 oracle）
+    var EX = {};
+    EX.track = [
+      "' " + ('神攝手插 1 號孔，相機選單切到模式 13；左輪馬達接 B、右輪馬達接 C'),
+      'folder "prjs" "MBC_unicam_chase"',
+      'LCD.Clear()',
+      'Sensor.SetMode(1, 1)',
+      '',
+      'While "True"',
+      '  g = Sensor.ReadRawValue(1, 0)',
+      '  If g = 0 Then',
+      "    ' " + ('沒看到色 1：停'),
+      '    Motor.Stop("BC", "False")',
+      '  Else',
+      "    ' " + ('格子換成像素 X（0～159），中間 80'),
+      '    x = (Math.Floor(g / 10) - 1) * 20 + 10',
+      '    turn = (x - 80) * 0.3',
+      '    Motor.StartPower("B", 30 + turn)',
+      '    Motor.StartPower("C", 30 - turn)',
+      '  EndIf',
+      '  Program.Delay(20)',
+      'EndWhile'
+    ];
+    EX.line = [
+      "' " + ('神攝手插 1 號孔，相機選單切到模式 41；左輪馬達接 B、右輪馬達接 C'),
+      'folder "prjs" "MBC_unicam_line"',
+      'LCD.Clear()',
+      'Sensor.SetMode(1, 1)',
+      "last = -1   ' " + ('最後看到線在哪邊（−1 左、1 右）'),
+      '',
+      'While "True"',
+      '  js = Sensor.ReadRawValue(1, 5)',
+      '  If Math.Remainder(js, 10) = 0 Then',
+      "    ' " + ('看不到線：往最後看到的那邊原地轉'),
+      '    Motor.StartPower("B", 20 * last)',
+      '    Motor.StartPower("C", -20 * last)',
+      '  Else',
+      '    e = Sensor.ReadRawValue(1, 0)',
+      '    If e < 0 Then',
+      '      last = -1',
+      '    Else',
+      '      last = 1',
+      '    EndIf',
+      "    ' " + ('線在左（負）→ 左輪慢、右輪快 → 往左轉'),
+      '    Motor.StartPower("B", 30 + e * 0.3)',
+      '    Motor.StartPower("C", 30 - e * 0.3)',
+      '  EndIf',
+      '  Program.Delay(20)',
+      'EndWhile'
+    ];
+    EX.obj = [
+      "' " + ('神攝手插 1 號孔，相機選單切到模式 51'),
+      'folder "prjs" "MBC_unicam_objects"',
+      'LCD.Clear()',
+      'Sensor.SetMode(1, 1)',
+      'For k = 0 To 9',
+      '  SH[k] = "OTHER"',
+      'EndFor',
+      'SH[1] = "CIRCLE"',
+      'SH[2] = "ELLIPSE"',
+      'SH[3] = "TRIANGLE"',
+      'SH[4] = "SQUARE"',
+      'SH[5] = "RECT"',
+      'SH[6] = "PENTAGON"',
+      'SH[7] = "HEXAGON"',
+      'SH[8] = "STAR"',
+      'SH[9] = "TRAPEZOID"',
+      '',
+      'While "True"',
+      "  ' " + ('物體 1～4：第 0、2、4、6 格是代碼，下一格是格子'),
+      '  For i = 0 To 3',
+      '    o = Sensor.ReadRawValue(1, i * 2)',
+      '    g = Sensor.ReadRawValue(1, i * 2 + 1)',
+      '    If o = 0 Then',
+      '      LCD.Text(1, 0, i * 16, 1, (i + 1) + " -                  ")',
+      '    Else',
+      '      LCD.Text(1, 0, i * 16, 1, (i + 1) + " C" + Math.Floor(o / 10) + " " + SH[Math.Remainder(o, 10)] + " " + g + "      ")',
+      '    EndIf',
+      '  EndFor',
+      '  Program.Delay(200)',
+      'EndWhile'
+    ];
+  
+
+  // ───── 模擬相機畫面：160×120 像素（左上 0,0；Y 上＝小），畫在 SVG 上放大 2.5 倍 ─────
+  // 數值全部直接用畫面位置換算（示意）：位置＝物體中心的像素、面積 %＝寬×高÷(160×120)、色相碼＝拖到的那個顏色本來的色相碼。
+  var FW = 160, FH = 120, K = 2.5, OX = 30, OY = 10, SW = 460, SH = 330;
+  var SC = {
+    blobs: [
+      { hue: 0, fill: '#d8392b', nm: ('紅'), cx: 42, cy: 46, size: 30, n: 1, gone: false },
+      { hue: 80, fill: '#2f9e44', nm: ('綠'), cx: 112, cy: 40, size: 24, n: 1, gone: false },
+      { hue: 160, fill: '#1f6fd1', nm: ('藍'), cx: 70, cy: 90, size: 20, n: 1, gone: false },
+      { hue: 40, fill: '#f2c318', nm: ('黃'), cx: 128, cy: 92, size: 26, n: 1, gone: false }
+    ],
+    sel: 0,
+    // 座標取色：白桌面上的色紙（可以拖），下面一條黑膠帶
+    patches: [
+      { hue: 0, s: 84, v: 72, cx: 30, cy: 45, w: 34, h: 26 },
+      { hue: 40, s: 80, v: 88, cx: 75, cy: 30, w: 30, h: 24 },
+      { hue: 80, s: 70, v: 56, cx: 112, cy: 64, w: 32, h: 26 },
+      { hue: 160, s: 76, v: 50, cx: 140, cy: 32, w: 26, h: 24 }
+    ],
+    psel: 0,
+    // 照順序給色號：一排積木（可以拖）
+    blocks: [
+      { hue: 0, fill: '#d8392b', cx: 22, cy: 62 }, { hue: 80, fill: '#2f9e44', cx: 52, cy: 58 }, { hue: 160, fill: '#1f6fd1', cx: 84, cy: 64 },
+      { hue: 40, fill: '#f2c318', cx: 112, cy: 60 }, { hue: 200, fill: '#8a3fc4', cx: 140, cy: 62 }
+    ],
+    osel: 0,
+    // 循線：近、中、遠三個把手（只能左右拖）
+    line: { ys: [100, 62, 24], xs: [66, 74, 88] }, lsel: 0,
+    mk: 0, mkn: 0, lastSide: -1,
+    // 物體偵測：彩色形狀（形狀由使用者選，不做輪廓判斷）；色號 1~8＝相機上教的目標色；id＝追蹤編號（跨幀不變）
+    objs: [
+      { id: 1, color: 1, shape: 3, cx: 40, cy: 44, size: 42, rot: 0, gone: false },
+      { id: 2, color: 2, shape: 4, cx: 112, cy: 38, size: 30, rot: 20, gone: false },
+      { id: 3, color: 3, shape: 1, cx: 74, cy: 88, size: 28, rot: 0, gone: false },
+      { id: 4, color: 4, shape: 5, cx: 128, cy: 90, size: 34, rot: 150, gone: false },
+      { id: 5, color: 5, shape: 8, cx: 30, cy: 96, size: 26, rot: 0, gone: false }
+    ],
+    jsel: 0
+  };
+  // 目標色 1~8 的畫面顏色（示意）
+  var OBJFILL = ['#888', '#d8392b', '#2f9e44', '#1f6fd1', '#f2c318', '#8a3fc4', '#f08a24', '#18a8b8', '#e0559a'];
+  var VERTS = [0, 0, 0, 3, 4, 4, 5, 6, 10, 4];
+  // 形狀的外框點（本地座標，大小 s、旋轉 rot 度；圓／橢圓用 48 點近似）：純幾何，只拿來畫圖與算面積、質心、外框
+  function objPoly(o) {
+    var s = o.size, pts = [], i, n, r;
+    if (o.shape === 1 || o.shape === 2) { var a = s / 2, b = o.shape === 1 ? s / 2 : s / 3; for (i = 0; i < 48; i++) { var t = i * Math.PI * 2 / 48; pts.push([a * Math.cos(t), b * Math.sin(t)]); } }
+    else if (o.shape === 3) { r = s / Math.sqrt(3); for (i = 0; i < 3; i++) { var t3 = -Math.PI / 2 + i * Math.PI * 2 / 3; pts.push([r * Math.cos(t3), r * Math.sin(t3) + r / 4]); } }
+    else if (o.shape === 4) pts = [[-s / 2, -s / 2], [s / 2, -s / 2], [s / 2, s / 2], [-s / 2, s / 2]];
+    else if (o.shape === 5) pts = [[-s / 2, -s * 0.28], [s / 2, -s * 0.28], [s / 2, s * 0.28], [-s / 2, s * 0.28]];
+    else if (o.shape === 6 || o.shape === 7) { n = o.shape === 6 ? 5 : 6; for (i = 0; i < n; i++) { var t5 = -Math.PI / 2 + i * Math.PI * 2 / n; pts.push([s / 2 * Math.cos(t5), s / 2 * Math.sin(t5)]); } }
+    else if (o.shape === 8) { for (i = 0; i < 10; i++) { var t8 = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? s * 0.2 : s / 2; pts.push([rr * Math.cos(t8), rr * Math.sin(t8)]); } }
+    else pts = [[-s / 2, s * 0.3], [s / 2, s * 0.3], [s * 0.28, -s * 0.3], [-s * 0.28, -s * 0.3]];
+    var c = Math.cos(o.rot * Math.PI / 180), sn = Math.sin(o.rot * Math.PI / 180);
+    return pts.map(function (q) { return [o.cx + q[0] * c - q[1] * sn, o.cy + q[0] * sn + q[1] * c]; });
+  }
+  function polyArea(P) { var a = 0; for (var i = 0; i < P.length; i++) { var j = (i + 1) % P.length; a += P[i][0] * P[j][1] - P[j][0] * P[i][1]; } return a / 2; }
+  function polyCentroid(P) {
+    var A = polyArea(P), x = 0, y = 0;
+    for (var i = 0; i < P.length; i++) { var j = (i + 1) % P.length, f = P[i][0] * P[j][1] - P[j][0] * P[i][1]; x += (P[i][0] + P[j][0]) * f; y += (P[i][1] + P[j][1]) * f; }
+    return [x / (6 * A), y / (6 * A)];
+  }
+  // 物體真值 [色號, 形狀, X, Y, 左, 上, 右, 下, 面積像素, 角度, 頂點數, 追蹤編號]（跟規格測試 oracle 的畫面格式一樣）
+  function objTruth(o) {
+    var P = objPoly(o), xs = P.map(function (q) { return q[0]; }), ys = P.map(function (q) { return q[1]; });
+    var l = clamp(Math.floor(Math.min.apply(null, xs)), 0, 159), r = clamp(Math.floor(Math.max.apply(null, xs)), 0, 159);
+    var t = clamp(Math.floor(Math.min.apply(null, ys)), 0, 119), b = clamp(Math.floor(Math.max.apply(null, ys)), 0, 119);
+    var c = polyCentroid(P);
+    // 角度（示意）：就是你轉的角度 0~179；圓沒有方向＝0
+    var ang = o.shape === 1 ? 0 : ((Math.round(o.rot) % 180) + 180) % 180;
+    return [o.color, o.shape, clamp(Math.round(c[0]), 0, 159), clamp(Math.round(c[1]), 0, 119), l, t, r, b, Math.max(1, Math.round(Math.abs(polyArea(P)))), ang, VERTS[o.shape], o.id];
+  }
+  var WHITE = { h: 244, s: 4, v: 92 }, BLACK = { h: 252, s: 8, v: 7 };
+  var TAPE = { y0: 104, y1: 112 };
+  function hueFill(h) { return 'hsl(' + Math.round(h * 1.5) + ', 72%, 48%)'; }   // 色相碼 0~240 → 0~360 度
+  function ctl(id) { return $(id); }
+  function num(id, d) { var e = $(id); return e ? Number(e.value) : d; }
+  function curG() { return modeOf(S.mode).g; }
+  function selBlob() { return SC.blobs[SC.sel]; }
+  // 取樣點的預設位置：8 點以內排一列，超過排兩列（產品頁寫的排法）
+  function points(n) {
+    var out = [], rows = n > 8 ? 2 : 1, per = Math.ceil(n / rows);
+    for (var i = 0; i < n; i++) {
+      var r = rows === 1 ? 0 : (i < per ? 0 : 1), k = rows === 1 ? i : (r === 0 ? i : i - per), cnt = r === 0 ? per : n - per;
+      out.push({ x: Math.round((k + 0.5) * FW / cnt), y: rows === 1 ? 60 : (r === 0 ? 40 : 80) });
+    }
+    return out;
+  }
+  function colorAt(x, y) {
+    for (var i = SC.patches.length - 1; i >= 0; i--) {
+      var p = SC.patches[i];
+      if (Math.abs(x - p.cx) <= p.w / 2 && Math.abs(y - p.cy) <= p.h / 2) return { h: p.hue, s: p.s, v: p.v };
+    }
+    if (y >= TAPE.y0 && y <= TAPE.y1) return BLACK;
+    return WHITE;
+  }
+  function lineRows() {
+    // 線從畫面最下面往上畫到「上端」：有路口（T、左、右、盡頭）時停在路口
+    var jt = num('ljunc', 0), jd = num('ljd', 60), jy = Math.round(FH - jd * 1.2);
+    var top = (jt >= 2) ? jy : 0;
+    return { jt: jt, jd: jd, jy: jy, top: top };
+  }
+  function xAtY(y) {
+    var ys = SC.line.ys, xs = SC.line.xs;
+    if (y >= ys[0]) return xs[0];
+    if (y >= ys[1]) return xs[0] + (xs[1] - xs[0]) * (ys[0] - y) / (ys[0] - ys[1]);
+    if (y >= ys[2]) return xs[1] + (xs[2] - xs[1]) * (ys[1] - y) / (ys[1] - ys[2]);
+    return xs[2] + (xs[2] - xs[1]) * (ys[2] - y) / (ys[1] - ys[2]);
+  }
+  function off(x) { return clamp(Math.round((x - 80) * 100 / 80), -100, 100); }
+  // ───── 畫面真值（像素、%）─────
+  function rawState() {
+    var s = { ok: true, none: false, mode: S.mode };
+    s.blobs = [null];
+    for (var c = 1; c <= 20; c++) {
+      var b = SC.blobs[c - 1];
+      if (!b || b.gone) { s.blobs.push({ f: false, x: 0, y: 0, w: 0, h: 0, n: 0, a: 0, ap: 0 }); continue; }
+      var half = b.size / 2;
+      b.cx = clamp(b.cx, half, FW - half); b.cy = clamp(b.cy, half, FH - half);
+      var x = clamp(Math.round(b.cx), 1, 159), y = clamp(Math.round(b.cy), 1, 119);
+      var ap = Math.round(b.size * b.size + (b.n - 1) * b.size * b.size * 0.25);
+      s.blobs.push({ f: true, x: x, y: y, w: Math.round(b.size), h: Math.round(b.size), n: b.n, ap: ap, a: clamp(idiv(ap * 100 + 9600, FW * FH), 1, 100) });
+    }
+    s.found = SC.blobs.filter(function (b) { return !b.gone; }).length;
+    var pts = points(20);
+    s.spot = [null];
+    var np = HOST.counts(S.mode).pt || 4;
+    var lay = points(np);
+    for (var i = 1; i <= 20; i++) { var p = lay[i - 1] || pts[i - 1]; var v = colorAt(p.x, p.y); s.spot.push({ h: v.h, s: v.s, v: v.v, x: p.x, y: p.y }); }
+    var k = num('ocount', 4), vis = SC.blocks.slice(0, k).slice().sort(function (a, b) { return a.cx - b.cx; });
+    s.order = { hues: vis.map(function (b) { return b.hue; }), total: vis.length };
+    var R = lineRows(), gone = $('lgone') && $('lgone').checked, wpx = num('lwidth', 16);
+    var L = { near: 0, mid: 0, far: 0, angle: 0, width: 0, flags: 0, junction: 0, jdist: 0, left: 0, right: 0, farw: 0, marker: SC.mk, mcount: SC.mkn, lost: 0 };
+    if (!gone) {
+      var vis2 = function (y) { return y >= R.top; };
+      var nx = xAtY(SC.line.ys[0]), mx = xAtY(SC.line.ys[1]), fx = xAtY(SC.line.ys[2]);
+      L.flags = 1 + (vis2(SC.line.ys[1]) ? 2 : 0) + (vis2(SC.line.ys[2]) ? 4 : 0);
+      L.near = off(nx); L.mid = (L.flags & 2) ? off(mx) : 0; L.far = (L.flags & 4) ? off(fx) : 0;
+      var ty = (L.flags & 4) ? SC.line.ys[2] : (L.flags & 2) ? SC.line.ys[1] : SC.line.ys[0];
+      L.angle = ty === SC.line.ys[0] ? 0 : clamp(Math.round(Math.atan2(xAtY(ty) - nx, SC.line.ys[0] - ty) * 180 / Math.PI), -90, 90);
+      L.width = clamp(Math.round(wpx * 100 / FW), 0, 100);
+      L.farw = (L.flags & 4) ? clamp(Math.round(wpx * 0.6 * 100 / FW), 0, 100) : 0;
+      L.left = off(nx - wpx / 2); L.right = off(nx + wpx / 2);
+      if (R.jt) { L.junction = R.jt; L.jdist = R.jd; }
+      SC.lastSide = L.near < 0 ? -1 : L.near > 0 ? 1 : SC.lastSide;
+    } else {
+      L.lost = SC.lastSide < 0 ? 1 : 2;
+    }
+    s.line = L;
+    // 物體：面積由大到小，最多 8 個（形狀拖到畫面邊會被擋在畫面裡）
+    s.obj = SC.objs.filter(function (o) { return !o.gone; }).map(function (o) {
+      var P = objPoly(o), xs = P.map(function (q) { return q[0]; }), ys = P.map(function (q) { return q[1]; });
+      o.cx = clamp(o.cx, o.cx - Math.min.apply(null, xs), FW - 1 - (Math.max.apply(null, xs) - o.cx));
+      o.cy = clamp(o.cy, o.cy - Math.min.apply(null, ys), FH - 1 - (Math.max.apply(null, ys) - o.cy));
+      return objTruth(o);
+    }).sort(function (a, b) { return b[8] - a[8] || a[11] - b[11]; }).slice(0, 8);
+    return s;
+  }
+  var frozen = null, everOk = false;
+  function state() {
+    var unplug = $('unplug').checked;
+    if (!unplug) { frozen = rawState(); everOk = true; return frozen; }
+    if (!frozen) { var z = rawState(); z.ok = false; z.none = true; return z; }
+    var s = JSON.parse(JSON.stringify(frozen)); s.ok = false; s.mode = S.mode; return s;
+  }
+  // ───── 畫圖 ─────
+  function fx(x) { return OX + x * K; }
+  function fy(y) { return OY + y * K; }
+  function txt(x, y, s, o) {
+    o = o || {};
+    return '<text x="' + x + '" y="' + y + '" font-size="' + (o.size || 12) + '"' + (o.anchor ? ' text-anchor="' + o.anchor + '"' : '') + (o.bold ? ' font-weight="700"' : '') +
+      ' fill="' + (o.fill || '#3d4a47') + '"' + (o.halo ? ' stroke="#fff" stroke-width="3" paint-order="stroke"' : '') + (o.mono ? ' font-family="JetBrains Mono, monospace"' : '') + '>' + esc(s) + '</text>';
+  }
+  function draw(st) {
+    var g = curG(), live = rawState(), h = '';
+    var ir = getComputedStyle(document.documentElement).getPropertyValue('--ir').trim() || '#c0392b';
+    var floor = g === 'obj' ? '#f6f4ee' : g === 'line' ? (S.mode === 42 ? '#2b2f33' : '#f2f0ea') : g === 'spot' ? '#f6f4ee' : '#e8e4da';
+    h += '<rect x="0" y="0" width="' + SW + '" height="' + SH + '" fill="#f7f7f2"/>';
+    h += '<rect x="' + OX + '" y="' + OY + '" width="' + FW * K + '" height="' + FH * K + '" fill="' + floor + '" stroke="#55605d" stroke-width="2"/>';
+    var top = '';
+    if (g === 'track') {
+      SC.blobs.forEach(function (b, i) {
+        if (b.gone) return;
+        var half = b.size / 2, x0 = fx(b.cx - half), y0 = fy(b.cy - half), side = b.size * K;
+        for (var e = b.n - 1; e >= 1; e--) {   // 同色的其他塊（畫在旁邊、小一點）
+          var ex = fx(clamp(b.cx + (e % 2 ? 1 : -1) * (half + 8), 6, FW - 6)) - side * 0.25, ey = fy(clamp(b.cy + e * 6, 6, FH - 6)) - side * 0.25;
+          h += '<rect x="' + ex + '" y="' + ey + '" width="' + side * 0.5 + '" height="' + side * 0.5 + '" rx="4" fill="' + b.fill + '" opacity="0.85" stroke="rgba(0,0,0,0.3)"/>';
+        }
+        h += '<rect x="' + x0 + '" y="' + y0 + '" width="' + side + '" height="' + side + '" rx="6" fill="' + b.fill + '" stroke="' + (i === SC.sel ? '#111' : 'rgba(0,0,0,0.35)') + '" stroke-width="' + (i === SC.sel ? 3 : 2) + '"/>';
+        h += txt(x0 + side / 2, y0 + side / 2 + 5, ('色 ') + (i + 1), { anchor: 'middle', bold: true, fill: '#fff', size: 13 });
+        if (st.ok) h += '<rect x="' + (x0 - 4) + '" y="' + (y0 - 4) + '" width="' + (side + 8) + '" height="' + (side + 8) + '" fill="none" stroke="#19a974" stroke-width="2.5"/>';
+      });
+      var b0 = st.blobs[SC.sel + 1];
+      top = ('色 ') + (SC.sel + 1) + (st.none ? '  ?' : b0.f ? '  X ' + b0.x + '  Y ' + b0.y + '  ' + ('寬') + ' ' + b0.w + '  ' + ('面積') + ' ' + b0.a + '%' : ('  沒看到'));
+    } else if (g === 'spot') {
+      h += '<rect x="' + fx(0) + '" y="' + fy(TAPE.y0) + '" width="' + FW * K + '" height="' + (TAPE.y1 - TAPE.y0) * K + '" fill="#161616"/>';
+      SC.patches.forEach(function (p, i) {
+        h += '<rect x="' + fx(p.cx - p.w / 2) + '" y="' + fy(p.cy - p.h / 2) + '" width="' + p.w * K + '" height="' + p.h * K + '" rx="3" fill="' + hueFill(p.hue) + '" stroke="' + (i === SC.psel ? '#111' : 'rgba(0,0,0,0.25)') + '" stroke-width="' + (i === SC.psel ? 3 : 1.5) + '"/>';
+      });
+      var np = HOST.counts(S.mode).pt || 4, lay = points(np);
+      lay.forEach(function (p, i) {
+        var X = fx(p.x), Y = fy(p.y), r = i < 4 ? 9 : 6;
+        h += '<g stroke-linecap="round"><line x1="' + (X - r) + '" y1="' + Y + '" x2="' + (X + r) + '" y2="' + Y + '" stroke="#fff" stroke-width="5"/><line x1="' + X + '" y1="' + (Y - r) + '" x2="' + X + '" y2="' + (Y + r) + '" stroke="#fff" stroke-width="5"/>' +
+          '<line x1="' + (X - r) + '" y1="' + Y + '" x2="' + (X + r) + '" y2="' + Y + '" stroke="#111" stroke-width="2"/><line x1="' + X + '" y1="' + (Y - r) + '" x2="' + X + '" y2="' + (Y + r) + '" stroke="#111" stroke-width="2"/></g>';
+        h += txt(X + 4, Y - 6, String(i + 1), { size: 11, bold: true, fill: '#111', halo: true });
+      });
+      top = ('點 1 色相碼 ') + (st.none ? '?' : st.spot[1].h) + ('  點 2 ') + (st.none ? '?' : st.spot[2].h) + ('  點 3 ') + (st.none ? '?' : st.spot[3].h);
+    } else if (g === 'order') {
+      var k = num('ocount', 4);
+      SC.blocks.forEach(function (b, i) {
+        if (i >= k) return;
+        var s2 = 22 * K;
+        h += '<rect x="' + (fx(b.cx) - s2 / 2) + '" y="' + (fy(b.cy) - s2 / 2) + '" width="' + s2 + '" height="' + s2 + '" rx="6" fill="' + b.fill + '" stroke="' + (i === SC.osel ? '#111' : 'rgba(0,0,0,0.35)') + '" stroke-width="' + (i === SC.osel ? 3 : 2) + '"/>';
+        h += txt(fx(b.cx), fy(b.cy) + 5, String(b.hue), { anchor: 'middle', bold: true, fill: '#fff', size: 13 });
+      });
+      top = ('由左到右 ') + (st.none ? '?' : '[' + st.order.hues.join(', ') + ']') + ('  共 ') + (st.none ? '?' : st.order.total) + (' 塊');
+    } else if (g === 'obj') {
+      var rank = {}; st.obj.forEach(function (o, k) { rank[o[11]] = k + 1; });
+      SC.objs.forEach(function (o, i) {
+        if (o.gone) return;
+        var P = objPoly(o);
+        h += '<polygon points="' + P.map(function (q) { return fx(q[0]).toFixed(1) + ',' + fy(q[1]).toFixed(1); }).join(' ') + '" fill="' + OBJFILL[o.color] + '" stroke="' + (i === SC.jsel ? '#111' : 'rgba(0,0,0,0.3)') + '" stroke-width="' + (i === SC.jsel ? 3 : 1.5) + '"/>';
+        var tr = objTruth(o);
+        if (st.ok && rank[o.id]) {
+          h += '<rect x="' + fx(tr[4]) + '" y="' + fy(tr[5]) + '" width="' + (tr[6] - tr[4] + 1) * K + '" height="' + (tr[7] - tr[5] + 1) * K + '" fill="none" stroke="#19a974" stroke-width="1.5" stroke-dasharray="4 3"/>';
+          h += '<circle cx="' + fx(tr[2]) + '" cy="' + fy(tr[3]) + '" r="3.5" fill="#fff" stroke="#111" stroke-width="1.5"/>';
+          h += txt(fx(tr[4]) + 2, fy(tr[5]) - 4, '#' + rank[o.id] + ' ' + (tr[0] * 10 + tr[1]), { size: 12, bold: true, fill: '#0b6b47', halo: true });
+        }
+      });
+      var o1 = st.obj[0];
+      top = st.none ? ('物體 ?') : ('物體 ') + st.obj.length + (o1 ? ('  最大 代碼 ') + (o1[0] * 10 + o1[1]) + '  X ' + o1[2] + '  Y ' + o1[3] : '');
+    } else {
+      var R = lineRows(), wpx = num('lwidth', 16), ink = S.mode === 42 ? '#f7f7f7' : S.mode === 43 ? '#d8392b' : '#1b1b1b';
+      var gone = $('lgone').checked;
+      if (!gone) {
+        var pts = [], y;
+        for (y = FH; y >= R.top; y -= 4) pts.push(fx(xAtY(y)) + ',' + fy(y));
+        pts.push(fx(xAtY(R.top)) + ',' + fy(R.top));
+        h += '<polyline points="' + pts.join(' ') + '" fill="none" stroke="' + ink + '" stroke-width="' + wpx * K + '" stroke-linejoin="round"/>';
+        if (R.jt && R.jt <= 4) {
+          var jx = xAtY(R.jy), x1 = R.jt === 4 ? jx : 0, x2 = R.jt === 3 ? jx : FW;
+          h += '<line x1="' + fx(x1) + '" y1="' + fy(R.jy) + '" x2="' + fx(x2) + '" y2="' + fy(R.jy) + '" stroke="' + ink + '" stroke-width="' + wpx * K + '"/>';
+        }
+        if (SC.mkNow) h += '<rect x="' + fx(xAtY(84) - wpx) + '" y="' + fy(80) + '" width="' + wpx * 2 * K + '" height="' + 8 * K + '" fill="' + SC.blobs[SC.mkNow - 1].fill + '"/>';
+      }
+      SC.line.ys.forEach(function (yy, i) {
+        h += '<line x1="' + fx(0) + '" y1="' + fy(yy) + '" x2="' + fx(FW) + '" y2="' + fy(yy) + '" stroke="#19a974" stroke-dasharray="5 5" stroke-width="1.5"/>';
+        h += txt(fx(2), fy(yy) - 4, [('近'), ('中'), ('遠')][i], { size: 11, fill: '#0b6b47', halo: true, bold: true });
+        if (!gone) h += '<circle cx="' + fx(SC.line.xs[i]) + '" cy="' + fy(yy) + '" r="' + (i === SC.lsel ? 9 : 7) + '" fill="#19a974" stroke="#fff" stroke-width="2"/>';
+      });
+      h += '<line x1="' + fx(80) + '" y1="' + fy(0) + '" x2="' + fx(80) + '" y2="' + fy(FH) + '" stroke="#9aa3a0" stroke-dasharray="6 6"/>';
+      var Lq = st.line;
+      top = st.none ? ('近 ?  中 ?  遠 ?') : ('近 ') + Lq.near + ('  中 ') + Lq.mid + ('  遠 ') + Lq.far + ('  角度 ') + Lq.angle + ('  旗標 ') + Lq.flags;
+    }
+    h += '<rect x="' + OX + '" y="' + OY + '" width="' + FW * K + '" height="26" fill="#1b2422" opacity="0.88"/>';
+    h += txt(OX + 10, OY + 18, top, { size: 13, fill: '#e3ece9', mono: true });
+    h += txt(OX, SH - 4, ('← 左 X 0'), { size: 13 }) + txt(OX + FW * K, SH - 4, ('X 159 右 →'), { size: 13, anchor: 'end' });
+    h += txt(OX + FW * K - 6, OY + 44, ('上 Y 0'), { size: 12, anchor: 'end', halo: true }) + txt(OX + FW * K - 6, fy(FH) - 6, ('下 Y 119'), { size: 12, anchor: 'end', halo: true });
+    if ($('unplug').checked) h += txt(SW / 2, fy(FH / 2) + 40, ('感應器拔掉了'), { anchor: 'middle', size: 17, bold: true, fill: ir, halo: true });
+    $('field').innerHTML = h;
+    syncCtrl();
+  }
+  function syncCtrl() {
+    var g = curG();
+    document.querySelectorAll('[data-g]').forEach(function (el) { el.hidden = el.getAttribute('data-g').split(' ').indexOf(g) < 0; });
+    var b = selBlob();
+    if ($('selname')) $('selname').textContent = ('色 ') + (SC.sel + 1) + ('（') + b.nm + ('）');
+    if ($('selname2')) $('selname2').textContent = ('色 ') + (SC.sel + 1);
+    if ($('selname3')) $('selname3').textContent = ('色 ') + (SC.sel + 1);
+    if ($('tsize') && Number($('tsize').value) !== b.size) $('tsize').value = b.size;
+    if ($('tcount') && Number($('tcount').value) !== b.n) $('tcount').value = b.n;
+    if ($('tgone')) $('tgone').checked = b.gone;
+    var ob = SC.objs[SC.jsel];
+    if ($('jname')) $('jname').textContent = ('追蹤編號 ') + ob.id;
+    if ($('jname2')) $('jname2').textContent = ('追蹤編號 ') + ob.id;
+    if ($('jshape') && Number($('jshape').value) !== ob.shape) $('jshape').value = ob.shape;
+    if ($('jcolor') && Number($('jcolor').value) !== ob.color) $('jcolor').value = ob.color;
+    if ($('jsize') && Number($('jsize').value) !== ob.size) $('jsize').value = ob.size;
+    if ($('jrot') && Number($('jrot').value) !== ob.rot) $('jrot').value = ob.rot;
+    if ($('jgone')) $('jgone').checked = ob.gone;
+    if ($('phueval')) { var h0 = SC.patches[0].hue; $('phueval').textContent = h0 + ('，') + CNAME_ZH[colorCode(h0)]; }
+  }
+  function simInput(id) {
+    var b = selBlob();
+    if (id === 'tsize') b.size = Number($('tsize').value);
+    if (id === 'tcount') b.n = Number($('tcount').value);
+    if (id === 'tgone') b.gone = $('tgone').checked;
+    if (id === 'phue') SC.patches[0].hue = Number($('phue').value);
+    var ob = SC.objs[SC.jsel];
+    if (id === 'jshape') ob.shape = Number($('jshape').value);
+    if (id === 'jcolor') ob.color = Number($('jcolor').value);
+    if (id === 'jsize') ob.size = Number($('jsize').value);
+    if (id === 'jrot') ob.rot = Number($('jrot').value);
+    if (id === 'jgone') ob.gone = $('jgone').checked;
+    if (id === 'lmark') {
+      var m = Number($('lmark').value);
+      SC.mkNow = m;
+      if (m) { SC.mk = m; SC.mkn = (SC.mkn + 1) % 100; }
+    }
+  }
+  // ───── 拖拉 ─────
+  function toCam(e) {
+    var r = $('field').getBoundingClientRect();
+    if (!r.width || !r.height) return null;
+    return { x: ((e.clientX - r.left) / r.width * SW - OX) / K, y: ((e.clientY - r.top) / r.height * SH - OY) / K };
+  }
+  function grab(p) {
+    var g = curG(), i;
+    if (g === 'track') { for (i = SC.blobs.length - 1; i >= 0; i--) { var b = SC.blobs[i]; if (!b.gone && Math.abs(p.x - b.cx) <= b.size / 2 + 4 && Math.abs(p.y - b.cy) <= b.size / 2 + 4) { SC.sel = i; return true; } } return false; }
+    if (g === 'spot') { for (i = SC.patches.length - 1; i >= 0; i--) { var q = SC.patches[i]; if (Math.abs(p.x - q.cx) <= q.w / 2 + 3 && Math.abs(p.y - q.cy) <= q.h / 2 + 3) { SC.psel = i; return true; } } return false; }
+    if (g === 'obj') { for (i = SC.objs.length - 1; i >= 0; i--) { var q2 = SC.objs[i]; if (!q2.gone && Math.abs(p.x - q2.cx) <= q2.size / 2 + 3 && Math.abs(p.y - q2.cy) <= q2.size / 2 + 3) { SC.jsel = i; return true; } } return false; }
+    if (g === 'order') { var k = num('ocount', 4); for (i = k - 1; i >= 0; i--) { var o = SC.blocks[i]; if (Math.abs(p.x - o.cx) <= 13 && Math.abs(p.y - o.cy) <= 13) { SC.osel = i; return true; } } return false; }
+    if ($('lgone').checked) return false;
+    var best = 0, bd = 1e9;
+    SC.line.ys.forEach(function (y, j) { var d = Math.abs(p.y - y); if (d < bd) { bd = d; best = j; } });
+    SC.lsel = best; return true;
+  }
+  function moveSel(p) {
+    var g = curG();
+    if (g === 'track') { var b = selBlob(); b.cx = p.x; b.cy = p.y; }
+    else if (g === 'spot') { var q = SC.patches[SC.psel]; q.cx = clamp(p.x, q.w / 2, FW - q.w / 2); q.cy = clamp(p.y, q.h / 2, FH - q.h / 2); }
+    else if (g === 'obj') { var q3 = SC.objs[SC.jsel]; q3.cx = p.x; q3.cy = p.y; }
+    else if (g === 'order') { var o = SC.blocks[SC.osel]; o.cx = clamp(p.x, 11, FW - 11); o.cy = clamp(p.y, 11, FH - 11); }
+    else SC.line.xs[SC.lsel] = clamp(p.x, 2, FW - 2);
+  }
+  function selPos() {
+    var g = curG();
+    if (g === 'track') return { x: selBlob().cx, y: selBlob().cy };
+    if (g === 'spot') return { x: SC.patches[SC.psel].cx, y: SC.patches[SC.psel].cy };
+    if (g === 'order') return { x: SC.blocks[SC.osel].cx, y: SC.blocks[SC.osel].cy };
+    if (g === 'obj') return { x: SC.objs[SC.jsel].cx, y: SC.objs[SC.jsel].cy };
+    return { x: SC.line.xs[SC.lsel], y: SC.line.ys[SC.lsel] };
+  }
+  function bindSim(onMove, onInput) {
+    var el = $('field'), dragging = false;
+    el.style.touchAction = 'none'; el.style.cursor = 'grab';
+    el.addEventListener('pointerdown', function (e) {
+      var p = toCam(e); if (!p || !grab(p)) return;
+      dragging = true; try { el.setPointerCapture(e.pointerId); } catch (err) { /* 舊瀏覽器 */ }
+      moveSel(p); onMove(); e.preventDefault();
+    });
+    el.addEventListener('pointermove', function (e) { if (!dragging) return; var p = toCam(e); if (p) { moveSel(p); onMove(); } });
+    ['pointerup', 'pointercancel'].forEach(function (ev) { el.addEventListener(ev, function () { dragging = false; }); });
+    el.addEventListener('keydown', function (e) {
+      var k = { ArrowLeft: [-3, 0], ArrowRight: [3, 0], ArrowUp: [0, -3], ArrowDown: [0, 3] }[e.key];
+      if (!k) return;
+      e.preventDefault(); var p = selPos(); moveSel({ x: p.x + k[0], y: p.y + k[1] }); onMove();
+    });
+    ['tsize', 'tcount', 'tgone', 'phue', 'ocount', 'lwidth', 'ljunc', 'ljd', 'lmark', 'lgone', 'jshape', 'jcolor', 'jsize', 'jrot', 'jgone', 'unplug'].forEach(function (id) {
+      var c = $(id); if (!c) return;
+      c.addEventListener(c.tagName === 'SELECT' ? 'change' : 'input', function () { simInput(id); onInput(id); });
+    });
+  }
+
+
+  var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; });
+  if (!BY[S.fn]) S.fn = FNS[0].id;
+  function fnOk(f, m) { return !f.modes || f.modes.indexOf(m) >= 0; }
+  function bestMode(f) {
+    if (fnOk(f, S.mode)) return S.mode;
+    var g = modeOf(S.mode).g;
+    for (var i = 0; i < f.modes.length; i++) if (modeOf(f.modes[i]).g === g) return f.modes[i];
+    return f.modes[0];
+  }
+  // ───── 右邊的程式 ─────
+  var lastKeys = '';
+  function fullLines(step) { var keep = S.step; S.step = step; var L = HOST.lines(BY[S.fn]); S.step = keep; return L; }
+  function drawMain() {
+    var L = fullLines(S.viewStep || S.step);
+    L.forEach(function (l, k) { l.no = k + 1; l.hl = l.tag === (S.viewStep || S.step); });
+    if (HOST.collapse && !S.showHelper) {
+      var nH = L.filter(function (l) { return l.helper; }).length, seen = false, F = [];
+      L.forEach(function (l) {
+        if (!l.helper) { F.push(l); return; }
+        if (seen) return;
+        seen = true; F.push(l);
+        F.push({ t: HOST.cmt(('⋯ 還有 ' + (nH - 1) + ' 行（按「顯示小幫手」看）')), no: '⋮', tag: l.tag, tagHide: true, hl: l.hl, helper: true });
+      });
+      L = F;
+    }
+    var prev = lastKeys ? lastKeys.split('\n') : [];
+    L.forEach(function (l) { if (l.t && lastKeys && prev.indexOf(l.t) < 0) l.isNew = true; });
+    lastKeys = L.map(function (l) { return l.t; }).join('\n');
+    render($('maincode'), L);
+    var b = $('bubble'); b.querySelector('i').textContent = S.viewStep || S.step; b.querySelector('span').textContent = HOST.bubble(S.viewStep || S.step, BY[S.fn]);
+    drawMinis();
+  }
+  var miniPrev = {};
+  function drawMinis() {
+    var full = fullLines(3);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('mini' + k); if (!el) return;
+      var lines = [], nh = 0, total = 0, h0 = 0, nums = [];
+      full.forEach(function (l) { if (l.tag === k && l.helper) total++; });
+      full.forEach(function (l, i) {
+        if (l.tag !== k) return;
+        if (l.helper) {
+          nh++; if (!h0) h0 = i + 1;
+          if (nh <= 2) lines.push({ t: l.t, no: i + 1 });
+          else if (nh === 3) lines.push({ t: HOST.cmt(('⋯ 小幫手共 ' + total + ' 行，按右邊「顯示小幫手」看全部')), no: '⋮' });
+          return;
+        }
+        nums.push(i + 1); lines.push({ t: l.t, no: i + 1 });
+      });
+      if (!lines.length) { el.innerHTML = ''; return; }
+      var a = nums.length ? nums[0] : h0, z = nums.length ? nums[nums.length - 1] : h0;
+      var range = ('第 ' + a + (z !== a ? '～' + z : '') + ' 行');
+      if (h0 && nums.length) range += ('，和第 ' + h0 + ' 行起的小幫手');
+      var txt = lines.map(function (l) { return l.no + l.t; }).join('\n');
+      el.innerHTML = '<span>' + ('這一步寫的程式（') + range + ('）') + '</span><pre class="code"></pre>';
+      render(el.querySelector('pre'), lines, { noTag: true });
+      if (miniPrev[k] !== undefined && miniPrev[k] !== txt) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      miniPrev[k] = txt;
+    });
+  }
+  // ───── 步驟 ─────
+  function setStep(n) {
+    S.step = Math.max(S.step, n);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    S.viewStep = n;
+    drawMain();
+    $('next2').disabled = !HOST.valid();
+  }
+  // ───── 第 1 步：選模式 ─────
+  function drawModes() {
+    var box = $('modes'); if (!box) return;
+    box.innerHTML = '';
+    ['track', 'spot', 'order', 'line', 'obj'].forEach(function (g) {
+      var w = document.createElement('div'); w.className = 'fgroup';
+      w.innerHTML = '<span>' + GROUPS[g].name + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      MODES.filter(function (m) { return m.g === g; }).forEach(function (m) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip';
+        b.textContent = m.n + ' ' + m.name; b.setAttribute('aria-pressed', String(S.mode === m.n));
+        b.addEventListener('click', function () { setMode(m.n, false); });
+        chips.appendChild(b);
+      });
+      w.appendChild(chips); box.appendChild(w);
+    });
+    var c = HOST.counts(S.mode), m = modeOf(S.mode);
+    var have = m.g === 'track' ? ('這個主機在這個模式拿到 ' + c.col + ' 色')
+      : m.g === 'spot' ? ('這個主機在這個模式拿到 ' + c.pt + ' 個取樣點')
+      : m.g === 'order' ? ('這個主機最多拿到 ' + c.order + ' 塊的色相碼')
+      : m.g === 'obj' ? ('這個主機在這個模式拿到 ' + c.obj + ' 個物體')
+      : ('這個主機拿到 ' + c.line + ' 個循線值');
+    $('modenow').innerHTML = '<b>' + ('你選的：模式編號 ') + S.mode + '</b><span>' + ('＝相機模式 ') + m.cm + ' ' + GROUPS[m.g].name.replace(/^\d /, '') + (m.sub ? ('・子選項 ') + m.name : '') + ('。') + have + ('。') + '</span><span class="err">' + HOST.modeWarn(S.mode) + '</span>';
+  }
+  function setMode(n, auto) {
+    S.mode = n;
+    if (!fnOk(BY[S.fn], n)) {
+      var g = modeOf(n).g, first = FNS.filter(function (f) { return f.grp === g && fnOk(f, n); })[0];
+      if (first) S.fn = first.id;
+    }
+    S.autoNote = auto ? auto : '';
+    drawModes(); drawPicker(); drawCards(); drawMain(); tick(true);
+  }
+  // ───── 第 3 步：功能選擇與範例卡 ─────
+  function drawPicker() {
+    var box = $('picker'); box.innerHTML = '';
+    GORDER.forEach(function (g) {
+      var list = FNS.filter(function (f) { return f.grp === g; }); if (!list.length) return;
+      var w = document.createElement('div'); w.className = 'fgroup';
+      w.innerHTML = '<span>' + GROUPS[g].name + (GROUPS[g].modes ? ('（模式 ') + GROUPS[g].modes.join(('、')) + ('）') : '') + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      list.forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (fnOk(f, S.mode) ? '' : ' no-ev3');
+        b.textContent = f.label; b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.title = f.name + (fnOk(f, S.mode) ? '' : ('（要切到') + modeList(f.modes) + ('）'));
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      w.appendChild(chips); box.appendChild(w);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + esc(f.label) + ('　') + f.name + '</b><span>' + f.what + '</span><span class="small">' +
+      (f.cmd ? ('命令：') : ('回傳：')) + f.ret + ('　｜　') + ('用在 ') + modeList(f.modes) + '</span>' +
+      (S.autoNote ? '<span class="err">' + S.autoNote + '</span>' : '');
+    if ($('nm1') && S.name) $('nm1').textContent = S.name;
+  }
+  function pick(id) {
+    var f = BY[id]; S.fn = id;
+    if (!fnOk(f, S.mode)) {
+      var m = bestMode(f);
+      setStep(3);
+      setMode(m, ('已經幫你把模式換成 ' + m + '：' + f.label + ' 要' + modeList(f.modes) + '。相機選單也要切到 ' + m + '。'));
+      return;
+    }
+    S.autoNote = '';
+    setStep(3);
+    drawPicker(); drawCards(); tick(true);
+  }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    FNS.forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      c.innerHTML =
+        '<div class="card-head"><h3>' + esc(f.label) + '<span class="zh">' + f.name + '</span></h3>' +
+        '<span class="badges"><span class="badge yes">' + modeList(f.modes) + '</span>' + (f.cmd ? '<span class="badge yes">' + ('命令') + '</span>' : '') + '</span></div>' +
+        '<p>' + f.what + '</p>' +
+        '<dl class="meta"><dt>' + (f.cmd ? ('命令') : ('回傳')) + '</dt><dd>' + f.ret + '</dd><dt>' + ('範例') + '</dt><dd>' + HOST.place(f) + '</dd></dl>' +
+        '<pre class="code"></pre>' +
+        '<p class="out">' + HOST.outLabel + '<code></code></p>' +
+        '<button type="button" class="try">' + ('試試看') + '</button>';
+      render(c.querySelector('pre'), HOST.card(f).map(function (t) { return { t: t }; }), { noTag: true });
+      c.querySelector('.try').addEventListener('click', function () {
+        pick(f.id);
+        var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      });
+      box.appendChild(c);
+    });
+    var cnt = $('fncount'); if (cnt) cnt.textContent = FNS.length;
+  }
+  // 範例卡的輸出：用「這個功能能用的模式」換算（目前模式可以用就用目前模式）
+  // V.__n＝這個範例讀了感應器幾次（拔線時函式庫每次讀值可能印一行提醒）
+  function runOut(f, st, m) {
+    var V = HOST.view(st, m);
+    try { var o = f.out(V, st); return { lines: Array.isArray(o) ? o : [String(o)], err: false, reads: V.__n || 0 }; }
+    catch (e) { if (e && e.err) return { lines: [e.err], err: true, reads: V.__n || 0 }; throw e; }
+  }
+  function updateCardOutputs(st) {
+    FNS.forEach(function (f) {
+      var el = document.querySelector('#fn-' + f.id + ' .out code'); if (!el) return;
+      var m = bestMode(f), r = runOut(f, Object.assign({}, st, { mode: m }), m);
+      el.textContent = r.lines.join('\n');
+    });
+  }
+  // ───── 完整範例 ─────
+  function exFull(id) { var out = []; EX[id].forEach(function (t) { if (t === '@HELPER') out = out.concat(HOST.helper || []); else out.push(t); }); return out; }
+  function drawExamples() {
+    Object.keys(EX).forEach(function (k) {
+      var el = $('ex-' + k); if (!el) return;
+      var shown = EX[k].map(function (t) { return t === '@HELPER' ? HOST.cmt(('……第 1 步的小幫手貼在這裡（按「複製」會自動帶上）……')) : t; });
+      render(el, shown.map(function (t) { return { t: t }; }), { noTag: true });
+    });
+  }
+  // ───── 輸出格 ─────
+  var log = [], booted = false, halted = false;
+  function push(t, c) { log.push({ c: c || '', t: t }); }
+  function tick(reset) {
+    var st = state(), f = BY[S.fn];
+    draw(st);
+    updateCardOutputs(st);
+    if (S.step < 3) {
+      log = [{ c: '', t: ('（做完第 3 步「使用功能」，這裡會出現程式印出的內容）') }];
+      booted = false; halted = false;
+    } else if (reset || !booted) {
+      log = []; booted = true; halted = false; HOST.reset && HOST.reset();
+      var b = HOST.boot ? HOST.boot(st, f) : null;
+      if (b) { b.lines.forEach(function (t) { push(t, (/!|Error|-32768|找不到|收不到/).test(t) ? 'warnline' : ''); }); halted = !!b.halt; }
+      if (!halted) once(f, st);
+    } else if (!f.once && !halted) {
+      once(f, st);
+    }
+    while (log.length > 8) log.shift();
+    $('console').innerHTML = log.map(function (l) { return '<span class="' + l.c + '">' + esc(l.t) + '</span>'; }).join('\n');
+  }
+  function once(f, st) {
+    var r = runOut(f, st, S.mode);
+    (HOST.warn ? HOST.warn(st, r.reads) : []).forEach(function (w) { push(w, 'warnline'); });
+    r.lines.forEach(function (t) { push(t, r.err ? 'errline' : (HOST.warnRe && HOST.warnRe.test(t) ? 'warnline' : '')); });
+    if (r.err) { halted = true; push(('（程式停了：出錯的那一行要先檢查讀到的值）'), ''); }
+  }
+  // ───── 事件 ─────
+  $('next1').addEventListener('click', function () { setStep(2); });
+  $('next2').addEventListener('click', function () { if (HOST.valid()) { setStep(3); drawPicker(); tick(true); } });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) {
+    $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } });
+  });
+  HOST.bind(function (rerun) { drawMain(); drawPicker(); $('next2').disabled = !HOST.valid(); if (rerun && S.step >= 3) tick(true); });
+  bindSim(function () { draw(state()); updateCardOutputs(state()); }, function (id) { tick(id === 'unplug' && (BY[S.fn].once || !!HOST.bootOnUnplug)); });
+  if ($('helperbtn')) $('helperbtn').addEventListener('click', function (e) {
+    S.showHelper = !S.showHelper;
+    e.currentTarget.textContent = S.showHelper ? ('收起小幫手') : ('顯示小幫手');
+    e.currentTarget.setAttribute('aria-pressed', String(!!S.showHelper));
+    drawMain();
+  });
+  $('copymain').addEventListener('click', function (e) { copyText(plain(fullLines(S.viewStep || S.step)), e.currentTarget); });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { copyText(exFull(b.getAttribute('data-copy')).join('\n') + '\n', b); });
+  });
+  // ───── 開始 ─────
+  S.viewStep = 1;
+  drawModes(); drawPicker(); drawCards(); drawExamples(); setStep(1); tick(true);
+  setInterval(function () { if (S.step >= 3 && !BY[S.fn].once) tick(false); }, 600);
+  function expect(id, m, none) {
+    var f = BY[id], st = rawState();
+    if (none) { st.ok = false; st.none = true; }
+    HOST.reset && HOST.reset();
+    var r = runOut(f, st, m), w = HOST.warn ? HOST.warn(st, r.reads) : [];
+    return { st: st, lines: w.concat(r.lines), err: r.err };
+  }
+  window.__uc = { expect: expect, S: S, FNS: FNS, setMode: setMode, pick: pick, tick: tick, state: state, fullLines: fullLines, EX: EX, exFull: exFull, SC: SC };
+
+})();
+</script>
+<script>
+(function () {
+  var side = document.querySelector('.side'); if (!side) return;
+  var mq = window.matchMedia('(max-width: 900px)');
+  var home = side.parentNode, homeNext = side.nextSibling;
+  var con = document.getElementById('console'), conP = con && con.closest('.panel');
+  if (conP && conP.parentNode !== side) conP = null;
+  var last = null, ready = false;
+  var STOP = '.step-body, .cards, .ref, .steps, .main, .wrap, body';
+  function anchorOf(el) { var a = el; while (a && a.parentElement && !a.parentElement.matches(STOP)) a = a.parentElement; return a && a.parentElement ? a : null; }
+  function flash(el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  // 把 box 搬到 a 那一塊的後面；a 在畫面上的位置維持不動（點下去時就記住 a：頁面常在點擊後重畫按鈕，按鈕本身會被換掉）
+  function moveAfter(box, a) {
+    if (!a || !a.isConnected || a === box || a.contains(box)) return false;
+    if (a.nextElementSibling === box) return true;
+    var y = a.getBoundingClientRect().top;
+    a.parentNode.insertBefore(box, a.nextSibling); box.classList.add('follow');
+    var d = a.getBoundingClientRect().top - y; if (d) window.scrollBy(0, d);
+    return true;
+  }
+  function inPanel(el) { return side.contains(el) || (conP && conP.contains(el)); }
+  function placeSide(a, scroll) {
+    if (!mq.matches || !a) return;
+    if (conP && conP.parentNode !== side) { conP.classList.remove('follow'); side.appendChild(conP); }
+    if (!moveAfter(side, a)) return;
+    if (scroll) { var r = side.getBoundingClientRect(); if (r.top > window.innerHeight * 0.7) window.scrollBy({ top: r.top - window.innerHeight * 0.3, behavior: 'smooth' }); }
+  }
+  function placeConsole(el) {
+    if (!mq.matches || !conP || inPanel(el)) return;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在「正在操作的那一排」正下方（排＝控制區的直接子元素），
+    // 畫面、那一排、輸出同一屏；控制區很長或那一排在最下面（例如拔線勾選）都不會跑出畫面
+    var sim = el.closest('.sim'), ctrl = null, row = null;
+    if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (ctrl && ctrl !== el) for (var j = 0; j < ctrl.children.length; j++) if (ctrl.children[j].contains(el)) row = ctrl.children[j];
+    if (sim && ctrl) {
+      var box = row ? ctrl : sim, after = row || null;
+      if (after ? after.nextElementSibling === conP : conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var y = el.getBoundingClientRect().top;
+      if (after) box.insertBefore(conP, after.nextSibling); else sim.insertBefore(conP, ctrl);
+      conP.classList.add('follow');
+      var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
+      return;
+    }
+    var a = anchorOf(el); if (a && a.nextElementSibling === side) return; // 程式那格已經緊接在下面，輸出就在它裡面
+    moveAfter(conP, a);
+  }
+  function reset() {
+    if (mq.matches) { var b = document.querySelector('#step1 .step-body button') || document.querySelector('#step1 button'); if (b) placeSide(anchorOf(b), false); return; }
+    if (conP) { conP.classList.remove('follow'); side.appendChild(conP); }
+    side.classList.remove('follow'); home.insertBefore(side, homeNext);
+  }
+  function remember(e) { if (!inPanel(e.target)) last = anchorOf(e.target); }
+  document.addEventListener('pointerdown', remember, true);
+  document.addEventListener('focusin', remember, true);
+  var mo = new MutationObserver(function () { if (ready && mq.matches) { placeSide(last, true); flash(side); } });
+  ['maincode', 'mainblocks'].forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true }); });
+  function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
+  document.addEventListener('input', sim, true);
+  document.addEventListener('change', sim, true);
+  // 模擬器裡的按鈕（掌控者按鍵、色點調色盤…）也算在操作模擬器
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.sim button'); if (b) placeConsole(b); }, true);
+  reset(); setTimeout(function () { ready = true; }, 800);
+  if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
+})();
+</script>
+</body>
+</html>

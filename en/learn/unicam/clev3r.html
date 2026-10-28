@@ -1,0 +1,1578 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="clev3r needs no library: on the EV3 the camera is a LEGO infrared sensor, each EV3 mode sends back a few numbers (cells), and what each cell holds depends on th">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/unicam/clev3r.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/unicam/clev3r.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/unicam/clev3r.html">
+<title>Sharpshooter Vision clev3r tutorial | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+
+:root {
+  --bg: #f3f6f5;          
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;      
+  --accent-soft: #dff1ef;
+  --tape: #121212;        
+  --ir: #e04a3b;          
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+[hidden] { display: none !important; }  /* 頁面用 hidden 切換「積木／程式」，.ws{display:grid} 會蓋掉它 */
+.learn-nav .tabs .tl { color: var(--muted, #666); font-size: 0.8rem; align-self: center; }
+.learn-nav .tabs .tsep { flex-basis: 100%; height: 0; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
+   排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
+@media (max-width: 900px) {
+  .learn-nav { position: static; width: 100vw; margin: -24px 0 14px calc(50% - 50vw); }
+  .learn-nav .in { padding: 6px 12px 8px; gap: 4px 14px; font-size: 0.85rem; }
+  .learn-nav .in > a { min-height: 36px; display: inline-flex; align-items: center; }
+  .learn-nav .tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .learn-nav .tabs::-webkit-scrollbar { display: none; }
+  .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
+  body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
+  .panel.follow { margin: 12px 0 16px; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow, .ctrl > .panel.follow { grid-column: 1 / -1; }
+  .flash { animation: followFlash 1.2s ease-out; }
+  @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
+  /* 點選目標放大：選項、勾選框、拉桿 */
+  .wrap > *, .main > *, .steps > *, .step-body > * { min-width: 0; }
+  label:has(input[type=radio]), label:has(input[type=checkbox]) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  button.copy, .viewtabs button { min-height: 36px; }
+  label:has(select) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  label select { min-height: 36px; }
+  input[type=radio], input[type=checkbox] { width: 20px; height: 20px; flex: none; }
+  input[type=range] { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+</style>
+<style>
+.v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
+.v1warn b { white-space: nowrap; }
+/* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
+.ucpick { display: grid; gap: 14px; }
+#modes { gap: 8px; }
+#modes .chip { font-family: inherit; }
+.ctrl select { font: inherit; padding: 4px 6px; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/unicam/ev3/">← Sharpshooter Vision EV3 guide</a><a class="lang" href="/learn/unicam/clev3r.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/unicam/micropython.html">SPIKE</a><a href="/en/learn/unicam/ev3-pybricks.html" aria-current="page">EV3</a><a href="/en/learn/unicam/arduino.html">Arduino</a><a href="/en/learn/unicam/mblock.html">mBlock</a><a href="/en/learn/unicam/matrix.html">MATRIX</a><a href="/en/learn/unicam/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/unicam/ev3-pybricks.html">Pybricks / EV3 MicroPython</a><a href="/en/learn/unicam/clev3r.html" aria-current="page">clev3r</a><a href="/en/learn/unicam/ev3-classroom.html">EV3 Classroom</a><a href="/en/learn/unicam/ev3g.html">EV3-G (LEGO software)</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC Sharpshooter Vision × EV3 clev3r (EV3 BASIC)</span>
+    <h1>Read Sharpshooter Vision with clev3r in three steps</h1>
+    <p class="lead">clev3r needs no library: on the EV3 the camera is a <b>LEGO infrared sensor</b>, each EV3 mode sends back a few numbers (cells), and what each cell holds depends on the <b>camera mode</b>. In order: <b>create the project and pick the camera mode</b>, then <b>pick the port and set the EV3 mode</b>, then <b>read the cells, split them into values and show them on the EV3 screen</b>. Work down the steps on the left and watch the program grow on the right; drag the blobs, papers, blocks, line or shapes in the simulated camera view to see what the EV3 screen shows.</p>
+    <p class="v1warn" role="note"><b>v1 not yet hardware-verified</b><span>The value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after hardware testing.</span></p>
+  </header>
+
+  <section class="main" aria-label="Tutorial">
+    <div class="steps">
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>Create the project, pick the camera mode</h2></div>
+        <div class="step-body">
+          <p class="why">clev3r needs no extension and no file to import: on the EV3 the camera acts as the LEGO infrared sensor (type 33), so you read it with the built-in <code>Sensor</code> commands. The first line, <code>folder</code>, decides which EV3 folder the program goes into.</p>
+          <ol class="howto">
+            <li>Install clev3r (this site was tested with v1.7.1.0), start a new program and write the lines on the right.</li>
+            <li>Plug the camera into <b>port 1–4</b> with an EV3 cable; the EV3 powers it. Turn the EV3 on first.</li>
+            <li>Press "Compile and download", then run it from the <code>MBC_unicam</code> folder in the EV3 file menu.</li>
+            <li>Pick the camera mode: choose the camera mode and sub-option in the camera's <b>MODE</b> menu, and click the <b>same mode number</b> below (mode number = camera mode × 10 + sub-option). The same EV3 cell holds different things in different camera modes.</li>
+          </ol>
+          <div id="modes" class="ucpick" role="group" aria-label="Camera mode"></div>
+          <div class="explain" id="modenow" aria-live="polite"></div>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">Done, next step</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>Pick the port, set the EV3 mode</h2></div>
+        <div class="step-body">
+          <p class="why"><code>Sensor.SetMode(port, EV3 mode)</code> picks which infrared-sensor mode to read; every cell you read after that comes from it. This "EV3 mode" is not the camera menu's "camera mode":</p>
+          <ul class="howto">
+            <li><b>EV3 mode 0 proximity</b> (1 cell): the camera's current mode number (e.g. 13).</li>
+            <li><b>EV3 mode 1 beacon</b> (8 cells, 0–7): most values are here.</li>
+            <li><b>EV3 mode 2 remote</b> (4 cells, 0–3): colors/spots 9–12 in modes 11 and 21, blocks 9–11 and the total in color order, line edges, far width, marker count, object 5 and the object count.</li>
+            <li><b>EV3 modes 3 and 4</b> always send 0 (not used); <b>EV3 mode 5</b> (2 cells): device ID and firmware version.</li>
+          </ul>
+          <div class="row">
+            <span class="small">Which port is the camera in?</span>
+            <div class="ports" id="ports" role="group" aria-label="Port"></div>
+          </div>
+          <p class="small">In <code>Sensor.SetMode(<b id="portnum">1</b>, <b id="evnum">1</b>)</code> the first number is the port (1–4) and the second is the EV3 mode, which follows the reading you pick in step 3. <b>Try to use one EV3 mode per program</b>: each switch takes about 0.5 s.</p>
+
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2">Done, next step</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>Read cells, show them on the EV3 screen</h2></div>
+        <div class="step-body">
+          <p class="why"><code>Sensor.ReadRawValue(port, cell)</code> reads one cell of the current EV3 mode (counting from 0). A cell often holds two numbers (e.g. X×10 + Y); split them with <code>Math.Floor(v / 10)</code> and <code>Math.Remainder(v, 10)</code>. <code>LCD.Text</code> writes on the EV3 screen. Functions are grouped by camera mode; grey ones need another camera mode (clicking switches it for you).</p>
+          <div id="picker" class="ucpick"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+          <div class="sim-box">
+        <div class="sim-title">Simulated camera view: drag things in the picture and watch the output change</div>
+        <div class="sim">
+          <svg id="field" viewBox="0 0 460 330" role="img" tabindex="0" aria-label="Camera view: drag with mouse or finger, or use the arrow keys to move the selected item"></svg>
+          <div class="ctrl">
+            <label class="f" for="tsize" data-g="track"><span>Blob size (selected: <span id="selname">color 1</span>; tap a blob to select it)</span>
+              <input autocomplete="off" type="range" id="tsize" min="8" max="90" value="30">
+            </label>
+            <label class="f" for="tcount" data-g="track"><span>How many blobs of <span id="selname2">color 1</span></span>
+              <input autocomplete="off" type="range" id="tcount" min="1" max="3" value="1">
+            </label>
+            <label class="f" for="phue" data-g="spot"><span>Color of paper 1 (hue code <span id="phueval">0</span>; drag the papers onto the spots)</span>
+              <input autocomplete="off" type="range" id="phue" min="0" max="239" value="0">
+            </label>
+            <label class="f" for="ocount" data-g="order"><span>Blocks in the picture (drag them to change the order)</span>
+              <input autocomplete="off" type="range" id="ocount" min="0" max="5" value="4">
+            </label>
+            <label class="f" for="lwidth" data-g="line"><span>Line width (drag the green dots to bend the line)</span>
+              <input autocomplete="off" type="range" id="lwidth" min="4" max="60" value="16">
+            </label>
+            <label class="f" for="ljunc" data-g="line"><span>Junction</span>
+              <select id="ljunc"><option value="0">0 none</option><option value="1">1 cross</option><option value="2">2 T</option><option value="3">3 left</option><option value="4">4 right</option><option value="5">5 dead end</option></select>
+            </label>
+            <label class="f" for="ljd" data-g="line"><span>Junction distance (0 = bottom, 100 = top)</span>
+              <input autocomplete="off" type="range" id="ljd" min="5" max="95" value="60">
+            </label>
+            <label class="f" for="lmark" data-g="line"><span>Colored marker line under the robot now</span>
+              <select id="lmark"><option value="0">none</option><option value="2">target color 2 (green)</option><option value="3">target color 3 (blue)</option><option value="4">target color 4 (yellow)</option></select>
+            </label>
+            <label class="f" for="jshape" data-g="obj"><span>Selected object (<span id="jname">track id 1</span>; tap a shape to select it): shape</span>
+              <select id="jshape"><option value="1">1 circle</option><option value="2">2 ellipse</option><option value="3">3 triangle</option><option value="4">4 square</option><option value="5">5 rectangle</option><option value="6">6 pentagon</option><option value="7">7 hexagon</option><option value="8">8 star</option><option value="9">9 trapezoid</option></select>
+            </label>
+            <label class="f" for="jcolor" data-g="obj"><span>Color (target color 1–8 taught on the camera)</span>
+              <select id="jcolor"><option value="1">target color 1 (red)</option><option value="2">target color 2 (green)</option><option value="3">target color 3 (blue)</option><option value="4">target color 4 (yellow)</option><option value="5">target color 5 (purple)</option><option value="6">target color 6 (orange)</option><option value="7">target color 7 (cyan)</option><option value="8">target color 8 (pink)</option></select>
+            </label>
+            <label class="f" for="jsize" data-g="obj"><span>Size (closer looks bigger)</span>
+              <input autocomplete="off" type="range" id="jsize" min="12" max="70" value="42">
+            </label>
+            <label class="f" for="jrot" data-g="obj"><span>Rotation (0–179°)</span>
+              <input autocomplete="off" type="range" id="jrot" min="0" max="179" value="0">
+            </label>
+            <div class="toggles">
+              <label data-g="obj"><input autocomplete="off" type="checkbox" id="jgone"> Remove this object (<span id="jname2">track id 1</span>)</label>
+              <label data-g="track"><input autocomplete="off" type="checkbox" id="tgone"> Remove <span id="selname3">color 1</span></label>
+              <label data-g="line"><input autocomplete="off" type="checkbox" id="lgone"> Remove the line (robot left the line)</label>
+              <label><input autocomplete="off" type="checkbox" id="unplug"> Unplug the sensor</label>
+            </div>
+          </div>
+          <p class="note">The view is a sketch: values come straight from where things are on screen (X 0–159 left→right, Y 0–119 top→bottom, area % = width × height ÷ whole picture); a hue code is the color the paper or block really has (red 0, yellow 40, green 80, blue 160, purple 200, white table 244, black tape 252). It is not the camera's own algorithm, and real numbers vary with the light. Color tracking assumes 4 colors were taught on the camera: color 1 red, 2 green, 3 blue, 4 yellow. In object detection you pick each shape yourself (the camera does not judge it here); objects 1, 2… are sorted by area, largest first; X, Y is the shape's centroid (white dot), the dashed box is its bounding box, and the angle is the rotation you set.</p>
+        </div>
+          </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">An example for every function</h2>
+        <p class="ref-intro">Every reading has an example you can drop into clev3r: <code>Sensor.SetMode</code> picks the EV3 mode, then the <code>While</code> loop reads. The badge shows the camera modes it works in; the same value can sit in a different cell in another camera mode, so the example follows the mode you picked. "Try it" jumps to step 3.</p>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="Your program and output">
+      <div class="panel">
+        <div class="panel-head"><span>Your program (clev3r)</span><span class="row"><button type="button" class="copy" id="copymain">Copy program</button></span></div>
+        <pre class="code" id="maincode" aria-live="polite"></pre>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>What the EV3 screen shows (updates every 0.6 s)</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="ref" aria-labelledby="fullh">
+    <h2 id="fullh">Full examples</h2>
+    <p class="ref-intro">Press "Copy" for the whole program. More examples are on the <a href="/en/sensors/unicam/ev3-examples.html">EV3 examples page</a> (Pybricks code; the cell layout is the same).</p>
+    <div class="full">
+      <div class="panel">
+        <div class="panel-head"><span>Turn toward a blob (mode 13, left wheel B, right wheel C)</span><button type="button" class="copy" data-copy="track">Copy</button></div>
+        <pre class="code" id="ex-track"></pre>
+        <p class="bubble"><i>!</i><span>Teach "target 1" on the camera and set the camera menu to mode 13. X is the 8×6 cell turned into pixels (cell centre); blob on the left = X below 80 = turn left. Turns the wrong way? Change <code>0.3</code> to <code>-0.3</code>.</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>Line following (mode 41 black line, left wheel B, right wheel C)</span><button type="button" class="copy" data-copy="line">Copy</button></div>
+        <pre class="code" id="ex-line"></pre>
+        <p class="bubble"><i>!</i><span>Point the camera down and forward. The ones digit of cell 5 is the line-seen flag; 0 = no line, so spin toward the side the line was last seen. Left offset is negative, so the left wheel slows and the robot turns left.</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>List the objects on screen (mode 51)</span><button type="button" class="copy" data-copy="obj">Copy</button></div>
+        <pre class="code" id="ex-obj"></pre>
+        <p class="bubble"><i>!</i><span>Set the camera menu to mode 51 and teach target colors 1–8 (you can set a shape while teaching). EV3 mode 1 has the codes and cells of objects 1–4; object 5 and the count are in EV3 mode 2, which costs another 0.5 s, so this example reads mode 1 only.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">Good to know</h2>
+    <ol>
+      <li><b>Unplugged reads 0 and the program keeps running.</b> clev3r's <code>Sensor.ReadRawValue</code> returns 0 when there is no data: a position of 0 = "not seen", and a hue of 0 looks like red. To know the camera is connected, use <code>Sensor.GetType</code> from the "Is the sensor connected" card (33 = connected). Tick "Unplug the sensor" to see it.</li>
+      <li><b>The camera menu mode must match the program.</b> A cell holds different things in different camera modes, so a mismatch gives meaningless numbers. clev3r can read EV3 mode 0 for the camera's current mode number and check it first (the "Which camera mode" card).</li>
+      <li><b>Each EV3 mode switch takes about 0.5 s.</b> Most values are in EV3 mode 1; only colors/spots 9–12 in modes 11 and 21, blocks 9–11 and the total in color order, line edges, far width, marker count, object 5 and the object count are in EV3 mode 2. Do not switch back and forth in one loop. EV3 modes 3 and 4 are always 0.</li>
+      <li><b>Positions are 8×6 cells:</b> X×10 + Y, X 1–8 left→right, <b>Y 1–6 bottom→top (bottom = small, the opposite of pixels)</b>, 0 = not seen. To pixel centres: X = (cell X − 1) × 20 + 10, Y = 109 − (cell Y − 1) × 20 (picture 160×120, top = 0). Line offset: left = negative, right = positive (looking forward from behind the robot).</li>
+      <li><b>An EV3 cell only holds −127–100.</b> Hue codes 0–240 are sent as hue × 100 ÷ 240 (0–100) and white/grey/black as −1 to −15; the examples turn them back into hue codes (±2). Mode 23 sends the raw hue code in two cells (hundreds, remainder) instead. Object angles are sent as (angle + 1) ÷ 2; multiply by 2. Colors are taught on the camera; the program cannot change them.</li>
+      <li><b>The EV3 screen shows only English letters and digits</b>, so <code>LCD.Text</code> labels are short English words, padded with spaces to wipe out longer text from before.</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+var PAGE = {"lang":"en","code":"bas"};
+var CFG = {"lay":{"11":{"0":["fn"],"1":["d8:1","d8:2","d8:3","d8:4","d8:5","d8:6","d8:7","d8:8"],"2":["d8:9","d8:10","d8:11","d8:12"]},"12":{"0":["fn"],"1":["d8:1","d8:2","d8:3","d8:4","d8:5","d8:6","d8:7","d8:8"],"2":[null,null,null,null]},"13":{"0":["fn"],"1":["d8:1","A1","d8:2","A2","d8:3","A3","d8:4","A4"],"2":[null,null,null,null]},"14":{"0":["fn"],"1":["d8:1","wh8:1","N1","A1","d8:2","wh8:2","N2","A2"],"2":[null,null,null,null]},"21":{"0":["fn"],"1":["e100:h1","e100:h2","e100:h3","e100:h4","e100:h5","e100:h6","e100:h7","e100:h8"],"2":["e100:h9","e100:h10","e100:h11","e100:h12"]},"22":{"0":["fn"],"1":["e100:h1","sv:1","e100:h2","sv:2","e100:h3","sv:3","e100:h4","sv:4"],"2":[null,null,null,null]},"23":{"0":["fn"],"1":["hh:h1","hl:h1","t1","v1","hh:h2","hl:h2","t2","v2"],"2":[null,null,null,null]},"30":{"0":["fn"],"1":["e100:o1","e100:o2","e100:o3","e100:o4","e100:o5","e100:o6","e100:o7","e100:o8"],"2":["e100:o9","e100:o10","e100:o11","total"]},"41":{"0":["fn"],"1":["near","mid","far","ang","wid","js","jd","mk"],"2":["le","re","fw","mkn"]},"42":{"0":["fn"],"1":["near","mid","far","ang","wid","js","jd","mk"],"2":["le","re","fw","mkn"]},"43":{"0":["fn"],"1":["near","mid","far","ang","wid","js","jd","mk"],"2":["le","re","fw","mkn"]},"51":{"0":["fn"],"1":["O1","d8:1","O2","d8:2","O3","d8:3","O4","d8:4"],"2":["O5","d8:5",null,"on"]},"52":{"0":["fn"],"1":["O1","d8:1","A1","half:G1","O2","d8:2","A2","half:G2"],"2":[null,null,null,null]}}};
+function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function idiv(a, b) { return Math.floor(a / b); }
+  var MODES = [
+    { n: 11, g: 'track', cm: 1, sub: 1, name: ('① Max colors') },
+    { n: 12, g: 'track', cm: 1, sub: 2, name: ('② Multi-color') },
+    { n: 13, g: 'track', cm: 1, sub: 3, name: ('③ Standard (XY + area)') },
+    { n: 14, g: 'track', cm: 1, sub: 4, name: ('④ Fine (XYWH)') },
+    { n: 21, g: 'spot', cm: 2, sub: 1, name: ('① Hue') },
+    { n: 22, g: 'spot', cm: 2, sub: 2, name: ('② Hue + saturation') },
+    { n: 23, g: 'spot', cm: 2, sub: 3, name: ('③ Hue + sat + value') },
+    { n: 30, g: 'order', cm: 3, sub: 0, name: ('(no sub-option)') },
+    { n: 41, g: 'line', cm: 4, sub: 1, name: ('① Black line') },
+    { n: 42, g: 'line', cm: 4, sub: 2, name: ('② White line') },
+    { n: 43, g: 'line', cm: 4, sub: 3, name: ('③ Colored line') },
+    { n: 51, g: 'obj', cm: 5, sub: 1, name: ('① Object list') },
+    { n: 52, g: 'obj', cm: 5, sub: 2, name: ('② Object details') }
+  ];
+  var GROUPS = {
+    track: { cm: 1, name: ('1 Color tracking'), modes: [11, 12, 13, 14] },
+    spot: { cm: 2, name: ('2 Color at points'), modes: [21, 22, 23] },
+    order: { cm: 3, name: ('3 Color order'), modes: [30] },
+    line: { cm: 4, name: ('4 Line following'), modes: [41, 42, 43] },
+    obj: { cm: 5, name: ('5 Object detection'), modes: [51, 52] },
+    info: { cm: 0, name: ('Sensor info (any mode)'), modes: null }
+  };
+  var GORDER = ['track', 'spot', 'order', 'line', 'obj', 'info'];
+  function modeOf(n) { for (var i = 0; i < MODES.length; i++) if (MODES[i].n === n) return MODES[i]; return MODES[2]; }
+  function modeTitle(n) { var m = modeOf(n); return n + ' = ' + GROUPS[m.g].name.replace(/^\d /, '') + ' ' + m.name; }
+  function modeList(ms) {
+    if (!ms) return ('any mode');
+    var out = [], i = 0;
+    while (i < ms.length) {
+      var j = i; while (j + 1 < ms.length && ms[j + 1] === ms[j] + 1) j++;
+      out.push(j - i >= 2 ? ms[i] + ('–') + ms[j] : ms.slice(i, j + 1).join((', ')));
+      i = j + 1;
+    }
+    return ('mode ') + out.join((', '));
+  }
+  var CNAME = ['', 'red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'white', 'black'];
+  var CNAME_ZH = ['', ('red'), ('orange'), ('yellow'), ('green'), ('cyan'), ('blue'), ('purple'), ('white/grey'), ('black')];
+  function colorCode(h) {
+    if (h > 248) return 9; if (h > 240) return 8;
+    if (h < 12 || h >= 220) return 1; if (h < 28) return 2; if (h < 56) return 3;
+    if (h < 100) return 4; if (h < 140) return 5; if (h < 180) return 6; return 7;
+  }
+  var SHAPES = ['other', 'circle', 'ellipse', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon', 'star', 'trapezoid'];
+  var SHAPES_ZH = [('other'), ('circle'), ('ellipse'), ('triangle'), ('square'), ('rectangle'), ('pentagon'), ('hexagon'), ('star'), ('trapezoid')];
+  function py(v) {
+    if (v === null || v === undefined) return 'None';
+    if (v === true) return 'True'; if (v === false) return 'False';
+    if (v && v.tuple) return '(' + v.tuple.map(pyIn).join(', ') + (v.tuple.length === 1 ? ',' : '') + ')';
+    if (Array.isArray(v)) return '[' + v.map(pyIn).join(', ') + ']';
+    return String(v);
+  }
+  function pyIn(v) { return typeof v === 'string' ? "'" + v + "'" : py(v); }
+  function tup(a) { return a === null || a === undefined ? null : { tuple: a }; }
+  function pr() { return Array.prototype.slice.call(arguments).map(py).join(' '); }   
+  function PyErr(msg) { this.err = msg; }
+  function cmp(op, a, b) {
+    var nm = { '<': '__lt__', '>': '__gt__', '<=': '__le__', '>=': '__ge__' }[op];
+    if (a === null || b === null || a === undefined || b === undefined) throw new PyErr("TypeError: unsupported types for " + nm + ": '" + (a == null ? 'NoneType' : 'int') + "', '" + (b == null ? 'NoneType' : 'int') + "'");
+    return op === '<' ? a < b : op === '>' ? a > b : op === '<=' ? a <= b : a >= b;
+  }
+  function unpack(v) { if (v === null || v === undefined) throw new PyErr("TypeError: 'NoneType' object isn't iterable"); return v.tuple || v; }
+  function sub(a, b) { if (a === null || a === undefined) throw new PyErr("TypeError: unsupported types for __sub__: 'NoneType', 'int'"); return a - b; }
+  var KWS = {
+    py: /^(from|import|while|True|False|None|if|else|elif|not|and|or|async|def|await|for|in|return|is|break|continue|pass)$/,
+    cpp: /^(void|bool|int|long|unsigned|char|float|double|const|if|else|while|for|return|true|false|switch|case|break|continue|default|static|struct|uint8_t|uint16_t|int16_t|int32_t|byte|auto)$/,
+    ts: /^(const|let|var|function|if|else|while|for|return|true|false|number|boolean|string|break|continue)$/
+  };
+  var LANGC = PAGE.code;
+  function hi(line) {
+    var out = '', i = 0, KW = KWS[LANGC], com = LANGC === 'py' ? '#' : '//';
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest.slice(0, com.length) === com) { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if (LANGC === 'cpp' && (m = rest.match(/^#[a-z]+/))) { out += '<span class="tk-kw">' + m[0] + '</span>'; i += m[0].length; continue; }
+      if (LANGC === 'cpp' && (m = rest.match(/^<[A-Za-z0-9_.\/]+\.h>/)) && /#include\s*$/.test(line.slice(0, i))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (KW.test(w)) out += '<span class="tk-kw">' + w + '</span>';
+        else if (after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^(0[xX][0-9A-Fa-f]+|\d+(\.\d+)?)/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  function render(el, lines, opts) {
+    opts = opts || {};
+    el.innerHTML = lines.map(function (l, k) {
+      var cls = 'ln' + (l.hl ? ' hl' : '') + (l.isNew ? ' new' : '');
+      var tag = opts.noTag ? '' : '<span class="tag">' + (l.tag && !l.tagHide ? '<i>' + l.tag + '</i>' : '') + '</span>';
+      return '<span class="' + cls + '"><span class="no">' + (l.no !== undefined ? l.no : k + 1) + '</span>' + tag + '<span>' + (l.t ? hi(l.t) : ' ') + '</span></span>';
+    }).join('');
+  }
+  function plain(lines) { return lines.map(function (l) { return typeof l === 'string' ? l : l.t; }).join('\n') + '\n'; }
+  function copyText(text, btn) {
+    var done = function () { var o = btn.textContent; btn.textContent = ('Copied'); setTimeout(function () { btn.textContent = o; }, 1400); };
+    try { navigator.clipboard.writeText(text).then(done, function () { fallback(text); }); } catch (e) { fallback(text); }
+    function fallback(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e2) { btn.textContent = ('Select and copy by hand'); }
+      document.body.removeChild(ta);
+    }
+  }
+    var S = { step: 1, viewStep: 1, fn: 'pos', mode: 13, port: 1 };
+    var LAY = CFG.lay;
+    var BKW = /^(While|EndWhile|If|Then|Else|ElseIf|EndIf|For|To|Step|EndFor|And|Or|folder|Sub|EndSub|Goto)$/;
+    function hi(line) {
+      var out = '', i = 0;
+      while (i < line.length) {
+        var rest = line.slice(i), m;
+        if (rest[0] === "'") { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+        if ((m = rest.match(/^"[^"]*"/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+        if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)?/))) {
+          var w = m[0], after = rest.slice(w.length);
+          if (BKW.test(w)) out += '<span class="tk-kw">' + w + '</span>';
+          else if (after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+          else out += esc(w);
+          i += w.length; continue;
+        }
+        if ((m = rest.match(/^\d+(\.\d+)?/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+        out += esc(rest[0]); i++;
+      }
+      return out;
+    }
+    var NCOL = { 11: 12, 12: 8, 13: 4, 14: 2 }, NPT = { 21: 12, 22: 4, 23: 2 }, NOBJ = { 51: 5, 52: 2 };
+    function ev3cells(st, m) {
+      var R = { 0: [0], 1: [0, 0, 0, 0, 0, 0, 0, 0], 2: [0, 0, 0, 0], 3: [0, 0, 0], 4: [0, 0, 0], 5: [0, 0] };
+      if (!st.ok || st.none) return R;
+      var objm = idiv(m, 10) === 5, Ln = st.line, hues = st.order.hues;
+      var LK = { near: Ln.near, mid: Ln.mid, far: Ln.far, ang: Ln.angle, wid: Ln.width, st: Ln.flags, jt: Ln.junction, jd: Ln.jdist, le: Ln.left, re: Ln.right, fw: Ln.farw, mk: Ln.marker, mkn: Ln.mcount, lost: Ln.lost };
+      function tgt(c) {
+        if (objm) { var o = st.obj[c - 1]; return o ? { f: 1, px: o[2], py: o[3], w: o[6] - o[4] + 1, h: o[7] - o[5] + 1, n: 0, area: o[8] } : { f: 0, px: 0, py: 0, w: 0, h: 0, n: 0, area: 0 }; }
+        var b = st.blobs[c];
+        return b && b.f ? { f: 1, px: b.x, py: b.y, w: b.w, h: b.h, n: b.n, area: b.ap } : { f: 0, px: 0, py: 0, w: 0, h: 0, n: 0, area: 0 };
+      }
+      function apct(c) { var o = tgt(c); return o.f ? Math.max(1, idiv(o.area * 100 + 9600, 19200)) : 0; }
+      function plain(k) {
+        var i = parseInt(k.slice(1), 10);
+        if (objm) {
+          if (k === 'on') return st.obj.length;
+          if (k[0] === 'A') return apct(i);
+          var o = st.obj[i - 1]; if (!o) return 0;
+          return { O: o[0] * 10 + o[1], K: o[0], S: o[1], G: o[9], V: o[10], I: o[11] }[k[0]];
+        }
+        if (LK.hasOwnProperty(k)) return LK[k];
+        if (k === 'js') return Ln.junction * 10 + Ln.flags;
+        if (k === 'total') return hues.length;
+        if (k[0] === 'h') return st.spot[i].h;
+        if (k[0] === 't') return st.spot[i].s;
+        if (k[0] === 'v') return st.spot[i].v;
+        if (k[0] === 'o') return i <= hues.length ? hues[i - 1] : 0;
+        if (k[0] === 'N') return tgt(i).n;
+        if (k[0] === 'A') return apct(i);
+        throw new Error('EV3 key ' + k);
+      }
+      function val(k) {
+        if (k === null) return 0;
+        if (k === 'fn') return m;
+        if (k.indexOf(':') < 0) return plain(k);
+        var pre = k.split(':')[0], arg = k.split(':')[1], h, o;
+        if (pre === 'e100') { h = plain(arg); return h <= 240 ? idiv(h * 100 + 120, 240) : -(h - 240); }
+        if (pre === 'half') return idiv(plain(arg) + 1, 2);
+        if (pre === 'hh') return idiv(plain(arg), 100);
+        if (pre === 'hl') return plain(arg) % 100;
+        if (pre === 'sv') { var p = st.spot[parseInt(arg, 10)]; return Math.min(9, idiv(p.s, 10)) * 10 + Math.min(9, idiv(p.v, 10)); }
+        o = tgt(parseInt(arg, 10));
+        if (!o.f) return 0;
+        if (pre === 'wh8') return (idiv(o.w, 20) + 1) * 10 + idiv(o.h, 20) + 1;
+        if (pre === 'd8') return (idiv(o.px, 20) + 1) * 10 + idiv(119 - o.py, 20) + 1;
+        throw new Error('EV3 key ' + k);
+      }
+      var lay = LAY[m];
+      [0, 1, 2].forEach(function (e) { R[e] = lay[e].map(function (k) { return clamp(val(k), -127, 100); }); });
+      R[5] = [0x034C, 100];   
+      return R;
+    }
+    function view(st, m) {
+      var R = ev3cells(st, m);
+      return { r: function (e, i) { return R[e][i]; }, type: function () { return st.ok && !st.none ? 33 : 126; }, cells: R };
+    }
+    function RD(p, i) { return 'Sensor.ReadRawValue(' + p + ', ' + i + ')'; }
+    function LT(y, expr) { return 'LCD.Text(1, 0, ' + y + ', 1, ' + expr + ' + "      ")'; }
+    function hueB(p, i) { return ['e = ' + RD(p, i), 'If e < 0 Then', '  h = 240 - e', 'Else', '  h = Math.Floor((e * 240 + 50) / 100)', 'EndIf']; }
+    function hc(e) { return e < 0 ? 240 - e : idiv(e * 240 + 50, 100); }
+    function gx(g) { return idiv(g, 10); }
+    function gy(g) { return g % 10; }
+    function pxX(g) { return (gx(g) - 1) * 20 + 10; }
+    function pxY(g) { return 109 - (gy(g) - 1) * 20; }
+    var CN = ['BLACK', 'WHITE', 'RED', 'ORANGE', 'YELLOW', 'GREEN', 'CYAN', 'BLUE', 'PURPLE'];
+    function cname(h) { return h > 248 ? 'BLACK' : h > 240 ? 'WHITE' : (h < 12 || h >= 220) ? 'RED' : h < 28 ? 'ORANGE' : h < 56 ? 'YELLOW' : h < 100 ? 'GREEN' : h < 140 ? 'CYAN' : h < 180 ? 'BLUE' : 'PURPLE'; }
+    var SHN = ['OTHER', 'CIRCLE', 'ELLIPSE', 'TRIANGLE', 'SQUARE', 'RECT', 'PENTAGON', 'HEXAGON', 'STAR', 'TRAPEZOID'];
+    var SHPRE = SHN.map(function (s, i) { return 'SH[' + i + '] = "' + s + '"'; });
+    var EVN = { 0: ('proximity'), 1: ('beacon'), 2: ('remote'), 5: ('device ID') };
+    function evOf(f, m) { return typeof f.ev === 'function' ? f.ev(m) : f.ev; }
+    function fnMode(f) {
+      if (!f.modes || f.modes.indexOf(S.mode) >= 0) return S.mode;
+      var g = modeOf(S.mode).g;
+      for (var i = 0; i < f.modes.length; i++) if (modeOf(f.modes[i]).g === g) return f.modes[i];
+      return f.modes[0];
+    }
+    var AREA = { 13: 1, 14: 3 };
+    var FNS = [];
+    function add(f) { FNS.push(f); }
+    add({ id: 'pos', grp: 'track', modes: [11, 12, 13, 14], ev: 1, label: ('Color 1 cell'), name: ('Beacon cell 0: X×10 + Y'),
+      what: ('Which 8×6 cell color 1 is in: one cell holds X×10 + Y, X 1–8 left→right, <b>Y 1–6 bottom→top</b> (bottom = small). 0 = not seen. Color 1 is "target 1" taught on the camera, and it is in cell 0 in every color-tracking mode. Drag blob 1.'),
+      ret: ('X×10 + Y (0, 11–86)'),
+      body: function (m, p) { return ['g = ' + RD(p, 0), 'If g = 0 Then', '  ' + LT(0, '"C1 NOT SEEN"'), 'Else', '  ' + LT(0, '"C1 X " + Math.Floor(g / 10) + " Y " + Math.Remainder(g, 10)'), 'EndIf']; },
+      out: function (V) { var g = V.r(1, 0); return g === 0 ? 'C1 NOT SEEN' : 'C1 X ' + gx(g) + ' Y ' + gy(g); } });
+    add({ id: 'pix', grp: 'track', modes: [11, 12, 13, 14], ev: 1, label: ('To pixel coordinates'), name: ('Cell → pixel centre'),
+      what: ('Turns the cell into pixels of the 160×120 picture (cell centre, ±10 px): X = (cell X − 1) × 20 + 10, Y = 109 − (cell Y − 1) × 20, so Y becomes top = small. The middle is X = 80.'),
+      ret: ('X 10–150, Y 9–109'),
+      body: function (m, p) { return ['g = ' + RD(p, 0), 'If g > 0 Then', '  x = (Math.Floor(g / 10) - 1) * 20 + 10', '  y = 109 - (Math.Remainder(g, 10) - 1) * 20', '  ' + LT(0, '"C1 X " + x + " Y " + y'), 'Else', '  ' + LT(0, '"C1 NOT SEEN"'), 'EndIf']; },
+      out: function (V) { var g = V.r(1, 0); return g > 0 ? 'C1 X ' + pxX(g) + ' Y ' + pxY(g) : 'C1 NOT SEEN'; } });
+    add({ id: 'side', grp: 'track', modes: [11, 12, 13, 14], ev: 1, label: ('Left / middle / right'), name: ('Is the blob left or right'),
+      what: ('Splits cell X in three: 1–3 = left, 6–8 = right, 4–5 = middle (the same as pixel X below 60 / above 100). A blob-chasing robot turns by this.'),
+      ret: ('decided from cell X'),
+      body: function (m, p) { return ['g = ' + RD(p, 0), 'x = Math.Floor(g / 10)', 'If g = 0 Then', '  ' + LT(0, '"C1 NOT SEEN"'), 'ElseIf x <= 3 Then', '  ' + LT(0, '"C1 LEFT " + x'), 'ElseIf x >= 6 Then', '  ' + LT(0, '"C1 RIGHT " + x'), 'Else', '  ' + LT(0, '"C1 MIDDLE " + x'), 'EndIf']; },
+      out: function (V) { var g = V.r(1, 0), x = gx(g); return g === 0 ? 'C1 NOT SEEN' : x <= 3 ? 'C1 LEFT ' + x : x >= 6 ? 'C1 RIGHT ' + x : 'C1 MIDDLE ' + x; } });
+    add({ id: 'c2', grp: 'track', modes: [11, 12, 13, 14], ev: 1, label: ('Color 2 cell'), name: ('Where the second color is'),
+      what: ('Which cell color 2 is in depends on the camera mode: cell 1 in modes 11 and 12 (one color per cell), cell 2 in mode 13 (color and area take turns), cell 4 in mode 14 (4 cells per color). The example follows the mode from step 1.'),
+      ret: ('X×10 + Y (0 = not seen)'),
+      body: function (m, p) { var i = { 11: 1, 12: 1, 13: 2, 14: 4 }[m]; return ['g = ' + RD(p, i), LT(0, '"C2 X " + Math.Floor(g / 10) + " Y " + Math.Remainder(g, 10)')]; },
+      out: function (V, st) { var g = V.r(1, { 11: 1, 12: 1, 13: 2, 14: 4 }[st.mode]); return 'C2 X ' + gx(g) + ' Y ' + gy(g); } });
+    add({ id: 'area', grp: 'track', modes: [13, 14], ev: 1, label: ('Color 1 area %'), name: ('Share of the picture'),
+      what: ('How many % of the picture color 1 covers (0 = not seen): cell 1 in mode 13, cell 3 in mode 14. Bigger = closer, good for "stop when close enough". Make the blob bigger.'),
+      ret: ('0–100'),
+      body: function (m, p) { return ['a = ' + RD(p, AREA[m]), 'If a >= 20 Then', '  ' + LT(0, '"CLOSE! AREA " + a'), 'Else', '  ' + LT(0, '"C1 AREA " + a'), 'EndIf']; },
+      out: function (V, st) { var a = V.r(1, AREA[st.mode]); return a >= 20 ? 'CLOSE! AREA ' + a : 'C1 AREA ' + a; } });
+    add({ id: 'size', grp: 'track', modes: [14], ev: 1, label: ('Color 1 width, height'), name: ('Beacon cell 1: W×10 + H'),
+      what: ('Mode 14: width and height of color 1, also in 20-pixel steps: W×10 + H, W = width ÷ 20 + 1 (about W × 20 − 10 px wide). Much taller than wide = standing up.'),
+      ret: ('W×10 + H (0, 11–77)'),
+      body: function (m, p) { return ['s = ' + RD(p, 1), LT(0, '"C1 W " + Math.Floor(s / 10) + " H " + Math.Remainder(s, 10)')]; },
+      out: function (V) { var s = V.r(1, 1); return 'C1 W ' + gx(s) + ' H ' + gy(s); } });
+    add({ id: 'count', grp: 'track', modes: [14], ev: 1, label: ('Blobs of color 1'), name: ('Beacon cell 2: count'),
+      what: ('Mode 14: how many blobs of color 1 are in the picture (0–15). On the EV3 only mode 14 has counts. Move "How many blobs".'),
+      ret: ('0–15'),
+      body: function (m, p) { return [LT(0, '"C1 COUNT " + ' + RD(p, 2))]; },
+      out: function (V) { return 'C1 COUNT ' + V.r(1, 2); } });
+    add({ id: 'c9', grp: 'track', modes: [11], ev: 2, label: ('Colors 9–12 (EV3 mode 2)'), name: ('Remote cells 0–3'),
+      what: ('Mode 11 gives 12 colors: 1–8 in EV3 mode 1, 9–12 in cells 0–3 of <b>EV3 mode 2</b>. The simulation only has 4 colors, so these are 0 here.'),
+      ret: ('X×10 + Y (0 = not seen)'),
+      body: function (m, p) { return ['g = ' + RD(p, 0), LT(0, '"C9 X " + Math.Floor(g / 10) + " Y " + Math.Remainder(g, 10)')]; },
+      out: function (V) { var g = V.r(2, 0); return 'C9 X ' + gx(g) + ' Y ' + gy(g); } });
+    add({ id: 'ehue', grp: 'spot', modes: [21, 22], ev: 1, label: ('Spot 1 raw value'), name: ('EV3 hue (0–100, negative = black/white)'),
+      what: ('Modes 21, 22: the EV3 hue value of spot 1, 0–100 = hue code × 100 ÷ 240 (red 0, yellow 17, green 33, blue 67, purple 83), −1 to −8 white/grey, −9 to −15 black. Drag a paper onto spot 1.'),
+      ret: ('−15–100'),
+      body: function (m, p) { return [LT(0, '"S1 RAW " + ' + RD(p, 0))]; },
+      out: function (V) { return 'S1 RAW ' + V.r(1, 0); } });
+    add({ id: 'hue', grp: 'spot', modes: [21, 22, 23], ev: 1, label: ('Spot 1 hue code'), name: ('Back to a 0–255 hue code'),
+      what: ('Hue code 0–255 at spot 1: red 0, yellow 40, green 80, cyan 120, blue 160, purple 200; 241–248 white/grey, 249–255 black. Modes 21, 22 convert back from the EV3 hue (±2); mode 23 sends the exact code in two cells (cell 0 hundreds + cell 1 remainder).'),
+      ret: ('0–255'),
+      body: function (m, p) { return (m === 23 ? ['h = ' + RD(p, 0) + ' * 100 + ' + RD(p, 1)] : hueB(p, 0)).concat([LT(0, '"S1 HUE " + h')]); },
+      out: function (V, st) { return 'S1 HUE ' + (st.mode === 23 ? V.r(1, 0) * 100 + V.r(1, 1) : hc(V.r(1, 0))); } });
+    function hueOf(V, st, i) { return st.mode === 23 ? V.r(1, 4 * i) * 100 + V.r(1, 4 * i + 1) : hc(V.r(1, st.mode === 22 ? 2 * i : i)); }
+    add({ id: 'color', grp: 'spot', modes: [21, 22, 23], ev: 1, label: ('Spot 1 color name'), name: ('Hue code → color name'),
+      what: ('Turns the hue code into a color name (same boundaries as the library\'s color_name()): RED ORANGE YELLOW GREEN CYAN BLUE PURPLE WHITE BLACK. Red is near 0 and from 220 up.'),
+      ret: ('color name'),
+      body: function (m, p) {
+        return (m === 23 ? ['h = ' + RD(p, 0) + ' * 100 + ' + RD(p, 1)] : hueB(p, 0)).concat(['If h > 248 Then', '  c = "BLACK"', 'ElseIf h > 240 Then', '  c = "WHITE"', 'ElseIf h < 12 Or h >= 220 Then', '  c = "RED"', 'ElseIf h < 28 Then', '  c = "ORANGE"', 'ElseIf h < 56 Then', '  c = "YELLOW"', 'ElseIf h < 100 Then', '  c = "GREEN"', 'ElseIf h < 140 Then', '  c = "CYAN"', 'ElseIf h < 180 Then', '  c = "BLUE"', 'Else', '  c = "PURPLE"', 'EndIf', LT(0, '"S1 " + c')]);
+      },
+      out: function (V, st) { return 'S1 ' + cname(hueOf(V, st, 0)); } });
+    add({ id: 'sv', grp: 'spot', modes: [22, 23], ev: 1, label: ('Spot 1 saturation, value'), name: ('How vivid, how bright'),
+      what: ('Saturation (0 = greyish, 100 = vivid) and value (0 = dark, 100 = bright). Mode 22 packs them into cell 1 as "sat ÷ 10 × 10 + value ÷ 10" (tens only); mode 23 has them in cells 2 and 3 as 0–100.'),
+      ret: ('0–100 (tens in mode 22)'),
+      body: function (m, p) { return m === 22 ? ['v = ' + RD(p, 1), LT(0, '"S1 SAT " + Math.Floor(v / 10) * 10 + " VAL " + Math.Remainder(v, 10) * 10')] : [LT(0, '"S1 SAT " + ' + RD(p, 2) + ' + " VAL " + ' + RD(p, 3))]; },
+      out: function (V, st) { if (st.mode === 22) { var v = V.r(1, 1); return 'S1 SAT ' + gx(v) * 10 + ' VAL ' + gy(v) * 10; } return 'S1 SAT ' + V.r(1, 2) + ' VAL ' + V.r(1, 3); } });
+    add({ id: 'spot2', grp: 'spot', modes: [21, 22, 23], ev: 1, label: ('Spot 2 hue code'), name: ('Where spot 2 is'),
+      what: ('Which cell spot 2 is in depends on the camera mode: cell 1 in mode 21 (one spot per cell), cell 2 in mode 22 (hue and sat/value take turns), cells 4 and 5 in mode 23 (4 cells per spot).'),
+      ret: ('0–255'),
+      body: function (m, p) { return (m === 23 ? ['h = ' + RD(p, 4) + ' * 100 + ' + RD(p, 5)] : hueB(p, m === 22 ? 2 : 1)).concat([LT(0, '"S2 HUE " + h')]); },
+      out: function (V, st) { return 'S2 HUE ' + hueOf(V, st, 1); } });
+    add({ id: 'pt9', grp: 'spot', modes: [21], ev: 2, label: ('Spots 9–12 (EV3 mode 2)'), name: ('Remote cells 0–3'),
+      what: ('Mode 21 gives 12 spots: 1–8 in EV3 mode 1, 9–12 in cells 0–3 of <b>EV3 mode 2</b>. The 12 spots sit in two rows; 9–12 are on the right of the lower row.'),
+      ret: ('0–255'),
+      body: function (m, p) { return hueB(p, 0).concat([LT(0, '"S9 HUE " + h')]); },
+      out: function (V) { return 'S9 HUE ' + hc(V.r(2, 0)); } });
+    add({ id: 'order', grp: 'order', modes: [30], ev: 1, label: ('Blocks 1–4 from the left'), name: ('Beacon cells 0–7: one block each'),
+      what: ('The color of each block left to right: cell 0 = leftmost, up to cell 7 (blocks 9–11 are in EV3 mode 2). The example turns them back into hue codes in a For loop, 4 lines on screen. Red is 0 and "no block" is 0 too, so check "Total blocks". Drag the blocks to reorder.'),
+      ret: ('hue code 0–255'),
+      body: function (m, p) { return ['For i = 0 To 3', '  e = ' + RD(p, 'i'), '  If e < 0 Then', '    h = 240 - e', '  Else', '    h = Math.Floor((e * 240 + 50) / 100)', '  EndIf', '  LCD.Text(1, 0, i * 16, 1, "B" + (i + 1) + " HUE " + h + "      ")', 'EndFor']; },
+      out: function (V) { var a = []; for (var i = 0; i < 4; i++) a.push('B' + (i + 1) + ' HUE ' + hc(V.r(1, i))); return a; } });
+    add({ id: 'total', grp: 'order', modes: [30], ev: 2, label: ('Total blocks (EV3 mode 2)'), name: ('Remote cell 3'),
+      what: ('How many blocks there are (0–18, can be more than the 11 with hues), in cell 3 of <b>EV3 mode 2</b>; cells 0–2 are blocks 9–11. Move "Blocks in the picture".'),
+      ret: ('0–18'),
+      body: function (m, p) { return ['n = ' + RD(p, 3), 'If n = 0 Then', '  ' + LT(0, '"NO BLOCKS"'), 'Else', '  ' + LT(0, '"TOTAL " + n'), 'EndIf']; },
+      out: function (V) { var n = V.r(2, 3); return n === 0 ? 'NO BLOCKS' : 'TOTAL ' + n; } });
+    function lineAdd(id, ev, label, name, what, ret, body, out) { add({ id: id, grp: 'line', modes: [41, 42, 43], ev: ev, label: label, name: name, what: what, ret: ret, body: body, out: out }); }
+    lineAdd('near', 1, ('Near offset'), ('Beacon cell 0'),
+      ('How far the line is from the middle on the bottom scan row: −100–100, <b>left = negative, right = positive</b>. It is also 0 with no line, so the example checks the flag in cell 5 first. Drag the "near" green dot.'),
+      ('−100–100'),
+      function (m, p) { return ['js = ' + RD(p, 5), 'e = ' + RD(p, 0), 'If Math.Remainder(js, 10) = 0 Then', '  ' + LT(0, '"NO LINE"'), 'ElseIf e < -10 Then', '  ' + LT(0, '"LINE LEFT " + e'), 'ElseIf e > 10 Then', '  ' + LT(0, '"LINE RIGHT " + e'), 'Else', '  ' + LT(0, '"LINE MIDDLE " + e'), 'EndIf']; },
+      function (V) { var f = V.r(1, 5) % 10, e = V.r(1, 0); return f === 0 ? 'NO LINE' : e < -10 ? 'LINE LEFT ' + e : e > 10 ? 'LINE RIGHT ' + e : 'LINE MIDDLE ' + e; });
+    lineAdd('nmf', 1, ('Near / mid / far'), ('Beacon cells 0–2'),
+      ('The offset on each of the three scan rows (−100–100). Far moves first = a bend is coming; a row with no line is 0.'),
+      ('−100–100'),
+      function (m, p) { return [LT(0, '"NEAR " + ' + RD(p, 0)), LT(16, '"MID " + ' + RD(p, 1)), LT(32, '"FAR " + ' + RD(p, 2))]; },
+      function (V) { return ['NEAR ' + V.r(1, 0), 'MID ' + V.r(1, 1), 'FAR ' + V.r(1, 2)]; });
+    lineAdd('angle', 1, ('Line angle'), ('Beacon cell 3'),
+      ('Which way the line leans: −90–90, positive = leans right (a right bend ahead).'), ('−90–90'),
+      function (m, p) { return ['a = ' + RD(p, 3), 'If a > 20 Then', '  ' + LT(0, '"BEND RIGHT " + a'), 'ElseIf a < -20 Then', '  ' + LT(0, '"BEND LEFT " + a'), 'Else', '  ' + LT(0, '"STRAIGHT " + a'), 'EndIf']; },
+      function (V) { var a = V.r(1, 3); return a > 20 ? 'BEND RIGHT ' + a : a < -20 ? 'BEND LEFT ' + a : 'STRAIGHT ' + a; });
+    lineAdd('width', 1, ('Near line width %'), ('Beacon cell 4'),
+      ('Width of the near line in % of the picture. Suddenly much wider = maybe a junction or cross line. Move "Line width".'), ('0–100'),
+      function (m, p) { return [LT(0, '"WIDTH " + ' + RD(p, 4) + ' + " %"')]; },
+      function (V) { return 'WIDTH ' + V.r(1, 4) + ' %'; });
+    lineAdd('flags', 1, ('Is the line seen'), ('Ones digit of beacon cell 5'),
+      ('Cell 5 = junction type × 10 + line flags; the ones digit is the flags: near 1 + mid 2 + far 4, 7 = all, 0 = none. The EV3 has no "last side lost", so remember the last side yourself (last in the full example). Tick "Remove the line".'),
+      ('0–7'),
+      function (m, p) { return ['f = Math.Remainder(' + RD(p, 5) + ', 10)', 'If f = 0 Then', '  ' + LT(0, '"NO LINE"'), 'ElseIf f = 7 Then', '  ' + LT(0, '"LINE NEAR MID FAR"'), 'Else', '  ' + LT(0, '"FLAGS " + f'), 'EndIf']; },
+      function (V) { var f = V.r(1, 5) % 10; return f === 0 ? 'NO LINE' : f === 7 ? 'LINE NEAR MID FAR' : 'FLAGS ' + f; });
+    lineAdd('junction', 1, ('Junction type and distance'), ('Tens of beacon cell 5 + cell 6'),
+      ('The tens digit of cell 5 is the junction ahead: 0 none, 1 cross, 2 T, 3 left, 4 right, 5 dead end; cell 6 is its distance % (0 = at the robot, 100 = top of the picture). Pick a junction on the right.'),
+      ('type 0–5, distance 0–100'),
+      function (m, p) { return ['j = Math.Floor(' + RD(p, 5) + ' / 10)', 'd = ' + RD(p, 6), 'If j = 0 Then', '  ' + LT(0, '"NO JUNCTION"'), 'Else', '  ' + LT(0, '"JUNCTION " + j + " AT " + d + " %"'), 'EndIf']; },
+      function (V) { var j = idiv(V.r(1, 5), 10), d = V.r(1, 6); return j === 0 ? 'NO JUNCTION' : 'JUNCTION ' + j + ' AT ' + d + ' %'; });
+    lineAdd('marker', 1, ('Marker line color'), ('Beacon cell 7'),
+      ('Target color of the last colored marker line crossed (0 = none yet). The running count is in cell 3 of EV3 mode 2 (next card). Change "Colored marker line" on the right.'),
+      ('0, 1–16'),
+      function (m, p) { return [LT(0, '"MARKER " + ' + RD(p, 7))]; },
+      function (V) { return 'MARKER ' + V.r(1, 7); });
+    lineAdd('mcount', 2, ('Marker count (EV3 mode 2)'), ('Remote cell 3'),
+      ('How many colored marker lines were crossed so far (0–99, then back to 0). In <b>EV3 mode 2</b>.'),
+      ('0–99'),
+      function (m, p) { return [LT(0, '"MARKERS " + ' + RD(p, 3))]; },
+      function (V) { return 'MARKERS ' + V.r(2, 3); });
+    lineAdd('edges', 2, ('Edges (EV3 mode 2)'), ('Remote cells 0, 1'),
+      ('Left and right edge of the near line (−100–100, left = negative); their difference is the width. In <b>EV3 mode 2</b>.'),
+      ('−100–100'),
+      function (m, p) { return [LT(0, '"LEFT EDGE " + ' + RD(p, 0)), LT(16, '"RIGHT EDGE " + ' + RD(p, 1))]; },
+      function (V) { return ['LEFT EDGE ' + V.r(2, 0), 'RIGHT EDGE ' + V.r(2, 1)]; });
+    lineAdd('farw', 2, ('Far width (EV3 mode 2)'), ('Remote cell 2'),
+      ('Width of the far line in % (0 when far is not seen). In <b>EV3 mode 2</b>.'),
+      ('0–100'),
+      function (m, p) { return [LT(0, '"FAR WIDTH " + ' + RD(p, 2) + ' + " %"')]; },
+      function (V) { return 'FAR WIDTH ' + V.r(2, 2) + ' %'; });
+    add({ id: 'ocode', grp: 'obj', modes: [51, 52], ev: 1, label: ('Object 1 code'), name: ('Beacon cell 0: color × 10 + shape'),
+      what: ('The code of object 1 (the largest) = color × 10 + shape, e.g. 13 = a triangle of target color 1; 0 = none. The tens digit is the taught target color (1–8), the ones digit the shape 0–9. Change the shape and color on the right.'),
+      ret: ('0, 10–89'),
+      body: function (m, p) { return ['o = ' + RD(p, 0), 'If o = 0 Then', '  ' + LT(0, '"NO OBJECT"'), 'Else', '  ' + LT(0, '"O1 COLOR " + Math.Floor(o / 10) + " SHAPE " + Math.Remainder(o, 10)'), 'EndIf']; },
+      out: function (V) { var o = V.r(1, 0); return o === 0 ? 'NO OBJECT' : 'O1 COLOR ' + gx(o) + ' SHAPE ' + gy(o); } });
+    add({ id: 'oshape', grp: 'obj', modes: [51, 52], ev: 1, label: ('Object 1 shape name'), name: ('Shape 0–9 → name'),
+      what: ('A text array turns the shape number into a name: 0 other, 1 circle, 2 ellipse, 3 triangle, 4 square, 5 rectangle, 6 pentagon, 7 hexagon, 8 star, 9 trapezoid. Fill the array once, outside the loop.'),
+      ret: ('shape name'), pre: SHPRE,
+      body: function (m, p) { return ['o = ' + RD(p, 0), 'If o = 0 Then', '  ' + LT(0, '"NO OBJECT"'), 'Else', '  ' + LT(0, '"O1 " + SH[Math.Remainder(o, 10)]'), 'EndIf']; },
+      out: function (V) { var o = V.r(1, 0); return o === 0 ? 'NO OBJECT' : 'O1 ' + SHN[o % 10]; } });
+    add({ id: 'opos', grp: 'obj', modes: [51, 52], ev: 1, label: ('Object 1 cell'), name: ('Beacon cell 1: X×10 + Y (centroid)'),
+      what: ('The 8×6 cell of object 1\'s centroid (white dot): X×10 + Y, Y bottom = small. The centroid is the balance point; a triangle\'s is lower than its box centre.'),
+      ret: ('X×10 + Y (0 = none)'),
+      body: function (m, p) { return ['g = ' + RD(p, 1), LT(0, '"O1 X " + Math.Floor(g / 10) + " Y " + Math.Remainder(g, 10)')]; },
+      out: function (V) { var g = V.r(1, 1); return 'O1 X ' + gx(g) + ' Y ' + gy(g); } });
+    add({ id: 'ofind', grp: 'obj', modes: [51, 52], ev: 1, label: ('Find the red triangle'), name: ('Find the object with code 13'),
+      what: ('Checks the objects in EV3 mode 1 for code 13 (a triangle of target color 1). Mode 51 has 2 cells per object (code, cell), objects 1–4 in mode 1; mode 52 has 4 cells each, objects 1 and 2 only. Change the triangle into another shape.'),
+      ret: ('decided by the code'),
+      body: function (m, p) {
+        var k = m === 51 ? 2 : 4, n = m === 51 ? 3 : 1;
+        return ['found = 0', 'For i = 0 To ' + n, '  If found = 0 And ' + RD(p, 'i * ' + k) + ' = 13 Then', '    found = i + 1', '  EndIf', 'EndFor', 'If found = 0 Then', '  ' + LT(0, '"NO RED TRIANGLE"'), 'Else', '  g = ' + RD(p, '(found - 1) * ' + k + ' + 1'), '  ' + LT(0, '"TRIANGLE " + found + " X " + Math.Floor(g / 10) + " Y " + Math.Remainder(g, 10)'), 'EndIf'];
+      },
+      out: function (V, st) { var k = st.mode === 51 ? 2 : 4, n = st.mode === 51 ? 4 : 2; for (var i = 0; i < n; i++) if (V.r(1, i * k) === 13) { var g = V.r(1, i * k + 1); return 'TRIANGLE ' + (i + 1) + ' X ' + gx(g) + ' Y ' + gy(g); } return 'NO RED TRIANGLE'; } });
+    add({ id: 'ocount', grp: 'obj', modes: [51], ev: 2, label: ('Objects in view (EV3 mode 2)'), name: ('Remote cell 3'),
+      what: ('Mode 51: how many objects are in view (0–8, target colors 1–8 only), in cell 3 of <b>EV3 mode 2</b>; cells 0 and 1 are object 5\'s code and cell. Remove an object to see it drop.'),
+      ret: ('0–8'),
+      body: function (m, p) { return [LT(0, '"OBJECTS " + ' + RD(p, 3)), LT(16, '"O5 CODE " + ' + RD(p, 0))]; },
+      out: function (V) { return ['OBJECTS ' + V.r(2, 3), 'O5 CODE ' + V.r(2, 0)]; } });
+    add({ id: 'oarea', grp: 'obj', modes: [52], ev: 1, label: ('Object 1 area %'), name: ('Beacon cell 2'),
+      what: ('Mode 52: how many % of the picture object 1 covers (0 = none). Bigger = closer. Make it bigger.'),
+      ret: ('0–100'),
+      body: function (m, p) { return ['a = ' + RD(p, 2), 'If a >= 20 Then', '  ' + LT(0, '"CLOSE! AREA " + a'), 'Else', '  ' + LT(0, '"O1 AREA " + a'), 'EndIf']; },
+      out: function (V) { var a = V.r(1, 2); return a >= 20 ? 'CLOSE! AREA ' + a : 'O1 AREA ' + a; } });
+    add({ id: 'oangle', grp: 'obj', modes: [52], ev: 1, label: ('Object 1 angle'), name: ('Beacon cell 3 × 2'),
+      what: ('Mode 52: angle 0–179° of object 1\'s long side (right = 0, turning toward the bottom = positive). One EV3 cell cannot hold 179, so it sends (angle + 1) ÷ 2; multiply by 2 (±1°). Rotate the object.'),
+      ret: ('0–179'),
+      body: function (m, p) { return ['a = ' + RD(p, 3) + ' * 2', 'If a > 179 Then', '  a = 179', 'EndIf', LT(0, '"O1 ANGLE " + a')]; },
+      out: function (V) { return 'O1 ANGLE ' + Math.min(179, V.r(1, 3) * 2); } });
+    add({ id: 'modenum', grp: 'info', modes: null, ev: 0, label: ('Which camera mode'), name: ('EV3 mode 0 proximity'),
+      what: ('EV3 mode 0 has one cell: the camera\'s current mode number (11–52). Read it when the program starts and warn if it is not the mode you wrote. It is 0 when unplugged.'),
+      ret: ('11–52 (0 = no data)'),
+      body: function (m, p) { return ['n = ' + RD(p, 0), 'If n = ' + m + ' Then', '  ' + LT(0, '"CAM MODE " + n + " OK"'), 'Else', '  ' + LT(0, '"SET CAM TO ' + m + ' NOW " + n'), 'EndIf']; },
+      out: function (V, st) { var n = V.r(0, 0); return n === st.mode ? 'CAM MODE ' + n + ' OK' : 'SET CAM TO ' + st.mode + ' NOW ' + n; } });
+    add({ id: 'devid', grp: 'info', modes: null, ev: 5, label: ('Device ID, firmware'), name: ('EV3 mode 5 (2 cells)'),
+      what: ('EV3 mode 5 has 2 cells: cell 0 = address 76 (0x4C) + hardware code 3 × 256 = 844, cell 1 = firmware word. Use it to check that this is the camera.'),
+      ret: ('ID 76, HW 3, firmware word'),
+      body: function (m, p) { return ['d = ' + RD(p, 0), LT(0, '"ID " + Math.Remainder(d, 256) + " HW " + Math.Floor(d / 256)'), LT(16, '"FW " + ' + RD(p, 1))]; },
+      out: function (V) { var d = V.r(5, 0); return ['ID ' + d % 256 + ' HW ' + idiv(d, 256), 'FW ' + V.r(5, 1)]; } });
+    add({ id: 'type', grp: 'info', modes: null, ev: 1, label: ('Is the sensor connected'), name: ('Sensor.GetType = 33'),
+      what: ('<code>Sensor.GetType(port)</code> is 33 (infrared sensor) = the camera is connected; unplugged it is not 33. Unplugged, <code>ReadRawValue</code> just reads 0, so check this first in real programs. Tick "Unplug the sensor".'),
+      ret: ('33 = connected'),
+      body: function (m, p) { return ['If Sensor.GetType(' + p + ') = 33 Then', '  ' + LT(0, '"SENSOR OK"'), 'Else', '  ' + LT(0, '"NO SENSOR"'), 'EndIf']; },
+      out: function (V) { return V.type() === 33 ? 'SENSOR OK' : 'NO SENSOR'; } });
+    function curF() { for (var i = 0; i < FNS.length; i++) if (FNS[i].id === S.fn) return FNS[i]; return FNS[0]; }
+    function loopLines(f, m, p) { return (f.pre || []).concat(['While "True"'], f.body(m, p).map(function (t) { return '  ' + t; }), ['  Program.Delay(100)', 'EndWhile']); }
+    var HOST = {
+      counts: function (m) { return { col: NCOL[m], pt: NPT[m], order: 11, line: 13, obj: NOBJ[m] }; },
+      cmt: function (s) { return "' " + s; },
+      lines: function (f) {
+        var L = [], mi = modeOf(S.mode), m = fnMode(f), ev = evOf(f, m), p = S.port;
+        L.push({ t: "' " + ('the program goes into this EV3 folder'), tag: 1 });
+        L.push({ t: 'folder "prjs" "MBC_unicam"', tag: 1 });
+        L.push({ t: 'LCD.Clear()', tag: 1 });
+        L.push({ t: "' " + ('camera menu: mode ') + S.mode + ' = ' + GROUPS[mi.g].name.replace(/^\d /, '') + (mi.sub ? ' ' + mi.name : ''), tag: 1 });
+        if (S.step >= 2) {
+          L.push({ t: '' });
+          L.push({ t: "' " + ('camera in port ' + p + ', EV3 mode ' + ev + ' (' + EVN[ev] + ')'), tag: 2 });
+          L.push({ t: 'Sensor.SetMode(' + p + ', ' + ev + ')', tag: 2 });
+        }
+        if (S.step >= 3) {
+          L.push({ t: '' });
+          loopLines(f, m, p).forEach(function (t) { L.push({ t: t, tag: 3 }); });
+        }
+        if ($('portnum')) $('portnum').textContent = p;
+        if ($('evnum')) $('evnum').textContent = ev;
+        return L;
+      },
+      card: function (f) { var m = fnMode(f); return ['Sensor.SetMode(' + S.port + ', ' + evOf(f, m) + ')'].concat(loopLines(f, m, S.port)); },
+      place: function (f) { var ev = evOf(f, fnMode(f)); return ('EV3 mode ' + ev + ' (' + EVN[ev] + '), inside the While loop'); },
+      outLabel: ('The EV3 screen shows: '),
+      bubble: function (step, f) {
+        var m = fnMode(f), ev = evOf(f, m);
+        if (step === 1) return ('Step 1: folder picks the EV3 folder for the program and LCD.Clear() wipes the screen; the comment reminds you to set the camera menu to mode ') + S.mode + ('. Nothing to import.');
+        if (step === 2) return ('Step 2: Sensor.SetMode(' + S.port + ', ' + ev + ') sets the sensor in port ' + S.port + ' to EV3 mode ' + ev + ' (' + EVN[ev] + ').');
+        return ('Step 3: While "True" repeats forever, ReadRawValue reads cells of EV3 mode ' + ev + ', LCD.Text writes on the screen, and Program.Delay(100) reads every 0.1 s.');
+      },
+      valid: function () { return true; },
+      modeWarn: function (m) { return ('Set the camera menu to mode ' + m + ' too. clev3r can read EV3 mode 0 to check the camera\'s current mode (the "Which camera mode" card).'); },
+      view: view,
+      bind: function (cb) {
+        function drawPorts() {
+          var box = $('ports'); box.innerHTML = '';
+          [1, 2, 3, 4].forEach(function (n) {
+            var b = document.createElement('button'); b.type = 'button'; b.textContent = n;
+            b.setAttribute('aria-pressed', String(S.port === n)); b.setAttribute('aria-label', ('port ' + n));
+            b.addEventListener('click', function () { S.port = n; drawPorts(); drawCards(); cb(false); });
+            box.appendChild(b);
+          });
+        }
+        drawPorts();
+      }
+    };
+    window.__ucCl = { view: view, HOST: HOST, FNS: FNS };   
+    var EX = {};
+    EX.track = [
+      "' " + ('camera in port 1, camera menu mode 13; left motor B, right motor C'),
+      'folder "prjs" "MBC_unicam_chase"',
+      'LCD.Clear()',
+      'Sensor.SetMode(1, 1)',
+      '',
+      'While "True"',
+      '  g = Sensor.ReadRawValue(1, 0)',
+      '  If g = 0 Then',
+      "    ' " + ('color 1 not seen: stop'),
+      '    Motor.Stop("BC", "False")',
+      '  Else',
+      "    ' " + ('cell to pixel X (0–159), middle 80'),
+      '    x = (Math.Floor(g / 10) - 1) * 20 + 10',
+      '    turn = (x - 80) * 0.3',
+      '    Motor.StartPower("B", 30 + turn)',
+      '    Motor.StartPower("C", 30 - turn)',
+      '  EndIf',
+      '  Program.Delay(20)',
+      'EndWhile'
+    ];
+    EX.line = [
+      "' " + ('camera in port 1, camera menu mode 41; left motor B, right motor C'),
+      'folder "prjs" "MBC_unicam_line"',
+      'LCD.Clear()',
+      'Sensor.SetMode(1, 1)',
+      "last = -1   ' " + ('last side the line was seen (-1 left, 1 right)'),
+      '',
+      'While "True"',
+      '  js = Sensor.ReadRawValue(1, 5)',
+      '  If Math.Remainder(js, 10) = 0 Then',
+      "    ' " + ('no line: spin toward the last side'),
+      '    Motor.StartPower("B", 20 * last)',
+      '    Motor.StartPower("C", -20 * last)',
+      '  Else',
+      '    e = Sensor.ReadRawValue(1, 0)',
+      '    If e < 0 Then',
+      '      last = -1',
+      '    Else',
+      '      last = 1',
+      '    EndIf',
+      "    ' " + ('line on the left (negative) → left wheel slower → turn left'),
+      '    Motor.StartPower("B", 30 + e * 0.3)',
+      '    Motor.StartPower("C", 30 - e * 0.3)',
+      '  EndIf',
+      '  Program.Delay(20)',
+      'EndWhile'
+    ];
+    EX.obj = [
+      "' " + ('camera in port 1, camera menu mode 51'),
+      'folder "prjs" "MBC_unicam_objects"',
+      'LCD.Clear()',
+      'Sensor.SetMode(1, 1)',
+      'For k = 0 To 9',
+      '  SH[k] = "OTHER"',
+      'EndFor',
+      'SH[1] = "CIRCLE"',
+      'SH[2] = "ELLIPSE"',
+      'SH[3] = "TRIANGLE"',
+      'SH[4] = "SQUARE"',
+      'SH[5] = "RECT"',
+      'SH[6] = "PENTAGON"',
+      'SH[7] = "HEXAGON"',
+      'SH[8] = "STAR"',
+      'SH[9] = "TRAPEZOID"',
+      '',
+      'While "True"',
+      "  ' " + ('objects 1-4: cells 0, 2, 4, 6 are codes, the next cell is the position'),
+      '  For i = 0 To 3',
+      '    o = Sensor.ReadRawValue(1, i * 2)',
+      '    g = Sensor.ReadRawValue(1, i * 2 + 1)',
+      '    If o = 0 Then',
+      '      LCD.Text(1, 0, i * 16, 1, (i + 1) + " -                  ")',
+      '    Else',
+      '      LCD.Text(1, 0, i * 16, 1, (i + 1) + " C" + Math.Floor(o / 10) + " " + SH[Math.Remainder(o, 10)] + " " + g + "      ")',
+      '    EndIf',
+      '  EndFor',
+      '  Program.Delay(200)',
+      'EndWhile'
+    ];
+  var FW = 160, FH = 120, K = 2.5, OX = 30, OY = 10, SW = 460, SH = 330;
+  var SC = {
+    blobs: [
+      { hue: 0, fill: '#d8392b', nm: ('red'), cx: 42, cy: 46, size: 30, n: 1, gone: false },
+      { hue: 80, fill: '#2f9e44', nm: ('green'), cx: 112, cy: 40, size: 24, n: 1, gone: false },
+      { hue: 160, fill: '#1f6fd1', nm: ('blue'), cx: 70, cy: 90, size: 20, n: 1, gone: false },
+      { hue: 40, fill: '#f2c318', nm: ('yellow'), cx: 128, cy: 92, size: 26, n: 1, gone: false }
+    ],
+    sel: 0,
+    patches: [
+      { hue: 0, s: 84, v: 72, cx: 30, cy: 45, w: 34, h: 26 },
+      { hue: 40, s: 80, v: 88, cx: 75, cy: 30, w: 30, h: 24 },
+      { hue: 80, s: 70, v: 56, cx: 112, cy: 64, w: 32, h: 26 },
+      { hue: 160, s: 76, v: 50, cx: 140, cy: 32, w: 26, h: 24 }
+    ],
+    psel: 0,
+    blocks: [
+      { hue: 0, fill: '#d8392b', cx: 22, cy: 62 }, { hue: 80, fill: '#2f9e44', cx: 52, cy: 58 }, { hue: 160, fill: '#1f6fd1', cx: 84, cy: 64 },
+      { hue: 40, fill: '#f2c318', cx: 112, cy: 60 }, { hue: 200, fill: '#8a3fc4', cx: 140, cy: 62 }
+    ],
+    osel: 0,
+    line: { ys: [100, 62, 24], xs: [66, 74, 88] }, lsel: 0,
+    mk: 0, mkn: 0, lastSide: -1,
+    objs: [
+      { id: 1, color: 1, shape: 3, cx: 40, cy: 44, size: 42, rot: 0, gone: false },
+      { id: 2, color: 2, shape: 4, cx: 112, cy: 38, size: 30, rot: 20, gone: false },
+      { id: 3, color: 3, shape: 1, cx: 74, cy: 88, size: 28, rot: 0, gone: false },
+      { id: 4, color: 4, shape: 5, cx: 128, cy: 90, size: 34, rot: 150, gone: false },
+      { id: 5, color: 5, shape: 8, cx: 30, cy: 96, size: 26, rot: 0, gone: false }
+    ],
+    jsel: 0
+  };
+  var OBJFILL = ['#888', '#d8392b', '#2f9e44', '#1f6fd1', '#f2c318', '#8a3fc4', '#f08a24', '#18a8b8', '#e0559a'];
+  var VERTS = [0, 0, 0, 3, 4, 4, 5, 6, 10, 4];
+  function objPoly(o) {
+    var s = o.size, pts = [], i, n, r;
+    if (o.shape === 1 || o.shape === 2) { var a = s / 2, b = o.shape === 1 ? s / 2 : s / 3; for (i = 0; i < 48; i++) { var t = i * Math.PI * 2 / 48; pts.push([a * Math.cos(t), b * Math.sin(t)]); } }
+    else if (o.shape === 3) { r = s / Math.sqrt(3); for (i = 0; i < 3; i++) { var t3 = -Math.PI / 2 + i * Math.PI * 2 / 3; pts.push([r * Math.cos(t3), r * Math.sin(t3) + r / 4]); } }
+    else if (o.shape === 4) pts = [[-s / 2, -s / 2], [s / 2, -s / 2], [s / 2, s / 2], [-s / 2, s / 2]];
+    else if (o.shape === 5) pts = [[-s / 2, -s * 0.28], [s / 2, -s * 0.28], [s / 2, s * 0.28], [-s / 2, s * 0.28]];
+    else if (o.shape === 6 || o.shape === 7) { n = o.shape === 6 ? 5 : 6; for (i = 0; i < n; i++) { var t5 = -Math.PI / 2 + i * Math.PI * 2 / n; pts.push([s / 2 * Math.cos(t5), s / 2 * Math.sin(t5)]); } }
+    else if (o.shape === 8) { for (i = 0; i < 10; i++) { var t8 = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? s * 0.2 : s / 2; pts.push([rr * Math.cos(t8), rr * Math.sin(t8)]); } }
+    else pts = [[-s / 2, s * 0.3], [s / 2, s * 0.3], [s * 0.28, -s * 0.3], [-s * 0.28, -s * 0.3]];
+    var c = Math.cos(o.rot * Math.PI / 180), sn = Math.sin(o.rot * Math.PI / 180);
+    return pts.map(function (q) { return [o.cx + q[0] * c - q[1] * sn, o.cy + q[0] * sn + q[1] * c]; });
+  }
+  function polyArea(P) { var a = 0; for (var i = 0; i < P.length; i++) { var j = (i + 1) % P.length; a += P[i][0] * P[j][1] - P[j][0] * P[i][1]; } return a / 2; }
+  function polyCentroid(P) {
+    var A = polyArea(P), x = 0, y = 0;
+    for (var i = 0; i < P.length; i++) { var j = (i + 1) % P.length, f = P[i][0] * P[j][1] - P[j][0] * P[i][1]; x += (P[i][0] + P[j][0]) * f; y += (P[i][1] + P[j][1]) * f; }
+    return [x / (6 * A), y / (6 * A)];
+  }
+  function objTruth(o) {
+    var P = objPoly(o), xs = P.map(function (q) { return q[0]; }), ys = P.map(function (q) { return q[1]; });
+    var l = clamp(Math.floor(Math.min.apply(null, xs)), 0, 159), r = clamp(Math.floor(Math.max.apply(null, xs)), 0, 159);
+    var t = clamp(Math.floor(Math.min.apply(null, ys)), 0, 119), b = clamp(Math.floor(Math.max.apply(null, ys)), 0, 119);
+    var c = polyCentroid(P);
+    var ang = o.shape === 1 ? 0 : ((Math.round(o.rot) % 180) + 180) % 180;
+    return [o.color, o.shape, clamp(Math.round(c[0]), 0, 159), clamp(Math.round(c[1]), 0, 119), l, t, r, b, Math.max(1, Math.round(Math.abs(polyArea(P)))), ang, VERTS[o.shape], o.id];
+  }
+  var WHITE = { h: 244, s: 4, v: 92 }, BLACK = { h: 252, s: 8, v: 7 };
+  var TAPE = { y0: 104, y1: 112 };
+  function hueFill(h) { return 'hsl(' + Math.round(h * 1.5) + ', 72%, 48%)'; }   
+  function ctl(id) { return $(id); }
+  function num(id, d) { var e = $(id); return e ? Number(e.value) : d; }
+  function curG() { return modeOf(S.mode).g; }
+  function selBlob() { return SC.blobs[SC.sel]; }
+  function points(n) {
+    var out = [], rows = n > 8 ? 2 : 1, per = Math.ceil(n / rows);
+    for (var i = 0; i < n; i++) {
+      var r = rows === 1 ? 0 : (i < per ? 0 : 1), k = rows === 1 ? i : (r === 0 ? i : i - per), cnt = r === 0 ? per : n - per;
+      out.push({ x: Math.round((k + 0.5) * FW / cnt), y: rows === 1 ? 60 : (r === 0 ? 40 : 80) });
+    }
+    return out;
+  }
+  function colorAt(x, y) {
+    for (var i = SC.patches.length - 1; i >= 0; i--) {
+      var p = SC.patches[i];
+      if (Math.abs(x - p.cx) <= p.w / 2 && Math.abs(y - p.cy) <= p.h / 2) return { h: p.hue, s: p.s, v: p.v };
+    }
+    if (y >= TAPE.y0 && y <= TAPE.y1) return BLACK;
+    return WHITE;
+  }
+  function lineRows() {
+    var jt = num('ljunc', 0), jd = num('ljd', 60), jy = Math.round(FH - jd * 1.2);
+    var top = (jt >= 2) ? jy : 0;
+    return { jt: jt, jd: jd, jy: jy, top: top };
+  }
+  function xAtY(y) {
+    var ys = SC.line.ys, xs = SC.line.xs;
+    if (y >= ys[0]) return xs[0];
+    if (y >= ys[1]) return xs[0] + (xs[1] - xs[0]) * (ys[0] - y) / (ys[0] - ys[1]);
+    if (y >= ys[2]) return xs[1] + (xs[2] - xs[1]) * (ys[1] - y) / (ys[1] - ys[2]);
+    return xs[2] + (xs[2] - xs[1]) * (ys[2] - y) / (ys[1] - ys[2]);
+  }
+  function off(x) { return clamp(Math.round((x - 80) * 100 / 80), -100, 100); }
+  function rawState() {
+    var s = { ok: true, none: false, mode: S.mode };
+    s.blobs = [null];
+    for (var c = 1; c <= 20; c++) {
+      var b = SC.blobs[c - 1];
+      if (!b || b.gone) { s.blobs.push({ f: false, x: 0, y: 0, w: 0, h: 0, n: 0, a: 0, ap: 0 }); continue; }
+      var half = b.size / 2;
+      b.cx = clamp(b.cx, half, FW - half); b.cy = clamp(b.cy, half, FH - half);
+      var x = clamp(Math.round(b.cx), 1, 159), y = clamp(Math.round(b.cy), 1, 119);
+      var ap = Math.round(b.size * b.size + (b.n - 1) * b.size * b.size * 0.25);
+      s.blobs.push({ f: true, x: x, y: y, w: Math.round(b.size), h: Math.round(b.size), n: b.n, ap: ap, a: clamp(idiv(ap * 100 + 9600, FW * FH), 1, 100) });
+    }
+    s.found = SC.blobs.filter(function (b) { return !b.gone; }).length;
+    var pts = points(20);
+    s.spot = [null];
+    var np = HOST.counts(S.mode).pt || 4;
+    var lay = points(np);
+    for (var i = 1; i <= 20; i++) { var p = lay[i - 1] || pts[i - 1]; var v = colorAt(p.x, p.y); s.spot.push({ h: v.h, s: v.s, v: v.v, x: p.x, y: p.y }); }
+    var k = num('ocount', 4), vis = SC.blocks.slice(0, k).slice().sort(function (a, b) { return a.cx - b.cx; });
+    s.order = { hues: vis.map(function (b) { return b.hue; }), total: vis.length };
+    var R = lineRows(), gone = $('lgone') && $('lgone').checked, wpx = num('lwidth', 16);
+    var L = { near: 0, mid: 0, far: 0, angle: 0, width: 0, flags: 0, junction: 0, jdist: 0, left: 0, right: 0, farw: 0, marker: SC.mk, mcount: SC.mkn, lost: 0 };
+    if (!gone) {
+      var vis2 = function (y) { return y >= R.top; };
+      var nx = xAtY(SC.line.ys[0]), mx = xAtY(SC.line.ys[1]), fx = xAtY(SC.line.ys[2]);
+      L.flags = 1 + (vis2(SC.line.ys[1]) ? 2 : 0) + (vis2(SC.line.ys[2]) ? 4 : 0);
+      L.near = off(nx); L.mid = (L.flags & 2) ? off(mx) : 0; L.far = (L.flags & 4) ? off(fx) : 0;
+      var ty = (L.flags & 4) ? SC.line.ys[2] : (L.flags & 2) ? SC.line.ys[1] : SC.line.ys[0];
+      L.angle = ty === SC.line.ys[0] ? 0 : clamp(Math.round(Math.atan2(xAtY(ty) - nx, SC.line.ys[0] - ty) * 180 / Math.PI), -90, 90);
+      L.width = clamp(Math.round(wpx * 100 / FW), 0, 100);
+      L.farw = (L.flags & 4) ? clamp(Math.round(wpx * 0.6 * 100 / FW), 0, 100) : 0;
+      L.left = off(nx - wpx / 2); L.right = off(nx + wpx / 2);
+      if (R.jt) { L.junction = R.jt; L.jdist = R.jd; }
+      SC.lastSide = L.near < 0 ? -1 : L.near > 0 ? 1 : SC.lastSide;
+    } else {
+      L.lost = SC.lastSide < 0 ? 1 : 2;
+    }
+    s.line = L;
+    s.obj = SC.objs.filter(function (o) { return !o.gone; }).map(function (o) {
+      var P = objPoly(o), xs = P.map(function (q) { return q[0]; }), ys = P.map(function (q) { return q[1]; });
+      o.cx = clamp(o.cx, o.cx - Math.min.apply(null, xs), FW - 1 - (Math.max.apply(null, xs) - o.cx));
+      o.cy = clamp(o.cy, o.cy - Math.min.apply(null, ys), FH - 1 - (Math.max.apply(null, ys) - o.cy));
+      return objTruth(o);
+    }).sort(function (a, b) { return b[8] - a[8] || a[11] - b[11]; }).slice(0, 8);
+    return s;
+  }
+  var frozen = null, everOk = false;
+  function state() {
+    var unplug = $('unplug').checked;
+    if (!unplug) { frozen = rawState(); everOk = true; return frozen; }
+    if (!frozen) { var z = rawState(); z.ok = false; z.none = true; return z; }
+    var s = JSON.parse(JSON.stringify(frozen)); s.ok = false; s.mode = S.mode; return s;
+  }
+  function fx(x) { return OX + x * K; }
+  function fy(y) { return OY + y * K; }
+  function txt(x, y, s, o) {
+    o = o || {};
+    return '<text x="' + x + '" y="' + y + '" font-size="' + (o.size || 12) + '"' + (o.anchor ? ' text-anchor="' + o.anchor + '"' : '') + (o.bold ? ' font-weight="700"' : '') +
+      ' fill="' + (o.fill || '#3d4a47') + '"' + (o.halo ? ' stroke="#fff" stroke-width="3" paint-order="stroke"' : '') + (o.mono ? ' font-family="JetBrains Mono, monospace"' : '') + '>' + esc(s) + '</text>';
+  }
+  function draw(st) {
+    var g = curG(), live = rawState(), h = '';
+    var ir = getComputedStyle(document.documentElement).getPropertyValue('--ir').trim() || '#c0392b';
+    var floor = g === 'obj' ? '#f6f4ee' : g === 'line' ? (S.mode === 42 ? '#2b2f33' : '#f2f0ea') : g === 'spot' ? '#f6f4ee' : '#e8e4da';
+    h += '<rect x="0" y="0" width="' + SW + '" height="' + SH + '" fill="#f7f7f2"/>';
+    h += '<rect x="' + OX + '" y="' + OY + '" width="' + FW * K + '" height="' + FH * K + '" fill="' + floor + '" stroke="#55605d" stroke-width="2"/>';
+    var top = '';
+    if (g === 'track') {
+      SC.blobs.forEach(function (b, i) {
+        if (b.gone) return;
+        var half = b.size / 2, x0 = fx(b.cx - half), y0 = fy(b.cy - half), side = b.size * K;
+        for (var e = b.n - 1; e >= 1; e--) {   
+          var ex = fx(clamp(b.cx + (e % 2 ? 1 : -1) * (half + 8), 6, FW - 6)) - side * 0.25, ey = fy(clamp(b.cy + e * 6, 6, FH - 6)) - side * 0.25;
+          h += '<rect x="' + ex + '" y="' + ey + '" width="' + side * 0.5 + '" height="' + side * 0.5 + '" rx="4" fill="' + b.fill + '" opacity="0.85" stroke="rgba(0,0,0,0.3)"/>';
+        }
+        h += '<rect x="' + x0 + '" y="' + y0 + '" width="' + side + '" height="' + side + '" rx="6" fill="' + b.fill + '" stroke="' + (i === SC.sel ? '#111' : 'rgba(0,0,0,0.35)') + '" stroke-width="' + (i === SC.sel ? 3 : 2) + '"/>';
+        h += txt(x0 + side / 2, y0 + side / 2 + 5, ('C') + (i + 1), { anchor: 'middle', bold: true, fill: '#fff', size: 13 });
+        if (st.ok) h += '<rect x="' + (x0 - 4) + '" y="' + (y0 - 4) + '" width="' + (side + 8) + '" height="' + (side + 8) + '" fill="none" stroke="#19a974" stroke-width="2.5"/>';
+      });
+      var b0 = st.blobs[SC.sel + 1];
+      top = ('Color ') + (SC.sel + 1) + (st.none ? '  ?' : b0.f ? '  X ' + b0.x + '  Y ' + b0.y + '  ' + ('W') + ' ' + b0.w + '  ' + ('area') + ' ' + b0.a + '%' : ('  not seen'));
+    } else if (g === 'spot') {
+      h += '<rect x="' + fx(0) + '" y="' + fy(TAPE.y0) + '" width="' + FW * K + '" height="' + (TAPE.y1 - TAPE.y0) * K + '" fill="#161616"/>';
+      SC.patches.forEach(function (p, i) {
+        h += '<rect x="' + fx(p.cx - p.w / 2) + '" y="' + fy(p.cy - p.h / 2) + '" width="' + p.w * K + '" height="' + p.h * K + '" rx="3" fill="' + hueFill(p.hue) + '" stroke="' + (i === SC.psel ? '#111' : 'rgba(0,0,0,0.25)') + '" stroke-width="' + (i === SC.psel ? 3 : 1.5) + '"/>';
+      });
+      var np = HOST.counts(S.mode).pt || 4, lay = points(np);
+      lay.forEach(function (p, i) {
+        var X = fx(p.x), Y = fy(p.y), r = i < 4 ? 9 : 6;
+        h += '<g stroke-linecap="round"><line x1="' + (X - r) + '" y1="' + Y + '" x2="' + (X + r) + '" y2="' + Y + '" stroke="#fff" stroke-width="5"/><line x1="' + X + '" y1="' + (Y - r) + '" x2="' + X + '" y2="' + (Y + r) + '" stroke="#fff" stroke-width="5"/>' +
+          '<line x1="' + (X - r) + '" y1="' + Y + '" x2="' + (X + r) + '" y2="' + Y + '" stroke="#111" stroke-width="2"/><line x1="' + X + '" y1="' + (Y - r) + '" x2="' + X + '" y2="' + (Y + r) + '" stroke="#111" stroke-width="2"/></g>';
+        h += txt(X + 4, Y - 6, String(i + 1), { size: 11, bold: true, fill: '#111', halo: true });
+      });
+      top = ('Spot 1 hue code ') + (st.none ? '?' : st.spot[1].h) + ('  spot 2 ') + (st.none ? '?' : st.spot[2].h) + ('  spot 3 ') + (st.none ? '?' : st.spot[3].h);
+    } else if (g === 'order') {
+      var k = num('ocount', 4);
+      SC.blocks.forEach(function (b, i) {
+        if (i >= k) return;
+        var s2 = 22 * K;
+        h += '<rect x="' + (fx(b.cx) - s2 / 2) + '" y="' + (fy(b.cy) - s2 / 2) + '" width="' + s2 + '" height="' + s2 + '" rx="6" fill="' + b.fill + '" stroke="' + (i === SC.osel ? '#111' : 'rgba(0,0,0,0.35)') + '" stroke-width="' + (i === SC.osel ? 3 : 2) + '"/>';
+        h += txt(fx(b.cx), fy(b.cy) + 5, String(b.hue), { anchor: 'middle', bold: true, fill: '#fff', size: 13 });
+      });
+      top = ('Left to right ') + (st.none ? '?' : '[' + st.order.hues.join(', ') + ']') + ('  total ') + (st.none ? '?' : st.order.total) + ('');
+    } else if (g === 'obj') {
+      var rank = {}; st.obj.forEach(function (o, k) { rank[o[11]] = k + 1; });
+      SC.objs.forEach(function (o, i) {
+        if (o.gone) return;
+        var P = objPoly(o);
+        h += '<polygon points="' + P.map(function (q) { return fx(q[0]).toFixed(1) + ',' + fy(q[1]).toFixed(1); }).join(' ') + '" fill="' + OBJFILL[o.color] + '" stroke="' + (i === SC.jsel ? '#111' : 'rgba(0,0,0,0.3)') + '" stroke-width="' + (i === SC.jsel ? 3 : 1.5) + '"/>';
+        var tr = objTruth(o);
+        if (st.ok && rank[o.id]) {
+          h += '<rect x="' + fx(tr[4]) + '" y="' + fy(tr[5]) + '" width="' + (tr[6] - tr[4] + 1) * K + '" height="' + (tr[7] - tr[5] + 1) * K + '" fill="none" stroke="#19a974" stroke-width="1.5" stroke-dasharray="4 3"/>';
+          h += '<circle cx="' + fx(tr[2]) + '" cy="' + fy(tr[3]) + '" r="3.5" fill="#fff" stroke="#111" stroke-width="1.5"/>';
+          h += txt(fx(tr[4]) + 2, fy(tr[5]) - 4, '#' + rank[o.id] + ' ' + (tr[0] * 10 + tr[1]), { size: 12, bold: true, fill: '#0b6b47', halo: true });
+        }
+      });
+      var o1 = st.obj[0];
+      top = st.none ? ('objects ?') : ('objects ') + st.obj.length + (o1 ? ('  largest code ') + (o1[0] * 10 + o1[1]) + '  X ' + o1[2] + '  Y ' + o1[3] : '');
+    } else {
+      var R = lineRows(), wpx = num('lwidth', 16), ink = S.mode === 42 ? '#f7f7f7' : S.mode === 43 ? '#d8392b' : '#1b1b1b';
+      var gone = $('lgone').checked;
+      if (!gone) {
+        var pts = [], y;
+        for (y = FH; y >= R.top; y -= 4) pts.push(fx(xAtY(y)) + ',' + fy(y));
+        pts.push(fx(xAtY(R.top)) + ',' + fy(R.top));
+        h += '<polyline points="' + pts.join(' ') + '" fill="none" stroke="' + ink + '" stroke-width="' + wpx * K + '" stroke-linejoin="round"/>';
+        if (R.jt && R.jt <= 4) {
+          var jx = xAtY(R.jy), x1 = R.jt === 4 ? jx : 0, x2 = R.jt === 3 ? jx : FW;
+          h += '<line x1="' + fx(x1) + '" y1="' + fy(R.jy) + '" x2="' + fx(x2) + '" y2="' + fy(R.jy) + '" stroke="' + ink + '" stroke-width="' + wpx * K + '"/>';
+        }
+        if (SC.mkNow) h += '<rect x="' + fx(xAtY(84) - wpx) + '" y="' + fy(80) + '" width="' + wpx * 2 * K + '" height="' + 8 * K + '" fill="' + SC.blobs[SC.mkNow - 1].fill + '"/>';
+      }
+      SC.line.ys.forEach(function (yy, i) {
+        h += '<line x1="' + fx(0) + '" y1="' + fy(yy) + '" x2="' + fx(FW) + '" y2="' + fy(yy) + '" stroke="#19a974" stroke-dasharray="5 5" stroke-width="1.5"/>';
+        h += txt(fx(2), fy(yy) - 4, [('near'), ('mid'), ('far')][i], { size: 11, fill: '#0b6b47', halo: true, bold: true });
+        if (!gone) h += '<circle cx="' + fx(SC.line.xs[i]) + '" cy="' + fy(yy) + '" r="' + (i === SC.lsel ? 9 : 7) + '" fill="#19a974" stroke="#fff" stroke-width="2"/>';
+      });
+      h += '<line x1="' + fx(80) + '" y1="' + fy(0) + '" x2="' + fx(80) + '" y2="' + fy(FH) + '" stroke="#9aa3a0" stroke-dasharray="6 6"/>';
+      var Lq = st.line;
+      top = st.none ? ('near ?  mid ?  far ?') : ('near ') + Lq.near + ('  mid ') + Lq.mid + ('  far ') + Lq.far + ('  angle ') + Lq.angle + ('  flags ') + Lq.flags;
+    }
+    h += '<rect x="' + OX + '" y="' + OY + '" width="' + FW * K + '" height="26" fill="#1b2422" opacity="0.88"/>';
+    h += txt(OX + 10, OY + 18, top, { size: 13, fill: '#e3ece9', mono: true });
+    h += txt(OX, SH - 4, ('← left X 0'), { size: 13 }) + txt(OX + FW * K, SH - 4, ('X 159 right →'), { size: 13, anchor: 'end' });
+    h += txt(OX + FW * K - 6, OY + 44, ('top Y 0'), { size: 12, anchor: 'end', halo: true }) + txt(OX + FW * K - 6, fy(FH) - 6, ('bottom Y 119'), { size: 12, anchor: 'end', halo: true });
+    if ($('unplug').checked) h += txt(SW / 2, fy(FH / 2) + 40, ('Sensor unplugged'), { anchor: 'middle', size: 17, bold: true, fill: ir, halo: true });
+    $('field').innerHTML = h;
+    syncCtrl();
+  }
+  function syncCtrl() {
+    var g = curG();
+    document.querySelectorAll('[data-g]').forEach(function (el) { el.hidden = el.getAttribute('data-g').split(' ').indexOf(g) < 0; });
+    var b = selBlob();
+    if ($('selname')) $('selname').textContent = ('color ') + (SC.sel + 1) + (' (') + b.nm + (')');
+    if ($('selname2')) $('selname2').textContent = ('color ') + (SC.sel + 1);
+    if ($('selname3')) $('selname3').textContent = ('color ') + (SC.sel + 1);
+    if ($('tsize') && Number($('tsize').value) !== b.size) $('tsize').value = b.size;
+    if ($('tcount') && Number($('tcount').value) !== b.n) $('tcount').value = b.n;
+    if ($('tgone')) $('tgone').checked = b.gone;
+    var ob = SC.objs[SC.jsel];
+    if ($('jname')) $('jname').textContent = ('track id ') + ob.id;
+    if ($('jname2')) $('jname2').textContent = ('track id ') + ob.id;
+    if ($('jshape') && Number($('jshape').value) !== ob.shape) $('jshape').value = ob.shape;
+    if ($('jcolor') && Number($('jcolor').value) !== ob.color) $('jcolor').value = ob.color;
+    if ($('jsize') && Number($('jsize').value) !== ob.size) $('jsize').value = ob.size;
+    if ($('jrot') && Number($('jrot').value) !== ob.rot) $('jrot').value = ob.rot;
+    if ($('jgone')) $('jgone').checked = ob.gone;
+    if ($('phueval')) { var h0 = SC.patches[0].hue; $('phueval').textContent = h0 + (', ') + CNAME_ZH[colorCode(h0)]; }
+  }
+  function simInput(id) {
+    var b = selBlob();
+    if (id === 'tsize') b.size = Number($('tsize').value);
+    if (id === 'tcount') b.n = Number($('tcount').value);
+    if (id === 'tgone') b.gone = $('tgone').checked;
+    if (id === 'phue') SC.patches[0].hue = Number($('phue').value);
+    var ob = SC.objs[SC.jsel];
+    if (id === 'jshape') ob.shape = Number($('jshape').value);
+    if (id === 'jcolor') ob.color = Number($('jcolor').value);
+    if (id === 'jsize') ob.size = Number($('jsize').value);
+    if (id === 'jrot') ob.rot = Number($('jrot').value);
+    if (id === 'jgone') ob.gone = $('jgone').checked;
+    if (id === 'lmark') {
+      var m = Number($('lmark').value);
+      SC.mkNow = m;
+      if (m) { SC.mk = m; SC.mkn = (SC.mkn + 1) % 100; }
+    }
+  }
+  function toCam(e) {
+    var r = $('field').getBoundingClientRect();
+    if (!r.width || !r.height) return null;
+    return { x: ((e.clientX - r.left) / r.width * SW - OX) / K, y: ((e.clientY - r.top) / r.height * SH - OY) / K };
+  }
+  function grab(p) {
+    var g = curG(), i;
+    if (g === 'track') { for (i = SC.blobs.length - 1; i >= 0; i--) { var b = SC.blobs[i]; if (!b.gone && Math.abs(p.x - b.cx) <= b.size / 2 + 4 && Math.abs(p.y - b.cy) <= b.size / 2 + 4) { SC.sel = i; return true; } } return false; }
+    if (g === 'spot') { for (i = SC.patches.length - 1; i >= 0; i--) { var q = SC.patches[i]; if (Math.abs(p.x - q.cx) <= q.w / 2 + 3 && Math.abs(p.y - q.cy) <= q.h / 2 + 3) { SC.psel = i; return true; } } return false; }
+    if (g === 'obj') { for (i = SC.objs.length - 1; i >= 0; i--) { var q2 = SC.objs[i]; if (!q2.gone && Math.abs(p.x - q2.cx) <= q2.size / 2 + 3 && Math.abs(p.y - q2.cy) <= q2.size / 2 + 3) { SC.jsel = i; return true; } } return false; }
+    if (g === 'order') { var k = num('ocount', 4); for (i = k - 1; i >= 0; i--) { var o = SC.blocks[i]; if (Math.abs(p.x - o.cx) <= 13 && Math.abs(p.y - o.cy) <= 13) { SC.osel = i; return true; } } return false; }
+    if ($('lgone').checked) return false;
+    var best = 0, bd = 1e9;
+    SC.line.ys.forEach(function (y, j) { var d = Math.abs(p.y - y); if (d < bd) { bd = d; best = j; } });
+    SC.lsel = best; return true;
+  }
+  function moveSel(p) {
+    var g = curG();
+    if (g === 'track') { var b = selBlob(); b.cx = p.x; b.cy = p.y; }
+    else if (g === 'spot') { var q = SC.patches[SC.psel]; q.cx = clamp(p.x, q.w / 2, FW - q.w / 2); q.cy = clamp(p.y, q.h / 2, FH - q.h / 2); }
+    else if (g === 'obj') { var q3 = SC.objs[SC.jsel]; q3.cx = p.x; q3.cy = p.y; }
+    else if (g === 'order') { var o = SC.blocks[SC.osel]; o.cx = clamp(p.x, 11, FW - 11); o.cy = clamp(p.y, 11, FH - 11); }
+    else SC.line.xs[SC.lsel] = clamp(p.x, 2, FW - 2);
+  }
+  function selPos() {
+    var g = curG();
+    if (g === 'track') return { x: selBlob().cx, y: selBlob().cy };
+    if (g === 'spot') return { x: SC.patches[SC.psel].cx, y: SC.patches[SC.psel].cy };
+    if (g === 'order') return { x: SC.blocks[SC.osel].cx, y: SC.blocks[SC.osel].cy };
+    if (g === 'obj') return { x: SC.objs[SC.jsel].cx, y: SC.objs[SC.jsel].cy };
+    return { x: SC.line.xs[SC.lsel], y: SC.line.ys[SC.lsel] };
+  }
+  function bindSim(onMove, onInput) {
+    var el = $('field'), dragging = false;
+    el.style.touchAction = 'none'; el.style.cursor = 'grab';
+    el.addEventListener('pointerdown', function (e) {
+      var p = toCam(e); if (!p || !grab(p)) return;
+      dragging = true; try { el.setPointerCapture(e.pointerId); } catch (err) {  }
+      moveSel(p); onMove(); e.preventDefault();
+    });
+    el.addEventListener('pointermove', function (e) { if (!dragging) return; var p = toCam(e); if (p) { moveSel(p); onMove(); } });
+    ['pointerup', 'pointercancel'].forEach(function (ev) { el.addEventListener(ev, function () { dragging = false; }); });
+    el.addEventListener('keydown', function (e) {
+      var k = { ArrowLeft: [-3, 0], ArrowRight: [3, 0], ArrowUp: [0, -3], ArrowDown: [0, 3] }[e.key];
+      if (!k) return;
+      e.preventDefault(); var p = selPos(); moveSel({ x: p.x + k[0], y: p.y + k[1] }); onMove();
+    });
+    ['tsize', 'tcount', 'tgone', 'phue', 'ocount', 'lwidth', 'ljunc', 'ljd', 'lmark', 'lgone', 'jshape', 'jcolor', 'jsize', 'jrot', 'jgone', 'unplug'].forEach(function (id) {
+      var c = $(id); if (!c) return;
+      c.addEventListener(c.tagName === 'SELECT' ? 'change' : 'input', function () { simInput(id); onInput(id); });
+    });
+  }
+  var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; });
+  if (!BY[S.fn]) S.fn = FNS[0].id;
+  function fnOk(f, m) { return !f.modes || f.modes.indexOf(m) >= 0; }
+  function bestMode(f) {
+    if (fnOk(f, S.mode)) return S.mode;
+    var g = modeOf(S.mode).g;
+    for (var i = 0; i < f.modes.length; i++) if (modeOf(f.modes[i]).g === g) return f.modes[i];
+    return f.modes[0];
+  }
+  var lastKeys = '';
+  function fullLines(step) { var keep = S.step; S.step = step; var L = HOST.lines(BY[S.fn]); S.step = keep; return L; }
+  function drawMain() {
+    var L = fullLines(S.viewStep || S.step);
+    L.forEach(function (l, k) { l.no = k + 1; l.hl = l.tag === (S.viewStep || S.step); });
+    if (HOST.collapse && !S.showHelper) {
+      var nH = L.filter(function (l) { return l.helper; }).length, seen = false, F = [];
+      L.forEach(function (l) {
+        if (!l.helper) { F.push(l); return; }
+        if (seen) return;
+        seen = true; F.push(l);
+        F.push({ t: HOST.cmt(('⋯ ' + (nH - 1) + ' more lines (press "Show helper")')), no: '⋮', tag: l.tag, tagHide: true, hl: l.hl, helper: true });
+      });
+      L = F;
+    }
+    var prev = lastKeys ? lastKeys.split('\n') : [];
+    L.forEach(function (l) { if (l.t && lastKeys && prev.indexOf(l.t) < 0) l.isNew = true; });
+    lastKeys = L.map(function (l) { return l.t; }).join('\n');
+    render($('maincode'), L);
+    var b = $('bubble'); b.querySelector('i').textContent = S.viewStep || S.step; b.querySelector('span').textContent = HOST.bubble(S.viewStep || S.step, BY[S.fn]);
+    drawMinis();
+  }
+  var miniPrev = {};
+  function drawMinis() {
+    var full = fullLines(3);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('mini' + k); if (!el) return;
+      var lines = [], nh = 0, total = 0, h0 = 0, nums = [];
+      full.forEach(function (l) { if (l.tag === k && l.helper) total++; });
+      full.forEach(function (l, i) {
+        if (l.tag !== k) return;
+        if (l.helper) {
+          nh++; if (!h0) h0 = i + 1;
+          if (nh <= 2) lines.push({ t: l.t, no: i + 1 });
+          else if (nh === 3) lines.push({ t: HOST.cmt(('⋯ ' + total + ' helper lines: press "Show helper" on the right')), no: '⋮' });
+          return;
+        }
+        nums.push(i + 1); lines.push({ t: l.t, no: i + 1 });
+      });
+      if (!lines.length) { el.innerHTML = ''; return; }
+      var a = nums.length ? nums[0] : h0, z = nums.length ? nums[nums.length - 1] : h0;
+      var range = ('line ' + a + (z !== a ? '–' + z : ''));
+      if (h0 && nums.length) range += (', plus the helper from line ' + h0);
+      var txt = lines.map(function (l) { return l.no + l.t; }).join('\n');
+      el.innerHTML = '<span>' + ('What this step writes (') + range + (')') + '</span><pre class="code"></pre>';
+      render(el.querySelector('pre'), lines, { noTag: true });
+      if (miniPrev[k] !== undefined && miniPrev[k] !== txt) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      miniPrev[k] = txt;
+    });
+  }
+  function setStep(n) {
+    S.step = Math.max(S.step, n);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    S.viewStep = n;
+    drawMain();
+    $('next2').disabled = !HOST.valid();
+  }
+  function drawModes() {
+    var box = $('modes'); if (!box) return;
+    box.innerHTML = '';
+    ['track', 'spot', 'order', 'line', 'obj'].forEach(function (g) {
+      var w = document.createElement('div'); w.className = 'fgroup';
+      w.innerHTML = '<span>' + GROUPS[g].name + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      MODES.filter(function (m) { return m.g === g; }).forEach(function (m) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip';
+        b.textContent = m.n + ' ' + m.name; b.setAttribute('aria-pressed', String(S.mode === m.n));
+        b.addEventListener('click', function () { setMode(m.n, false); });
+        chips.appendChild(b);
+      });
+      w.appendChild(chips); box.appendChild(w);
+    });
+    var c = HOST.counts(S.mode), m = modeOf(S.mode);
+    var have = m.g === 'track' ? ('This host gets ' + c.col + ' colors in this mode')
+      : m.g === 'spot' ? ('This host gets ' + c.pt + ' sample spots in this mode')
+      : m.g === 'order' ? ('This host gets the hue codes of up to ' + c.order + ' blocks')
+      : m.g === 'obj' ? ('This host gets ' + c.obj + ' objects in this mode')
+      : ('This host gets ' + c.line + ' line values');
+    $('modenow').innerHTML = '<b>' + ('You picked mode number ') + S.mode + '</b><span>' + ('= camera mode ') + m.cm + ' ' + GROUPS[m.g].name.replace(/^\d /, '') + (m.sub ? (' · sub-option ') + m.name : '') + ('. ') + have + ('.') + '</span><span class="err">' + HOST.modeWarn(S.mode) + '</span>';
+  }
+  function setMode(n, auto) {
+    S.mode = n;
+    if (!fnOk(BY[S.fn], n)) {
+      var g = modeOf(n).g, first = FNS.filter(function (f) { return f.grp === g && fnOk(f, n); })[0];
+      if (first) S.fn = first.id;
+    }
+    S.autoNote = auto ? auto : '';
+    drawModes(); drawPicker(); drawCards(); drawMain(); tick(true);
+  }
+  function drawPicker() {
+    var box = $('picker'); box.innerHTML = '';
+    GORDER.forEach(function (g) {
+      var list = FNS.filter(function (f) { return f.grp === g; }); if (!list.length) return;
+      var w = document.createElement('div'); w.className = 'fgroup';
+      w.innerHTML = '<span>' + GROUPS[g].name + (GROUPS[g].modes ? (' (mode ') + GROUPS[g].modes.join((', ')) + (')') : '') + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      list.forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (fnOk(f, S.mode) ? '' : ' no-ev3');
+        b.textContent = f.label; b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.title = f.name + (fnOk(f, S.mode) ? '' : (' (needs ') + modeList(f.modes) + (')'));
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      w.appendChild(chips); box.appendChild(w);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + esc(f.label) + (' · ') + f.name + '</b><span>' + f.what + '</span><span class="small">' +
+      (f.cmd ? ('Command: ') : ('Returns: ')) + f.ret + (' | ') + ('Works in ') + modeList(f.modes) + '</span>' +
+      (S.autoNote ? '<span class="err">' + S.autoNote + '</span>' : '');
+    if ($('nm1') && S.name) $('nm1').textContent = S.name;
+  }
+  function pick(id) {
+    var f = BY[id]; S.fn = id;
+    if (!fnOk(f, S.mode)) {
+      var m = bestMode(f);
+      setStep(3);
+      setMode(m, ('Mode switched to ' + m + ' for you: ' + f.label + ' needs ' + modeList(f.modes) + '. Switch the camera menu to ' + m + ' too.'));
+      return;
+    }
+    S.autoNote = '';
+    setStep(3);
+    drawPicker(); drawCards(); tick(true);
+  }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    FNS.forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      c.innerHTML =
+        '<div class="card-head"><h3>' + esc(f.label) + '<span class="zh">' + f.name + '</span></h3>' +
+        '<span class="badges"><span class="badge yes">' + modeList(f.modes) + '</span>' + (f.cmd ? '<span class="badge yes">' + ('command') + '</span>' : '') + '</span></div>' +
+        '<p>' + f.what + '</p>' +
+        '<dl class="meta"><dt>' + (f.cmd ? ('Command') : ('Returns')) + '</dt><dd>' + f.ret + '</dd><dt>' + ('Example') + '</dt><dd>' + HOST.place(f) + '</dd></dl>' +
+        '<pre class="code"></pre>' +
+        '<p class="out">' + HOST.outLabel + '<code></code></p>' +
+        '<button type="button" class="try">' + ('Try it') + '</button>';
+      render(c.querySelector('pre'), HOST.card(f).map(function (t) { return { t: t }; }), { noTag: true });
+      c.querySelector('.try').addEventListener('click', function () {
+        pick(f.id);
+        var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      });
+      box.appendChild(c);
+    });
+    var cnt = $('fncount'); if (cnt) cnt.textContent = FNS.length;
+  }
+  function runOut(f, st, m) {
+    var V = HOST.view(st, m);
+    try { var o = f.out(V, st); return { lines: Array.isArray(o) ? o : [String(o)], err: false, reads: V.__n || 0 }; }
+    catch (e) { if (e && e.err) return { lines: [e.err], err: true, reads: V.__n || 0 }; throw e; }
+  }
+  function updateCardOutputs(st) {
+    FNS.forEach(function (f) {
+      var el = document.querySelector('#fn-' + f.id + ' .out code'); if (!el) return;
+      var m = bestMode(f), r = runOut(f, Object.assign({}, st, { mode: m }), m);
+      el.textContent = r.lines.join('\n');
+    });
+  }
+  function exFull(id) { var out = []; EX[id].forEach(function (t) { if (t === '@HELPER') out = out.concat(HOST.helper || []); else out.push(t); }); return out; }
+  function drawExamples() {
+    Object.keys(EX).forEach(function (k) {
+      var el = $('ex-' + k); if (!el) return;
+      var shown = EX[k].map(function (t) { return t === '@HELPER' ? HOST.cmt(('… paste the step-1 helper here ("Copy" adds it for you) …')) : t; });
+      render(el, shown.map(function (t) { return { t: t }; }), { noTag: true });
+    });
+  }
+  var log = [], booted = false, halted = false;
+  function push(t, c) { log.push({ c: c || '', t: t }); }
+  function tick(reset) {
+    var st = state(), f = BY[S.fn];
+    draw(st);
+    updateCardOutputs(st);
+    if (S.step < 3) {
+      log = [{ c: '', t: ('(Finish step 3 "Use a function" to see what the program prints here)') }];
+      booted = false; halted = false;
+    } else if (reset || !booted) {
+      log = []; booted = true; halted = false; HOST.reset && HOST.reset();
+      var b = HOST.boot ? HOST.boot(st, f) : null;
+      if (b) { b.lines.forEach(function (t) { push(t, (/!|Error|-32768|not found|no data/i).test(t) ? 'warnline' : ''); }); halted = !!b.halt; }
+      if (!halted) once(f, st);
+    } else if (!f.once && !halted) {
+      once(f, st);
+    }
+    while (log.length > 8) log.shift();
+    $('console').innerHTML = log.map(function (l) { return '<span class="' + l.c + '">' + esc(l.t) + '</span>'; }).join('\n');
+  }
+  function once(f, st) {
+    var r = runOut(f, st, S.mode);
+    (HOST.warn ? HOST.warn(st, r.reads) : []).forEach(function (w) { push(w, 'warnline'); });
+    r.lines.forEach(function (t) { push(t, r.err ? 'errline' : (HOST.warnRe && HOST.warnRe.test(t) ? 'warnline' : '')); });
+    if (r.err) { halted = true; push(('(The program stopped: check the value before using it)'), ''); }
+  }
+  $('next1').addEventListener('click', function () { setStep(2); });
+  $('next2').addEventListener('click', function () { if (HOST.valid()) { setStep(3); drawPicker(); tick(true); } });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) {
+    $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } });
+  });
+  HOST.bind(function (rerun) { drawMain(); drawPicker(); $('next2').disabled = !HOST.valid(); if (rerun && S.step >= 3) tick(true); });
+  bindSim(function () { draw(state()); updateCardOutputs(state()); }, function (id) { tick(id === 'unplug' && (BY[S.fn].once || !!HOST.bootOnUnplug)); });
+  if ($('helperbtn')) $('helperbtn').addEventListener('click', function (e) {
+    S.showHelper = !S.showHelper;
+    e.currentTarget.textContent = S.showHelper ? ('Hide helper') : ('Show helper');
+    e.currentTarget.setAttribute('aria-pressed', String(!!S.showHelper));
+    drawMain();
+  });
+  $('copymain').addEventListener('click', function (e) { copyText(plain(fullLines(S.viewStep || S.step)), e.currentTarget); });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { copyText(exFull(b.getAttribute('data-copy')).join('\n') + '\n', b); });
+  });
+  S.viewStep = 1;
+  drawModes(); drawPicker(); drawCards(); drawExamples(); setStep(1); tick(true);
+  setInterval(function () { if (S.step >= 3 && !BY[S.fn].once) tick(false); }, 600);
+  function expect(id, m, none) {
+    var f = BY[id], st = rawState();
+    if (none) { st.ok = false; st.none = true; }
+    HOST.reset && HOST.reset();
+    var r = runOut(f, st, m), w = HOST.warn ? HOST.warn(st, r.reads) : [];
+    return { st: st, lines: w.concat(r.lines), err: r.err };
+  }
+  window.__uc = { expect: expect, S: S, FNS: FNS, setMode: setMode, pick: pick, tick: tick, state: state, fullLines: fullLines, EX: EX, exFull: exFull, SC: SC };
+})();
+</script>
+<script>
+(function () {
+  var side = document.querySelector('.side'); if (!side) return;
+  var mq = window.matchMedia('(max-width: 900px)');
+  var home = side.parentNode, homeNext = side.nextSibling;
+  var con = document.getElementById('console'), conP = con && con.closest('.panel');
+  if (conP && conP.parentNode !== side) conP = null;
+  var last = null, ready = false;
+  var STOP = '.step-body, .cards, .ref, .steps, .main, .wrap, body';
+  function anchorOf(el) { var a = el; while (a && a.parentElement && !a.parentElement.matches(STOP)) a = a.parentElement; return a && a.parentElement ? a : null; }
+  function flash(el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  // 把 box 搬到 a 那一塊的後面；a 在畫面上的位置維持不動（點下去時就記住 a：頁面常在點擊後重畫按鈕，按鈕本身會被換掉）
+  function moveAfter(box, a) {
+    if (!a || !a.isConnected || a === box || a.contains(box)) return false;
+    if (a.nextElementSibling === box) return true;
+    var y = a.getBoundingClientRect().top;
+    a.parentNode.insertBefore(box, a.nextSibling); box.classList.add('follow');
+    var d = a.getBoundingClientRect().top - y; if (d) window.scrollBy(0, d);
+    return true;
+  }
+  function inPanel(el) { return side.contains(el) || (conP && conP.contains(el)); }
+  function placeSide(a, scroll) {
+    if (!mq.matches || !a) return;
+    if (conP && conP.parentNode !== side) { conP.classList.remove('follow'); side.appendChild(conP); }
+    if (!moveAfter(side, a)) return;
+    if (scroll) { var r = side.getBoundingClientRect(); if (r.top > window.innerHeight * 0.7) window.scrollBy({ top: r.top - window.innerHeight * 0.3, behavior: 'smooth' }); }
+  }
+  function placeConsole(el) {
+    if (!mq.matches || !conP || inPanel(el)) return;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在「正在操作的那一排」正下方（排＝控制區的直接子元素），
+    // 畫面、那一排、輸出同一屏；控制區很長或那一排在最下面（例如拔線勾選）都不會跑出畫面
+    var sim = el.closest('.sim'), ctrl = null, row = null;
+    if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (ctrl && ctrl !== el) for (var j = 0; j < ctrl.children.length; j++) if (ctrl.children[j].contains(el)) row = ctrl.children[j];
+    if (sim && ctrl) {
+      var box = row ? ctrl : sim, after = row || null;
+      if (after ? after.nextElementSibling === conP : conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var y = el.getBoundingClientRect().top;
+      if (after) box.insertBefore(conP, after.nextSibling); else sim.insertBefore(conP, ctrl);
+      conP.classList.add('follow');
+      var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
+      return;
+    }
+    var a = anchorOf(el); if (a && a.nextElementSibling === side) return; // 程式那格已經緊接在下面，輸出就在它裡面
+    moveAfter(conP, a);
+  }
+  function reset() {
+    if (mq.matches) { var b = document.querySelector('#step1 .step-body button') || document.querySelector('#step1 button'); if (b) placeSide(anchorOf(b), false); return; }
+    if (conP) { conP.classList.remove('follow'); side.appendChild(conP); }
+    side.classList.remove('follow'); home.insertBefore(side, homeNext);
+  }
+  function remember(e) { if (!inPanel(e.target)) last = anchorOf(e.target); }
+  document.addEventListener('pointerdown', remember, true);
+  document.addEventListener('focusin', remember, true);
+  var mo = new MutationObserver(function () { if (ready && mq.matches) { placeSide(last, true); flash(side); } });
+  ['maincode', 'mainblocks'].forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true }); });
+  function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
+  document.addEventListener('input', sim, true);
+  document.addEventListener('change', sim, true);
+  // 模擬器裡的按鈕（掌控者按鍵、色點調色盤…）也算在操作模擬器
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.sim button'); if (b) placeConsole(b); }, true);
+  reset(); setTimeout(function () { ready = true; }, 800);
+  if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
+})();
+</script>
+</body>
+</html>
