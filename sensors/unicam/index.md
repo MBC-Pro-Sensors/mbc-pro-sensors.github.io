@@ -19,15 +19,15 @@
 <a class="pick-tile pg-matrix" href="/sensors/unicam/matrix/mvision.md"><span class="pt-img"><img src="/images/illust/host-matrix.webp" alt="" loading="lazy"></span><span class="pt-name">MATRIX</span><span class="pt-tag">MATRIX Mini R4，mVision 攝影機積木</span><span class="pt-sw">mVision 積木</span></a>
 <a class="pick-tile pg-arduino" href="/sensors/unicam/arduino/index.md"><span class="pt-img"><img src="/images/illust/host-arduino.webp" alt="" loading="lazy"></span><span class="pt-name">Arduino</span><span class="pt-tag">UNO、Nano、UNO R4、ESP32，用 I2C（0x4C）</span><span class="pt-sw">Arduino IDE</span></a>
 <a class="pick-tile pg-microbit" href="/sensors/unicam/microbit/index.md"><span class="pt-img"><img src="/images/illust/host-microbit.webp" alt="" loading="lazy"></span><span class="pt-name">micro:bit</span><span class="pt-tag">micro:bit V1／V2，用 I2C（0x4C）</span><span class="pt-sw">MakeCode</span></a>
-<a class="pick-tile pg-mblock" href="/sensors/unicam/mblock/index.md"><span class="pt-img"><img src="/images/illust/host-mblock.webp" alt="" loading="lazy"></span><span class="pt-name">mBlock</span><span class="pt-tag">mBot、Ranger、Orion、MegaPi，RJ25 串口 38400</span><span class="pt-sw">mBlock 5（MBC 感應器擴展 v2.1.0）</span></a>
+<a class="pick-tile pg-mblock" href="/sensors/unicam/mblock/index.md"><span class="pt-img"><img src="/images/illust/host-mblock.webp" alt="" loading="lazy"></span><span class="pt-name">mBlock</span><span class="pt-tag">mBot、Ranger、Orion、MegaPi，RJ25 串口 38400</span><span class="pt-sw">mBlock 5（MBC 感應器擴展 v2.2.0）</span></a>
 </div></div>
 <!-- /gen -->
 
-> **一台相機、四種用法：顏色追蹤、座標取色、照順序給色號、循線，在相機選單切換；SPIKE、EV3、MATRIX、Arduino、micro:bit 都讀得到，各平台給到它放得下的最多資料。**
+> **一台相機、五種用法：顏色追蹤、座標取色、照順序給色號、循線、物體偵測，在相機選單切換；SPIKE、EV3、MATRIX、Arduino、micro:bit 都讀得到，各平台給到它放得下的最多資料。**
 
-## 📸 4 個相機模式
+## 📸 5 個相機模式
 
-在相機的 **MODE** 選單選相機模式，再選子選項。**子選項＝層級**：層級越精細，每個目標給的值越多、目標數越少；實際給幾色看下一節的總表。模式編號＝相機模式 × 10 ＋ 子選項（例：13＝顏色追蹤 ③ 標準；照順序給色號＝30）。
+在相機的 **MODE** 選單選相機模式，再選子選項。**子選項＝層級**：層級越精細，每個目標給的值越多、目標數越少；實際給幾色看下一節的總表。模式編號＝相機模式 × 10 ＋ 子選項（例：13＝顏色追蹤 ③ 標準；照順序給色號＝30；物體偵測＝51／52）。
 
 ### 1 顏色追蹤
 
@@ -79,6 +79,26 @@
 
 循線給的值：近／中／遠偏移（−100～100，負＝線在左）、線角度（−90～90）、近處與遠處線寬 %、有線旗標（近 1＋中 2＋遠 4）、路口類型（0 無、1 十字、2 T、3 左、4 右、5 盡頭）與路口距離 %、近處線左右緣、彩色標記線色號與累計條數、最後離線方向（0 有線、1 左、2 右）。三種線用同一種排法，每個上位機給它放得下的值。
 
+### 5 物體偵測
+
+顏色＋外輪廓一起判斷：相機找出目標色 1～8 的每一塊，判斷它是什麼形狀，給**物體代碼＝色號×10＋形狀**（例：13＝色 1 的三角形、24＝色 2 的正方形，0＝沒有物體），以及位置。每個畫面最多 8 個物體，**面積大的排前面**（物體 1＝最大的那個）。
+
+<figure class="ref-fig"><img src="/images/sensors/unicam/objects.svg" alt="物體偵測：物體依面積編號 1、2、3，每個標上代碼（色號×10＋形狀）" loading="lazy"></figure>
+
+| 形狀代號 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 形狀 | 其他／判不出 | 圓 | 橢圓 | 三角 | 正方 | 長方 | 五邊 | 六邊 | 星 | 梯形 |
+
+| 子選項 | 給什麼 |
+| :--- | :--- |
+| ① 物體清單 | 每個物體的代碼與位置，再給物體數；給的物體最多（I2C 8 個、SPIKE App 教育版 7 個、EV3 5 個） |
+| ② 物體詳細 | 再加寬高、面積、角度（各上位機放得下的欄位不同，看下一節的總表；I2C／mBlock 全部都有，另有頂點數、追蹤編號）；給的物體較少 |
+
+- **X、Y 是質心**（顏色追蹤是外框中心，兩者不同）；寬高＝外框（比顏色追蹤多 1）。
+- **角度** 0～179 度（最小外接矩形的長邊，往右＝0，往畫面下方轉為正）；EV3 送「(角度＋1)÷2」。**頂點數**：三角 3、四邊形 4、五邊 5、六邊 6、星 10、圓／橢圓 0。**追蹤編號** 1～255：同一個物體跨畫面不變。
+- 只看**目標色 1～8**（代碼才維持兩位數）；目標色 9～16 照樣做顏色追蹤，只是不當成物體。
+- 教完目標 1～8 的顏色會跳出 `Target N shape`，可以指定這個顏色要找的形狀（Any＝不指定）；SET 選單第 14 項 **ShapeTol 1～5** 調形狀判斷的寬鬆度（預設 3，越大越寬鬆）。
+
 ## 📊 各上位機給幾色
 
 同一個子選項，各上位機能放的資料量不同，相機會**自動給到它放得下的最多**：學生教了幾色就給幾色，放不下的就少給。點數字看那張逐格表。
@@ -95,21 +115,23 @@
 | 2 座標取色 ③ 色相＋飽和＋明度 | [4 點色相＋飽和＋明度](/sensors/unicam/reference.md#pyb-23) | [4 點色相＋飽和＋明度](/sensors/unicam/reference.md#edu-23) | [2 點色相＋飽和明度](/sensors/unicam/reference.md#toy-23) | [1 點原始色相＋飽和＋明度](/sensors/unicam/reference.md#pyblk-23) | [2 點原始色相＋飽和＋明度](/sensors/unicam/reference.md#ev3-23) | [6 點色相＋飽和＋明度](/sensors/unicam/reference.md#mx-23) | [16 點色相＋飽和＋明度](/sensors/unicam/reference.md#i2c-23) |
 | 3 照順序給色號 | [13 塊色相碼](/sensors/unicam/reference.md#pyb-30) | [13 塊色相碼](/sensors/unicam/reference.md#edu-30) | [3 塊色相碼](/sensors/unicam/reference.md#toy-30) | [2 塊色相碼](/sensors/unicam/reference.md#pyblk-30) | [11 塊色相碼](/sensors/unicam/reference.md#ev3-30) | [18 塊色相碼](/sensors/unicam/reference.md#mx-30) | [16 塊色相碼](/sensors/unicam/reference.md#i2c-30) |
 | 4 循線 ①②③ 黑線／白線／色線 | [14 個值](/sensors/unicam/reference.md#pyb-41) | [13 個值](/sensors/unicam/reference.md#edu-41) | [5 個值](/sensors/unicam/reference.md#toy-41) | [4 個值](/sensors/unicam/reference.md#pyblk-41) | [12 個值](/sensors/unicam/reference.md#ev3-41) | [14 個值](/sensors/unicam/reference.md#mx-41) | [14 個值](/sensors/unicam/reference.md#i2c-41) |
+| 5 物體偵測 ① 物體清單 | [4 個物體](/sensors/unicam/reference.md#pyb-51) | [7 個物體](/sensors/unicam/reference.md#edu-51) | [2 個物體](/sensors/unicam/reference.md#toy-51) | [1 個物體](/sensors/unicam/reference.md#pyblk-51) | [5 個物體](/sensors/unicam/reference.md#ev3-51) | [4 個物體](/sensors/unicam/reference.md#mx-51) | [8 個物體 色號、形狀、XY](/sensors/unicam/reference.md#i2c-51) |
+| 5 物體偵測 ② 物體詳細 | [2 個物體＋大小、面積](/sensors/unicam/reference.md#pyb-52) | [2 個物體＋大小、面積、角度](/sensors/unicam/reference.md#edu-52) | [1 個物體＋面積](/sensors/unicam/reference.md#toy-52) | [1 個物體＋面積](/sensors/unicam/reference.md#pyblk-52) | [2 個物體＋面積、角度](/sensors/unicam/reference.md#ev3-52) | [3 個物體＋大小、面積](/sensors/unicam/reference.md#mx-52) | [8 個物體＋大小、面積、角度](/sensors/unicam/reference.md#i2c-52) |
 <!-- /gen -->
 
 - 完整逐格對照（每一格放什麼、範圍、怎麼拆）：[讀值參考](/sensors/unicam/reference.md)。
-- 一個上位機一個韌體版本：**SPIKE 版**（官方 App 與 Pybricks 自動分）、**EV3 版**、**MATRIX 版**、**通用 I2C 版**（Arduino、micro:bit）。
+- 一個上位機一個韌體版本：**SPIKE 版**（官方 App 與 Pybricks 自動分）、**EV3 版**、**MATRIX 版**、**通用 I2C 版**（Arduino、micro:bit）、**mBlock 版**（mBot 等）。
 
 ## 🎛️ 相機上的操作
 
 相機背面有 1.8 吋彩色螢幕和 4 顆按鍵，設定都在相機上做，不用電腦。
 
 1. **即時畫面**用左右鍵循環：目標 1 … 目標 N → **MODE** → **SET**。N＝已教到的最後一色＋1 個空位（最多 16）。
-2. **停在目標按 OK：教色**（AxisX → AxisY → OK 取色；按住 OK 0.8 秒直接完成；之後可調 Hue／Sta／Size／Locked・MaxArea）。停在目標按**側鍵**：清除這個目標。
-3. **停在 MODE 按 OK**：左右鍵選相機模式 1～4 → OK → 選子選項 → OK。子選項名稱顯示**目前上位機實際給的數量**（例：EV3「8 XY」、Pybricks 函式庫「7 XY」）；SPIKE 還沒被主機讀過時顯示層級名稱（Max／Multi／Std／Fine、H／HS／HSV）。只有一個子選項的模式自動跳過。選單裡按側鍵＝回上一層。
-4. **停在 SET 按 OK**：鏡頭選單（亮度、對比、飽和度、白平衡、白色校正、自測、回預設）。
-5. **畫面**：左上角是主機名稱（綠＝連線中、紅＝斷線）；右上角是「模式-子選項」（例 1-3）和目標編號（1 起算，跟送給上位機的色號一樣）；底部資訊列依模式顯示：顏色追蹤＝目前目標的 X Y W H 數量、座標取色＝S1 的 H S V、照順序給色號＝塊數、循線＝近／遠偏移、角度、路口類型。座標取色會畫取樣點十字和編號，照順序給色號在色塊上標順序，循線畫三條掃描列和找到的線。
-6. **斷電記住**：目標色（16 個）、鏡頭設定、相機模式與各模式的子選項、I2C 改過的取樣點位置。第一次燒這一代神攝手的韌體時會全部回預設（顏色追蹤 ③ 標準）。
+2. **停在目標按 OK：教色**（AxisX → AxisY → OK 取色；按住 OK 0.8 秒直接完成；之後可調 Hue／Sta／Size／Locked・MaxArea）。停在目標按**側鍵**：清除這個目標（指定的形狀一起清）。物體偵測模式教完目標 1～8 會跳出 `Target N shape` 選形狀。
+3. **停在 MODE 按 OK**：左右鍵選相機模式 1～5 → OK → 選子選項 → OK。子選項名稱顯示**目前上位機實際給的數量**（例：EV3「8 XY」、Pybricks 函式庫「7 XY」）；SPIKE 還沒被主機讀過時顯示層級名稱（Max／Multi／Std／Fine、H／HS／HSV）。只有一個子選項的模式自動跳過。選單裡按側鍵＝回上一層。
+4. **停在 SET 按 OK**：鏡頭選單（亮度、對比、飽和度、白平衡、白色校正、自測、回預設）；第 14 項 ShapeTol 1～5 是物體偵測的形狀寬鬆度。
+5. **畫面**：左上角是主機名稱（綠＝連線中、紅＝斷線）；右上角是「模式-子選項」（例 1-3）和目標編號（1 起算，跟送給上位機的色號一樣）；底部資訊列依模式顯示：顏色追蹤＝目前目標的 X Y W H 數量、座標取色＝S1 的 H S V、照順序給色號＝塊數、循線＝近／遠偏移、角度、路口類型、物體偵測＝物體數＋最大那個的代碼與位置。座標取色會畫取樣點十字和編號，照順序給色號在色塊上標順序，循線畫三條掃描列和找到的線，物體偵測畫每個物體的外輪廓和「色號 形狀」（碰到畫面邊加 ?）。
+6. **斷電記住**：目標色（16 個）、鏡頭設定、相機模式與各模式的子選項、I2C 改過的取樣點位置、形狀寬鬆度、目標 1～8 指定的形狀。第一次燒這一代神攝手的韌體時會全部回預設（顏色追蹤 ③ 標準）。
 
 > [!NOTE]
 > SPIKE 主機讀不到相機目前在哪個模式，程式要跟相機設定一致（Pybricks 函式庫建構時傳模式編號，例 `mode=13`）。EV3 讀模式 0 就知道；I2C 讀 `0x01`，也可以用命令 `E0` 從程式切換。
@@ -120,6 +142,7 @@
 - **寬高**：像素（右−左、下−上）。
 - **面積占比**：色塊像素數 ÷ 19200 × 100，四捨五入；有找到但不到 1% 送 1。
 - **數量**：面積大於最小面積（Size）的區塊數。
+- **物體（相機模式 5）**：物體代碼＝色號×10＋形狀；X、Y 是質心，寬高＝外框＋1，角度 0～179。詳見上面「5 物體偵測」。
 - **會有負數的值**（循線偏移、角度、左右緣）：EV3、Pybricks 函式庫（有號 byte）、I2C（int16）照原值送；SPIKE App、MATRIX、Pybricks 積木 **＋100** 送，讀到後減 100。
 
 ### 色相碼 0～255
@@ -157,8 +180,8 @@ EV3 的 Y 是**下＝小**：(119−Y)÷20＋1；SPIKE 系列照 Kito「上＝�
 
 | | 舊版：學校版 | 舊版：WRO 版（HUE12） | 目前的神攝手 |
 | :--- | :--- | :--- | :--- |
-| 主要功能 | 取色點＋色塊追蹤＋動態偵測 | 12 個色點的顏色碼與鮮豔度 | 顏色追蹤（最多 16 色）、座標取色、照順序給色號、循線 |
-| 在相機上切換用法 | — | — | 4 個相機模式＋子選項 |
+| 主要功能 | 取色點＋色塊追蹤＋動態偵測 | 12 個色點的顏色碼與鮮豔度 | 顏色追蹤（最多 16 色）、座標取色、照順序給色號、循線、物體偵測 |
+| 在相機上切換用法 | — | — | 5 個相機模式＋子選項 |
 | 平台 | SPIKE、EV3、MATRIX、Arduino 等 | SPIKE、EV3、MATRIX | SPIKE、EV3、MATRIX、Arduino、micro:bit、mBlock |
 | 狀態 | 停止支援 | 停止支援 | **韌體 v1 開發中，尚未上機驗證** |
 | 說明 | [舊版總覽](/sensors/esp32cam/index.md) | [舊版總覽](/sensors/esp32cam/index.md) | 本頁 |
@@ -175,7 +198,7 @@ EV3 的 Y 是**下＝小**：(119−Y)÷20＋1；SPIKE 系列照 Kito「上＝�
 | MATRIX Mini R4 | MATRIXblock mVision 積木（10 格） | [MATRIX 讀值教學](/sensors/unicam/matrix/mvision.md) |
 | Arduino／ESP32／UNO R4 | I2C 0x4C | [Arduino 讀值教學](/sensors/unicam/arduino/index.md) |
 | micro:bit | I2C 0x4C（MakeCode） | [micro:bit 讀值教學](/sensors/unicam/microbit/index.md) |
-| mBlock（mBot、Ranger、Orion、MegaPi） | RJ25 串口 38400，MBC 感應器擴展 v2.1.0（開發中，正式上架前可先下載匯入檔試用） | [mBlock 讀值教學](/sensors/unicam/mblock/index.md) |
+| mBlock（mBot、Ranger、Orion、MegaPi） | RJ25 串口 38400，MBC 感應器擴展 v2.2.0（開發中，正式上架前可先下載匯入檔試用） | [mBlock 讀值教學](/sensors/unicam/mblock/index.md) |
 
 範例程式：[SPIKE](/sensors/unicam/spike-examples.md)・[EV3](/sensors/unicam/ev3-examples.md)・[Arduino](/sensors/unicam/arduino-examples.md)・[micro:bit](/sensors/unicam/microbit-examples.md)・[MATRIX](/sensors/unicam/matrix-examples.md)・[mBlock](/sensors/unicam/mblock-examples.md)。
 
@@ -189,3 +212,4 @@ EV3 的 Y 是**下＝小**：(119−Y)÷20＋1；SPIKE 系列照 Kito「上＝�
 4. **SPIKE App Python** 讀不讀得到模式 0 的 byte 8～15 待確認；積木讀得到的 8 byte 不受影響。
 5. **取樣點位置**：預設排法＋I2C E1 修改；相機選單還不能移動取樣點。
 6. **照順序給色號**最多收 32 塊（各平台實際給 2～18 塊）；引擎上限 16 色，LEGO 平台最多用到 14 色。
+7. **物體偵測**是 16 色判色再加輪廓分析，fps 要重新量；畫面處理不完時只在模式 5 自動降幀率（最低 25 fps）。形狀門檻沿用物體偵測專用版上機調過的值，電腦端測試形狀判對 99%（面積約 310 像素以上）。

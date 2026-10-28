@@ -27,7 +27,7 @@
 
 | 編號 | 內容 |
 | :--- | :--- |
-| `0x01` | 相機模式編號（相機模式 × 10 ＋ 子選項，例 13＝顏色追蹤 ③ 標準） |
+| `0x01` | 相機模式編號（相機模式 × 10 ＋ 子選項，例 13＝顏色追蹤 ③ 標準、51＝物體偵測 ① 物體清單） |
 | `0x02` | 子選項 |
 | `0x03` | 已教幾色 |
 | `0x04` | 這一層給幾個（色數／點數／塊數） |
@@ -100,6 +100,73 @@ void loop() {
 ```
 
 同一層的色 2 從 `0x14` 起（每色 4 個值）；其他相機模式每個值的編號看 [讀值參考：I2C](/sensors/unicam/reference.md#host-i2c)。
+
+## 相機模式 5 物體偵測
+
+相機把畫面裡的物體由大到小排好（物體 1 最大），每個物體給**物體代碼＝色號 × 10 ＋ 形狀**（例 13＝目標 1 的三角形，0＝沒有）。形狀：0 其他、1 圓、2 橢圓、3 三角、4 正方、5 長方、6 五邊、7 六邊、8 星、9 梯形。X、Y 是物體的**質心**；只看目標色 1～8。模式編號 **51＝① 物體清單**、**52＝② 物體詳細**。代碼再拆：色號＝代碼 ÷ 10（取整數）、形狀＝代碼除以 10 的餘數。
+
+切模式：命令 `E0 [5, 1]`（物體清單）或 `E0 [5, 2]`（物體詳細）。
+
+| 模式 | 每個物體（物體 i 從 `0x10 + 每個值數 × (i−1)` 起） | 物體數 |
+| :---: | :--- | :---: |
+| 51 ① 物體清單 | 4 個值：色號、形狀、X、Y（8 個物體） | `0x30` |
+| 52 ② 物體詳細 | 10 個值：色號、形狀、X、Y、寬、高、面積 %、角度 0～179、頂點數（三角 3、四邊形 4、五邊 5、六邊 6、星 10、圓 0）、追蹤編號 1～255（8 個物體） | `0x60` |
+
+F3 狀態旗標的 bit1 在物體偵測＝物體數 > 0。下面是物體詳細（52）的最小程式：
+
+```cpp
+#include <Wire.h>
+const uint8_t CAM = 0x4C;                    // 出廠位址
+
+// 從編號 id 起連續讀 k 個值（k ≤ 16）。回傳 false = 相機沒回應
+bool camRead(uint8_t id, uint8_t k, int16_t *out) {
+  Wire.beginTransmission(CAM);
+  Wire.write(id);
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);
+  if (Wire.requestFrom(CAM, (uint8_t)(2 * k)) != 2 * k) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read(), hi = Wire.read();
+    out[i] = (int16_t)(lo | (hi << 8));     // 低位元組在前
+  }
+  return true;
+}
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin();
+  Wire.beginTransmission(CAM);               // 命令 E0 [5, 2]：切到 物體偵測 ② 物體詳細
+  Wire.write(0xE0);
+  Wire.write(5);
+  Wire.write(2);
+  Wire.endTransmission();
+  delay(100);
+}
+
+void loop() {
+  int16_t n, v[10];
+  if (!camRead(0x60, 1, &n)) {               // 0x60：物體數（模式 52）
+    Serial.println("找不到相機，請檢查接線與位址");
+    delay(500);
+    return;
+  }
+  Serial.print("物體數 "); Serial.println(n);
+  for (uint8_t i = 0; i < n && i < 8; i++) { // 物體 1 最大
+    if (!camRead(0x10 + 10 * i, 10, v)) return;   // 色號、形狀、X、Y、寬、高、面積、角度、頂點數、追蹤編號
+    Serial.print("  物體 "); Serial.print(i + 1);
+    Serial.print(" 代碼="); Serial.print(v[0] * 10 + v[1]);   // 色號 × 10 ＋ 形狀
+    Serial.print(" X="); Serial.print(v[2]);
+    Serial.print(" Y="); Serial.print(v[3]);
+    Serial.print(" 面積="); Serial.print(v[6]);
+    Serial.print("% 角度="); Serial.print(v[7]);
+    Serial.print(" 頂點="); Serial.print(v[8]);
+    Serial.print(" 追蹤="); Serial.println(v[9]);
+  }
+  delay(200);
+}
+```
+
+範例裡的小幫手 `ucReadObject(mode, i, o)`、`ucObjectCount(mode)`、`ucShapeName(s)` 已經包好這些，看 [Arduino 範例 6](/sensors/unicam/arduino-examples.md#ex6)。
 
 ## 逐格對照與範例
 

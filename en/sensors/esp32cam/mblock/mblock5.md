@@ -21,7 +21,7 @@ Get the **MakeBlock edition** (RJ25 plug) and plug it into an RJ25 port of mBot 
 
 ## Reading values (School edition)
 
-After adding the MBC Pro Sensors extension, find the blocks in the "Vision" category and pick the port the sensor is plugged into.
+After adding the MBC Pro Sensors extension, find the blocks in the "Sharpshooter Vision (legacy)" category and pick the port the sensor is plugged into.
 
 <section id="v01" class="ref-item">
 
@@ -33,7 +33,7 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Vision" cate
 | :--- | :--- |
 | `-1~100` | hue of sample point S1, 0~100 (hue ring 0~240 scaled); −1 = black/white/grey (saturation < 10); 0 when S1 is not set |
 
-<pre class="blocks">(Vision port [1 v] hue :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] hue :: sensing)</pre>
 
 <p class="ref-note">Block returns hue（-1~100）。Host sends <code>[01]</code> → reply <code>[lo][hi][01 ^ lo ^ hi]</code>, value = int16 little-endian.</p>
 
@@ -49,7 +49,7 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Vision" cate
 | :--- | :--- |
 | `0~100` | saturation of sample point S1, 0~100 |
 
-<pre class="blocks">(Vision port [1 v] saturation :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] saturation :: sensing)</pre>
 
 <p class="ref-note">Block returns saturation（0~100）。Host sends <code>[02]</code> → reply <code>[lo][hi][02 ^ lo ^ hi]</code>, value = int16 little-endian.</p>
 
@@ -65,7 +65,7 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Vision" cate
 | :--- | :--- |
 | `0~100` | brightness (HSV value) of sample point S1, 0~100 |
 
-<pre class="blocks">(Vision port [1 v] brightness :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] brightness :: sensing)</pre>
 
 <p class="ref-note">Block returns brightness（0~100）。Host sends <code>[03]</code> → reply <code>[lo][hi][03 ^ lo ^ hi]</code>, value = int16 little-endian.</p>
 
@@ -81,7 +81,7 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Vision" cate
 | :--- | :--- |
 | `0~100` | whole-frame motion 0~100 (more change = larger) |
 
-<pre class="blocks">(Vision port [1 v] motion :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] motion :: sensing)</pre>
 
 <p class="ref-note">Block returns motion（0~100）。Host sends <code>[04]</code> → reply <code>[lo][hi][04 ^ lo ^ hi]</code>, value = int16 little-endian.</p>
 
@@ -97,7 +97,7 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Vision" cate
 | :--- | :--- |
 | `0~100` | blob centre X 0~100, left = 0; 0 when not found |
 
-<pre class="blocks">(Vision port [1 v] blob X :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] blob X :: sensing)</pre>
 
 <p class="ref-note">Block returns blob X（0~100）。Host sends <code>[05]</code> → reply <code>[lo][hi][05 ^ lo ^ hi]</code>, value = int16 little-endian.</p>
 
@@ -113,7 +113,7 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Vision" cate
 | :--- | :--- |
 | `0~75` | blob centre Y 0~75, bottom = 0, top = 75; 0 when not found |
 
-<pre class="blocks">(Vision port [1 v] blob Y :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] blob Y :: sensing)</pre>
 
 <p class="ref-note">Block returns blob Y（0~75）。Host sends <code>[06]</code> → reply <code>[lo][hi][06 ^ lo ^ hi]</code>, value = int16 little-endian.</p>
 
@@ -129,7 +129,7 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Vision" cate
 | :--- | :--- |
 | `0~100` | blob width W 0~100; 0 = not found |
 
-<pre class="blocks">(Vision port [1 v] blob width :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] blob width :: sensing)</pre>
 
 <p class="ref-note">Block returns blob width（0~100）。Host sends <code>[07]</code> → reply <code>[lo][hi][07 ^ lo ^ hi]</code>, value = int16 little-endian.</p>
 
@@ -145,7 +145,7 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Vision" cate
 | :--- | :--- |
 | `0~75` | blob height H 0~75; 0 when not found |
 
-<pre class="blocks">(Vision port [1 v] blob height :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] blob height :: sensing)</pre>
 
 <p class="ref-note">Block returns blob height（0~75）。Host sends <code>[08]</code> → reply <code>[lo][hi][08 ^ lo ^ hi]</code>, value = int16 little-endian.</p>
 
@@ -161,7 +161,7 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Vision" cate
 | :--- | :--- |
 | `0~7500` | W×H (0~7500); 0 when not found |
 
-<pre class="blocks">(Vision port [1 v] blob area :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] blob area :: sensing)</pre>
 
 <p class="ref-note">Block returns blob area（0~7500）。Host sends <code>[09]</code> → reply <code>[lo][hi][09 ^ lo ^ hi]</code>, value = int16 little-endian.</p>
 
@@ -175,7 +175,7 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Vision" cate
 | :--- | :--- |
 | `0~1` | 1 = a blob of the target colour is in view (W > 0), 0 = none |
 
-<pre class="blocks">(Vision port [1 v] blob found? :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] blob found? :: sensing)</pre>
 
 <p class="ref-note">Block returns blob found（0~1）。Host sends <code>[0A]</code> → reply <code>[lo][hi][0A ^ lo ^ hi]</code>, value = int16 little-endian.</p>
 
@@ -189,13 +189,13 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Vision" cate
 
 reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one
 
-<pre class="blocks">Vision port [1 v] update all values :: sensing</pre>
+<pre class="blocks">Sharpshooter Vision (legacy) port [1 v] update all values :: sensing</pre>
 
 </section>
 
 ## Reading values (WRO edition)
 
-After adding the MBC Pro Sensors extension, find the blocks in the "Vision WRO" category and pick the port the sensor is plugged into.
+After adding the MBC Pro Sensors extension, find the blocks in the "Sharpshooter Vision WRO (legacy)" category and pick the port the sensor is plugged into.
 
 <section id="w10" class="ref-item">
 
@@ -207,7 +207,7 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Vision WRO" 
 | :--- | :--- |
 | `0~255` | 10~1B = colour code of spots S1~S12: 0~239 colour (hue 0~255 scaled to 0~239), 240~245 white (saturation < 30, lower = larger), 246~250 black (value < 30, darker = larger), 255 = spot not enabled |
 
-<pre class="blocks">(Vision WRO port [1 v] spot [1 v] colour code :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision WRO (legacy) port [1 v] spot [1 v] colour code :: sensing)</pre>
 
 <p class="ref-note">Block returns spot 1~12 colour code（0~255）。Host sends <code>[10]</code> → reply <code>[lo][hi][10 ^ lo ^ hi]</code>, value = int16 little-endian; channel N uses id 0x10 + (N − 1).</p>
 
@@ -223,7 +223,7 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Vision WRO" 
 | :--- | :--- |
 | `0~255` | 20~2B = vividness (saturation) of spots S1~S12, 0~255: black = 1, white/colour = actual saturation; 0 when the spot is not enabled |
 
-<pre class="blocks">(Vision WRO port [1 v] spot [1 v] vividness :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision WRO (legacy) port [1 v] spot [1 v] vividness :: sensing)</pre>
 
 <p class="ref-note">Block returns spot 1~12 vividness（0~255）。Host sends <code>[20]</code> → reply <code>[lo][hi][20 ^ lo ^ hi]</code>, value = int16 little-endian; channel N uses id 0x20 + (N − 1).</p>
 
@@ -237,7 +237,7 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Vision WRO" 
 
 reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one
 
-<pre class="blocks">Vision WRO port [1 v] update all values :: sensing</pre>
+<pre class="blocks">Sharpshooter Vision WRO (legacy) port [1 v] update all values :: sensing</pre>
 
 </section>
 
@@ -254,6 +254,7 @@ Still stuck? [Contact us](/en/contact.md) with your software and a screenshot of
 
 ## Downloads
 
+- [MBC_Pro_Sensors_mBlock5_v2.2.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.2.0_import.mext)
 - [MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext)
 - [MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext)
 - [MBC_Pro_Sensors_mBlock5_v1.0.0.mext (legacy, units shipped before 2026-10)](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext)

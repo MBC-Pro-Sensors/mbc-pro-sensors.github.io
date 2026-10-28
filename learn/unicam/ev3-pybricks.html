@@ -329,13 +329,26 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
             <label class="f" for="lmark" data-g="line"><span>現在穿過的彩色標記線</span>
               <select id="lmark"><option value="0">沒有</option><option value="2">目標色 2（綠）</option><option value="3">目標色 3（藍）</option><option value="4">目標色 4（黃）</option></select>
             </label>
+            <label class="f" for="jshape" data-g="obj"><span>選到的物體（<span id="jname">追蹤編號 1</span>；點形狀可以換選）的形狀</span>
+              <select id="jshape"><option value="1">1 圓</option><option value="2">2 橢圓</option><option value="3">3 三角</option><option value="4">4 正方</option><option value="5">5 長方</option><option value="6">6 五邊</option><option value="7">7 六邊</option><option value="8">8 星</option><option value="9">9 梯形</option></select>
+            </label>
+            <label class="f" for="jcolor" data-g="obj"><span>顏色（相機上教的目標色 1～8）</span>
+              <select id="jcolor"><option value="1">目標色 1（紅）</option><option value="2">目標色 2（綠）</option><option value="3">目標色 3（藍）</option><option value="4">目標色 4（黃）</option><option value="5">目標色 5（紫）</option><option value="6">目標色 6（橙）</option><option value="7">目標色 7（青）</option><option value="8">目標色 8（粉紅）</option></select>
+            </label>
+            <label class="f" for="jsize" data-g="obj"><span>大小（越近看起來越大）</span>
+              <input autocomplete="off" type="range" id="jsize" min="12" max="70" value="42">
+            </label>
+            <label class="f" for="jrot" data-g="obj"><span>轉角度（0～179 度）</span>
+              <input autocomplete="off" type="range" id="jrot" min="0" max="179" value="0">
+            </label>
             <div class="toggles">
+              <label data-g="obj"><input autocomplete="off" type="checkbox" id="jgone"> 拿走這個物體（<span id="jname2">追蹤編號 1</span>）</label>
               <label data-g="track"><input autocomplete="off" type="checkbox" id="tgone"> 拿走<span id="selname3">色 1</span></label>
               <label data-g="line"><input autocomplete="off" type="checkbox" id="lgone"> 拿走線（車子離開線）</label>
               <label><input autocomplete="off" type="checkbox" id="unplug"> 拔掉感應器</label>
             </div>
           </div>
-          <p class="note">模擬畫面是示意：數值直接用畫面上的位置換算（X 0～159 左→右、Y 0～119 上→下、面積 %＝寬×高÷整個畫面），色相碼是那張色紙／積木本來的顏色（紅 0、黃 40、綠 80、藍 160、紫 200、白桌面 244、黑膠帶 252），不是相機裡面的算法；實際數值會因光線差一些。顏色追蹤假設相機上已經教了 4 色：色 1 紅、色 2 綠、色 3 藍、色 4 黃。</p>
+          <p class="note">模擬畫面是示意：數值直接用畫面上的位置換算（X 0～159 左→右、Y 0～119 上→下、面積 %＝寬×高÷整個畫面），色相碼是那張色紙／積木本來的顏色（紅 0、黃 40、綠 80、藍 160、紫 200、白桌面 244、黑膠帶 252），不是相機裡面的算法；實際數值會因光線差一些。顏色追蹤假設相機上已經教了 4 色：色 1 紅、色 2 綠、色 3 藍、色 4 黃。物體偵測的形狀是你直接選的（不是相機判斷的），物體 1、2…照面積由大到小排，X、Y 是形狀的質心（白點）、虛線框是外框，角度就是你轉的角度。</p>
         </div>
           </div>
         </div>
@@ -414,16 +427,19 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     { n: 30, g: 'order', cm: 3, sub: 0, name: ('（沒有子選項）') },
     { n: 41, g: 'line', cm: 4, sub: 1, name: ('① 黑線') },
     { n: 42, g: 'line', cm: 4, sub: 2, name: ('② 白線') },
-    { n: 43, g: 'line', cm: 4, sub: 3, name: ('③ 色線') }
+    { n: 43, g: 'line', cm: 4, sub: 3, name: ('③ 色線') },
+    { n: 51, g: 'obj', cm: 5, sub: 1, name: ('① 物體清單') },
+    { n: 52, g: 'obj', cm: 5, sub: 2, name: ('② 物體詳細') }
   ];
   var GROUPS = {
     track: { cm: 1, name: ('1 顏色追蹤'), modes: [11, 12, 13, 14] },
     spot: { cm: 2, name: ('2 座標取色'), modes: [21, 22, 23] },
     order: { cm: 3, name: ('3 照順序給色號'), modes: [30] },
     line: { cm: 4, name: ('4 循線'), modes: [41, 42, 43] },
+    obj: { cm: 5, name: ('5 物體偵測'), modes: [51, 52] },
     info: { cm: 0, name: ('感應器資訊（每個模式都能用）'), modes: null }
   };
-  var GORDER = ['track', 'spot', 'order', 'line', 'info'];
+  var GORDER = ['track', 'spot', 'order', 'line', 'obj', 'info'];
   function modeOf(n) { for (var i = 0; i < MODES.length; i++) if (MODES[i].n === n) return MODES[i]; return MODES[2]; }
   function modeTitle(n) { var m = modeOf(n); return n + ' = ' + GROUPS[m.g].name.replace(/^\d /, '') + ' ' + m.name; }
   function modeList(ms) {
@@ -445,6 +461,9 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if (h < 12 || h >= 220) return 1; if (h < 28) return 2; if (h < 56) return 3;
     if (h < 100) return 4; if (h < 140) return 5; if (h < 180) return 6; return 7;
   }
+  // 物體形狀 0~9（跟函式庫 shape_name()／ucShapeName() 同一張表）
+  var SHAPES = ['other', 'circle', 'ellipse', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon', 'star', 'trapezoid'];
+  var SHAPES_ZH = [('其他'), ('圓'), ('橢圓'), ('三角'), ('正方'), ('長方'), ('五邊'), ('六邊'), ('星'), ('梯形')];
   // ───── Python 輸出格式 ─────
   function py(v) {
     if (v === null || v === undefined) return 'None';
@@ -516,6 +535,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
 
       var EV3 = CFG.ev3;
       var S = { step: 1, viewStep: 1, fn: 'xy', mode: 13, name: 'cam', port: CFG.port, multi: false, auto: false };
+      var NOBJ = EV3 ? { 51: 5, 52: 2 } : { 51: 4, 52: 2 };
       var NCOL = EV3 ? { 11: 12, 12: 8, 13: 4, 14: 2 } : { 11: 14, 12: 7, 13: 4, 14: 2 };
       var NPT = EV3 ? { 21: 12, 22: 4, 23: 2 } : { 21: 14, 22: 7, 23: 4 };
       var ORDN = EV3 ? 11 : 13;
@@ -571,22 +591,40 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
           sensor_ok: function () { return st.ok; },
           device_id: function () { return N ? null : tup([76, 3, 100]); },
           is_unicam: function () { return EV3 ? !N : (N ? null : true); },
-          firmware_version: function () { return N ? null : tup([1, 0]); }
+          firmware_version: function () { return N ? null : tup([1, 0]); },
+          // 物體偵測：st.obj＝[色號, 形狀, X, Y, 左, 上, 右, 下, 面積像素, 角度, 頂點數, 追蹤編號]，面積大的先
+          max_object: function () { return NOBJ[m]; },
+          object_count: function () { return N ? null : st.obj.length; },
+          object: function (i) { var o = st.obj[i - 1]; return N ? null : (o ? o[0] * 10 + o[1] : 0); },
+          object_found: function (i) { return N ? null : !!st.obj[i - 1]; },
+          object_color: function (i) { var o = st.obj[i - 1]; return N ? null : (o ? o[0] : 0); },
+          object_shape: function (i) { var o = st.obj[i - 1]; return N ? null : (o ? o[1] : 0); },
+          object_grid: function (i) { var o = st.obj[i - 1]; return N ? null : tup(o ? [idiv(o[2], 20) + 1, 6 - idiv(o[3], 20)] : [0, 0]); },
+          object_xy: function (i) {
+            var o = st.obj[i - 1]; if (N) return null; if (!o) return tup([0, 0]);
+            return tup(EV3 ? [idiv(o[2], 20) * 20 + 10, idiv(o[3], 20) * 20 + 9] : [Math.max(1, o[2]), Math.max(1, o[3])]);
+          },
+          object_size: function (i) { var o = st.obj[i - 1]; return N ? null : tup(o ? [o[6] - o[4] + 1, o[7] - o[5] + 1] : [0, 0]); },
+          object_area: function (i) { var o = st.obj[i - 1]; return N ? null : (o ? Math.max(1, idiv(o[8] * 100 + 9600, 19200)) : 0); },
+          object_angle: function (i) { var o = st.obj[i - 1]; if (N) return null; if (!o) return 0; var v = idiv(o[9] + 1, 2); return v <= 0 ? 0 : Math.min(179, 2 * v); }
         };
         // EV3 不寫 mode 又讀不到相機：函式庫的 _need() 拿到模式 None，丟 ValueError（訊息照函式庫原文）
         if (EV3 && S.auto && N) {
           var NEED = { xy: 'xy', x: 'xy', y: 'xy', found: 'xy', grid: 'grid', max_color: 'max_color', area: 'area', size: 'size', count: 'count',
             hsv: 'hsv', hue: 'hsv', color: 'hsv', sat: 'sat', val: 'val', max_point: 'max_point', order: 'order', total: 'total',
             near: 'near', mid: 'mid', far: 'far', angle: 'angle', width: 'width', flags: 'flags', junction: 'junction', junction_dist: 'junction_dist',
-            edges: 'edges', far_width: 'far_width', marker: 'marker', line_all: 'line_all' };
-          var OKM = { xy: '(11, 12, 13, 14)', grid: '(11, 12, 13, 14)', max_color: '(11, 12, 13, 14)', area: '(13, 14)', size: '(14,)', count: '(14,)', hsv: '(21, 22, 23)', max_point: '(21, 22, 23)', sat: '(22, 23)', val: '(22, 23)', order: '(30,)', total: '(30,)' };
+            edges: 'edges', far_width: 'far_width', marker: 'marker', line_all: 'line_all',
+            max_object: 'max_object', object_count: 'object_count', object: 'object', object_found: 'object', object_color: 'object', object_shape: 'object',
+            object_grid: 'object_grid', object_xy: 'object_xy', object_area: 'object_area', object_angle: 'object_angle' };
+          var OKM = { xy: '(11, 12, 13, 14)', grid: '(11, 12, 13, 14)', max_color: '(11, 12, 13, 14)', area: '(13, 14)', size: '(14,)', count: '(14,)', hsv: '(21, 22, 23)', max_point: '(21, 22, 23)', sat: '(22, 23)', val: '(22, 23)', order: '(30,)', total: '(30,)',
+            max_object: '(51, 52)', object_count: '(51,)', object: '(51, 52)', object_grid: '(51, 52)', object_xy: '(51, 52)', object_area: '(52,)', object_angle: '(52,)' };
           Object.keys(NEED).forEach(function (k) {
             var nm = NEED[k], ok = OKM[nm] || '(41, 42, 43)';
             V[k] = function () { throw new PyErr('ValueError: ' + nm + '(): 模式 None 沒有這個值，要用模式 ' + ok + ' / not available in mode None, use mode ' + ok); };
           });
         }
         // 數讀了幾次感應器（拔線提醒用）；不讀感應器的功能不算
-        var NOREAD = EV3 ? { max_color: 1, max_point: 1, sensor_ok: 1, mode_number: S.auto ? 0 : 1 } : { max_color: 1, max_point: 1, mode_number: 1 };
+        var NOREAD = EV3 ? { max_color: 1, max_point: 1, max_object: 1, sensor_ok: 1, mode_number: S.auto ? 0 : 1 } : { max_color: 1, max_point: 1, max_object: 1, mode_number: 1 };
         var COST = EV3 ? { line_all: 2, order: 2, marker: 2 } : {};
         if (EV3 && S.auto && N) { NOREAD = { sensor_ok: 1 }; COST = {}; }   // 先讀模式 0（印一次）就丟 ValueError
         var W = { __n: 0 };
@@ -739,6 +777,55 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         what: ('相機韌體版本 (主版, 次版)，例如 (1, 0)＝1.0。讀模式 8，放迴圈外面。'),
         ret: ('(主版, 次版)'), body: ['print({n}.firmware_version())'], out: function (V) { return py(V.firmware_version()); } });
 
+      // ───── 相機模式 5 物體偵測 ─────
+      FNS.push(
+        { id: 'max_object', label: 'max_object()', name: ('這個模式給幾個物體'), grp: 'obj', modes: [51, 52], once: true,
+          what: ('這個主機在這個模式拿得到幾個物體：') + (EV3 ? '51→5, 52→2' : '51→4, 52→2') + ('。物體 1＝面積最大，2、3…越來越小。不用讀相機。'),
+          ret: ('整數'), body: ['print("' + ('最多幾個物體:') + '", {n}.max_object())'], out: function (V) { return pr(('最多幾個物體:'), V.max_object()); } },
+        { id: 'object_count', label: 'object_count()', name: ('畫面裡有幾個物體'), grp: 'obj', modes: [51],
+          what: ('畫面裡有幾個物體（0～8，可能比 max_object() 多）。只看目標色 1～8。只有模式 51 有。勾「拿走這個物體」看數字變小。') + (EV3 ? ('EV3 讀紅外線模式 2（多 0.5 秒）。') : ''),
+          ret: ('0～8'), body: ['print("' + ('畫面裡有幾個物體:') + '", {n}.object_count())'], out: function (V) { return pr(('畫面裡有幾個物體:'), V.object_count()); } },
+        { id: 'object', label: 'object(i)', name: ('物體代碼'), grp: 'obj', modes: [51, 52],
+          what: ('物體 i 的代碼＝色號×10＋形狀，例 13＝目標色 1 的三角形、24＝目標色 2 的正方形；0＝沒有。形狀：1 圓 2 橢圓 3 三角 4 正方 5 長方 6 五邊 7 六邊 8 星 9 梯形 0 其他。在右邊換形狀、顏色試試看。'),
+          ret: ('0, 10～89'), body: ['print("' + ('物體 1 代碼:') + '", {n}.object(1))'], out: function (V) { return pr(('物體 1 代碼:'), V.object(1)); } },
+        { id: 'object_found', label: 'object_found(i)', name: ('有沒有物體'), grp: 'obj', modes: [51, 52],
+          what: ('有沒有物體 i。物體 1 一定是最大的那個，所以「有沒有物體 1」＝畫面裡有沒有任何物體。'),
+          ret: ('True／False'),
+          body: ['if {n}.object_found(1):', '    print("' + ('看到物體') + '")', 'else:', '    print("' + ('沒有物體') + '")'],
+          out: function (V) { return V.object_found(1) ? ('看到物體') : ('沒有物體'); } },
+        { id: 'object_color', label: 'object_color(i)', name: ('物體的色號'), grp: 'obj', modes: [51, 52],
+          what: ('物體 i 是相機上教的第幾個目標色（1～8），0＝沒有。'),
+          ret: ('0～8'), body: ['print("' + ('物體 1 是目標色') + '", {n}.object_color(1))'], out: function (V) { return pr(('物體 1 是目標色'), V.object_color(1)); } },
+        { id: 'object_shape', label: 'object_shape(i)', name: ('物體的形狀'), grp: 'obj', modes: [51, 52], imp: true,
+          what: ('物體 i 的形狀 0～9；<code>shape_name(s, True)</code> 換成中文名稱（要多匯入 <code>shape_name</code>）。沒有物體也是 0，先用 object_found() 判斷。'),
+          ret: ('0～9'), body: ['s = {n}.object_shape(1)', 'print("' + ('物體 1 的形狀:') + '", s, ' + ('shape_name(s, True)') + ')'],
+          out: function (V) { var x = V.object_shape(1); return pr(('物體 1 的形狀:'), x, x === null ? null : (SHAPES_ZH[x])); } },
+        { id: 'object_xy', label: 'object_xy(i)', name: ('物體位置（質心）'), grp: 'obj', modes: [51, 52],
+          what: ('物體 i 的質心 (X, Y) 像素，(0, 0)＝沒有。質心是形狀的重心（白點），三角形的質心比外框中心偏下。') + (EV3 ? ('EV3 是 8×6 格的格子中心（±10 像素）。') : ''),
+          ret: ('(X, Y)'), body: ['print("' + ('物體 1 位置:') + '", {n}.object_xy(1))'], out: function (V) { return pr(('物體 1 位置:'), V.object_xy(1)); } },
+        { id: 'object_find', label: ('找物體 13'), name: ('找紅色三角形'), grp: 'obj', modes: [51, 52],
+          what: ('一個一個看物體 1～max_object()，找代碼 13（目標色 1 的三角形）。找到就印位置，都沒有就印「沒看到」。把三角形換成別的形狀試試看。'),
+          ret: ('用 object() 判斷'),
+          body: ['for i in range(1, {n}.max_object() + 1):', '    if {n}.object(i) == 13:', '        print("' + ('紅色三角形在') + '", {n}.object_xy(i))', '        break', 'else:', '    print("' + ('沒看到紅色三角形') + '")'],
+          out: function (V) { var n = V.max_object(); for (var i = 1; i <= n; i++) if (V.object(i) === 13) return pr(('紅色三角形在'), V.object_xy(i)); return ('沒看到紅色三角形'); } });
+      if (!EV3) FNS.push({ id: 'object_size', label: 'object_size(i)', name: ('物體寬、高'), grp: 'obj', modes: [52],
+        what: ('模式 52：物體 i 外框的 (寬, 高) 像素（虛線框）。高比寬大很多＝直立的東西。'),
+        ret: ('(寬, 高)'), body: ['w, h = {n}.object_size(1)', 'print("' + ('寬') + '", w, "' + ('高') + '", h)'],
+        out: function (V) { var t = unpack(V.object_size(1)); return pr(('寬'), t[0], ('高'), t[1]); } });
+      if (EV3) FNS.push({ id: 'object_grid', label: 'object_grid(i)', name: ('EV3 原始格子（8×6）'), grp: 'obj', modes: [51, 52],
+        what: ('物體 i 在 EV3 原始 8×6 格的哪一格：(X 1～8, Y 1～6)，<b>Y 下＝小</b>。'),
+        ret: ('(X 格, Y 格)'), body: ['print("' + ('物體 1 格子:') + '", {n}.object_grid(1))'], out: function (V) { return pr(('物體 1 格子:'), V.object_grid(1)); } });
+      FNS.push({ id: 'object_area', label: 'object_area(i)', name: ('物體面積 %'), grp: 'obj', modes: [52],
+        what: ('模式 52：物體 i 佔畫面的幾 %（0＝沒有）。越近越大。把物體拉大試試看。'),
+        ret: ('0～100'),
+        body: ['a = {n}.object_area(1)', 'if a == 0:', '    print("' + ('沒有物體') + '")', 'elif a >= 20:', '    print("' + ('夠近了！面積') + '", a)', 'else:', '    print("' + ('物體 1 面積') + '", a, "%")'],
+        out: function (V) { var a = V.object_area(1); return a === 0 ? ('沒有物體') : cmp('>=', a, 20) ? pr(('夠近了！面積'), a) : pr(('物體 1 面積'), a, '%'); } });
+      if (EV3) FNS.push({ id: 'object_angle', label: 'object_angle(i)', name: ('物體角度'), grp: 'obj', modes: [52],
+        what: ('模式 52：物體 i 長邊的角度 0～179 度（往右＝0，往畫面下方轉為正）。EV3 送「(角度＋1)÷2」，函式庫乘 2 還原，±1 度。轉轉看物體。'),
+        ret: ('0～179'), body: ['print("' + ('物體 1 角度:') + '", {n}.object_angle(1))'], out: function (V) { return pr(('物體 1 角度:'), V.object_angle(1)); } });
+      // 卡片照分組排（模式 5 放在循線後面、感應器資訊前面）
+      FNS = FNS.map(function (f, i) { return [GORDER.indexOf(f.grp), i, f]; }).sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; }).map(function (x) { return x[2]; });
+
       // ───── 程式組裝 ─────
       function portRef() { return 'Port.' + CFG.ports[S.port]; }
       function ctor() {
@@ -749,14 +836,14 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       }
       function bodyOf(f, name) { return f.body.map(function (b) { return b.replace(/\{n\}\./g, (S.multi ? 'await ' : '') + name + '.'); }); }
       var HOST = {
-        counts: function (m) { return { col: NCOL[m], pt: NPT[m], order: ORDN, line: LINEN }; },
+        counts: function (m) { return { col: NCOL[m], pt: NPT[m], order: ORDN, line: LINEN, obj: NOBJ[m] }; },
         cmt: function (s) { return '# ' + s; },
         lines: function (f) {
           var L = [], mi = modeOf(S.mode);
           if (EV3) L.push({ t: '#!/usr/bin/env pybricks-micropython', tag: 1 });
           L.push({ t: 'from pybricks.parameters import Port', tag: 1 });
           L.push({ t: S.multi ? 'from pybricks.tools import wait, run_task' : 'from pybricks.tools import wait', tag: 1 });
-          L.push({ t: 'from ' + CFG.lib + ' import UniCam', tag: 1 });
+          L.push({ t: 'from ' + CFG.lib + ' import UniCam' + (S.step >= 3 && f.imp ? ', shape_name' : ''), tag: 1 });
           L.push({ t: '# ' + ('相機選單切到 模式 ') + S.mode + ' = ' + GROUPS[mi.g].name.replace(/^\d /, '') + (mi.sub ? ' ' + mi.name : ''), tag: 1 });
           if (S.step >= 2) {
             L.push({ t: '' });
@@ -929,8 +1016,49 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     osel: 0,
     // 循線：近、中、遠三個把手（只能左右拖）
     line: { ys: [100, 62, 24], xs: [66, 74, 88] }, lsel: 0,
-    mk: 0, mkn: 0, lastSide: -1
+    mk: 0, mkn: 0, lastSide: -1,
+    // 物體偵測：彩色形狀（形狀由使用者選，不做輪廓判斷）；色號 1~8＝相機上教的目標色；id＝追蹤編號（跨幀不變）
+    objs: [
+      { id: 1, color: 1, shape: 3, cx: 40, cy: 44, size: 42, rot: 0, gone: false },
+      { id: 2, color: 2, shape: 4, cx: 112, cy: 38, size: 30, rot: 20, gone: false },
+      { id: 3, color: 3, shape: 1, cx: 74, cy: 88, size: 28, rot: 0, gone: false },
+      { id: 4, color: 4, shape: 5, cx: 128, cy: 90, size: 34, rot: 150, gone: false },
+      { id: 5, color: 5, shape: 8, cx: 30, cy: 96, size: 26, rot: 0, gone: false }
+    ],
+    jsel: 0
   };
+  // 目標色 1~8 的畫面顏色（示意）
+  var OBJFILL = ['#888', '#d8392b', '#2f9e44', '#1f6fd1', '#f2c318', '#8a3fc4', '#f08a24', '#18a8b8', '#e0559a'];
+  var VERTS = [0, 0, 0, 3, 4, 4, 5, 6, 10, 4];
+  // 形狀的外框點（本地座標，大小 s、旋轉 rot 度；圓／橢圓用 48 點近似）：純幾何，只拿來畫圖與算面積、質心、外框
+  function objPoly(o) {
+    var s = o.size, pts = [], i, n, r;
+    if (o.shape === 1 || o.shape === 2) { var a = s / 2, b = o.shape === 1 ? s / 2 : s / 3; for (i = 0; i < 48; i++) { var t = i * Math.PI * 2 / 48; pts.push([a * Math.cos(t), b * Math.sin(t)]); } }
+    else if (o.shape === 3) { r = s / Math.sqrt(3); for (i = 0; i < 3; i++) { var t3 = -Math.PI / 2 + i * Math.PI * 2 / 3; pts.push([r * Math.cos(t3), r * Math.sin(t3) + r / 4]); } }
+    else if (o.shape === 4) pts = [[-s / 2, -s / 2], [s / 2, -s / 2], [s / 2, s / 2], [-s / 2, s / 2]];
+    else if (o.shape === 5) pts = [[-s / 2, -s * 0.28], [s / 2, -s * 0.28], [s / 2, s * 0.28], [-s / 2, s * 0.28]];
+    else if (o.shape === 6 || o.shape === 7) { n = o.shape === 6 ? 5 : 6; for (i = 0; i < n; i++) { var t5 = -Math.PI / 2 + i * Math.PI * 2 / n; pts.push([s / 2 * Math.cos(t5), s / 2 * Math.sin(t5)]); } }
+    else if (o.shape === 8) { for (i = 0; i < 10; i++) { var t8 = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? s * 0.2 : s / 2; pts.push([rr * Math.cos(t8), rr * Math.sin(t8)]); } }
+    else pts = [[-s / 2, s * 0.3], [s / 2, s * 0.3], [s * 0.28, -s * 0.3], [-s * 0.28, -s * 0.3]];
+    var c = Math.cos(o.rot * Math.PI / 180), sn = Math.sin(o.rot * Math.PI / 180);
+    return pts.map(function (q) { return [o.cx + q[0] * c - q[1] * sn, o.cy + q[0] * sn + q[1] * c]; });
+  }
+  function polyArea(P) { var a = 0; for (var i = 0; i < P.length; i++) { var j = (i + 1) % P.length; a += P[i][0] * P[j][1] - P[j][0] * P[i][1]; } return a / 2; }
+  function polyCentroid(P) {
+    var A = polyArea(P), x = 0, y = 0;
+    for (var i = 0; i < P.length; i++) { var j = (i + 1) % P.length, f = P[i][0] * P[j][1] - P[j][0] * P[i][1]; x += (P[i][0] + P[j][0]) * f; y += (P[i][1] + P[j][1]) * f; }
+    return [x / (6 * A), y / (6 * A)];
+  }
+  // 物體真值 [色號, 形狀, X, Y, 左, 上, 右, 下, 面積像素, 角度, 頂點數, 追蹤編號]（跟規格測試 oracle 的畫面格式一樣）
+  function objTruth(o) {
+    var P = objPoly(o), xs = P.map(function (q) { return q[0]; }), ys = P.map(function (q) { return q[1]; });
+    var l = clamp(Math.floor(Math.min.apply(null, xs)), 0, 159), r = clamp(Math.floor(Math.max.apply(null, xs)), 0, 159);
+    var t = clamp(Math.floor(Math.min.apply(null, ys)), 0, 119), b = clamp(Math.floor(Math.max.apply(null, ys)), 0, 119);
+    var c = polyCentroid(P);
+    // 角度（示意）：就是你轉的角度 0~179；圓沒有方向＝0
+    var ang = o.shape === 1 ? 0 : ((Math.round(o.rot) % 180) + 180) % 180;
+    return [o.color, o.shape, clamp(Math.round(c[0]), 0, 159), clamp(Math.round(c[1]), 0, 119), l, t, r, b, Math.max(1, Math.round(Math.abs(polyArea(P)))), ang, VERTS[o.shape], o.id];
+  }
   var WHITE = { h: 244, s: 4, v: 92 }, BLACK = { h: 252, s: 8, v: 7 };
   var TAPE = { y0: 104, y1: 112 };
   function hueFill(h) { return 'hsl(' + Math.round(h * 1.5) + ', 72%, 48%)'; }   // 色相碼 0~240 → 0~360 度
@@ -1008,6 +1136,13 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       L.lost = SC.lastSide < 0 ? 1 : 2;
     }
     s.line = L;
+    // 物體：面積由大到小，最多 8 個（形狀拖到畫面邊會被擋在畫面裡）
+    s.obj = SC.objs.filter(function (o) { return !o.gone; }).map(function (o) {
+      var P = objPoly(o), xs = P.map(function (q) { return q[0]; }), ys = P.map(function (q) { return q[1]; });
+      o.cx = clamp(o.cx, o.cx - Math.min.apply(null, xs), FW - 1 - (Math.max.apply(null, xs) - o.cx));
+      o.cy = clamp(o.cy, o.cy - Math.min.apply(null, ys), FH - 1 - (Math.max.apply(null, ys) - o.cy));
+      return objTruth(o);
+    }).sort(function (a, b) { return b[8] - a[8] || a[11] - b[11]; }).slice(0, 8);
     return s;
   }
   var frozen = null, everOk = false;
@@ -1028,7 +1163,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
   function draw(st) {
     var g = curG(), live = rawState(), h = '';
     var ir = getComputedStyle(document.documentElement).getPropertyValue('--ir').trim() || '#c0392b';
-    var floor = g === 'line' ? (S.mode === 42 ? '#2b2f33' : '#f2f0ea') : g === 'spot' ? '#f6f4ee' : '#e8e4da';
+    var floor = g === 'obj' ? '#f6f4ee' : g === 'line' ? (S.mode === 42 ? '#2b2f33' : '#f2f0ea') : g === 'spot' ? '#f6f4ee' : '#e8e4da';
     h += '<rect x="0" y="0" width="' + SW + '" height="' + SH + '" fill="#f7f7f2"/>';
     h += '<rect x="' + OX + '" y="' + OY + '" width="' + FW * K + '" height="' + FH * K + '" fill="' + floor + '" stroke="#55605d" stroke-width="2"/>';
     var top = '';
@@ -1068,6 +1203,21 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         h += txt(fx(b.cx), fy(b.cy) + 5, String(b.hue), { anchor: 'middle', bold: true, fill: '#fff', size: 13 });
       });
       top = ('由左到右 ') + (st.none ? '?' : '[' + st.order.hues.join(', ') + ']') + ('  共 ') + (st.none ? '?' : st.order.total) + (' 塊');
+    } else if (g === 'obj') {
+      var rank = {}; st.obj.forEach(function (o, k) { rank[o[11]] = k + 1; });
+      SC.objs.forEach(function (o, i) {
+        if (o.gone) return;
+        var P = objPoly(o);
+        h += '<polygon points="' + P.map(function (q) { return fx(q[0]).toFixed(1) + ',' + fy(q[1]).toFixed(1); }).join(' ') + '" fill="' + OBJFILL[o.color] + '" stroke="' + (i === SC.jsel ? '#111' : 'rgba(0,0,0,0.3)') + '" stroke-width="' + (i === SC.jsel ? 3 : 1.5) + '"/>';
+        var tr = objTruth(o);
+        if (st.ok && rank[o.id]) {
+          h += '<rect x="' + fx(tr[4]) + '" y="' + fy(tr[5]) + '" width="' + (tr[6] - tr[4] + 1) * K + '" height="' + (tr[7] - tr[5] + 1) * K + '" fill="none" stroke="#19a974" stroke-width="1.5" stroke-dasharray="4 3"/>';
+          h += '<circle cx="' + fx(tr[2]) + '" cy="' + fy(tr[3]) + '" r="3.5" fill="#fff" stroke="#111" stroke-width="1.5"/>';
+          h += txt(fx(tr[4]) + 2, fy(tr[5]) - 4, '#' + rank[o.id] + ' ' + (tr[0] * 10 + tr[1]), { size: 12, bold: true, fill: '#0b6b47', halo: true });
+        }
+      });
+      var o1 = st.obj[0];
+      top = st.none ? ('物體 ?') : ('物體 ') + st.obj.length + (o1 ? ('  最大 代碼 ') + (o1[0] * 10 + o1[1]) + '  X ' + o1[2] + '  Y ' + o1[3] : '');
     } else {
       var R = lineRows(), wpx = num('lwidth', 16), ink = S.mode === 42 ? '#f7f7f7' : S.mode === 43 ? '#d8392b' : '#1b1b1b';
       var gone = $('lgone').checked;
@@ -1109,6 +1259,14 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if ($('tsize') && Number($('tsize').value) !== b.size) $('tsize').value = b.size;
     if ($('tcount') && Number($('tcount').value) !== b.n) $('tcount').value = b.n;
     if ($('tgone')) $('tgone').checked = b.gone;
+    var ob = SC.objs[SC.jsel];
+    if ($('jname')) $('jname').textContent = ('追蹤編號 ') + ob.id;
+    if ($('jname2')) $('jname2').textContent = ('追蹤編號 ') + ob.id;
+    if ($('jshape') && Number($('jshape').value) !== ob.shape) $('jshape').value = ob.shape;
+    if ($('jcolor') && Number($('jcolor').value) !== ob.color) $('jcolor').value = ob.color;
+    if ($('jsize') && Number($('jsize').value) !== ob.size) $('jsize').value = ob.size;
+    if ($('jrot') && Number($('jrot').value) !== ob.rot) $('jrot').value = ob.rot;
+    if ($('jgone')) $('jgone').checked = ob.gone;
     if ($('phueval')) { var h0 = SC.patches[0].hue; $('phueval').textContent = h0 + ('，') + CNAME_ZH[colorCode(h0)]; }
   }
   function simInput(id) {
@@ -1117,6 +1275,12 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if (id === 'tcount') b.n = Number($('tcount').value);
     if (id === 'tgone') b.gone = $('tgone').checked;
     if (id === 'phue') SC.patches[0].hue = Number($('phue').value);
+    var ob = SC.objs[SC.jsel];
+    if (id === 'jshape') ob.shape = Number($('jshape').value);
+    if (id === 'jcolor') ob.color = Number($('jcolor').value);
+    if (id === 'jsize') ob.size = Number($('jsize').value);
+    if (id === 'jrot') ob.rot = Number($('jrot').value);
+    if (id === 'jgone') ob.gone = $('jgone').checked;
     if (id === 'lmark') {
       var m = Number($('lmark').value);
       SC.mkNow = m;
@@ -1133,6 +1297,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     var g = curG(), i;
     if (g === 'track') { for (i = SC.blobs.length - 1; i >= 0; i--) { var b = SC.blobs[i]; if (!b.gone && Math.abs(p.x - b.cx) <= b.size / 2 + 4 && Math.abs(p.y - b.cy) <= b.size / 2 + 4) { SC.sel = i; return true; } } return false; }
     if (g === 'spot') { for (i = SC.patches.length - 1; i >= 0; i--) { var q = SC.patches[i]; if (Math.abs(p.x - q.cx) <= q.w / 2 + 3 && Math.abs(p.y - q.cy) <= q.h / 2 + 3) { SC.psel = i; return true; } } return false; }
+    if (g === 'obj') { for (i = SC.objs.length - 1; i >= 0; i--) { var q2 = SC.objs[i]; if (!q2.gone && Math.abs(p.x - q2.cx) <= q2.size / 2 + 3 && Math.abs(p.y - q2.cy) <= q2.size / 2 + 3) { SC.jsel = i; return true; } } return false; }
     if (g === 'order') { var k = num('ocount', 4); for (i = k - 1; i >= 0; i--) { var o = SC.blocks[i]; if (Math.abs(p.x - o.cx) <= 13 && Math.abs(p.y - o.cy) <= 13) { SC.osel = i; return true; } } return false; }
     if ($('lgone').checked) return false;
     var best = 0, bd = 1e9;
@@ -1143,6 +1308,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     var g = curG();
     if (g === 'track') { var b = selBlob(); b.cx = p.x; b.cy = p.y; }
     else if (g === 'spot') { var q = SC.patches[SC.psel]; q.cx = clamp(p.x, q.w / 2, FW - q.w / 2); q.cy = clamp(p.y, q.h / 2, FH - q.h / 2); }
+    else if (g === 'obj') { var q3 = SC.objs[SC.jsel]; q3.cx = p.x; q3.cy = p.y; }
     else if (g === 'order') { var o = SC.blocks[SC.osel]; o.cx = clamp(p.x, 11, FW - 11); o.cy = clamp(p.y, 11, FH - 11); }
     else SC.line.xs[SC.lsel] = clamp(p.x, 2, FW - 2);
   }
@@ -1151,6 +1317,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if (g === 'track') return { x: selBlob().cx, y: selBlob().cy };
     if (g === 'spot') return { x: SC.patches[SC.psel].cx, y: SC.patches[SC.psel].cy };
     if (g === 'order') return { x: SC.blocks[SC.osel].cx, y: SC.blocks[SC.osel].cy };
+    if (g === 'obj') return { x: SC.objs[SC.jsel].cx, y: SC.objs[SC.jsel].cy };
     return { x: SC.line.xs[SC.lsel], y: SC.line.ys[SC.lsel] };
   }
   function bindSim(onMove, onInput) {
@@ -1168,7 +1335,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       if (!k) return;
       e.preventDefault(); var p = selPos(); moveSel({ x: p.x + k[0], y: p.y + k[1] }); onMove();
     });
-    ['tsize', 'tcount', 'tgone', 'phue', 'ocount', 'lwidth', 'ljunc', 'ljd', 'lmark', 'lgone', 'unplug'].forEach(function (id) {
+    ['tsize', 'tcount', 'tgone', 'phue', 'ocount', 'lwidth', 'ljunc', 'ljd', 'lmark', 'lgone', 'jshape', 'jcolor', 'jsize', 'jrot', 'jgone', 'unplug'].forEach(function (id) {
       var c = $(id); if (!c) return;
       c.addEventListener(c.tagName === 'SELECT' ? 'change' : 'input', function () { simInput(id); onInput(id); });
     });
@@ -1252,7 +1419,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
   function drawModes() {
     var box = $('modes'); if (!box) return;
     box.innerHTML = '';
-    ['track', 'spot', 'order', 'line'].forEach(function (g) {
+    ['track', 'spot', 'order', 'line', 'obj'].forEach(function (g) {
       var w = document.createElement('div'); w.className = 'fgroup';
       w.innerHTML = '<span>' + GROUPS[g].name + '</span>';
       var chips = document.createElement('div'); chips.className = 'chips';
@@ -1268,6 +1435,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     var have = m.g === 'track' ? ('這個主機在這個模式拿到 ' + c.col + ' 色')
       : m.g === 'spot' ? ('這個主機在這個模式拿到 ' + c.pt + ' 個取樣點')
       : m.g === 'order' ? ('這個主機最多拿到 ' + c.order + ' 塊的色相碼')
+      : m.g === 'obj' ? ('這個主機在這個模式拿到 ' + c.obj + ' 個物體')
       : ('這個主機拿到 ' + c.line + ' 個循線值');
     $('modenow').innerHTML = '<b>' + ('你選的：模式編號 ') + S.mode + '</b><span>' + ('＝相機模式 ') + m.cm + ' ' + GROUPS[m.g].name.replace(/^\d /, '') + (m.sub ? ('・子選項 ') + m.name : '') + ('。') + have + ('。') + '</span><span class="err">' + HOST.modeWarn(S.mode) + '</span>';
   }

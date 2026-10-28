@@ -11,7 +11,7 @@
  *   4. Then print the current mode number every second (it follows the camera menu too)
  *
  * Mode number = camera mode x 10 + option:
- *   11~14 colour tracking, 21~23 spot colour, 30 colour order, 41~43 line following
+ *   11~14 colour tracking, 21~23 spot colour, 30 colour order, 41~43 line following, 51/52 object detection
  *
  * You need: Sharpshooter Vision (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
  *
@@ -38,6 +38,9 @@ struct UcSpot { int16_t h, s, v; };
 // 14 line values (near/mid/far offset -100~100: line on the left = negative)
 struct UcLine { int16_t nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,
                 leftEdge, rightEdge, farWidth, marker, markerCount, lost; };
+// one object (modes 51/52): code = colour x 10 + shape (0 = none), color 1~8, shape 0~9,
+// x, y centroid pixels, w, h box pixels, area %, angle 0~179, vertices, trackId 1~255; -1 = not given in mode 51
+struct UcObject { int16_t code, color, shape, x, y, w, h, area, angle, vertices, trackId; };
 // ==== MBC_UNICAM_TOP_END ====
 
 unsigned long lastPrint = 0;
@@ -149,7 +152,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 
 // ---------- Sharpshooter Vision ----------
 
-// Switch camera mode (E0): camMode 1~4, sub = option (0 for colour order). Saved in the camera
+// Switch camera mode (E0): camMode 1~5, sub = option (0 for colour order; object detection 1 list, 2 detail). Saved in the camera
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
   uint8_t p[2] = { camMode, sub };
   bool ok = mbcWrite(ADDR, 0xE0, p, 2);
@@ -230,6 +233,43 @@ bool ucReadLine(UcLine &l) {
   l.leftEdge = d[8]; l.rightEdge = d[9]; l.farWidth = d[10];
   l.marker = d[11]; l.markerCount = d[12]; l.lost = d[13];
   return true;
+}
+
+// Object detection (modes 51/52): values per object: 51 -> 4 (colour shape X Y), 52 -> 10 (+ width height area angle vertices track id)
+uint8_t ucObjStride(uint8_t mode) {
+  if (mode == 51) return 4;
+  if (mode == 52) return 10;
+  return 0;
+}
+
+// Read object i (1~8, 1 = largest); mode = 51 or 52. true if read
+bool ucReadObject(uint8_t mode, uint8_t i, UcObject &o) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0 || i < 1 || i > 8) return false;
+  int16_t d[10];
+  if (!mbcReadMany(ADDR, 0x10 + (i - 1) * k, k, d)) return false;
+  o.color = d[0]; o.shape = d[1]; o.x = d[2]; o.y = d[3];
+  o.code = (d[0] > 0) ? d[0] * 10 + d[1] : 0;
+  o.w = -1; o.h = -1; o.area = -1; o.angle = -1; o.vertices = -1; o.trackId = -1;
+  if (mode == 52) { o.w = d[4]; o.h = d[5]; o.area = d[6]; o.angle = d[7]; o.vertices = d[8]; o.trackId = d[9]; }
+  return true;
+}
+
+// Number of objects in view, 0~8 (modes 51/52)
+int16_t ucObjectCount(uint8_t mode) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0) return MBC_NONE;
+  return mbcRead(ADDR, 0x10 + 8 * k);
+}
+
+// Shape number -> name: 0 other 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid
+const char *ucShapeName(int16_t s) {
+  switch (s) {
+    case 0: return "other";    case 1: return "circle";    case 2: return "ellipse";  case 3: return "triangle";
+    case 4: return "square";   case 5: return "rectangle"; case 6: return "pentagon"; case 7: return "hexagon";
+    case 8: return "star";     case 9: return "trapezoid";
+  }
+  return "?";
 }
 
 // Hue code -> colour number: 1 red 2 orange 3 yellow 4 green 5 cyan 6 blue 7 purple 8 white/grey 9 black

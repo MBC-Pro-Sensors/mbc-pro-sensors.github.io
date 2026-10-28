@@ -51,7 +51,7 @@
 
 ### 2.7 神攝手（攝影機感應器，開發中）
 - **類型**：機器人視覺攝影機感應器（OV3660 鏡頭、1.8 吋彩色螢幕＋4 顆按鍵）
-- **主要用途**：在相機選單切換 4 種模式：顏色追蹤（最多 16 色）、座標取色、照順序給色號、循線；SPIKE、EV3、MATRIX、Arduino、micro:bit、mBlock 都讀得到。韌體 v1 尚未上機驗證。網址：https://mbc-pro-sensors.github.io/sensors/unicam/
+- **主要用途**：在相機選單切換 5 種模式：顏色追蹤（最多 16 色）、座標取色、照順序給色號、循線、物體偵測（物體代碼＝色號×10＋形狀，9 種形狀，最多 8 個物體）；SPIKE、EV3、MATRIX、Arduino、micro:bit、mBlock 都讀得到。韌體 v1 尚未上機驗證。網址：https://mbc-pro-sensors.github.io/sensors/unicam/
 - **舊版**：2026-10 以前出貨的神攝手 ESP32CAM（學校版、WRO 版 HUE12）已停止支援，說明與範例保留在 https://mbc-pro-sensors.github.io/sensors/esp32cam/ 。升級成目前的神攝手：請聯繫原購買的經銷商寄回，韌體更新免費，來回運費由買家負擔。
 
 ---

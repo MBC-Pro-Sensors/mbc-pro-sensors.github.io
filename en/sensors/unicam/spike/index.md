@@ -131,6 +131,88 @@ When the hub sends 0x25 the camera switches to the home-edition layout: color on
 
 Every slot of the other camera modes: [value reference: Education](/en/sensors/unicam/reference.md#host-edu), [home edition](/en/sensors/unicam/reference.md#host-toy). Line following and other values that can be negative are sent **+100**.
 
+## Camera mode 5 object detection
+
+The camera sorts the objects in the picture from largest to smallest (object 1 = largest) and gives each an **object code = color × 10 + shape** (13 = a triangle of target 1, 0 = none). Shapes: 0 other, 1 circle, 2 ellipse, 3 triangle, 4 square, 5 rectangle, 6 pentagon, 7 hexagon, 8 star, 9 trapezoid. X, Y is the **centroid** of the object; only target colors 1~8 count. Mode number **51 = ① Object list**, **52 = ② Object detail**. Split the code: color = code ÷ 10 (whole number), shape = remainder of code ÷ 10.
+
+**Pybricks library** (easiest; [download MBC_UniCam.py](/examples/unicam/pybricks/MBC_UniCam.py) and import it with your program):
+
+```python
+from pybricks.parameters import Port
+from pybricks.tools import wait
+from MBC_UniCam import UniCam, shape_name
+
+cam = UniCam(Port.A, mode=51)            # camera set to Object detection ① Object list
+while True:
+    print("objects", cam.object_count())
+    for i in range(1, cam.max_object() + 1):     # SPIKE gets 4 objects, object 1 is the largest
+        if cam.object_found(i):
+            x, y = cam.object_xy(i)
+            print(" object", i, "code", cam.object(i), shape_name(cam.object_shape(i)), "X", x, "Y", y)
+    wait(200)
+```
+
+With `mode=52` you get 2 objects plus `object_size(i)` (width, height) and `object_area(i)` (area %), but no object count. Method list and a full program: [SPIKE example 6](/en/sensors/unicam/spike-examples.md).
+
+**Without the library (split mode 9 yourself)**:
+
+| Mode | byte 0 | Then |
+| :---: | :--- | :--- |
+| 51 | object count 0~8 | 3 bytes per object: code, X, Y (object 1 = bytes 1~3 … object 4 = bytes 10~12) |
+| 52 | object 1 color | 7 bytes per object: color, shape, X, Y, width, height, area % (object 1 = bytes 0~6, object 2 = bytes 7~13); no count, no angle |
+
+```python
+from pybricks.iodevices import PUPDevice
+from pybricks.parameters import Port
+from pybricks.tools import wait
+
+cam = PUPDevice(Port.A)          # camera set to Object detection ② Object detail (mode number 52)
+
+while True:
+    b = []
+    for v in cam.read(9):        # 7 int16 split into 14 bytes (low byte first)
+        b.append(v & 0xFF)
+        b.append((v >> 8) & 0xFF)
+    for i in range(2):           # 52: 7 bytes per object, object 1 is the largest
+        color, shape, x, y, w, h, area = b[7 * i:7 * i + 7]
+        if color:                # color 0 = no such object
+            print("object", i + 1, "code", color * 10 + shape, "X", x, "Y", y, "w", w, "h", h, "area", area, "%")
+    wait(100)
+```
+
+**Pybricks built-in blocks** (`reflection()`, `ambient()`, object 1 only): `reflection()` = object 1 X cell × 100 + Y cell (40×30 grid: X 1~40, Y 1~30, top = small, 0 = none; add 6399 when negative); `ambient()` shows A.BB: A = object 1 code, BB = object count (51) or object 1 area % (52, 100 shows as 99).
+
+```python
+from pybricks.pupdevices import ColorSensor
+from pybricks.parameters import Port
+from pybricks.tools import wait
+
+cam = ColorSensor(Port.A)        # camera set to Object detection ① (51) or ② (52): object 1 only
+
+while True:
+    r = int(cam.reflection())
+    if r < 0:
+        r += 6399                # above 3199 it shows as negative: add 6399
+    gx, gy = r // 100, r % 100   # object 1 position: 40×30 grid (X 1~40, Y 1~30, top = small); 0 = none
+    a = cam.ambient()            # shown as A.BB
+    code = int(a)                # A: object 1 code (color × 10 + shape)
+    bb = round((a - code) * 100) # BB: 51 = object count, 52 = object 1 area % (100 shows as 99)
+    print("code", code, "color", code // 10, "shape", code % 10, "cell", gx, gy, bb)
+    wait(100)
+```
+
+**Official SPIKE App** (the 5 values the blocks can read):
+
+| Block | Education 51 | Education 52 | Home 51 | Home 52 |
+| :--- | :--- | :--- | :--- | :--- |
+| color | object count | object 1 code | object count | object count |
+| reflection | object 1 code | object 1 area % | object 1 code | object 1 code |
+| raw red | object 1 position (X×10+Y) | object 1 X = remainder (÷256), Y = ÷256 whole number | object 1 position (X×10+Y) | object 1 X (pixels) |
+| raw green | ÷100 whole number = object 2 code, remainder = object 2 position | object 1 width = remainder, height = ÷256 | object 2 code | object 1 Y (pixels) |
+| raw blue | like raw green, object 3 | object 2 code = remainder, area % = ÷256 | object 2 position | object 1 area % |
+
+A position is an 8×6 cell "X×10+Y": X = ÷10 whole number (1~8), Y = remainder (1~6, top = small), pixels ≈ cell × 20 − 10. In Education App Python the reading helper [MBC_UniCam_App_helper.py](/examples/unicam/spike_app/MBC_UniCam_App_helper.py) has `object(i)`, `object_cell(i)`, `object_xy(1)` …; Education bytes 8~15 (objects 4~7, angle, vertices) cannot be read with blocks.
+
 ## Slot tables and examples
 
 - [Value reference: Pybricks library](/en/sensors/unicam/reference.md#host-pyb) · [SPIKE App](/en/sensors/unicam/reference.md#host-edu) · [Robot Inventor App](/en/sensors/unicam/reference.md#host-toy) · [Pybricks built-in blocks](/en/sensors/unicam/reference.md#host-pyblk)

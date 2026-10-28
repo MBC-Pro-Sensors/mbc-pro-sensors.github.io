@@ -15,6 +15,7 @@ What the Sharpshooter Vision sends on each host for each "camera mode · sub-opt
 - **"A.BB"**: Pybricks `ambient()` shows a decimal: integer part = A, two decimals = B.
 - **"(+100)"**: values that can be negative are sent +100; subtract 100 after reading.
 - Coordinates: pixel X 0~159 (left → right), Y 0~119 (top → bottom); on EV3, Y is small at the bottom. Grid conversions (16×12, 8×6, 40×30) are on the [product page](/en/sensors/unicam/index.md).
+- **Object code (camera mode 5)**: color number × 10 + shape, e.g. 13 = a triangle in color 1, 24 = a square in color 2, 0 = no object. Shapes: 0 other / unknown, 1 circle, 2 ellipse, 3 triangle, 4 square, 5 rectangle, 6 pentagon, 7 hexagon, 8 star, 9 trapezoid. Object 1 = the largest one; only target colors 1~8 count.
 
 <a id="counts"></a>
 
@@ -33,6 +34,8 @@ Click a number to jump to its table. Sub-option = level: the finer the level, th
 | 2 Color at points ③ Hue + saturation + value | [4 points hue + sat + value](/en/sensors/unicam/reference.md#pyb-23) | [4 points hue + sat + value](/en/sensors/unicam/reference.md#edu-23) | [2 points hue + sat/value](/en/sensors/unicam/reference.md#toy-23) | [1 point(s) raw hue + sat + value](/en/sensors/unicam/reference.md#pyblk-23) | [2 point(s) raw hue + sat + value](/en/sensors/unicam/reference.md#ev3-23) | [6 points hue + sat + value](/en/sensors/unicam/reference.md#mx-23) | [16 points hue + sat + value](/en/sensors/unicam/reference.md#i2c-23) |
 | 3 Color order | [13 blocks hue code](/en/sensors/unicam/reference.md#pyb-30) | [13 blocks hue code](/en/sensors/unicam/reference.md#edu-30) | [3 blocks hue code](/en/sensors/unicam/reference.md#toy-30) | [2 blocks hue code](/en/sensors/unicam/reference.md#pyblk-30) | [11 blocks hue code](/en/sensors/unicam/reference.md#ev3-30) | [18 blocks hue code](/en/sensors/unicam/reference.md#mx-30) | [16 blocks hue code](/en/sensors/unicam/reference.md#i2c-30) |
 | 4 Line following ①②③ black / white / colored line | [14 values](/en/sensors/unicam/reference.md#pyb-41) | [13 values](/en/sensors/unicam/reference.md#edu-41) | [5 values](/en/sensors/unicam/reference.md#toy-41) | [4 values](/en/sensors/unicam/reference.md#pyblk-41) | [12 values](/en/sensors/unicam/reference.md#ev3-41) | [14 values](/en/sensors/unicam/reference.md#mx-41) | [14 values](/en/sensors/unicam/reference.md#i2c-41) |
+| 5 Object detection ① Object list | [4 objects](/en/sensors/unicam/reference.md#pyb-51) | [7 objects](/en/sensors/unicam/reference.md#edu-51) | [2 objects](/en/sensors/unicam/reference.md#toy-51) | [1 object](/en/sensors/unicam/reference.md#pyblk-51) | [5 objects](/en/sensors/unicam/reference.md#ev3-51) | [4 objects](/en/sensors/unicam/reference.md#mx-51) | [8 objects: color, shape, XY](/en/sensors/unicam/reference.md#i2c-51) |
+| 5 Object detection ② Object details | [2 objects + size, area](/en/sensors/unicam/reference.md#pyb-52) | [2 objects + size, area, angle](/en/sensors/unicam/reference.md#edu-52) | [1 object + area](/en/sensors/unicam/reference.md#toy-52) | [1 object + area](/en/sensors/unicam/reference.md#pyblk-52) | [2 objects + area, angle](/en/sensors/unicam/reference.md#ev3-52) | [3 objects + size, area](/en/sensors/unicam/reference.md#mx-52) | [8 objects + size, area, angle](/en/sensors/unicam/reference.md#i2c-52) |
 
 <a id="host-pyb"></a>
 
@@ -320,6 +323,63 @@ Mode number 41 / 42 / 43.
 
 </details>
 
+<details class="plat pg-spike" id="pyb-51">
+<summary><span class="plat-dot"></span>Camera mode 5 Object detection ① Object list: 4 objects</summary>
+
+Mode number 51.
+
+<div>
+
+| Position | Content | Range |
+| :--- | :--- | :--- |
+| **SPIKE read(9)** | | |
+| Byte 0 | Object count | 0~8 |
+| Byte 1 | Object 1 code (color × 10 + shape) | 0, 10~89 |
+| Byte 2 | Object 1 X (px) | 0, 1~159 |
+| Byte 3 | Object 1 Y (px, small at top) | 0, 1~119 |
+| Byte 4 | Object 2 code (color × 10 + shape) | 0, 10~89 |
+| Byte 5 | Object 2 X (px) | 0, 1~159 |
+| Byte 6 | Object 2 Y (px, small at top) | 0, 1~119 |
+| Byte 7 | Object 3 code (color × 10 + shape) | 0, 10~89 |
+| Byte 8 | Object 3 X (px) | 0, 1~159 |
+| Byte 9 | Object 3 Y (px, small at top) | 0, 1~119 |
+| Byte 10 | Object 4 code (color × 10 + shape) | 0, 10~89 |
+| Byte 11 | Object 4 X (px) | 0, 1~159 |
+| Byte 12 | Object 4 Y (px, small at top) | 0, 1~119 |
+
+</div>
+
+</details>
+
+<details class="plat pg-spike" id="pyb-52">
+<summary><span class="plat-dot"></span>Camera mode 5 Object detection ② Object details: 2 objects + size, area</summary>
+
+Mode number 52.
+
+<div>
+
+| Position | Content | Range |
+| :--- | :--- | :--- |
+| **SPIKE read(9)** | | |
+| Byte 0 | Object 1 color number | 0, 1~8 |
+| Byte 1 | Object 1 shape | 0~9 |
+| Byte 2 | Object 1 X (px) | 0, 1~159 |
+| Byte 3 | Object 1 Y (px, small at top) | 0, 1~119 |
+| Byte 4 | Object 1 width (px) | 0~160 |
+| Byte 5 | Object 1 height (px) | 0~120 |
+| Byte 6 | Object 1 area (% of frame) | 0, 1~100 % |
+| Byte 7 | Object 2 color number | 0, 1~8 |
+| Byte 8 | Object 2 shape | 0~9 |
+| Byte 9 | Object 2 X (px) | 0, 1~159 |
+| Byte 10 | Object 2 Y (px, small at top) | 0, 1~119 |
+| Byte 11 | Object 2 width (px) | 0~160 |
+| Byte 12 | Object 2 height (px) | 0~120 |
+| Byte 13 | Object 2 area (% of frame) | 0, 1~100 % |
+
+</div>
+
+</details>
+
 <a id="host-edu"></a>
 
 ## SPIKE App (SPIKE Prime, yellow hub)
@@ -576,6 +636,64 @@ Mode number 41 / 42 / 43.
 
 </details>
 
+<details class="plat pg-spike" id="edu-51">
+<summary><span class="plat-dot"></span>Camera mode 5 Object detection ① Object list: 7 objects</summary>
+
+Mode number 51.
+
+<div>
+
+| Position | Content | Range |
+| :--- | :--- | :--- |
+| **Stock blocks (mode 0)** | | |
+| Color | Object count | 0~8 |
+| Reflected light | Object 1 code (color × 10 + shape) | 0, 10~89 |
+| Raw red | Object 1 X×10 + Y (8×6 grid, small at top) | 0, 11~86 |
+| Raw green | Object 2 code (color × 10 + shape) ×100 + object 2 X×10 + Y (8×6 grid, small at top) | Split ÷100 |
+| Raw blue | Object 3 code (color × 10 + shape) ×100 + object 3 X×10 + Y (8×6 grid, small at top) | Split ÷100 |
+| **App Python device.data(): bytes 8~15** | | |
+| Byte 8 | Object 4 code (color × 10 + shape) | 0, 10~89 |
+| Byte 9 | Object 4 X×10 + Y (8×6 grid, small at top) | 0, 11~86 |
+| Byte 10 | Object 5 code (color × 10 + shape) | 0, 10~89 |
+| Byte 11 | Object 5 X×10 + Y (8×6 grid, small at top) | 0, 11~86 |
+| Byte 12 | Object 6 code (color × 10 + shape) | 0, 10~89 |
+| Byte 13 | Object 6 X×10 + Y (8×6 grid, small at top) | 0, 11~86 |
+| Byte 14 | Object 7 code (color × 10 + shape) | 0, 10~89 |
+| Byte 15 | Object 7 X×10 + Y (8×6 grid, small at top) | 0, 11~86 |
+
+</div>
+
+</details>
+
+<details class="plat pg-spike" id="edu-52">
+<summary><span class="plat-dot"></span>Camera mode 5 Object detection ② Object details: 2 objects + size, area, angle</summary>
+
+Mode number 52.
+
+<div>
+
+| Position | Content | Range |
+| :--- | :--- | :--- |
+| **Stock blocks (mode 0)** | | |
+| Color | Object 1 code (color × 10 + shape) | 0, 10~89 |
+| Reflected light | Object 1 area (% of frame) | 0, 1~100 % |
+| Raw red | Object 1 X (px) + object 1 Y (px, small at top)×256 | Mod 256, ÷256 |
+| Raw green | Object 1 width (px) + object 1 height (px)×256 | Mod 256, ÷256 |
+| Raw blue | Object 2 code (color × 10 + shape) + object 2 area (% of frame)×256 | Mod 256, ÷256 |
+| **App Python device.data(): bytes 8~15** | | |
+| Byte 8 | Object 1 angle | 0~179 |
+| Byte 9 | Object 2 X (px) | 0, 1~159 |
+| Byte 10 | Object 2 Y (px, small at top) | 0, 1~119 |
+| Byte 11 | Object 2 width (px) | 0~160 |
+| Byte 12 | Object 2 height (px) | 0~120 |
+| Byte 13 | Object 2 angle | 0~179 |
+| Byte 14 | Object 1 vertices | 0~10 |
+| Byte 15 | Object count | 0~8 |
+
+</div>
+
+</details>
+
 <a id="host-toy"></a>
 
 ## Robot Inventor App (home edition, teal hub)
@@ -762,6 +880,46 @@ Mode number 41 / 42 / 43.
 
 </details>
 
+<details class="plat pg-spike" id="toy-51">
+<summary><span class="plat-dot"></span>Camera mode 5 Object detection ① Object list: 2 objects</summary>
+
+Mode number 51.
+
+<div>
+
+| Position | Content | Range |
+| :--- | :--- | :--- |
+| **Stock blocks (mode 0)** | | |
+| Color | Object count | 0~8 |
+| Reflected light | Object 1 code (color × 10 + shape) | 0, 10~89 |
+| Raw red | Object 1 X×10 + Y (8×6 grid, small at top) | 0, 11~86 |
+| Raw green | Object 2 code (color × 10 + shape) | 0, 10~89 |
+| Raw blue | Object 2 X×10 + Y (8×6 grid, small at top) | 0, 11~86 |
+
+</div>
+
+</details>
+
+<details class="plat pg-spike" id="toy-52">
+<summary><span class="plat-dot"></span>Camera mode 5 Object detection ② Object details: 1 object + area</summary>
+
+Mode number 52.
+
+<div>
+
+| Position | Content | Range |
+| :--- | :--- | :--- |
+| **Stock blocks (mode 0)** | | |
+| Color | Object count | 0~8 |
+| Reflected light | Object 1 code (color × 10 + shape) | 0, 10~89 |
+| Raw red | Object 1 X (px) | 0, 1~159 |
+| Raw green | Object 1 Y (px, small at top) | 0, 1~119 |
+| Raw blue | Object 1 area (% of frame) | 0, 1~100 % |
+
+</div>
+
+</details>
+
 <a id="host-pyblk"></a>
 
 ## Pybricks built-in blocks (no library)
@@ -930,6 +1088,42 @@ Mode number 41 / 42 / 43.
 
 </details>
 
+<details class="plat pg-spike" id="pyblk-51">
+<summary><span class="plat-dot"></span>Camera mode 5 Object detection ① Object list: 1 object</summary>
+
+Mode number 51.
+
+<div>
+
+| Position | Content | Range |
+| :--- | :--- | :--- |
+| **Mode 5 reflection()** | | |
+| reflection() | Object 1 X (40 cells) ×100 + object 1 Y (30 cells, small at top) | Split ÷100 (same as Kito) |
+| **Mode 7 ambient()** | | |
+| ambient() | Object 1 code (color × 10 + shape) . object count | A.BB |
+
+</div>
+
+</details>
+
+<details class="plat pg-spike" id="pyblk-52">
+<summary><span class="plat-dot"></span>Camera mode 5 Object detection ② Object details: 1 object + area</summary>
+
+Mode number 52.
+
+<div>
+
+| Position | Content | Range |
+| :--- | :--- | :--- |
+| **Mode 5 reflection()** | | |
+| reflection() | Object 1 X (40 cells) ×100 + object 1 Y (30 cells, small at top) | Split ÷100 (same as Kito) |
+| **Mode 7 ambient()** | | |
+| ambient() | Object 1 code (color × 10 + shape) . object 1 area (% of frame) | A.BB |
+
+</div>
+
+</details>
+
 <a id="host-ev3"></a>
 
 ## EV3 (EV3-G / EV3 Classroom / EV3 MicroPython)
@@ -946,7 +1140,7 @@ Mode number 11.
 | Position | Content | Range |
 | :--- | :--- | :--- |
 | **Mode 0 proximity (1 value)** | | |
-| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard) | 11~43 |
+| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard, 51 = Object detection ① list) | 11~52 |
 | **Mode 1 beacon (8 values)** | | |
 | Channel 1 heading | Color 1 X×10 + Y (8×6 grid) | 0, 11~86 |
 | Channel 1 distance | Color 2 X×10 + Y (8×6 grid) | 0, 11~86 |
@@ -976,7 +1170,7 @@ Mode number 12.
 | Position | Content | Range |
 | :--- | :--- | :--- |
 | **Mode 0 proximity (1 value)** | | |
-| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard) | 11~43 |
+| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard, 51 = Object detection ① list) | 11~52 |
 | **Mode 1 beacon (8 values)** | | |
 | Channel 1 heading | Color 1 X×10 + Y (8×6 grid) | 0, 11~86 |
 | Channel 1 distance | Color 2 X×10 + Y (8×6 grid) | 0, 11~86 |
@@ -1006,7 +1200,7 @@ Mode number 13.
 | Position | Content | Range |
 | :--- | :--- | :--- |
 | **Mode 0 proximity (1 value)** | | |
-| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard) | 11~43 |
+| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard, 51 = Object detection ① list) | 11~52 |
 | **Mode 1 beacon (8 values)** | | |
 | Channel 1 heading | Color 1 X×10 + Y (8×6 grid) | 0, 11~86 |
 | Channel 1 distance | Color 1 area (% of frame) | 0, 1~100 % |
@@ -1036,7 +1230,7 @@ Mode number 14.
 | Position | Content | Range |
 | :--- | :--- | :--- |
 | **Mode 0 proximity (1 value)** | | |
-| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard) | 11~43 |
+| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard, 51 = Object detection ① list) | 11~52 |
 | **Mode 1 beacon (8 values)** | | |
 | Channel 1 heading | Color 1 X×10 + Y (8×6 grid) | 0, 11~86 |
 | Channel 1 distance | Color 1 W×10 + H (8×6 grid) | 0, 11~86 |
@@ -1066,7 +1260,7 @@ Mode number 21.
 | Position | Content | Range |
 | :--- | :--- | :--- |
 | **Mode 0 proximity (1 value)** | | |
-| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard) | 11~43 |
+| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard, 51 = Object detection ① list) | 11~52 |
 | **Mode 1 beacon (8 values)** | | |
 | Channel 1 heading | S1 hue (EV3: positive = hue, negative = black / white) | −15~100 |
 | Channel 1 distance | S2 hue (EV3: positive = hue, negative = black / white) | −15~100 |
@@ -1096,7 +1290,7 @@ Mode number 22.
 | Position | Content | Range |
 | :--- | :--- | :--- |
 | **Mode 0 proximity (1 value)** | | |
-| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard) | 11~43 |
+| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard, 51 = Object detection ① list) | 11~52 |
 | **Mode 1 beacon (8 values)** | | |
 | Channel 1 heading | S1 hue (EV3: positive = hue, negative = black / white) | −15~100 |
 | Channel 1 distance | S1 sat÷10 ×10 + value÷10 | 0~99 |
@@ -1126,7 +1320,7 @@ Mode number 23.
 | Position | Content | Range |
 | :--- | :--- | :--- |
 | **Mode 0 proximity (1 value)** | | |
-| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard) | 11~43 |
+| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard, 51 = Object detection ① list) | 11~52 |
 | **Mode 1 beacon (8 values)** | | |
 | Channel 1 heading | S1 hue code ÷100 (hundreds) | 0~2 |
 | Channel 1 distance | S1 hue code mod 100 | 0~99 |
@@ -1156,7 +1350,7 @@ Mode number 30.
 | Position | Content | Range |
 | :--- | :--- | :--- |
 | **Mode 0 proximity (1 value)** | | |
-| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard) | 11~43 |
+| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard, 51 = Object detection ① list) | 11~52 |
 | **Mode 1 beacon (8 values)** | | |
 | Channel 1 heading | Hue of block 1 from the left (EV3: positive = hue, negative = black / white) | −15~100 |
 | Channel 1 distance | Hue of block 2 from the left (EV3: positive = hue, negative = black / white) | −15~100 |
@@ -1186,7 +1380,7 @@ Mode number 41 / 42 / 43.
 | Position | Content | Range |
 | :--- | :--- | :--- |
 | **Mode 0 proximity (1 value)** | | |
-| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard) | 11~43 |
+| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard, 51 = Object detection ① list) | 11~52 |
 | **Mode 1 beacon (8 values)** | | |
 | Channel 1 heading | Near offset | −100~100 |
 | Channel 1 distance | Middle offset | −100~100 |
@@ -1201,6 +1395,66 @@ Mode number 41 / 42 / 43.
 | Channel 2 | Near line right edge | −100~100 |
 | Channel 3 | Far line width % | 0~100 |
 | Channel 4 | Marker lines crossed so far | 0~99 |
+
+</div>
+
+</details>
+
+<details class="plat pg-ev3" id="ev3-51">
+<summary><span class="plat-dot"></span>Camera mode 5 Object detection ① Object list: 5 objects</summary>
+
+Mode number 51.
+
+<div>
+
+| Position | Content | Range |
+| :--- | :--- | :--- |
+| **Mode 0 proximity (1 value)** | | |
+| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard, 51 = Object detection ① list) | 11~52 |
+| **Mode 1 beacon (8 values)** | | |
+| Channel 1 heading | Object 1 code (color × 10 + shape) | 0, 10~89 |
+| Channel 1 distance | Object 1 X×10 + Y (8×6 grid) | 0, 11~86 |
+| Channel 2 heading | Object 2 code (color × 10 + shape) | 0, 10~89 |
+| Channel 2 distance | Object 2 X×10 + Y (8×6 grid) | 0, 11~86 |
+| Channel 3 heading | Object 3 code (color × 10 + shape) | 0, 10~89 |
+| Channel 3 distance | Object 3 X×10 + Y (8×6 grid) | 0, 11~86 |
+| Channel 4 heading | Object 4 code (color × 10 + shape) | 0, 10~89 |
+| Channel 4 distance | Object 4 X×10 + Y (8×6 grid) | 0, 11~86 |
+| **Mode 2 remote (4 values)** | | |
+| Channel 1 | Object 5 code (color × 10 + shape) | 0, 10~89 |
+| Channel 2 | Object 5 X×10 + Y (8×6 grid) | 0, 11~86 |
+| Channel 3 | (unused, sends 0) |  |
+| Channel 4 | Object count | 0~8 |
+
+</div>
+
+</details>
+
+<details class="plat pg-ev3" id="ev3-52">
+<summary><span class="plat-dot"></span>Camera mode 5 Object detection ② Object details: 2 objects + area, angle</summary>
+
+Mode number 52.
+
+<div>
+
+| Position | Content | Range |
+| :--- | :--- | :--- |
+| **Mode 0 proximity (1 value)** | | |
+| Value | Camera mode number (e.g. 13 = Color tracking ③ Standard, 51 = Object detection ① list) | 11~52 |
+| **Mode 1 beacon (8 values)** | | |
+| Channel 1 heading | Object 1 code (color × 10 + shape) | 0, 10~89 |
+| Channel 1 distance | Object 1 X×10 + Y (8×6 grid) | 0, 11~86 |
+| Channel 2 heading | Object 1 area (% of frame) | 0, 1~100 % |
+| Channel 2 distance | Object 1 angle ((angle + 1) ÷ 2) | 0~90 |
+| Channel 3 heading | Object 2 code (color × 10 + shape) | 0, 10~89 |
+| Channel 3 distance | Object 2 X×10 + Y (8×6 grid) | 0, 11~86 |
+| Channel 4 heading | Object 2 area (% of frame) | 0, 1~100 % |
+| Channel 4 distance | Object 2 angle ((angle + 1) ÷ 2) | 0~90 |
+| **Mode 2 remote (4 values)** | | |
+| Channel 1 | (unused, sends 0) |  |
+| Channel 2 | (unused, sends 0) |  |
+| Channel 3 | (unused, sends 0) |  |
+| Channel 4 | (unused, sends 0) |  |
 
 </div>
 
@@ -1432,6 +1686,56 @@ Mode number 41 / 42 / 43.
 | Slot 8 | Near line left edge (+100) + near line right edge (+100)×256 | Mod 256, ÷256 |
 | Slot 9 | Far line width % + color number of the marker line crossed×256 | Mod 256, ÷256 |
 | Slot 10 | Marker lines crossed so far + side the line was last lost (0 on the line, 1 left, 2 right)×256 | Mod 256, ÷256 |
+
+</div>
+
+</details>
+
+<details class="plat pg-matrix" id="mx-51">
+<summary><span class="plat-dot"></span>Camera mode 5 Object detection ① Object list: 4 objects</summary>
+
+Mode number 51.
+
+<div>
+
+| Position | Content | Range |
+| :--- | :--- | :--- |
+| **mVision, 10 slots** | | |
+| Slot 1 | Object count | 0~8 |
+| Slot 2 | Object 1 code (color × 10 + shape) + object 1 area (% of frame)×256 | Mod 256, ÷256 |
+| Slot 3 | Object 1 X (px) + object 1 Y (px, small at top)×256 | Mod 256, ÷256 |
+| Slot 4 | Object 2 code (color × 10 + shape) + object 2 area (% of frame)×256 | Mod 256, ÷256 |
+| Slot 5 | Object 2 X (px) + object 2 Y (px, small at top)×256 | Mod 256, ÷256 |
+| Slot 6 | Object 3 code (color × 10 + shape) + object 3 area (% of frame)×256 | Mod 256, ÷256 |
+| Slot 7 | Object 3 X (px) + object 3 Y (px, small at top)×256 | Mod 256, ÷256 |
+| Slot 8 | Object 4 code (color × 10 + shape) + object 4 area (% of frame)×256 | Mod 256, ÷256 |
+| Slot 9 | Object 4 X (px) + object 4 Y (px, small at top)×256 | Mod 256, ÷256 |
+| Slot 10 | (unused, sends 0) |  |
+
+</div>
+
+</details>
+
+<details class="plat pg-matrix" id="mx-52">
+<summary><span class="plat-dot"></span>Camera mode 5 Object detection ② Object details: 3 objects + size, area</summary>
+
+Mode number 52.
+
+<div>
+
+| Position | Content | Range |
+| :--- | :--- | :--- |
+| **mVision, 10 slots** | | |
+| Slot 1 | Object count | 0~8 |
+| Slot 2 | Object 1 code (color × 10 + shape) + object 1 area (% of frame)×256 | Mod 256, ÷256 |
+| Slot 3 | Object 1 X (px) + object 1 Y (px, small at top)×256 | Mod 256, ÷256 |
+| Slot 4 | Object 1 width (px) + object 1 height (px)×256 | Mod 256, ÷256 |
+| Slot 5 | Object 2 code (color × 10 + shape) + object 2 area (% of frame)×256 | Mod 256, ÷256 |
+| Slot 6 | Object 2 X (px) + object 2 Y (px, small at top)×256 | Mod 256, ÷256 |
+| Slot 7 | Object 2 width (px) + object 2 height (px)×256 | Mod 256, ÷256 |
+| Slot 8 | Object 3 code (color × 10 + shape) + object 3 area (% of frame)×256 | Mod 256, ÷256 |
+| Slot 9 | Object 3 X (px) + object 3 Y (px, small at top)×256 | Mod 256, ÷256 |
+| Slot 10 | Object 3 width (px) + object 3 height (px)×256 | Mod 256, ÷256 |
 
 </div>
 
@@ -1960,6 +2264,154 @@ Mode number 41 / 42 / 43.
 | Value 12 · `0x1B` | Color number of the marker line crossed | 0, 1~16 |
 | Value 13 · `0x1C` | Marker lines crossed so far | 0~99 |
 | Value 14 · `0x1D` | Side the line was last lost (0 on the line, 1 left, 2 right) | 0~2 |
+| **Write** | | |
+|  | Switch camera mode and sub-option; set target colors, minimum area and sample-point positions | |
+
+</div>
+
+</details>
+
+<details class="plat pg-arduino" id="i2c-51">
+<summary><span class="plat-dot"></span>Camera mode 5 Object detection ① Object list: 8 objects: color, shape, XY</summary>
+
+Mode number 51.
+
+<div>
+
+| Position | Content | Range |
+| :--- | :--- | :--- |
+| **Read (value numbers in order)** | | |
+| Value 1 · `0x10` | Object 1 color number | 0, 1~8 |
+| Value 2 · `0x11` | Object 1 shape | 0~9 |
+| Value 3 · `0x12` | Object 1 X (px) | 0, 1~159 |
+| Value 4 · `0x13` | Object 1 Y (px, small at top) | 0, 1~119 |
+| Value 5 · `0x14` | Object 2 color number | 0, 1~8 |
+| Value 6 · `0x15` | Object 2 shape | 0~9 |
+| Value 7 · `0x16` | Object 2 X (px) | 0, 1~159 |
+| Value 8 · `0x17` | Object 2 Y (px, small at top) | 0, 1~119 |
+| Value 9 · `0x18` | Object 3 color number | 0, 1~8 |
+| Value 10 · `0x19` | Object 3 shape | 0~9 |
+| Value 11 · `0x1A` | Object 3 X (px) | 0, 1~159 |
+| Value 12 · `0x1B` | Object 3 Y (px, small at top) | 0, 1~119 |
+| Value 13 · `0x1C` | Object 4 color number | 0, 1~8 |
+| Value 14 · `0x1D` | Object 4 shape | 0~9 |
+| Value 15 · `0x1E` | Object 4 X (px) | 0, 1~159 |
+| Value 16 · `0x1F` | Object 4 Y (px, small at top) | 0, 1~119 |
+| Value 17 · `0x20` | Object 5 color number | 0, 1~8 |
+| Value 18 · `0x21` | Object 5 shape | 0~9 |
+| Value 19 · `0x22` | Object 5 X (px) | 0, 1~159 |
+| Value 20 · `0x23` | Object 5 Y (px, small at top) | 0, 1~119 |
+| Value 21 · `0x24` | Object 6 color number | 0, 1~8 |
+| Value 22 · `0x25` | Object 6 shape | 0~9 |
+| Value 23 · `0x26` | Object 6 X (px) | 0, 1~159 |
+| Value 24 · `0x27` | Object 6 Y (px, small at top) | 0, 1~119 |
+| Value 25 · `0x28` | Object 7 color number | 0, 1~8 |
+| Value 26 · `0x29` | Object 7 shape | 0~9 |
+| Value 27 · `0x2A` | Object 7 X (px) | 0, 1~159 |
+| Value 28 · `0x2B` | Object 7 Y (px, small at top) | 0, 1~119 |
+| Value 29 · `0x2C` | Object 8 color number | 0, 1~8 |
+| Value 30 · `0x2D` | Object 8 shape | 0~9 |
+| Value 31 · `0x2E` | Object 8 X (px) | 0, 1~159 |
+| Value 32 · `0x2F` | Object 8 Y (px, small at top) | 0, 1~119 |
+| Value 33 · `0x30` | Object count | 0~8 |
+| **Write** | | |
+|  | Switch camera mode and sub-option; set target colors, minimum area and sample-point positions | |
+
+</div>
+
+</details>
+
+<details class="plat pg-arduino" id="i2c-52">
+<summary><span class="plat-dot"></span>Camera mode 5 Object detection ② Object details: 8 objects + size, area, angle</summary>
+
+Mode number 52.
+
+<div>
+
+| Position | Content | Range |
+| :--- | :--- | :--- |
+| **Read (value numbers in order)** | | |
+| Value 1 · `0x10` | Object 1 color number | 0, 1~8 |
+| Value 2 · `0x11` | Object 1 shape | 0~9 |
+| Value 3 · `0x12` | Object 1 X (px) | 0, 1~159 |
+| Value 4 · `0x13` | Object 1 Y (px, small at top) | 0, 1~119 |
+| Value 5 · `0x14` | Object 1 width (px) | 0~160 |
+| Value 6 · `0x15` | Object 1 height (px) | 0~120 |
+| Value 7 · `0x16` | Object 1 area (% of frame) | 0, 1~100 % |
+| Value 8 · `0x17` | Object 1 angle | 0~179 |
+| Value 9 · `0x18` | Object 1 vertices | 0~10 |
+| Value 10 · `0x19` | Object 1 tracking ID | 0~255 |
+| Value 11 · `0x1A` | Object 2 color number | 0, 1~8 |
+| Value 12 · `0x1B` | Object 2 shape | 0~9 |
+| Value 13 · `0x1C` | Object 2 X (px) | 0, 1~159 |
+| Value 14 · `0x1D` | Object 2 Y (px, small at top) | 0, 1~119 |
+| Value 15 · `0x1E` | Object 2 width (px) | 0~160 |
+| Value 16 · `0x1F` | Object 2 height (px) | 0~120 |
+| Value 17 · `0x20` | Object 2 area (% of frame) | 0, 1~100 % |
+| Value 18 · `0x21` | Object 2 angle | 0~179 |
+| Value 19 · `0x22` | Object 2 vertices | 0~10 |
+| Value 20 · `0x23` | Object 2 tracking ID | 0~255 |
+| Value 21 · `0x24` | Object 3 color number | 0, 1~8 |
+| Value 22 · `0x25` | Object 3 shape | 0~9 |
+| Value 23 · `0x26` | Object 3 X (px) | 0, 1~159 |
+| Value 24 · `0x27` | Object 3 Y (px, small at top) | 0, 1~119 |
+| Value 25 · `0x28` | Object 3 width (px) | 0~160 |
+| Value 26 · `0x29` | Object 3 height (px) | 0~120 |
+| Value 27 · `0x2A` | Object 3 area (% of frame) | 0, 1~100 % |
+| Value 28 · `0x2B` | Object 3 angle | 0~179 |
+| Value 29 · `0x2C` | Object 3 vertices | 0~10 |
+| Value 30 · `0x2D` | Object 3 tracking ID | 0~255 |
+| Value 31 · `0x2E` | Object 4 color number | 0, 1~8 |
+| Value 32 · `0x2F` | Object 4 shape | 0~9 |
+| Value 33 · `0x30` | Object 4 X (px) | 0, 1~159 |
+| Value 34 · `0x31` | Object 4 Y (px, small at top) | 0, 1~119 |
+| Value 35 · `0x32` | Object 4 width (px) | 0~160 |
+| Value 36 · `0x33` | Object 4 height (px) | 0~120 |
+| Value 37 · `0x34` | Object 4 area (% of frame) | 0, 1~100 % |
+| Value 38 · `0x35` | Object 4 angle | 0~179 |
+| Value 39 · `0x36` | Object 4 vertices | 0~10 |
+| Value 40 · `0x37` | Object 4 tracking ID | 0~255 |
+| Value 41 · `0x38` | Object 5 color number | 0, 1~8 |
+| Value 42 · `0x39` | Object 5 shape | 0~9 |
+| Value 43 · `0x3A` | Object 5 X (px) | 0, 1~159 |
+| Value 44 · `0x3B` | Object 5 Y (px, small at top) | 0, 1~119 |
+| Value 45 · `0x3C` | Object 5 width (px) | 0~160 |
+| Value 46 · `0x3D` | Object 5 height (px) | 0~120 |
+| Value 47 · `0x3E` | Object 5 area (% of frame) | 0, 1~100 % |
+| Value 48 · `0x3F` | Object 5 angle | 0~179 |
+| Value 49 · `0x40` | Object 5 vertices | 0~10 |
+| Value 50 · `0x41` | Object 5 tracking ID | 0~255 |
+| Value 51 · `0x42` | Object 6 color number | 0, 1~8 |
+| Value 52 · `0x43` | Object 6 shape | 0~9 |
+| Value 53 · `0x44` | Object 6 X (px) | 0, 1~159 |
+| Value 54 · `0x45` | Object 6 Y (px, small at top) | 0, 1~119 |
+| Value 55 · `0x46` | Object 6 width (px) | 0~160 |
+| Value 56 · `0x47` | Object 6 height (px) | 0~120 |
+| Value 57 · `0x48` | Object 6 area (% of frame) | 0, 1~100 % |
+| Value 58 · `0x49` | Object 6 angle | 0~179 |
+| Value 59 · `0x4A` | Object 6 vertices | 0~10 |
+| Value 60 · `0x4B` | Object 6 tracking ID | 0~255 |
+| Value 61 · `0x4C` | Object 7 color number | 0, 1~8 |
+| Value 62 · `0x4D` | Object 7 shape | 0~9 |
+| Value 63 · `0x4E` | Object 7 X (px) | 0, 1~159 |
+| Value 64 · `0x4F` | Object 7 Y (px, small at top) | 0, 1~119 |
+| Value 65 · `0x50` | Object 7 width (px) | 0~160 |
+| Value 66 · `0x51` | Object 7 height (px) | 0~120 |
+| Value 67 · `0x52` | Object 7 area (% of frame) | 0, 1~100 % |
+| Value 68 · `0x53` | Object 7 angle | 0~179 |
+| Value 69 · `0x54` | Object 7 vertices | 0~10 |
+| Value 70 · `0x55` | Object 7 tracking ID | 0~255 |
+| Value 71 · `0x56` | Object 8 color number | 0, 1~8 |
+| Value 72 · `0x57` | Object 8 shape | 0~9 |
+| Value 73 · `0x58` | Object 8 X (px) | 0, 1~159 |
+| Value 74 · `0x59` | Object 8 Y (px, small at top) | 0, 1~119 |
+| Value 75 · `0x5A` | Object 8 width (px) | 0~160 |
+| Value 76 · `0x5B` | Object 8 height (px) | 0~120 |
+| Value 77 · `0x5C` | Object 8 area (% of frame) | 0, 1~100 % |
+| Value 78 · `0x5D` | Object 8 angle | 0~179 |
+| Value 79 · `0x5E` | Object 8 vertices | 0~10 |
+| Value 80 · `0x5F` | Object 8 tracking ID | 0~255 |
+| Value 81 · `0x60` | Object count | 0~8 |
 | **Write** | | |
 |  | Switch camera mode and sub-option; set target colors, minimum area and sample-point positions | |
 

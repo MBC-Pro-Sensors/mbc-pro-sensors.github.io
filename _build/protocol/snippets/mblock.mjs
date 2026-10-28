@@ -9,7 +9,7 @@ const PREFIX = {
   tof2: { zh: '測距者 2 路', en: 'Ranger 2' }, tof8: { zh: '測距者 8 路', en: 'Ranger 8' },
   ps2: { zh: '掌控者', en: 'Controller' }, ps4: { zh: '掌控者', en: 'Controller' },
   imu: { zh: 'IMU 陀螺儀', en: 'IMU Gyro' },
-  cam_school: { zh: '神攝手', en: 'Vision' }, cam_wro: { zh: '神攝手 WRO', en: 'Vision WRO' },
+  cam_school: { zh: '神攝手舊版', en: 'Sharpshooter Vision (legacy)' }, cam_wro: { zh: '神攝手舊版 WRO', en: 'Sharpshooter Vision WRO (legacy)' },
 };
 export function category(product, lang) {
   const p = PREFIX[product.id];

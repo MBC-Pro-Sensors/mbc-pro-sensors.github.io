@@ -86,6 +86,68 @@ class UniCamApp:
         """循線：(近處偏移, 遠處偏移, 角度, 路口類型, 近處線寬)；偏移、角度 −100~100（線在左＝負）"""
         return (self._w(0) - 100, self._w(1) - 100, self._w(2) - 100, self.b[0], self.b[1])
 
+    # ── 物體偵測（51 物體清單、52 物體詳細）：物體代碼＝色號×10＋形狀，0＝沒有；物體 1＝面積最大 ──
+    # ── object detection (51 list, 52 detail): code = colour×10 + shape, 0 = none; object 1 = largest ──
+    def _obj(self, i, n, modes=(51, 52)):
+        if self.mode not in modes:
+            raise ValueError('模式 %d 沒有這個值，要用模式 %s / not available in mode %d, use %s' % (self.mode, modes, self.mode, modes))
+        if not 1 <= i <= n:
+            raise ValueError('第幾個物體要填 1~%d / object must be 1~%d' % (n, n))
+
+    def max_object(self):
+        """byte 0~7 給幾個物體的代碼：51→3、52→2（52 的位置、大小只有物體 1）"""
+        self._obj(1, 1)
+        return 3 if self.mode == 51 else 2
+
+    def object_count(self):
+        """51：畫面裡有幾個物體 0~8（顏色）/ objects in view (colour)"""
+        self._obj(1, 1, (51,))
+        return self.b[0]
+
+    def object(self, i):
+        """物體 i 的代碼（51：物體 1~3；52：物體 1~2）/ object code"""
+        if self.mode == 51:
+            self._obj(i, 3)
+            return self.b[1] if i == 1 else self._w(i - 1) // 100
+        self._obj(i, 2)
+        return self.b[0] if i == 1 else self._w(2) & 255
+
+    def object_color(self, i):
+        """物體 i 的色號 1~8，0＝沒有"""
+        return self.object(i) // 10
+
+    def object_shape(self, i):
+        """物體 i 的形狀 0~9（沒有物體也是 0）"""
+        return self.object(i) % 10
+
+    def object_cell(self, i):
+        """51：物體 i（1~3）的 8×6 格 (X 格, Y 格)，(0, 0)＝沒有（Y 上＝小；像素 ≈ 格×20−10）"""
+        self._obj(i, 3, (51,))
+        g = self._w(0) if i == 1 else self._w(i - 1) % 100
+        return (g // 10, g % 10)
+
+    def object_xy(self, i):
+        """52：物體 1 的質心 (X, Y) 像素，(0, 0)＝沒有"""
+        self._obj(i, 1, (52,))
+        return (self._w(0) & 255, self._w(0) >> 8)
+
+    def object_size(self, i):
+        """52：物體 1 的外框 (寬, 高) 像素"""
+        self._obj(i, 1, (52,))
+        return (self._w(1) & 255, self._w(1) >> 8)
+
+    def object_area(self, i):
+        """52：物體 1、2 的面積（佔畫面 %）"""
+        self._obj(i, 2, (52,))
+        return self.b[1] if i == 1 else self._w(2) >> 8
+
+
+def shape_name(s, zh=False):
+    """形狀 0~9 → 'other' 'circle' 'ellipse' 'triangle' 'square' 'rectangle' 'pentagon' 'hexagon' 'star' 'trapezoid'（zh=True 中文）"""
+    if s is None or not 0 <= s <= 9:
+        return None
+    return ('其他', '圓', '橢圓', '三角', '正方', '長方', '五邊', '六邊', '星', '梯形')[s] if zh else         ('other', 'circle', 'ellipse', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon', 'star', 'trapezoid')[s]
+
 
 def color_name(h):
     """色相碼 → 'red' 'orange' 'yellow' 'green' 'cyan' 'blue' 'purple' 'white' 'black'"""

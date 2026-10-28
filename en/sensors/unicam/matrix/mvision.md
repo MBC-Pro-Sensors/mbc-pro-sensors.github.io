@@ -39,8 +39,53 @@ In MATRIXblock use the Math divide and remainder blocks; check that X is not 0 b
 | Color at points ① / ② / ③ | 20 points hue / 10 points hue + saturation / 6 points hue + saturation + value |
 | Color order | 18 blocks hue code + total blocks |
 | Line following | 14 values (offsets, angle, widths, junction …) |
+| Object detection ① Object list / ② Object detail | 4 objects code + area, XY + object count / 3 objects plus width and height (next section) |
 
 What each slot holds: [value reference: MATRIX](/en/sensors/unicam/reference.md#host-mx).
+
+## Camera mode 5 object detection
+
+The camera sorts the objects in the picture from largest to smallest (object 1 = largest) and gives each an **object code = color × 10 + shape** (13 = a triangle of target 1, 0 = none). Shapes: 0 other, 1 circle, 2 ellipse, 3 triangle, 4 square, 5 rectangle, 6 pentagon, 7 hexagon, 8 star, 9 trapezoid. X, Y is the **centroid** of the object; only target colors 1~8 count. Mode number **51 = ① Object list**, **52 = ② Object detail**. Split the code: color = code ÷ 10 (whole number), shape = remainder of code ÷ 10.
+
+| Block | 51 Object list (4) | 52 Object detail (3) |
+| :--- | :--- | :--- |
+| mVision data 0 | object count (no split) | object count (no split) |
+| object i, cell 1 | data 2i−1: code = remainder (÷256), area % = ÷256 whole number | data 3i−2: code, area % |
+| object i, cell 2 | data 2i: X = remainder, Y = ÷256 | data 3i−1: X, Y |
+| object i, cell 3 | — | data 3i: width = remainder, height = ÷256 (pixels) |
+
+In 51 data 9 is unused. MATRIX gets no angle, vertices or track id (use the I2C version for those). In MATRIXblock split the cells with the Math divide and remainder blocks; in C++ read object 1 like this:
+
+```cpp
+#include <MatrixMiniR4.h>
+unsigned int CamData[10];                // the 10 mVision slots (data 0~9)
+
+void setup() {
+  MiniR4.begin();
+  MiniR4.Vision.Begin();                 // start receiving mVision (Serial1 115200)
+  Serial.begin(115200);
+}
+
+void loop() {
+  if (MiniR4.Vision.SmartCamReader(CamData) > 0) {   // camera set to Object detection ① Object list (51)
+    int n = CamData[0];                  // data 0: object count
+    int code = CamData[1] % 256;         // data 1 remainder: object 1 code (color × 10 + shape)
+    int area = CamData[1] / 256;         // data 1 ÷256: object 1 area %
+    int x = CamData[2] % 256;            // data 2 remainder: object 1 X
+    int y = CamData[2] / 256;            // data 2 ÷256: object 1 Y
+    Serial.print("objects "); Serial.print(n);
+    Serial.print("  object 1 code "); Serial.print(code);
+    Serial.print(" color "); Serial.print(code / 10);
+    Serial.print(" shape "); Serial.print(code % 10);
+    Serial.print(" X "); Serial.print(x);
+    Serial.print(" Y "); Serial.print(y);
+    Serial.print(" area "); Serial.println(area);
+  }
+  delay(50);
+}
+```
+
+The helpers in the examples, `ucObject(mode, i, o)`, `ucObjectCount(mode)` and `ucShapeName(s)`, wrap all of this; see [MATRIX example 3](/en/sensors/unicam/matrix-examples.md).
 
 ## Slot tables and examples
 

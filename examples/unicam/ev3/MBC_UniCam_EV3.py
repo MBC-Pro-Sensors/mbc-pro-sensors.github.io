@@ -8,7 +8,7 @@
 #  相機在 EV3 上偽裝成「紅外線感應器」/ the camera poses as an EV3 infrared sensor:
 #    模式 0 近距 proximity ＝ 模式編號（相機模式 ×10 ＋ 子選項，例 13）
 #    模式 1 信標 seeker   ＝ 8 個值 / 8 values
-#    模式 2 遙控 remote   ＝ 4 個值（只有模式 11、21、30、4x 用到）/ 4 values
+#    模式 2 遙控 remote   ＝ 4 個值（只有模式 11、21、30、4x、51 用到）/ 4 values
 #    模式 5 校正 cal      ＝ [裝置 ID 0x034C, 韌體版 100]
 #  每換一次模式約 0.5 秒 / every mode switch takes about 0.5 s.
 #
@@ -23,6 +23,12 @@
 #  座標取色 ①／照順序給色號 的色相碼是 0~100 換回來的（±2）。
 #  Method names match MBC_UniCam.py (SPIKE). Coordinates are converted to pixels (Y top = small, like SPIKE);
 #  raw EV3 8×6 grid (Y bottom = small) via grid(). EV3 grid is coarse: ±10 px; hue in modes 21/30 is ±2.
+#
+#  物體偵測 Object detection（51 物體清單 5 個／52 物體詳細 2 個）：物體代碼＝色號×10＋形狀（0＝沒有），
+#  物體 1＝面積最大；位置同樣是 8×6 格中心（±10 像素），原始格子用 object_grid()；52 的角度 EV3 送 (角度＋1)÷2，
+#  函式庫 ×2 還原成 0~179（±1 度）。/ object code = colour×10 + shape; object 1 = largest; angle restored ×2 (±1°).
+#      形狀 shape：0 其他 other  1 圓 circle  2 橢圓 ellipse  3 三角 triangle  4 正方 square
+#                  5 長方 rectangle  6 五邊 pentagon  7 六邊 hexagon  8 星 star  9 梯形 trapezoid
 # ════════════════════════════════════════════════════════════════
 
 from pybricks.parameters import Port
@@ -37,10 +43,13 @@ if _Ev3dev is None:                             # Pybricks v4（code.pybricks.co
     except ImportError:
         from pybricks.iodevices import PUPDevice as _Lump
 
-MODES = (11, 12, 13, 14, 21, 22, 23, 30, 41, 42, 43)
+MODES = (11, 12, 13, 14, 21, 22, 23, 30, 41, 42, 43, 51, 52)
 _NAMES = ('IR-PROX', 'IR-SEEK', 'IR-REMOTE', 'IR-REM-A', 'IR-S-ALT', 'IR-CAL')
 _NCOL = {11: 12, 12: 8, 13: 4, 14: 2}
 _NPT = {21: 12, 22: 4, 23: 2}
+_NOBJ = {51: 5, 52: 2}
+SHAPES = ('other', 'circle', 'ellipse', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon', 'star', 'trapezoid')
+SHAPES_ZH = ('其他', '圓', '橢圓', '三角', '正方', '長方', '五邊', '六邊', '星', '梯形')
 
 
 def color_name(h):
@@ -64,6 +73,14 @@ def color_name(h):
     if h < 180:
         return 'blue'
     return 'purple'
+
+
+def shape_name(s, zh=False):
+    """形狀編號 0~9 → 'other' 'circle' 'ellipse' 'triangle' 'square' 'rectangle' 'pentagon' 'hexagon' 'star'
+    'trapezoid'；zh=True 回中文（'圓'…）；None 或超出範圍回 None / shape number -> name"""
+    if s is None or not 0 <= s <= 9:
+        return None
+    return SHAPES_ZH[s] if zh else SHAPES[s]
 
 
 def _hue(e):
@@ -129,6 +146,13 @@ class UniCam:
     def _col(self, c, n):
         if not 1 <= c <= n:
             raise ValueError('第幾色／第幾點要填 1~%d / colour or spot must be 1~%d' % (n, n))
+
+    def _obj(self, name, i, ok=(51, 52)):
+        m = self._need(name, ok)
+        n = _NOBJ[m]
+        if not 1 <= i <= n:
+            raise ValueError('第幾個物體要填 1~%d / object must be 1~%d' % (n, n))
+        return m
 
     def _beacon(self, i):
         # 第 i 個值（1~12）：1~8 在模式 1、9~12 在模式 2 / value i: 1~8 mode 1, 9~12 mode 2
@@ -334,3 +358,63 @@ class UniCam:
         if a is None or b is None:
             return None
         return (a[0], a[1], a[2], a[3], a[4], a[5] % 10, a[5] // 10, a[6], b[0], b[1], b[2], a[7], b[3])
+
+    # ───── 物體偵測 51、52 / object detection ─────
+    #  51：物體 i 代碼在第 2i−1 個值、位置在第 2i 個（物體 5 在模式 2）；物體數在模式 2 通道 4
+    #  52：物體 i 的 代碼、位置、面積、角度÷2 在第 4i−3 ~ 4i 個值（全部在模式 1）
+    def _oi(self, m, i, k):
+        # 物體 i 第 k 項（0 代碼 1 位置 2 面積 3 角度）的值編號 / value index of item k of object i
+        return 2 * i - 1 + k if m == 51 else 4 * i - 3 + k
+
+    def max_object(self):
+        """這個模式給幾個物體：51→5、52→2 / objects available in this mode"""
+        return _NOBJ[self._need('max_object', (51, 52))]
+
+    def object_count(self):
+        """畫面裡有幾個物體 0~8（模式 51，讀模式 2；52 沒有）/ objects in view (mode 51, EV3 mode 2)"""
+        self._need('object_count', (51,))
+        return self._beacon(12)
+
+    def object(self, i):
+        """物體 i 的代碼＝色號×10＋形狀（例 13＝目標 1 三角形），0＝沒有 / object code, 0 = none"""
+        m = self._obj('object', i)
+        return self._beacon(self._oi(m, i, 0))
+
+    def object_found(self, i):
+        """有沒有物體 i / is there an object i"""
+        c = self.object(i)
+        return None if c is None else c > 0
+
+    def object_color(self, i):
+        """物體 i 的色號 1~8，0＝沒有 / colour number 1~8, 0 = none"""
+        c = self.object(i)
+        return None if c is None else c // 10
+
+    def object_shape(self, i):
+        """物體 i 的形狀 0~9（沒有物體也是 0，先用 object_found()）/ shape 0~9 (0 also when none)"""
+        c = self.object(i)
+        return None if c is None else c % 10
+
+    def object_grid(self, i):
+        """物體 i 的原始 8×6 格 (X 1~8, Y 1~6，Y 下＝小)，(0, 0)＝沒有 / raw 8×6 grid (Y bottom = small)"""
+        m = self._obj('object_grid', i)
+        g = self._beacon(self._oi(m, i, 1))
+        return None if g is None else ((0, 0) if g <= 0 else (g // 10, g % 10))
+
+    def object_xy(self, i):
+        """物體 i 的質心（像素，格子中心 ±10；Y 上＝小），(0, 0)＝沒有 / centroid in pixels (±10)"""
+        m = self._obj('object_xy', i)
+        g = self._beacon(self._oi(m, i, 1))
+        return None if g is None else _d8(g)
+
+    def object_area(self, i):
+        """模式 52：物體 i 面積 %（0＝沒有）/ mode 52: area %"""
+        self._obj('object_area', i, (52,))
+        return self._beacon(self._oi(52, i, 2))
+
+    def object_angle(self, i):
+        """模式 52：物體 i 的角度 0~179 度（長邊往右＝0、往畫面下方轉為正；EV3 送 ÷2，×2 還原，±1 度）
+        mode 52: angle 0~179 (long side, right = 0, clockwise on screen positive; sent ÷2, restored ×2, ±1°)"""
+        self._obj('object_angle', i, (52,))
+        v = self._beacon(self._oi(52, i, 3))
+        return None if v is None else (0 if v <= 0 else min(179, 2 * v))

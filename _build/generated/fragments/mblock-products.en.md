@@ -1,7 +1,7 @@
 | Product | Category | Blocks | Legacy ext. |
 | :--- | :--- | :--- | :--- |
-| [Vision Sensor (School Edition) (legacy, no longer supported)](/en/sensors/esp32cam/mblock.md) | Vision | hue, saturation, brightness, motion, blob X, blob Y, blob width, blob height, blob area, blob found? | — |
-| [Vision Sensor (WRO Edition, HUE12) (legacy, no longer supported)](/en/sensors/esp32cam/mblock-wro.md) | Vision WRO | spot N colour code, spot N vividness | — |
+| [Vision Sensor (School Edition) (legacy, no longer supported)](/en/sensors/esp32cam/mblock.md) | Sharpshooter Vision (legacy) | hue, saturation, brightness, motion, blob X, blob Y, blob width, blob height, blob area, blob found? | — |
+| [Vision Sensor (WRO Edition, HUE12) (legacy, no longer supported)](/en/sensors/esp32cam/mblock-wro.md) | Sharpshooter Vision WRO (legacy) | spot N colour code, spot N vividness | — |
 | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | IMU Gyro | gyro 3D heading, fused heading, gyro 1D heading, magnetic heading, yaw rate, pitch angle, pitch rate, magnetometer trust, magnetic disturbance, face up, gyro [axis], accel [axis], mag [axis] | — |
 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | Pathfinder | line position, fine line position, line width, line segments, line bitmap, last exit direction, threshold, calibration count, channel N reflect, channel N on line? | v1.0.0 works (pre-2026-10 firmware) |
 | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | Pathfinder | line position, fine line position, line width, line segments, line bitmap, last exit direction, threshold, calibration count, channel N reflect, channel N on line? | v1.0.0 works (pre-2026-10 firmware) |

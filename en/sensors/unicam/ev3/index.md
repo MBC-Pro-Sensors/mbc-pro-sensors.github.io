@@ -18,7 +18,7 @@ On the EV3 the Sharpshooter Vision (EV3 edition) shows up as a **stock LEGO Infr
 | :--- | :---: | :--- |
 | Mode 0 Proximity | 1 | **Camera mode number** (camera mode × 10 + sub-option, e.g. 13 = Color tracking ③ Standard): read it first to check the camera is set right |
 | Mode 1 Beacon | 8 | "Heading" and "distance" of channels 1~4, 8 values with the main data |
-| Mode 2 Remote | 4 | One value per channel 1~4; only used by sub-option ①, Color order and Line following |
+| Mode 2 Remote | 4 | One value per channel 1~4; only used by sub-option ①, Color order, Line following and Object detection ① |
 
 - Every value is an integer −127~100. **Switching modes takes about 0.5 s**, so don't keep switching between modes 1 and 2 in the same loop; decide which one you need.
 - Mode 5 is the device ID (you can ignore it).
@@ -70,6 +70,43 @@ while True:
 ```
 
 In sub-option ①, colors 9 and up are in mode 2: `cam.read(2)` (4 values).
+
+## Camera mode 5 object detection
+
+The camera sorts the objects in the picture from largest to smallest (object 1 = largest) and gives each an **object code = color × 10 + shape** (13 = a triangle of target 1, 0 = none). Shapes: 0 other, 1 circle, 2 ellipse, 3 triangle, 4 square, 5 rectangle, 6 pentagon, 7 hexagon, 8 star, 9 trapezoid. X, Y is the **centroid** of the object; only target colors 1~8 count. Mode number **51 = ① Object list**, **52 = ② Object detail**. Split the code: color = code ÷ 10 (whole number), shape = remainder of code ÷ 10.
+
+| Infrared mode / channel | 51 Object list (5) | 52 Object detail (2) |
+| :--- | :--- | :--- |
+| mode 1 channel 1 heading / distance | object 1 code / position | object 1 code / position |
+| mode 1 channel 2 | object 2 code / position | object 1 area % / angle ÷ 2 |
+| mode 1 channel 3 | object 3 code / position | object 2 code / position |
+| mode 1 channel 4 | object 4 code / position | object 2 area % / angle ÷ 2 |
+| mode 2 remote | channels 1, 2 = object 5 code, position; channel 4 = object count | unused |
+
+- Positions are the same 8×6 cell X×10+Y (**Y bottom = small**).
+- Angle: the camera sends "(angle + 1) ÷ 2"; the value × 2 is 0~179 degrees (within 1 degree; long side pointing right = 0, turning toward the bottom of the picture is positive).
+- Mode 52 is all in mode 1, so the loop never switches modes; in 51 object 5 and the object count are in mode 2 (+0.5 s).
+
+```python
+#!/usr/bin/env pybricks-micropython
+from pybricks.iodevices import LUMPDevice
+from pybricks.parameters import Port
+from pybricks.tools import wait
+
+cam = LUMPDevice(Port.S1)        # camera set to Object detection ② Object detail (mode number 52)
+
+while True:
+    v = cam.read(1)              # mode 1 beacon: object 1 code, position, area, angle ÷ 2; object 2 the same 4
+    code, pos, area, half = v[0], v[1], v[2], v[3]
+    if code:                     # code 0 = no object
+        print("object 1 code", code, "color", code // 10, "shape", code % 10,
+              "X cell", pos // 10, "Y cell", pos % 10, "area", area, "% angle about", min(179, half * 2))
+    else:
+        print("no object")
+    wait(100)
+```
+
+The MBC library `MBC_UniCam_EV3.py` is easier: `object(i)`, `object_xy(i)`, `object_area(i)`, `object_angle(i)` (already × 2), `object_count()`; see [EV3 example 4](/en/sensors/unicam/ev3-examples.md). In EV3-G / EV3 Classroom read "heading" and "proximity" as in the table and split them with divide and modulo.
 
 ## Slot tables and examples
 

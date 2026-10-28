@@ -19,15 +19,15 @@
 <a class="pick-tile pg-matrix" href="/en/sensors/unicam/matrix/mvision.md"><span class="pt-img"><img src="/images/illust/host-matrix.webp" alt="" loading="lazy"></span><span class="pt-name">MATRIX</span><span class="pt-tag">MATRIX Mini R4, mVision camera blocks</span><span class="pt-sw">mVision blocks</span></a>
 <a class="pick-tile pg-arduino" href="/en/sensors/unicam/arduino/index.md"><span class="pt-img"><img src="/images/illust/host-arduino.webp" alt="" loading="lazy"></span><span class="pt-name">Arduino</span><span class="pt-tag">UNO, Nano, UNO R4, ESP32 over I2C (0x4C)</span><span class="pt-sw">Arduino IDE</span></a>
 <a class="pick-tile pg-microbit" href="/en/sensors/unicam/microbit/index.md"><span class="pt-img"><img src="/images/illust/host-microbit.webp" alt="" loading="lazy"></span><span class="pt-name">micro:bit</span><span class="pt-tag">micro:bit V1 / V2 over I2C (0x4C)</span><span class="pt-sw">MakeCode</span></a>
-<a class="pick-tile pg-mblock" href="/en/sensors/unicam/mblock/index.md"><span class="pt-img"><img src="/images/illust/host-mblock.webp" alt="" loading="lazy"></span><span class="pt-name">mBlock</span><span class="pt-tag">mBot, Ranger, Orion, MegaPi over RJ25 serial 38400</span><span class="pt-sw">mBlock 5 (MBC Pro Sensors extension v2.1.0)</span></a>
+<a class="pick-tile pg-mblock" href="/en/sensors/unicam/mblock/index.md"><span class="pt-img"><img src="/images/illust/host-mblock.webp" alt="" loading="lazy"></span><span class="pt-name">mBlock</span><span class="pt-tag">mBot, Ranger, Orion, MegaPi over RJ25 serial 38400</span><span class="pt-sw">mBlock 5 (MBC Pro Sensors extension v2.2.0)</span></a>
 </div></div>
 <!-- /gen -->
 
-> **One camera, four jobs: color tracking, color at points, color order and line following, switched in the camera menu. SPIKE, EV3, MATRIX, Arduino and micro:bit can all read it, and each host gets as much data as it can hold.**
+> **One camera, five jobs: color tracking, color at points, color order, line following and object detection, switched in the camera menu. SPIKE, EV3, MATRIX, Arduino and micro:bit can all read it, and each host gets as much data as it can hold.**
 
-## 📸 The 4 camera modes
+## 📸 The 5 camera modes
 
-Pick a camera mode in the camera's **MODE** menu, then a sub-option. **Sub-option = level**: the finer the level, the more values per target and the fewer targets; the table in the next section shows how many each host gets. Mode number = camera mode × 10 + sub-option (e.g. 13 = Color tracking ③ Standard; Color order = 30).
+Pick a camera mode in the camera's **MODE** menu, then a sub-option. **Sub-option = level**: the finer the level, the more values per target and the fewer targets; the table in the next section shows how many each host gets. Mode number = camera mode × 10 + sub-option (e.g. 13 = Color tracking ③ Standard; Color order = 30; Object detection = 51 / 52).
 
 ### 1 Color tracking
 
@@ -79,6 +79,26 @@ The camera looks ahead at an angle and finds the line on **three scan rows: near
 
 Line-following values: near / middle / far offset (−100~100, negative = line on the left), line angle (−90~90), near and far line width %, line-found flags (near 1 + middle 2 + far 4), junction type (0 none, 1 cross, 2 T, 3 left, 4 right, 5 dead end) and junction distance %, near line left / right edge, colored marker line number and count, side the line was last lost (0 on the line, 1 left, 2 right). All three line types use the same layout; each host gets the values it can hold.
 
+### 5 Object detection
+
+Color and outline together: the camera finds each blob of target colors 1~8, works out its shape and gives an **object code = color number × 10 + shape** (e.g. 13 = a triangle in color 1, 24 = a square in color 2, 0 = no object) plus its position. Up to 8 objects per frame, **largest first** (object 1 = the biggest).
+
+<figure class="ref-fig"><img src="/images/sensors/unicam/objects.svg" alt="Object detection: objects numbered 1, 2, 3 by area, each labelled with its code (color × 10 + shape)" loading="lazy"></figure>
+
+| Shape number | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Shape | other / unknown | circle | ellipse | triangle | square | rectangle | pentagon | hexagon | star | trapezoid |
+
+| Sub-option | What you get |
+| :--- | :--- |
+| ① Object list | Code and position of each object, plus the object count; the most objects (I2C 8, SPIKE App 7, EV3 5) |
+| ② Object details | Adds width / height, area and angle (which of these fit depends on the host, see the table in the next section; I2C / mBlock get all of them plus vertices and a tracking ID); fewer objects |
+
+- **X, Y are the centroid** (color tracking uses the bounding-box centre, so they differ); width / height = bounding box (1 more than in color tracking).
+- **Angle** 0~179° (long side of the minimum bounding rectangle, 0 = pointing right, positive = turning toward the bottom of the frame); EV3 sends "(angle + 1) ÷ 2". **Vertices**: triangle 3, four-sided 4, pentagon 5, hexagon 6, star 10, circle / ellipse 0. **Tracking ID** 1~255: stays the same for the same object across frames.
+- Only **target colors 1~8** count (so the code stays two digits); colors 9~16 are still tracked in color tracking, just not treated as objects.
+- After teaching target 1~8 the camera asks `Target N shape`, so you can tell it which shape to look for in that color (Any = no preference); SET menu item 14 **ShapeTol 1~5** sets how loose the shape check is (default 3, larger = looser).
+
 ## 📊 Colors per host
 
 The same sub-option carries different amounts of data on each host, and the camera **fills each host to its capacity**: you get as many colors as you taught, minus what does not fit. Click a number for its slot table.
@@ -95,21 +115,23 @@ The same sub-option carries different amounts of data on each host, and the came
 | 2 Color at points ③ Hue + saturation + value | [4 points hue + sat + value](/en/sensors/unicam/reference.md#pyb-23) | [4 points hue + sat + value](/en/sensors/unicam/reference.md#edu-23) | [2 points hue + sat/value](/en/sensors/unicam/reference.md#toy-23) | [1 point(s) raw hue + sat + value](/en/sensors/unicam/reference.md#pyblk-23) | [2 point(s) raw hue + sat + value](/en/sensors/unicam/reference.md#ev3-23) | [6 points hue + sat + value](/en/sensors/unicam/reference.md#mx-23) | [16 points hue + sat + value](/en/sensors/unicam/reference.md#i2c-23) |
 | 3 Color order | [13 blocks hue code](/en/sensors/unicam/reference.md#pyb-30) | [13 blocks hue code](/en/sensors/unicam/reference.md#edu-30) | [3 blocks hue code](/en/sensors/unicam/reference.md#toy-30) | [2 blocks hue code](/en/sensors/unicam/reference.md#pyblk-30) | [11 blocks hue code](/en/sensors/unicam/reference.md#ev3-30) | [18 blocks hue code](/en/sensors/unicam/reference.md#mx-30) | [16 blocks hue code](/en/sensors/unicam/reference.md#i2c-30) |
 | 4 Line following ①②③ black / white / colored line | [14 values](/en/sensors/unicam/reference.md#pyb-41) | [13 values](/en/sensors/unicam/reference.md#edu-41) | [5 values](/en/sensors/unicam/reference.md#toy-41) | [4 values](/en/sensors/unicam/reference.md#pyblk-41) | [12 values](/en/sensors/unicam/reference.md#ev3-41) | [14 values](/en/sensors/unicam/reference.md#mx-41) | [14 values](/en/sensors/unicam/reference.md#i2c-41) |
+| 5 Object detection ① Object list | [4 objects](/en/sensors/unicam/reference.md#pyb-51) | [7 objects](/en/sensors/unicam/reference.md#edu-51) | [2 objects](/en/sensors/unicam/reference.md#toy-51) | [1 object](/en/sensors/unicam/reference.md#pyblk-51) | [5 objects](/en/sensors/unicam/reference.md#ev3-51) | [4 objects](/en/sensors/unicam/reference.md#mx-51) | [8 objects: color, shape, XY](/en/sensors/unicam/reference.md#i2c-51) |
+| 5 Object detection ② Object details | [2 objects + size, area](/en/sensors/unicam/reference.md#pyb-52) | [2 objects + size, area, angle](/en/sensors/unicam/reference.md#edu-52) | [1 object + area](/en/sensors/unicam/reference.md#toy-52) | [1 object + area](/en/sensors/unicam/reference.md#pyblk-52) | [2 objects + area, angle](/en/sensors/unicam/reference.md#ev3-52) | [3 objects + size, area](/en/sensors/unicam/reference.md#mx-52) | [8 objects + size, area, angle](/en/sensors/unicam/reference.md#i2c-52) |
 <!-- /gen -->
 
 - Full slot-by-slot layout (what is in each slot, range, how to split): [Value reference](/en/sensors/unicam/reference.md).
-- One firmware edition per host: **SPIKE edition** (official app and Pybricks detected automatically), **EV3 edition**, **MATRIX edition**, **Universal I2C edition** (Arduino, micro:bit).
+- One firmware edition per host: **SPIKE edition** (official app and Pybricks detected automatically), **EV3 edition**, **MATRIX edition**, **Universal I2C edition** (Arduino, micro:bit), **mBlock edition** (mBot etc.).
 
 ## 🎛️ On the camera
 
 The back of the camera has a 1.8" color screen and 4 buttons; everything is set on the camera, no computer needed.
 
 1. **Live view**: left / right cycles target 1 … target N → **MODE** → **SET**. N = the last taught color + 1 empty slot (up to 16).
-2. **OK on a target: teach a color** (AxisX → AxisY → OK to pick; hold OK for 0.8 s to finish at once; then adjust Hue / Sta / Size / Locked · MaxArea). **Side button** on a target: clear it.
-3. **OK on MODE**: left / right picks camera mode 1~4 → OK → pick a sub-option → OK. Sub-option names show **what the current host actually gets** (e.g. EV3 "8 XY", Pybricks library "7 XY"); before a SPIKE hub has read the camera they show the level names (Max / Multi / Std / Fine, H / HS / HSV). Modes with one sub-option skip that step. In menus the side button goes back one level.
-4. **OK on SET**: camera menu (brightness, contrast, saturation, white balance, white calibration, self-test, defaults).
-5. **Screen**: top left is the host name (green = connected, red = disconnected); top right shows "mode-sub-option" (e.g. 1-3) and the target number (from 1, the same color number the host receives); the bottom bar shows, per mode: color tracking = X Y W H count of the current target, color at points = H S V of S1, color order = number of blocks, line following = near / far offset, angle, junction type. Color at points draws the sample crosses and numbers, color order labels the blocks, line following draws the three scan rows and the line it found.
-6. **Kept after power-off**: target colors (16), camera settings, camera mode and each mode's sub-option, sample-point positions changed over I2C. The first time this generation's firmware is flashed everything resets to defaults (Color tracking ③ Standard).
+2. **OK on a target: teach a color** (AxisX → AxisY → OK to pick; hold OK for 0.8 s to finish at once; then adjust Hue / Sta / Size / Locked · MaxArea). **Side button** on a target: clear it (with its assigned shape). In object detection, teaching target 1~8 is followed by a `Target N shape` prompt.
+3. **OK on MODE**: left / right picks camera mode 1~5 → OK → pick a sub-option → OK. Sub-option names show **what the current host actually gets** (e.g. EV3 "8 XY", Pybricks library "7 XY"); before a SPIKE hub has read the camera they show the level names (Max / Multi / Std / Fine, H / HS / HSV). Modes with one sub-option skip that step. In menus the side button goes back one level.
+4. **OK on SET**: camera menu (brightness, contrast, saturation, white balance, white calibration, self-test, defaults); item 14 ShapeTol 1~5 is the shape tolerance for object detection.
+5. **Screen**: top left is the host name (green = connected, red = disconnected); top right shows "mode-sub-option" (e.g. 1-3) and the target number (from 1, the same color number the host receives); the bottom bar shows, per mode: color tracking = X Y W H count of the current target, color at points = H S V of S1, color order = number of blocks, line following = near / far offset, angle, junction type, object detection = object count + code and position of the largest. Color at points draws the sample crosses and numbers, color order labels the blocks, line following draws the three scan rows and the line it found, object detection outlines each object with its "color shape" label (a ? when it touches the frame edge).
+6. **Kept after power-off**: target colors (16), camera settings, camera mode and each mode's sub-option, sample-point positions changed over I2C, shape tolerance, shapes assigned to targets 1~8. The first time this generation's firmware is flashed everything resets to defaults (Color tracking ③ Standard).
 
 > [!NOTE]
 > A SPIKE hub cannot read which mode the camera is in, so your program must match the camera setting (pass the mode number when you create the Pybricks library object, e.g. `mode=13`). On EV3 read mode 0; over I2C read `0x01`, or switch from your program with command `E0`.
@@ -120,6 +142,7 @@ The back of the camera has a 1.8" color screen and 4 buttons; everything is set 
 - **Width, height**: pixels (right − left, bottom − top).
 - **Area share**: blob pixels ÷ 19200 × 100, rounded; found but under 1% sends 1.
 - **Count**: number of blobs larger than the minimum area (Size).
+- **Objects (camera mode 5)**: object code = color number × 10 + shape; X, Y are the centroid, width / height = bounding box + 1, angle 0~179. See "5 Object detection" above.
 - **Values that can be negative** (line offsets, angle, edges): EV3, Pybricks library (signed byte) and I2C (int16) send them as they are; SPIKE App, MATRIX and Pybricks blocks send them **+100**, so subtract 100.
 
 ### Hue code 0~255
@@ -158,7 +181,7 @@ Sharpshooter Vision units shipped before October 2026 (School and WRO editions) 
 | | Legacy: School edition | Legacy: WRO edition (HUE12) | Current Sharpshooter Vision |
 | :--- | :--- | :--- | :--- |
 | Main features | Pick point + blob tracking + motion | Color code and vividness of 12 spots | Color tracking (up to 16 colors), color at points, color order, line following |
-| Switch jobs on the camera | — | — | 4 camera modes + sub-options |
+| Switch jobs on the camera | — | — | 5 camera modes + sub-options |
 | Hosts | SPIKE, EV3, MATRIX, Arduino and more | SPIKE, EV3, MATRIX | SPIKE, EV3, MATRIX, Arduino, micro:bit, mBlock |
 | Status | No longer supported | No longer supported | **Firmware v1 in development, not yet hardware-verified** |
 | Guide | [Legacy overview](/en/sensors/esp32cam/index.md) | [Legacy overview](/en/sensors/esp32cam/index.md) | This page |
@@ -175,7 +198,7 @@ Sharpshooter Vision units shipped before October 2026 (School and WRO editions) 
 | MATRIX Mini R4 | MATRIXblock mVision blocks (10 slots) | [Reading it on MATRIX](/en/sensors/unicam/matrix/mvision.md) |
 | Arduino / ESP32 / UNO R4 | I2C 0x4C | [Reading it on Arduino](/en/sensors/unicam/arduino/index.md) |
 | micro:bit | I2C 0x4C (MakeCode) | [Reading it on micro:bit](/en/sensors/unicam/microbit/index.md) |
-| mBlock (mBot, Ranger, Orion, MegaPi) | RJ25 serial 38400, MBC Pro Sensors extension v2.1.0 (in development; download the import file to try it before it is listed) | [Reading it in mBlock](/en/sensors/unicam/mblock/index.md) |
+| mBlock (mBot, Ranger, Orion, MegaPi) | RJ25 serial 38400, MBC Pro Sensors extension v2.2.0 (in development; download the import file to try it before it is listed) | [Reading it in mBlock](/en/sensors/unicam/mblock/index.md) |
 
 Example programs: [SPIKE](/en/sensors/unicam/spike-examples.md) · [EV3](/en/sensors/unicam/ev3-examples.md) · [Arduino](/en/sensors/unicam/arduino-examples.md) · [micro:bit](/en/sensors/unicam/microbit-examples.md) · [MATRIX](/en/sensors/unicam/matrix-examples.md) · [mBlock](/en/sensors/unicam/mblock-examples.md).
 
@@ -189,3 +212,4 @@ Firmware v1 has not been run on real hardware yet; these may change after testin
 4. Whether **SPIKE App Python** can read bytes 8~15 of mode 0 is not confirmed yet; the 8 bytes the blocks read are not affected.
 5. **Sample-point positions**: default layout + I2C E1; the camera menu cannot move sample points yet.
 6. **Color order** takes up to 32 blocks (hosts actually get 2~18); the engine handles 16 colors, LEGO hosts use up to 14.
+7. **Object detection** runs outline analysis on top of 16-color matching, so fps has to be measured again; when a frame cannot be finished in time the camera lowers the frame rate in mode 5 only (down to 25 fps). Shape thresholds come from the hardware-tuned object-detection edition; on the computer shapes are recognised correctly 99% of the time (area above about 310 pixels).

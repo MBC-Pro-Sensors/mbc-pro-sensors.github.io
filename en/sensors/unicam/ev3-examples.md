@@ -8,7 +8,7 @@
 > [!WARNING]
 > **v1 not yet hardware-verified**: the value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after bench testing.
 
-This page has **3 EV3 Python examples**: turn to follow a blob, colour at a spot, PD line following with a stop at a junction. The same program runs on **Pybricks v4** and on **LEGO EV3 MicroPython v2**; the library `MBC_UniCam_EV3.py` detects which one. EV3-G and EV3 Classroom read it with infrared sensor blocks, see [How EV3 reads it](/en/sensors/unicam/ev3/index.md).
+This page has **4 EV3 Python examples**: turn to follow a blob, colour at a spot, PD line following with a stop at a junction, object detection (drive to a square). The same program runs on **Pybricks v4** and on **LEGO EV3 MicroPython v2**; the library `MBC_UniCam_EV3.py` detects which one. EV3-G and EV3 Classroom read it with infrared sensor blocks, see [How EV3 reads it](/en/sensors/unicam/ev3/index.md).
 
 | Software | How |
 |---|---|
@@ -38,8 +38,12 @@ This page has **3 EV3 Python examples**: turn to follow a blob, colour at a spot
 | 23 | 2 Spot colour, 3 | 2 spots: exact hue code, saturation, value (mode 1) |
 | 30 | 3 Colour order | hues of 11 blocks from the left (±2) + total (modes 1 + 2) |
 | 41 / 42 / 43 | 4 Line | near/mid/far offset, angle, width, junction, flags, junction distance, marker colour (mode 1); edges, far width, marker count (mode 2); no lost side on EV3 |
+| 51 | 5 Object detection, 1 Object list | code and position (8×6 grid) of 5 objects; objects 1~4 in mode 1, object 5 and the object count in mode 2 |
+| 52 | 5 Object detection, 2 Object detail | code, position, area %, angle (sent ÷2, restored ×2 by the library, ±1°) of 2 objects (all in mode 1; no count, no width/height) |
 
 **Reading the numbers**: the library turns the EV3 8×6 grid **into pixels** (X 0~159 left → right, Y 0~119 top → bottom, same as SPIKE), using the cell centre, ±10 px; **(0, 0) = not found**. For the raw EV3 grid (Y bottom = small) use `grid(c)`. Line offsets −100~100: **standing behind the robot, line on the left = negative**.
+
+**Objects (modes 51 / 52)**: object code = **colour × 10 + shape** (14 = a square of target 1), 0 = none. Shapes: 0 other, 1 circle, 2 ellipse, 3 triangle, 4 square, 5 rectangle, 6 pentagon, 7 hexagon, 8 star, 9 trapezoid. Objects 1, 2… are sorted **largest first**; the position is the centroid (also turned into pixels ±10; raw cell via `object_grid(i)`). Angle 0~179: long side pointing right = 0, turning toward the bottom of the picture is positive.
 
 ## MBC_UniCam_EV3.py methods
 
@@ -56,7 +60,12 @@ This page has **3 EV3 Python examples**: turn to follow a blob, colour at a spot
 | `order()`, `total()` | hue codes from the left (≤11), total blocks | 30 |
 | `near()` `mid()` `far()` `angle()` `width()` `junction()` `flags()` `junction_dist()` | line values (mode 1) | 41~43 |
 | `edges()`, `far_width()`, `marker()`, `line_all()` | line values (need mode 2, +0.5 s) | 41~43 |
+| `max_object()`, `object_count()` | objects in this mode (51 → 5, 52 → 2), objects in view 0~8 (51, reads mode 2) | 51, 52 / 51 |
+| `object(i)`, `object_found(i)`, `object_color(i)`, `object_shape(i)` | object code (0 = none), found, colour 1~8, shape 0~9 | 51, 52 |
+| `object_xy(i)`, `object_grid(i)` | centroid (pixels ±10), raw 8×6 cell (Y bottom = small) | 51, 52 |
+| `object_area(i)`, `object_angle(i)` | area %, angle 0~179 (±1) | 52 |
 | `device_id()`, `is_unicam()`, `sensor_ok()` | mode 5: (0x4C, 3, 100), True, last read OK | all |
+| `shape_name(s, zh=False)`, `color_name(h)` (module functions) | shape 0~9 → `'circle'` … (`zh=True` Chinese), hue code → colour name | — |
 
 - Values EV3 does not get (counts in modes 11~13, colours found, lost side) raise `ValueError`; so does a wrong mode. Messages are bilingual.
 - If the camera does not answer you get `None`; the examples check for `None` first.
@@ -288,6 +297,103 @@ while True:
 **Common problems**
 - **Slow and jerky?** → `edges()`, `far_width()`, `marker()` and `line_all()` switch to mode 2 (0.5 s each time); do not use them in the line loop.
 - **Wobbles a lot?** → smaller `KP`, bigger `KD`, or a slower `SPEED`.
+
+---
+
+## Example 4: drive to a square and show its angle
+
+**What it does**: looks for a "square of target 1" among objects 1 and 2 (the two largest), turns to it and drives forward while the EV3 screen shows its angle; stops and beeps when the area is big enough (close); spins slowly to search when it sees none. It first checks that the camera is in mode 52.
+
+**Camera mode**: camera mode 5 Object detection, option 2 Object detail = **mode number 52**; teach the colour of "target 1" first (for example a blue block).
+
+**You need**: EV3 brick, camera in port **1**, left wheel **B**, right wheel **C**, a square block or card in the target colour.
+
+**Download**: [ex04_object.py](/examples/unicam/ev3/ex04_object.py) + [MBC_UniCam_EV3.py](/examples/unicam/ev3/MBC_UniCam_EV3.py)
+
+<details>
+<summary>🐍 Python code (Pybricks v4 / EV3 MicroPython v2)</summary>
+
+```python
+#!/usr/bin/env pybricks-micropython
+# 神攝手 × EV3 範例 4：跟著正方形走、螢幕顯示它轉了幾度
+# Sharpshooter Vision × EV3 example 4: drive to a square and show its angle on the screen
+# 需要把相機選單切到 相機模式 5 物體偵測 ・子選項 ② 物體詳細＝模式編號 52
+# Camera menu: camera mode 5 Object detection, option 2 Object detail = mode number 52
+# 軟體 Software：Pybricks v4（code.pybricks.com）或 樂高官方 EV3 MicroPython v2（同一支程式都能跑）
+# 準備：在相機上教「目標 1」的顏色（例如藍色方塊）/ teach "target 1" on the camera (e.g. a blue block)
+# 接線 Wiring：相機 → 1 號孔 / camera → port 1；左輪 B、右輪 C / left wheel B, right wheel C
+# 同一個資料夾要有 MBC_UniCam_EV3.py / put MBC_UniCam_EV3.py in the same folder
+#
+# 物體代碼＝色號×10＋形狀：目標 1 的正方形＝1×10＋4＝14。EV3 模式 52 給 2 個物體（面積大的是物體 1），
+# 代碼、位置、面積、角度都在 EV3 模式 1，不用換模式（不會多等 0.5 秒）。
+# Object code = colour × 10 + shape: target 1 square = 14. EV3 mode 52 gives 2 objects (object 1 = largest);
+# code, position, area and angle are all in EV3 mode 1, so there is no 0.5 s mode switch.
+from pybricks.hubs import EV3Brick
+from pybricks.ev3devices import Motor
+from pybricks.parameters import Port
+from pybricks.robotics import DriveBase
+from pybricks.tools import wait
+from MBC_UniCam_EV3 import UniCam, shape_name
+
+ev3 = EV3Brick()
+cam = UniCam(Port.S1)                            # 不填 mode：自動讀相機目前的模式 / mode read from the camera
+left = Motor(Port.B)
+right = Motor(Port.C)
+robot = DriveBase(left, right, 56, 114)          # 輪徑 56 mm、輪距 114 mm / wheel 56 mm, axle 114 mm
+
+if cam.mode_number() != 52:                      # EV3 讀得到相機的模式，切錯了就提醒 / EV3 can check the mode
+    print('請把相機切到 模式 52（物體偵測 ② 物體詳細）/ please set the camera to mode 52')
+    ev3.speaker.beep(200, 500)
+    wait(3000)
+    raise SystemExit
+
+WANT = 1 * 10 + 4   # 👉 可以改：目標 1 × 10 ＋ 形狀 4（正方）；三角改成 13、圓改成 11 / triangle 13, circle 11
+KP = 3              # 👉 可以改：偏 1 像素就多轉幾度／秒 / turn rate per pixel of error
+STOP_AREA = 25      # 👉 可以改：面積 ≥ 25 % 就算到了 / area (%) that counts as "arrived"
+
+print('要找 looking for: 目標 target', WANT // 10, shape_name(WANT % 10, True), shape_name(WANT % 10))
+while True:
+    c1 = cam.object(1)                           # 物體 1（最大）的代碼 / code of object 1 (largest)
+    if c1 is None:                               # 讀不到相機 / no camera
+        robot.stop()
+        wait(100)
+        continue
+    if c1 == WANT:                               # 物體 1、2 裡哪一個是要找的（0＝都不是）/ which one we want
+        i = 1
+    elif cam.object(2) == WANT:
+        i = 2
+    else:
+        i = 0
+    if i == 0:                                 # 沒看到：原地慢慢轉著找 / not seen: spin to search
+        robot.drive(0, 60)
+        wait(20)
+        continue
+    x, y = cam.object_xy(i)                      # 像素（EV3 是 8×6 格中心，±10）/ pixels (±10 on EV3)
+    angle = cam.object_angle(i)                  # 0~179 度（EV3 精度 ±1）/ degrees (±1 on EV3)
+    ev3.screen.clear()
+    ev3.screen.print(shape_name(WANT % 10), angle)
+    if cam.object_area(i) >= STOP_AREA:          # 到了：停車、嗶一聲 / arrived: stop and beep
+        robot.stop()
+        ev3.speaker.beep()
+        break
+    robot.drive(80, (x - 80) * KP)               # 畫面中間 X = 80；在右 → 正 → 右轉 / right of centre = positive
+    wait(20)
+```
+
+</details>
+
+**Step by step**
+1. `WANT = 1 × 10 + 4`: object code = colour × 10 + shape, so a square of target 1 is 14 (triangle 13, circle 11).
+2. `cam.object(1)`, `cam.object(2)`: EV3 mode 52 gives the 2 largest objects; code, position, area and angle are all in EV3 mode 1, so the loop never switches modes.
+3. `cam.object_angle(i)`: an EV3 value only goes up to 100, so the camera sends "(angle + 1) ÷ 2" and the library multiplies by 2 again: 0~179, ±1°.
+4. `cam.object_area(i) ≥ STOP_AREA`: a big area means close, so stop.
+
+**What you should see**: with the block on the left the robot turns left, on the right it turns right; the screen shows the shape and angle, like `square 30` (turn the block and the number changes); close to it the robot stops and beeps.
+
+**Common problems**
+- **Beeps and ends right away?** → the camera is not in mode 52: MODE → "5 Object detection → 2"; the top right of the camera screen must show `5-2`.
+- **Square not found?** → look at the "colour shape" label next to each object on the camera screen; if it reads rectangle (5) or other (0), set `Target 1 shape` to Square or adjust **ShapeTol** in the SET menu.
+- **Need 5 objects or the object count?** → use mode 51 (`object_count()`; object 5 is in EV3 mode 2, +0.5 s).
 
 ## Please note
 

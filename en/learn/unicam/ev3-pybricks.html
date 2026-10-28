@@ -329,13 +329,26 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
             <label class="f" for="lmark" data-g="line"><span>Colored marker line under the robot now</span>
               <select id="lmark"><option value="0">none</option><option value="2">target color 2 (green)</option><option value="3">target color 3 (blue)</option><option value="4">target color 4 (yellow)</option></select>
             </label>
+            <label class="f" for="jshape" data-g="obj"><span>Selected object (<span id="jname">track id 1</span>; tap a shape to select it): shape</span>
+              <select id="jshape"><option value="1">1 circle</option><option value="2">2 ellipse</option><option value="3">3 triangle</option><option value="4">4 square</option><option value="5">5 rectangle</option><option value="6">6 pentagon</option><option value="7">7 hexagon</option><option value="8">8 star</option><option value="9">9 trapezoid</option></select>
+            </label>
+            <label class="f" for="jcolor" data-g="obj"><span>Color (target color 1–8 taught on the camera)</span>
+              <select id="jcolor"><option value="1">target color 1 (red)</option><option value="2">target color 2 (green)</option><option value="3">target color 3 (blue)</option><option value="4">target color 4 (yellow)</option><option value="5">target color 5 (purple)</option><option value="6">target color 6 (orange)</option><option value="7">target color 7 (cyan)</option><option value="8">target color 8 (pink)</option></select>
+            </label>
+            <label class="f" for="jsize" data-g="obj"><span>Size (closer looks bigger)</span>
+              <input autocomplete="off" type="range" id="jsize" min="12" max="70" value="42">
+            </label>
+            <label class="f" for="jrot" data-g="obj"><span>Rotation (0–179°)</span>
+              <input autocomplete="off" type="range" id="jrot" min="0" max="179" value="0">
+            </label>
             <div class="toggles">
+              <label data-g="obj"><input autocomplete="off" type="checkbox" id="jgone"> Remove this object (<span id="jname2">track id 1</span>)</label>
               <label data-g="track"><input autocomplete="off" type="checkbox" id="tgone"> Remove <span id="selname3">color 1</span></label>
               <label data-g="line"><input autocomplete="off" type="checkbox" id="lgone"> Remove the line (robot left the line)</label>
               <label><input autocomplete="off" type="checkbox" id="unplug"> Unplug the sensor</label>
             </div>
           </div>
-          <p class="note">The view is a sketch: values come straight from where things are on screen (X 0–159 left→right, Y 0–119 top→bottom, area % = width × height ÷ whole picture); a hue code is the color the paper or block really has (red 0, yellow 40, green 80, blue 160, purple 200, white table 244, black tape 252). It is not the camera's own algorithm, and real numbers vary with the light. Color tracking assumes 4 colors were taught on the camera: color 1 red, 2 green, 3 blue, 4 yellow.</p>
+          <p class="note">The view is a sketch: values come straight from where things are on screen (X 0–159 left→right, Y 0–119 top→bottom, area % = width × height ÷ whole picture); a hue code is the color the paper or block really has (red 0, yellow 40, green 80, blue 160, purple 200, white table 244, black tape 252). It is not the camera's own algorithm, and real numbers vary with the light. Color tracking assumes 4 colors were taught on the camera: color 1 red, 2 green, 3 blue, 4 yellow. In object detection you pick each shape yourself (the camera does not judge it here); objects 1, 2… are sorted by area, largest first; X, Y is the shape's centroid (white dot), the dashed box is its bounding box, and the angle is the rotation you set.</p>
         </div>
           </div>
         </div>
@@ -412,16 +425,19 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     { n: 30, g: 'order', cm: 3, sub: 0, name: ('(no sub-option)') },
     { n: 41, g: 'line', cm: 4, sub: 1, name: ('① Black line') },
     { n: 42, g: 'line', cm: 4, sub: 2, name: ('② White line') },
-    { n: 43, g: 'line', cm: 4, sub: 3, name: ('③ Colored line') }
+    { n: 43, g: 'line', cm: 4, sub: 3, name: ('③ Colored line') },
+    { n: 51, g: 'obj', cm: 5, sub: 1, name: ('① Object list') },
+    { n: 52, g: 'obj', cm: 5, sub: 2, name: ('② Object details') }
   ];
   var GROUPS = {
     track: { cm: 1, name: ('1 Color tracking'), modes: [11, 12, 13, 14] },
     spot: { cm: 2, name: ('2 Color at points'), modes: [21, 22, 23] },
     order: { cm: 3, name: ('3 Color order'), modes: [30] },
     line: { cm: 4, name: ('4 Line following'), modes: [41, 42, 43] },
+    obj: { cm: 5, name: ('5 Object detection'), modes: [51, 52] },
     info: { cm: 0, name: ('Sensor info (any mode)'), modes: null }
   };
-  var GORDER = ['track', 'spot', 'order', 'line', 'info'];
+  var GORDER = ['track', 'spot', 'order', 'line', 'obj', 'info'];
   function modeOf(n) { for (var i = 0; i < MODES.length; i++) if (MODES[i].n === n) return MODES[i]; return MODES[2]; }
   function modeTitle(n) { var m = modeOf(n); return n + ' = ' + GROUPS[m.g].name.replace(/^\d /, '') + ' ' + m.name; }
   function modeList(ms) {
@@ -441,6 +457,8 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if (h < 12 || h >= 220) return 1; if (h < 28) return 2; if (h < 56) return 3;
     if (h < 100) return 4; if (h < 140) return 5; if (h < 180) return 6; return 7;
   }
+  var SHAPES = ['other', 'circle', 'ellipse', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon', 'star', 'trapezoid'];
+  var SHAPES_ZH = [('other'), ('circle'), ('ellipse'), ('triangle'), ('square'), ('rectangle'), ('pentagon'), ('hexagon'), ('star'), ('trapezoid')];
   function py(v) {
     if (v === null || v === undefined) return 'None';
     if (v === true) return 'True'; if (v === false) return 'False';
@@ -506,6 +524,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
   }
       var EV3 = CFG.ev3;
       var S = { step: 1, viewStep: 1, fn: 'xy', mode: 13, name: 'cam', port: CFG.port, multi: false, auto: false };
+      var NOBJ = EV3 ? { 51: 5, 52: 2 } : { 51: 4, 52: 2 };
       var NCOL = EV3 ? { 11: 12, 12: 8, 13: 4, 14: 2 } : { 11: 14, 12: 7, 13: 4, 14: 2 };
       var NPT = EV3 ? { 21: 12, 22: 4, 23: 2 } : { 21: 14, 22: 7, 23: 4 };
       var ORDN = EV3 ? 11 : 13;
@@ -560,20 +579,37 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
           sensor_ok: function () { return st.ok; },
           device_id: function () { return N ? null : tup([76, 3, 100]); },
           is_unicam: function () { return EV3 ? !N : (N ? null : true); },
-          firmware_version: function () { return N ? null : tup([1, 0]); }
+          firmware_version: function () { return N ? null : tup([1, 0]); },
+          max_object: function () { return NOBJ[m]; },
+          object_count: function () { return N ? null : st.obj.length; },
+          object: function (i) { var o = st.obj[i - 1]; return N ? null : (o ? o[0] * 10 + o[1] : 0); },
+          object_found: function (i) { return N ? null : !!st.obj[i - 1]; },
+          object_color: function (i) { var o = st.obj[i - 1]; return N ? null : (o ? o[0] : 0); },
+          object_shape: function (i) { var o = st.obj[i - 1]; return N ? null : (o ? o[1] : 0); },
+          object_grid: function (i) { var o = st.obj[i - 1]; return N ? null : tup(o ? [idiv(o[2], 20) + 1, 6 - idiv(o[3], 20)] : [0, 0]); },
+          object_xy: function (i) {
+            var o = st.obj[i - 1]; if (N) return null; if (!o) return tup([0, 0]);
+            return tup(EV3 ? [idiv(o[2], 20) * 20 + 10, idiv(o[3], 20) * 20 + 9] : [Math.max(1, o[2]), Math.max(1, o[3])]);
+          },
+          object_size: function (i) { var o = st.obj[i - 1]; return N ? null : tup(o ? [o[6] - o[4] + 1, o[7] - o[5] + 1] : [0, 0]); },
+          object_area: function (i) { var o = st.obj[i - 1]; return N ? null : (o ? Math.max(1, idiv(o[8] * 100 + 9600, 19200)) : 0); },
+          object_angle: function (i) { var o = st.obj[i - 1]; if (N) return null; if (!o) return 0; var v = idiv(o[9] + 1, 2); return v <= 0 ? 0 : Math.min(179, 2 * v); }
         };
         if (EV3 && S.auto && N) {
           var NEED = { xy: 'xy', x: 'xy', y: 'xy', found: 'xy', grid: 'grid', max_color: 'max_color', area: 'area', size: 'size', count: 'count',
             hsv: 'hsv', hue: 'hsv', color: 'hsv', sat: 'sat', val: 'val', max_point: 'max_point', order: 'order', total: 'total',
             near: 'near', mid: 'mid', far: 'far', angle: 'angle', width: 'width', flags: 'flags', junction: 'junction', junction_dist: 'junction_dist',
-            edges: 'edges', far_width: 'far_width', marker: 'marker', line_all: 'line_all' };
-          var OKM = { xy: '(11, 12, 13, 14)', grid: '(11, 12, 13, 14)', max_color: '(11, 12, 13, 14)', area: '(13, 14)', size: '(14,)', count: '(14,)', hsv: '(21, 22, 23)', max_point: '(21, 22, 23)', sat: '(22, 23)', val: '(22, 23)', order: '(30,)', total: '(30,)' };
+            edges: 'edges', far_width: 'far_width', marker: 'marker', line_all: 'line_all',
+            max_object: 'max_object', object_count: 'object_count', object: 'object', object_found: 'object', object_color: 'object', object_shape: 'object',
+            object_grid: 'object_grid', object_xy: 'object_xy', object_area: 'object_area', object_angle: 'object_angle' };
+          var OKM = { xy: '(11, 12, 13, 14)', grid: '(11, 12, 13, 14)', max_color: '(11, 12, 13, 14)', area: '(13, 14)', size: '(14,)', count: '(14,)', hsv: '(21, 22, 23)', max_point: '(21, 22, 23)', sat: '(22, 23)', val: '(22, 23)', order: '(30,)', total: '(30,)',
+            max_object: '(51, 52)', object_count: '(51,)', object: '(51, 52)', object_grid: '(51, 52)', object_xy: '(51, 52)', object_area: '(52,)', object_angle: '(52,)' };
           Object.keys(NEED).forEach(function (k) {
             var nm = NEED[k], ok = OKM[nm] || '(41, 42, 43)';
             V[k] = function () { throw new PyErr('ValueError: ' + nm + '(): 模式 None 沒有這個值，要用模式 ' + ok + ' / not available in mode None, use mode ' + ok); };
           });
         }
-        var NOREAD = EV3 ? { max_color: 1, max_point: 1, sensor_ok: 1, mode_number: S.auto ? 0 : 1 } : { max_color: 1, max_point: 1, mode_number: 1 };
+        var NOREAD = EV3 ? { max_color: 1, max_point: 1, max_object: 1, sensor_ok: 1, mode_number: S.auto ? 0 : 1 } : { max_color: 1, max_point: 1, max_object: 1, mode_number: 1 };
         var COST = EV3 ? { line_all: 2, order: 2, marker: 2 } : {};
         if (EV3 && S.auto && N) { NOREAD = { sensor_ok: 1 }; COST = {}; }   
         var W = { __n: 0 };
@@ -724,6 +760,52 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       if (!EV3) FNS.push({ id: 'firmware_version', label: 'firmware_version()', name: ('Firmware version'), grp: 'info', modes: null, once: true,
         what: ('Camera firmware (major, minor), e.g. (1, 0) = 1.0. Reads mode 8: keep it outside the loop.'),
         ret: ('(major, minor)'), body: ['print({n}.firmware_version())'], out: function (V) { return py(V.firmware_version()); } });
+      FNS.push(
+        { id: 'max_object', label: 'max_object()', name: ('Objects in this mode'), grp: 'obj', modes: [51, 52], once: true,
+          what: ('How many objects this host gets in this mode: ') + (EV3 ? '51→5, 52→2' : '51→4, 52→2') + ('. Object 1 is the largest, then 2, 3… smaller. No camera read.'),
+          ret: ('integer'), body: ['print("' + ('max objects:') + '", {n}.max_object())'], out: function (V) { return pr(('max objects:'), V.max_object()); } },
+        { id: 'object_count', label: 'object_count()', name: ('Objects in view'), grp: 'obj', modes: [51],
+          what: ('How many objects are in view (0–8, can be more than max_object()). Only target colors 1–8 count. Mode 51 only. Remove an object to see it drop.') + (EV3 ? (' The EV3 reads infrared mode 2 (0.5 s more).') : ''),
+          ret: ('0–8'), body: ['print("' + ('objects in view:') + '", {n}.object_count())'], out: function (V) { return pr(('objects in view:'), V.object_count()); } },
+        { id: 'object', label: 'object(i)', name: ('Object code'), grp: 'obj', modes: [51, 52],
+          what: ('Code of object i = color × 10 + shape, e.g. 13 = a triangle of target color 1, 24 = a square of target color 2; 0 = none. Shapes: 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid 0 other. Change the shape and color on the right.'),
+          ret: ('0, 10–89'), body: ['print("' + ('object 1 code:') + '", {n}.object(1))'], out: function (V) { return pr(('object 1 code:'), V.object(1)); } },
+        { id: 'object_found', label: 'object_found(i)', name: ('Is there an object'), grp: 'obj', modes: [51, 52],
+          what: ('Is there an object i? Object 1 is always the largest, so "is there object 1" = is there any object at all.'),
+          ret: ('True / False'),
+          body: ['if {n}.object_found(1):', '    print("' + ('object seen') + '")', 'else:', '    print("' + ('no object') + '")'],
+          out: function (V) { return V.object_found(1) ? ('object seen') : ('no object'); } },
+        { id: 'object_color', label: 'object_color(i)', name: ('Object color'), grp: 'obj', modes: [51, 52],
+          what: ('Which taught target color object i is (1–8); 0 = none.'),
+          ret: ('0–8'), body: ['print("' + ('object 1 is target color') + '", {n}.object_color(1))'], out: function (V) { return pr(('object 1 is target color'), V.object_color(1)); } },
+        { id: 'object_shape', label: 'object_shape(i)', name: ('Object shape'), grp: 'obj', modes: [51, 52], imp: true,
+          what: ('Shape 0–9 of object i; <code>shape_name(s)</code> turns it into a name (import <code>shape_name</code> too). It is also 0 when there is no object, so check object_found() first.'),
+          ret: ('0–9'), body: ['s = {n}.object_shape(1)', 'print("' + ('object 1 shape:') + '", s, ' + ('shape_name(s)') + ')'],
+          out: function (V) { var x = V.object_shape(1); return pr(('object 1 shape:'), x, x === null ? null : (SHAPES[x])); } },
+        { id: 'object_xy', label: 'object_xy(i)', name: ('Object position (centroid)'), grp: 'obj', modes: [51, 52],
+          what: ('Centroid (X, Y) of object i in pixels; (0, 0) = none. The centroid is the shape\'s balance point (white dot); a triangle\'s is lower than its box centre.') + (EV3 ? (' On the EV3 it is the 8×6 grid-cell centre (±10 px).') : ''),
+          ret: ('(X, Y)'), body: ['print("' + ('object 1 at:') + '", {n}.object_xy(1))'], out: function (V) { return pr(('object 1 at:'), V.object_xy(1)); } },
+        { id: 'object_find', label: ('find object 13'), name: ('Find the red triangle'), grp: 'obj', modes: [51, 52],
+          what: ('Checks objects 1 to max_object() for code 13 (a triangle of target color 1) and prints where it is, or "not seen". Change the triangle into another shape.'),
+          ret: ('decided with object()'),
+          body: ['for i in range(1, {n}.max_object() + 1):', '    if {n}.object(i) == 13:', '        print("' + ('red triangle at') + '", {n}.object_xy(i))', '        break', 'else:', '    print("' + ('no red triangle') + '")'],
+          out: function (V) { var n = V.max_object(); for (var i = 1; i <= n; i++) if (V.object(i) === 13) return pr(('red triangle at'), V.object_xy(i)); return ('no red triangle'); } });
+      if (!EV3) FNS.push({ id: 'object_size', label: 'object_size(i)', name: ('Object width, height'), grp: 'obj', modes: [52],
+        what: ('Mode 52: (width, height) of the bounding box of object i in pixels (dashed box). Much taller than wide = standing up.'),
+        ret: ('(width, height)'), body: ['w, h = {n}.object_size(1)', 'print("' + ('width') + '", w, "' + ('height') + '", h)'],
+        out: function (V) { var t = unpack(V.object_size(1)); return pr(('width'), t[0], ('height'), t[1]); } });
+      if (EV3) FNS.push({ id: 'object_grid', label: 'object_grid(i)', name: ('Raw EV3 grid (8×6)'), grp: 'obj', modes: [51, 52],
+        what: ('Raw EV3 8×6 cell of object i: (X 1–8, Y 1–6), <b>Y bottom = small</b>.'),
+        ret: ('(X cell, Y cell)'), body: ['print("' + ('object 1 cell:') + '", {n}.object_grid(1))'], out: function (V) { return pr(('object 1 cell:'), V.object_grid(1)); } });
+      FNS.push({ id: 'object_area', label: 'object_area(i)', name: ('Object area %'), grp: 'obj', modes: [52],
+        what: ('Mode 52: how many % of the picture object i covers (0 = none). Bigger = closer. Make it bigger.'),
+        ret: ('0–100'),
+        body: ['a = {n}.object_area(1)', 'if a == 0:', '    print("' + ('no object') + '")', 'elif a >= 20:', '    print("' + ('close enough! area') + '", a)', 'else:', '    print("' + ('object 1 area') + '", a, "%")'],
+        out: function (V) { var a = V.object_area(1); return a === 0 ? ('no object') : cmp('>=', a, 20) ? pr(('close enough! area'), a) : pr(('object 1 area'), a, '%'); } });
+      if (EV3) FNS.push({ id: 'object_angle', label: 'object_angle(i)', name: ('Object angle'), grp: 'obj', modes: [52],
+        what: ('Mode 52: angle 0–179° of the long side of object i (right = 0, turning toward the bottom = positive). The EV3 sends (angle + 1) ÷ 2 and the library doubles it back, ±1°. Rotate the object.'),
+        ret: ('0–179'), body: ['print("' + ('object 1 angle:') + '", {n}.object_angle(1))'], out: function (V) { return pr(('object 1 angle:'), V.object_angle(1)); } });
+      FNS = FNS.map(function (f, i) { return [GORDER.indexOf(f.grp), i, f]; }).sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; }).map(function (x) { return x[2]; });
       function portRef() { return 'Port.' + CFG.ports[S.port]; }
       function ctor() {
         var args = portRef();
@@ -733,14 +815,14 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       }
       function bodyOf(f, name) { return f.body.map(function (b) { return b.replace(/\{n\}\./g, (S.multi ? 'await ' : '') + name + '.'); }); }
       var HOST = {
-        counts: function (m) { return { col: NCOL[m], pt: NPT[m], order: ORDN, line: LINEN }; },
+        counts: function (m) { return { col: NCOL[m], pt: NPT[m], order: ORDN, line: LINEN, obj: NOBJ[m] }; },
         cmt: function (s) { return '# ' + s; },
         lines: function (f) {
           var L = [], mi = modeOf(S.mode);
           if (EV3) L.push({ t: '#!/usr/bin/env pybricks-micropython', tag: 1 });
           L.push({ t: 'from pybricks.parameters import Port', tag: 1 });
           L.push({ t: S.multi ? 'from pybricks.tools import wait, run_task' : 'from pybricks.tools import wait', tag: 1 });
-          L.push({ t: 'from ' + CFG.lib + ' import UniCam', tag: 1 });
+          L.push({ t: 'from ' + CFG.lib + ' import UniCam' + (S.step >= 3 && f.imp ? ', shape_name' : ''), tag: 1 });
           L.push({ t: '# ' + ('camera menu: mode ') + S.mode + ' = ' + GROUPS[mi.g].name.replace(/^\d /, '') + (mi.sub ? ' ' + mi.name : ''), tag: 1 });
           if (S.step >= 2) {
             L.push({ t: '' });
@@ -905,8 +987,44 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     ],
     osel: 0,
     line: { ys: [100, 62, 24], xs: [66, 74, 88] }, lsel: 0,
-    mk: 0, mkn: 0, lastSide: -1
+    mk: 0, mkn: 0, lastSide: -1,
+    objs: [
+      { id: 1, color: 1, shape: 3, cx: 40, cy: 44, size: 42, rot: 0, gone: false },
+      { id: 2, color: 2, shape: 4, cx: 112, cy: 38, size: 30, rot: 20, gone: false },
+      { id: 3, color: 3, shape: 1, cx: 74, cy: 88, size: 28, rot: 0, gone: false },
+      { id: 4, color: 4, shape: 5, cx: 128, cy: 90, size: 34, rot: 150, gone: false },
+      { id: 5, color: 5, shape: 8, cx: 30, cy: 96, size: 26, rot: 0, gone: false }
+    ],
+    jsel: 0
   };
+  var OBJFILL = ['#888', '#d8392b', '#2f9e44', '#1f6fd1', '#f2c318', '#8a3fc4', '#f08a24', '#18a8b8', '#e0559a'];
+  var VERTS = [0, 0, 0, 3, 4, 4, 5, 6, 10, 4];
+  function objPoly(o) {
+    var s = o.size, pts = [], i, n, r;
+    if (o.shape === 1 || o.shape === 2) { var a = s / 2, b = o.shape === 1 ? s / 2 : s / 3; for (i = 0; i < 48; i++) { var t = i * Math.PI * 2 / 48; pts.push([a * Math.cos(t), b * Math.sin(t)]); } }
+    else if (o.shape === 3) { r = s / Math.sqrt(3); for (i = 0; i < 3; i++) { var t3 = -Math.PI / 2 + i * Math.PI * 2 / 3; pts.push([r * Math.cos(t3), r * Math.sin(t3) + r / 4]); } }
+    else if (o.shape === 4) pts = [[-s / 2, -s / 2], [s / 2, -s / 2], [s / 2, s / 2], [-s / 2, s / 2]];
+    else if (o.shape === 5) pts = [[-s / 2, -s * 0.28], [s / 2, -s * 0.28], [s / 2, s * 0.28], [-s / 2, s * 0.28]];
+    else if (o.shape === 6 || o.shape === 7) { n = o.shape === 6 ? 5 : 6; for (i = 0; i < n; i++) { var t5 = -Math.PI / 2 + i * Math.PI * 2 / n; pts.push([s / 2 * Math.cos(t5), s / 2 * Math.sin(t5)]); } }
+    else if (o.shape === 8) { for (i = 0; i < 10; i++) { var t8 = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? s * 0.2 : s / 2; pts.push([rr * Math.cos(t8), rr * Math.sin(t8)]); } }
+    else pts = [[-s / 2, s * 0.3], [s / 2, s * 0.3], [s * 0.28, -s * 0.3], [-s * 0.28, -s * 0.3]];
+    var c = Math.cos(o.rot * Math.PI / 180), sn = Math.sin(o.rot * Math.PI / 180);
+    return pts.map(function (q) { return [o.cx + q[0] * c - q[1] * sn, o.cy + q[0] * sn + q[1] * c]; });
+  }
+  function polyArea(P) { var a = 0; for (var i = 0; i < P.length; i++) { var j = (i + 1) % P.length; a += P[i][0] * P[j][1] - P[j][0] * P[i][1]; } return a / 2; }
+  function polyCentroid(P) {
+    var A = polyArea(P), x = 0, y = 0;
+    for (var i = 0; i < P.length; i++) { var j = (i + 1) % P.length, f = P[i][0] * P[j][1] - P[j][0] * P[i][1]; x += (P[i][0] + P[j][0]) * f; y += (P[i][1] + P[j][1]) * f; }
+    return [x / (6 * A), y / (6 * A)];
+  }
+  function objTruth(o) {
+    var P = objPoly(o), xs = P.map(function (q) { return q[0]; }), ys = P.map(function (q) { return q[1]; });
+    var l = clamp(Math.floor(Math.min.apply(null, xs)), 0, 159), r = clamp(Math.floor(Math.max.apply(null, xs)), 0, 159);
+    var t = clamp(Math.floor(Math.min.apply(null, ys)), 0, 119), b = clamp(Math.floor(Math.max.apply(null, ys)), 0, 119);
+    var c = polyCentroid(P);
+    var ang = o.shape === 1 ? 0 : ((Math.round(o.rot) % 180) + 180) % 180;
+    return [o.color, o.shape, clamp(Math.round(c[0]), 0, 159), clamp(Math.round(c[1]), 0, 119), l, t, r, b, Math.max(1, Math.round(Math.abs(polyArea(P)))), ang, VERTS[o.shape], o.id];
+  }
   var WHITE = { h: 244, s: 4, v: 92 }, BLACK = { h: 252, s: 8, v: 7 };
   var TAPE = { y0: 104, y1: 112 };
   function hueFill(h) { return 'hsl(' + Math.round(h * 1.5) + ', 72%, 48%)'; }   
@@ -981,6 +1099,12 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       L.lost = SC.lastSide < 0 ? 1 : 2;
     }
     s.line = L;
+    s.obj = SC.objs.filter(function (o) { return !o.gone; }).map(function (o) {
+      var P = objPoly(o), xs = P.map(function (q) { return q[0]; }), ys = P.map(function (q) { return q[1]; });
+      o.cx = clamp(o.cx, o.cx - Math.min.apply(null, xs), FW - 1 - (Math.max.apply(null, xs) - o.cx));
+      o.cy = clamp(o.cy, o.cy - Math.min.apply(null, ys), FH - 1 - (Math.max.apply(null, ys) - o.cy));
+      return objTruth(o);
+    }).sort(function (a, b) { return b[8] - a[8] || a[11] - b[11]; }).slice(0, 8);
     return s;
   }
   var frozen = null, everOk = false;
@@ -1000,7 +1124,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
   function draw(st) {
     var g = curG(), live = rawState(), h = '';
     var ir = getComputedStyle(document.documentElement).getPropertyValue('--ir').trim() || '#c0392b';
-    var floor = g === 'line' ? (S.mode === 42 ? '#2b2f33' : '#f2f0ea') : g === 'spot' ? '#f6f4ee' : '#e8e4da';
+    var floor = g === 'obj' ? '#f6f4ee' : g === 'line' ? (S.mode === 42 ? '#2b2f33' : '#f2f0ea') : g === 'spot' ? '#f6f4ee' : '#e8e4da';
     h += '<rect x="0" y="0" width="' + SW + '" height="' + SH + '" fill="#f7f7f2"/>';
     h += '<rect x="' + OX + '" y="' + OY + '" width="' + FW * K + '" height="' + FH * K + '" fill="' + floor + '" stroke="#55605d" stroke-width="2"/>';
     var top = '';
@@ -1040,6 +1164,21 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         h += txt(fx(b.cx), fy(b.cy) + 5, String(b.hue), { anchor: 'middle', bold: true, fill: '#fff', size: 13 });
       });
       top = ('Left to right ') + (st.none ? '?' : '[' + st.order.hues.join(', ') + ']') + ('  total ') + (st.none ? '?' : st.order.total) + ('');
+    } else if (g === 'obj') {
+      var rank = {}; st.obj.forEach(function (o, k) { rank[o[11]] = k + 1; });
+      SC.objs.forEach(function (o, i) {
+        if (o.gone) return;
+        var P = objPoly(o);
+        h += '<polygon points="' + P.map(function (q) { return fx(q[0]).toFixed(1) + ',' + fy(q[1]).toFixed(1); }).join(' ') + '" fill="' + OBJFILL[o.color] + '" stroke="' + (i === SC.jsel ? '#111' : 'rgba(0,0,0,0.3)') + '" stroke-width="' + (i === SC.jsel ? 3 : 1.5) + '"/>';
+        var tr = objTruth(o);
+        if (st.ok && rank[o.id]) {
+          h += '<rect x="' + fx(tr[4]) + '" y="' + fy(tr[5]) + '" width="' + (tr[6] - tr[4] + 1) * K + '" height="' + (tr[7] - tr[5] + 1) * K + '" fill="none" stroke="#19a974" stroke-width="1.5" stroke-dasharray="4 3"/>';
+          h += '<circle cx="' + fx(tr[2]) + '" cy="' + fy(tr[3]) + '" r="3.5" fill="#fff" stroke="#111" stroke-width="1.5"/>';
+          h += txt(fx(tr[4]) + 2, fy(tr[5]) - 4, '#' + rank[o.id] + ' ' + (tr[0] * 10 + tr[1]), { size: 12, bold: true, fill: '#0b6b47', halo: true });
+        }
+      });
+      var o1 = st.obj[0];
+      top = st.none ? ('objects ?') : ('objects ') + st.obj.length + (o1 ? ('  largest code ') + (o1[0] * 10 + o1[1]) + '  X ' + o1[2] + '  Y ' + o1[3] : '');
     } else {
       var R = lineRows(), wpx = num('lwidth', 16), ink = S.mode === 42 ? '#f7f7f7' : S.mode === 43 ? '#d8392b' : '#1b1b1b';
       var gone = $('lgone').checked;
@@ -1081,6 +1220,14 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if ($('tsize') && Number($('tsize').value) !== b.size) $('tsize').value = b.size;
     if ($('tcount') && Number($('tcount').value) !== b.n) $('tcount').value = b.n;
     if ($('tgone')) $('tgone').checked = b.gone;
+    var ob = SC.objs[SC.jsel];
+    if ($('jname')) $('jname').textContent = ('track id ') + ob.id;
+    if ($('jname2')) $('jname2').textContent = ('track id ') + ob.id;
+    if ($('jshape') && Number($('jshape').value) !== ob.shape) $('jshape').value = ob.shape;
+    if ($('jcolor') && Number($('jcolor').value) !== ob.color) $('jcolor').value = ob.color;
+    if ($('jsize') && Number($('jsize').value) !== ob.size) $('jsize').value = ob.size;
+    if ($('jrot') && Number($('jrot').value) !== ob.rot) $('jrot').value = ob.rot;
+    if ($('jgone')) $('jgone').checked = ob.gone;
     if ($('phueval')) { var h0 = SC.patches[0].hue; $('phueval').textContent = h0 + (', ') + CNAME_ZH[colorCode(h0)]; }
   }
   function simInput(id) {
@@ -1089,6 +1236,12 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if (id === 'tcount') b.n = Number($('tcount').value);
     if (id === 'tgone') b.gone = $('tgone').checked;
     if (id === 'phue') SC.patches[0].hue = Number($('phue').value);
+    var ob = SC.objs[SC.jsel];
+    if (id === 'jshape') ob.shape = Number($('jshape').value);
+    if (id === 'jcolor') ob.color = Number($('jcolor').value);
+    if (id === 'jsize') ob.size = Number($('jsize').value);
+    if (id === 'jrot') ob.rot = Number($('jrot').value);
+    if (id === 'jgone') ob.gone = $('jgone').checked;
     if (id === 'lmark') {
       var m = Number($('lmark').value);
       SC.mkNow = m;
@@ -1104,6 +1257,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     var g = curG(), i;
     if (g === 'track') { for (i = SC.blobs.length - 1; i >= 0; i--) { var b = SC.blobs[i]; if (!b.gone && Math.abs(p.x - b.cx) <= b.size / 2 + 4 && Math.abs(p.y - b.cy) <= b.size / 2 + 4) { SC.sel = i; return true; } } return false; }
     if (g === 'spot') { for (i = SC.patches.length - 1; i >= 0; i--) { var q = SC.patches[i]; if (Math.abs(p.x - q.cx) <= q.w / 2 + 3 && Math.abs(p.y - q.cy) <= q.h / 2 + 3) { SC.psel = i; return true; } } return false; }
+    if (g === 'obj') { for (i = SC.objs.length - 1; i >= 0; i--) { var q2 = SC.objs[i]; if (!q2.gone && Math.abs(p.x - q2.cx) <= q2.size / 2 + 3 && Math.abs(p.y - q2.cy) <= q2.size / 2 + 3) { SC.jsel = i; return true; } } return false; }
     if (g === 'order') { var k = num('ocount', 4); for (i = k - 1; i >= 0; i--) { var o = SC.blocks[i]; if (Math.abs(p.x - o.cx) <= 13 && Math.abs(p.y - o.cy) <= 13) { SC.osel = i; return true; } } return false; }
     if ($('lgone').checked) return false;
     var best = 0, bd = 1e9;
@@ -1114,6 +1268,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     var g = curG();
     if (g === 'track') { var b = selBlob(); b.cx = p.x; b.cy = p.y; }
     else if (g === 'spot') { var q = SC.patches[SC.psel]; q.cx = clamp(p.x, q.w / 2, FW - q.w / 2); q.cy = clamp(p.y, q.h / 2, FH - q.h / 2); }
+    else if (g === 'obj') { var q3 = SC.objs[SC.jsel]; q3.cx = p.x; q3.cy = p.y; }
     else if (g === 'order') { var o = SC.blocks[SC.osel]; o.cx = clamp(p.x, 11, FW - 11); o.cy = clamp(p.y, 11, FH - 11); }
     else SC.line.xs[SC.lsel] = clamp(p.x, 2, FW - 2);
   }
@@ -1122,6 +1277,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if (g === 'track') return { x: selBlob().cx, y: selBlob().cy };
     if (g === 'spot') return { x: SC.patches[SC.psel].cx, y: SC.patches[SC.psel].cy };
     if (g === 'order') return { x: SC.blocks[SC.osel].cx, y: SC.blocks[SC.osel].cy };
+    if (g === 'obj') return { x: SC.objs[SC.jsel].cx, y: SC.objs[SC.jsel].cy };
     return { x: SC.line.xs[SC.lsel], y: SC.line.ys[SC.lsel] };
   }
   function bindSim(onMove, onInput) {
@@ -1139,7 +1295,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       if (!k) return;
       e.preventDefault(); var p = selPos(); moveSel({ x: p.x + k[0], y: p.y + k[1] }); onMove();
     });
-    ['tsize', 'tcount', 'tgone', 'phue', 'ocount', 'lwidth', 'ljunc', 'ljd', 'lmark', 'lgone', 'unplug'].forEach(function (id) {
+    ['tsize', 'tcount', 'tgone', 'phue', 'ocount', 'lwidth', 'ljunc', 'ljd', 'lmark', 'lgone', 'jshape', 'jcolor', 'jsize', 'jrot', 'jgone', 'unplug'].forEach(function (id) {
       var c = $(id); if (!c) return;
       c.addEventListener(c.tagName === 'SELECT' ? 'change' : 'input', function () { simInput(id); onInput(id); });
     });
@@ -1218,7 +1374,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
   function drawModes() {
     var box = $('modes'); if (!box) return;
     box.innerHTML = '';
-    ['track', 'spot', 'order', 'line'].forEach(function (g) {
+    ['track', 'spot', 'order', 'line', 'obj'].forEach(function (g) {
       var w = document.createElement('div'); w.className = 'fgroup';
       w.innerHTML = '<span>' + GROUPS[g].name + '</span>';
       var chips = document.createElement('div'); chips.className = 'chips';
@@ -1234,6 +1390,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     var have = m.g === 'track' ? ('This host gets ' + c.col + ' colors in this mode')
       : m.g === 'spot' ? ('This host gets ' + c.pt + ' sample spots in this mode')
       : m.g === 'order' ? ('This host gets the hue codes of up to ' + c.order + ' blocks')
+      : m.g === 'obj' ? ('This host gets ' + c.obj + ' objects in this mode')
       : ('This host gets ' + c.line + ' line values');
     $('modenow').innerHTML = '<b>' + ('You picked mode number ') + S.mode + '</b><span>' + ('= camera mode ') + m.cm + ' ' + GROUPS[m.g].name.replace(/^\d /, '') + (m.sub ? (' · sub-option ') + m.name : '') + ('. ') + have + ('.') + '</span><span class="err">' + HOST.modeWarn(S.mode) + '</span>';
   }

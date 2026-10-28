@@ -17,12 +17,16 @@
 #      21 座標取色 色相 spot H   22 色相＋飽和 H+S   23 色相＋飽和＋明度 H+S+V
 #      30 照順序給色號 colour order
 #      41 循線 黑線 black line   42 白線 white line   43 色線 colour line
+#      51 物體偵測 物體清單 object list   52 物體詳細 object detail
 #  SPIKE 讀不到相機目前的模式，所以 mode 一定要跟相機選單切的一樣。
 #  SPIKE cannot read the camera's current mode: mode must match the camera menu.
 #
 #  座標 Coordinates：像素 X 0~159（左→右）、Y 0~119（上→下）；(0, 0)＝沒有目標 / no target.
 #  色相碼 Hue code：0~240 色相（紅 0/240、黃 40、綠 80、青 120、藍 160、紫 200）；
 #                   241~248 白／灰 white/grey；249~255 黑 black。
+#  物體 Object（模式 51／52）：物體代碼＝色號×10＋形狀（0＝沒有）；物體 1＝面積最大 / object 1 = largest.
+#      形狀 shape：0 其他 other  1 圓 circle  2 橢圓 ellipse  3 三角 triangle  4 正方 square
+#                  5 長方 rectangle  6 五邊 pentagon  7 六邊 hexagon  8 星 star  9 梯形 trapezoid
 #
 #  讀模式 9（14 byte，每個 byte 一個值）；數量（模式 11／12）才讀模式 6；裝置 ID 讀模式 8。
 #  Reads mode 9 (14 bytes, one value per byte); counts in modes 11/12 read mode 6; device ID = mode 8.
@@ -39,9 +43,12 @@ from pybricks.tools import StopWatch as _StopWatch
 _CACHE_MS = 10
 _RETRY_MS = 1000
 _watch = _StopWatch()
-MODES = (11, 12, 13, 14, 21, 22, 23, 30, 41, 42, 43)
+MODES = (11, 12, 13, 14, 21, 22, 23, 30, 41, 42, 43, 51, 52)
 _NCOL = {11: 14, 12: 7, 13: 4, 14: 2}     # 這個模式給幾色 / colours per mode
 _NPT = {21: 14, 22: 7, 23: 4}              # 給幾點 / spots per mode
+_NOBJ = {51: 4, 52: 2}                     # 給幾個物體 / objects per mode
+SHAPES = ('other', 'circle', 'ellipse', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon', 'star', 'trapezoid')
+SHAPES_ZH = ('其他', '圓', '橢圓', '三角', '正方', '長方', '五邊', '六邊', '星', '梯形')
 
 
 def _port(p):
@@ -94,6 +101,14 @@ def color_name(h):
     if h < 180:
         return 'blue'
     return 'purple'
+
+
+def shape_name(s, zh=False):
+    """形狀編號 0~9 → 名稱 / shape number -> name: 'other' 'circle' 'ellipse' 'triangle' 'square'
+    'rectangle' 'pentagon' 'hexagon' 'star' 'trapezoid'；zh=True 回中文（'圓'…）；None 或超出範圍回 None"""
+    if s is None or not 0 <= s <= 9:
+        return None
+    return SHAPES_ZH[s] if zh else SHAPES[s]
 
 
 # ───── 解碼函式：v = 模式 9 讀到的 7 個 int16 / decoders: v = 7 int16 of mode 9 ─────
@@ -170,6 +185,20 @@ def _line(v, m, a):
     b = _bytes(v, 14)
     s = _s8
     return (s(b[0]), s(b[1]), s(b[2]), s(b[3]), b[4], b[5], b[6], b[7], s(b[8]), s(b[9]), b[10], b[11], b[12], b[13])
+
+
+def _ob(v, m, i):
+    # 物體 i 的 (代碼, X, Y, 寬, 高, 面積)；51 沒有寬高面積（None）/ object i: (code, X, Y, w, h, area)
+    b = _bytes(v, 14)
+    if m == 51:
+        k = 3 * i - 2
+        return (b[k], b[k + 1], b[k + 2], None, None, None)
+    k = 7 * (i - 1)
+    return (b[k] * 10 + b[k + 1] if b[k] else 0, b[k + 2], b[k + 3], b[k + 4], b[k + 5], b[k + 6])
+
+
+def _ocount(v, m, a):
+    return _bytes(v, 14)[0]
 
 
 class UniCam:
@@ -262,9 +291,15 @@ class UniCam:
         if not 1 <= c <= n:
             raise ValueError('第幾色／第幾點要填 1~%d / colour or spot must be 1~%d' % (n, n))
 
+    def _obj(self, name, i, ok=(51, 52)):
+        self._need(name, ok)
+        n = _NOBJ[self._m]
+        if not 1 <= i <= n:
+            raise ValueError('第幾個物體要填 1~%d / object must be 1~%d' % (n, n))
+
     # ───── 共用 / common ─────
     def mode_number(self):
-        """建構時設定的模式編號（11~43）/ the mode number given to UniCam()"""
+        """建構時設定的模式編號（11~52）/ the mode number given to UniCam()"""
         return self._r(self._m)
 
     def sensor_ok(self):
@@ -457,3 +492,51 @@ class UniCam:
     def lost(self):
         """最後離線方向 0 有線 1 左 2 右 / last lost side: 0 on line, 1 left, 2 right"""
         return self._li('lost', 13)
+
+    # ───── 相機模式 5 物體偵測（51、52）/ camera mode 5 object detection ─────
+    #  物體 1、2…＝面積由大到小；只看目標色 1~8 / object 1 = largest; only target colours 1~8
+    def max_object(self):
+        """這個模式給幾個物體：51→4、52→2 / objects available in this mode"""
+        self._need('max_object', (51, 52))
+        return self._r(_NOBJ[self._m])
+
+    def object_count(self):
+        """畫面裡有幾個物體 0~8（可能比 max_object() 多；只有模式 51）/ objects in view 0~8 (mode 51 only)"""
+        self._need('object_count', (51,))
+        return self._g(9, _ocount)
+
+    def object(self, i):
+        """物體 i 的代碼＝色號×10＋形狀（例 13＝目標 1 三角形），0＝沒有 / object code = colour×10 + shape, 0 = none"""
+        self._obj('object', i)
+        return self._g(9, lambda v, m, a: _ob(v, m, a)[0], i)
+
+    def object_found(self, i):
+        """有沒有物體 i / is there an object i: True／False"""
+        self._obj('object_found', i)
+        return self._g(9, lambda v, m, a: _ob(v, m, a)[0] > 0, i)
+
+    def object_color(self, i):
+        """物體 i 的色號 1~8（相機上的目標幾），0＝沒有 / colour number 1~8 (camera target), 0 = none"""
+        self._obj('object_color', i)
+        return self._g(9, lambda v, m, a: _ob(v, m, a)[0] // 10, i)
+
+    def object_shape(self, i):
+        """物體 i 的形狀 0~9（shape_name() 換名稱）；沒有物體也是 0，先用 object_found() 判斷
+        shape 0~9 (see shape_name()); also 0 when there is no object, check object_found() first"""
+        self._obj('object_shape', i)
+        return self._g(9, lambda v, m, a: _ob(v, m, a)[0] % 10, i)
+
+    def object_xy(self, i):
+        """物體 i 的質心 (X 0~159, Y 0~119) 像素，(0, 0)＝沒有 / centroid in pixels, (0, 0) = none"""
+        self._obj('object_xy', i)
+        return self._g(9, lambda v, m, a: _ob(v, m, a)[1:3], i)
+
+    def object_size(self, i):
+        """模式 52：物體 i 外框 (寬, 高) 像素 / mode 52: bounding box (width, height) in pixels"""
+        self._obj('object_size', i, (52,))
+        return self._g(9, lambda v, m, a: _ob(v, m, a)[3:5], i)
+
+    def object_area(self, i):
+        """模式 52：物體 i 面積（佔畫面 %），0＝沒有 / mode 52: area in % of the picture"""
+        self._obj('object_area', i, (52,))
+        return self._g(9, lambda v, m, a: _ob(v, m, a)[5], i)

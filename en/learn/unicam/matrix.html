@@ -315,13 +315,26 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
             <label class="f" for="lmark" data-g="line"><span>Colored marker line under the robot now</span>
               <select id="lmark"><option value="0">none</option><option value="2">target color 2 (green)</option><option value="3">target color 3 (blue)</option><option value="4">target color 4 (yellow)</option></select>
             </label>
+            <label class="f" for="jshape" data-g="obj"><span>Selected object (<span id="jname">track id 1</span>; tap a shape to select it): shape</span>
+              <select id="jshape"><option value="1">1 circle</option><option value="2">2 ellipse</option><option value="3">3 triangle</option><option value="4">4 square</option><option value="5">5 rectangle</option><option value="6">6 pentagon</option><option value="7">7 hexagon</option><option value="8">8 star</option><option value="9">9 trapezoid</option></select>
+            </label>
+            <label class="f" for="jcolor" data-g="obj"><span>Color (target color 1–8 taught on the camera)</span>
+              <select id="jcolor"><option value="1">target color 1 (red)</option><option value="2">target color 2 (green)</option><option value="3">target color 3 (blue)</option><option value="4">target color 4 (yellow)</option><option value="5">target color 5 (purple)</option><option value="6">target color 6 (orange)</option><option value="7">target color 7 (cyan)</option><option value="8">target color 8 (pink)</option></select>
+            </label>
+            <label class="f" for="jsize" data-g="obj"><span>Size (closer looks bigger)</span>
+              <input autocomplete="off" type="range" id="jsize" min="12" max="70" value="42">
+            </label>
+            <label class="f" for="jrot" data-g="obj"><span>Rotation (0–179°)</span>
+              <input autocomplete="off" type="range" id="jrot" min="0" max="179" value="0">
+            </label>
             <div class="toggles">
+              <label data-g="obj"><input autocomplete="off" type="checkbox" id="jgone"> Remove this object (<span id="jname2">track id 1</span>)</label>
               <label data-g="track"><input autocomplete="off" type="checkbox" id="tgone"> Remove <span id="selname3">color 1</span></label>
               <label data-g="line"><input autocomplete="off" type="checkbox" id="lgone"> Remove the line (robot left the line)</label>
               <label><input autocomplete="off" type="checkbox" id="unplug"> Unplug the sensor</label>
             </div>
           </div>
-          <p class="note">The view is a sketch: values come straight from where things are on screen (X 0–159 left→right, Y 0–119 top→bottom, area % = width × height ÷ whole picture); a hue code is the color the paper or block really has (red 0, yellow 40, green 80, blue 160, purple 200, white table 244, black tape 252). It is not the camera's own algorithm, and real numbers vary with the light. Color tracking assumes 4 colors were taught on the camera: color 1 red, 2 green, 3 blue, 4 yellow.</p>
+          <p class="note">The view is a sketch: values come straight from where things are on screen (X 0–159 left→right, Y 0–119 top→bottom, area % = width × height ÷ whole picture); a hue code is the color the paper or block really has (red 0, yellow 40, green 80, blue 160, purple 200, white table 244, black tape 252). It is not the camera's own algorithm, and real numbers vary with the light. Color tracking assumes 4 colors were taught on the camera: color 1 red, 2 green, 3 blue, 4 yellow. In object detection you pick each shape yourself (the camera does not judge it here); objects 1, 2… are sorted by area, largest first; X, Y is the shape's centroid (white dot), the dashed box is its bounding box, and the angle is the rotation you set.</p>
         </div>
           </div>
         </div>
@@ -380,7 +393,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 (function () {
   'use strict';
 var PAGE = {"lang":"en","code":"cpp"};
-var CFG = {"top":["// ==== MBC_UNICAM_MX_TOP_BEGIN ====","unsigned int CamData[10];","int CamStatus;","struct UcBlob { int x, y, w, h, count, area; };","struct UcSpot { int h, s, v; };","struct UcLine { int nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,","                leftEdge, rightEdge, farWidth, marker, markerCount, lost; };","// ==== MBC_UNICAM_MX_TOP_END ===="],"helper":["// ==== MBC_UNICAM_MX_HELPERS_BEGIN ====","// ============================================================","// ============================================================","","int ucLo(uint8_t i) { return (int)(CamData[i - 1] & 255); }","int ucHi(uint8_t i) { return (int)((CamData[i - 1] >> 8) & 255); }","","int ucByte(uint8_t k) { return (k & 1) ? ucHi(k / 2 + 1) : ucLo(k / 2 + 1); }","","uint8_t ucMaxColor(uint8_t mode) {","  if (mode == 11) return 16;","  if (mode == 12) return 10;","  if (mode == 13) return 5;","  if (mode == 14) return 3;","  return 0;","}","","bool ucBlob(uint8_t mode, uint8_t color, UcBlob &b) {","  if (color < 1 || color > ucMaxColor(mode)) return false;","  b.w = -1; b.h = -1; b.count = -1; b.area = -1;","  if (mode == 11) {","    unsigned int c = CamData[(color - 1) / 2];","    int g = (color & 1) ? (int)(c / 100) : (int)(c % 100);","    if (g == 0) { b.x = 0; b.y = 0; return true; }","    b.x = (g / 10 - 1) * 20 + 10;","    b.y = (g % 10 - 1) * 20 + 10;","    return true;","  }","  uint8_t base = (mode == 12) ? color : (mode == 13) ? 2 * color - 1 : 3 * color - 2;","  b.x = ucLo(base); b.y = ucHi(base);","  if (mode == 13) { b.area = ucLo(base + 1); b.count = ucHi(base + 1); }","  if (mode == 14) { b.w = ucLo(base + 1); b.h = ucHi(base + 1); b.area = ucLo(base + 2); b.count = ucHi(base + 2); }","  return true;","}","","int ucColorsFound(uint8_t mode) {","  if (mode == 11) return (int)CamData[8];","  if (mode == 14) return (int)CamData[9];","  return -1;","}","","uint8_t ucMaxPoint(uint8_t mode) {","  if (mode == 21) return 20;","  if (mode == 22) return 10;","  if (mode == 23) return 6;","  return 0;","}","","bool ucSpot(uint8_t mode, uint8_t point, UcSpot &p) {","  if (point < 1 || point > ucMaxPoint(mode)) return false;","  p.s = -1; p.v = -1;","  if (mode == 21) { p.h = ucByte(point - 1); return true; }","  if (mode == 22) { p.h = ucLo(point); p.s = ucHi(point); return true; }","  uint8_t k = 3 * (point - 1);","  p.h = ucByte(k); p.s = ucByte(k + 1); p.v = ucByte(k + 2);","  return true;","}","","uint8_t ucOrder(int *hues, uint8_t maxN, int &total) {","  total = (int)CamData[9];","  uint8_t n = (total < 18) ? (uint8_t)total : 18;","  if (n > maxN) n = maxN;","  for (uint8_t i = 0; i < n; i++) hues[i] = ucByte(i);","  return n;","}","","void ucLine(UcLine &l) {","  l.nearOff = (int)CamData[0] - 100; l.midOff = (int)CamData[1] - 100;","  l.farOff = (int)CamData[2] - 100;  l.angle = (int)CamData[3] - 100;","  l.junction = (int)CamData[4];      l.flags = (int)CamData[5];","  l.width = ucLo(7);                 l.junctionDist = ucHi(7);","  l.leftEdge = ucLo(8) - 100;        l.rightEdge = ucHi(8) - 100;","  l.farWidth = ucLo(9);              l.marker = ucHi(9);","  l.markerCount = ucLo(10);          l.lost = ucHi(10);","}","","uint8_t ucColorCode(int h) {","  if (h > 248) return 9;","  if (h > 240) return 8;","  if (h < 12 || h >= 220) return 1;","  if (h < 28) return 2;","  if (h < 56) return 3;","  if (h < 100) return 4;","  if (h < 140) return 5;","  if (h < 180) return 6;","  return 7;","}","// ==== MBC_UNICAM_MX_HELPERS_END ===="]};
+var CFG = {"top":["// ==== MBC_UNICAM_MX_TOP_BEGIN ====","unsigned int CamData[10];","int CamStatus;","struct UcBlob { int x, y, w, h, count, area; };","struct UcSpot { int h, s, v; };","struct UcLine { int nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,","                leftEdge, rightEdge, farWidth, marker, markerCount, lost; };","struct UcObject { int code, color, shape, x, y, w, h, area, angle, vertices, trackId; };","// ==== MBC_UNICAM_MX_TOP_END ===="],"helper":["// ==== MBC_UNICAM_MX_HELPERS_BEGIN ====","// ============================================================","// ============================================================","","int ucLo(uint8_t i) { return (int)(CamData[i - 1] & 255); }","int ucHi(uint8_t i) { return (int)((CamData[i - 1] >> 8) & 255); }","","int ucByte(uint8_t k) { return (k & 1) ? ucHi(k / 2 + 1) : ucLo(k / 2 + 1); }","","uint8_t ucMaxColor(uint8_t mode) {","  if (mode == 11) return 16;","  if (mode == 12) return 10;","  if (mode == 13) return 5;","  if (mode == 14) return 3;","  return 0;","}","","bool ucBlob(uint8_t mode, uint8_t color, UcBlob &b) {","  if (color < 1 || color > ucMaxColor(mode)) return false;","  b.w = -1; b.h = -1; b.count = -1; b.area = -1;","  if (mode == 11) {","    unsigned int c = CamData[(color - 1) / 2];","    int g = (color & 1) ? (int)(c / 100) : (int)(c % 100);","    if (g == 0) { b.x = 0; b.y = 0; return true; }","    b.x = (g / 10 - 1) * 20 + 10;","    b.y = (g % 10 - 1) * 20 + 10;","    return true;","  }","  uint8_t base = (mode == 12) ? color : (mode == 13) ? 2 * color - 1 : 3 * color - 2;","  b.x = ucLo(base); b.y = ucHi(base);","  if (mode == 13) { b.area = ucLo(base + 1); b.count = ucHi(base + 1); }","  if (mode == 14) { b.w = ucLo(base + 1); b.h = ucHi(base + 1); b.area = ucLo(base + 2); b.count = ucHi(base + 2); }","  return true;","}","","int ucColorsFound(uint8_t mode) {","  if (mode == 11) return (int)CamData[8];","  if (mode == 14) return (int)CamData[9];","  return -1;","}","","uint8_t ucMaxPoint(uint8_t mode) {","  if (mode == 21) return 20;","  if (mode == 22) return 10;","  if (mode == 23) return 6;","  return 0;","}","","bool ucSpot(uint8_t mode, uint8_t point, UcSpot &p) {","  if (point < 1 || point > ucMaxPoint(mode)) return false;","  p.s = -1; p.v = -1;","  if (mode == 21) { p.h = ucByte(point - 1); return true; }","  if (mode == 22) { p.h = ucLo(point); p.s = ucHi(point); return true; }","  uint8_t k = 3 * (point - 1);","  p.h = ucByte(k); p.s = ucByte(k + 1); p.v = ucByte(k + 2);","  return true;","}","","uint8_t ucOrder(int *hues, uint8_t maxN, int &total) {","  total = (int)CamData[9];","  uint8_t n = (total < 18) ? (uint8_t)total : 18;","  if (n > maxN) n = maxN;","  for (uint8_t i = 0; i < n; i++) hues[i] = ucByte(i);","  return n;","}","","void ucLine(UcLine &l) {","  l.nearOff = (int)CamData[0] - 100; l.midOff = (int)CamData[1] - 100;","  l.farOff = (int)CamData[2] - 100;  l.angle = (int)CamData[3] - 100;","  l.junction = (int)CamData[4];      l.flags = (int)CamData[5];","  l.width = ucLo(7);                 l.junctionDist = ucHi(7);","  l.leftEdge = ucLo(8) - 100;        l.rightEdge = ucHi(8) - 100;","  l.farWidth = ucLo(9);              l.marker = ucHi(9);","  l.markerCount = ucLo(10);          l.lost = ucHi(10);","}","","uint8_t ucMaxObject(uint8_t mode) {","  if (mode == 51) return 4;","  if (mode == 52) return 3;","  return 0;","}","","int ucObjectCount(uint8_t mode) {","  if (mode == 51 || mode == 52) return (int)CamData[0];","  return -1;","}","","bool ucObject(uint8_t mode, uint8_t i, UcObject &o) {","  if (i < 1 || i > ucMaxObject(mode)) return false;","  uint8_t base = (mode == 51) ? 2 * i : 3 * i - 1;","  o.code = ucLo(base); o.area = ucHi(base);","  o.color = o.code / 10; o.shape = o.code % 10;","  o.x = ucLo(base + 1); o.y = ucHi(base + 1);","  o.w = -1; o.h = -1; o.angle = -1; o.vertices = -1; o.trackId = -1;","  if (mode == 52) { o.w = ucLo(base + 2); o.h = ucHi(base + 2); }","  return true;","}","","const char *ucShapeName(int s) {","  switch (s) {","    case 0: return \"other\";    case 1: return \"circle\";    case 2: return \"ellipse\";  case 3: return \"triangle\";","    case 4: return \"square\";   case 5: return \"rectangle\"; case 6: return \"pentagon\"; case 7: return \"hexagon\";","    case 8: return \"star\";     case 9: return \"trapezoid\";","  }","  return \"?\";","}","","uint8_t ucColorCode(int h) {","  if (h > 248) return 9;","  if (h > 240) return 8;","  if (h < 12 || h >= 220) return 1;","  if (h < 28) return 2;","  if (h < 56) return 3;","  if (h < 100) return 4;","  if (h < 140) return 5;","  if (h < 180) return 6;","  return 7;","}","// ==== MBC_UNICAM_MX_HELPERS_END ===="]};
 function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
   function $(id) { return document.getElementById(id); }
   function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
@@ -397,16 +410,19 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     { n: 30, g: 'order', cm: 3, sub: 0, name: ('(no sub-option)') },
     { n: 41, g: 'line', cm: 4, sub: 1, name: ('① Black line') },
     { n: 42, g: 'line', cm: 4, sub: 2, name: ('② White line') },
-    { n: 43, g: 'line', cm: 4, sub: 3, name: ('③ Colored line') }
+    { n: 43, g: 'line', cm: 4, sub: 3, name: ('③ Colored line') },
+    { n: 51, g: 'obj', cm: 5, sub: 1, name: ('① Object list') },
+    { n: 52, g: 'obj', cm: 5, sub: 2, name: ('② Object details') }
   ];
   var GROUPS = {
     track: { cm: 1, name: ('1 Color tracking'), modes: [11, 12, 13, 14] },
     spot: { cm: 2, name: ('2 Color at points'), modes: [21, 22, 23] },
     order: { cm: 3, name: ('3 Color order'), modes: [30] },
     line: { cm: 4, name: ('4 Line following'), modes: [41, 42, 43] },
+    obj: { cm: 5, name: ('5 Object detection'), modes: [51, 52] },
     info: { cm: 0, name: ('Sensor info (any mode)'), modes: null }
   };
-  var GORDER = ['track', 'spot', 'order', 'line', 'info'];
+  var GORDER = ['track', 'spot', 'order', 'line', 'obj', 'info'];
   function modeOf(n) { for (var i = 0; i < MODES.length; i++) if (MODES[i].n === n) return MODES[i]; return MODES[2]; }
   function modeTitle(n) { var m = modeOf(n); return n + ' = ' + GROUPS[m.g].name.replace(/^\d /, '') + ' ' + m.name; }
   function modeList(ms) {
@@ -426,6 +442,8 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if (h < 12 || h >= 220) return 1; if (h < 28) return 2; if (h < 56) return 3;
     if (h < 100) return 4; if (h < 140) return 5; if (h < 180) return 6; return 7;
   }
+  var SHAPES = ['other', 'circle', 'ellipse', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon', 'star', 'trapezoid'];
+  var SHAPES_ZH = [('other'), ('circle'), ('ellipse'), ('triangle'), ('square'), ('rectangle'), ('pentagon'), ('hexagon'), ('star'), ('trapezoid')];
   function py(v) {
     if (v === null || v === undefined) return 'None';
     if (v === true) return 'True'; if (v === false) return 'False';
@@ -490,7 +508,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     }
   }
     var S = { step: 1, viewStep: 1, fn: 'pos', mode: 13, showHelper: false };
-    var MAXC = { 11: 16, 12: 10, 13: 5, 14: 3 }, MAXP = { 21: 20, 22: 10, 23: 6 };
+    var MAXC = { 11: 16, 12: 10, 13: 5, 14: 3 }, MAXP = { 21: 20, 22: 10, 23: 6 }, MAXO = { 51: 4, 52: 3 };
     function view(st, m) {
       var ok = st.ok && !st.none, L = st.line;
       return {
@@ -506,7 +524,15 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         spot: function (i) { var p = st.spot[i], k = m - 20; return { h: p.h, s: k >= 2 ? p.s : -1, v: k >= 3 ? p.v : -1 }; },
         order: function () { return { hues: st.order.hues.slice(0, 18), total: st.order.total }; },
         line: function () { return { nearOff: L.near, midOff: L.mid, farOff: L.far, angle: L.angle, width: L.width, flags: L.flags, junction: L.junction, junctionDist: L.jdist, leftEdge: L.left, rightEdge: L.right, farWidth: L.farw, marker: L.marker, markerCount: L.mcount, lost: L.lost }; },
-        raw: function () { return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; }
+        raw: function () { return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; },
+        obj: function (i) {
+          var o = st.obj[i - 1];
+          var r = o ? { code: o[0] * 10 + o[1], color: o[0], shape: o[1], x: Math.max(1, o[2]), y: Math.max(1, o[3]), area: Math.max(1, idiv(o[8] * 100 + 9600, 19200)) } : { code: 0, color: 0, shape: 0, x: 0, y: 0, area: 0 };
+          r.w = m === 52 ? (o ? o[6] - o[4] + 1 : 0) : -1; r.h = m === 52 ? (o ? o[7] - o[5] + 1 : 0) : -1;
+          r.angle = r.vertices = r.trackId = -1;
+          return r;
+        },
+        objCount: function () { return st.obj.length; }
       };
     }
     var NODATA = ('No data from the camera');
@@ -602,15 +628,44 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       } else if (m === 21) { for (i = 0; i < 10; i++) c[i] = lo(st.spot[2 * i + 1].h, st.spot[2 * i + 2].h); }
       else if (m === 22) { for (i = 0; i < 10; i++) c[i] = lo(st.spot[i + 1].h, st.spot[i + 1].s); }
       else if (m === 23) { var bytes = []; for (i = 1; i <= 6; i++) bytes.push(st.spot[i].h, st.spot[i].s, st.spot[i].v); bytes.push(0, 0); for (i = 0; i < 10; i++) c[i] = lo(bytes[2 * i], bytes[2 * i + 1]); }
+      else if (m === 51 || m === 52) {   
+        c[0] = st.obj.length;
+        for (i = 1; i <= MAXO[m]; i++) { var ob = V.obj(i), b0 = m === 51 ? 2 * i - 1 : 3 * i - 2; c[b0] = lo(ob.code, ob.area); c[b0 + 1] = lo(ob.x, ob.y); if (m === 52) c[b0 + 2] = lo(ob.w, ob.h); }
+      }
       else if (m === 30) { var h = st.order.hues.slice(0, 18); while (h.length < 18) h.push(0); for (i = 0; i < 9; i++) c[i] = lo(h[2 * i], h[2 * i + 1]); c[9] = st.order.total; }
       else { var L = st.line; c = [L.near + 100, L.mid + 100, L.far + 100, L.angle + 100, L.junction, L.flags, lo(L.width, L.jdist), lo(L.left + 100, L.right + 100), lo(L.farw, L.marker), lo(L.mcount, L.lost)]; }
       return c;
     }
+    function objB(then) { return ['UcObject o;', 'ucObject(MODE, 1, o);'].concat(then); }
+    add({ id: 'objcount', grp: 'obj', modes: [51, 52], label: 'ucObjectCount()', name: ('Objects in view'),
+      what: ('How many objects are in view (0–8, cell 1). Only target colors 1–8 count. Remove an object to see it drop.'),
+      ret: ('0–8'), body: [out([('objects in view: '), v('ucObjectCount(MODE)'), ('')])], out: function (V) { return ('objects in view: ') + V.objCount() + (''); } });
+    add({ id: 'objcode', grp: 'obj', modes: [51, 52], label: 'ucObject → o.code, o.x, o.y', name: ('Object code and position'),
+      what: ('Decodes object i (1 = largest; 4 in mode 51, 3 in mode 52). Code = color × 10 + shape, e.g. 13 = a triangle of target color 1; 0 = none. X, Y = centroid (white dot).'),
+      ret: ('true = number in range; values go into UcObject o'),
+      body: objB(['if (o.code == 0) ' + out([('no object')]), 'else { ' + out([('object 1 code '), v('o.code'), ' X=', v('o.x'), ' Y=', v('o.y')]) + ' }']),
+      out: function (V) { var o = V.obj(1); return o.code === 0 ? ('no object') : ('object 1 code ') + o.code + ' X=' + o.x + ' Y=' + o.y; } });
+    add({ id: 'objshape', grp: 'obj', modes: [51, 52], label: 'ucObject → o.color, o.shape', name: ('Object color and shape'),
+      what: ('Which target color (1–8) and shape (0–9) object i is; <code>ucShapeName()</code> gives the English name.'),
+      ret: ('color, shape'),
+      body: objB([out([('object 1: target color '), v('o.color'), ' ', v('ucShapeName(o.shape)')])]), out: function (V) { var o = V.obj(1); return ('object 1: target color ') + o.color + ' ' + SHAPES[o.shape]; } });
+    add({ id: 'objarea', grp: 'obj', modes: [51, 52], label: 'ucObject → o.area', name: ('Object area %'),
+      what: ('How many % of the picture object i covers (0 = none). Bigger = closer.'), ret: ('0–100'),
+      body: objB(['if (o.area >= 20) { ' + out([('close enough! area '), v('o.area')]) + ' }', 'else { ' + out([('area '), v('o.area'), ' %']) + ' }']),
+      out: function (V) { var a = V.obj(1).area; return a >= 20 ? ('close enough! area ') + a : ('area ') + a + ' %'; } });
+    add({ id: 'objsize', grp: 'obj', modes: [52], label: 'ucObject → o.w, o.h', name: ('Object width, height'),
+      what: ('Mode 52: width and height of the bounding box (dashed box). MATRIX has no angle, vertices or track id (−1).'), ret: ('pixels'),
+      body: objB([out([('width '), v('o.w'), (' height '), v('o.h')])]), out: function (V) { var o = V.obj(1); return ('width ') + o.w + (' height ') + o.h; } });
+    add({ id: 'objfind', grp: 'obj', modes: [51, 52], label: ('find object 13'), name: ('Find the red triangle'),
+      what: ('Checks objects 1 to ucMaxObject(MODE) for code 13 (a triangle of target color 1). Change the triangle into another shape.'), ret: ('decided by the code'),
+      body: ['bool found = false;', 'for (uint8_t i = 1; i <= ucMaxObject(MODE); i++) {', '  UcObject o;', '  if (ucObject(MODE, i, o) && o.code == 13) {', '    ' + out([('red triangle at X='), v('o.x'), ' Y=', v('o.y')]), '    found = true;', '    break;', '  }', '}', 'if (!found) ' + out([('no red triangle')])],
+      out: function (V, st) { for (var i = 1; i <= MAXO[st.mode]; i++) { var o = V.obj(i); if (o.code === 13) return ('red triangle at X=') + o.x + ' Y=' + o.y; } return ('no red triangle'); } });
+    FNS = FNS.map(function (f, i) { return [GORDER.indexOf(f.grp), i, f]; }).sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; }).map(function (x) { return x[2]; });
     var HELPER = CFG.helper;
     function modeLine() { var mi = modeOf(S.mode); return 'const uint8_t MODE = ' + S.mode + ';                 // ' + ('mode number: set the camera menu to ') + S.mode + ' (' + mi.cm + ' × 10 + ' + mi.sub + ')'; }
     var HOST = {
       collapse: true, helper: HELPER,
-      counts: function (m) { return { col: MAXC[m], pt: MAXP[m], order: 18, line: 14 }; },
+      counts: function (m) { return { col: MAXC[m], pt: MAXP[m], order: 18, line: 14, obj: MAXO[m] }; },
       cmt: function (s) { return '// ' + s; },
       lines: function (f) {
         var L = [], s3 = S.step >= 3;
@@ -696,8 +751,44 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     ],
     osel: 0,
     line: { ys: [100, 62, 24], xs: [66, 74, 88] }, lsel: 0,
-    mk: 0, mkn: 0, lastSide: -1
+    mk: 0, mkn: 0, lastSide: -1,
+    objs: [
+      { id: 1, color: 1, shape: 3, cx: 40, cy: 44, size: 42, rot: 0, gone: false },
+      { id: 2, color: 2, shape: 4, cx: 112, cy: 38, size: 30, rot: 20, gone: false },
+      { id: 3, color: 3, shape: 1, cx: 74, cy: 88, size: 28, rot: 0, gone: false },
+      { id: 4, color: 4, shape: 5, cx: 128, cy: 90, size: 34, rot: 150, gone: false },
+      { id: 5, color: 5, shape: 8, cx: 30, cy: 96, size: 26, rot: 0, gone: false }
+    ],
+    jsel: 0
   };
+  var OBJFILL = ['#888', '#d8392b', '#2f9e44', '#1f6fd1', '#f2c318', '#8a3fc4', '#f08a24', '#18a8b8', '#e0559a'];
+  var VERTS = [0, 0, 0, 3, 4, 4, 5, 6, 10, 4];
+  function objPoly(o) {
+    var s = o.size, pts = [], i, n, r;
+    if (o.shape === 1 || o.shape === 2) { var a = s / 2, b = o.shape === 1 ? s / 2 : s / 3; for (i = 0; i < 48; i++) { var t = i * Math.PI * 2 / 48; pts.push([a * Math.cos(t), b * Math.sin(t)]); } }
+    else if (o.shape === 3) { r = s / Math.sqrt(3); for (i = 0; i < 3; i++) { var t3 = -Math.PI / 2 + i * Math.PI * 2 / 3; pts.push([r * Math.cos(t3), r * Math.sin(t3) + r / 4]); } }
+    else if (o.shape === 4) pts = [[-s / 2, -s / 2], [s / 2, -s / 2], [s / 2, s / 2], [-s / 2, s / 2]];
+    else if (o.shape === 5) pts = [[-s / 2, -s * 0.28], [s / 2, -s * 0.28], [s / 2, s * 0.28], [-s / 2, s * 0.28]];
+    else if (o.shape === 6 || o.shape === 7) { n = o.shape === 6 ? 5 : 6; for (i = 0; i < n; i++) { var t5 = -Math.PI / 2 + i * Math.PI * 2 / n; pts.push([s / 2 * Math.cos(t5), s / 2 * Math.sin(t5)]); } }
+    else if (o.shape === 8) { for (i = 0; i < 10; i++) { var t8 = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? s * 0.2 : s / 2; pts.push([rr * Math.cos(t8), rr * Math.sin(t8)]); } }
+    else pts = [[-s / 2, s * 0.3], [s / 2, s * 0.3], [s * 0.28, -s * 0.3], [-s * 0.28, -s * 0.3]];
+    var c = Math.cos(o.rot * Math.PI / 180), sn = Math.sin(o.rot * Math.PI / 180);
+    return pts.map(function (q) { return [o.cx + q[0] * c - q[1] * sn, o.cy + q[0] * sn + q[1] * c]; });
+  }
+  function polyArea(P) { var a = 0; for (var i = 0; i < P.length; i++) { var j = (i + 1) % P.length; a += P[i][0] * P[j][1] - P[j][0] * P[i][1]; } return a / 2; }
+  function polyCentroid(P) {
+    var A = polyArea(P), x = 0, y = 0;
+    for (var i = 0; i < P.length; i++) { var j = (i + 1) % P.length, f = P[i][0] * P[j][1] - P[j][0] * P[i][1]; x += (P[i][0] + P[j][0]) * f; y += (P[i][1] + P[j][1]) * f; }
+    return [x / (6 * A), y / (6 * A)];
+  }
+  function objTruth(o) {
+    var P = objPoly(o), xs = P.map(function (q) { return q[0]; }), ys = P.map(function (q) { return q[1]; });
+    var l = clamp(Math.floor(Math.min.apply(null, xs)), 0, 159), r = clamp(Math.floor(Math.max.apply(null, xs)), 0, 159);
+    var t = clamp(Math.floor(Math.min.apply(null, ys)), 0, 119), b = clamp(Math.floor(Math.max.apply(null, ys)), 0, 119);
+    var c = polyCentroid(P);
+    var ang = o.shape === 1 ? 0 : ((Math.round(o.rot) % 180) + 180) % 180;
+    return [o.color, o.shape, clamp(Math.round(c[0]), 0, 159), clamp(Math.round(c[1]), 0, 119), l, t, r, b, Math.max(1, Math.round(Math.abs(polyArea(P)))), ang, VERTS[o.shape], o.id];
+  }
   var WHITE = { h: 244, s: 4, v: 92 }, BLACK = { h: 252, s: 8, v: 7 };
   var TAPE = { y0: 104, y1: 112 };
   function hueFill(h) { return 'hsl(' + Math.round(h * 1.5) + ', 72%, 48%)'; }   
@@ -772,6 +863,12 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       L.lost = SC.lastSide < 0 ? 1 : 2;
     }
     s.line = L;
+    s.obj = SC.objs.filter(function (o) { return !o.gone; }).map(function (o) {
+      var P = objPoly(o), xs = P.map(function (q) { return q[0]; }), ys = P.map(function (q) { return q[1]; });
+      o.cx = clamp(o.cx, o.cx - Math.min.apply(null, xs), FW - 1 - (Math.max.apply(null, xs) - o.cx));
+      o.cy = clamp(o.cy, o.cy - Math.min.apply(null, ys), FH - 1 - (Math.max.apply(null, ys) - o.cy));
+      return objTruth(o);
+    }).sort(function (a, b) { return b[8] - a[8] || a[11] - b[11]; }).slice(0, 8);
     return s;
   }
   var frozen = null, everOk = false;
@@ -791,7 +888,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
   function draw(st) {
     var g = curG(), live = rawState(), h = '';
     var ir = getComputedStyle(document.documentElement).getPropertyValue('--ir').trim() || '#c0392b';
-    var floor = g === 'line' ? (S.mode === 42 ? '#2b2f33' : '#f2f0ea') : g === 'spot' ? '#f6f4ee' : '#e8e4da';
+    var floor = g === 'obj' ? '#f6f4ee' : g === 'line' ? (S.mode === 42 ? '#2b2f33' : '#f2f0ea') : g === 'spot' ? '#f6f4ee' : '#e8e4da';
     h += '<rect x="0" y="0" width="' + SW + '" height="' + SH + '" fill="#f7f7f2"/>';
     h += '<rect x="' + OX + '" y="' + OY + '" width="' + FW * K + '" height="' + FH * K + '" fill="' + floor + '" stroke="#55605d" stroke-width="2"/>';
     var top = '';
@@ -831,6 +928,21 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         h += txt(fx(b.cx), fy(b.cy) + 5, String(b.hue), { anchor: 'middle', bold: true, fill: '#fff', size: 13 });
       });
       top = ('Left to right ') + (st.none ? '?' : '[' + st.order.hues.join(', ') + ']') + ('  total ') + (st.none ? '?' : st.order.total) + ('');
+    } else if (g === 'obj') {
+      var rank = {}; st.obj.forEach(function (o, k) { rank[o[11]] = k + 1; });
+      SC.objs.forEach(function (o, i) {
+        if (o.gone) return;
+        var P = objPoly(o);
+        h += '<polygon points="' + P.map(function (q) { return fx(q[0]).toFixed(1) + ',' + fy(q[1]).toFixed(1); }).join(' ') + '" fill="' + OBJFILL[o.color] + '" stroke="' + (i === SC.jsel ? '#111' : 'rgba(0,0,0,0.3)') + '" stroke-width="' + (i === SC.jsel ? 3 : 1.5) + '"/>';
+        var tr = objTruth(o);
+        if (st.ok && rank[o.id]) {
+          h += '<rect x="' + fx(tr[4]) + '" y="' + fy(tr[5]) + '" width="' + (tr[6] - tr[4] + 1) * K + '" height="' + (tr[7] - tr[5] + 1) * K + '" fill="none" stroke="#19a974" stroke-width="1.5" stroke-dasharray="4 3"/>';
+          h += '<circle cx="' + fx(tr[2]) + '" cy="' + fy(tr[3]) + '" r="3.5" fill="#fff" stroke="#111" stroke-width="1.5"/>';
+          h += txt(fx(tr[4]) + 2, fy(tr[5]) - 4, '#' + rank[o.id] + ' ' + (tr[0] * 10 + tr[1]), { size: 12, bold: true, fill: '#0b6b47', halo: true });
+        }
+      });
+      var o1 = st.obj[0];
+      top = st.none ? ('objects ?') : ('objects ') + st.obj.length + (o1 ? ('  largest code ') + (o1[0] * 10 + o1[1]) + '  X ' + o1[2] + '  Y ' + o1[3] : '');
     } else {
       var R = lineRows(), wpx = num('lwidth', 16), ink = S.mode === 42 ? '#f7f7f7' : S.mode === 43 ? '#d8392b' : '#1b1b1b';
       var gone = $('lgone').checked;
@@ -872,6 +984,14 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if ($('tsize') && Number($('tsize').value) !== b.size) $('tsize').value = b.size;
     if ($('tcount') && Number($('tcount').value) !== b.n) $('tcount').value = b.n;
     if ($('tgone')) $('tgone').checked = b.gone;
+    var ob = SC.objs[SC.jsel];
+    if ($('jname')) $('jname').textContent = ('track id ') + ob.id;
+    if ($('jname2')) $('jname2').textContent = ('track id ') + ob.id;
+    if ($('jshape') && Number($('jshape').value) !== ob.shape) $('jshape').value = ob.shape;
+    if ($('jcolor') && Number($('jcolor').value) !== ob.color) $('jcolor').value = ob.color;
+    if ($('jsize') && Number($('jsize').value) !== ob.size) $('jsize').value = ob.size;
+    if ($('jrot') && Number($('jrot').value) !== ob.rot) $('jrot').value = ob.rot;
+    if ($('jgone')) $('jgone').checked = ob.gone;
     if ($('phueval')) { var h0 = SC.patches[0].hue; $('phueval').textContent = h0 + (', ') + CNAME_ZH[colorCode(h0)]; }
   }
   function simInput(id) {
@@ -880,6 +1000,12 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if (id === 'tcount') b.n = Number($('tcount').value);
     if (id === 'tgone') b.gone = $('tgone').checked;
     if (id === 'phue') SC.patches[0].hue = Number($('phue').value);
+    var ob = SC.objs[SC.jsel];
+    if (id === 'jshape') ob.shape = Number($('jshape').value);
+    if (id === 'jcolor') ob.color = Number($('jcolor').value);
+    if (id === 'jsize') ob.size = Number($('jsize').value);
+    if (id === 'jrot') ob.rot = Number($('jrot').value);
+    if (id === 'jgone') ob.gone = $('jgone').checked;
     if (id === 'lmark') {
       var m = Number($('lmark').value);
       SC.mkNow = m;
@@ -895,6 +1021,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     var g = curG(), i;
     if (g === 'track') { for (i = SC.blobs.length - 1; i >= 0; i--) { var b = SC.blobs[i]; if (!b.gone && Math.abs(p.x - b.cx) <= b.size / 2 + 4 && Math.abs(p.y - b.cy) <= b.size / 2 + 4) { SC.sel = i; return true; } } return false; }
     if (g === 'spot') { for (i = SC.patches.length - 1; i >= 0; i--) { var q = SC.patches[i]; if (Math.abs(p.x - q.cx) <= q.w / 2 + 3 && Math.abs(p.y - q.cy) <= q.h / 2 + 3) { SC.psel = i; return true; } } return false; }
+    if (g === 'obj') { for (i = SC.objs.length - 1; i >= 0; i--) { var q2 = SC.objs[i]; if (!q2.gone && Math.abs(p.x - q2.cx) <= q2.size / 2 + 3 && Math.abs(p.y - q2.cy) <= q2.size / 2 + 3) { SC.jsel = i; return true; } } return false; }
     if (g === 'order') { var k = num('ocount', 4); for (i = k - 1; i >= 0; i--) { var o = SC.blocks[i]; if (Math.abs(p.x - o.cx) <= 13 && Math.abs(p.y - o.cy) <= 13) { SC.osel = i; return true; } } return false; }
     if ($('lgone').checked) return false;
     var best = 0, bd = 1e9;
@@ -905,6 +1032,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     var g = curG();
     if (g === 'track') { var b = selBlob(); b.cx = p.x; b.cy = p.y; }
     else if (g === 'spot') { var q = SC.patches[SC.psel]; q.cx = clamp(p.x, q.w / 2, FW - q.w / 2); q.cy = clamp(p.y, q.h / 2, FH - q.h / 2); }
+    else if (g === 'obj') { var q3 = SC.objs[SC.jsel]; q3.cx = p.x; q3.cy = p.y; }
     else if (g === 'order') { var o = SC.blocks[SC.osel]; o.cx = clamp(p.x, 11, FW - 11); o.cy = clamp(p.y, 11, FH - 11); }
     else SC.line.xs[SC.lsel] = clamp(p.x, 2, FW - 2);
   }
@@ -913,6 +1041,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if (g === 'track') return { x: selBlob().cx, y: selBlob().cy };
     if (g === 'spot') return { x: SC.patches[SC.psel].cx, y: SC.patches[SC.psel].cy };
     if (g === 'order') return { x: SC.blocks[SC.osel].cx, y: SC.blocks[SC.osel].cy };
+    if (g === 'obj') return { x: SC.objs[SC.jsel].cx, y: SC.objs[SC.jsel].cy };
     return { x: SC.line.xs[SC.lsel], y: SC.line.ys[SC.lsel] };
   }
   function bindSim(onMove, onInput) {
@@ -930,7 +1059,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       if (!k) return;
       e.preventDefault(); var p = selPos(); moveSel({ x: p.x + k[0], y: p.y + k[1] }); onMove();
     });
-    ['tsize', 'tcount', 'tgone', 'phue', 'ocount', 'lwidth', 'ljunc', 'ljd', 'lmark', 'lgone', 'unplug'].forEach(function (id) {
+    ['tsize', 'tcount', 'tgone', 'phue', 'ocount', 'lwidth', 'ljunc', 'ljd', 'lmark', 'lgone', 'jshape', 'jcolor', 'jsize', 'jrot', 'jgone', 'unplug'].forEach(function (id) {
       var c = $(id); if (!c) return;
       c.addEventListener(c.tagName === 'SELECT' ? 'change' : 'input', function () { simInput(id); onInput(id); });
     });
@@ -1009,7 +1138,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
   function drawModes() {
     var box = $('modes'); if (!box) return;
     box.innerHTML = '';
-    ['track', 'spot', 'order', 'line'].forEach(function (g) {
+    ['track', 'spot', 'order', 'line', 'obj'].forEach(function (g) {
       var w = document.createElement('div'); w.className = 'fgroup';
       w.innerHTML = '<span>' + GROUPS[g].name + '</span>';
       var chips = document.createElement('div'); chips.className = 'chips';
@@ -1025,6 +1154,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     var have = m.g === 'track' ? ('This host gets ' + c.col + ' colors in this mode')
       : m.g === 'spot' ? ('This host gets ' + c.pt + ' sample spots in this mode')
       : m.g === 'order' ? ('This host gets the hue codes of up to ' + c.order + ' blocks')
+      : m.g === 'obj' ? ('This host gets ' + c.obj + ' objects in this mode')
       : ('This host gets ' + c.line + ' line values');
     $('modenow').innerHTML = '<b>' + ('You picked mode number ') + S.mode + '</b><span>' + ('= camera mode ') + m.cm + ' ' + GROUPS[m.g].name.replace(/^\d /, '') + (m.sub ? (' · sub-option ') + m.name : '') + ('. ') + have + ('.') + '</span><span class="err">' + HOST.modeWarn(S.mode) + '</span>';
   }

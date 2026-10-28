@@ -130,7 +130,7 @@ int16_t hue = mbcRead(0x4C, 0x01);   // 色相：-1~100
 
 積木傳回 色相（-1~100）。主機送 `[01]` → 回 `[值低][值高][01 ^ 值低 ^ 值高]`，值 = int16 小端。
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 色相 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 色相 :: sensing)</pre>
 
 </details>
 
@@ -241,7 +241,7 @@ int16_t saturation = mbcRead(0x4C, 0x02);   // 飽和度：0~100
 
 積木傳回 飽和度（0~100）。主機送 `[02]` → 回 `[值低][值高][02 ^ 值低 ^ 值高]`，值 = int16 小端。
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 飽和度 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 飽和度 :: sensing)</pre>
 
 </details>
 
@@ -343,7 +343,7 @@ int16_t value = mbcRead(0x4C, 0x03);   // 明度：0~100
 
 積木傳回 明度（0~100）。主機送 `[03]` → 回 `[值低][值高][03 ^ 值低 ^ 值高]`，值 = int16 小端。
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 明度 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 明度 :: sensing)</pre>
 
 </details>
 
@@ -445,7 +445,7 @@ int16_t motion = mbcRead(0x4C, 0x04);   // 動態：0~100
 
 積木傳回 動態（0~100）。主機送 `[04]` → 回 `[值低][值高][04 ^ 值低 ^ 值高]`，值 = int16 小端。
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 動態 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 動態 :: sensing)</pre>
 
 </details>
 
@@ -547,7 +547,7 @@ int16_t blobX = mbcRead(0x4C, 0x05);   // 色塊 X：0~100
 
 積木傳回 色塊 X（0~100）。主機送 `[05]` → 回 `[值低][值高][05 ^ 值低 ^ 值高]`，值 = int16 小端。
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 色塊 X :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 色塊 X :: sensing)</pre>
 
 </details>
 
@@ -649,7 +649,7 @@ int16_t blobY = mbcRead(0x4C, 0x06);   // 色塊 Y：0~75
 
 積木傳回 色塊 Y（0~75）。主機送 `[06]` → 回 `[值低][值高][06 ^ 值低 ^ 值高]`，值 = int16 小端。
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 色塊 Y :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 色塊 Y :: sensing)</pre>
 
 </details>
 
@@ -751,7 +751,7 @@ int16_t blobW = mbcRead(0x4C, 0x07);   // 色塊寬：0~100
 
 積木傳回 色塊寬（0~100）。主機送 `[07]` → 回 `[值低][值高][07 ^ 值低 ^ 值高]`，值 = int16 小端。
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 色塊寬 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 色塊寬 :: sensing)</pre>
 
 </details>
 
@@ -853,7 +853,7 @@ int16_t blobH = mbcRead(0x4C, 0x08);   // 色塊高：0~75
 
 積木傳回 色塊高（0~75）。主機送 `[08]` → 回 `[值低][值高][08 ^ 值低 ^ 值高]`，值 = int16 小端。
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 色塊高 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 色塊高 :: sensing)</pre>
 
 </details>
 
@@ -935,7 +935,7 @@ int16_t blobArea = mbcRead(0x4C, 0x09);   // 色塊面積：0~7500
 
 積木傳回 色塊面積（0~7500）。主機送 `[09]` → 回 `[值低][值高][09 ^ 值低 ^ 值高]`，值 = int16 小端。
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 色塊面積 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 色塊面積 :: sensing)</pre>
 
 </details>
 
@@ -996,7 +996,7 @@ int16_t found = mbcRead(0x4C, 0x0A);   // 有找到色塊：0~1
 
 積木傳回 有找到色塊（0~1）。主機送 `[0A]` → 回 `[值低][值高][0A ^ 值低 ^ 值高]`，值 = int16 小端。
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 有找到色塊？ :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 有找到色塊？ :: sensing)</pre>
 
 </details>
 
@@ -1085,7 +1085,7 @@ bool found = st & (1 << 1);   // 有找到色塊
 
 狀態旗標 F3 的各 bit 由擴展拆成布林積木（就緒、校準中…）。
 
-<pre class="blocks"><神攝手 連接埠 [1 v] 連線正常？ :: sensing></pre>
+<pre class="blocks"><神攝手舊版 連接埠 [1 v] 連線正常？ :: sensing></pre>
 
 </details>
 

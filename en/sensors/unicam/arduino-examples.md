@@ -8,7 +8,7 @@
 > [!WARNING]
 > **v1 not yet hardware-verified**: the value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after bench testing.
 
-This page has **5 examples**: check the connection, colour tracking, spot colour, colour order (WRO colour sequence) and a line-following car. Every example can be copied and uploaded as is, and every important line has a comment. **No coding experience needed** — just go through them in order.
+This page has **6 examples**: check the connection, colour tracking, spot colour, colour order (WRO colour sequence), a line-following car and object detection (find the red triangle). Every example can be copied and uploaded as is, and every important line has a comment. **No coding experience needed** — just go through them in order.
 
 > [!TIP]
 > New to Arduino? Start with [🔰 Arduino from zero](/en/sensors/arduino-start.md): install the software, upload a program and see the result in 15 minutes.
@@ -50,6 +50,10 @@ This page has **5 examples**: check the connection, colour tracking, spot colour
 | 21 / 22 / 23 | 2 Spot colour ① / ② / ③ | hue / + saturation / + value | 3 |
 | 30 | 3 Colour order | hue code of each block left to right + total | 4 |
 | 41 / 42 / 43 | 4 Line following black / white / colour | near/mid/far offset, angle, junction… 14 values | 5 |
+| 51 | 5 Object detection ① Object list | 8 objects: colour, shape, X, Y + object count | 6 |
+| 52 | 5 Object detection ② Object detail | 8 objects: colour, shape, X, Y, width, height, area, angle, vertices, track id + object count | — |
+| 51 | 5 Object detection ① Object list | 8 objects: colour, shape, X, Y + object count | 6 |
+| 52 | 5 Object detection ② Object detail | 8 objects: colour, shape, X, Y, width, height, area, angle, vertices, track id + object count | — |
 
 ---
 
@@ -59,7 +63,7 @@ The camera is like a row of numbered "boxes", each holding one number (int16). W
 
 | Id | Name | Range | Notes |
 | :---: | :--- | :--- | :--- |
-| `01` | Mode number | 11–43 | camera mode × 10 + option (colour order = 30) |
+| `01` | Mode number | 11–52 | camera mode × 10 + option (colour order = 30, object detection = 51 / 52) |
 | `02` | Option | 0–4 | |
 | `03` | Colours taught | 0–16 | |
 | `04` | Values in this layer | | e.g. mode 13 gives 65 (16 colours × 4 + colours found) |
@@ -67,7 +71,7 @@ The camera is like a row of numbered "boxes", each holding one number (int16). W
 | `F0` | Device ID | | low byte = `0x4C`, high byte **hw0 = 3 (current Sharpshooter Vision)**; School version 1, WRO version 2 |
 | `F1` | Protocol version | 2 | |
 | `F2` | Firmware version | 100 | major × 100 + minor (100 = 1.0) |
-| `F3` | Status flags | bit | bit0 = ready (used by `mbcWaitReady`) |
+| `F3` | Status flags | bit | bit0 = ready (used by `mbcWaitReady`), bit1 = something found in the current mode (object detection = object count > 0) |
 
 **Layout from `10`** (colour c and spot p start at 1):
 
@@ -79,17 +83,23 @@ The camera is like a row of numbered "boxes", each holding one number (int16). W
 | 14 | 6 per colour: X, Y, width, height, count, area % | `70` = colours found |
 | 21 / 22 / 23 | 1 / 2 / 3 per spot: hue code (, saturation, value) | — |
 | 30 | `10`–`1F` = hue code of blocks 1–16 from the left | `20` = total blocks |
+| 51 | 4 boxes per object: `10+4(i−1)` = colour, +1 = shape, +2 = X, +3 = Y (objects 1–8, 1 = largest) | `30` = object count |
+| 52 | 10 per object: colour, shape, X, Y, width, height, area %, angle 0–179, vertices, track id 1–255 | `60` = object count |
+| 51 | 4 boxes per object: `10+4(i−1)` = colour, +1 = shape, +2 = X, +3 = Y (objects 1–8, 1 = largest) | `30` = object count |
+| 52 | 10 per object: colour, shape, X, Y, width, height, area %, angle 0–179, vertices, track id 1–255 | `60` = object count |
 | 41–43 | `10` near offset, `11` mid, `12` far, `13` angle, `14` near width %, `15` line seen flags (near 1 + mid 2 + far 4), `16` junction (0 none 1 cross 2 T 3 left 4 right 5 dead end), `17` junction distance %, `18` left edge, `19` right edge, `1A` far width %, `1B` marker colour, `1C` marker count, `1D` last lost side (0 on line 1 left 2 right) | — |
 
 - **Coordinates**: X 0–159 (left → right), Y 0–119 (top → bottom), **0 = not found** (at least 1 when found).
 - **Hue code** 0–255: 0–240 colours (red 0/240, yellow 40, green 80, cyan 120, blue 160, purple 200), 241–248 white/grey, 249–255 black.
 - **Offsets, angle and edges** are signed: **line on the left = negative** (standing behind the car, looking forward).
+- **Objects (51 / 52)**: object code = **colour × 10 + shape** (13 = a triangle of target 1, 0 = none); shapes 0 other, 1 circle, 2 ellipse, 3 triangle, 4 square, 5 rectangle, 6 pentagon, 7 hexagon, 8 star, 9 trapezoid. X, Y is the centroid; width/height = bounding box; angle = long side, right = 0, turning toward the bottom of the picture is positive; vertices: triangle 3, quadrilateral 4, pentagon 5, hexagon 6, star 10, circle 0. Only target colours 1–8 count.
+- **Objects (51 / 52)**: object code = **colour × 10 + shape** (13 = a triangle of target 1, 0 = none); shapes 0 other, 1 circle, 2 ellipse, 3 triangle, 4 square, 5 rectangle, 6 pentagon, 7 hexagon, 8 star, 9 trapezoid. X, Y is the centroid; width/height = bounding box; angle = long side, right = 0, turning toward the bottom of the picture is positive; vertices: triangle 3, quadrilateral 4, pentagon 5, hexagon 6, star 10, circle 0. Only target colours 1–8 count.
 
 **Write commands:**
 
 | Command | Parameters | What it does |
 | :---: | :--- | :--- |
-| `E0` | [camera mode 1–4, option] | switch mode (saved in the camera) |
+| `E0` | [camera mode 1–5, option] | switch mode (saved in the camera); object detection [5, 1] / [5, 2] |
 | `E1` | [spot 1–20, X 0–159, Y 0–119] | move a spot-colour sample spot (saved in the camera) |
 
 > [!NOTE]
@@ -103,7 +113,7 @@ Every example has the same code at the top and at the bottom (between `MBC_UNICA
 
 | Helper | What it does | Mode |
 | :--- | :--- | :---: |
-| `ucSetMode(cameraMode, option)` | E0 switch mode (colour order: `ucSetMode(3, 0)`) | all |
+| `ucSetMode(cameraMode, option)` | E0 switch mode (colour order: `ucSetMode(3, 0)`, object detection: `ucSetMode(5, 1)`) | all |
 | `ucSetPoint(spot, X, Y)` | E1 move a sample spot | 21–23 |
 | `ucModeNumber()` | read the current mode number (e.g. 13) | all |
 | `ucReadBlob(mode, colour, b)` | read one colour → `UcBlob b`: `b.x`, `b.y`, `b.w`, `b.h`, `b.count`, `b.area` (-1 = not in this mode) | 11–14 |
@@ -111,6 +121,12 @@ Every example has the same code at the top and at the bottom (between `MBC_UNICA
 | `ucReadSpot(mode, spot, s)` | read one spot → `UcSpot s`: `s.h`, `s.s`, `s.v` (-1 = not given) | 21–23 |
 | `ucReadOrder(array, max, total)` | hue codes from left to right into the array, returns how many; `total` = all blocks | 30 |
 | `ucReadLine(l)` | read all 14 → `UcLine l`: `nearOff`, `midOff`, `farOff`, `angle`, `width`, `flags`, `junction`, `junctionDist`, `leftEdge`, `rightEdge`, `farWidth`, `marker`, `markerCount`, `lost` | 41–43 |
+| `ucReadObject(mode, i, o)` | read object 1–8 (1 = largest) → `UcObject o`: `o.code` (colour × 10 + shape, 0 = none), `o.color`, `o.shape`, `o.x`, `o.y`, `o.w`, `o.h`, `o.area`, `o.angle`, `o.vertices`, `o.trackId` (-1 = not given in mode 51) | 51, 52 |
+| `ucObjectCount(mode)` | objects in view, 0–8 | 51, 52 |
+| `ucShapeName(shape)` | shape 0–9 → `"other"` `"circle"` `"ellipse"` `"triangle"` `"square"` `"rectangle"` `"pentagon"` `"hexagon"` `"star"` `"trapezoid"` | any |
+| `ucReadObject(mode, i, o)` | read object 1–8 (1 = largest) → `UcObject o`: `o.code` (colour × 10 + shape, 0 = none), `o.color`, `o.shape`, `o.x`, `o.y`, `o.w`, `o.h`, `o.area`, `o.angle`, `o.vertices`, `o.trackId` (-1 = not given in mode 51) | 51, 52 |
+| `ucObjectCount(mode)` | objects in view, 0–8 | 51, 52 |
+| `ucShapeName(shape)` | shape 0–9 → `"other"` `"circle"` `"ellipse"` `"triangle"` `"square"` `"rectangle"` `"pentagon"` `"hexagon"` `"star"` `"trapezoid"` | any |
 | `ucColorCode(hue)` | hue code → colour number: 1 red 2 orange 3 yellow 4 green 5 cyan 6 blue 7 purple 8 white/grey 9 black | any |
 | `mbcRead` / `mbcReadMany` / `mbcWaitReady` | read ids directly, wait for the camera to boot | any |
 
@@ -128,9 +144,11 @@ Every example has the same code at the top and at the bottom (between `MBC_UNICA
 | 3 | [What colour is this?](#ex3) | 2 Spot colour ③ (23) | move spots with E1, hue code → colour name | a few coloured bricks |
 | 4 | [Colour order (WRO)](#ex4) | 3 Colour order (30) | colour of each block from left to right + total | a row of coloured blocks |
 | 5 | [Line follower that looks ahead (advanced)](#ex5) | 4 Line following ① black (41) | near/far offset PD line following, stop at junctions | 2-wheel car, L298N |
+| 6 | [Find the red triangle (object detection)](#ex6) | 5 Object detection ① Object list (51) | object code = colour × 10 + shape, search largest first, shape names | a red triangle and other shapes |
+| 6 | [Find the red triangle (object detection)](#ex6) | 5 Object detection ① Object list (51) | object code = colour × 10 + shape, search largest first, shape names | a red triangle and other shapes |
 
 > [!TIP]
-> **Suggested order: 1 → 2 → 3 → 4 → 5.** Each example switches the camera to the mode it needs at the start.
+> **Suggested order: 1 → 2 → 3 → 4 → 5 → 6.** Each example switches the camera to the mode it needs at the start.
 
 ---
 
@@ -162,7 +180,7 @@ Every example has the same code at the top and at the bottom (between `MBC_UNICA
  *   4. Then print the current mode number every second (it follows the camera menu too)
  *
  * Mode number = camera mode x 10 + option:
- *   11~14 colour tracking, 21~23 spot colour, 30 colour order, 41~43 line following
+ *   11~14 colour tracking, 21~23 spot colour, 30 colour order, 41~43 line following, 51/52 object detection
  *
  * You need: Sharpshooter Vision (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
  *
@@ -189,6 +207,9 @@ struct UcSpot { int16_t h, s, v; };
 // 14 line values (near/mid/far offset -100~100: line on the left = negative)
 struct UcLine { int16_t nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,
                 leftEdge, rightEdge, farWidth, marker, markerCount, lost; };
+// one object (modes 51/52): code = colour x 10 + shape (0 = none), color 1~8, shape 0~9,
+// x, y centroid pixels, w, h box pixels, area %, angle 0~179, vertices, trackId 1~255; -1 = not given in mode 51
+struct UcObject { int16_t code, color, shape, x, y, w, h, area, angle, vertices, trackId; };
 // ==== MBC_UNICAM_TOP_END ====
 
 unsigned long lastPrint = 0;
@@ -300,7 +321,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 
 // ---------- Sharpshooter Vision ----------
 
-// Switch camera mode (E0): camMode 1~4, sub = option (0 for colour order). Saved in the camera
+// Switch camera mode (E0): camMode 1~5, sub = option (0 for colour order; object detection 1 list, 2 detail). Saved in the camera
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
   uint8_t p[2] = { camMode, sub };
   bool ok = mbcWrite(ADDR, 0xE0, p, 2);
@@ -383,6 +404,43 @@ bool ucReadLine(UcLine &l) {
   return true;
 }
 
+// Object detection (modes 51/52): values per object: 51 -> 4 (colour shape X Y), 52 -> 10 (+ width height area angle vertices track id)
+uint8_t ucObjStride(uint8_t mode) {
+  if (mode == 51) return 4;
+  if (mode == 52) return 10;
+  return 0;
+}
+
+// Read object i (1~8, 1 = largest); mode = 51 or 52. true if read
+bool ucReadObject(uint8_t mode, uint8_t i, UcObject &o) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0 || i < 1 || i > 8) return false;
+  int16_t d[10];
+  if (!mbcReadMany(ADDR, 0x10 + (i - 1) * k, k, d)) return false;
+  o.color = d[0]; o.shape = d[1]; o.x = d[2]; o.y = d[3];
+  o.code = (d[0] > 0) ? d[0] * 10 + d[1] : 0;
+  o.w = -1; o.h = -1; o.area = -1; o.angle = -1; o.vertices = -1; o.trackId = -1;
+  if (mode == 52) { o.w = d[4]; o.h = d[5]; o.area = d[6]; o.angle = d[7]; o.vertices = d[8]; o.trackId = d[9]; }
+  return true;
+}
+
+// Number of objects in view, 0~8 (modes 51/52)
+int16_t ucObjectCount(uint8_t mode) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0) return MBC_NONE;
+  return mbcRead(ADDR, 0x10 + 8 * k);
+}
+
+// Shape number -> name: 0 other 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid
+const char *ucShapeName(int16_t s) {
+  switch (s) {
+    case 0: return "other";    case 1: return "circle";    case 2: return "ellipse";  case 3: return "triangle";
+    case 4: return "square";   case 5: return "rectangle"; case 6: return "pentagon"; case 7: return "hexagon";
+    case 8: return "star";     case 9: return "trapezoid";
+  }
+  return "?";
+}
+
 // Hue code -> colour number: 1 red 2 orange 3 yellow 4 green 5 cyan 6 blue 7 purple 8 white/grey 9 black
 uint8_t ucColorCode(int16_t h) {
   if (h > 248) return 9;
@@ -462,6 +520,9 @@ struct UcSpot { int16_t h, s, v; };
 // 14 line values (near/mid/far offset -100~100: line on the left = negative)
 struct UcLine { int16_t nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,
                 leftEdge, rightEdge, farWidth, marker, markerCount, lost; };
+// one object (modes 51/52): code = colour x 10 + shape (0 = none), color 1~8, shape 0~9,
+// x, y centroid pixels, w, h box pixels, area %, angle 0~179, vertices, trackId 1~255; -1 = not given in mode 51
+struct UcObject { int16_t code, color, shape, x, y, w, h, area, angle, vertices, trackId; };
 // ==== MBC_UNICAM_TOP_END ====
 
 const uint8_t MODE = 13;                 // mode number 13 = colour tracking 3 standard (X, Y, area, count per colour)
@@ -569,7 +630,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 
 // ---------- Sharpshooter Vision ----------
 
-// Switch camera mode (E0): camMode 1~4, sub = option (0 for colour order). Saved in the camera
+// Switch camera mode (E0): camMode 1~5, sub = option (0 for colour order; object detection 1 list, 2 detail). Saved in the camera
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
   uint8_t p[2] = { camMode, sub };
   bool ok = mbcWrite(ADDR, 0xE0, p, 2);
@@ -652,6 +713,43 @@ bool ucReadLine(UcLine &l) {
   return true;
 }
 
+// Object detection (modes 51/52): values per object: 51 -> 4 (colour shape X Y), 52 -> 10 (+ width height area angle vertices track id)
+uint8_t ucObjStride(uint8_t mode) {
+  if (mode == 51) return 4;
+  if (mode == 52) return 10;
+  return 0;
+}
+
+// Read object i (1~8, 1 = largest); mode = 51 or 52. true if read
+bool ucReadObject(uint8_t mode, uint8_t i, UcObject &o) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0 || i < 1 || i > 8) return false;
+  int16_t d[10];
+  if (!mbcReadMany(ADDR, 0x10 + (i - 1) * k, k, d)) return false;
+  o.color = d[0]; o.shape = d[1]; o.x = d[2]; o.y = d[3];
+  o.code = (d[0] > 0) ? d[0] * 10 + d[1] : 0;
+  o.w = -1; o.h = -1; o.area = -1; o.angle = -1; o.vertices = -1; o.trackId = -1;
+  if (mode == 52) { o.w = d[4]; o.h = d[5]; o.area = d[6]; o.angle = d[7]; o.vertices = d[8]; o.trackId = d[9]; }
+  return true;
+}
+
+// Number of objects in view, 0~8 (modes 51/52)
+int16_t ucObjectCount(uint8_t mode) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0) return MBC_NONE;
+  return mbcRead(ADDR, 0x10 + 8 * k);
+}
+
+// Shape number -> name: 0 other 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid
+const char *ucShapeName(int16_t s) {
+  switch (s) {
+    case 0: return "other";    case 1: return "circle";    case 2: return "ellipse";  case 3: return "triangle";
+    case 4: return "square";   case 5: return "rectangle"; case 6: return "pentagon"; case 7: return "hexagon";
+    case 8: return "star";     case 9: return "trapezoid";
+  }
+  return "?";
+}
+
 // Hue code -> colour number: 1 red 2 orange 3 yellow 4 green 5 cyan 6 blue 7 purple 8 white/grey 9 black
 uint8_t ucColorCode(int16_t h) {
   if (h > 248) return 9;
@@ -725,6 +823,9 @@ struct UcSpot { int16_t h, s, v; };
 // 14 line values (near/mid/far offset -100~100: line on the left = negative)
 struct UcLine { int16_t nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,
                 leftEdge, rightEdge, farWidth, marker, markerCount, lost; };
+// one object (modes 51/52): code = colour x 10 + shape (0 = none), color 1~8, shape 0~9,
+// x, y centroid pixels, w, h box pixels, area %, angle 0~179, vertices, trackId 1~255; -1 = not given in mode 51
+struct UcObject { int16_t code, color, shape, x, y, w, h, area, angle, vertices, trackId; };
 // ==== MBC_UNICAM_TOP_END ====
 
 const uint8_t MODE = 23;                 // mode number 23 = spot colour 3 (hue + saturation + value)
@@ -840,7 +941,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 
 // ---------- Sharpshooter Vision ----------
 
-// Switch camera mode (E0): camMode 1~4, sub = option (0 for colour order). Saved in the camera
+// Switch camera mode (E0): camMode 1~5, sub = option (0 for colour order; object detection 1 list, 2 detail). Saved in the camera
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
   uint8_t p[2] = { camMode, sub };
   bool ok = mbcWrite(ADDR, 0xE0, p, 2);
@@ -923,6 +1024,43 @@ bool ucReadLine(UcLine &l) {
   return true;
 }
 
+// Object detection (modes 51/52): values per object: 51 -> 4 (colour shape X Y), 52 -> 10 (+ width height area angle vertices track id)
+uint8_t ucObjStride(uint8_t mode) {
+  if (mode == 51) return 4;
+  if (mode == 52) return 10;
+  return 0;
+}
+
+// Read object i (1~8, 1 = largest); mode = 51 or 52. true if read
+bool ucReadObject(uint8_t mode, uint8_t i, UcObject &o) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0 || i < 1 || i > 8) return false;
+  int16_t d[10];
+  if (!mbcReadMany(ADDR, 0x10 + (i - 1) * k, k, d)) return false;
+  o.color = d[0]; o.shape = d[1]; o.x = d[2]; o.y = d[3];
+  o.code = (d[0] > 0) ? d[0] * 10 + d[1] : 0;
+  o.w = -1; o.h = -1; o.area = -1; o.angle = -1; o.vertices = -1; o.trackId = -1;
+  if (mode == 52) { o.w = d[4]; o.h = d[5]; o.area = d[6]; o.angle = d[7]; o.vertices = d[8]; o.trackId = d[9]; }
+  return true;
+}
+
+// Number of objects in view, 0~8 (modes 51/52)
+int16_t ucObjectCount(uint8_t mode) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0) return MBC_NONE;
+  return mbcRead(ADDR, 0x10 + 8 * k);
+}
+
+// Shape number -> name: 0 other 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid
+const char *ucShapeName(int16_t s) {
+  switch (s) {
+    case 0: return "other";    case 1: return "circle";    case 2: return "ellipse";  case 3: return "triangle";
+    case 4: return "square";   case 5: return "rectangle"; case 6: return "pentagon"; case 7: return "hexagon";
+    case 8: return "star";     case 9: return "trapezoid";
+  }
+  return "?";
+}
+
 // Hue code -> colour number: 1 red 2 orange 3 yellow 4 green 5 cyan 6 blue 7 purple 8 white/grey 9 black
 uint8_t ucColorCode(int16_t h) {
   if (h > 248) return 9;
@@ -999,6 +1137,9 @@ struct UcSpot { int16_t h, s, v; };
 // 14 line values (near/mid/far offset -100~100: line on the left = negative)
 struct UcLine { int16_t nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,
                 leftEdge, rightEdge, farWidth, marker, markerCount, lost; };
+// one object (modes 51/52): code = colour x 10 + shape (0 = none), color 1~8, shape 0~9,
+// x, y centroid pixels, w, h box pixels, area %, angle 0~179, vertices, trackId 1~255; -1 = not given in mode 51
+struct UcObject { int16_t code, color, shape, x, y, w, h, area, angle, vertices, trackId; };
 // ==== MBC_UNICAM_TOP_END ====
 
 const uint8_t MAX_BLOCKS = 6;            // 👉 You can change this: how many blocks to print at most (1~16)
@@ -1112,7 +1253,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 
 // ---------- Sharpshooter Vision ----------
 
-// Switch camera mode (E0): camMode 1~4, sub = option (0 for colour order). Saved in the camera
+// Switch camera mode (E0): camMode 1~5, sub = option (0 for colour order; object detection 1 list, 2 detail). Saved in the camera
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
   uint8_t p[2] = { camMode, sub };
   bool ok = mbcWrite(ADDR, 0xE0, p, 2);
@@ -1193,6 +1334,43 @@ bool ucReadLine(UcLine &l) {
   l.leftEdge = d[8]; l.rightEdge = d[9]; l.farWidth = d[10];
   l.marker = d[11]; l.markerCount = d[12]; l.lost = d[13];
   return true;
+}
+
+// Object detection (modes 51/52): values per object: 51 -> 4 (colour shape X Y), 52 -> 10 (+ width height area angle vertices track id)
+uint8_t ucObjStride(uint8_t mode) {
+  if (mode == 51) return 4;
+  if (mode == 52) return 10;
+  return 0;
+}
+
+// Read object i (1~8, 1 = largest); mode = 51 or 52. true if read
+bool ucReadObject(uint8_t mode, uint8_t i, UcObject &o) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0 || i < 1 || i > 8) return false;
+  int16_t d[10];
+  if (!mbcReadMany(ADDR, 0x10 + (i - 1) * k, k, d)) return false;
+  o.color = d[0]; o.shape = d[1]; o.x = d[2]; o.y = d[3];
+  o.code = (d[0] > 0) ? d[0] * 10 + d[1] : 0;
+  o.w = -1; o.h = -1; o.area = -1; o.angle = -1; o.vertices = -1; o.trackId = -1;
+  if (mode == 52) { o.w = d[4]; o.h = d[5]; o.area = d[6]; o.angle = d[7]; o.vertices = d[8]; o.trackId = d[9]; }
+  return true;
+}
+
+// Number of objects in view, 0~8 (modes 51/52)
+int16_t ucObjectCount(uint8_t mode) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0) return MBC_NONE;
+  return mbcRead(ADDR, 0x10 + 8 * k);
+}
+
+// Shape number -> name: 0 other 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid
+const char *ucShapeName(int16_t s) {
+  switch (s) {
+    case 0: return "other";    case 1: return "circle";    case 2: return "ellipse";  case 3: return "triangle";
+    case 4: return "square";   case 5: return "rectangle"; case 6: return "pentagon"; case 7: return "hexagon";
+    case 8: return "star";     case 9: return "trapezoid";
+  }
+  return "?";
 }
 
 // Hue code -> colour number: 1 red 2 orange 3 yellow 4 green 5 cyan 6 blue 7 purple 8 white/grey 9 black
@@ -1287,6 +1465,9 @@ struct UcSpot { int16_t h, s, v; };
 // 14 line values (near/mid/far offset -100~100: line on the left = negative)
 struct UcLine { int16_t nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,
                 leftEdge, rightEdge, farWidth, marker, markerCount, lost; };
+// one object (modes 51/52): code = colour x 10 + shape (0 = none), color 1~8, shape 0~9,
+// x, y centroid pixels, w, h box pixels, area %, angle 0~179, vertices, trackId 1~255; -1 = not given in mode 51
+struct UcObject { int16_t code, color, shape, x, y, w, h, area, angle, vertices, trackId; };
 // ==== MBC_UNICAM_TOP_END ====
 
 // ---- Motor pins ----
@@ -1439,7 +1620,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 
 // ---------- Sharpshooter Vision ----------
 
-// Switch camera mode (E0): camMode 1~4, sub = option (0 for colour order). Saved in the camera
+// Switch camera mode (E0): camMode 1~5, sub = option (0 for colour order; object detection 1 list, 2 detail). Saved in the camera
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
   uint8_t p[2] = { camMode, sub };
   bool ok = mbcWrite(ADDR, 0xE0, p, 2);
@@ -1522,6 +1703,43 @@ bool ucReadLine(UcLine &l) {
   return true;
 }
 
+// Object detection (modes 51/52): values per object: 51 -> 4 (colour shape X Y), 52 -> 10 (+ width height area angle vertices track id)
+uint8_t ucObjStride(uint8_t mode) {
+  if (mode == 51) return 4;
+  if (mode == 52) return 10;
+  return 0;
+}
+
+// Read object i (1~8, 1 = largest); mode = 51 or 52. true if read
+bool ucReadObject(uint8_t mode, uint8_t i, UcObject &o) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0 || i < 1 || i > 8) return false;
+  int16_t d[10];
+  if (!mbcReadMany(ADDR, 0x10 + (i - 1) * k, k, d)) return false;
+  o.color = d[0]; o.shape = d[1]; o.x = d[2]; o.y = d[3];
+  o.code = (d[0] > 0) ? d[0] * 10 + d[1] : 0;
+  o.w = -1; o.h = -1; o.area = -1; o.angle = -1; o.vertices = -1; o.trackId = -1;
+  if (mode == 52) { o.w = d[4]; o.h = d[5]; o.area = d[6]; o.angle = d[7]; o.vertices = d[8]; o.trackId = d[9]; }
+  return true;
+}
+
+// Number of objects in view, 0~8 (modes 51/52)
+int16_t ucObjectCount(uint8_t mode) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0) return MBC_NONE;
+  return mbcRead(ADDR, 0x10 + 8 * k);
+}
+
+// Shape number -> name: 0 other 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid
+const char *ucShapeName(int16_t s) {
+  switch (s) {
+    case 0: return "other";    case 1: return "circle";    case 2: return "ellipse";  case 3: return "triangle";
+    case 4: return "square";   case 5: return "rectangle"; case 6: return "pentagon"; case 7: return "hexagon";
+    case 8: return "star";     case 9: return "trapezoid";
+  }
+  return "?";
+}
+
 // Hue code -> colour number: 1 red 2 orange 3 yellow 4 green 5 cyan 6 blue 7 purple 8 white/grey 9 black
 uint8_t ucColorCode(int16_t h) {
   if (h > 248) return 9;
@@ -1543,6 +1761,320 @@ uint8_t ucColorCode(int16_t h) {
 - If it cannot get back onto the line, raise `KP`; if the wobble keeps growing, raise `KD` and lower `KP`.
 - Stops before the junction → lower `JUNCTION_NEAR`; stops too late → raise it.
 - v1 is not bench-tested yet: all these numbers are starting values — tune them on your field.
+
+---
+
+<h2 id="ex6">6️⃣ Find the red triangle (object detection)</h2>
+
+**Camera mode needed:** camera mode 5 Object detection, option ① Object list (the sketch switches it with E0 at the start; for size and angle use `ucSetMode(5, 2)` and `MODE = 52`)
+
+**What it does:** the camera sorts the objects in the picture from largest to smallest (object 1 = largest) and gives each an "object code" = colour × 10 + shape. Every 0.2 s this sketch prints the code and shape name of every object, then looks from the largest down for a "triangle of target 1 (red)" = code **13** and tells you to turn left, turn right or drive forward.
+
+**Steps:**
+1. Teach "Target 1" as red on the camera (the shape can stay unset; only targets 1–8 become objects).
+2. Upload the sketch and open the Serial Monitor (115200).
+3. Move a red triangle and other shapes (a red circle, a blue triangle…) in front of the lens.
+
+<a href="/examples/unicam/arduino-en/unicam_06_object/unicam_06_object.ino" download data-ignore="true">📄 Download unicam_06_object.ino</a>
+
+<!-- ino: examples/unicam/arduino-en/unicam_06_object/unicam_06_object.ino -->
+```cpp
+/*
+ * Sharpshooter Vision x Arduino  Example 6: find the red triangle (object detection)
+ * ------------------------------------------------------------
+ * Camera menu: camera mode 5 Object detection, option 1 Object list (the sketch also switches it with E0)
+ *
+ * What does this example do?
+ *   The camera sorts the objects in the picture from largest to smallest (object 1 = largest) and gives each one
+ *   an "object code" = colour number x 10 + shape.
+ *   Every 0.2 s it prints the code and shape name of every object, then looks from the largest down for
+ *   a "triangle of target 1 (red)" = code 13 and tells you to turn left, turn right or drive forward.
+ *   Shapes: 0 other 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid.
+ *   X 0~159 (left -> right), Y 0~119 (top -> bottom) is the centroid of the object.
+ *
+ * Before you start: teach "Target 1" as red on the camera (the shape can stay unset; the camera works it out).
+ *   Only targets 1~8 become objects.
+ *
+ * Wiring (the I2C pins are provisional until bench testing):
+ *   camera 5V  -> external 5V (power bank or adapter, 2 A or more; do not draw it from the Arduino 5V pin)
+ *   camera GND -> Arduino GND (the external supply GND too)
+ *   camera IO3 (SDA) -> A4   camera IO1 (SCL) -> A5      (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
+ *   Note: use the "I2C" firmware. IO1/IO3 are shared with the LEGO serial version; the firmware is one or the other.
+ *
+ * How to see the result: open the Serial Monitor (115200) and put a red triangle and other shapes in front of the lens.
+ */
+
+#include <Wire.h>
+
+// ==== MBC_UNICAM_TOP_BEGIN ====
+const uint8_t ADDR = 0x4C;               // the camera's I2C address ("house number")
+const int16_t MBC_NONE = -32768;         // code for "no value / cannot read"
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);   // helper declaration (the code is at the bottom)
+// one blob: x, y pixels (0 = not found), w, h pixels, count = number of blobs, area %; -1 = not given in this mode
+struct UcBlob { int16_t x, y, w, h, count, area; };
+// one sample spot: h hue code 0~255, s saturation, v value 0~100; -1 = not given
+struct UcSpot { int16_t h, s, v; };
+// 14 line values (near/mid/far offset -100~100: line on the left = negative)
+struct UcLine { int16_t nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,
+                leftEdge, rightEdge, farWidth, marker, markerCount, lost; };
+// one object (modes 51/52): code = colour x 10 + shape (0 = none), color 1~8, shape 0~9,
+// x, y centroid pixels, w, h box pixels, area %, angle 0~179, vertices, trackId 1~255; -1 = not given in mode 51
+struct UcObject { int16_t code, color, shape, x, y, w, h, area, angle, vertices, trackId; };
+// ==== MBC_UNICAM_TOP_END ====
+
+const uint8_t MODE = 51;                 // mode number 51 = object detection, option 1 Object list (8 objects: colour, shape, X, Y)
+const int16_t WANT = 1 * 10 + 3;         // 👉 You can change this: target 1 x 10 + shape 3 (triangle); square 14, circle 11
+unsigned long lastPrint = 0;
+
+void setup() {
+  Serial.begin(115200);
+  mbcBegin();
+  delay(500);
+  if (!mbcWaitReady(ADDR, 8000)) {        // wait up to 8 s for the camera to boot
+    Serial.println(F("Camera not found! Please check:"));
+    Serial.println(F(" 1. The camera has external 5V and its GND is joined to the Arduino GND"));
+    Serial.println(F(" 2. IO3 goes to SDA, IO1 goes to SCL (swap them if reversed)"));
+    Serial.println(F(" 3. The camera runs the I2C firmware"));
+    while (true) {}                      // stop here
+  }
+  ucSetMode(5, 1);                       // E0: camera mode 5, option 1 (object list)
+  Serial.println(F("Ready! Put a red triangle in front of the lens."));
+}
+
+void loop() {
+  if (millis() - lastPrint < 200) return; // 👉 You can change this: print every 0.2 s
+  lastPrint = millis();
+
+  int16_t n = ucObjectCount(MODE);       // objects in view, 0~8
+  if (n == MBC_NONE) { Serial.println(F("Cannot read the camera")); return; }
+  Serial.print(F("Objects ")); Serial.print(n); Serial.print(F(":"));
+
+  uint8_t found = 0;                     // which object is the one we want (0 = none)
+  UcObject target;
+  for (uint8_t i = 1; i <= 8 && i <= n; i++) {
+    UcObject o;
+    if (!ucReadObject(MODE, i, o)) { Serial.println(F("Cannot read the camera")); return; }
+    Serial.print(F(" [")); Serial.print(o.code);           // e.g. 13 = triangle of target 1
+    Serial.print(' '); Serial.print(ucShapeName(o.shape));  // shape name
+    Serial.print(F("]"));
+    if (found == 0 && o.code == WANT) { found = i; target = o; }   // object 1 is the largest: the first match is the biggest
+  }
+  Serial.println();
+
+  if (found == 0) {
+    Serial.println(F("  -> no red triangle: spin to search"));
+    return;
+  }
+  int16_t error = target.x - 80;         // centre of the picture is X = 80; right = positive
+  Serial.print(F("  -> the biggest red triangle is object ")); Serial.print(found);
+  Serial.print(F(" X=")); Serial.print(target.x);
+  Serial.print(F(" Y=")); Serial.print(target.y);
+  if (error < -20)      Serial.println(F(": turn left"));          // 👉 You can change this: within ±20 px = straight ahead
+  else if (error > 20)  Serial.println(F(": turn right"));
+  else                  Serial.println(F(": straight ahead, drive forward"));
+}
+
+// ==== MBC_UNICAM_HELPERS_BEGIN ====
+// ============================================================
+// Communication helpers (MBC I2C protocol v2) + UniCam helpers. Same in every example, no need to change or understand.
+//   Read: write [id] -> wait 2 ms -> read 2*k bytes = k int16 values from that id (little-endian)
+// ============================================================
+
+// Start I2C (call once in setup). UNO/Nano: SDA=A4, SCL=A5; ESP32: GPIO21/22
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // does not hang if a wire is loose
+#endif
+}
+
+// Read k values (1~16) starting at id into out; true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // at most 16 values (32 bytes) at a time
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // the camera (ESP32) needs a 2 ms wait before reading
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();
+    uint16_t hi = Wire.read();
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// Read one value; MBC_NONE if it cannot be read
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][params...]; true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// Wait until the sensor is ready (F3 bit0 = 1), at most ms milliseconds
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+
+// ---------- Sharpshooter Vision ----------
+
+// Switch camera mode (E0): camMode 1~5, sub = option (0 for colour order; object detection 1 list, 2 detail). Saved in the camera
+bool ucSetMode(uint8_t camMode, uint8_t sub) {
+  uint8_t p[2] = { camMode, sub };
+  bool ok = mbcWrite(ADDR, 0xE0, p, 2);
+  delay(50);                             // give the camera time to switch
+  return ok;
+}
+
+// Move a sample spot (E1): n = spot 1~20, x 0~159, y 0~119. Saved in the camera
+bool ucSetPoint(uint8_t n, uint8_t x, uint8_t y) {
+  uint8_t p[3] = { n, x, y };
+  return mbcWrite(ADDR, 0xE1, p, 3);
+}
+
+// The camera's current mode number (e.g. 13 = colour tracking 3); MBC_NONE if it cannot be read
+int16_t ucModeNumber() {
+  return mbcRead(ADDR, 0x01);
+}
+
+// values per colour in colour tracking (modes 11~14)
+uint8_t ucStride(uint8_t mode) {
+  if (mode == 11) return 2;              // X Y
+  if (mode == 12) return 3;              // X Y count
+  if (mode == 13) return 4;              // X Y area count
+  if (mode == 14) return 6;              // X Y width height count area
+  return 0;
+}
+
+// Read the blob of colour (1~16); mode = the mode number you chose, 11~14. true if read
+bool ucReadBlob(uint8_t mode, uint8_t color, UcBlob &b) {
+  uint8_t k = ucStride(mode);
+  if (k == 0 || color < 1 || color > 16) return false;
+  int16_t d[6];
+  if (!mbcReadMany(ADDR, 0x10 + (color - 1) * k, k, d)) return false;
+  b.x = d[0]; b.y = d[1];
+  b.w = -1; b.h = -1; b.count = -1; b.area = -1;
+  if (mode == 12) b.count = d[2];
+  if (mode == 13) { b.area = d[2]; b.count = d[3]; }
+  if (mode == 14) { b.w = d[2]; b.h = d[3]; b.count = d[4]; b.area = d[5]; }
+  return true;
+}
+
+// How many of the 16 target colours are found (modes 11~14)
+int16_t ucColorsFound(uint8_t mode) {
+  uint8_t k = ucStride(mode);
+  if (k == 0) return MBC_NONE;
+  return mbcRead(ADDR, 0x10 + 16 * k);
+}
+
+// Read sample spot point (1~16); mode = 21, 22, 23
+bool ucReadSpot(uint8_t mode, uint8_t point, UcSpot &p) {
+  if (mode < 21 || mode > 23 || point < 1 || point > 16) return false;
+  uint8_t k = mode - 20;                 // 21 -> 1 value, 22 -> 2, 23 -> 3
+  int16_t d[3];
+  if (!mbcReadMany(ADDR, 0x10 + (point - 1) * k, k, d)) return false;
+  p.h = d[0];
+  p.s = (k >= 2) ? d[1] : -1;
+  p.v = (k >= 3) ? d[2] : -1;
+  return true;
+}
+
+// Colour order (mode 30): hues gets the hue code of each block from left to right (up to maxN, <= 16); returns how many; total = all blocks
+uint8_t ucReadOrder(int16_t *hues, uint8_t maxN, int16_t &total) {
+  int16_t d[16];
+  total = mbcRead(ADDR, 0x20);
+  if (total == MBC_NONE || !mbcReadMany(ADDR, 0x10, 16, d)) { total = MBC_NONE; return 0; }
+  uint8_t n = (total < 16) ? (uint8_t)total : 16;
+  if (n > maxN) n = maxN;
+  for (uint8_t i = 0; i < n; i++) hues[i] = d[i];
+  return n;
+}
+
+// Line following (modes 41~43): read 14 values at once
+bool ucReadLine(UcLine &l) {
+  int16_t d[14];
+  if (!mbcReadMany(ADDR, 0x10, 14, d)) return false;
+  l.nearOff = d[0]; l.midOff = d[1]; l.farOff = d[2]; l.angle = d[3];
+  l.width = d[4]; l.flags = d[5]; l.junction = d[6]; l.junctionDist = d[7];
+  l.leftEdge = d[8]; l.rightEdge = d[9]; l.farWidth = d[10];
+  l.marker = d[11]; l.markerCount = d[12]; l.lost = d[13];
+  return true;
+}
+
+// Object detection (modes 51/52): values per object: 51 -> 4 (colour shape X Y), 52 -> 10 (+ width height area angle vertices track id)
+uint8_t ucObjStride(uint8_t mode) {
+  if (mode == 51) return 4;
+  if (mode == 52) return 10;
+  return 0;
+}
+
+// Read object i (1~8, 1 = largest); mode = 51 or 52. true if read
+bool ucReadObject(uint8_t mode, uint8_t i, UcObject &o) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0 || i < 1 || i > 8) return false;
+  int16_t d[10];
+  if (!mbcReadMany(ADDR, 0x10 + (i - 1) * k, k, d)) return false;
+  o.color = d[0]; o.shape = d[1]; o.x = d[2]; o.y = d[3];
+  o.code = (d[0] > 0) ? d[0] * 10 + d[1] : 0;
+  o.w = -1; o.h = -1; o.area = -1; o.angle = -1; o.vertices = -1; o.trackId = -1;
+  if (mode == 52) { o.w = d[4]; o.h = d[5]; o.area = d[6]; o.angle = d[7]; o.vertices = d[8]; o.trackId = d[9]; }
+  return true;
+}
+
+// Number of objects in view, 0~8 (modes 51/52)
+int16_t ucObjectCount(uint8_t mode) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0) return MBC_NONE;
+  return mbcRead(ADDR, 0x10 + 8 * k);
+}
+
+// Shape number -> name: 0 other 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid
+const char *ucShapeName(int16_t s) {
+  switch (s) {
+    case 0: return "other";    case 1: return "circle";    case 2: return "ellipse";  case 3: return "triangle";
+    case 4: return "square";   case 5: return "rectangle"; case 6: return "pentagon"; case 7: return "hexagon";
+    case 8: return "star";     case 9: return "trapezoid";
+  }
+  return "?";
+}
+
+// Hue code -> colour number: 1 red 2 orange 3 yellow 4 green 5 cyan 6 blue 7 purple 8 white/grey 9 black
+uint8_t ucColorCode(int16_t h) {
+  if (h > 248) return 9;
+  if (h > 240) return 8;
+  if (h < 12 || h >= 220) return 1;
+  if (h < 28) return 2;
+  if (h < 56) return 3;
+  if (h < 100) return 4;
+  if (h < 140) return 5;
+  if (h < 180) return 6;
+  return 7;
+}
+// ==== MBC_UNICAM_HELPERS_END ====
+```
+
+**You will see:** lines like `Objects 3: [13 triangle] [21 circle] [23 triangle]`, followed by `-> the biggest red triangle is object 1 X=40 Y=60: turn left`; take the red triangle away and it prints `no red triangle: spin to search`.
+
+**Try it:**
+- Set `WANT` to 14 for a square, 11 for a circle, or 23 for a triangle of target 2.
+- The triangle is read as another shape (see the "colour shape" label next to each object on the camera screen) → set the shape of target 1 to Tri on the camera, or raise **ShapeTol** in the SET menu.
+- Want motors? Replace the "turn left / turn right" lines with `drive()` from example 5 and steer with `error`.
 
 ---
 

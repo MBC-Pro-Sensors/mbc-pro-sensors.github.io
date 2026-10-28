@@ -39,8 +39,53 @@
 | 座標取色 ①／②／③ | 20 點色相／10 點色相＋飽和／6 點色相＋飽和＋明度 |
 | 照順序給色號 | 18 塊色相碼＋總塊數 |
 | 循線 | 14 個值（偏移、角度、線寬、路口…） |
+| 物體偵測 ① 物體清單／② 物體詳細 | 4 個物體代碼＋面積、XY＋物體數／3 個物體再加寬高（下面一節） |
 
 每一格放什麼看 [讀值參考：MATRIX](/sensors/unicam/reference.md#host-mx)。
+
+## 相機模式 5 物體偵測
+
+相機把畫面裡的物體由大到小排好（物體 1 最大），每個物體給**物體代碼＝色號 × 10 ＋ 形狀**（例 13＝目標 1 的三角形，0＝沒有）。形狀：0 其他、1 圓、2 橢圓、3 三角、4 正方、5 長方、6 五邊、7 六邊、8 星、9 梯形。X、Y 是物體的**質心**；只看目標色 1～8。模式編號 **51＝① 物體清單**、**52＝② 物體詳細**。代碼再拆：色號＝代碼 ÷ 10（取整數）、形狀＝代碼除以 10 的餘數。
+
+| 積木 | 51 物體清單（4 個） | 52 物體詳細（3 個） |
+| :--- | :--- | :--- |
+| mVision 資料 0 | 物體數（不用拆） | 物體數（不用拆） |
+| 物體 i 第 1 格 | 資料 2i−1：代碼＝餘數（÷256）、面積 %＝÷256 取整數 | 資料 3i−2：代碼、面積 % |
+| 物體 i 第 2 格 | 資料 2i：X＝餘數、Y＝÷256 | 資料 3i−1：X、Y |
+| 物體 i 第 3 格 | — | 資料 3i：寬＝餘數、高＝÷256（像素） |
+
+51 的資料 9 不用。MATRIX 不給角度、頂點數、追蹤編號（要這些用 I2C 版）。在 MATRIXblock 用「數學」的除法、取餘數積木拆；C++ 這樣讀物體 1：
+
+```cpp
+#include <MatrixMiniR4.h>
+unsigned int CamData[10];                // mVision 的 10 格（資料 0～9）
+
+void setup() {
+  MiniR4.begin();
+  MiniR4.Vision.Begin();                 // 開始收 mVision（Serial1 115200）
+  Serial.begin(115200);
+}
+
+void loop() {
+  if (MiniR4.Vision.SmartCamReader(CamData) > 0) {   // 相機切在 物體偵測 ① 物體清單（51）
+    int n = CamData[0];                  // 資料 0：物體數
+    int code = CamData[1] % 256;         // 資料 1 餘數：物體 1 代碼（色號 × 10 ＋ 形狀）
+    int area = CamData[1] / 256;         // 資料 1 ÷256：物體 1 面積 %
+    int x = CamData[2] % 256;            // 資料 2 餘數：物體 1 X
+    int y = CamData[2] / 256;            // 資料 2 ÷256：物體 1 Y
+    Serial.print("物體數 "); Serial.print(n);
+    Serial.print("  物體 1 代碼 "); Serial.print(code);
+    Serial.print(" 色號 "); Serial.print(code / 10);
+    Serial.print(" 形狀 "); Serial.print(code % 10);
+    Serial.print(" X "); Serial.print(x);
+    Serial.print(" Y "); Serial.print(y);
+    Serial.print(" 面積 "); Serial.println(area);
+  }
+  delay(50);
+}
+```
+
+範例裡的小幫手 `ucObject(mode, i, o)`、`ucObjectCount(mode)`、`ucShapeName(s)` 已經包好這些，看 [MATRIX 範例 3](/sensors/unicam/matrix-examples.md)。
 
 ## 逐格對照與範例
 

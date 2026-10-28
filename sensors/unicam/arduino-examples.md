@@ -8,7 +8,7 @@
 > [!WARNING]
 > **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
 
-這一頁有 **5 個範例**：確認接好、顏色追蹤、座標取色、照順序給色號（WRO 顏色順序）、循線小車。每個範例都可以直接複製、上傳，程式裡每一行都有中文說明。**完全沒寫過程式也沒關係**，照順序一個一個做就好。
+這一頁有 **6 個範例**：確認接好、顏色追蹤、座標取色、照順序給色號（WRO 顏色順序）、循線小車、物體偵測（找紅色三角形）。每個範例都可以直接複製、上傳，程式裡每一行都有中文說明。**完全沒寫過程式也沒關係**，照順序一個一個做就好。
 
 > [!TIP]
 > 第一次用 Arduino？先看 [🔰 第一次用 Arduino：從零開始](/sensors/arduino-start.md)，15 分鐘學會安裝軟體、上傳程式、看結果。
@@ -50,6 +50,10 @@
 | 21／22／23 | 2 座標取色 ①／②／③ | 色相／＋飽和／＋明度 | 3 |
 | 30 | 3 照順序給色號 | 由左到右每塊的色相碼＋總塊數 | 4 |
 | 41／42／43 | 4 循線 黑線／白線／色線 | 近中遠偏移、角度、路口…14 個值 | 5 |
+| 51 | 5 物體偵測 ① 物體清單 | 8 個物體：色號、形狀、X、Y＋物體數 | 6 |
+| 52 | 5 物體偵測 ② 物體詳細 | 8 個物體：色號、形狀、X、Y、寬、高、面積、角度、頂點數、追蹤編號＋物體數 | — |
+| 51 | 5 物體偵測 ① 物體清單 | 8 個物體：色號、形狀、X、Y＋物體數 | 6 |
+| 52 | 5 物體偵測 ② 物體詳細 | 8 個物體：色號、形狀、X、Y、寬、高、面積、角度、頂點數、追蹤編號＋物體數 | — |
 
 ---
 
@@ -59,7 +63,7 @@
 
 | 編號 | 名稱 | 範圍 | 說明 |
 | :---: | :--- | :--- | :--- |
-| `01` | 模式編號 | 11～43 | 相機模式 × 10 ＋ 子選項（照順序給色號＝30） |
+| `01` | 模式編號 | 11～52 | 相機模式 × 10 ＋ 子選項（照順序給色號＝30、物體偵測＝51／52） |
 | `02` | 子選項 | 0～4 | |
 | `03` | 已教幾色 | 0～16 | |
 | `04` | 這一層給幾個值 | | 例：模式 13 給 65 個（16 色 × 4 ＋ 找到幾色） |
@@ -67,7 +71,7 @@
 | `F0` | 裝置 ID | | 低 byte＝`0x4C`、高 byte **hw0＝3（目前的神攝手）**；學校版 1、WRO 版 2 |
 | `F1` | 協議版本 | 2 | |
 | `F2` | 韌體版本 | 100 | 主 × 100 ＋ 次（100 ＝ 1.0） |
-| `F3` | 狀態旗標 | bit | bit0＝準備好（`mbcWaitReady` 用它） |
+| `F3` | 狀態旗標 | bit | bit0＝準備好（`mbcWaitReady` 用它）、bit1＝目前模式有找到東西（物體偵測＝物體數 > 0） |
 
 **`10` 起的排法**（第 c 色、第 p 點都從 1 起算）：
 
@@ -79,17 +83,23 @@
 | 14 | 每色 6 格：X、Y、寬、高、數量、面積 % | `70`＝找到幾色 |
 | 21／22／23 | 每點 1／2／3 格：色相碼（、飽和度、明度） | — |
 | 30 | `10`～`1F`＝左起第 1～16 塊色相碼 | `20`＝總塊數 |
+| 51 | 每個物體 4 格：`10+4(i−1)`＝色號、＋1＝形狀、＋2＝X、＋3＝Y（物體 1～8，1＝面積最大） | `30`＝物體數 |
+| 52 | 每個物體 10 格：色號、形狀、X、Y、寬、高、面積 %、角度 0～179、頂點數、追蹤編號 1～255 | `60`＝物體數 |
+| 51 | 每個物體 4 格：`10+4(i−1)`＝色號、＋1＝形狀、＋2＝X、＋3＝Y（物體 1～8，1＝面積最大） | `30`＝物體數 |
+| 52 | 每個物體 10 格：色號、形狀、X、Y、寬、高、面積 %、角度 0～179、頂點數、追蹤編號 1～255 | `60`＝物體數 |
 | 41～43 | `10` 近處偏移、`11` 中段、`12` 遠處、`13` 角度、`14` 近處線寬 %、`15` 有線旗標（近 1＋中 2＋遠 4）、`16` 路口類型（0 無 1 十字 2 T 3 左 4 右 5 盡頭）、`17` 路口距離 %、`18` 左緣、`19` 右緣、`1A` 遠處線寬 %、`1B` 標記線色號、`1C` 標記條數、`1D` 最後離線方向（0 有線 1 左 2 右） | — |
 
 - **座標**：X 0～159（左 → 右）、Y 0～119（上 → 下），**0＝沒找到**（找到時至少是 1）。
 - **色相碼** 0～255：0～240 彩色（紅 0／240、黃 40、綠 80、青 120、藍 160、紫 200）、241～248 白／灰、249～255 黑。
 - **偏移、角度、左右緣** 有正負：**線在左＝負**（站在車子後面往前看）。
+- **物體（51／52）**：物體代碼＝**色號 × 10 ＋ 形狀**（例 13＝目標 1 的三角形，0＝沒有）；形狀 0 其他、1 圓、2 橢圓、3 三角、4 正方、5 長方、6 五邊、7 六邊、8 星、9 梯形。X、Y 是質心；寬高＝外框；角度＝長邊往右 0、往畫面下方轉為正；頂點數 三角 3、四邊形 4、五邊 5、六邊 6、星 10、圓 0。只看目標色 1～8。
+- **物體（51／52）**：物體代碼＝**色號 × 10 ＋ 形狀**（例 13＝目標 1 的三角形，0＝沒有）；形狀 0 其他、1 圓、2 橢圓、3 三角、4 正方、5 長方、6 五邊、7 六邊、8 星、9 梯形。X、Y 是質心；寬高＝外框；角度＝長邊往右 0、往畫面下方轉為正；頂點數 三角 3、四邊形 4、五邊 5、六邊 6、星 10、圓 0。只看目標色 1～8。
 
 **寫入命令：**
 
 | 命令 | 參數 | 做什麼 |
 | :---: | :--- | :--- |
-| `E0` | [相機模式 1～4, 子選項] | 切模式（存進相機，斷電也記得） |
+| `E0` | [相機模式 1～5, 子選項] | 切模式（存進相機，斷電也記得）；物體偵測 [5, 1]／[5, 2] |
 | `E1` | [第幾點 1～20, X 0～159, Y 0～119] | 改座標取色的取樣點位置（存進相機） |
 
 > [!NOTE]
@@ -103,7 +113,7 @@
 
 | 小幫手 | 做什麼 | 需要的模式 |
 | :--- | :--- | :---: |
-| `ucSetMode(相機模式, 子選項)` | E0 切模式（照順序給色號填 `ucSetMode(3, 0)`） | 全部 |
+| `ucSetMode(相機模式, 子選項)` | E0 切模式（照順序給色號填 `ucSetMode(3, 0)`、物體偵測 `ucSetMode(5, 1)`） | 全部 |
 | `ucSetPoint(第幾點, X, Y)` | E1 移動取樣點 | 21～23 |
 | `ucModeNumber()` | 讀目前的模式編號（例 13） | 全部 |
 | `ucReadBlob(模式, 第幾色, b)` | 讀一色 → `UcBlob b`：`b.x`、`b.y`、`b.w`、`b.h`、`b.count`、`b.area`（這個模式沒給的是 -1） | 11～14 |
@@ -111,6 +121,12 @@
 | `ucReadSpot(模式, 第幾點, s)` | 讀一點 → `UcSpot s`：`s.h`、`s.s`、`s.v`（沒給的是 -1） | 21～23 |
 | `ucReadOrder(陣列, 最多幾個, total)` | 由左到右的色相碼放進陣列，回傳放了幾個；`total`＝總塊數 | 30 |
 | `ucReadLine(l)` | 一次讀 14 個 → `UcLine l`：`nearOff`、`midOff`、`farOff`、`angle`、`width`、`flags`、`junction`、`junctionDist`、`leftEdge`、`rightEdge`、`farWidth`、`marker`、`markerCount`、`lost` | 41～43 |
+| `ucReadObject(模式, 第幾個, o)` | 讀物體 1～8（1＝最大）→ `UcObject o`：`o.code`（色號×10＋形狀，0＝沒有）、`o.color`、`o.shape`、`o.x`、`o.y`、`o.w`、`o.h`、`o.area`、`o.angle`、`o.vertices`、`o.trackId`（模式 51 沒給的是 -1） | 51、52 |
+| `ucObjectCount(模式)` | 畫面裡有幾個物體 0～8 | 51、52 |
+| `ucShapeName(形狀)` | 形狀 0～9 → `"other"` `"circle"` `"ellipse"` `"triangle"` `"square"` `"rectangle"` `"pentagon"` `"hexagon"` `"star"` `"trapezoid"` | 任何 |
+| `ucReadObject(模式, 第幾個, o)` | 讀物體 1～8（1＝最大）→ `UcObject o`：`o.code`（色號×10＋形狀，0＝沒有）、`o.color`、`o.shape`、`o.x`、`o.y`、`o.w`、`o.h`、`o.area`、`o.angle`、`o.vertices`、`o.trackId`（模式 51 沒給的是 -1） | 51、52 |
+| `ucObjectCount(模式)` | 畫面裡有幾個物體 0～8 | 51、52 |
+| `ucShapeName(形狀)` | 形狀 0～9 → `"other"` `"circle"` `"ellipse"` `"triangle"` `"square"` `"rectangle"` `"pentagon"` `"hexagon"` `"star"` `"trapezoid"` | 任何 |
 | `ucColorCode(色相碼)` | 色相碼 → 顏色代號：1 紅 2 橙 3 黃 4 綠 5 青 6 藍 7 紫 8 白／灰 9 黑 | 任何 |
 | `mbcRead`／`mbcReadMany`／`mbcWaitReady` | 直接讀編號、等相機開機 | 任何 |
 
@@ -128,9 +144,11 @@
 | 3 | [這是什麼顏色？](#ex3) | 2 座標取色 ③（23） | E1 移動取樣點、色相碼 → 顏色名稱 | 幾塊彩色積木 |
 | 4 | [顏色順序（WRO）](#ex4) | 3 照順序給色號（30） | 由左到右每塊的顏色＋總塊數 | 一排顏色方塊 |
 | 5 | [看前方的循線小車（進階）](#ex5) | 4 循線 ① 黑線（41） | 近／遠偏移 PD 循線、路口停車 | 兩輪小車、L298N |
+| 6 | [找紅色三角形（物體偵測）](#ex6) | 5 物體偵測 ① 物體清單（51） | 物體代碼＝色號×10＋形狀、由大到小找、形狀名稱 | 紅色三角形和別的形狀 |
+| 6 | [找紅色三角形（物體偵測）](#ex6) | 5 物體偵測 ① 物體清單（51） | 物體代碼＝色號×10＋形狀、由大到小找、形狀名稱 | 紅色三角形和別的形狀 |
 
 > [!TIP]
-> **建議順序：1 → 2 → 3 → 4 → 5。** 每換一個範例，程式開頭會自動把相機切到需要的模式。
+> **建議順序：1 → 2 → 3 → 4 → 5 → 6。** 每換一個範例，程式開頭會自動把相機切到需要的模式。
 
 ---
 
@@ -162,7 +180,7 @@
  *   4. 之後每秒印一次目前的模式編號（你在相機選單換模式，這裡也會跟著變）
  *
  * 模式編號 = 相機模式 × 10 + 子選項：
- *   11~14 顏色追蹤、21~23 座標取色、30 照順序給色號、41~43 循線
+ *   11~14 顏色追蹤、21~23 座標取色、30 照順序給色號、41~43 循線、51／52 物體偵測
  *
  * 你需要：神攝手（I2C 版韌體）、Arduino UNO／Nano／UNO R4 或 ESP32。
  *
@@ -189,6 +207,9 @@ struct UcSpot { int16_t h, s, v; };
 // 循線 14 個值（近／中／遠偏移 -100~100：線在左 = 負）
 struct UcLine { int16_t nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,
                 leftEdge, rightEdge, farWidth, marker, markerCount, lost; };
+// 一個物體（模式 51／52）：code 物體代碼＝色號×10＋形狀（0 = 沒有）、color 色號 1~8、shape 形狀 0~9、
+// x、y 質心像素、w、h 外框像素、area 面積 %、angle 角度 0~179、vertices 頂點數、trackId 追蹤編號 1~255；模式 51 沒給的是 -1
+struct UcObject { int16_t code, color, shape, x, y, w, h, area, angle, vertices, trackId; };
 // ==== MBC_UNICAM_TOP_END ====
 
 unsigned long lastPrint = 0;
@@ -300,7 +321,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 
 // ---------- 神攝手 ----------
 
-// 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）。會存進相機
+// 切相機模式（E0）：camMode 1~5、sub 子選項（照順序給色號填 0；物體偵測 1 清單、2 詳細）。會存進相機
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
   uint8_t p[2] = { camMode, sub };
   bool ok = mbcWrite(ADDR, 0xE0, p, 2);
@@ -383,6 +404,43 @@ bool ucReadLine(UcLine &l) {
   return true;
 }
 
+// 物體偵測（模式 51／52）每個物體佔幾個值：51 → 4（色號 形狀 X Y）、52 → 10（再加 寬 高 面積 角度 頂點數 追蹤編號）
+uint8_t ucObjStride(uint8_t mode) {
+  if (mode == 51) return 4;
+  if (mode == 52) return 10;
+  return 0;
+}
+
+// 讀物體 i（1~8，1 = 面積最大）；mode = 51 或 52。讀到回傳 true
+bool ucReadObject(uint8_t mode, uint8_t i, UcObject &o) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0 || i < 1 || i > 8) return false;
+  int16_t d[10];
+  if (!mbcReadMany(ADDR, 0x10 + (i - 1) * k, k, d)) return false;
+  o.color = d[0]; o.shape = d[1]; o.x = d[2]; o.y = d[3];
+  o.code = (d[0] > 0) ? d[0] * 10 + d[1] : 0;
+  o.w = -1; o.h = -1; o.area = -1; o.angle = -1; o.vertices = -1; o.trackId = -1;
+  if (mode == 52) { o.w = d[4]; o.h = d[5]; o.area = d[6]; o.angle = d[7]; o.vertices = d[8]; o.trackId = d[9]; }
+  return true;
+}
+
+// 畫面裡有幾個物體 0~8（模式 51／52）
+int16_t ucObjectCount(uint8_t mode) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0) return MBC_NONE;
+  return mbcRead(ADDR, 0x10 + 8 * k);
+}
+
+// 形狀編號 → 英文名稱：0 other 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid
+const char *ucShapeName(int16_t s) {
+  switch (s) {
+    case 0: return "other";    case 1: return "circle";    case 2: return "ellipse";  case 3: return "triangle";
+    case 4: return "square";   case 5: return "rectangle"; case 6: return "pentagon"; case 7: return "hexagon";
+    case 8: return "star";     case 9: return "trapezoid";
+  }
+  return "?";
+}
+
 // 色相碼 → 顏色代號：1 紅 2 橙 3 黃 4 綠 5 青 6 藍 7 紫 8 白／灰 9 黑
 uint8_t ucColorCode(int16_t h) {
   if (h > 248) return 9;
@@ -462,6 +520,9 @@ struct UcSpot { int16_t h, s, v; };
 // 循線 14 個值（近／中／遠偏移 -100~100：線在左 = 負）
 struct UcLine { int16_t nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,
                 leftEdge, rightEdge, farWidth, marker, markerCount, lost; };
+// 一個物體（模式 51／52）：code 物體代碼＝色號×10＋形狀（0 = 沒有）、color 色號 1~8、shape 形狀 0~9、
+// x、y 質心像素、w、h 外框像素、area 面積 %、angle 角度 0~179、vertices 頂點數、trackId 追蹤編號 1~255；模式 51 沒給的是 -1
+struct UcObject { int16_t code, color, shape, x, y, w, h, area, angle, vertices, trackId; };
 // ==== MBC_UNICAM_TOP_END ====
 
 const uint8_t MODE = 13;                 // 模式編號 13 = 顏色追蹤 ③ 標準（每色 X、Y、面積、數量）
@@ -569,7 +630,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 
 // ---------- 神攝手 ----------
 
-// 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）。會存進相機
+// 切相機模式（E0）：camMode 1~5、sub 子選項（照順序給色號填 0；物體偵測 1 清單、2 詳細）。會存進相機
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
   uint8_t p[2] = { camMode, sub };
   bool ok = mbcWrite(ADDR, 0xE0, p, 2);
@@ -652,6 +713,43 @@ bool ucReadLine(UcLine &l) {
   return true;
 }
 
+// 物體偵測（模式 51／52）每個物體佔幾個值：51 → 4（色號 形狀 X Y）、52 → 10（再加 寬 高 面積 角度 頂點數 追蹤編號）
+uint8_t ucObjStride(uint8_t mode) {
+  if (mode == 51) return 4;
+  if (mode == 52) return 10;
+  return 0;
+}
+
+// 讀物體 i（1~8，1 = 面積最大）；mode = 51 或 52。讀到回傳 true
+bool ucReadObject(uint8_t mode, uint8_t i, UcObject &o) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0 || i < 1 || i > 8) return false;
+  int16_t d[10];
+  if (!mbcReadMany(ADDR, 0x10 + (i - 1) * k, k, d)) return false;
+  o.color = d[0]; o.shape = d[1]; o.x = d[2]; o.y = d[3];
+  o.code = (d[0] > 0) ? d[0] * 10 + d[1] : 0;
+  o.w = -1; o.h = -1; o.area = -1; o.angle = -1; o.vertices = -1; o.trackId = -1;
+  if (mode == 52) { o.w = d[4]; o.h = d[5]; o.area = d[6]; o.angle = d[7]; o.vertices = d[8]; o.trackId = d[9]; }
+  return true;
+}
+
+// 畫面裡有幾個物體 0~8（模式 51／52）
+int16_t ucObjectCount(uint8_t mode) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0) return MBC_NONE;
+  return mbcRead(ADDR, 0x10 + 8 * k);
+}
+
+// 形狀編號 → 英文名稱：0 other 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid
+const char *ucShapeName(int16_t s) {
+  switch (s) {
+    case 0: return "other";    case 1: return "circle";    case 2: return "ellipse";  case 3: return "triangle";
+    case 4: return "square";   case 5: return "rectangle"; case 6: return "pentagon"; case 7: return "hexagon";
+    case 8: return "star";     case 9: return "trapezoid";
+  }
+  return "?";
+}
+
 // 色相碼 → 顏色代號：1 紅 2 橙 3 黃 4 綠 5 青 6 藍 7 紫 8 白／灰 9 黑
 uint8_t ucColorCode(int16_t h) {
   if (h > 248) return 9;
@@ -725,6 +823,9 @@ struct UcSpot { int16_t h, s, v; };
 // 循線 14 個值（近／中／遠偏移 -100~100：線在左 = 負）
 struct UcLine { int16_t nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,
                 leftEdge, rightEdge, farWidth, marker, markerCount, lost; };
+// 一個物體（模式 51／52）：code 物體代碼＝色號×10＋形狀（0 = 沒有）、color 色號 1~8、shape 形狀 0~9、
+// x、y 質心像素、w、h 外框像素、area 面積 %、angle 角度 0~179、vertices 頂點數、trackId 追蹤編號 1~255；模式 51 沒給的是 -1
+struct UcObject { int16_t code, color, shape, x, y, w, h, area, angle, vertices, trackId; };
 // ==== MBC_UNICAM_TOP_END ====
 
 const uint8_t MODE = 23;                 // 模式編號 23 = 座標取色 ③（色相＋飽和＋明度）
@@ -840,7 +941,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 
 // ---------- 神攝手 ----------
 
-// 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）。會存進相機
+// 切相機模式（E0）：camMode 1~5、sub 子選項（照順序給色號填 0；物體偵測 1 清單、2 詳細）。會存進相機
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
   uint8_t p[2] = { camMode, sub };
   bool ok = mbcWrite(ADDR, 0xE0, p, 2);
@@ -923,6 +1024,43 @@ bool ucReadLine(UcLine &l) {
   return true;
 }
 
+// 物體偵測（模式 51／52）每個物體佔幾個值：51 → 4（色號 形狀 X Y）、52 → 10（再加 寬 高 面積 角度 頂點數 追蹤編號）
+uint8_t ucObjStride(uint8_t mode) {
+  if (mode == 51) return 4;
+  if (mode == 52) return 10;
+  return 0;
+}
+
+// 讀物體 i（1~8，1 = 面積最大）；mode = 51 或 52。讀到回傳 true
+bool ucReadObject(uint8_t mode, uint8_t i, UcObject &o) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0 || i < 1 || i > 8) return false;
+  int16_t d[10];
+  if (!mbcReadMany(ADDR, 0x10 + (i - 1) * k, k, d)) return false;
+  o.color = d[0]; o.shape = d[1]; o.x = d[2]; o.y = d[3];
+  o.code = (d[0] > 0) ? d[0] * 10 + d[1] : 0;
+  o.w = -1; o.h = -1; o.area = -1; o.angle = -1; o.vertices = -1; o.trackId = -1;
+  if (mode == 52) { o.w = d[4]; o.h = d[5]; o.area = d[6]; o.angle = d[7]; o.vertices = d[8]; o.trackId = d[9]; }
+  return true;
+}
+
+// 畫面裡有幾個物體 0~8（模式 51／52）
+int16_t ucObjectCount(uint8_t mode) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0) return MBC_NONE;
+  return mbcRead(ADDR, 0x10 + 8 * k);
+}
+
+// 形狀編號 → 英文名稱：0 other 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid
+const char *ucShapeName(int16_t s) {
+  switch (s) {
+    case 0: return "other";    case 1: return "circle";    case 2: return "ellipse";  case 3: return "triangle";
+    case 4: return "square";   case 5: return "rectangle"; case 6: return "pentagon"; case 7: return "hexagon";
+    case 8: return "star";     case 9: return "trapezoid";
+  }
+  return "?";
+}
+
 // 色相碼 → 顏色代號：1 紅 2 橙 3 黃 4 綠 5 青 6 藍 7 紫 8 白／灰 9 黑
 uint8_t ucColorCode(int16_t h) {
   if (h > 248) return 9;
@@ -999,6 +1137,9 @@ struct UcSpot { int16_t h, s, v; };
 // 循線 14 個值（近／中／遠偏移 -100~100：線在左 = 負）
 struct UcLine { int16_t nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,
                 leftEdge, rightEdge, farWidth, marker, markerCount, lost; };
+// 一個物體（模式 51／52）：code 物體代碼＝色號×10＋形狀（0 = 沒有）、color 色號 1~8、shape 形狀 0~9、
+// x、y 質心像素、w、h 外框像素、area 面積 %、angle 角度 0~179、vertices 頂點數、trackId 追蹤編號 1~255；模式 51 沒給的是 -1
+struct UcObject { int16_t code, color, shape, x, y, w, h, area, angle, vertices, trackId; };
 // ==== MBC_UNICAM_TOP_END ====
 
 const uint8_t MAX_BLOCKS = 6;            // 👉 可以改：最多印幾塊（1~16）
@@ -1112,7 +1253,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 
 // ---------- 神攝手 ----------
 
-// 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）。會存進相機
+// 切相機模式（E0）：camMode 1~5、sub 子選項（照順序給色號填 0；物體偵測 1 清單、2 詳細）。會存進相機
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
   uint8_t p[2] = { camMode, sub };
   bool ok = mbcWrite(ADDR, 0xE0, p, 2);
@@ -1193,6 +1334,43 @@ bool ucReadLine(UcLine &l) {
   l.leftEdge = d[8]; l.rightEdge = d[9]; l.farWidth = d[10];
   l.marker = d[11]; l.markerCount = d[12]; l.lost = d[13];
   return true;
+}
+
+// 物體偵測（模式 51／52）每個物體佔幾個值：51 → 4（色號 形狀 X Y）、52 → 10（再加 寬 高 面積 角度 頂點數 追蹤編號）
+uint8_t ucObjStride(uint8_t mode) {
+  if (mode == 51) return 4;
+  if (mode == 52) return 10;
+  return 0;
+}
+
+// 讀物體 i（1~8，1 = 面積最大）；mode = 51 或 52。讀到回傳 true
+bool ucReadObject(uint8_t mode, uint8_t i, UcObject &o) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0 || i < 1 || i > 8) return false;
+  int16_t d[10];
+  if (!mbcReadMany(ADDR, 0x10 + (i - 1) * k, k, d)) return false;
+  o.color = d[0]; o.shape = d[1]; o.x = d[2]; o.y = d[3];
+  o.code = (d[0] > 0) ? d[0] * 10 + d[1] : 0;
+  o.w = -1; o.h = -1; o.area = -1; o.angle = -1; o.vertices = -1; o.trackId = -1;
+  if (mode == 52) { o.w = d[4]; o.h = d[5]; o.area = d[6]; o.angle = d[7]; o.vertices = d[8]; o.trackId = d[9]; }
+  return true;
+}
+
+// 畫面裡有幾個物體 0~8（模式 51／52）
+int16_t ucObjectCount(uint8_t mode) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0) return MBC_NONE;
+  return mbcRead(ADDR, 0x10 + 8 * k);
+}
+
+// 形狀編號 → 英文名稱：0 other 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid
+const char *ucShapeName(int16_t s) {
+  switch (s) {
+    case 0: return "other";    case 1: return "circle";    case 2: return "ellipse";  case 3: return "triangle";
+    case 4: return "square";   case 5: return "rectangle"; case 6: return "pentagon"; case 7: return "hexagon";
+    case 8: return "star";     case 9: return "trapezoid";
+  }
+  return "?";
 }
 
 // 色相碼 → 顏色代號：1 紅 2 橙 3 黃 4 綠 5 青 6 藍 7 紫 8 白／灰 9 黑
@@ -1287,6 +1465,9 @@ struct UcSpot { int16_t h, s, v; };
 // 循線 14 個值（近／中／遠偏移 -100~100：線在左 = 負）
 struct UcLine { int16_t nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,
                 leftEdge, rightEdge, farWidth, marker, markerCount, lost; };
+// 一個物體（模式 51／52）：code 物體代碼＝色號×10＋形狀（0 = 沒有）、color 色號 1~8、shape 形狀 0~9、
+// x、y 質心像素、w、h 外框像素、area 面積 %、angle 角度 0~179、vertices 頂點數、trackId 追蹤編號 1~255；模式 51 沒給的是 -1
+struct UcObject { int16_t code, color, shape, x, y, w, h, area, angle, vertices, trackId; };
 // ==== MBC_UNICAM_TOP_END ====
 
 // ---- 馬達接腳 ----
@@ -1439,7 +1620,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 
 // ---------- 神攝手 ----------
 
-// 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）。會存進相機
+// 切相機模式（E0）：camMode 1~5、sub 子選項（照順序給色號填 0；物體偵測 1 清單、2 詳細）。會存進相機
 bool ucSetMode(uint8_t camMode, uint8_t sub) {
   uint8_t p[2] = { camMode, sub };
   bool ok = mbcWrite(ADDR, 0xE0, p, 2);
@@ -1522,6 +1703,43 @@ bool ucReadLine(UcLine &l) {
   return true;
 }
 
+// 物體偵測（模式 51／52）每個物體佔幾個值：51 → 4（色號 形狀 X Y）、52 → 10（再加 寬 高 面積 角度 頂點數 追蹤編號）
+uint8_t ucObjStride(uint8_t mode) {
+  if (mode == 51) return 4;
+  if (mode == 52) return 10;
+  return 0;
+}
+
+// 讀物體 i（1~8，1 = 面積最大）；mode = 51 或 52。讀到回傳 true
+bool ucReadObject(uint8_t mode, uint8_t i, UcObject &o) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0 || i < 1 || i > 8) return false;
+  int16_t d[10];
+  if (!mbcReadMany(ADDR, 0x10 + (i - 1) * k, k, d)) return false;
+  o.color = d[0]; o.shape = d[1]; o.x = d[2]; o.y = d[3];
+  o.code = (d[0] > 0) ? d[0] * 10 + d[1] : 0;
+  o.w = -1; o.h = -1; o.area = -1; o.angle = -1; o.vertices = -1; o.trackId = -1;
+  if (mode == 52) { o.w = d[4]; o.h = d[5]; o.area = d[6]; o.angle = d[7]; o.vertices = d[8]; o.trackId = d[9]; }
+  return true;
+}
+
+// 畫面裡有幾個物體 0~8（模式 51／52）
+int16_t ucObjectCount(uint8_t mode) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0) return MBC_NONE;
+  return mbcRead(ADDR, 0x10 + 8 * k);
+}
+
+// 形狀編號 → 英文名稱：0 other 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid
+const char *ucShapeName(int16_t s) {
+  switch (s) {
+    case 0: return "other";    case 1: return "circle";    case 2: return "ellipse";  case 3: return "triangle";
+    case 4: return "square";   case 5: return "rectangle"; case 6: return "pentagon"; case 7: return "hexagon";
+    case 8: return "star";     case 9: return "trapezoid";
+  }
+  return "?";
+}
+
 // 色相碼 → 顏色代號：1 紅 2 橙 3 黃 4 綠 5 青 6 藍 7 紫 8 白／灰 9 黑
 uint8_t ucColorCode(int16_t h) {
   if (h > 248) return 9;
@@ -1543,6 +1761,318 @@ uint8_t ucColorCode(int16_t h) {
 - 修不回來就把 `KP` 加大；左右搖擺越來越大就把 `KD` 加大、`KP` 減小。
 - 還沒到路口就停 → `JUNCTION_NEAR` 改小；衝過頭才停 → 改大。
 - v1 還沒上機，這些數字都是建議值，請在你的場地調。
+
+---
+
+<h2 id="ex6">6️⃣ 找紅色三角形（物體偵測）</h2>
+
+**需要的相機模式：** 相機模式 5 物體偵測・子選項 ① 物體清單（程式開頭會用 E0 自動切；要大小、角度改 `ucSetMode(5, 2)`、`MODE = 52`）
+
+**做什麼：** 相機把畫面裡的物體由大到小排好（物體 1 最大），每個物體給「物體代碼」＝色號 × 10 ＋ 形狀。這支每 0.2 秒印出每個物體的代碼和形狀名稱，再從最大的往下找「目標 1（紅色）的三角形」＝代碼 **13**，告訴你要往左轉、往右轉還是往前開。
+
+**步驟：**
+1. 在相機上把「目標 1」教成紅色（形狀可以不指定，相機會自己判斷；只有目標 1～8 會當成物體）。
+2. 上傳程式、打開序列埠監控窗（115200）。
+3. 把紅色三角形和其他形狀（紅色圓形、藍色三角形…）放到鏡頭前左右移動。
+
+<a href="/examples/unicam/arduino/unicam_06_object/unicam_06_object.ino" download data-ignore="true">📄 下載 unicam_06_object.ino</a>
+
+<!-- ino: examples/unicam/arduino/unicam_06_object/unicam_06_object.ino -->
+```cpp
+/*
+ * 神攝手 × Arduino　範例 6：找紅色三角形（物體偵測）
+ * ------------------------------------------------------------
+ * 需要把相機選單切到：相機模式 5 物體偵測 ・子選項 ① 物體清單（程式開頭也會用 E0 自動切）
+ *
+ * 這個範例會做什麼？
+ *   相機把畫面裡的物體由大到小排好（物體 1 最大），每個物體給「物體代碼」＝色號 × 10 ＋ 形狀。
+ *   每 0.2 秒印出畫面裡每個物體的代碼和形狀名稱，再從最大的往下找「目標 1（紅色）的三角形」＝代碼 13，
+ *   告訴你要往左轉、往右轉還是往前開。
+ *   形狀：0 其他 1 圓 2 橢圓 3 三角 4 正方 5 長方 6 五邊 7 六邊 8 星 9 梯形。
+ *   X 0~159（左 → 右）、Y 0~119（上 → 下）是物體的質心。
+ *
+ * 準備：在相機上把「目標 1」教成紅色（形狀可以不指定，相機會自己判斷）。只有目標 1~8 會當成物體。
+ *
+ * 接線（I2C 腳位是暫定，等上機確認）：
+ *   神攝手 5V  → 外接 5V（2 A 以上的行動電源或變壓器；不要從 Arduino 的 5V 腳拉大電流）
+ *   神攝手 GND → Arduino GND（外接電源的 GND 也要接在一起）
+ *   神攝手 IO3（SDA）→ A4   神攝手 IO1（SCL）→ A5      （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
+ *   ※ 要燒「I2C 版」韌體。IO1/IO3 跟樂高串口版共用，韌體二選一。
+ *
+ * 怎麼看結果：打開「序列埠監控窗」（115200），把紅色三角形和別的形狀放到鏡頭前。
+ */
+
+#include <Wire.h>
+
+// ==== MBC_UNICAM_TOP_BEGIN ====
+const uint8_t ADDR = 0x4C;               // 神攝手的 I2C 位址（門牌號碼）
+const int16_t MBC_NONE = -32768;         // 「讀不到／沒有這個值」的代號
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);   // 小幫手的宣告（實作在最下面）
+// 一個色塊：x、y 像素（0 = 沒找到）、w、h 像素、count 塊數、area 面積 %；這個模式沒給的值是 -1
+struct UcBlob { int16_t x, y, w, h, count, area; };
+// 一個取樣點：h 色相碼 0~255、s 飽和度、v 明度 0~100；沒給的是 -1
+struct UcSpot { int16_t h, s, v; };
+// 循線 14 個值（近／中／遠偏移 -100~100：線在左 = 負）
+struct UcLine { int16_t nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,
+                leftEdge, rightEdge, farWidth, marker, markerCount, lost; };
+// 一個物體（模式 51／52）：code 物體代碼＝色號×10＋形狀（0 = 沒有）、color 色號 1~8、shape 形狀 0~9、
+// x、y 質心像素、w、h 外框像素、area 面積 %、angle 角度 0~179、vertices 頂點數、trackId 追蹤編號 1~255；模式 51 沒給的是 -1
+struct UcObject { int16_t code, color, shape, x, y, w, h, area, angle, vertices, trackId; };
+// ==== MBC_UNICAM_TOP_END ====
+
+const uint8_t MODE = 51;                 // 模式編號 51 = 物體偵測 ① 物體清單（8 個物體：色號、形狀、X、Y）
+const int16_t WANT = 1 * 10 + 3;         // 👉 可以改：目標 1 × 10 ＋ 形狀 3（三角）；正方形 14、圓 11
+unsigned long lastPrint = 0;
+
+void setup() {
+  Serial.begin(115200);
+  mbcBegin();
+  delay(500);
+  if (!mbcWaitReady(ADDR, 8000)) {        // 最多等 8 秒讓相機開機
+    Serial.println(F("找不到神攝手！請檢查："));
+    Serial.println(F(" 1. 相機有接外接 5V、GND 有跟 Arduino 接在一起"));
+    Serial.println(F(" 2. IO3 接 SDA、IO1 接 SCL（接反了就對調）"));
+    Serial.println(F(" 3. 相機燒的是「I2C 版」韌體"));
+    while (true) {}                      // 停在這裡
+  }
+  ucSetMode(5, 1);                       // E0：切到相機模式 5、子選項 1（物體清單）
+  Serial.println(F("準備好了！把紅色三角形放到鏡頭前。"));
+}
+
+void loop() {
+  if (millis() - lastPrint < 200) return; // 👉 可以改：每 0.2 秒印一次
+  lastPrint = millis();
+
+  int16_t n = ucObjectCount(MODE);       // 畫面裡有幾個物體 0~8
+  if (n == MBC_NONE) { Serial.println(F("讀不到神攝手")); return; }
+  Serial.print(F("物體數 ")); Serial.print(n); Serial.print(F("："));
+
+  uint8_t found = 0;                     // 第幾個物體是要找的（0 = 沒有）
+  UcObject target;
+  for (uint8_t i = 1; i <= 8 && i <= n; i++) {
+    UcObject o;
+    if (!ucReadObject(MODE, i, o)) { Serial.println(F("讀不到神攝手")); return; }
+    Serial.print(F(" [")); Serial.print(o.code);           // 例：13 = 目標 1 的三角形
+    Serial.print(' '); Serial.print(ucShapeName(o.shape));  // 形狀名稱（英文）
+    Serial.print(F("]"));
+    if (found == 0 && o.code == WANT) { found = i; target = o; }   // 物體 1 最大：第一個找到的就是最大的
+  }
+  Serial.println();
+
+  if (found == 0) {
+    Serial.println(F("  → 沒看到紅色三角形：原地轉著找"));
+    return;
+  }
+  int16_t error = target.x - 80;         // 畫面中間 X = 80；在右 → 正
+  Serial.print(F("  → 最大的紅色三角形是物體 ")); Serial.print(found);
+  Serial.print(F(" X=")); Serial.print(target.x);
+  Serial.print(F(" Y=")); Serial.print(target.y);
+  if (error < -20)      Serial.println(F("：往左轉"));      // 👉 可以改：±20 像素內算正前方
+  else if (error > 20)  Serial.println(F("：往右轉"));
+  else                  Serial.println(F("：正前方，往前開"));
+}
+
+// ==== MBC_UNICAM_HELPERS_BEGIN ====
+// ============================================================
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）＋「神攝手小幫手」。所有範例都一樣，不用改。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+// ============================================================
+
+// 開始 I2C 通訊（setup 裡呼叫一次）。UNO/Nano：SDA=A4、SCL=A5；ESP32：GPIO21／22
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // 線沒接好時不會卡住
+#endif
+}
+
+// 由編號 id 起連續讀 k 個值（1~16）放進 out；全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte）
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // 相機（ESP32）一定要等 2 ms 再讀
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();
+    uint16_t hi = Wire.read();
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// 讀一個值；讀不到回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]；成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// 等感應器準備好（F3 的 bit0 = 1），最多等 ms 毫秒
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+
+// ---------- 神攝手 ----------
+
+// 切相機模式（E0）：camMode 1~5、sub 子選項（照順序給色號填 0；物體偵測 1 清單、2 詳細）。會存進相機
+bool ucSetMode(uint8_t camMode, uint8_t sub) {
+  uint8_t p[2] = { camMode, sub };
+  bool ok = mbcWrite(ADDR, 0xE0, p, 2);
+  delay(50);                             // 給相機一點時間換模式
+  return ok;
+}
+
+// 改取樣點位置（E1）：n 第幾點 1~20、x 0~159、y 0~119。會存進相機
+bool ucSetPoint(uint8_t n, uint8_t x, uint8_t y) {
+  uint8_t p[3] = { n, x, y };
+  return mbcWrite(ADDR, 0xE1, p, 3);
+}
+
+// 相機目前的模式編號（例 13 = 顏色追蹤 ③）；讀不到回傳 MBC_NONE
+int16_t ucModeNumber() {
+  return mbcRead(ADDR, 0x01);
+}
+
+// 顏色追蹤（模式 11~14）每色佔幾個值 / values per colour
+uint8_t ucStride(uint8_t mode) {
+  if (mode == 11) return 2;              // X Y
+  if (mode == 12) return 3;              // X Y 數量
+  if (mode == 13) return 4;              // X Y 面積 數量
+  if (mode == 14) return 6;              // X Y 寬 高 數量 面積
+  return 0;
+}
+
+// 讀色 color（1~16）的色塊；mode = 你切的模式編號 11~14。讀到回傳 true
+bool ucReadBlob(uint8_t mode, uint8_t color, UcBlob &b) {
+  uint8_t k = ucStride(mode);
+  if (k == 0 || color < 1 || color > 16) return false;
+  int16_t d[6];
+  if (!mbcReadMany(ADDR, 0x10 + (color - 1) * k, k, d)) return false;
+  b.x = d[0]; b.y = d[1];
+  b.w = -1; b.h = -1; b.count = -1; b.area = -1;
+  if (mode == 12) b.count = d[2];
+  if (mode == 13) { b.area = d[2]; b.count = d[3]; }
+  if (mode == 14) { b.w = d[2]; b.h = d[3]; b.count = d[4]; b.area = d[5]; }
+  return true;
+}
+
+// 16 個目標色裡找到幾色（模式 11~14）
+int16_t ucColorsFound(uint8_t mode) {
+  uint8_t k = ucStride(mode);
+  if (k == 0) return MBC_NONE;
+  return mbcRead(ADDR, 0x10 + 16 * k);
+}
+
+// 讀取樣點 point（1~16）；mode = 21、22、23
+bool ucReadSpot(uint8_t mode, uint8_t point, UcSpot &p) {
+  if (mode < 21 || mode > 23 || point < 1 || point > 16) return false;
+  uint8_t k = mode - 20;                 // 21 → 1 個值、22 → 2、23 → 3
+  int16_t d[3];
+  if (!mbcReadMany(ADDR, 0x10 + (point - 1) * k, k, d)) return false;
+  p.h = d[0];
+  p.s = (k >= 2) ? d[1] : -1;
+  p.v = (k >= 3) ? d[2] : -1;
+  return true;
+}
+
+// 照順序給色號（模式 30）：hues 放由左到右每塊的色相碼（最多 maxN 個、≤16），回傳放了幾個；total = 總塊數
+uint8_t ucReadOrder(int16_t *hues, uint8_t maxN, int16_t &total) {
+  int16_t d[16];
+  total = mbcRead(ADDR, 0x20);
+  if (total == MBC_NONE || !mbcReadMany(ADDR, 0x10, 16, d)) { total = MBC_NONE; return 0; }
+  uint8_t n = (total < 16) ? (uint8_t)total : 16;
+  if (n > maxN) n = maxN;
+  for (uint8_t i = 0; i < n; i++) hues[i] = d[i];
+  return n;
+}
+
+// 循線（模式 41~43）：一次讀 14 個值
+bool ucReadLine(UcLine &l) {
+  int16_t d[14];
+  if (!mbcReadMany(ADDR, 0x10, 14, d)) return false;
+  l.nearOff = d[0]; l.midOff = d[1]; l.farOff = d[2]; l.angle = d[3];
+  l.width = d[4]; l.flags = d[5]; l.junction = d[6]; l.junctionDist = d[7];
+  l.leftEdge = d[8]; l.rightEdge = d[9]; l.farWidth = d[10];
+  l.marker = d[11]; l.markerCount = d[12]; l.lost = d[13];
+  return true;
+}
+
+// 物體偵測（模式 51／52）每個物體佔幾個值：51 → 4（色號 形狀 X Y）、52 → 10（再加 寬 高 面積 角度 頂點數 追蹤編號）
+uint8_t ucObjStride(uint8_t mode) {
+  if (mode == 51) return 4;
+  if (mode == 52) return 10;
+  return 0;
+}
+
+// 讀物體 i（1~8，1 = 面積最大）；mode = 51 或 52。讀到回傳 true
+bool ucReadObject(uint8_t mode, uint8_t i, UcObject &o) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0 || i < 1 || i > 8) return false;
+  int16_t d[10];
+  if (!mbcReadMany(ADDR, 0x10 + (i - 1) * k, k, d)) return false;
+  o.color = d[0]; o.shape = d[1]; o.x = d[2]; o.y = d[3];
+  o.code = (d[0] > 0) ? d[0] * 10 + d[1] : 0;
+  o.w = -1; o.h = -1; o.area = -1; o.angle = -1; o.vertices = -1; o.trackId = -1;
+  if (mode == 52) { o.w = d[4]; o.h = d[5]; o.area = d[6]; o.angle = d[7]; o.vertices = d[8]; o.trackId = d[9]; }
+  return true;
+}
+
+// 畫面裡有幾個物體 0~8（模式 51／52）
+int16_t ucObjectCount(uint8_t mode) {
+  uint8_t k = ucObjStride(mode);
+  if (k == 0) return MBC_NONE;
+  return mbcRead(ADDR, 0x10 + 8 * k);
+}
+
+// 形狀編號 → 英文名稱：0 other 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid
+const char *ucShapeName(int16_t s) {
+  switch (s) {
+    case 0: return "other";    case 1: return "circle";    case 2: return "ellipse";  case 3: return "triangle";
+    case 4: return "square";   case 5: return "rectangle"; case 6: return "pentagon"; case 7: return "hexagon";
+    case 8: return "star";     case 9: return "trapezoid";
+  }
+  return "?";
+}
+
+// 色相碼 → 顏色代號：1 紅 2 橙 3 黃 4 綠 5 青 6 藍 7 紫 8 白／灰 9 黑
+uint8_t ucColorCode(int16_t h) {
+  if (h > 248) return 9;
+  if (h > 240) return 8;
+  if (h < 12 || h >= 220) return 1;
+  if (h < 28) return 2;
+  if (h < 56) return 3;
+  if (h < 100) return 4;
+  if (h < 140) return 5;
+  if (h < 180) return 6;
+  return 7;
+}
+// ==== MBC_UNICAM_HELPERS_END ====
+```
+
+**你會看到：** `物體數 3： [13 triangle] [21 circle] [23 triangle]` 這樣的行，下面一行 `→ 最大的紅色三角形是物體 1 X=40 Y=60：往左轉`；拿走紅色三角形會印 `沒看到紅色三角形：原地轉著找`。
+
+**試試看：**
+- `WANT` 改成 14 找正方形、11 找圓；改成 23 找目標 2 的三角形。
+- 三角形被判成別的形狀（看相機畫面物體旁邊標的「色號 形狀」）→ 在相機上給目標 1 指定形狀 Tri，或在 SET 選單把 **ShapeTol** 調大。
+- 想接馬達：把「往左轉／往右轉」那幾行換成範例 5 的 `drive()`，用 `error` 算轉向。
 
 ---
 

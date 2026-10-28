@@ -8,7 +8,7 @@
 > [!WARNING]
 > **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
 
-這一頁是 **EV3 的 Python 範例 3 個**：跟著色塊轉、座標取色判斷顏色、PD 循線＋路口停車。同一支程式在 **Pybricks v4** 和 **樂高官方 EV3 MicroPython v2** 都能跑，函式庫 `MBC_UniCam_EV3.py` 會自己判斷。EV3-G、EV3 Classroom 用紅外線感應器積木讀，做法在 [EV3 讀法說明](/sensors/unicam/ev3/index.md)。
+這一頁是 **EV3 的 Python 範例 4 個**：跟著色塊轉、座標取色判斷顏色、PD 循線＋路口停車、物體偵測（跟著正方形走）。同一支程式在 **Pybricks v4** 和 **樂高官方 EV3 MicroPython v2** 都能跑，函式庫 `MBC_UniCam_EV3.py` 會自己判斷。EV3-G、EV3 Classroom 用紅外線感應器積木讀，做法在 [EV3 讀法說明](/sensors/unicam/ev3/index.md)。
 
 | 軟體 | 怎麼用 |
 |---|---|
@@ -38,8 +38,12 @@
 | 23 | 2 座標取色 ③ | 2 點原始色相碼、飽和、明度（模式 1） |
 | 30 | 3 照順序給色號 | 左起 11 塊色相（±2）＋總塊數（模式 1＋2） |
 | 41／42／43 | 4 循線 | 近中遠偏移、角度、線寬、路口、旗標、路口距離、標記色號（模式 1）；左右緣、遠線寬、標記條數（模式 2）；EV3 沒有離線方向 |
+| 51 | 5 物體偵測 ① 物體清單 | 5 個物體的代碼、位置（8×6 格）；物體 1～4 在模式 1，物體 5 和物體數在模式 2 |
+| 52 | 5 物體偵測 ② 物體詳細 | 2 個物體的代碼、位置、面積 %、角度（送 ÷2，函式庫 ×2 還原，±1 度）（全部在模式 1；沒有物體數、寬高） |
 
 **數字怎麼看**：函式庫把 EV3 的 8×6 格**換成像素**（X 0～159 左→右、Y 0～119 上→下，跟 SPIKE 一樣），是格子中心，誤差 ±10 像素；**(0, 0)＝沒找到**。要 EV3 原始的格子（Y 下＝小）用 `grid(c)`。循線偏移 −100～100，**站在車後往前看，線在左＝負**。
+
+**物體（模式 51／52）**：物體代碼＝**色號×10＋形狀**（例 14＝目標 1 的正方形），0＝沒有。形狀 0 其他、1 圓、2 橢圓、3 三角、4 正方、5 長方、6 五邊、7 六邊、8 星、9 梯形。物體 1、2…＝**面積由大到小**；位置是質心（同樣換成像素 ±10，原始格子用 `object_grid(i)`）。角度 0～179：長邊往右＝0，往畫面下方轉為正。
 
 ## 函式庫 MBC_UniCam_EV3.py 的方法
 
@@ -56,7 +60,12 @@
 | `order()`、`total()` | 左起每塊色相碼（≤11）、總塊數 | 30 |
 | `near()` `mid()` `far()` `angle()` `width()` `junction()` `flags()` `junction_dist()` | 循線（模式 1） | 41～43 |
 | `edges()`、`far_width()`、`marker()`、`line_all()` | 循線（要讀模式 2，會多 0.5 秒） | 41～43 |
+| `max_object()`、`object_count()` | 這個模式給幾個物體（51→5、52→2）、畫面裡幾個物體 0～8（51，讀模式 2） | 51、52／51 |
+| `object(i)`、`object_found(i)`、`object_color(i)`、`object_shape(i)` | 物體代碼（0＝沒有）、有沒有、色號 1～8、形狀 0～9 | 51、52 |
+| `object_xy(i)`、`object_grid(i)` | 質心（像素 ±10）、原始 8×6 格（Y 下＝小） | 51、52 |
+| `object_area(i)`、`object_angle(i)` | 面積 %、角度 0～179（±1） | 52 |
 | `device_id()`、`is_unicam()`、`sensor_ok()` | 模式 5：(0x4C, 3, 100)、True、最近有沒有讀到 | 全部 |
+| `shape_name(s, zh=False)`、`color_name(h)`（模組函式） | 形狀 0～9 → `'circle'`…（`zh=True` 中文）、色相碼 → 顏色名稱 | — |
 
 - EV3 讀不到的值（模式 11～13 的數量、找到幾色、離線方向）呼叫會丟 `ValueError`；模式不對也會丟，訊息中英並列。
 - 讀不到相機時回傳 `None`，範例都會先判斷 `None` 再用。
@@ -288,6 +297,103 @@ while True:
 **常見問題**
 - **很慢、一頓一頓？** → 迴圈裡用到 `edges()`、`far_width()`、`marker()`、`line_all()` 會換到模式 2（每次 0.5 秒），循線迴圈不要用。
 - **晃得厲害？** → `KP` 改小、`KD` 改大，或 `SPEED` 改慢。
+
+---
+
+## 範例 4：跟著正方形走、螢幕顯示角度
+
+**這個範例會做什麼**：在物體 1、2（面積最大的兩個）裡找「目標 1 的正方形」，轉過去往前開，EV3 螢幕顯示它轉了幾度；面積夠大（很近）就停車嗶一聲；看不到就原地慢慢轉著找。開頭會檢查相機是不是在模式 52。
+
+**相機要切到**：相機模式 5 物體偵測 ・子選項 ② 物體詳細＝**模式編號 52**；先教「目標 1」的顏色（例如藍色方塊）。
+
+**要準備什麼**：EV3 主機、相機插 **1 號孔**、左輪 **B**、右輪 **C**、目標色的正方形積木或紙板。
+
+**下載**：[ex04_object.py](/examples/unicam/ev3/ex04_object.py)＋[MBC_UniCam_EV3.py](/examples/unicam/ev3/MBC_UniCam_EV3.py)
+
+<details>
+<summary>🐍 Python 程式碼（Pybricks v4／EV3 MicroPython v2）</summary>
+
+```python
+#!/usr/bin/env pybricks-micropython
+# 神攝手 × EV3 範例 4：跟著正方形走、螢幕顯示它轉了幾度
+# Sharpshooter Vision × EV3 example 4: drive to a square and show its angle on the screen
+# 需要把相機選單切到 相機模式 5 物體偵測 ・子選項 ② 物體詳細＝模式編號 52
+# Camera menu: camera mode 5 Object detection, option 2 Object detail = mode number 52
+# 軟體 Software：Pybricks v4（code.pybricks.com）或 樂高官方 EV3 MicroPython v2（同一支程式都能跑）
+# 準備：在相機上教「目標 1」的顏色（例如藍色方塊）/ teach "target 1" on the camera (e.g. a blue block)
+# 接線 Wiring：相機 → 1 號孔 / camera → port 1；左輪 B、右輪 C / left wheel B, right wheel C
+# 同一個資料夾要有 MBC_UniCam_EV3.py / put MBC_UniCam_EV3.py in the same folder
+#
+# 物體代碼＝色號×10＋形狀：目標 1 的正方形＝1×10＋4＝14。EV3 模式 52 給 2 個物體（面積大的是物體 1），
+# 代碼、位置、面積、角度都在 EV3 模式 1，不用換模式（不會多等 0.5 秒）。
+# Object code = colour × 10 + shape: target 1 square = 14. EV3 mode 52 gives 2 objects (object 1 = largest);
+# code, position, area and angle are all in EV3 mode 1, so there is no 0.5 s mode switch.
+from pybricks.hubs import EV3Brick
+from pybricks.ev3devices import Motor
+from pybricks.parameters import Port
+from pybricks.robotics import DriveBase
+from pybricks.tools import wait
+from MBC_UniCam_EV3 import UniCam, shape_name
+
+ev3 = EV3Brick()
+cam = UniCam(Port.S1)                            # 不填 mode：自動讀相機目前的模式 / mode read from the camera
+left = Motor(Port.B)
+right = Motor(Port.C)
+robot = DriveBase(left, right, 56, 114)          # 輪徑 56 mm、輪距 114 mm / wheel 56 mm, axle 114 mm
+
+if cam.mode_number() != 52:                      # EV3 讀得到相機的模式，切錯了就提醒 / EV3 can check the mode
+    print('請把相機切到 模式 52（物體偵測 ② 物體詳細）/ please set the camera to mode 52')
+    ev3.speaker.beep(200, 500)
+    wait(3000)
+    raise SystemExit
+
+WANT = 1 * 10 + 4   # 👉 可以改：目標 1 × 10 ＋ 形狀 4（正方）；三角改成 13、圓改成 11 / triangle 13, circle 11
+KP = 3              # 👉 可以改：偏 1 像素就多轉幾度／秒 / turn rate per pixel of error
+STOP_AREA = 25      # 👉 可以改：面積 ≥ 25 % 就算到了 / area (%) that counts as "arrived"
+
+print('要找 looking for: 目標 target', WANT // 10, shape_name(WANT % 10, True), shape_name(WANT % 10))
+while True:
+    c1 = cam.object(1)                           # 物體 1（最大）的代碼 / code of object 1 (largest)
+    if c1 is None:                               # 讀不到相機 / no camera
+        robot.stop()
+        wait(100)
+        continue
+    if c1 == WANT:                               # 物體 1、2 裡哪一個是要找的（0＝都不是）/ which one we want
+        i = 1
+    elif cam.object(2) == WANT:
+        i = 2
+    else:
+        i = 0
+    if i == 0:                                 # 沒看到：原地慢慢轉著找 / not seen: spin to search
+        robot.drive(0, 60)
+        wait(20)
+        continue
+    x, y = cam.object_xy(i)                      # 像素（EV3 是 8×6 格中心，±10）/ pixels (±10 on EV3)
+    angle = cam.object_angle(i)                  # 0~179 度（EV3 精度 ±1）/ degrees (±1 on EV3)
+    ev3.screen.clear()
+    ev3.screen.print(shape_name(WANT % 10), angle)
+    if cam.object_area(i) >= STOP_AREA:          # 到了：停車、嗶一聲 / arrived: stop and beep
+        robot.stop()
+        ev3.speaker.beep()
+        break
+    robot.drive(80, (x - 80) * KP)               # 畫面中間 X = 80；在右 → 正 → 右轉 / right of centre = positive
+    wait(20)
+```
+
+</details>
+
+**一步一步看懂程式**
+1. `WANT = 1 × 10 + 4`：物體代碼＝色號×10＋形狀，目標 1 的正方形＝14（三角 13、圓 11）。
+2. `cam.object(1)`、`cam.object(2)`：EV3 模式 52 給面積最大的 2 個物體；代碼、位置、面積、角度都在 EV3 模式 1，迴圈裡不用換模式。
+3. `cam.object_angle(i)`：EV3 一格只到 100，相機送「(角度＋1)÷2」，函式庫 ×2 還原成 0～179，誤差 ±1 度。
+4. `cam.object_area(i) ≥ STOP_AREA`：面積夠大＝很近，停車。
+
+**跑起來應該看到什麼**：方塊在左車頭往左轉、在右往右轉；螢幕顯示 `square 30` 這樣的形狀和角度（把方塊轉一轉數字會變）；開到很近停車嗶一聲。
+
+**常見問題**
+- **一開始就嗶一聲結束？** → 相機不在模式 52：MODE 切到「5 物體偵測 → ②」，螢幕右上要顯示 `5-2`。
+- **找不到正方形？** → 看相機畫面每個物體旁邊的「色號 形狀」；判成長方（5）或其他（0）就到 `Target 1 shape` 指定 Square，或調 SET 選單的 **ShapeTol**。
+- **要 5 個物體、物體數？** → 用模式 51（`object_count()`、物體 5 在 EV3 模式 2，會多 0.5 秒）。
 
 ## 要注意的事
 

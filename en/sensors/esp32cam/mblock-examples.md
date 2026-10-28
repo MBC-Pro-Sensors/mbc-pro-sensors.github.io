@@ -36,10 +36,10 @@ Each reporter block is one "value id" of the sensor's value table (the same ids 
 
 | Block | Returns | Meaning |
 |---|---|---|
-| Vision port [1] hue | -1~100 | hue of sample point S1, 0~100 (hue ring 0~240 scaled); −1 = black/white/grey (saturation < 10); 0 when S1 is not set |
-| Vision port [1] blob found? | true / false | 1 = a blob of the target colour is in view (W > 0), 0 = none |
-| Vision port [1] blob X | 0~100 | blob centre X 0~100, left = 0; 0 when not found |
-| Vision port [1] blob area | 0~7500 | W×H (0~7500); 0 when not found |
+| Sharpshooter Vision (legacy) port [1] hue | -1~100 | hue of sample point S1, 0~100 (hue ring 0~240 scaled); −1 = black/white/grey (saturation < 10); 0 when S1 is not set |
+| Sharpshooter Vision (legacy) port [1] blob found? | true / false | 1 = a blob of the target colour is in view (W > 0), 0 = none |
+| Sharpshooter Vision (legacy) port [1] blob X | 0~100 | blob centre X 0~100, left = 0; 0 when not found |
+| Sharpshooter Vision (legacy) port [1] blob area | 0~7500 | W×H (0~7500); 0 when not found |
 
 **Examples on this page**
 
@@ -77,7 +77,7 @@ Each reporter block is one "value id" of the sensor's value table (the same ids 
 <pre class="blocks">when mBot starts up :: events hat
 wait (1) seconds
 forever
-  play tone ((200) + ((Vision port [1 v] hue :: #C2255C) * (6))) Hz for (0.1) seconds :: sound
+  play tone ((200) + ((Sharpshooter Vision \(legacy\) port [1 v] hue :: #C2255C) * (6))) Hz for (0.1) seconds :: sound
 end</pre>
 
 </details>
@@ -164,7 +164,7 @@ void loop() {}   // nothing here: the blocks above never return
 <pre class="blocks">when mBot starts up :: events hat
 wait (1) seconds
 forever
-  if &lt;Vision port [1 v] blob found? :: #C2255C&gt; then
+  if &lt;Sharpshooter Vision \(legacy\) port [1 v] blob found? :: #C2255C&gt; then
     LED [all v] colour red (0) green (255) blue (0) :: looks
   else
     LED [all v] colour red (255) green (0) blue (0) :: looks
@@ -261,8 +261,8 @@ void loop() {}   // nothing here: the blocks above never return
 <pre class="blocks">when mBot starts up :: events hat
 wait (1) seconds
 forever
-  if &lt;Vision port [1 v] blob found? :: #C2255C&gt; then
-    left wheel power (((Vision port [1 v] blob X :: #C2255C) - (50)) * (0.8)) %, right wheel power (0) % :: motion
+  if &lt;Sharpshooter Vision \(legacy\) port [1 v] blob found? :: #C2255C&gt; then
+    left wheel power (((Sharpshooter Vision \(legacy\) port [1 v] blob X :: #C2255C) - (50)) * (0.8)) %, right wheel power (0) % :: motion
   else
     stop moving :: motion
   end
@@ -360,8 +360,8 @@ void loop() {}   // nothing here: the blocks above never return
 <pre class="blocks">when mBot starts up :: events hat
 wait (1) seconds
 forever
-  if &lt;Vision port [1 v] blob found? :: #C2255C&gt; then
-    set [turn v] to (((Vision port [1 v] blob X :: #C2255C) - (50)) * (0.6))
+  if &lt;Sharpshooter Vision \(legacy\) port [1 v] blob found? :: #C2255C&gt; then
+    set [turn v] to (((Sharpshooter Vision \(legacy\) port [1 v] blob X :: #C2255C) - (50)) * (0.6))
     left wheel power ((35) + (turn)) %, right wheel power ((35) - (turn)) % :: motion
   else
     stop moving :: motion
@@ -463,14 +463,14 @@ void loop() {}   // nothing here: the blocks above never return
 <pre class="blocks">when mBot starts up :: events hat
 wait (1) seconds
 forever
-  if &lt;Vision port [1 v] blob found? :: #C2255C&gt; then
-    if &lt;(Vision port [1 v] blob area :: #C2255C) &gt; (2500)&gt; then
+  if &lt;Sharpshooter Vision \(legacy\) port [1 v] blob found? :: #C2255C&gt; then
+    if &lt;(Sharpshooter Vision \(legacy\) port [1 v] blob area :: #C2255C) &gt; (2500)&gt; then
       stop moving :: motion
       LED [all v] colour red (0) green (0) blue (255) :: looks
       play tone (880) Hz for (0.3) seconds :: sound
     else
       LED [all v] colour red (0) green (255) blue (0) :: looks
-      set [turn v] to (((Vision port [1 v] blob X :: #C2255C) - (50)) * (0.6))
+      set [turn v] to (((Sharpshooter Vision \(legacy\) port [1 v] blob X :: #C2255C) - (50)) * (0.6))
       left wheel power ((35) + (turn)) %, right wheel power ((35) - (turn)) % :: motion
     end
   else

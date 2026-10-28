@@ -8,7 +8,7 @@
 > [!WARNING]
 > **v1 not yet hardware-verified**: the value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after bench testing.
 
-This page has **5 Pybricks examples** (with the MBC library `MBC_UniCam.py`) and **2 LEGO SPIKE App (Education) Python examples**, plus a table for the official App blocks (Education and Robot Inventor). The tasks are the ones students use most: turn to follow a blob, find several colours, read the colour at a spot, colour order (WRO), PD line following with a stop at a junction.
+This page has **6 Pybricks examples** (with the MBC library `MBC_UniCam.py`) and **2 LEGO SPIKE App (Education) Python examples**, plus a table for the official App blocks (Education and Robot Inventor). The tasks are the ones students use most: turn to follow a blob, find several colours, read the colour at a spot, colour order (WRO), PD line following with a stop at a junction, object detection (find the biggest red triangle).
 
 | Way | For whom | How |
 |---|---|---|
@@ -26,8 +26,9 @@ This page has **5 Pybricks examples** (with the MBC library `MBC_UniCam.py`) and
 ## Before you start: teach colours and set the mode on the camera
 
 1. **Teach a colour**: on the live view use left/right to stop on "target 1" → **OK** → move the cross onto the colour (AxisX → AxisY) → **OK** (hold OK for 0.8 s to finish at once). Do the same for target 2, 3… The **side key** on a target clears it.
-2. **Set the mode**: left/right to **MODE** → **OK** → camera mode 1~4 → **OK** → option → **OK**. Options show how many values this hub really gets (for example Pybricks "7 XY"). "1-3" at the top right of the screen is the current mode (= mode number 13).
-3. Settings survive power-off (colours, mode, options).
+2. **Set the mode**: left/right to **MODE** → **OK** → camera mode 1~5 → **OK** → option → **OK**. Options show how many values this hub really gets (for example Pybricks "7 XY"). "1-3" at the top right of the screen is the current mode (= mode number 13).
+3. **Object detection (camera mode 5)**: after teaching targets 1~8 the camera asks `Target N shape`; pick a shape (Any = not set) or skip with the side key. Only target colours 1~8 become objects.
+4. Settings survive power-off (colours, mode, options, target shapes).
 
 | Mode number | Camera menu | What Pybricks gets |
 |---|---|---|
@@ -38,8 +39,12 @@ This page has **5 Pybricks examples** (with the MBC library `MBC_UniCam.py`) and
 | 21 / 22 / 23 | 2 Spot colour, 1/2/3 | 14 spots hue / 7 spots hue + sat / 4 spots hue + sat + val |
 | 30 | 3 Colour order | hue codes of 13 blocks from the left + total |
 | 41 / 42 / 43 | 4 Line: black / white / colour | 14 values (near/mid/far offset, angle, width, flags, junction, edges, markers, lost side) |
+| 51 | 5 Object detection, 1 Object list | code, X, Y (pixels) of 4 objects + object count |
+| 52 | 5 Object detection, 2 Object detail | colour, shape, X, Y, width, height, area % of 2 objects (no count, no angle) |
 
 **Reading the numbers**: pixels, X 0~159 (left → right), Y 0~119 (top → bottom), **(0, 0) = not found**. Hue code 0~255: red 0/240, yellow 40, green 80, cyan 120, blue 160, purple 200; 241~248 white/grey; 249~255 black. Line offsets −100~100: **standing behind the robot, line on the left = negative**.
+
+**Objects (modes 51 / 52)**: object code = **colour × 10 + shape** (13 = a triangle of target 1), 0 = none. Shapes: 0 other, 1 circle, 2 ellipse, 3 triangle, 4 square, 5 rectangle, 6 pentagon, 7 hexagon, 8 star, 9 trapezoid. Objects 1, 2… are sorted **largest first**; X, Y is the centroid. Only target colours 1~8 count.
 
 ## MBC_UniCam.py methods
 
@@ -58,9 +63,16 @@ This page has **5 Pybricks examples** (with the MBC library `MBC_UniCam.py`) and
 | `order()`, `total()` | hue codes from the left (≤13), total blocks | 30 |
 | `line_all()` | all 14 values at once | 41~43 |
 | `near()` `mid()` `far()` `angle()` `width()` `flags()` `junction()` `junction_dist()` `edges()` `far_width()` `marker()` `lost()` | single line values | 41~43 |
+| `max_object()` | objects in this mode: 51 → 4, 52 → 2 | 51, 52 |
+| `object_count()` | objects in view, 0~8 | 51 |
+| `object(i)`, `object_found(i)` | code of object i (colour × 10 + shape, 0 = none), found or not | 51, 52 |
+| `object_color(i)`, `object_shape(i)` | colour 1~8, shape 0~9 | 51, 52 |
+| `object_xy(i)` | centroid (X, Y) pixels, (0, 0) = none | 51, 52 |
+| `object_size(i)`, `object_area(i)` | bounding box (width, height) pixels, area % | 52 |
 | `device_id()`, `is_unicam()`, `firmware_version()` | mode 8: (0x4C, 3, 100), True, (1, 0) | all |
 | `sensor_ok()`, `mode_number()` | last read OK, mode number given | all |
 | `color_name(h)` (module function) | hue code → `'red'` … `'black'` | — |
+| `shape_name(s, zh=False)` (module function) | shape 0~9 → `'other'` `'circle'` `'ellipse'` `'triangle'` `'square'` `'rectangle'` `'pentagon'` `'hexagon'` `'star'` `'trapezoid'`; `zh=True` gives Chinese | — |
 
 - A method that the mode does not have (for example `xy()` in mode 21) or a colour number out of range raises `ValueError` with a bilingual message; it never returns a wrong value silently.
 - Unplugging does not stop the program: you get the last value; `None` if it was never read.
@@ -418,6 +430,100 @@ while True:
 
 ---
 
+## Example 6: find the biggest red triangle
+
+**What it does**: the camera sorts the objects in the picture from largest to smallest; the program looks from the largest down for a "triangle of target 1 (red)", turns to it and drives up until it reaches the bottom of the picture, then stops and beeps. If it sees none it spins slowly to search. The hub display shows how many objects are in view.
+
+**Camera mode**: camera mode 5 Object detection, option 1 Object list = **mode number 51**; teach "target 1" as red first (the shape can stay unset; the camera works it out).
+
+**You need**: SPIKE hub, driving base (left wheel **E**, right wheel **F**), camera in port **C**, a red triangle (card or bricks), plus a few other shapes for fun.
+
+**Download**: [ex06_object_pick.py](/examples/unicam/pybricks/ex06_object_pick.py) + [MBC_UniCam.py](/examples/unicam/pybricks/MBC_UniCam.py)
+
+<details>
+<summary>🐍 Pybricks code</summary>
+
+```python
+# 神攝手 × Pybricks（SPIKE）範例 6：找最大的紅色三角形、轉過去
+# Sharpshooter Vision × Pybricks (SPIKE) example 6: find the biggest red triangle and drive to it
+# 需要把相機選單切到 相機模式 5 物體偵測 ・子選項 ① 物體清單＝模式編號 51
+# Camera menu: camera mode 5 Object detection, option 1 Object list = mode number 51
+# 準備：在相機上把「目標 1」教成紅色（形狀可以不指定）/ teach "target 1" as red on the camera
+# 接線 Wiring：相機 → C 孔 / camera → port C；左輪 E、右輪 F / left wheel E, right wheel F
+# 同一個資料夾要有 MBC_UniCam.py / MBC_UniCam.py must be imported too
+#
+# 物體代碼＝色號×10＋形狀：目標 1 的三角形＝1×10＋3＝13。物體 1、2、3、4 是面積由大到小，
+# 所以從物體 1 往下找，第一個代碼是 13 的就是「最大的紅色三角形」。
+# Object code = colour × 10 + shape: target 1 triangle = 13. Objects 1~4 are sorted largest first,
+# so the first object with code 13 is the biggest red triangle.
+from pybricks.hubs import PrimeHub
+from pybricks.pupdevices import Motor
+from pybricks.parameters import Port, Direction, Color
+from pybricks.robotics import DriveBase
+from pybricks.tools import wait
+from MBC_UniCam import UniCam, shape_name
+
+hub = PrimeHub()
+cam = UniCam(Port.C, mode=51)                    # 模式編號要跟相機選單一樣 / must match the camera menu
+left = Motor(Port.E, Direction.COUNTERCLOCKWISE)
+right = Motor(Port.F)
+robot = DriveBase(left, right, 56, 112)          # 輪徑 56 mm、輪距 112 mm / wheel 56 mm, axle 112 mm
+
+WANT = 1 * 10 + 3  # 👉 可以改：目標 1 × 10 ＋ 形狀 3（三角）；正方形改成 14、圓改成 11 / square 14, circle 11
+KP = 3             # 👉 可以改：偏 1 像素就多轉幾度／秒 / turn rate per pixel of error
+NEAR_Y = 100       # 👉 可以改：物體的 Y ≥ 100（畫面最下面）就算到了 / Y at the bottom of the picture = arrived
+
+
+def find(want):
+    # 從最大的物體往下找代碼＝want 的，回傳它的 (X, Y)；找不到 (0, 0) / largest first; (0, 0) = not found
+    for i in range(1, cam.max_object() + 1):     # SPIKE 模式 51 給 4 個物體 / 4 objects on SPIKE
+        if cam.object(i) == want:
+            return cam.object_xy(i)
+    return (0, 0)
+
+
+print('要找 looking for: 目標 target', WANT // 10, shape_name(WANT % 10, True), shape_name(WANT % 10))
+while True:
+    n = cam.object_count()                       # 畫面裡有幾個物體 0~8 / objects in view
+    if n is None:                                # 從來沒讀到相機 / camera never answered
+        robot.stop()
+        hub.light.on(Color.RED)
+        wait(100)
+        continue
+    hub.display.number(n)
+    x, y = find(WANT)
+    if x == 0:                                   # 沒看到紅色三角形：原地慢慢轉著找 / not seen: spin to search
+        robot.drive(0, 60)
+        hub.light.on(Color.ORANGE)
+    elif y >= NEAR_Y:                            # 到了：停車、嗶一聲 / arrived: stop and beep
+        robot.stop()
+        hub.light.on(Color.GREEN)
+        hub.speaker.beep()
+        break
+    else:
+        error = x - 80                           # 畫面中間 X = 80；在右 → 正 → 右轉 / right of centre = positive
+        robot.drive(80, error * KP)
+        hub.light.on(Color.BLUE)
+    wait(20)
+```
+
+</details>
+
+**Step by step**
+1. `WANT = 1 × 10 + 3`: object code = colour × 10 + shape, so a triangle of target 1 is 13. Use 14 for a square, 11 for a circle.
+2. `cam.object(i)`: code of object i; object 1 is the largest, so the first match from 1 down is the biggest one. SPIKE mode 51 gives 4 objects (`cam.max_object()`).
+3. `cam.object_xy(i)`: centroid (X, Y) in pixels; `X − 80` is positive on the right → turn right.
+4. `cam.object_count()`: total objects in view (0~8, may be more than 4).
+
+**What you should see**: with the red triangle on the left the robot turns left, on the right it turns right, while driving forward; in front of it the robot stops, beeps, and the program ends. A red circle or a blue triangle nearby is ignored.
+
+**Common problems**
+- **Keeps spinning?** → the camera screen must show `5-1` at the top right; look at the "colour shape" label next to each object on the camera screen. If the triangle is read as another shape, set `Target 1 shape` to Tri, or raise **ShapeTol** in the SET menu.
+- **Too many things in view?** → SPIKE only gets the 4 largest; a small red triangle may not make the list, so clear the background.
+- **Want size and area?** → use mode 52: `cam.object_size(i)`, `cam.object_area(i)` (2 objects only).
+
+---
+
 ## LEGO SPIKE App (Education) Python examples
 
 The official App sees the camera as a "colour sensor". Python reads **bytes 0~7** with `color_sensor.color()`, `reflection()` and `rgbi()` (colour, reflection, raw red/green/blue). The reading helper `UniCamApp` at the top of each example splits them by mode (helper alone: [MBC_UniCam_App_helper.py](/examples/unicam/spike_app/MBC_UniCam_App_helper.py)). Bytes 8~15 may only be readable with `device.data()`; **not yet verified on hardware (task #77)**, so the helper does not use them.
@@ -430,6 +536,10 @@ The official App sees the camera as a "colour sensor". Python reads **bytes 0~7*
 | `hue(i)`, `sat(i)`, `val(i)` | 21: hue of spots 1~6; 22, 23: hue + sat of spots 1~3; 23: value of spot 1 | 21~23 |
 | `order()` | (hue codes of the first 6 blocks, total) | 30 |
 | `line()` | (near offset, far offset, angle, junction type, near width) | 41~43 |
+| `max_object()`, `object_count()` | objects with a code (51 → 3, 52 → 2), objects in view (51) | 51, 52 |
+| `object(i)`, `object_color(i)`, `object_shape(i)` | object code, colour, shape (51: objects 1~3; 52: objects 1~2) | 51, 52 |
+| `object_cell(i)` | 8×6 grid cell (X, Y) of objects 1~3 (Y top = small) | 51 |
+| `object_xy(1)`, `object_size(1)`, `object_area(i)` | centroid and box (pixels) of object 1; area % of objects 1, 2 | 52 |
 
 ### App example 1: turn to follow a colour blob
 
@@ -528,6 +638,68 @@ class UniCamApp:
     def line(self):
         """循線：(近處偏移, 遠處偏移, 角度, 路口類型, 近處線寬)；偏移、角度 −100~100（線在左＝負）"""
         return (self._w(0) - 100, self._w(1) - 100, self._w(2) - 100, self.b[0], self.b[1])
+
+    # ── 物體偵測（51 物體清單、52 物體詳細）：物體代碼＝色號×10＋形狀，0＝沒有；物體 1＝面積最大 ──
+    # ── object detection (51 list, 52 detail): code = colour×10 + shape, 0 = none; object 1 = largest ──
+    def _obj(self, i, n, modes=(51, 52)):
+        if self.mode not in modes:
+            raise ValueError('模式 %d 沒有這個值，要用模式 %s / not available in mode %d, use %s' % (self.mode, modes, self.mode, modes))
+        if not 1 <= i <= n:
+            raise ValueError('第幾個物體要填 1~%d / object must be 1~%d' % (n, n))
+
+    def max_object(self):
+        """byte 0~7 給幾個物體的代碼：51→3、52→2（52 的位置、大小只有物體 1）"""
+        self._obj(1, 1)
+        return 3 if self.mode == 51 else 2
+
+    def object_count(self):
+        """51：畫面裡有幾個物體 0~8（顏色）/ objects in view (colour)"""
+        self._obj(1, 1, (51,))
+        return self.b[0]
+
+    def object(self, i):
+        """物體 i 的代碼（51：物體 1~3；52：物體 1~2）/ object code"""
+        if self.mode == 51:
+            self._obj(i, 3)
+            return self.b[1] if i == 1 else self._w(i - 1) // 100
+        self._obj(i, 2)
+        return self.b[0] if i == 1 else self._w(2) & 255
+
+    def object_color(self, i):
+        """物體 i 的色號 1~8，0＝沒有"""
+        return self.object(i) // 10
+
+    def object_shape(self, i):
+        """物體 i 的形狀 0~9（沒有物體也是 0）"""
+        return self.object(i) % 10
+
+    def object_cell(self, i):
+        """51：物體 i（1~3）的 8×6 格 (X 格, Y 格)，(0, 0)＝沒有（Y 上＝小；像素 ≈ 格×20−10）"""
+        self._obj(i, 3, (51,))
+        g = self._w(0) if i == 1 else self._w(i - 1) % 100
+        return (g // 10, g % 10)
+
+    def object_xy(self, i):
+        """52：物體 1 的質心 (X, Y) 像素，(0, 0)＝沒有"""
+        self._obj(i, 1, (52,))
+        return (self._w(0) & 255, self._w(0) >> 8)
+
+    def object_size(self, i):
+        """52：物體 1 的外框 (寬, 高) 像素"""
+        self._obj(i, 1, (52,))
+        return (self._w(1) & 255, self._w(1) >> 8)
+
+    def object_area(self, i):
+        """52：物體 1、2 的面積（佔畫面 %）"""
+        self._obj(i, 2, (52,))
+        return self.b[1] if i == 1 else self._w(2) >> 8
+
+
+def shape_name(s, zh=False):
+    """形狀 0~9 → 'other' 'circle' 'ellipse' 'triangle' 'square' 'rectangle' 'pentagon' 'hexagon' 'star' 'trapezoid'（zh=True 中文）"""
+    if s is None or not 0 <= s <= 9:
+        return None
+    return ('其他', '圓', '橢圓', '三角', '正方', '長方', '五邊', '六邊', '星', '梯形')[s] if zh else         ('other', 'circle', 'ellipse', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon', 'star', 'trapezoid')[s]
 
 
 def color_name(h):
@@ -678,6 +850,68 @@ class UniCamApp:
         """循線：(近處偏移, 遠處偏移, 角度, 路口類型, 近處線寬)；偏移、角度 −100~100（線在左＝負）"""
         return (self._w(0) - 100, self._w(1) - 100, self._w(2) - 100, self.b[0], self.b[1])
 
+    # ── 物體偵測（51 物體清單、52 物體詳細）：物體代碼＝色號×10＋形狀，0＝沒有；物體 1＝面積最大 ──
+    # ── object detection (51 list, 52 detail): code = colour×10 + shape, 0 = none; object 1 = largest ──
+    def _obj(self, i, n, modes=(51, 52)):
+        if self.mode not in modes:
+            raise ValueError('模式 %d 沒有這個值，要用模式 %s / not available in mode %d, use %s' % (self.mode, modes, self.mode, modes))
+        if not 1 <= i <= n:
+            raise ValueError('第幾個物體要填 1~%d / object must be 1~%d' % (n, n))
+
+    def max_object(self):
+        """byte 0~7 給幾個物體的代碼：51→3、52→2（52 的位置、大小只有物體 1）"""
+        self._obj(1, 1)
+        return 3 if self.mode == 51 else 2
+
+    def object_count(self):
+        """51：畫面裡有幾個物體 0~8（顏色）/ objects in view (colour)"""
+        self._obj(1, 1, (51,))
+        return self.b[0]
+
+    def object(self, i):
+        """物體 i 的代碼（51：物體 1~3；52：物體 1~2）/ object code"""
+        if self.mode == 51:
+            self._obj(i, 3)
+            return self.b[1] if i == 1 else self._w(i - 1) // 100
+        self._obj(i, 2)
+        return self.b[0] if i == 1 else self._w(2) & 255
+
+    def object_color(self, i):
+        """物體 i 的色號 1~8，0＝沒有"""
+        return self.object(i) // 10
+
+    def object_shape(self, i):
+        """物體 i 的形狀 0~9（沒有物體也是 0）"""
+        return self.object(i) % 10
+
+    def object_cell(self, i):
+        """51：物體 i（1~3）的 8×6 格 (X 格, Y 格)，(0, 0)＝沒有（Y 上＝小；像素 ≈ 格×20−10）"""
+        self._obj(i, 3, (51,))
+        g = self._w(0) if i == 1 else self._w(i - 1) % 100
+        return (g // 10, g % 10)
+
+    def object_xy(self, i):
+        """52：物體 1 的質心 (X, Y) 像素，(0, 0)＝沒有"""
+        self._obj(i, 1, (52,))
+        return (self._w(0) & 255, self._w(0) >> 8)
+
+    def object_size(self, i):
+        """52：物體 1 的外框 (寬, 高) 像素"""
+        self._obj(i, 1, (52,))
+        return (self._w(1) & 255, self._w(1) >> 8)
+
+    def object_area(self, i):
+        """52：物體 1、2 的面積（佔畫面 %）"""
+        self._obj(i, 2, (52,))
+        return self.b[1] if i == 1 else self._w(2) >> 8
+
+
+def shape_name(s, zh=False):
+    """形狀 0~9 → 'other' 'circle' 'ellipse' 'triangle' 'square' 'rectangle' 'pentagon' 'hexagon' 'star' 'trapezoid'（zh=True 中文）"""
+    if s is None or not 0 <= s <= 9:
+        return None
+    return ('其他', '圓', '橢圓', '三角', '正方', '長方', '五邊', '六邊', '星', '梯形')[s] if zh else         ('other', 'circle', 'ellipse', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon', 'star', 'trapezoid')[s]
+
 
 def color_name(h):
     """色相碼 → 'red' 'orange' 'yellow' 'green' 'cyan' 'blue' 'purple' 'white' 'black'"""
@@ -756,6 +990,8 @@ Colour and reflection are 1 byte each; raw red/green/blue are 2 bytes each: "A +
 | 2-3 Hue+Sat+Val | — | S1 val | S1 hue + S1 sat ×256 | S2 hue + S2 sat ×256 | S3 hue + S3 sat ×256 |
 | 3 Colour order | total blocks | — | block 1 hue + block 2 hue ×256 | block 3 hue + block 4 hue ×256 | block 5 hue + block 6 hue ×256 |
 | 4 Line (1/2/3 same) | junction type | near width % | near offset + 100 | far offset + 100 | line angle + 100 |
+| 5-1 Object list | object count | object 1 code | object 1 X×10+Y (8×6) | object 2 code ×100 + object 2 X×10+Y (8×6) | object 3 code ×100 + object 3 X×10+Y (8×6) |
+| 5-2 Object detail | object 1 code | object 1 area % | object 1 X + object 1 Y ×256 | object 1 width + object 1 height ×256 | object 2 code + object 2 area % ×256 |
 
 ### Robot Inventor (Robot Inventor App, teal hub)
 
@@ -772,6 +1008,8 @@ On Robot Inventor the colour is only 0~10, reflection up to 126 and raw red/gree
 | 2-3 Hue+Sat+Val | — | S2 sat÷10×10 + val÷10 | S1 hue | S1 sat÷10×10 + val÷10 | S2 hue |
 | 3 Colour order | — | total blocks | block 1 hue | block 2 hue | block 3 hue |
 | 4 Line (1/2/3 same) | junction type | near width % | near offset + 100 | far offset + 100 | line angle + 100 |
+| 5-1 Object list | object count | object 1 code | object 1 X×10+Y (8×6) | object 2 code | object 2 X×10+Y (8×6) |
+| 5-2 Object detail | object count | object 1 code | object 1 X | object 1 Y | object 1 area % |
 
 > [!CAUTION]
 > In the official App **do not use the "colour is [red]?" block**: it compares LEGO's own colour numbers. Always put the number in a variable and compare. The Robot Inventor App's Python reading is not verified yet; this page only lists the block reading.

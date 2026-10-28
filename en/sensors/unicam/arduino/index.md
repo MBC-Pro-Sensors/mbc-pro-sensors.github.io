@@ -27,7 +27,7 @@ The Sharpshooter Vision (Universal I2C edition) uses the MBC universal I2C proto
 
 | Number | Content |
 | :--- | :--- |
-| `0x01` | Camera mode number (camera mode × 10 + sub-option, e.g. 13 = Color tracking ③ Standard) |
+| `0x01` | Camera mode number (camera mode × 10 + sub-option, e.g. 13 = Color tracking ③ Standard, 51 = Object detection ① Object list) |
 | `0x02` | Sub-option |
 | `0x03` | Number of taught colors |
 | `0x04` | How many this level gives (colors / points / blocks) |
@@ -100,6 +100,73 @@ void loop() {
 ```
 
 Color 2 of the same level starts at `0x14` (4 values per color); numbers for the other camera modes are in the [value reference: I2C](/en/sensors/unicam/reference.md#host-i2c).
+
+## Camera mode 5 object detection
+
+The camera sorts the objects in the picture from largest to smallest (object 1 = largest) and gives each an **object code = color × 10 + shape** (13 = a triangle of target 1, 0 = none). Shapes: 0 other, 1 circle, 2 ellipse, 3 triangle, 4 square, 5 rectangle, 6 pentagon, 7 hexagon, 8 star, 9 trapezoid. X, Y is the **centroid** of the object; only target colors 1~8 count. Mode number **51 = ① Object list**, **52 = ② Object detail**. Split the code: color = code ÷ 10 (whole number), shape = remainder of code ÷ 10.
+
+Switch modes with command `E0 [5, 1]` (object list) or `E0 [5, 2]` (object detail).
+
+| Mode | Per object (object i starts at `0x10 + values per object × (i−1)`) | Object count |
+| :---: | :--- | :---: |
+| 51 ① Object list | 4 values: color, shape, X, Y (8 objects) | `0x30` |
+| 52 ② Object detail | 10 values: color, shape, X, Y, width, height, area %, angle 0~179, vertices (triangle 3, quadrilateral 4, pentagon 5, hexagon 6, star 10, circle 0), track id 1~255 (8 objects) | `0x60` |
+
+Bit1 of the F3 status flags in object detection = object count > 0. The smallest program for object detail (52):
+
+```cpp
+#include <Wire.h>
+const uint8_t CAM = 0x4C;                    // factory address
+
+// Read k consecutive values from number id (k <= 16). false = no answer
+bool camRead(uint8_t id, uint8_t k, int16_t *out) {
+  Wire.beginTransmission(CAM);
+  Wire.write(id);
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);
+  if (Wire.requestFrom(CAM, (uint8_t)(2 * k)) != 2 * k) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read(), hi = Wire.read();
+    out[i] = (int16_t)(lo | (hi << 8));     // low byte first
+  }
+  return true;
+}
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin();
+  Wire.beginTransmission(CAM);               // command E0 [5, 2]: Object detection ② Object detail
+  Wire.write(0xE0);
+  Wire.write(5);
+  Wire.write(2);
+  Wire.endTransmission();
+  delay(100);
+}
+
+void loop() {
+  int16_t n, v[10];
+  if (!camRead(0x60, 1, &n)) {               // 0x60: object count (mode 52)
+    Serial.println("Camera not found, check wiring and address");
+    delay(500);
+    return;
+  }
+  Serial.print("objects "); Serial.println(n);
+  for (uint8_t i = 0; i < n && i < 8; i++) { // object 1 is the largest
+    if (!camRead(0x10 + 10 * i, 10, v)) return;   // color, shape, X, Y, width, height, area, angle, vertices, track id
+    Serial.print("  object "); Serial.print(i + 1);
+    Serial.print(" code="); Serial.print(v[0] * 10 + v[1]);   // color × 10 + shape
+    Serial.print(" X="); Serial.print(v[2]);
+    Serial.print(" Y="); Serial.print(v[3]);
+    Serial.print(" area="); Serial.print(v[6]);
+    Serial.print("% angle="); Serial.print(v[7]);
+    Serial.print(" vertices="); Serial.print(v[8]);
+    Serial.print(" track="); Serial.println(v[9]);
+  }
+  delay(200);
+}
+```
+
+The helpers in the examples, `ucReadObject(mode, i, o)`, `ucObjectCount(mode)` and `ucShapeName(s)`, wrap all of this; see [Arduino example 6](/en/sensors/unicam/arduino-examples.md#ex6).
 
 ## Slot tables and examples
 

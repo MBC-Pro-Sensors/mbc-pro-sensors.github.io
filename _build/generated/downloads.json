@@ -163,6 +163,7 @@
         "ev3/examples/ex01_track_turn.py",
         "ev3/examples/ex02_spot_color.py",
         "ev3/examples/ex03_line_follow.py",
+        "ev3/examples/ex04_object.py",
         "matrix/MBC_UniCam_MATRIX.h",
         "microbit/MBC_UniCam_microbit.ts",
         "pybricks/MBC_UniCam.py",
@@ -171,11 +172,12 @@
         "pybricks/examples/ex03_spot_color.py",
         "pybricks/examples/ex04_color_order.py",
         "pybricks/examples/ex05_line_follow.py",
+        "pybricks/examples/ex06_object_pick.py",
         "spike_app/MBC_UniCam_App_helper.py",
         "spike_app/examples/ex01_track_turn.py",
         "spike_app/examples/ex02_line_follow.py"
       ],
-      "size": 45832
+      "size": 59613
     },
     {
       "out": "/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext",

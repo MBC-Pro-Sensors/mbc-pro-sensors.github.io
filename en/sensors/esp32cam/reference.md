@@ -130,7 +130,7 @@ int16_t hue = mbcRead(0x4C, 0x01);   // hue：-1~100
 
 Block returns hue（-1~100）。Host sends `[01]` → reply `[lo][hi][01 ^ lo ^ hi]`, value = int16 little-endian.
 
-<pre class="blocks">(Vision port [1 v] hue :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] hue :: sensing)</pre>
 
 </details>
 
@@ -241,7 +241,7 @@ int16_t saturation = mbcRead(0x4C, 0x02);   // saturation：0~100
 
 Block returns saturation（0~100）。Host sends `[02]` → reply `[lo][hi][02 ^ lo ^ hi]`, value = int16 little-endian.
 
-<pre class="blocks">(Vision port [1 v] saturation :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] saturation :: sensing)</pre>
 
 </details>
 
@@ -343,7 +343,7 @@ int16_t value = mbcRead(0x4C, 0x03);   // brightness：0~100
 
 Block returns brightness（0~100）。Host sends `[03]` → reply `[lo][hi][03 ^ lo ^ hi]`, value = int16 little-endian.
 
-<pre class="blocks">(Vision port [1 v] brightness :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] brightness :: sensing)</pre>
 
 </details>
 
@@ -445,7 +445,7 @@ int16_t motion = mbcRead(0x4C, 0x04);   // motion：0~100
 
 Block returns motion（0~100）。Host sends `[04]` → reply `[lo][hi][04 ^ lo ^ hi]`, value = int16 little-endian.
 
-<pre class="blocks">(Vision port [1 v] motion :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] motion :: sensing)</pre>
 
 </details>
 
@@ -547,7 +547,7 @@ int16_t blobX = mbcRead(0x4C, 0x05);   // blob X：0~100
 
 Block returns blob X（0~100）。Host sends `[05]` → reply `[lo][hi][05 ^ lo ^ hi]`, value = int16 little-endian.
 
-<pre class="blocks">(Vision port [1 v] blob X :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] blob X :: sensing)</pre>
 
 </details>
 
@@ -649,7 +649,7 @@ int16_t blobY = mbcRead(0x4C, 0x06);   // blob Y：0~75
 
 Block returns blob Y（0~75）。Host sends `[06]` → reply `[lo][hi][06 ^ lo ^ hi]`, value = int16 little-endian.
 
-<pre class="blocks">(Vision port [1 v] blob Y :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] blob Y :: sensing)</pre>
 
 </details>
 
@@ -751,7 +751,7 @@ int16_t blobW = mbcRead(0x4C, 0x07);   // blob width：0~100
 
 Block returns blob width（0~100）。Host sends `[07]` → reply `[lo][hi][07 ^ lo ^ hi]`, value = int16 little-endian.
 
-<pre class="blocks">(Vision port [1 v] blob width :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] blob width :: sensing)</pre>
 
 </details>
 
@@ -853,7 +853,7 @@ int16_t blobH = mbcRead(0x4C, 0x08);   // blob height：0~75
 
 Block returns blob height（0~75）。Host sends `[08]` → reply `[lo][hi][08 ^ lo ^ hi]`, value = int16 little-endian.
 
-<pre class="blocks">(Vision port [1 v] blob height :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] blob height :: sensing)</pre>
 
 </details>
 
@@ -935,7 +935,7 @@ int16_t blobArea = mbcRead(0x4C, 0x09);   // blob area：0~7500
 
 Block returns blob area（0~7500）。Host sends `[09]` → reply `[lo][hi][09 ^ lo ^ hi]`, value = int16 little-endian.
 
-<pre class="blocks">(Vision port [1 v] blob area :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] blob area :: sensing)</pre>
 
 </details>
 
@@ -996,7 +996,7 @@ int16_t found = mbcRead(0x4C, 0x0A);   // blob found：0~1
 
 Block returns blob found（0~1）。Host sends `[0A]` → reply `[lo][hi][0A ^ lo ^ hi]`, value = int16 little-endian.
 
-<pre class="blocks">(Vision port [1 v] blob found? :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision (legacy) port [1 v] blob found? :: sensing)</pre>
 
 </details>
 
@@ -1085,7 +1085,7 @@ bool found = st & (1 << 1);   // blob found
 
 The extension splits status flags F3 into boolean blocks (ready, calibrating, …).
 
-<pre class="blocks"><Vision port [1 v] connected? :: sensing></pre>
+<pre class="blocks"><Sharpshooter Vision (legacy) port [1 v] connected? :: sensing></pre>
 
 </details>
 

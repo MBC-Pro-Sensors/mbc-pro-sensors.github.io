@@ -131,6 +131,88 @@ while True:
 
 其他相機模式的每一格看 [讀值參考：教育版](/sensors/unicam/reference.md#host-edu)、[家用版](/sensors/unicam/reference.md#host-toy)。循線、會有負數的值是 **＋100** 送。
 
+## 相機模式 5 物體偵測
+
+相機把畫面裡的物體由大到小排好（物體 1 最大），每個物體給**物體代碼＝色號 × 10 ＋ 形狀**（例 13＝目標 1 的三角形，0＝沒有）。形狀：0 其他、1 圓、2 橢圓、3 三角、4 正方、5 長方、6 五邊、7 六邊、8 星、9 梯形。X、Y 是物體的**質心**；只看目標色 1～8。模式編號 **51＝① 物體清單**、**52＝② 物體詳細**。代碼再拆：色號＝代碼 ÷ 10（取整數）、形狀＝代碼除以 10 的餘數。
+
+**Pybricks 函式庫**（最簡單；[下載 MBC_UniCam.py](/examples/unicam/pybricks/MBC_UniCam.py)，跟程式一起匯入）：
+
+```python
+from pybricks.parameters import Port
+from pybricks.tools import wait
+from MBC_UniCam import UniCam, shape_name
+
+cam = UniCam(Port.A, mode=51)            # 相機切在 物體偵測 ① 物體清單
+while True:
+    print("物體數", cam.object_count())
+    for i in range(1, cam.max_object() + 1):     # SPIKE 給 4 個物體，物體 1 最大
+        if cam.object_found(i):
+            x, y = cam.object_xy(i)
+            print(" 物體", i, "代碼", cam.object(i), shape_name(cam.object_shape(i), True), "X", x, "Y", y)
+    wait(200)
+```
+
+`mode=52` 改成 2 個物體，另有 `object_size(i)`（寬、高）、`object_area(i)`（面積 %），沒有物體數。方法一覽與整支範例看 [SPIKE 範例 6](/sensors/unicam/spike-examples.md)。
+
+**不裝函式庫（模式 9 自己拆）**：
+
+| 模式 | byte 0 | 之後 |
+| :---: | :--- | :--- |
+| 51 | 物體數 0～8 | 每個物體 3 byte：代碼、X、Y（物體 1＝byte 1～3 … 物體 4＝byte 10～12） |
+| 52 | 物體 1 色號 | 每個物體 7 byte：色號、形狀、X、Y、寬、高、面積 %（物體 1＝byte 0～6、物體 2＝byte 7～13）；沒有物體數、角度 |
+
+```python
+from pybricks.iodevices import PUPDevice
+from pybricks.parameters import Port
+from pybricks.tools import wait
+
+cam = PUPDevice(Port.A)          # 相機切在 物體偵測 ② 物體詳細（模式編號 52）
+
+while True:
+    b = []
+    for v in cam.read(9):        # 7 個 int16 拆成 14 個 byte（低位元組在前）
+        b.append(v & 0xFF)
+        b.append((v >> 8) & 0xFF)
+    for i in range(2):           # 52：每個物體 7 byte，物體 1 最大
+        color, shape, x, y, w, h, area = b[7 * i:7 * i + 7]
+        if color:                # 色號 0 = 沒有這個物體
+            print("物體", i + 1, "代碼", color * 10 + shape, "X", x, "Y", y, "寬", w, "高", h, "面積", area, "%")
+    wait(100)
+```
+
+**Pybricks 內建積木**（`reflection()`、`ambient()`，只給物體 1）：`reflection()`＝物體 1 的 X 格 × 100 ＋ Y 格（40×30 格：X 1～40、Y 1～30，上＝小，0＝沒有；負數加 6399 修回）；`ambient()` 顯示 A.BB：A＝物體 1 代碼、BB＝物體數（51）或物體 1 面積 %（52，100 顯示成 99）。
+
+```python
+from pybricks.pupdevices import ColorSensor
+from pybricks.parameters import Port
+from pybricks.tools import wait
+
+cam = ColorSensor(Port.A)        # 相機切在 物體偵測 ①（51）或 ②（52）：只給物體 1
+
+while True:
+    r = int(cam.reflection())
+    if r < 0:
+        r += 6399                # 超過 3199 會顯示成負數，加 6399 修回
+    gx, gy = r // 100, r % 100   # 物體 1 位置：40×30 格（X 1～40、Y 1～30，上＝小）；0 = 沒有
+    a = cam.ambient()            # 顯示 A.BB
+    code = int(a)                # A：物體 1 代碼（色號 × 10 ＋ 形狀）
+    bb = round((a - code) * 100) # BB：51＝物體數、52＝物體 1 面積 %（100 顯示成 99）
+    print("代碼", code, "色號", code // 10, "形狀", code % 10, "格", gx, gy, bb)
+    wait(100)
+```
+
+**官方 SPIKE App**（積木讀得到的 5 個值）：
+
+| 積木 | 教育版 51 | 教育版 52 | 家用版 51 | 家用版 52 |
+| :--- | :--- | :--- | :--- | :--- |
+| 顏色 | 物體數 | 物體 1 代碼 | 物體數 | 物體數 |
+| 反射光 | 物體 1 代碼 | 物體 1 面積 % | 物體 1 代碼 | 物體 1 代碼 |
+| 原始紅 | 物體 1 位置（X×10＋Y） | 物體 1 X＝餘數（÷256）、Y＝÷256 取整數 | 物體 1 位置（X×10＋Y） | 物體 1 X（像素） |
+| 原始綠 | ÷100 取整數＝物體 2 代碼、餘數＝物體 2 位置 | 物體 1 寬＝餘數、高＝÷256 | 物體 2 代碼 | 物體 1 Y（像素） |
+| 原始藍 | 同原始綠，物體 3 | 物體 2 代碼＝餘數、面積 %＝÷256 | 物體 2 位置 | 物體 1 面積 % |
+
+位置是 8×6 格「X×10＋Y」：X＝÷10 取整數（1～8）、Y＝除以 10 的餘數（1～6，上＝小），像素 ≈ 格 × 20 − 10。教育版 App Python 可以用讀值小工具 [MBC_UniCam_App_helper.py](/examples/unicam/spike_app/MBC_UniCam_App_helper.py) 的 `object(i)`、`object_cell(i)`、`object_xy(1)`…；教育版 byte 8～15（物體 4～7、角度、頂點數）積木讀不到。
+
 ## 逐格對照與範例
 
 - [讀值參考：Pybricks 函式庫](/sensors/unicam/reference.md#host-pyb)・[SPIKE App 教育版](/sensors/unicam/reference.md#host-edu)・[家用版](/sensors/unicam/reference.md#host-toy)・[Pybricks 內建積木](/sensors/unicam/reference.md#host-pyblk)

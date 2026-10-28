@@ -954,10 +954,10 @@
     },
     "zh": {
       "badge": "CAM-VIS · 開發中",
-      "pitch": "一台相機四種用法：顏色追蹤（最多 16 色）、座標取色、照順序給色號、循線，在相機選單切換；SPIKE、EV3、MATRIX、Arduino、micro:bit、mBlock 都讀得到。",
+      "pitch": "一台相機五種用法：顏色追蹤（最多 16 色）、座標取色、照順序給色號、循線、物體偵測（顏色＋形狀），在相機選單切換；SPIKE、EV3、MATRIX、Arduino、micro:bit、mBlock 都讀得到。",
       "stats": [
         [
-          "4 種",
+          "5 種",
           "相機模式"
         ],
         [
@@ -994,10 +994,10 @@
     },
     "en": {
       "badge": "CAM-VIS · IN DEVELOPMENT",
-      "pitch": "One camera, four jobs: color tracking (up to 16 colors), color at points, color order and line following, switched in the camera menu; SPIKE, EV3, MATRIX, Arduino, micro:bit and mBlock can all read it.",
+      "pitch": "One camera, five jobs: color tracking (up to 16 colors), color at points, color order, line following and object detection (color + shape), switched in the camera menu; SPIKE, EV3, MATRIX, Arduino, micro:bit and mBlock can all read it.",
       "stats": [
         [
-          "4",
+          "5",
           "camera modes"
         ],
         [

@@ -7,7 +7,7 @@
 > [!WARNING]
 > **v1 not yet hardware-verified**: the value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after bench testing.
 
-This page is for people who **have never written a program**. Three examples: **which side is the blob**, **what colour does the spot see**, and a **line-following car**. All are written in **MakeCode** JavaScript: switch to JavaScript, paste the whole example, done. You can switch back to Blocks to see what it looks like as blocks.
+This page is for people who **have never written a program**. Four examples: **which side is the blob**, **what colour does the spot see**, a **line-following car** and **which side is the red triangle (object detection)**. All are written in **MakeCode** JavaScript: switch to JavaScript, paste the whole example, done. You can switch back to Blocks to see what it looks like as blocks.
 
 > [!IMPORTANT]
 > - **No extension needed.** At the bottom of every example there is a "UniCam helpers" section that talks to the camera with the built-in `pins.i2c…` functions. The "camera" blocks in the **pxt-mbc-sensors** extension are for the **School edition** and cannot read the current Sharpshooter Vision's values — do not mix them.
@@ -58,15 +58,15 @@ If you only ever see an X: check SDA/SCL are not swapped → the external power 
 
 | Id | Content |
 |---|---|
-| `0x01` | Mode number (e.g. 13) |
+| `0x01` | Mode number (e.g. 13; object detection 51 / 52) |
 | `0x02` | Option |
 | `0x03` | Colours taught |
 | `0x04` | Values in this level |
 | from `0x10` | Values of this mode (order as in the [value reference](/en/sensors/unicam/reference.md#host-i2c): value 1 = `0x10`, value 2 = `0x11` …) |
 | `0xF0` | Device id (`0x4C` + 3×256, 3 = current Sharpshooter Vision) |
 | `0xF2` | Firmware version (100 = 1.0) |
-| `0xF3` | Status (bit0 = ready) |
-| write `0xE0` | [camera mode, option]: switch mode (saved in the camera) |
+| `0xF3` | Status (bit0 = ready, bit1 = something found in the current mode) |
+| write `0xE0` | [camera mode 1~5, option]: switch mode (saved in the camera; object detection [5, 1] / [5, 2]) |
 | write `0xE1` | [spot 1~20, X 0~159, Y 0~119]: move a sample spot (saved in the camera) |
 
 Reading (MBC common I2C protocol v2): write [id] → wait 2 ms → read 2×k bytes = k values from that id (int16, low byte first), at most 16 at a time; unknown ids read −32768.
@@ -88,6 +88,9 @@ Reading (MBC common I2C protocol v2): write [id] → wait 2 ms → read 2×k byt
 | `ucOrderTotal()` | number | total blocks |
 | `ucReadLine()` | 14 numbers | line: [near, mid, far offset, angle, width, line flags, junction, junction distance, left edge, right edge, far width, marker colour, marker count, lost side] |
 | `ucColorCode(h)` | 1~9 | hue code → 1 red 2 orange 3 yellow 4 green 5 cyan 6 blue 7 purple 8 white/grey 9 black |
+| `ucReadObject(mode, i)` | `[code, colour, shape, x, y, width, height, area%, angle, vertices, track id]` | object detection 51 / 52, objects 1~8 (1 = largest); code = colour × 10 + shape, 0 = none; −1 = not given in mode 51 |
+| `ucObjectCount(mode)` | number | objects in view, 0~8 |
+| `ucShapeName(s)` | text | shape 0~9 → `"other"` `"circle"` `"ellipse"` `"triangle"` `"square"` `"rectangle"` `"pentagon"` `"hexagon"` `"star"` `"trapezoid"` |
 
 ---
 
@@ -196,7 +199,7 @@ function ucReady(): boolean {
     return f != UC_NONE && (f & 1) == 1
 }
 
-// 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）/ switch camera mode
+// 切相機模式（E0）：camMode 1~5、sub 子選項（照順序給色號填 0；物體偵測 1 清單、2 詳細）/ switch camera mode
 function ucSetMode(camMode: number, sub: number): void {
     ucWrite(0xE0, [camMode, sub])
     basic.pause(50)
@@ -261,6 +264,35 @@ function ucOrderTotal(): number {
 // line values (near/mid/far offset: line on the left = negative)
 function ucReadLine(): number[] {
     return ucReadMany(0x10, 14)
+}
+
+// 物體偵測每個物體幾個值：51 → 4（色號 形狀 X Y）、52 → 10 / values per object (modes 51, 52)
+function ucObjStride(mode: number): number {
+    if (mode == 51) return 4
+    if (mode == 52) return 10
+    return 0
+}
+
+// 物體 i（1~8，1 = 面積最大）：[代碼, 色號, 形狀, x, y, 寬, 高, 面積%, 角度, 頂點數, 追蹤編號]
+// 代碼 = 色號×10＋形狀，0 = 沒有；模式 51 沒給的是 -1
+// object i: [code, colour, shape, x, y, w, h, area%, angle, vertices, trackId]; -1 = not in mode 51
+function ucReadObject(mode: number, i: number): number[] {
+    const k = ucObjStride(mode)
+    const d = ucReadMany(0x10 + (i - 1) * k, k)
+    const code = d[0] > 0 ? d[0] * 10 + d[1] : 0
+    if (mode == 51) return [code, d[0], d[1], d[2], d[3], -1, -1, -1, -1, -1, -1]
+    return [code, d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9]]
+}
+
+// 畫面裡有幾個物體 0~8 / number of objects in view (modes 51, 52)
+function ucObjectCount(mode: number): number {
+    return ucReadMany(0x10 + 8 * ucObjStride(mode), 1)[0]
+}
+
+// 形狀編號 → 英文名稱 / shape number -> name
+function ucShapeName(s: number): string {
+    const n = ["other", "circle", "ellipse", "triangle", "square", "rectangle", "pentagon", "hexagon", "star", "trapezoid"]
+    return (s >= 0 && s <= 9) ? n[s] : "?"
 }
 
 // 色相碼 → 顏色代號：1 紅 2 橙 3 黃 4 綠 5 青 6 藍 7 紫 8 白／灰 9 黑
@@ -403,7 +435,7 @@ function ucReady(): boolean {
     return f != UC_NONE && (f & 1) == 1
 }
 
-// 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）/ switch camera mode
+// 切相機模式（E0）：camMode 1~5、sub 子選項（照順序給色號填 0；物體偵測 1 清單、2 詳細）/ switch camera mode
 function ucSetMode(camMode: number, sub: number): void {
     ucWrite(0xE0, [camMode, sub])
     basic.pause(50)
@@ -468,6 +500,35 @@ function ucOrderTotal(): number {
 // line values (near/mid/far offset: line on the left = negative)
 function ucReadLine(): number[] {
     return ucReadMany(0x10, 14)
+}
+
+// 物體偵測每個物體幾個值：51 → 4（色號 形狀 X Y）、52 → 10 / values per object (modes 51, 52)
+function ucObjStride(mode: number): number {
+    if (mode == 51) return 4
+    if (mode == 52) return 10
+    return 0
+}
+
+// 物體 i（1~8，1 = 面積最大）：[代碼, 色號, 形狀, x, y, 寬, 高, 面積%, 角度, 頂點數, 追蹤編號]
+// 代碼 = 色號×10＋形狀，0 = 沒有；模式 51 沒給的是 -1
+// object i: [code, colour, shape, x, y, w, h, area%, angle, vertices, trackId]; -1 = not in mode 51
+function ucReadObject(mode: number, i: number): number[] {
+    const k = ucObjStride(mode)
+    const d = ucReadMany(0x10 + (i - 1) * k, k)
+    const code = d[0] > 0 ? d[0] * 10 + d[1] : 0
+    if (mode == 51) return [code, d[0], d[1], d[2], d[3], -1, -1, -1, -1, -1, -1]
+    return [code, d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9]]
+}
+
+// 畫面裡有幾個物體 0~8 / number of objects in view (modes 51, 52)
+function ucObjectCount(mode: number): number {
+    return ucReadMany(0x10 + 8 * ucObjStride(mode), 1)[0]
+}
+
+// 形狀編號 → 英文名稱 / shape number -> name
+function ucShapeName(s: number): string {
+    const n = ["other", "circle", "ellipse", "triangle", "square", "rectangle", "pentagon", "hexagon", "star", "trapezoid"]
+    return (s >= 0 && s <= 9) ? n[s] : "?"
 }
 
 // 色相碼 → 顏色代號：1 紅 2 橙 3 黃 4 綠 5 青 6 藍 7 紫 8 白／灰 9 黑
@@ -639,7 +700,7 @@ function ucReady(): boolean {
     return f != UC_NONE && (f & 1) == 1
 }
 
-// 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）/ switch camera mode
+// 切相機模式（E0）：camMode 1~5、sub 子選項（照順序給色號填 0；物體偵測 1 清單、2 詳細）/ switch camera mode
 function ucSetMode(camMode: number, sub: number): void {
     ucWrite(0xE0, [camMode, sub])
     basic.pause(50)
@@ -706,6 +767,35 @@ function ucReadLine(): number[] {
     return ucReadMany(0x10, 14)
 }
 
+// 物體偵測每個物體幾個值：51 → 4（色號 形狀 X Y）、52 → 10 / values per object (modes 51, 52)
+function ucObjStride(mode: number): number {
+    if (mode == 51) return 4
+    if (mode == 52) return 10
+    return 0
+}
+
+// 物體 i（1~8，1 = 面積最大）：[代碼, 色號, 形狀, x, y, 寬, 高, 面積%, 角度, 頂點數, 追蹤編號]
+// 代碼 = 色號×10＋形狀，0 = 沒有；模式 51 沒給的是 -1
+// object i: [code, colour, shape, x, y, w, h, area%, angle, vertices, trackId]; -1 = not in mode 51
+function ucReadObject(mode: number, i: number): number[] {
+    const k = ucObjStride(mode)
+    const d = ucReadMany(0x10 + (i - 1) * k, k)
+    const code = d[0] > 0 ? d[0] * 10 + d[1] : 0
+    if (mode == 51) return [code, d[0], d[1], d[2], d[3], -1, -1, -1, -1, -1, -1]
+    return [code, d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9]]
+}
+
+// 畫面裡有幾個物體 0~8 / number of objects in view (modes 51, 52)
+function ucObjectCount(mode: number): number {
+    return ucReadMany(0x10 + 8 * ucObjStride(mode), 1)[0]
+}
+
+// 形狀編號 → 英文名稱 / shape number -> name
+function ucShapeName(s: number): string {
+    const n = ["other", "circle", "ellipse", "triangle", "square", "rectangle", "pentagon", "hexagon", "star", "trapezoid"]
+    return (s >= 0 && s <= 9) ? n[s] : "?"
+}
+
 // 色相碼 → 顏色代號：1 紅 2 橙 3 黃 4 綠 5 青 6 藍 7 紫 8 白／灰 9 黑
 function ucColorCode(h: number): number {
     if (h > 248) return 9
@@ -735,6 +825,254 @@ function ucColorCode(h: number): number {
 - **Runs off and cannot come back?** → Increase `KP` (0.5 → 0.8); wobbles a lot → decrease `KP`, slow `BASE`.
 - **Wrong direction (line on the left but it turns right)?** → Servos are swapped: swap the P1 and P2 wires, or swap `+`/`-` in the two lines of `drive`.
 - **Stops before the junction?** → The camera looks far ahead and reports the junction while it is at the top of the picture. Check `v[7]` (junction distance %) and only stop above a number you choose.
+
+---
+
+## Example 4: which side is the red triangle (object detection)
+
+**What it does**: the camera sorts the objects in the picture from largest to smallest (object 1 = largest) and gives each an "object code" = colour × 10 + shape. The program looks from the largest down for a "triangle of target 1" (code 13): on the left → left arrow; middle → up arrow; right → right arrow; not found → question mark. Press A to show how many objects are in view, B to scroll the shape name of object 1.
+
+**You need**
+- The parts of example 1
+- A red triangle (card or bricks); add a red circle and a triangle of another colour to see that it is not fooled
+
+**Camera setup**: teach "target 1" as red on the camera (the shape can stay unset; only targets 1~8 become objects). Camera mode **5 object detection · option ① object list** (mode number 51) — the program switches it with E0 at start.
+
+**Wiring**: see the wiring table above.
+
+**Download**: [ex04_object.ts](/examples/unicam/microbit/en/ex04_object.ts) (right-click, save) → paste into MakeCode JavaScript → Download.
+
+**Program**
+
+```typescript
+// Sharpshooter Vision × micro:bit example 4: which side is the red triangle (object detection)
+// ★ Set the camera menu to camera mode 5 object detection · option ① object list (mode number 51) (the program also switches it with E0 at start)
+// What it does: the camera sorts objects from largest to smallest (object 1 = largest) and gives each an "object code" = colour × 10 + shape. It looks from the largest down for a "triangle of target 1" (code 13):
+//   on the left → left arrow, middle → up arrow, right → right arrow; not found → question mark. Press A to show how many objects are in view, B to scroll the shape name of object 1.
+// Shapes: 0 other 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid.
+// Wiring: camera SDA → P20, SCL → P19, VCC → external 5 V (do not power it from the micro:bit 3V pin), GND → GND (common ground).
+// Before you start: teach "target 1" as red on the camera (the shape can stay unset). MakeCode new project → switch to JavaScript (top right) → paste this whole file → Download. No extension needed.
+// What you see: a tick at start; move a red triangle left and right in front of the lens and the arrow follows; a circle or another colour → question mark.
+// ⚠ v1 not yet hardware-verified: the value layout is final and passed computer tests; real-hardware numbers may change.
+
+const MODE = 51                                   // mode number = camera mode 5 × 10 + option 1
+const WANT = 1 * 10 + 3                           // 👉 you can change: target 1 × 10 + shape 3 (triangle); square 14, circle 11
+let ready = false
+let busy = false
+
+basic.showIcon(IconNames.SmallDiamond)            // waiting for the camera
+
+// Look from the largest object down for code = WANT and return its X (0 = not found)
+function findX(): number {
+    const n = ucObjectCount(MODE)                 // objects in view, 0~8
+    for (let i = 1; i <= n && i <= 8; i++) {
+        const o = ucReadObject(MODE, i)           // [code, colour, shape, x, y, …]
+        if (o[0] == WANT) return o[3]
+    }
+    return 0
+}
+
+basic.forever(function () {
+    if (!ready) {                                 // first time: wait for the camera, then switch to mode 51
+        if (ucReady()) {
+            ucSetMode(5, 1)                       // E0: camera mode 5, option 1
+            ready = true
+            basic.showIcon(IconNames.Yes)
+            basic.pause(500)
+        } else {
+            basic.showIcon(IconNames.No)          // no answer: check P19/P20 and the external power
+            basic.pause(500)
+        }
+        return
+    }
+    if (busy) {
+        basic.pause(100)
+        return
+    }
+    const x = findX()                             // 0 = not found; 1~159 left → right
+    if (x <= 0) {
+        basic.showString("?", 0)
+    } else if (x < 60) {                          // 👉 you can change: the left range
+        basic.showArrow(ArrowNames.West, 0)
+    } else if (x > 100) {                         // 👉 you can change: the right range
+        basic.showArrow(ArrowNames.East, 0)
+    } else {
+        basic.showArrow(ArrowNames.North, 0)
+    }
+    basic.pause(50)
+})
+
+input.onButtonPressed(Button.A, function () {
+    busy = true
+    basic.showNumber(ucObjectCount(MODE))         // objects in view, 0~8
+    busy = false
+})
+
+input.onButtonPressed(Button.B, function () {
+    busy = true
+    const o = ucReadObject(MODE, 1)               // object 1 (the largest)
+    basic.showString(o[0] > 0 ? ucShapeName(o[2]) : "-")   // shape name; "-" when there is no object
+    busy = false
+})
+
+// ==== MBC_UNICAM_MB_HELPERS_BEGIN ====
+// ===== 神攝手 小幫手（MBC 通用 I2C 協議 v2）：所有範例都一樣，不用改 =====
+// ===== UniCam helpers (MBC common I2C protocol v2): same in every example, no need to change =====
+const UC_ADDR = 0x4C                     // 相機的 I2C 位址 / camera I2C address
+const UC_NONE = -32768                   // 讀不到 / no value
+
+// 從編號 id 起連續讀 k 個 int16（1~16）；讀不到全部是 UC_NONE
+function ucReadMany(id: number, k: number): number[] {
+    const cmd = pins.createBuffer(1)
+    cmd[0] = id
+    const r = pins.i2cWriteBuffer(UC_ADDR, cmd, false)
+    basic.pause(2)                       // 相機（ESP32）要等 2 ms 再讀
+    const out: number[] = []
+    if (r) {                             // 實機：非 0 = 沒有回應
+        for (let i = 0; i < k; i++) out.push(UC_NONE)
+        return out
+    }
+    const b = pins.i2cReadBuffer(UC_ADDR, 2 * k, false)
+    for (let i = 0; i < k; i++) out.push(b.getNumber(NumberFormat.Int16LE, 2 * i))
+    return out
+}
+
+// 寫命令 [id][參數…] / write a command
+function ucWrite(id: number, params: number[]): void {
+    const b = pins.createBuffer(1 + params.length)
+    b[0] = id
+    for (let i = 0; i < params.length; i++) b[1 + i] = params[i]
+    pins.i2cWriteBuffer(UC_ADDR, b, false)
+}
+
+// 相機準備好了嗎（F3 bit0）/ is the camera ready
+function ucReady(): boolean {
+    const f = ucReadMany(0xF3, 1)[0]
+    return f != UC_NONE && (f & 1) == 1
+}
+
+// 切相機模式（E0）：camMode 1~5、sub 子選項（照順序給色號填 0；物體偵測 1 清單、2 詳細）/ switch camera mode
+function ucSetMode(camMode: number, sub: number): void {
+    ucWrite(0xE0, [camMode, sub])
+    basic.pause(50)
+}
+
+// 改取樣點位置（E1）：n 1~20、x 0~159、y 0~119 / move a sample spot
+function ucSetPoint(n: number, x: number, y: number): void {
+    ucWrite(0xE1, [n, x, y])
+}
+
+// 相機目前的模式編號（例 13）/ current mode number
+function ucModeNumber(): number {
+    return ucReadMany(0x01, 1)[0]
+}
+
+// 顏色追蹤每色幾個值 / values per colour (modes 11~14)
+function ucStride(mode: number): number {
+    if (mode == 11) return 2
+    if (mode == 12) return 3
+    if (mode == 13) return 4
+    if (mode == 14) return 6
+    return 0
+}
+
+// 色 color（1~16）的色塊：[x, y, 寬, 高, 塊數, 面積%]，x = 0 = 沒找到；這個模式沒給的是 -1
+// blob of colour: [x, y, w, h, count, area%]; x = 0 = not found; -1 = not in this mode
+function ucReadBlob(mode: number, color: number): number[] {
+    const k = ucStride(mode)
+    const d = ucReadMany(0x10 + (color - 1) * k, k)
+    if (mode == 11) return [d[0], d[1], -1, -1, -1, -1]
+    if (mode == 12) return [d[0], d[1], -1, -1, d[2], -1]
+    if (mode == 13) return [d[0], d[1], -1, -1, d[3], d[2]]
+    return [d[0], d[1], d[2], d[3], d[4], d[5]]
+}
+
+// 16 個目標色裡找到幾色 / colours found (modes 11~14)
+function ucColorsFound(mode: number): number {
+    return ucReadMany(0x10 + 16 * ucStride(mode), 1)[0]
+}
+
+// 取樣點 point（1~16）：[色相碼, 飽和度, 明度]；沒給的是 -1 / spot: [hue, sat, val]
+function ucReadSpot(mode: number, point: number): number[] {
+    const k = mode - 20
+    const d = ucReadMany(0x10 + (point - 1) * k, k)
+    return [d[0], k >= 2 ? d[1] : -1, k >= 3 ? d[2] : -1]
+}
+
+// 照順序給色號：由左到右每塊的色相碼（最多 16 塊）/ hue codes left to right
+function ucReadOrder(): number[] {
+    const total = ucReadMany(0x20, 1)[0]
+    const d = ucReadMany(0x10, 16)
+    if (total == UC_NONE) return []
+    return d.slice(0, Math.min(16, total))
+}
+
+// 總塊數 / total blocks (mode 30)
+function ucOrderTotal(): number {
+    return ucReadMany(0x20, 1)[0]
+}
+
+// 循線 14 個值：[近, 中, 遠偏移, 角度, 線寬, 有線旗標, 路口類型, 路口距離, 左緣, 右緣, 遠線寬, 標記色號, 標記條數, 離線方向]
+// line values (near/mid/far offset: line on the left = negative)
+function ucReadLine(): number[] {
+    return ucReadMany(0x10, 14)
+}
+
+// 物體偵測每個物體幾個值：51 → 4（色號 形狀 X Y）、52 → 10 / values per object (modes 51, 52)
+function ucObjStride(mode: number): number {
+    if (mode == 51) return 4
+    if (mode == 52) return 10
+    return 0
+}
+
+// 物體 i（1~8，1 = 面積最大）：[代碼, 色號, 形狀, x, y, 寬, 高, 面積%, 角度, 頂點數, 追蹤編號]
+// 代碼 = 色號×10＋形狀，0 = 沒有；模式 51 沒給的是 -1
+// object i: [code, colour, shape, x, y, w, h, area%, angle, vertices, trackId]; -1 = not in mode 51
+function ucReadObject(mode: number, i: number): number[] {
+    const k = ucObjStride(mode)
+    const d = ucReadMany(0x10 + (i - 1) * k, k)
+    const code = d[0] > 0 ? d[0] * 10 + d[1] : 0
+    if (mode == 51) return [code, d[0], d[1], d[2], d[3], -1, -1, -1, -1, -1, -1]
+    return [code, d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9]]
+}
+
+// 畫面裡有幾個物體 0~8 / number of objects in view (modes 51, 52)
+function ucObjectCount(mode: number): number {
+    return ucReadMany(0x10 + 8 * ucObjStride(mode), 1)[0]
+}
+
+// 形狀編號 → 英文名稱 / shape number -> name
+function ucShapeName(s: number): string {
+    const n = ["other", "circle", "ellipse", "triangle", "square", "rectangle", "pentagon", "hexagon", "star", "trapezoid"]
+    return (s >= 0 && s <= 9) ? n[s] : "?"
+}
+
+// 色相碼 → 顏色代號：1 紅 2 橙 3 黃 4 綠 5 青 6 藍 7 紫 8 白／灰 9 黑
+function ucColorCode(h: number): number {
+    if (h > 248) return 9
+    if (h > 240) return 8
+    if (h < 12 || h >= 220) return 1
+    if (h < 28) return 2
+    if (h < 56) return 3
+    if (h < 100) return 4
+    if (h < 140) return 5
+    if (h < 180) return 6
+    return 7
+}
+// ==== MBC_UNICAM_MB_HELPERS_END ====
+```
+
+**Step by step**
+1. `WANT = 1 × 10 + 3`: object code = colour × 10 + shape, so a triangle of target 1 is 13 (square 14, circle 11).
+2. `ucObjectCount(MODE)`: how many objects are in view (0~8).
+3. `ucReadObject(MODE, i)` → `[code, colour, shape, x, y, …]`; object 1 is the largest, so the first match from 1 down is the biggest. Mode 51 only gives code, colour, shape, X, Y; the rest are −1.
+4. `ucShapeName(o[2])`: shape number → English name (the LEDs can only scroll plain letters).
+
+**What you should see**: a tick at start; red triangle on the left → left arrow, on the right → right arrow; a red circle or a blue triangle → question mark. B scrolls a word such as `triangle`.
+
+**Common problems**
+- **Always a question mark?** → The top right of the camera screen must show `5-1`; look at the "colour shape" label next to each object on the camera screen. If the triangle is read as another shape, set the shape of target 1 to Tri on the camera, or raise **ShapeTol** in the SET menu.
+- **Want size, area, angle?** → Use `ucSetMode(5, 2)` and `MODE = 52`: `ucReadObject` then also gives width, height, area %, angle 0~179, vertices and track id.
 
 ---
 

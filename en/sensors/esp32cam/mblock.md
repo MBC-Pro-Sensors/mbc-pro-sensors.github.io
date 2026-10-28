@@ -21,22 +21,22 @@ Sensor → mBot adapter → RJ25 port on the board (S1 = host TX, S2 = host RX).
 
 | Block | Returns | Id | Meaning |
 | :--- | :--- | :--- | :--- |
-| Vision port [port] hue | -1~100 | [`01`](/en/sensors/esp32cam/reference.md#v01) | hue of sample point S1, 0~100 (hue ring 0~240 scaled); −1 = black/white/grey (saturation < 10); 0 when S1 is not set |
-| Vision port [port] saturation | 0~100 | [`02`](/en/sensors/esp32cam/reference.md#v02) | saturation of sample point S1, 0~100 |
-| Vision port [port] brightness | 0~100 | [`03`](/en/sensors/esp32cam/reference.md#v03) | brightness (HSV value) of sample point S1, 0~100 |
-| Vision port [port] motion | 0~100 | [`04`](/en/sensors/esp32cam/reference.md#v04) | whole-frame motion 0~100 (more change = larger) |
-| Vision port [port] blob X | 0~100 | [`05`](/en/sensors/esp32cam/reference.md#v05) | blob centre X 0~100, left = 0; 0 when not found |
-| Vision port [port] blob Y | 0~75 | [`06`](/en/sensors/esp32cam/reference.md#v06) | blob centre Y 0~75, bottom = 0, top = 75; 0 when not found |
-| Vision port [port] blob width | 0~100 | [`07`](/en/sensors/esp32cam/reference.md#v07) | blob width W 0~100; 0 = not found |
-| Vision port [port] blob height | 0~75 | [`08`](/en/sensors/esp32cam/reference.md#v08) | blob height H 0~75; 0 when not found |
-| Vision port [port] blob area | 0~7500 | [`09`](/en/sensors/esp32cam/reference.md#v09) | W×H (0~7500); 0 when not found |
-| Vision port [port] blob found? | 0~1 | [`0A`](/en/sensors/esp32cam/reference.md#v0a) | 1 = a blob of the target colour is in view (W > 0), 0 = none |
+| Sharpshooter Vision (legacy) port [port] hue | -1~100 | [`01`](/en/sensors/esp32cam/reference.md#v01) | hue of sample point S1, 0~100 (hue ring 0~240 scaled); −1 = black/white/grey (saturation < 10); 0 when S1 is not set |
+| Sharpshooter Vision (legacy) port [port] saturation | 0~100 | [`02`](/en/sensors/esp32cam/reference.md#v02) | saturation of sample point S1, 0~100 |
+| Sharpshooter Vision (legacy) port [port] brightness | 0~100 | [`03`](/en/sensors/esp32cam/reference.md#v03) | brightness (HSV value) of sample point S1, 0~100 |
+| Sharpshooter Vision (legacy) port [port] motion | 0~100 | [`04`](/en/sensors/esp32cam/reference.md#v04) | whole-frame motion 0~100 (more change = larger) |
+| Sharpshooter Vision (legacy) port [port] blob X | 0~100 | [`05`](/en/sensors/esp32cam/reference.md#v05) | blob centre X 0~100, left = 0; 0 when not found |
+| Sharpshooter Vision (legacy) port [port] blob Y | 0~75 | [`06`](/en/sensors/esp32cam/reference.md#v06) | blob centre Y 0~75, bottom = 0, top = 75; 0 when not found |
+| Sharpshooter Vision (legacy) port [port] blob width | 0~100 | [`07`](/en/sensors/esp32cam/reference.md#v07) | blob width W 0~100; 0 = not found |
+| Sharpshooter Vision (legacy) port [port] blob height | 0~75 | [`08`](/en/sensors/esp32cam/reference.md#v08) | blob height H 0~75; 0 when not found |
+| Sharpshooter Vision (legacy) port [port] blob area | 0~7500 | [`09`](/en/sensors/esp32cam/reference.md#v09) | W×H (0~7500); 0 when not found |
+| Sharpshooter Vision (legacy) port [port] blob found? | 0~1 | [`0A`](/en/sensors/esp32cam/reference.md#v0a) | 1 = a blob of the target colour is in view (W > 0), 0 = none |
 
 ## Command blocks
 
 | Block | Id | Meaning |
 | :--- | :--- | :--- |
-| Vision port [port] update all values | `FD` | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
+| Sharpshooter Vision (legacy) port [port] update all values | `FD` | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 
 ## Status blocks
 

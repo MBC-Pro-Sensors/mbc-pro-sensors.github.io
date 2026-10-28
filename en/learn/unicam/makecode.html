@@ -320,13 +320,26 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
             <label class="f" for="lmark" data-g="line"><span>Colored marker line under the robot now</span>
               <select id="lmark"><option value="0">none</option><option value="2">target color 2 (green)</option><option value="3">target color 3 (blue)</option><option value="4">target color 4 (yellow)</option></select>
             </label>
+            <label class="f" for="jshape" data-g="obj"><span>Selected object (<span id="jname">track id 1</span>; tap a shape to select it): shape</span>
+              <select id="jshape"><option value="1">1 circle</option><option value="2">2 ellipse</option><option value="3">3 triangle</option><option value="4">4 square</option><option value="5">5 rectangle</option><option value="6">6 pentagon</option><option value="7">7 hexagon</option><option value="8">8 star</option><option value="9">9 trapezoid</option></select>
+            </label>
+            <label class="f" for="jcolor" data-g="obj"><span>Color (target color 1–8 taught on the camera)</span>
+              <select id="jcolor"><option value="1">target color 1 (red)</option><option value="2">target color 2 (green)</option><option value="3">target color 3 (blue)</option><option value="4">target color 4 (yellow)</option><option value="5">target color 5 (purple)</option><option value="6">target color 6 (orange)</option><option value="7">target color 7 (cyan)</option><option value="8">target color 8 (pink)</option></select>
+            </label>
+            <label class="f" for="jsize" data-g="obj"><span>Size (closer looks bigger)</span>
+              <input autocomplete="off" type="range" id="jsize" min="12" max="70" value="42">
+            </label>
+            <label class="f" for="jrot" data-g="obj"><span>Rotation (0–179°)</span>
+              <input autocomplete="off" type="range" id="jrot" min="0" max="179" value="0">
+            </label>
             <div class="toggles">
+              <label data-g="obj"><input autocomplete="off" type="checkbox" id="jgone"> Remove this object (<span id="jname2">track id 1</span>)</label>
               <label data-g="track"><input autocomplete="off" type="checkbox" id="tgone"> Remove <span id="selname3">color 1</span></label>
               <label data-g="line"><input autocomplete="off" type="checkbox" id="lgone"> Remove the line (robot left the line)</label>
               <label><input autocomplete="off" type="checkbox" id="unplug"> Unplug the sensor</label>
             </div>
           </div>
-          <p class="note">The view is a sketch: values come straight from where things are on screen (X 0–159 left→right, Y 0–119 top→bottom, area % = width × height ÷ whole picture); a hue code is the color the paper or block really has (red 0, yellow 40, green 80, blue 160, purple 200, white table 244, black tape 252). It is not the camera's own algorithm, and real numbers vary with the light. Color tracking assumes 4 colors were taught on the camera: color 1 red, 2 green, 3 blue, 4 yellow.</p>
+          <p class="note">The view is a sketch: values come straight from where things are on screen (X 0–159 left→right, Y 0–119 top→bottom, area % = width × height ÷ whole picture); a hue code is the color the paper or block really has (red 0, yellow 40, green 80, blue 160, purple 200, white table 244, black tape 252). It is not the camera's own algorithm, and real numbers vary with the light. Color tracking assumes 4 colors were taught on the camera: color 1 red, 2 green, 3 blue, 4 yellow. In object detection you pick each shape yourself (the camera does not judge it here); objects 1, 2… are sorted by area, largest first; X, Y is the shape's centroid (white dot), the dashed box is its bounding box, and the angle is the rotation you set.</p>
         </div>
           </div>
         </div>
@@ -386,7 +399,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 (function () {
   'use strict';
 var PAGE = {"lang":"en","code":"ts"};
-var CFG = {"mb":true,"helper":["// ==== MBC_UNICAM_MB_HELPERS_BEGIN ====","// ===== UniCam helpers (MBC common I2C protocol v2): same in every example, no need to change =====","const UC_ADDR = 0x4C                     // camera I2C address","const UC_NONE = -32768                   // no value","","function ucReadMany(id: number, k: number): number[] {","    const cmd = pins.createBuffer(1)","    cmd[0] = id","    const r = pins.i2cWriteBuffer(UC_ADDR, cmd, false)","    basic.pause(2)","    const out: number[] = []","    if (r) {","        for (let i = 0; i < k; i++) out.push(UC_NONE)","        return out","    }","    const b = pins.i2cReadBuffer(UC_ADDR, 2 * k, false)","    for (let i = 0; i < k; i++) out.push(b.getNumber(NumberFormat.Int16LE, 2 * i))","    return out","}","","// write a command","function ucWrite(id: number, params: number[]): void {","    const b = pins.createBuffer(1 + params.length)","    b[0] = id","    for (let i = 0; i < params.length; i++) b[1 + i] = params[i]","    pins.i2cWriteBuffer(UC_ADDR, b, false)","}","","function ucReady(): boolean {","    const f = ucReadMany(0xF3, 1)[0]","    return f != UC_NONE && (f & 1) == 1","}","","function ucSetMode(camMode: number, sub: number): void {","    ucWrite(0xE0, [camMode, sub])","    basic.pause(50)","}","","// move a sample spot","function ucSetPoint(n: number, x: number, y: number): void {","    ucWrite(0xE1, [n, x, y])","}","","function ucModeNumber(): number {","    return ucReadMany(0x01, 1)[0]","}","","// values per colour (modes 11~14)","function ucStride(mode: number): number {","    if (mode == 11) return 2","    if (mode == 12) return 3","    if (mode == 13) return 4","    if (mode == 14) return 6","    return 0","}","","// blob of colour: [x, y, w, h, count, area%]; x = 0 = not found; -1 = not in this mode","function ucReadBlob(mode: number, color: number): number[] {","    const k = ucStride(mode)","    const d = ucReadMany(0x10 + (color - 1) * k, k)","    if (mode == 11) return [d[0], d[1], -1, -1, -1, -1]","    if (mode == 12) return [d[0], d[1], -1, -1, d[2], -1]","    if (mode == 13) return [d[0], d[1], -1, -1, d[3], d[2]]","    return [d[0], d[1], d[2], d[3], d[4], d[5]]","}","","// colours found (modes 11~14)","function ucColorsFound(mode: number): number {","    return ucReadMany(0x10 + 16 * ucStride(mode), 1)[0]","}","","// spot: [hue, sat, val]","function ucReadSpot(mode: number, point: number): number[] {","    const k = mode - 20","    const d = ucReadMany(0x10 + (point - 1) * k, k)","    return [d[0], k >= 2 ? d[1] : -1, k >= 3 ? d[2] : -1]","}","","function ucReadOrder(): number[] {","    const total = ucReadMany(0x20, 1)[0]","    const d = ucReadMany(0x10, 16)","    if (total == UC_NONE) return []","    return d.slice(0, Math.min(16, total))","}","","// total blocks (mode 30)","function ucOrderTotal(): number {","    return ucReadMany(0x20, 1)[0]","}","","// line values (near/mid/far offset: line on the left = negative)","function ucReadLine(): number[] {","    return ucReadMany(0x10, 14)","}","","function ucColorCode(h: number): number {","    if (h > 248) return 9","    if (h > 240) return 8","    if (h < 12 || h >= 220) return 1","    if (h < 28) return 2","    if (h < 56) return 3","    if (h < 100) return 4","    if (h < 140) return 5","    if (h < 180) return 6","    return 7","}","// ==== MBC_UNICAM_MB_HELPERS_END ===="]};
+var CFG = {"mb":true,"helper":["// ==== MBC_UNICAM_MB_HELPERS_BEGIN ====","// ===== UniCam helpers (MBC common I2C protocol v2): same in every example, no need to change =====","const UC_ADDR = 0x4C                     // camera I2C address","const UC_NONE = -32768                   // no value","","function ucReadMany(id: number, k: number): number[] {","    const cmd = pins.createBuffer(1)","    cmd[0] = id","    const r = pins.i2cWriteBuffer(UC_ADDR, cmd, false)","    basic.pause(2)","    const out: number[] = []","    if (r) {","        for (let i = 0; i < k; i++) out.push(UC_NONE)","        return out","    }","    const b = pins.i2cReadBuffer(UC_ADDR, 2 * k, false)","    for (let i = 0; i < k; i++) out.push(b.getNumber(NumberFormat.Int16LE, 2 * i))","    return out","}","","// write a command","function ucWrite(id: number, params: number[]): void {","    const b = pins.createBuffer(1 + params.length)","    b[0] = id","    for (let i = 0; i < params.length; i++) b[1 + i] = params[i]","    pins.i2cWriteBuffer(UC_ADDR, b, false)","}","","function ucReady(): boolean {","    const f = ucReadMany(0xF3, 1)[0]","    return f != UC_NONE && (f & 1) == 1","}","","function ucSetMode(camMode: number, sub: number): void {","    ucWrite(0xE0, [camMode, sub])","    basic.pause(50)","}","","// move a sample spot","function ucSetPoint(n: number, x: number, y: number): void {","    ucWrite(0xE1, [n, x, y])","}","","function ucModeNumber(): number {","    return ucReadMany(0x01, 1)[0]","}","","// values per colour (modes 11~14)","function ucStride(mode: number): number {","    if (mode == 11) return 2","    if (mode == 12) return 3","    if (mode == 13) return 4","    if (mode == 14) return 6","    return 0","}","","// blob of colour: [x, y, w, h, count, area%]; x = 0 = not found; -1 = not in this mode","function ucReadBlob(mode: number, color: number): number[] {","    const k = ucStride(mode)","    const d = ucReadMany(0x10 + (color - 1) * k, k)","    if (mode == 11) return [d[0], d[1], -1, -1, -1, -1]","    if (mode == 12) return [d[0], d[1], -1, -1, d[2], -1]","    if (mode == 13) return [d[0], d[1], -1, -1, d[3], d[2]]","    return [d[0], d[1], d[2], d[3], d[4], d[5]]","}","","// colours found (modes 11~14)","function ucColorsFound(mode: number): number {","    return ucReadMany(0x10 + 16 * ucStride(mode), 1)[0]","}","","// spot: [hue, sat, val]","function ucReadSpot(mode: number, point: number): number[] {","    const k = mode - 20","    const d = ucReadMany(0x10 + (point - 1) * k, k)","    return [d[0], k >= 2 ? d[1] : -1, k >= 3 ? d[2] : -1]","}","","function ucReadOrder(): number[] {","    const total = ucReadMany(0x20, 1)[0]","    const d = ucReadMany(0x10, 16)","    if (total == UC_NONE) return []","    return d.slice(0, Math.min(16, total))","}","","// total blocks (mode 30)","function ucOrderTotal(): number {","    return ucReadMany(0x20, 1)[0]","}","","// line values (near/mid/far offset: line on the left = negative)","function ucReadLine(): number[] {","    return ucReadMany(0x10, 14)","}","","// values per object (modes 51, 52)","function ucObjStride(mode: number): number {","    if (mode == 51) return 4","    if (mode == 52) return 10","    return 0","}","","// object i: [code, colour, shape, x, y, w, h, area%, angle, vertices, trackId]; -1 = not in mode 51","function ucReadObject(mode: number, i: number): number[] {","    const k = ucObjStride(mode)","    const d = ucReadMany(0x10 + (i - 1) * k, k)","    const code = d[0] > 0 ? d[0] * 10 + d[1] : 0","    if (mode == 51) return [code, d[0], d[1], d[2], d[3], -1, -1, -1, -1, -1, -1]","    return [code, d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9]]","}","","// number of objects in view (modes 51, 52)","function ucObjectCount(mode: number): number {","    return ucReadMany(0x10 + 8 * ucObjStride(mode), 1)[0]","}","","// shape number -> name","function ucShapeName(s: number): string {","    const n = [\"other\", \"circle\", \"ellipse\", \"triangle\", \"square\", \"rectangle\", \"pentagon\", \"hexagon\", \"star\", \"trapezoid\"]","    return (s >= 0 && s <= 9) ? n[s] : \"?\"","}","","function ucColorCode(h: number): number {","    if (h > 248) return 9","    if (h > 240) return 8","    if (h < 12 || h >= 220) return 1","    if (h < 28) return 2","    if (h < 56) return 3","    if (h < 100) return 4","    if (h < 140) return 5","    if (h < 180) return 6","    return 7","}","// ==== MBC_UNICAM_MB_HELPERS_END ===="]};
 function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
   function $(id) { return document.getElementById(id); }
   function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
@@ -403,16 +416,19 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     { n: 30, g: 'order', cm: 3, sub: 0, name: ('(no sub-option)') },
     { n: 41, g: 'line', cm: 4, sub: 1, name: ('① Black line') },
     { n: 42, g: 'line', cm: 4, sub: 2, name: ('② White line') },
-    { n: 43, g: 'line', cm: 4, sub: 3, name: ('③ Colored line') }
+    { n: 43, g: 'line', cm: 4, sub: 3, name: ('③ Colored line') },
+    { n: 51, g: 'obj', cm: 5, sub: 1, name: ('① Object list') },
+    { n: 52, g: 'obj', cm: 5, sub: 2, name: ('② Object details') }
   ];
   var GROUPS = {
     track: { cm: 1, name: ('1 Color tracking'), modes: [11, 12, 13, 14] },
     spot: { cm: 2, name: ('2 Color at points'), modes: [21, 22, 23] },
     order: { cm: 3, name: ('3 Color order'), modes: [30] },
     line: { cm: 4, name: ('4 Line following'), modes: [41, 42, 43] },
+    obj: { cm: 5, name: ('5 Object detection'), modes: [51, 52] },
     info: { cm: 0, name: ('Sensor info (any mode)'), modes: null }
   };
-  var GORDER = ['track', 'spot', 'order', 'line', 'info'];
+  var GORDER = ['track', 'spot', 'order', 'line', 'obj', 'info'];
   function modeOf(n) { for (var i = 0; i < MODES.length; i++) if (MODES[i].n === n) return MODES[i]; return MODES[2]; }
   function modeTitle(n) { var m = modeOf(n); return n + ' = ' + GROUPS[m.g].name.replace(/^\d /, '') + ' ' + m.name; }
   function modeList(ms) {
@@ -432,6 +448,8 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if (h < 12 || h >= 220) return 1; if (h < 28) return 2; if (h < 56) return 3;
     if (h < 100) return 4; if (h < 140) return 5; if (h < 180) return 6; return 7;
   }
+  var SHAPES = ['other', 'circle', 'ellipse', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon', 'star', 'trapezoid'];
+  var SHAPES_ZH = [('other'), ('circle'), ('ellipse'), ('triangle'), ('square'), ('rectangle'), ('pentagon'), ('hexagon'), ('star'), ('trapezoid')];
   function py(v) {
     if (v === null || v === undefined) return 'None';
     if (v === true) return 'True'; if (v === false) return 'False';
@@ -525,7 +543,17 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
             return { nearOff: L.near, midOff: L.mid, farOff: L.far, angle: L.angle, width: L.width, flags: L.flags, junction: L.junction, junctionDist: L.jdist, leftEdge: L.left, rightEdge: L.right, farWidth: L.farw, marker: L.marker, markerCount: L.mcount, lost: L.lost };
           },
           read: function (id) { if (!ok) return NONE; return id === 0x01 ? m : id === 0xF0 ? 0x034C : id === 0xF2 ? 100 : id === 0xF3 ? 1 : NONE; },
-          write: function () { return ok; }
+          write: function () { return ok; },
+          obj: function (i) {
+            var o = st.obj[i - 1];
+            if (!ok) return MB ? { code: 0, color: NONE, shape: NONE, x: NONE, y: NONE, w: m === 52 ? NONE : -1, h: m === 52 ? NONE : -1, area: m === 52 ? NONE : -1, angle: m === 52 ? NONE : -1, vertices: m === 52 ? NONE : -1, trackId: m === 52 ? NONE : -1 } : null;
+            var r = o ? { code: o[0] * 10 + o[1], color: o[0], shape: o[1], x: Math.max(1, o[2]), y: Math.max(1, o[3]) } : { code: 0, color: 0, shape: 0, x: 0, y: 0 };
+            if (m === 51) { r.w = r.h = r.area = r.angle = r.vertices = r.trackId = -1; }
+            else if (o) { r.w = o[6] - o[4] + 1; r.h = o[7] - o[5] + 1; r.area = Math.max(1, idiv(o[8] * 100 + 9600, 19200)); r.angle = o[9]; r.vertices = o[10]; r.trackId = o[11]; }
+            else { r.w = r.h = r.area = r.angle = r.vertices = r.trackId = 0; }
+            return r;
+          },
+          objCount: function () { return ok ? st.obj.length : NONE; }
         };
         return V;
       }
@@ -664,12 +692,51 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         body: MB ? ['if (ucReady()) {', '    ' + out([('camera OK')]), '} else {', '    ' + out([('camera not answering!')]), '}']
           : ['int16_t f = mbcRead(ADDR, 0xF3);', 'if (f != MBC_NONE && (f & 1)) ' + out([('camera OK')]), 'else ' + out([('camera not answering!')])],
         out: function (V) { var f = V.read(0xF3); return f !== NONE && (f & 1) ? ('camera OK') : ('camera not answering!'); } });
+      var SN = SHAPES;
+      function objRead(then) {
+        return MB ? mbRead('const o = ucReadObject(MODE, 1)          // [' + ('code, color, shape, x, y, w, h, area, angle, vertices, trackId') + ']', 'o[1]', then)
+          : ['UcObject o;'].concat(ardRead('', 'ucReadObject(MODE, 1, o)', then).slice(1));
+      }
+      var OF = MB ? { code: 'o[0]', color: 'o[1]', shape: 'o[2]', x: 'o[3]', y: 'o[4]', w: 'o[5]', h: 'o[6]', area: 'o[7]', angle: 'o[8]', vert: 'o[9]', id: 'o[10]' }
+        : { code: 'o.code', color: 'o.color', shape: 'o.shape', x: 'o.x', y: 'o.y', w: 'o.w', h: 'o.h', area: 'o.area', angle: 'o.angle', vert: 'o.vertices', id: 'o.trackId' };
+      function objOut(f) { return function (V) { var o = V.obj(1); if (!o || o.color === NONE) return NOREAD; return f(o); }; }
+      add({ id: 'objcount', grp: 'obj', modes: [51, 52], label: 'ucObjectCount()', name: ('Objects in view'),
+        what: ('How many objects are in view (0–8). Only target colors 1–8 count. Remove an object to see it drop. −32768 when it cannot be read.'),
+        ret: ('0–8'), body: [out([('objects in view: '), v('ucObjectCount(MODE)'), ('')])],
+        out: function (V) { return ('objects in view: ') + V.objCount() + (''); } });
+      add({ id: 'objcode', grp: 'obj', modes: [51, 52], label: MB ? 'ucReadObject → [0], [3], [4]' : 'ucReadObject → o.code, o.x, o.y', name: ('Object code and position'),
+        what: ('Reads object i (1–8, 1 = largest). Code = color × 10 + shape, e.g. 13 = a triangle of target color 1; 0 = none. X, Y = centroid (white dot). Shapes: 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid 0 other.'),
+        ret: MB ? ('list of 11 values') : ('true / false; values go into UcObject o'),
+        body: objRead([IF(OF.code + ' == 0'), I + out([('no object')]), '} else {', I + out([('object 1 code '), v(OF.code), ' X=', v(OF.x), ' Y=', v(OF.y)]), '}']),
+        out: objOut(function (o) { return o.code === 0 ? ('no object') : ('object 1 code ') + o.code + ' X=' + o.x + ' Y=' + o.y; }) });
+      add({ id: 'objshape', grp: 'obj', modes: [51, 52], label: MB ? 'ucReadObject → [1], [2]' : 'ucReadObject → o.color, o.shape', name: ('Object color and shape'),
+        what: ('Which target color (1–8) and shape (0–9) object i is; <code>ucShapeName()</code> gives the English name. Change the shape and color on the right.'),
+        ret: ('color 0–8, shape 0–9'),
+        body: objRead([out([('object 1: target color '), v(OF.color), ' ', v('ucShapeName(' + OF.shape + ')')])]),
+        out: objOut(function (o) { return ('object 1: target color ') + o.color + ' ' + SN[o.shape]; }) });
+      add({ id: 'objsize', grp: 'obj', modes: [52], label: MB ? 'ucReadObject → [5], [6], [7]' : 'ucReadObject → o.w, o.h, o.area', name: ('Object width, height, area'),
+        what: ('Mode 52: width and height of the bounding box (dashed box) in pixels and the area %. Bigger = closer. Not in mode 51 (−1).'),
+        ret: ('pixels, %'),
+        body: objRead([out([('width '), v(OF.w), (' height '), v(OF.h), (' area '), v(OF.area), ' %'])]),
+        out: objOut(function (o) { return ('width ') + o.w + (' height ') + o.h + (' area ') + o.area + ' %'; }) });
+      add({ id: 'objangle', grp: 'obj', modes: [52], label: MB ? 'ucReadObject → [8], [9], [10]' : 'ucReadObject → o.angle', name: ('Object angle, vertices, track id'),
+        what: ('Mode 52: long-side angle 0–179° (right = 0, toward the bottom = positive), vertices (triangle 3, quadrilaterals 4, pentagon 5, hexagon 6, star 10, circle 0), and track id (stays the same for the same object, 1–255). Rotate the object.'),
+        ret: ('angle, vertices, id'),
+        body: objRead([out([('angle '), v(OF.angle), (' vertices '), v(OF.vert), (' id '), v(OF.id)])]),
+        out: objOut(function (o) { return ('angle ') + o.angle + (' vertices ') + o.vertices + (' id ') + o.trackId; }) });
+      add({ id: 'objfind', grp: 'obj', modes: [51, 52], label: ('find object 13'), name: ('Find the red triangle'),
+        what: ('Checks objects 1–8 for code 13 (a triangle of target color 1) and prints where it is, or "not seen". Change the triangle into another shape.'),
+        ret: ('decided by the code'),
+        body: MB ? ['let found = false', 'for (let i = 1; i <= 8; i++) {', '    const o = ucReadObject(MODE, i)', '    if (o[0] == 13) {', '        serial.writeLine("' + ('red triangle at X=') + '" + o[3] + " Y=" + o[4])', '        found = true', '        break', '    }', '}', 'if (!found) serial.writeLine("' + ('no red triangle') + '")']
+          : ['bool found = false;', 'for (uint8_t i = 1; i <= 8; i++) {', '  UcObject o;', '  if (ucReadObject(MODE, i, o) && o.code == 13) {', '    ' + out([('red triangle at X='), v('o.x'), ' Y=', v('o.y')]), '    found = true;', '    break;', '  }', '}', 'if (!found) ' + out([('no red triangle')])],
+        out: function (V) { for (var i = 1; i <= 8; i++) { var o = V.obj(i); if (o && o.code === 13) return ('red triangle at X=') + o.x + ' Y=' + o.y; } return ('no red triangle'); } });
+      FNS = FNS.map(function (f, i) { return [GORDER.indexOf(f.grp), i, f]; }).sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; }).map(function (x) { return x[2]; });
       var HELPER = CFG.helper;
       function modeLine() { var mi = modeOf(S.mode); return (MB ? 'const MODE = ' : 'const uint8_t MODE = ') + S.mode + (MB ? '' : ';') + '                 // ' + ('mode number = camera mode ') + mi.cm + ' × 10 + ' + mi.sub; }
       function setModeLine() { var mi = modeOf(S.mode); return 'ucSetMode(' + mi.cm + ', ' + mi.sub + ')' + (MB ? '' : ';') + '                     // ' + ('E0: camera to mode ') + S.mode; }
       var HOST = {
         collapse: true, helper: HELPER,
-        counts: function () { return { col: 16, pt: 16, order: 16, line: 14 }; },
+        counts: function () { return { col: 16, pt: 16, order: 16, line: 14, obj: 8 }; },
         cmt: function (s) { return '// ' + s; },
         lines: function (f) {
           var L = [], s3 = S.step >= 3;
@@ -844,8 +911,44 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     ],
     osel: 0,
     line: { ys: [100, 62, 24], xs: [66, 74, 88] }, lsel: 0,
-    mk: 0, mkn: 0, lastSide: -1
+    mk: 0, mkn: 0, lastSide: -1,
+    objs: [
+      { id: 1, color: 1, shape: 3, cx: 40, cy: 44, size: 42, rot: 0, gone: false },
+      { id: 2, color: 2, shape: 4, cx: 112, cy: 38, size: 30, rot: 20, gone: false },
+      { id: 3, color: 3, shape: 1, cx: 74, cy: 88, size: 28, rot: 0, gone: false },
+      { id: 4, color: 4, shape: 5, cx: 128, cy: 90, size: 34, rot: 150, gone: false },
+      { id: 5, color: 5, shape: 8, cx: 30, cy: 96, size: 26, rot: 0, gone: false }
+    ],
+    jsel: 0
   };
+  var OBJFILL = ['#888', '#d8392b', '#2f9e44', '#1f6fd1', '#f2c318', '#8a3fc4', '#f08a24', '#18a8b8', '#e0559a'];
+  var VERTS = [0, 0, 0, 3, 4, 4, 5, 6, 10, 4];
+  function objPoly(o) {
+    var s = o.size, pts = [], i, n, r;
+    if (o.shape === 1 || o.shape === 2) { var a = s / 2, b = o.shape === 1 ? s / 2 : s / 3; for (i = 0; i < 48; i++) { var t = i * Math.PI * 2 / 48; pts.push([a * Math.cos(t), b * Math.sin(t)]); } }
+    else if (o.shape === 3) { r = s / Math.sqrt(3); for (i = 0; i < 3; i++) { var t3 = -Math.PI / 2 + i * Math.PI * 2 / 3; pts.push([r * Math.cos(t3), r * Math.sin(t3) + r / 4]); } }
+    else if (o.shape === 4) pts = [[-s / 2, -s / 2], [s / 2, -s / 2], [s / 2, s / 2], [-s / 2, s / 2]];
+    else if (o.shape === 5) pts = [[-s / 2, -s * 0.28], [s / 2, -s * 0.28], [s / 2, s * 0.28], [-s / 2, s * 0.28]];
+    else if (o.shape === 6 || o.shape === 7) { n = o.shape === 6 ? 5 : 6; for (i = 0; i < n; i++) { var t5 = -Math.PI / 2 + i * Math.PI * 2 / n; pts.push([s / 2 * Math.cos(t5), s / 2 * Math.sin(t5)]); } }
+    else if (o.shape === 8) { for (i = 0; i < 10; i++) { var t8 = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? s * 0.2 : s / 2; pts.push([rr * Math.cos(t8), rr * Math.sin(t8)]); } }
+    else pts = [[-s / 2, s * 0.3], [s / 2, s * 0.3], [s * 0.28, -s * 0.3], [-s * 0.28, -s * 0.3]];
+    var c = Math.cos(o.rot * Math.PI / 180), sn = Math.sin(o.rot * Math.PI / 180);
+    return pts.map(function (q) { return [o.cx + q[0] * c - q[1] * sn, o.cy + q[0] * sn + q[1] * c]; });
+  }
+  function polyArea(P) { var a = 0; for (var i = 0; i < P.length; i++) { var j = (i + 1) % P.length; a += P[i][0] * P[j][1] - P[j][0] * P[i][1]; } return a / 2; }
+  function polyCentroid(P) {
+    var A = polyArea(P), x = 0, y = 0;
+    for (var i = 0; i < P.length; i++) { var j = (i + 1) % P.length, f = P[i][0] * P[j][1] - P[j][0] * P[i][1]; x += (P[i][0] + P[j][0]) * f; y += (P[i][1] + P[j][1]) * f; }
+    return [x / (6 * A), y / (6 * A)];
+  }
+  function objTruth(o) {
+    var P = objPoly(o), xs = P.map(function (q) { return q[0]; }), ys = P.map(function (q) { return q[1]; });
+    var l = clamp(Math.floor(Math.min.apply(null, xs)), 0, 159), r = clamp(Math.floor(Math.max.apply(null, xs)), 0, 159);
+    var t = clamp(Math.floor(Math.min.apply(null, ys)), 0, 119), b = clamp(Math.floor(Math.max.apply(null, ys)), 0, 119);
+    var c = polyCentroid(P);
+    var ang = o.shape === 1 ? 0 : ((Math.round(o.rot) % 180) + 180) % 180;
+    return [o.color, o.shape, clamp(Math.round(c[0]), 0, 159), clamp(Math.round(c[1]), 0, 119), l, t, r, b, Math.max(1, Math.round(Math.abs(polyArea(P)))), ang, VERTS[o.shape], o.id];
+  }
   var WHITE = { h: 244, s: 4, v: 92 }, BLACK = { h: 252, s: 8, v: 7 };
   var TAPE = { y0: 104, y1: 112 };
   function hueFill(h) { return 'hsl(' + Math.round(h * 1.5) + ', 72%, 48%)'; }   
@@ -920,6 +1023,12 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       L.lost = SC.lastSide < 0 ? 1 : 2;
     }
     s.line = L;
+    s.obj = SC.objs.filter(function (o) { return !o.gone; }).map(function (o) {
+      var P = objPoly(o), xs = P.map(function (q) { return q[0]; }), ys = P.map(function (q) { return q[1]; });
+      o.cx = clamp(o.cx, o.cx - Math.min.apply(null, xs), FW - 1 - (Math.max.apply(null, xs) - o.cx));
+      o.cy = clamp(o.cy, o.cy - Math.min.apply(null, ys), FH - 1 - (Math.max.apply(null, ys) - o.cy));
+      return objTruth(o);
+    }).sort(function (a, b) { return b[8] - a[8] || a[11] - b[11]; }).slice(0, 8);
     return s;
   }
   var frozen = null, everOk = false;
@@ -939,7 +1048,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
   function draw(st) {
     var g = curG(), live = rawState(), h = '';
     var ir = getComputedStyle(document.documentElement).getPropertyValue('--ir').trim() || '#c0392b';
-    var floor = g === 'line' ? (S.mode === 42 ? '#2b2f33' : '#f2f0ea') : g === 'spot' ? '#f6f4ee' : '#e8e4da';
+    var floor = g === 'obj' ? '#f6f4ee' : g === 'line' ? (S.mode === 42 ? '#2b2f33' : '#f2f0ea') : g === 'spot' ? '#f6f4ee' : '#e8e4da';
     h += '<rect x="0" y="0" width="' + SW + '" height="' + SH + '" fill="#f7f7f2"/>';
     h += '<rect x="' + OX + '" y="' + OY + '" width="' + FW * K + '" height="' + FH * K + '" fill="' + floor + '" stroke="#55605d" stroke-width="2"/>';
     var top = '';
@@ -979,6 +1088,21 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         h += txt(fx(b.cx), fy(b.cy) + 5, String(b.hue), { anchor: 'middle', bold: true, fill: '#fff', size: 13 });
       });
       top = ('Left to right ') + (st.none ? '?' : '[' + st.order.hues.join(', ') + ']') + ('  total ') + (st.none ? '?' : st.order.total) + ('');
+    } else if (g === 'obj') {
+      var rank = {}; st.obj.forEach(function (o, k) { rank[o[11]] = k + 1; });
+      SC.objs.forEach(function (o, i) {
+        if (o.gone) return;
+        var P = objPoly(o);
+        h += '<polygon points="' + P.map(function (q) { return fx(q[0]).toFixed(1) + ',' + fy(q[1]).toFixed(1); }).join(' ') + '" fill="' + OBJFILL[o.color] + '" stroke="' + (i === SC.jsel ? '#111' : 'rgba(0,0,0,0.3)') + '" stroke-width="' + (i === SC.jsel ? 3 : 1.5) + '"/>';
+        var tr = objTruth(o);
+        if (st.ok && rank[o.id]) {
+          h += '<rect x="' + fx(tr[4]) + '" y="' + fy(tr[5]) + '" width="' + (tr[6] - tr[4] + 1) * K + '" height="' + (tr[7] - tr[5] + 1) * K + '" fill="none" stroke="#19a974" stroke-width="1.5" stroke-dasharray="4 3"/>';
+          h += '<circle cx="' + fx(tr[2]) + '" cy="' + fy(tr[3]) + '" r="3.5" fill="#fff" stroke="#111" stroke-width="1.5"/>';
+          h += txt(fx(tr[4]) + 2, fy(tr[5]) - 4, '#' + rank[o.id] + ' ' + (tr[0] * 10 + tr[1]), { size: 12, bold: true, fill: '#0b6b47', halo: true });
+        }
+      });
+      var o1 = st.obj[0];
+      top = st.none ? ('objects ?') : ('objects ') + st.obj.length + (o1 ? ('  largest code ') + (o1[0] * 10 + o1[1]) + '  X ' + o1[2] + '  Y ' + o1[3] : '');
     } else {
       var R = lineRows(), wpx = num('lwidth', 16), ink = S.mode === 42 ? '#f7f7f7' : S.mode === 43 ? '#d8392b' : '#1b1b1b';
       var gone = $('lgone').checked;
@@ -1020,6 +1144,14 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if ($('tsize') && Number($('tsize').value) !== b.size) $('tsize').value = b.size;
     if ($('tcount') && Number($('tcount').value) !== b.n) $('tcount').value = b.n;
     if ($('tgone')) $('tgone').checked = b.gone;
+    var ob = SC.objs[SC.jsel];
+    if ($('jname')) $('jname').textContent = ('track id ') + ob.id;
+    if ($('jname2')) $('jname2').textContent = ('track id ') + ob.id;
+    if ($('jshape') && Number($('jshape').value) !== ob.shape) $('jshape').value = ob.shape;
+    if ($('jcolor') && Number($('jcolor').value) !== ob.color) $('jcolor').value = ob.color;
+    if ($('jsize') && Number($('jsize').value) !== ob.size) $('jsize').value = ob.size;
+    if ($('jrot') && Number($('jrot').value) !== ob.rot) $('jrot').value = ob.rot;
+    if ($('jgone')) $('jgone').checked = ob.gone;
     if ($('phueval')) { var h0 = SC.patches[0].hue; $('phueval').textContent = h0 + (', ') + CNAME_ZH[colorCode(h0)]; }
   }
   function simInput(id) {
@@ -1028,6 +1160,12 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if (id === 'tcount') b.n = Number($('tcount').value);
     if (id === 'tgone') b.gone = $('tgone').checked;
     if (id === 'phue') SC.patches[0].hue = Number($('phue').value);
+    var ob = SC.objs[SC.jsel];
+    if (id === 'jshape') ob.shape = Number($('jshape').value);
+    if (id === 'jcolor') ob.color = Number($('jcolor').value);
+    if (id === 'jsize') ob.size = Number($('jsize').value);
+    if (id === 'jrot') ob.rot = Number($('jrot').value);
+    if (id === 'jgone') ob.gone = $('jgone').checked;
     if (id === 'lmark') {
       var m = Number($('lmark').value);
       SC.mkNow = m;
@@ -1043,6 +1181,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     var g = curG(), i;
     if (g === 'track') { for (i = SC.blobs.length - 1; i >= 0; i--) { var b = SC.blobs[i]; if (!b.gone && Math.abs(p.x - b.cx) <= b.size / 2 + 4 && Math.abs(p.y - b.cy) <= b.size / 2 + 4) { SC.sel = i; return true; } } return false; }
     if (g === 'spot') { for (i = SC.patches.length - 1; i >= 0; i--) { var q = SC.patches[i]; if (Math.abs(p.x - q.cx) <= q.w / 2 + 3 && Math.abs(p.y - q.cy) <= q.h / 2 + 3) { SC.psel = i; return true; } } return false; }
+    if (g === 'obj') { for (i = SC.objs.length - 1; i >= 0; i--) { var q2 = SC.objs[i]; if (!q2.gone && Math.abs(p.x - q2.cx) <= q2.size / 2 + 3 && Math.abs(p.y - q2.cy) <= q2.size / 2 + 3) { SC.jsel = i; return true; } } return false; }
     if (g === 'order') { var k = num('ocount', 4); for (i = k - 1; i >= 0; i--) { var o = SC.blocks[i]; if (Math.abs(p.x - o.cx) <= 13 && Math.abs(p.y - o.cy) <= 13) { SC.osel = i; return true; } } return false; }
     if ($('lgone').checked) return false;
     var best = 0, bd = 1e9;
@@ -1053,6 +1192,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     var g = curG();
     if (g === 'track') { var b = selBlob(); b.cx = p.x; b.cy = p.y; }
     else if (g === 'spot') { var q = SC.patches[SC.psel]; q.cx = clamp(p.x, q.w / 2, FW - q.w / 2); q.cy = clamp(p.y, q.h / 2, FH - q.h / 2); }
+    else if (g === 'obj') { var q3 = SC.objs[SC.jsel]; q3.cx = p.x; q3.cy = p.y; }
     else if (g === 'order') { var o = SC.blocks[SC.osel]; o.cx = clamp(p.x, 11, FW - 11); o.cy = clamp(p.y, 11, FH - 11); }
     else SC.line.xs[SC.lsel] = clamp(p.x, 2, FW - 2);
   }
@@ -1061,6 +1201,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if (g === 'track') return { x: selBlob().cx, y: selBlob().cy };
     if (g === 'spot') return { x: SC.patches[SC.psel].cx, y: SC.patches[SC.psel].cy };
     if (g === 'order') return { x: SC.blocks[SC.osel].cx, y: SC.blocks[SC.osel].cy };
+    if (g === 'obj') return { x: SC.objs[SC.jsel].cx, y: SC.objs[SC.jsel].cy };
     return { x: SC.line.xs[SC.lsel], y: SC.line.ys[SC.lsel] };
   }
   function bindSim(onMove, onInput) {
@@ -1078,7 +1219,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       if (!k) return;
       e.preventDefault(); var p = selPos(); moveSel({ x: p.x + k[0], y: p.y + k[1] }); onMove();
     });
-    ['tsize', 'tcount', 'tgone', 'phue', 'ocount', 'lwidth', 'ljunc', 'ljd', 'lmark', 'lgone', 'unplug'].forEach(function (id) {
+    ['tsize', 'tcount', 'tgone', 'phue', 'ocount', 'lwidth', 'ljunc', 'ljd', 'lmark', 'lgone', 'jshape', 'jcolor', 'jsize', 'jrot', 'jgone', 'unplug'].forEach(function (id) {
       var c = $(id); if (!c) return;
       c.addEventListener(c.tagName === 'SELECT' ? 'change' : 'input', function () { simInput(id); onInput(id); });
     });
@@ -1157,7 +1298,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
   function drawModes() {
     var box = $('modes'); if (!box) return;
     box.innerHTML = '';
-    ['track', 'spot', 'order', 'line'].forEach(function (g) {
+    ['track', 'spot', 'order', 'line', 'obj'].forEach(function (g) {
       var w = document.createElement('div'); w.className = 'fgroup';
       w.innerHTML = '<span>' + GROUPS[g].name + '</span>';
       var chips = document.createElement('div'); chips.className = 'chips';
@@ -1173,6 +1314,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     var have = m.g === 'track' ? ('This host gets ' + c.col + ' colors in this mode')
       : m.g === 'spot' ? ('This host gets ' + c.pt + ' sample spots in this mode')
       : m.g === 'order' ? ('This host gets the hue codes of up to ' + c.order + ' blocks')
+      : m.g === 'obj' ? ('This host gets ' + c.obj + ' objects in this mode')
       : ('This host gets ' + c.line + ' line values');
     $('modenow').innerHTML = '<b>' + ('You picked mode number ') + S.mode + '</b><span>' + ('= camera mode ') + m.cm + ' ' + GROUPS[m.g].name.replace(/^\d /, '') + (m.sub ? (' · sub-option ') + m.name : '') + ('. ') + have + ('.') + '</span><span class="err">' + HOST.modeWarn(S.mode) + '</span>';
   }

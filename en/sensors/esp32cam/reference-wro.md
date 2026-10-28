@@ -113,7 +113,7 @@ Serial.println();
 
 Block returns spot 1~12 colour code（0~255）。Host sends `[10]` → reply `[lo][hi][10 ^ lo ^ hi]`, value = int16 little-endian; channel N uses id 0x10 + (N − 1).
 
-<pre class="blocks">(Vision WRO port [1 v] spot [1 v] colour code :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision WRO (legacy) port [1 v] spot [1 v] colour code :: sensing)</pre>
 
 </details>
 
@@ -221,7 +221,7 @@ Serial.println();
 
 Block returns spot 1~12 vividness（0~255）。Host sends `[20]` → reply `[lo][hi][20 ^ lo ^ hi]`, value = int16 little-endian; channel N uses id 0x20 + (N − 1).
 
-<pre class="blocks">(Vision WRO port [1 v] spot [1 v] vividness :: sensing)</pre>
+<pre class="blocks">(Sharpshooter Vision WRO (legacy) port [1 v] spot [1 v] vividness :: sensing)</pre>
 
 </details>
 
@@ -301,7 +301,7 @@ bool ready = st & (1 << 0);   // ready
 
 The extension splits status flags F3 into boolean blocks (ready, calibrating, …).
 
-<pre class="blocks"><Vision WRO port [1 v] connected? :: sensing></pre>
+<pre class="blocks"><Sharpshooter Vision WRO (legacy) port [1 v] connected? :: sensing></pre>
 
 </details>
 

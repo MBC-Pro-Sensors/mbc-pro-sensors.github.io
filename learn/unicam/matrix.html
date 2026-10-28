@@ -315,13 +315,26 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
             <label class="f" for="lmark" data-g="line"><span>現在穿過的彩色標記線</span>
               <select id="lmark"><option value="0">沒有</option><option value="2">目標色 2（綠）</option><option value="3">目標色 3（藍）</option><option value="4">目標色 4（黃）</option></select>
             </label>
+            <label class="f" for="jshape" data-g="obj"><span>選到的物體（<span id="jname">追蹤編號 1</span>；點形狀可以換選）的形狀</span>
+              <select id="jshape"><option value="1">1 圓</option><option value="2">2 橢圓</option><option value="3">3 三角</option><option value="4">4 正方</option><option value="5">5 長方</option><option value="6">6 五邊</option><option value="7">7 六邊</option><option value="8">8 星</option><option value="9">9 梯形</option></select>
+            </label>
+            <label class="f" for="jcolor" data-g="obj"><span>顏色（相機上教的目標色 1～8）</span>
+              <select id="jcolor"><option value="1">目標色 1（紅）</option><option value="2">目標色 2（綠）</option><option value="3">目標色 3（藍）</option><option value="4">目標色 4（黃）</option><option value="5">目標色 5（紫）</option><option value="6">目標色 6（橙）</option><option value="7">目標色 7（青）</option><option value="8">目標色 8（粉紅）</option></select>
+            </label>
+            <label class="f" for="jsize" data-g="obj"><span>大小（越近看起來越大）</span>
+              <input autocomplete="off" type="range" id="jsize" min="12" max="70" value="42">
+            </label>
+            <label class="f" for="jrot" data-g="obj"><span>轉角度（0～179 度）</span>
+              <input autocomplete="off" type="range" id="jrot" min="0" max="179" value="0">
+            </label>
             <div class="toggles">
+              <label data-g="obj"><input autocomplete="off" type="checkbox" id="jgone"> 拿走這個物體（<span id="jname2">追蹤編號 1</span>）</label>
               <label data-g="track"><input autocomplete="off" type="checkbox" id="tgone"> 拿走<span id="selname3">色 1</span></label>
               <label data-g="line"><input autocomplete="off" type="checkbox" id="lgone"> 拿走線（車子離開線）</label>
               <label><input autocomplete="off" type="checkbox" id="unplug"> 拔掉感應器</label>
             </div>
           </div>
-          <p class="note">模擬畫面是示意：數值直接用畫面上的位置換算（X 0～159 左→右、Y 0～119 上→下、面積 %＝寬×高÷整個畫面），色相碼是那張色紙／積木本來的顏色（紅 0、黃 40、綠 80、藍 160、紫 200、白桌面 244、黑膠帶 252），不是相機裡面的算法；實際數值會因光線差一些。顏色追蹤假設相機上已經教了 4 色：色 1 紅、色 2 綠、色 3 藍、色 4 黃。</p>
+          <p class="note">模擬畫面是示意：數值直接用畫面上的位置換算（X 0～159 左→右、Y 0～119 上→下、面積 %＝寬×高÷整個畫面），色相碼是那張色紙／積木本來的顏色（紅 0、黃 40、綠 80、藍 160、紫 200、白桌面 244、黑膠帶 252），不是相機裡面的算法；實際數值會因光線差一些。顏色追蹤假設相機上已經教了 4 色：色 1 紅、色 2 綠、色 3 藍、色 4 黃。物體偵測的形狀是你直接選的（不是相機判斷的），物體 1、2…照面積由大到小排，X、Y 是形狀的質心（白點）、虛線框是外框，角度就是你轉的角度。</p>
         </div>
           </div>
         </div>
@@ -380,7 +393,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 (function () {
   'use strict';
 var PAGE = {"lang":"zh","code":"cpp"};
-var CFG = {"top":["// ==== MBC_UNICAM_MX_TOP_BEGIN ====","unsigned int CamData[10];                // mVision 的 10 格資料（跟 MATRIXblock 產生的程式同名）","int CamStatus;                           // 讀到幾格（> 0 = 讀到）","// 一個色塊：x、y 像素（0 = 沒找到）、w、h 像素、count 塊數、area 面積 %；這個模式沒給的值是 -1","struct UcBlob { int x, y, w, h, count, area; };","// 一個取樣點：h 色相碼 0~255、s 飽和度、v 明度 0~100；沒給的是 -1","struct UcSpot { int h, s, v; };","// 循線 14 個值（近／中／遠偏移 -100~100：線在左 = 負）","struct UcLine { int nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,","                leftEdge, rightEdge, farWidth, marker, markerCount, lost; };","// ==== MBC_UNICAM_MX_TOP_END ===="],"helper":["// ==== MBC_UNICAM_MX_HELPERS_BEGIN ====","// ============================================================","// 以下是「神攝手 × mVision 解碼小幫手」，所有 MATRIX 範例都一樣，不用改。","// 每格 = 低 byte ＋ 高 byte × 256（模式 11 是 A × 100 ＋ B）","// ============================================================","","// 第 i 格（1~10）的低 byte、高 byte","int ucLo(uint8_t i) { return (int)(CamData[i - 1] & 255); }","int ucHi(uint8_t i) { return (int)((CamData[i - 1] >> 8) & 255); }","","// 第 k 個 byte（0~19）：10 格依序拆成 20 個 byte（模式 23 用）","int ucByte(uint8_t k) { return (k & 1) ? ucHi(k / 2 + 1) : ucLo(k / 2 + 1); }","","// 這個模式最多幾色：11 → 16、12 → 10、13 → 5、14 → 3","uint8_t ucMaxColor(uint8_t mode) {","  if (mode == 11) return 16;","  if (mode == 12) return 10;","  if (mode == 13) return 5;","  if (mode == 14) return 3;","  return 0;","}","","// 讀色 color 的色塊（模式 11~14）；模式 11 的位置是 8×6 格的格子中心（±10 像素）","bool ucBlob(uint8_t mode, uint8_t color, UcBlob &b) {","  if (color < 1 || color > ucMaxColor(mode)) return false;","  b.w = -1; b.h = -1; b.count = -1; b.area = -1;","  if (mode == 11) {                      // 一格兩色：(X格×10＋Y格)×100 ＋ (X格×10＋Y格)","    unsigned int c = CamData[(color - 1) / 2];","    int g = (color & 1) ? (int)(c / 100) : (int)(c % 100);","    if (g == 0) { b.x = 0; b.y = 0; return true; }","    b.x = (g / 10 - 1) * 20 + 10;        // 8×6 格 → 像素（格子中心）","    b.y = (g % 10 - 1) * 20 + 10;        // Y 上 = 小","    return true;","  }","  uint8_t base = (mode == 12) ? color : (mode == 13) ? 2 * color - 1 : 3 * color - 2;","  b.x = ucLo(base); b.y = ucHi(base);","  if (mode == 13) { b.area = ucLo(base + 1); b.count = ucHi(base + 1); }","  if (mode == 14) { b.w = ucLo(base + 1); b.h = ucHi(base + 1); b.area = ucLo(base + 2); b.count = ucHi(base + 2); }","  return true;","}","","// 16 個目標色裡找到幾色（模式 11 第 9 格、模式 14 第 10 格）；其他模式回傳 -1","int ucColorsFound(uint8_t mode) {","  if (mode == 11) return (int)CamData[8];","  if (mode == 14) return (int)CamData[9];","  return -1;","}","","// 這個模式最多幾點：21 → 20、22 → 10、23 → 6","uint8_t ucMaxPoint(uint8_t mode) {","  if (mode == 21) return 20;","  if (mode == 22) return 10;","  if (mode == 23) return 6;","  return 0;","}","","// 讀取樣點 point（模式 21~23）","bool ucSpot(uint8_t mode, uint8_t point, UcSpot &p) {","  if (point < 1 || point > ucMaxPoint(mode)) return false;","  p.s = -1; p.v = -1;","  if (mode == 21) { p.h = ucByte(point - 1); return true; }          // 一格兩點色相","  if (mode == 22) { p.h = ucLo(point); p.s = ucHi(point); return true; }","  uint8_t k = 3 * (point - 1);                                        // 23：色相 飽和 明度 依序排","  p.h = ucByte(k); p.s = ucByte(k + 1); p.v = ucByte(k + 2);","  return true;","}","","// 照順序給色號（模式 30）：hues 放由左到右的色相碼（最多 18 塊），回傳放了幾個；total = 總塊數","uint8_t ucOrder(int *hues, uint8_t maxN, int &total) {","  total = (int)CamData[9];","  uint8_t n = (total < 18) ? (uint8_t)total : 18;","  if (n > maxN) n = maxN;","  for (uint8_t i = 0; i < n; i++) hues[i] = ucByte(i);","  return n;","}","","// 循線（模式 41~43）：10 格拆成 14 個值（＋100 的值減回來）","void ucLine(UcLine &l) {","  l.nearOff = (int)CamData[0] - 100; l.midOff = (int)CamData[1] - 100;","  l.farOff = (int)CamData[2] - 100;  l.angle = (int)CamData[3] - 100;","  l.junction = (int)CamData[4];      l.flags = (int)CamData[5];","  l.width = ucLo(7);                 l.junctionDist = ucHi(7);","  l.leftEdge = ucLo(8) - 100;        l.rightEdge = ucHi(8) - 100;","  l.farWidth = ucLo(9);              l.marker = ucHi(9);","  l.markerCount = ucLo(10);          l.lost = ucHi(10);","}","","// 色相碼 → 顏色代號：1 紅 2 橙 3 黃 4 綠 5 青 6 藍 7 紫 8 白／灰 9 黑","uint8_t ucColorCode(int h) {","  if (h > 248) return 9;","  if (h > 240) return 8;","  if (h < 12 || h >= 220) return 1;","  if (h < 28) return 2;","  if (h < 56) return 3;","  if (h < 100) return 4;","  if (h < 140) return 5;","  if (h < 180) return 6;","  return 7;","}","// ==== MBC_UNICAM_MX_HELPERS_END ===="]};
+var CFG = {"top":["// ==== MBC_UNICAM_MX_TOP_BEGIN ====","unsigned int CamData[10];                // mVision 的 10 格資料（跟 MATRIXblock 產生的程式同名）","int CamStatus;                           // 讀到幾格（> 0 = 讀到）","// 一個色塊：x、y 像素（0 = 沒找到）、w、h 像素、count 塊數、area 面積 %；這個模式沒給的值是 -1","struct UcBlob { int x, y, w, h, count, area; };","// 一個取樣點：h 色相碼 0~255、s 飽和度、v 明度 0~100；沒給的是 -1","struct UcSpot { int h, s, v; };","// 循線 14 個值（近／中／遠偏移 -100~100：線在左 = 負）","struct UcLine { int nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,","                leftEdge, rightEdge, farWidth, marker, markerCount, lost; };","// 一個物體（模式 51／52）：code 物體代碼＝色號×10＋形狀（0 = 沒有）、color 色號 1~8、shape 形狀 0~9、x、y 質心像素、","// w、h 外框像素（52）、area 面積 %；angle、vertices、trackId MATRIX 沒給（-1，要用 I2C 版）；沒給的是 -1","struct UcObject { int code, color, shape, x, y, w, h, area, angle, vertices, trackId; };","// ==== MBC_UNICAM_MX_TOP_END ===="],"helper":["// ==== MBC_UNICAM_MX_HELPERS_BEGIN ====","// ============================================================","// 以下是「神攝手 × mVision 解碼小幫手」，所有 MATRIX 範例都一樣，不用改。","// 每格 = 低 byte ＋ 高 byte × 256（模式 11 是 A × 100 ＋ B）","// ============================================================","","// 第 i 格（1~10）的低 byte、高 byte","int ucLo(uint8_t i) { return (int)(CamData[i - 1] & 255); }","int ucHi(uint8_t i) { return (int)((CamData[i - 1] >> 8) & 255); }","","// 第 k 個 byte（0~19）：10 格依序拆成 20 個 byte（模式 23 用）","int ucByte(uint8_t k) { return (k & 1) ? ucHi(k / 2 + 1) : ucLo(k / 2 + 1); }","","// 這個模式最多幾色：11 → 16、12 → 10、13 → 5、14 → 3","uint8_t ucMaxColor(uint8_t mode) {","  if (mode == 11) return 16;","  if (mode == 12) return 10;","  if (mode == 13) return 5;","  if (mode == 14) return 3;","  return 0;","}","","// 讀色 color 的色塊（模式 11~14）；模式 11 的位置是 8×6 格的格子中心（±10 像素）","bool ucBlob(uint8_t mode, uint8_t color, UcBlob &b) {","  if (color < 1 || color > ucMaxColor(mode)) return false;","  b.w = -1; b.h = -1; b.count = -1; b.area = -1;","  if (mode == 11) {                      // 一格兩色：(X格×10＋Y格)×100 ＋ (X格×10＋Y格)","    unsigned int c = CamData[(color - 1) / 2];","    int g = (color & 1) ? (int)(c / 100) : (int)(c % 100);","    if (g == 0) { b.x = 0; b.y = 0; return true; }","    b.x = (g / 10 - 1) * 20 + 10;        // 8×6 格 → 像素（格子中心）","    b.y = (g % 10 - 1) * 20 + 10;        // Y 上 = 小","    return true;","  }","  uint8_t base = (mode == 12) ? color : (mode == 13) ? 2 * color - 1 : 3 * color - 2;","  b.x = ucLo(base); b.y = ucHi(base);","  if (mode == 13) { b.area = ucLo(base + 1); b.count = ucHi(base + 1); }","  if (mode == 14) { b.w = ucLo(base + 1); b.h = ucHi(base + 1); b.area = ucLo(base + 2); b.count = ucHi(base + 2); }","  return true;","}","","// 16 個目標色裡找到幾色（模式 11 第 9 格、模式 14 第 10 格）；其他模式回傳 -1","int ucColorsFound(uint8_t mode) {","  if (mode == 11) return (int)CamData[8];","  if (mode == 14) return (int)CamData[9];","  return -1;","}","","// 這個模式最多幾點：21 → 20、22 → 10、23 → 6","uint8_t ucMaxPoint(uint8_t mode) {","  if (mode == 21) return 20;","  if (mode == 22) return 10;","  if (mode == 23) return 6;","  return 0;","}","","// 讀取樣點 point（模式 21~23）","bool ucSpot(uint8_t mode, uint8_t point, UcSpot &p) {","  if (point < 1 || point > ucMaxPoint(mode)) return false;","  p.s = -1; p.v = -1;","  if (mode == 21) { p.h = ucByte(point - 1); return true; }          // 一格兩點色相","  if (mode == 22) { p.h = ucLo(point); p.s = ucHi(point); return true; }","  uint8_t k = 3 * (point - 1);                                        // 23：色相 飽和 明度 依序排","  p.h = ucByte(k); p.s = ucByte(k + 1); p.v = ucByte(k + 2);","  return true;","}","","// 照順序給色號（模式 30）：hues 放由左到右的色相碼（最多 18 塊），回傳放了幾個；total = 總塊數","uint8_t ucOrder(int *hues, uint8_t maxN, int &total) {","  total = (int)CamData[9];","  uint8_t n = (total < 18) ? (uint8_t)total : 18;","  if (n > maxN) n = maxN;","  for (uint8_t i = 0; i < n; i++) hues[i] = ucByte(i);","  return n;","}","","// 循線（模式 41~43）：10 格拆成 14 個值（＋100 的值減回來）","void ucLine(UcLine &l) {","  l.nearOff = (int)CamData[0] - 100; l.midOff = (int)CamData[1] - 100;","  l.farOff = (int)CamData[2] - 100;  l.angle = (int)CamData[3] - 100;","  l.junction = (int)CamData[4];      l.flags = (int)CamData[5];","  l.width = ucLo(7);                 l.junctionDist = ucHi(7);","  l.leftEdge = ucLo(8) - 100;        l.rightEdge = ucHi(8) - 100;","  l.farWidth = ucLo(9);              l.marker = ucHi(9);","  l.markerCount = ucLo(10);          l.lost = ucHi(10);","}","","// 物體偵測：這個模式最多幾個物體：51 → 4、52 → 3","uint8_t ucMaxObject(uint8_t mode) {","  if (mode == 51) return 4;","  if (mode == 52) return 3;","  return 0;","}","","// 畫面裡有幾個物體 0~8（模式 51／52 第 1 格）；其他模式回傳 -1","int ucObjectCount(uint8_t mode) {","  if (mode == 51 || mode == 52) return (int)CamData[0];","  return -1;","}","","// 讀物體 i（1 = 面積最大）：51 每個物體 2 格（代碼＋面積、X＋Y）、52 每個 3 格（再加 寬＋高）","bool ucObject(uint8_t mode, uint8_t i, UcObject &o) {","  if (i < 1 || i > ucMaxObject(mode)) return false;","  uint8_t base = (mode == 51) ? 2 * i : 3 * i - 1;     // 代碼＋面積 在第 base 格","  o.code = ucLo(base); o.area = ucHi(base);","  o.color = o.code / 10; o.shape = o.code % 10;","  o.x = ucLo(base + 1); o.y = ucHi(base + 1);","  o.w = -1; o.h = -1; o.angle = -1; o.vertices = -1; o.trackId = -1;","  if (mode == 52) { o.w = ucLo(base + 2); o.h = ucHi(base + 2); }","  return true;","}","","// 形狀編號 → 英文名稱：0 other 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid","const char *ucShapeName(int s) {","  switch (s) {","    case 0: return \"other\";    case 1: return \"circle\";    case 2: return \"ellipse\";  case 3: return \"triangle\";","    case 4: return \"square\";   case 5: return \"rectangle\"; case 6: return \"pentagon\"; case 7: return \"hexagon\";","    case 8: return \"star\";     case 9: return \"trapezoid\";","  }","  return \"?\";","}","","// 色相碼 → 顏色代號：1 紅 2 橙 3 黃 4 綠 5 青 6 藍 7 紫 8 白／灰 9 黑","uint8_t ucColorCode(int h) {","  if (h > 248) return 9;","  if (h > 240) return 8;","  if (h < 12 || h >= 220) return 1;","  if (h < 28) return 2;","  if (h < 56) return 3;","  if (h < 100) return 4;","  if (h < 140) return 5;","  if (h < 180) return 6;","  return 7;","}","// ==== MBC_UNICAM_MX_HELPERS_END ===="]};
 function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
 
   function $(id) { return document.getElementById(id); }
@@ -399,16 +412,19 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     { n: 30, g: 'order', cm: 3, sub: 0, name: ('（沒有子選項）') },
     { n: 41, g: 'line', cm: 4, sub: 1, name: ('① 黑線') },
     { n: 42, g: 'line', cm: 4, sub: 2, name: ('② 白線') },
-    { n: 43, g: 'line', cm: 4, sub: 3, name: ('③ 色線') }
+    { n: 43, g: 'line', cm: 4, sub: 3, name: ('③ 色線') },
+    { n: 51, g: 'obj', cm: 5, sub: 1, name: ('① 物體清單') },
+    { n: 52, g: 'obj', cm: 5, sub: 2, name: ('② 物體詳細') }
   ];
   var GROUPS = {
     track: { cm: 1, name: ('1 顏色追蹤'), modes: [11, 12, 13, 14] },
     spot: { cm: 2, name: ('2 座標取色'), modes: [21, 22, 23] },
     order: { cm: 3, name: ('3 照順序給色號'), modes: [30] },
     line: { cm: 4, name: ('4 循線'), modes: [41, 42, 43] },
+    obj: { cm: 5, name: ('5 物體偵測'), modes: [51, 52] },
     info: { cm: 0, name: ('感應器資訊（每個模式都能用）'), modes: null }
   };
-  var GORDER = ['track', 'spot', 'order', 'line', 'info'];
+  var GORDER = ['track', 'spot', 'order', 'line', 'obj', 'info'];
   function modeOf(n) { for (var i = 0; i < MODES.length; i++) if (MODES[i].n === n) return MODES[i]; return MODES[2]; }
   function modeTitle(n) { var m = modeOf(n); return n + ' = ' + GROUPS[m.g].name.replace(/^\d /, '') + ' ' + m.name; }
   function modeList(ms) {
@@ -430,6 +446,9 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if (h < 12 || h >= 220) return 1; if (h < 28) return 2; if (h < 56) return 3;
     if (h < 100) return 4; if (h < 140) return 5; if (h < 180) return 6; return 7;
   }
+  // 物體形狀 0~9（跟函式庫 shape_name()／ucShapeName() 同一張表）
+  var SHAPES = ['other', 'circle', 'ellipse', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon', 'star', 'trapezoid'];
+  var SHAPES_ZH = [('其他'), ('圓'), ('橢圓'), ('三角'), ('正方'), ('長方'), ('五邊'), ('六邊'), ('星'), ('梯形')];
   // ───── Python 輸出格式 ─────
   function py(v) {
     if (v === null || v === undefined) return 'None';
@@ -500,7 +519,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
 
 
     var S = { step: 1, viewStep: 1, fn: 'pos', mode: 13, showHelper: false };
-    var MAXC = { 11: 16, 12: 10, 13: 5, 14: 3 }, MAXP = { 21: 20, 22: 10, 23: 6 };
+    var MAXC = { 11: 16, 12: 10, 13: 5, 14: 3 }, MAXP = { 21: 20, 22: 10, 23: 6 }, MAXO = { 51: 4, 52: 3 };
     function view(st, m) {
       var ok = st.ok && !st.none, L = st.line;
       return {
@@ -516,7 +535,16 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         spot: function (i) { var p = st.spot[i], k = m - 20; return { h: p.h, s: k >= 2 ? p.s : -1, v: k >= 3 ? p.v : -1 }; },
         order: function () { return { hues: st.order.hues.slice(0, 18), total: st.order.total }; },
         line: function () { return { nearOff: L.near, midOff: L.mid, farOff: L.far, angle: L.angle, width: L.width, flags: L.flags, junction: L.junction, junctionDist: L.jdist, leftEdge: L.left, rightEdge: L.right, farWidth: L.farw, marker: L.marker, markerCount: L.mcount, lost: L.lost }; },
-        raw: function () { return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; }
+        raw: function () { return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; },
+        // 物體 i：代碼、面積、X、Y（52 再加寬高；角度、頂點數、追蹤編號 MATRIX 沒有＝−1）
+        obj: function (i) {
+          var o = st.obj[i - 1];
+          var r = o ? { code: o[0] * 10 + o[1], color: o[0], shape: o[1], x: Math.max(1, o[2]), y: Math.max(1, o[3]), area: Math.max(1, idiv(o[8] * 100 + 9600, 19200)) } : { code: 0, color: 0, shape: 0, x: 0, y: 0, area: 0 };
+          r.w = m === 52 ? (o ? o[6] - o[4] + 1 : 0) : -1; r.h = m === 52 ? (o ? o[7] - o[5] + 1 : 0) : -1;
+          r.angle = r.vertices = r.trackId = -1;
+          return r;
+        },
+        objCount: function () { return st.obj.length; }
       };
     }
     var NODATA = ('收不到相機資料');
@@ -613,15 +641,45 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       } else if (m === 21) { for (i = 0; i < 10; i++) c[i] = lo(st.spot[2 * i + 1].h, st.spot[2 * i + 2].h); }
       else if (m === 22) { for (i = 0; i < 10; i++) c[i] = lo(st.spot[i + 1].h, st.spot[i + 1].s); }
       else if (m === 23) { var bytes = []; for (i = 1; i <= 6; i++) bytes.push(st.spot[i].h, st.spot[i].s, st.spot[i].v); bytes.push(0, 0); for (i = 0; i < 10; i++) c[i] = lo(bytes[2 * i], bytes[2 * i + 1]); }
+      else if (m === 51 || m === 52) {   // 第 1 格物體數；51 每個物體 2 格（代碼＋面積、X＋Y）、52 每個 3 格（再加 寬＋高）
+        c[0] = st.obj.length;
+        for (i = 1; i <= MAXO[m]; i++) { var ob = V.obj(i), b0 = m === 51 ? 2 * i - 1 : 3 * i - 2; c[b0] = lo(ob.code, ob.area); c[b0 + 1] = lo(ob.x, ob.y); if (m === 52) c[b0 + 2] = lo(ob.w, ob.h); }
+      }
       else if (m === 30) { var h = st.order.hues.slice(0, 18); while (h.length < 18) h.push(0); for (i = 0; i < 9; i++) c[i] = lo(h[2 * i], h[2 * i + 1]); c[9] = st.order.total; }
       else { var L = st.line; c = [L.near + 100, L.mid + 100, L.far + 100, L.angle + 100, L.junction, L.flags, lo(L.width, L.jdist), lo(L.left + 100, L.right + 100), lo(L.farw, L.marker), lo(L.mcount, L.lost)]; }
       return c;
     }
+    // ───── 相機模式 5 物體偵測（MATRIX：51 給 4 個、52 給 3 個；物體數在第 1 格）─────
+    function objB(then) { return ['UcObject o;', 'ucObject(MODE, 1, o);'].concat(then); }
+    add({ id: 'objcount', grp: 'obj', modes: [51, 52], label: 'ucObjectCount()', name: ('畫面裡有幾個物體'),
+      what: ('畫面裡有幾個物體（0～8，第 1 格）。只看目標色 1～8。勾「拿走這個物體」看數字變小。'),
+      ret: ('0～8'), body: [out([('畫面裡有 '), v('ucObjectCount(MODE)'), (' 個物體')])], out: function (V) { return ('畫面裡有 ') + V.objCount() + (' 個物體'); } });
+    add({ id: 'objcode', grp: 'obj', modes: [51, 52], label: 'ucObject → o.code, o.x, o.y', name: ('物體代碼與位置'),
+      what: ('解出物體 i（1＝面積最大；51 有 4 個、52 有 3 個）。代碼＝色號×10＋形狀，例 13＝目標色 1 的三角形；0＝沒有。X、Y＝質心（白點）。'),
+      ret: ('true＝編號在範圍內；值放進 UcObject o'),
+      body: objB(['if (o.code == 0) ' + out([('沒有物體')]), 'else { ' + out([('物體 1 代碼 '), v('o.code'), ' X=', v('o.x'), ' Y=', v('o.y')]) + ' }']),
+      out: function (V) { var o = V.obj(1); return o.code === 0 ? ('沒有物體') : ('物體 1 代碼 ') + o.code + ' X=' + o.x + ' Y=' + o.y; } });
+    add({ id: 'objshape', grp: 'obj', modes: [51, 52], label: 'ucObject → o.color, o.shape', name: ('物體的色號與形狀'),
+      what: ('物體 i 是第幾個目標色（1～8）、什麼形狀（0～9）；<code>ucShapeName()</code> 換成英文名稱。在右邊換形狀、顏色試試看。'),
+      ret: ('色號、形狀'),
+      body: objB([out([('物體 1：目標色 '), v('o.color'), ' ', v('ucShapeName(o.shape)')])]), out: function (V) { var o = V.obj(1); return ('物體 1：目標色 ') + o.color + ' ' + SHAPES[o.shape]; } });
+    add({ id: 'objarea', grp: 'obj', modes: [51, 52], label: 'ucObject → o.area', name: ('物體面積 %'),
+      what: ('物體 i 佔畫面的幾 %（0＝沒有）。越近越大。把物體拉大試試看。'), ret: ('0～100'),
+      body: objB(['if (o.area >= 20) { ' + out([('夠近了！面積 '), v('o.area')]) + ' }', 'else { ' + out([('面積 '), v('o.area'), ' %']) + ' }']),
+      out: function (V) { var a = V.obj(1).area; return a >= 20 ? ('夠近了！面積 ') + a : ('面積 ') + a + ' %'; } });
+    add({ id: 'objsize', grp: 'obj', modes: [52], label: 'ucObject → o.w, o.h', name: ('物體寬、高'),
+      what: ('模式 52：物體 i 外框的寬、高像素（虛線框）。MATRIX 沒有角度、頂點數、追蹤編號（−1）。'), ret: ('像素'),
+      body: objB([out([('寬 '), v('o.w'), (' 高 '), v('o.h')])]), out: function (V) { var o = V.obj(1); return ('寬 ') + o.w + (' 高 ') + o.h; } });
+    add({ id: 'objfind', grp: 'obj', modes: [51, 52], label: ('找物體 13'), name: ('找紅色三角形'),
+      what: ('一個一個看物體 1～ucMaxObject(MODE)，找代碼 13（目標色 1 的三角形）。把三角形換成別的形狀試試看。'), ret: ('用代碼判斷'),
+      body: ['bool found = false;', 'for (uint8_t i = 1; i <= ucMaxObject(MODE); i++) {', '  UcObject o;', '  if (ucObject(MODE, i, o) && o.code == 13) {', '    ' + out([('紅色三角形在 X='), v('o.x'), ' Y=', v('o.y')]), '    found = true;', '    break;', '  }', '}', 'if (!found) ' + out([('沒看到紅色三角形')])],
+      out: function (V, st) { for (var i = 1; i <= MAXO[st.mode]; i++) { var o = V.obj(i); if (o.code === 13) return ('紅色三角形在 X=') + o.x + ' Y=' + o.y; } return ('沒看到紅色三角形'); } });
+    FNS = FNS.map(function (f, i) { return [GORDER.indexOf(f.grp), i, f]; }).sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; }).map(function (x) { return x[2]; });
     var HELPER = CFG.helper;
     function modeLine() { var mi = modeOf(S.mode); return 'const uint8_t MODE = ' + S.mode + ';                 // ' + ('模式編號：相機選單也要切到 ') + S.mode + ' (' + mi.cm + ' × 10 + ' + mi.sub + ')'; }
     var HOST = {
       collapse: true, helper: HELPER,
-      counts: function (m) { return { col: MAXC[m], pt: MAXP[m], order: 18, line: 14 }; },
+      counts: function (m) { return { col: MAXC[m], pt: MAXP[m], order: 18, line: 14, obj: MAXO[m] }; },
       cmt: function (s) { return '// ' + s; },
       lines: function (f) {
         var L = [], s3 = S.step >= 3;
@@ -715,8 +773,49 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     osel: 0,
     // 循線：近、中、遠三個把手（只能左右拖）
     line: { ys: [100, 62, 24], xs: [66, 74, 88] }, lsel: 0,
-    mk: 0, mkn: 0, lastSide: -1
+    mk: 0, mkn: 0, lastSide: -1,
+    // 物體偵測：彩色形狀（形狀由使用者選，不做輪廓判斷）；色號 1~8＝相機上教的目標色；id＝追蹤編號（跨幀不變）
+    objs: [
+      { id: 1, color: 1, shape: 3, cx: 40, cy: 44, size: 42, rot: 0, gone: false },
+      { id: 2, color: 2, shape: 4, cx: 112, cy: 38, size: 30, rot: 20, gone: false },
+      { id: 3, color: 3, shape: 1, cx: 74, cy: 88, size: 28, rot: 0, gone: false },
+      { id: 4, color: 4, shape: 5, cx: 128, cy: 90, size: 34, rot: 150, gone: false },
+      { id: 5, color: 5, shape: 8, cx: 30, cy: 96, size: 26, rot: 0, gone: false }
+    ],
+    jsel: 0
   };
+  // 目標色 1~8 的畫面顏色（示意）
+  var OBJFILL = ['#888', '#d8392b', '#2f9e44', '#1f6fd1', '#f2c318', '#8a3fc4', '#f08a24', '#18a8b8', '#e0559a'];
+  var VERTS = [0, 0, 0, 3, 4, 4, 5, 6, 10, 4];
+  // 形狀的外框點（本地座標，大小 s、旋轉 rot 度；圓／橢圓用 48 點近似）：純幾何，只拿來畫圖與算面積、質心、外框
+  function objPoly(o) {
+    var s = o.size, pts = [], i, n, r;
+    if (o.shape === 1 || o.shape === 2) { var a = s / 2, b = o.shape === 1 ? s / 2 : s / 3; for (i = 0; i < 48; i++) { var t = i * Math.PI * 2 / 48; pts.push([a * Math.cos(t), b * Math.sin(t)]); } }
+    else if (o.shape === 3) { r = s / Math.sqrt(3); for (i = 0; i < 3; i++) { var t3 = -Math.PI / 2 + i * Math.PI * 2 / 3; pts.push([r * Math.cos(t3), r * Math.sin(t3) + r / 4]); } }
+    else if (o.shape === 4) pts = [[-s / 2, -s / 2], [s / 2, -s / 2], [s / 2, s / 2], [-s / 2, s / 2]];
+    else if (o.shape === 5) pts = [[-s / 2, -s * 0.28], [s / 2, -s * 0.28], [s / 2, s * 0.28], [-s / 2, s * 0.28]];
+    else if (o.shape === 6 || o.shape === 7) { n = o.shape === 6 ? 5 : 6; for (i = 0; i < n; i++) { var t5 = -Math.PI / 2 + i * Math.PI * 2 / n; pts.push([s / 2 * Math.cos(t5), s / 2 * Math.sin(t5)]); } }
+    else if (o.shape === 8) { for (i = 0; i < 10; i++) { var t8 = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? s * 0.2 : s / 2; pts.push([rr * Math.cos(t8), rr * Math.sin(t8)]); } }
+    else pts = [[-s / 2, s * 0.3], [s / 2, s * 0.3], [s * 0.28, -s * 0.3], [-s * 0.28, -s * 0.3]];
+    var c = Math.cos(o.rot * Math.PI / 180), sn = Math.sin(o.rot * Math.PI / 180);
+    return pts.map(function (q) { return [o.cx + q[0] * c - q[1] * sn, o.cy + q[0] * sn + q[1] * c]; });
+  }
+  function polyArea(P) { var a = 0; for (var i = 0; i < P.length; i++) { var j = (i + 1) % P.length; a += P[i][0] * P[j][1] - P[j][0] * P[i][1]; } return a / 2; }
+  function polyCentroid(P) {
+    var A = polyArea(P), x = 0, y = 0;
+    for (var i = 0; i < P.length; i++) { var j = (i + 1) % P.length, f = P[i][0] * P[j][1] - P[j][0] * P[i][1]; x += (P[i][0] + P[j][0]) * f; y += (P[i][1] + P[j][1]) * f; }
+    return [x / (6 * A), y / (6 * A)];
+  }
+  // 物體真值 [色號, 形狀, X, Y, 左, 上, 右, 下, 面積像素, 角度, 頂點數, 追蹤編號]（跟規格測試 oracle 的畫面格式一樣）
+  function objTruth(o) {
+    var P = objPoly(o), xs = P.map(function (q) { return q[0]; }), ys = P.map(function (q) { return q[1]; });
+    var l = clamp(Math.floor(Math.min.apply(null, xs)), 0, 159), r = clamp(Math.floor(Math.max.apply(null, xs)), 0, 159);
+    var t = clamp(Math.floor(Math.min.apply(null, ys)), 0, 119), b = clamp(Math.floor(Math.max.apply(null, ys)), 0, 119);
+    var c = polyCentroid(P);
+    // 角度（示意）：就是你轉的角度 0~179；圓沒有方向＝0
+    var ang = o.shape === 1 ? 0 : ((Math.round(o.rot) % 180) + 180) % 180;
+    return [o.color, o.shape, clamp(Math.round(c[0]), 0, 159), clamp(Math.round(c[1]), 0, 119), l, t, r, b, Math.max(1, Math.round(Math.abs(polyArea(P)))), ang, VERTS[o.shape], o.id];
+  }
   var WHITE = { h: 244, s: 4, v: 92 }, BLACK = { h: 252, s: 8, v: 7 };
   var TAPE = { y0: 104, y1: 112 };
   function hueFill(h) { return 'hsl(' + Math.round(h * 1.5) + ', 72%, 48%)'; }   // 色相碼 0~240 → 0~360 度
@@ -794,6 +893,13 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       L.lost = SC.lastSide < 0 ? 1 : 2;
     }
     s.line = L;
+    // 物體：面積由大到小，最多 8 個（形狀拖到畫面邊會被擋在畫面裡）
+    s.obj = SC.objs.filter(function (o) { return !o.gone; }).map(function (o) {
+      var P = objPoly(o), xs = P.map(function (q) { return q[0]; }), ys = P.map(function (q) { return q[1]; });
+      o.cx = clamp(o.cx, o.cx - Math.min.apply(null, xs), FW - 1 - (Math.max.apply(null, xs) - o.cx));
+      o.cy = clamp(o.cy, o.cy - Math.min.apply(null, ys), FH - 1 - (Math.max.apply(null, ys) - o.cy));
+      return objTruth(o);
+    }).sort(function (a, b) { return b[8] - a[8] || a[11] - b[11]; }).slice(0, 8);
     return s;
   }
   var frozen = null, everOk = false;
@@ -814,7 +920,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
   function draw(st) {
     var g = curG(), live = rawState(), h = '';
     var ir = getComputedStyle(document.documentElement).getPropertyValue('--ir').trim() || '#c0392b';
-    var floor = g === 'line' ? (S.mode === 42 ? '#2b2f33' : '#f2f0ea') : g === 'spot' ? '#f6f4ee' : '#e8e4da';
+    var floor = g === 'obj' ? '#f6f4ee' : g === 'line' ? (S.mode === 42 ? '#2b2f33' : '#f2f0ea') : g === 'spot' ? '#f6f4ee' : '#e8e4da';
     h += '<rect x="0" y="0" width="' + SW + '" height="' + SH + '" fill="#f7f7f2"/>';
     h += '<rect x="' + OX + '" y="' + OY + '" width="' + FW * K + '" height="' + FH * K + '" fill="' + floor + '" stroke="#55605d" stroke-width="2"/>';
     var top = '';
@@ -854,6 +960,21 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         h += txt(fx(b.cx), fy(b.cy) + 5, String(b.hue), { anchor: 'middle', bold: true, fill: '#fff', size: 13 });
       });
       top = ('由左到右 ') + (st.none ? '?' : '[' + st.order.hues.join(', ') + ']') + ('  共 ') + (st.none ? '?' : st.order.total) + (' 塊');
+    } else if (g === 'obj') {
+      var rank = {}; st.obj.forEach(function (o, k) { rank[o[11]] = k + 1; });
+      SC.objs.forEach(function (o, i) {
+        if (o.gone) return;
+        var P = objPoly(o);
+        h += '<polygon points="' + P.map(function (q) { return fx(q[0]).toFixed(1) + ',' + fy(q[1]).toFixed(1); }).join(' ') + '" fill="' + OBJFILL[o.color] + '" stroke="' + (i === SC.jsel ? '#111' : 'rgba(0,0,0,0.3)') + '" stroke-width="' + (i === SC.jsel ? 3 : 1.5) + '"/>';
+        var tr = objTruth(o);
+        if (st.ok && rank[o.id]) {
+          h += '<rect x="' + fx(tr[4]) + '" y="' + fy(tr[5]) + '" width="' + (tr[6] - tr[4] + 1) * K + '" height="' + (tr[7] - tr[5] + 1) * K + '" fill="none" stroke="#19a974" stroke-width="1.5" stroke-dasharray="4 3"/>';
+          h += '<circle cx="' + fx(tr[2]) + '" cy="' + fy(tr[3]) + '" r="3.5" fill="#fff" stroke="#111" stroke-width="1.5"/>';
+          h += txt(fx(tr[4]) + 2, fy(tr[5]) - 4, '#' + rank[o.id] + ' ' + (tr[0] * 10 + tr[1]), { size: 12, bold: true, fill: '#0b6b47', halo: true });
+        }
+      });
+      var o1 = st.obj[0];
+      top = st.none ? ('物體 ?') : ('物體 ') + st.obj.length + (o1 ? ('  最大 代碼 ') + (o1[0] * 10 + o1[1]) + '  X ' + o1[2] + '  Y ' + o1[3] : '');
     } else {
       var R = lineRows(), wpx = num('lwidth', 16), ink = S.mode === 42 ? '#f7f7f7' : S.mode === 43 ? '#d8392b' : '#1b1b1b';
       var gone = $('lgone').checked;
@@ -895,6 +1016,14 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if ($('tsize') && Number($('tsize').value) !== b.size) $('tsize').value = b.size;
     if ($('tcount') && Number($('tcount').value) !== b.n) $('tcount').value = b.n;
     if ($('tgone')) $('tgone').checked = b.gone;
+    var ob = SC.objs[SC.jsel];
+    if ($('jname')) $('jname').textContent = ('追蹤編號 ') + ob.id;
+    if ($('jname2')) $('jname2').textContent = ('追蹤編號 ') + ob.id;
+    if ($('jshape') && Number($('jshape').value) !== ob.shape) $('jshape').value = ob.shape;
+    if ($('jcolor') && Number($('jcolor').value) !== ob.color) $('jcolor').value = ob.color;
+    if ($('jsize') && Number($('jsize').value) !== ob.size) $('jsize').value = ob.size;
+    if ($('jrot') && Number($('jrot').value) !== ob.rot) $('jrot').value = ob.rot;
+    if ($('jgone')) $('jgone').checked = ob.gone;
     if ($('phueval')) { var h0 = SC.patches[0].hue; $('phueval').textContent = h0 + ('，') + CNAME_ZH[colorCode(h0)]; }
   }
   function simInput(id) {
@@ -903,6 +1032,12 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if (id === 'tcount') b.n = Number($('tcount').value);
     if (id === 'tgone') b.gone = $('tgone').checked;
     if (id === 'phue') SC.patches[0].hue = Number($('phue').value);
+    var ob = SC.objs[SC.jsel];
+    if (id === 'jshape') ob.shape = Number($('jshape').value);
+    if (id === 'jcolor') ob.color = Number($('jcolor').value);
+    if (id === 'jsize') ob.size = Number($('jsize').value);
+    if (id === 'jrot') ob.rot = Number($('jrot').value);
+    if (id === 'jgone') ob.gone = $('jgone').checked;
     if (id === 'lmark') {
       var m = Number($('lmark').value);
       SC.mkNow = m;
@@ -919,6 +1054,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     var g = curG(), i;
     if (g === 'track') { for (i = SC.blobs.length - 1; i >= 0; i--) { var b = SC.blobs[i]; if (!b.gone && Math.abs(p.x - b.cx) <= b.size / 2 + 4 && Math.abs(p.y - b.cy) <= b.size / 2 + 4) { SC.sel = i; return true; } } return false; }
     if (g === 'spot') { for (i = SC.patches.length - 1; i >= 0; i--) { var q = SC.patches[i]; if (Math.abs(p.x - q.cx) <= q.w / 2 + 3 && Math.abs(p.y - q.cy) <= q.h / 2 + 3) { SC.psel = i; return true; } } return false; }
+    if (g === 'obj') { for (i = SC.objs.length - 1; i >= 0; i--) { var q2 = SC.objs[i]; if (!q2.gone && Math.abs(p.x - q2.cx) <= q2.size / 2 + 3 && Math.abs(p.y - q2.cy) <= q2.size / 2 + 3) { SC.jsel = i; return true; } } return false; }
     if (g === 'order') { var k = num('ocount', 4); for (i = k - 1; i >= 0; i--) { var o = SC.blocks[i]; if (Math.abs(p.x - o.cx) <= 13 && Math.abs(p.y - o.cy) <= 13) { SC.osel = i; return true; } } return false; }
     if ($('lgone').checked) return false;
     var best = 0, bd = 1e9;
@@ -929,6 +1065,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     var g = curG();
     if (g === 'track') { var b = selBlob(); b.cx = p.x; b.cy = p.y; }
     else if (g === 'spot') { var q = SC.patches[SC.psel]; q.cx = clamp(p.x, q.w / 2, FW - q.w / 2); q.cy = clamp(p.y, q.h / 2, FH - q.h / 2); }
+    else if (g === 'obj') { var q3 = SC.objs[SC.jsel]; q3.cx = p.x; q3.cy = p.y; }
     else if (g === 'order') { var o = SC.blocks[SC.osel]; o.cx = clamp(p.x, 11, FW - 11); o.cy = clamp(p.y, 11, FH - 11); }
     else SC.line.xs[SC.lsel] = clamp(p.x, 2, FW - 2);
   }
@@ -937,6 +1074,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     if (g === 'track') return { x: selBlob().cx, y: selBlob().cy };
     if (g === 'spot') return { x: SC.patches[SC.psel].cx, y: SC.patches[SC.psel].cy };
     if (g === 'order') return { x: SC.blocks[SC.osel].cx, y: SC.blocks[SC.osel].cy };
+    if (g === 'obj') return { x: SC.objs[SC.jsel].cx, y: SC.objs[SC.jsel].cy };
     return { x: SC.line.xs[SC.lsel], y: SC.line.ys[SC.lsel] };
   }
   function bindSim(onMove, onInput) {
@@ -954,7 +1092,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       if (!k) return;
       e.preventDefault(); var p = selPos(); moveSel({ x: p.x + k[0], y: p.y + k[1] }); onMove();
     });
-    ['tsize', 'tcount', 'tgone', 'phue', 'ocount', 'lwidth', 'ljunc', 'ljd', 'lmark', 'lgone', 'unplug'].forEach(function (id) {
+    ['tsize', 'tcount', 'tgone', 'phue', 'ocount', 'lwidth', 'ljunc', 'ljd', 'lmark', 'lgone', 'jshape', 'jcolor', 'jsize', 'jrot', 'jgone', 'unplug'].forEach(function (id) {
       var c = $(id); if (!c) return;
       c.addEventListener(c.tagName === 'SELECT' ? 'change' : 'input', function () { simInput(id); onInput(id); });
     });
@@ -1038,7 +1176,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
   function drawModes() {
     var box = $('modes'); if (!box) return;
     box.innerHTML = '';
-    ['track', 'spot', 'order', 'line'].forEach(function (g) {
+    ['track', 'spot', 'order', 'line', 'obj'].forEach(function (g) {
       var w = document.createElement('div'); w.className = 'fgroup';
       w.innerHTML = '<span>' + GROUPS[g].name + '</span>';
       var chips = document.createElement('div'); chips.className = 'chips';
@@ -1054,6 +1192,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     var have = m.g === 'track' ? ('這個主機在這個模式拿到 ' + c.col + ' 色')
       : m.g === 'spot' ? ('這個主機在這個模式拿到 ' + c.pt + ' 個取樣點')
       : m.g === 'order' ? ('這個主機最多拿到 ' + c.order + ' 塊的色相碼')
+      : m.g === 'obj' ? ('這個主機在這個模式拿到 ' + c.obj + ' 個物體')
       : ('這個主機拿到 ' + c.line + ' 個循線值');
     $('modenow').innerHTML = '<b>' + ('你選的：模式編號 ') + S.mode + '</b><span>' + ('＝相機模式 ') + m.cm + ' ' + GROUPS[m.g].name.replace(/^\d /, '') + (m.sub ? ('・子選項 ') + m.name : '') + ('。') + have + ('。') + '</span><span class="err">' + HOST.modeWarn(S.mode) + '</span>';
   }

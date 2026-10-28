@@ -23,7 +23,7 @@ const w = makeWriter({ check: CHECK, label: 'gen-unicam' });
 
 // ---------------------------------------------------------------- 單一來源
 const wrap = (entries, copied) => JSON.stringify({
-  _說明: '神攝手（韌體 v1）逐格對照（網站的單一來源）。複製自相機韌體資料夾 tests\\spec_layout.json（說明網頁第 39 版匯出，規格定案 2026-10-28）。不要手改：規格改了先在相機那邊重新匯出，再跑 node _build/gen-unicam.mjs --sync。',
+  _說明: '神攝手（韌體 v1）逐格對照（網站的單一來源）。複製自相機韌體資料夾 tests\\spec_layout.json（說明網頁第 40 版匯出，規格定案 2026-10-28）。不要手改：規格改了先在相機那邊重新匯出，再跑 node _build/gen-unicam.mjs --sync。',
   source: SRC,
   copied,
   entries,
@@ -89,7 +89,7 @@ const HOSTS = [
       en: 'I2C address 0x4C (Arduino, ESP32, UNO R4, micro:bit). Registers are read in bursts with no slot limit: write the value number → wait 2 ms → read 2×k bytes (int16, little-endian), up to 16 values per read. "Value 1" below = register 0x10, "value 2" = 0x11 and so on. Coordinates are 160×120 pixels (Y: small at top), 0 = no target; negative values are sent as they are. Every level gives 16 colors / 16 points; the level only decides which values. mBlock (mBot and other Makeblock boards) reads the same value table over UART 38400: send 1 byte [id] → reply [low][high][id^low^high].' } },
 ];
 const HOST = Object.fromEntries(HOSTS.map((h) => [h.id, h]));
-const MODE = { 1: { zh: '顏色追蹤', en: 'Color tracking' }, 2: { zh: '座標取色', en: 'Color at points' }, 3: { zh: '照順序給色號', en: 'Color order' }, 4: { zh: '循線', en: 'Line following' } };
+const MODE = { 1: { zh: '顏色追蹤', en: 'Color tracking' }, 2: { zh: '座標取色', en: 'Color at points' }, 3: { zh: '照順序給色號', en: 'Color order' }, 4: { zh: '循線', en: 'Line following' }, 5: { zh: '物體偵測', en: 'Object detection' } };
 const SUBS = [
   [1, 1, { zh: '① 最多色', en: '① Max colors' }],
   [1, 2, { zh: '② 多色', en: '② Multi-color' }],
@@ -100,6 +100,8 @@ const SUBS = [
   [2, 3, { zh: '③ 色相＋飽和＋明度', en: '③ Hue + saturation + value' }],
   [3, 0, { zh: '（沒有子選項）', en: '(no sub-options)' }],
   [4, 1, { zh: '①②③ 黑線／白線／色線', en: '①②③ black / white / colored line' }],
+  [5, 1, { zh: '① 物體清單', en: '① Object list' }],
+  [5, 2, { zh: '② 物體詳細', en: '② Object details' }],
 ];
 const T = (lang, zh, en) => (lang === 'en' ? en : zh);
 const L = (o, lang) => o[lang];
@@ -116,14 +118,24 @@ for (const h of HOSTS) {
   const a = [1, 2, 3].map((s) => JSON.stringify(entry(h.id, 4, s).rows));
   if (a[0] !== a[1] || a[1] !== a[2]) throw new Error(`${h.id} 循線三個子選項排法不同，頁面要改成分開列`);
 }
-if (D.length !== 77) throw new Error(`entries 應有 77 筆，現在 ${D.length}`);
+if (D.length !== 91) throw new Error(`entries 應有 91 筆（7 上位機 × 13 個模式・子選項），現在 ${D.length}`);
 
 // ---------------------------------------------------------------- 英文對照（照順序替換；最後檢查不能留下中文）
 const EN_RULES = [
   // 整句
   [/色 1～14 的數量各 3 bit（0～7，7＝7 塊以上）＋找到幾色 4 bit，共 46 bit 放 6 B（小端），函式庫自動拆/g, 'counts of colors 1~14, 3 bits each (0~7, 7 = 7 or more) + colors found, 4 bits: 46 bits in 6 B (little-endian), split by the library'],
   [/切換模式與子選項；設定目標色、最小面積門檻、取樣點位置/g, 'switch camera mode and sub-option; set target colors, minimum area and sample-point positions'],
+  [/相機模式編號（例 13＝顏色追蹤 ③ 標準、51＝物體偵測 ① 清單）/g, 'camera mode number (e.g. 13 = Color tracking ③ Standard, 51 = Object detection ① list)'],
   [/相機模式編號（例 13＝顏色追蹤 ③ 標準）/g, 'camera mode number (e.g. 13 = Color tracking ③ Standard)'],
+  [/物體 (\d+) 代碼（色號×10＋形狀）/g, 'object $1 code (color × 10 + shape)'],
+  [/物體代碼（色號×10＋形狀）/g, 'object code (color × 10 + shape)'],
+  [/物體 (\d+) 角度（\(角度＋1\)÷2）/g, 'object $1 angle ((angle + 1) ÷ 2)'],
+  [/物體 (\d+) 角度（÷2）/g, 'object $1 angle (÷2)'],
+  [/物體 (\d+) 色號/g, 'object $1 color number'], [/物體 (\d+) 形狀/g, 'object $1 shape'], [/物體 (\d+) 頂點數/g, 'object $1 vertices'],
+  [/物體 (\d+) 追蹤編號/g, 'object $1 tracking ID'], [/物體 (\d+) 角度/g, 'object $1 angle'],
+  [/(\d+) 個物體＋大小、面積、角度/g, '$1 objects + size, area, angle'], [/^1 個物體＋/g, '1 object ＋'], [/(\d+) 個物體＋大小/g, '$1 objects + size'],
+  [/(\d+) 個物體 色號、形狀、XY/g, '$1 objects: color, shape, XY'], [/^1 個物體$/g, '1 object'], [/(\d+) 個物體/g, '$1 objects'],
+  [/物體數/g, 'object count'], [/物體 (\d+)/g, 'object $1'],
   [/SPIKE read\(6\)：要數量時才讀（換模式多等 30 ms；模式 8 是裝置 ID）/g, 'SPIKE read(6): only when you need counts (switching modes adds 30 ms; mode 8 is the device ID)'],
   [/App Python device\.data\(\)：byte 8～15/g, 'App Python device.data(): bytes 8~15'],
   [/讀（值編號照順序）/g, 'read (value numbers in order)'],
@@ -166,7 +178,7 @@ const EN_RULES = [
   [/(\d+) 色( |$)/g, '$1 colors$2'],
   [/色 (\d+)/g, 'color $1'],
   [/色相碼/g, 'hue code'], [/色相/g, 'hue'], [/飽和度/g, 'saturation'], [/飽和明度/g, 'sat/value'], [/飽和/g, 'sat'], [/明度/g, 'value'],
-  [/數量/g, 'count'], [/面積/g, 'area'], [/寬/g, 'width'], [/高/g, 'height'],
+  [/數量/g, 'count'], [/面積/g, 'area'], [/角度/g, 'angle'], [/寬/g, 'width'], [/高/g, 'height'],
   // 位置欄
   [/通道 (\d+) 方向/g, 'channel $1 heading'], [/通道 (\d+) 距離/g, 'channel $1 distance'], [/通道 (\d+)/g, 'channel $1'],
   [/^值 (\d+)/g, 'value $1'], [/^值$/g, 'value'],
@@ -252,6 +264,7 @@ function referencePage(lang) {
       '- **「A.BB」**：Pybricks `ambient()` 顯示成小數，整數部分＝A、小數兩位＝B。',
       '- **「（＋100）」**：會有負數的值加 100 再送，讀到後減 100。',
       '- 座標：像素 X 0～159（左→右）、Y 0～119（上→下）；EV3 的 Y 是「下＝小」。各種格子（16×12、8×6、40×30）的換算看 [產品首頁的數值規則](/sensors/unicam/index.md)。',
+      '- **物體代碼（相機模式 5）**：色號×10＋形狀，例 13＝色 1 的三角形、24＝色 2 的正方形，0＝沒有物體。形狀 0 其他／判不出、1 圓、2 橢圓、3 三角、4 正方、5 長方、6 五邊、7 六邊、8 星、9 梯形。物體 1＝面積最大的那個，只看目標色 1～8。',
     ].join('\n'),
     [
       '- **0 = no target**: a coordinate, cell number or area of 0 means nothing was found (when something is found X and Y are at least 1). Hue code 0 is red, so check the area or the total blocks as well.',
@@ -260,6 +273,7 @@ function referencePage(lang) {
       '- **"A.BB"**: Pybricks `ambient()` shows a decimal: integer part = A, two decimals = B.',
       '- **"(+100)"**: values that can be negative are sent +100; subtract 100 after reading.',
       '- Coordinates: pixel X 0~159 (left → right), Y 0~119 (top → bottom); on EV3, Y is small at the bottom. Grid conversions (16×12, 8×6, 40×30) are on the [product page](/en/sensors/unicam/index.md).',
+      '- **Object code (camera mode 5)**: color number × 10 + shape, e.g. 13 = a triangle in color 1, 24 = a square in color 2, 0 = no object. Shapes: 0 other / unknown, 1 circle, 2 ellipse, 3 triangle, 4 square, 5 rectangle, 6 pentagon, 7 hexagon, 8 star, 9 trapezoid. Object 1 = the largest one; only target colors 1~8 count.',
     ].join('\n')), '');
   out.push('<a id="counts"></a>', '');
   out.push(`## ${T(lang, '各上位機給幾色', 'Colors / points per host')}`, '');
@@ -305,7 +319,7 @@ const TILES = [
     sw: { zh: 'MakeCode', en: 'MakeCode' } },
   { pg: 'mblock', page: 'mblock/index.md', img: '/images/illust/host-mblock.webp', name: 'mBlock',
     tag: { zh: 'mBot、Ranger、Orion、MegaPi，RJ25 串口 38400', en: 'mBot, Ranger, Orion, MegaPi over RJ25 serial 38400' },
-    sw: { zh: 'mBlock 5（MBC 感應器擴展 v2.1.0）', en: 'mBlock 5 (MBC Pro Sensors extension v2.1.0)' } },
+    sw: { zh: 'mBlock 5（MBC 感應器擴展 v2.2.0）', en: 'mBlock 5 (MBC Pro Sensors extension v2.2.0)' } },
 ];
 function hostTiles(lang) {
   const P = pre(lang);
@@ -474,6 +488,24 @@ function figGrid() {
   return svg(480, 380, s, '8 by 6 grid: X times 10 plus Y; EV3 counts Y from the bottom');
 }
 
+function figObjects() {
+  const ox = 40, oy = 34, S = 2.5;
+  const P = (x) => ox + x * S, Q = (y) => oy + y * S;
+  let s = ARROW + frame(ox, oy, S);
+  // 物體（色號、形狀、質心像素、大小）；面積大的排前面 → 標籤寫物體編號與代碼
+  const tri = (cx, cy, r) => `${P(cx)},${Q(cy - r)} ${P(cx + r * 0.95)},${Q(cy + r * 0.75)} ${P(cx - r * 0.95)},${Q(cy + r * 0.75)}`;
+  s += `<rect x="${P(98)}" y="${Q(60)}" width="${40 * S}" height="${40 * S}" rx="3" fill="${C.blue}" fill-opacity="0.9"/>`;           // 物體 1：色 2 正方 → 24
+  s += `<polygon points="${tri(46, 52, 24)}" fill="${C.red}" fill-opacity="0.9"/>`;                                                   // 物體 2：色 1 三角 → 13
+  s += `<circle cx="${P(126)}" cy="${Q(28)}" r="${14 * S}" fill="${C.green}" fill-opacity="0.9"/>`;                                  // 物體 3：色 3 圓 → 31
+  const tag = (x, y, n, code) => `<g font-weight="700"><circle cx="${x}" cy="${y}" r="13" fill="${C.ink}"/><text x="${x}" y="${y + 5}" text-anchor="middle" font-size="14" fill="#fff">${n}</text>` +
+    `<text x="${x + 18}" y="${y + 6}" font-size="17" fill="${C.ink}" stroke="#fff" stroke-width="4" paint-order="stroke">${code}</text></g>`;
+  s += tag(P(118) - 6, Q(80), 1, '24') + tag(P(46) - 6, Q(58), 2, '13') + tag(P(126) - 6, Q(28), 3, '31');
+  // 物體 1 的質心十字
+  s += `<g stroke="#fff" stroke-width="2.4"><line x1="${P(118) - 8}" y1="${Q(92)}" x2="${P(118) + 8}" y2="${Q(92)}"/><line x1="${P(118)}" y1="${Q(92) - 8}" x2="${P(118)}" y2="${Q(92) + 8}"/></g>`;
+  s += `<g font-size="13" fill="${C.mute}"><text x="${ox}" y="${Q(120) + 24}">code = color × 10 + shape</text><text x="${ox}" y="${Q(120) + 42}">1 circle · 2 ellipse · 3 triangle · 4 square · 5 rectangle · 6 pentagon · 7 hexagon · 8 star · 9 trapezoid</text></g>`;
+  return svg(480, 400, s, 'Object detection: objects numbered by area, each with code = color times 10 plus shape');
+}
+
 // ---------------------------------------------------------------- 寫出
 for (const lang of ['zh', 'en']) {
   const base = lang === 'en' ? 'en/' : '';
@@ -483,7 +515,7 @@ for (const lang of ['zh', 'en']) {
     if (r === null) { console.log(`${base}sensors/unicam/index.md 缺 <!-- gen:${name} -->…<!-- /gen -->`); process.exitCode = 1; }
   }
 }
-const FIGS = { 'color-track': figColorTrack, 'sample-points': figSamplePoints, 'color-order': figColorOrder, 'line-follow': figLine, 'hue-code': figHue, 'grid-8x6': figGrid };
+const FIGS = { 'color-track': figColorTrack, 'sample-points': figSamplePoints, 'color-order': figColorOrder, 'line-follow': figLine, 'hue-code': figHue, 'grid-8x6': figGrid, objects: figObjects };
 for (const [name, fn] of Object.entries(FIGS)) w.write(`images/sensors/unicam/${name}.svg`, fn());
 
 if (untranslated.size) {

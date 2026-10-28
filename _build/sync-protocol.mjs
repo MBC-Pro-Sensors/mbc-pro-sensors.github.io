@@ -58,7 +58,8 @@ function render(src) {
   return JSON.stringify(d, null, 2) + '\n';
 }
 
-const files = fs.readdirSync(SRC).filter((f) => f.endsWith('.json')).sort();
+// 有頂層 layout 的產品（神攝手 unicam：0x10 起的值表依相機模式而變）不進 gen-reference 的通用頁，網站頁由 gen-unicam.mjs 產生 → 不複製
+const files = fs.readdirSync(SRC).filter((f) => f.endsWith('.json') && !JSON.parse(fs.readFileSync(path.join(SRC, f), 'utf8')).layout).sort();
 let diff = 0;
 for (const f of files) {
   let src = fs.readFileSync(path.join(SRC, f), 'utf8');

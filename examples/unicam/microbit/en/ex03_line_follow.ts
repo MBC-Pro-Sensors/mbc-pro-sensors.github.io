@@ -117,7 +117,7 @@ function ucReady(): boolean {
     return f != UC_NONE && (f & 1) == 1
 }
 
-// 切相機模式（E0）：camMode 1~4、sub 子選項（照順序給色號填 0）/ switch camera mode
+// 切相機模式（E0）：camMode 1~5、sub 子選項（照順序給色號填 0；物體偵測 1 清單、2 詳細）/ switch camera mode
 function ucSetMode(camMode: number, sub: number): void {
     ucWrite(0xE0, [camMode, sub])
     basic.pause(50)
@@ -182,6 +182,35 @@ function ucOrderTotal(): number {
 // line values (near/mid/far offset: line on the left = negative)
 function ucReadLine(): number[] {
     return ucReadMany(0x10, 14)
+}
+
+// 物體偵測每個物體幾個值：51 → 4（色號 形狀 X Y）、52 → 10 / values per object (modes 51, 52)
+function ucObjStride(mode: number): number {
+    if (mode == 51) return 4
+    if (mode == 52) return 10
+    return 0
+}
+
+// 物體 i（1~8，1 = 面積最大）：[代碼, 色號, 形狀, x, y, 寬, 高, 面積%, 角度, 頂點數, 追蹤編號]
+// 代碼 = 色號×10＋形狀，0 = 沒有；模式 51 沒給的是 -1
+// object i: [code, colour, shape, x, y, w, h, area%, angle, vertices, trackId]; -1 = not in mode 51
+function ucReadObject(mode: number, i: number): number[] {
+    const k = ucObjStride(mode)
+    const d = ucReadMany(0x10 + (i - 1) * k, k)
+    const code = d[0] > 0 ? d[0] * 10 + d[1] : 0
+    if (mode == 51) return [code, d[0], d[1], d[2], d[3], -1, -1, -1, -1, -1, -1]
+    return [code, d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9]]
+}
+
+// 畫面裡有幾個物體 0~8 / number of objects in view (modes 51, 52)
+function ucObjectCount(mode: number): number {
+    return ucReadMany(0x10 + 8 * ucObjStride(mode), 1)[0]
+}
+
+// 形狀編號 → 英文名稱 / shape number -> name
+function ucShapeName(s: number): string {
+    const n = ["other", "circle", "ellipse", "triangle", "square", "rectangle", "pentagon", "hexagon", "star", "trapezoid"]
+    return (s >= 0 && s <= 9) ? n[s] : "?"
 }
 
 // 色相碼 → 顏色代號：1 紅 2 橙 3 黃 4 綠 5 青 6 藍 7 紫 8 白／灰 9 黑

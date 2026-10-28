@@ -117,7 +117,7 @@ mBot、mBot Ranger、Orion、Ultimate 2.0（MegaPi）都能用。感應器選 Ma
 | 想在 SPIKE 上用舵機 | [SPIKE 6 路舵機擴充器](/sensors/servo6/index.md) | 一個孔接 6 顆舵機，主機供電（即將推出） |
 | 比賽用遙控，現場隊伍多 | [掌控者 PS4/PS5](/sensors/ps4/index.md) | 只綁定自己的手把，斷訊自動停車 |
 | 教學或專題用遙控，預算有限 | [掌控者 PS2](/sensors/ps2/index.md) | 2.4G 手把，最划算 |
-| 追顏色、找物體位置、取色點、排順序、循線 | [神攝手](/sensors/unicam/index.md) | 相機選單切換 4 種模式，六種主機（SPIKE、EV3、Arduino、mBlock、MATRIX、micro:bit）都讀得到（開發中） |
+| 追顏色、找物體位置、取色點、排順序、循線 | [神攝手](/sensors/unicam/index.md) | 相機選單切換 5 種模式（含物體偵測：顏色＋形狀），六種主機（SPIKE、EV3、Arduino、mBlock、MATRIX、micro:bit）都讀得到（開發中） |
 | 走直線、轉精準角度 | [陀螺儀 IMU](/sensors/imu/index.md) | 任意角度安裝，磁力計融合不飄移（即將推出） |
 
 <div class="lp-final">

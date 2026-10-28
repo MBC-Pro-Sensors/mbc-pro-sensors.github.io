@@ -113,7 +113,7 @@ Serial.println();
 
 積木傳回 色點 1~12 顏色碼（0~255）。主機送 `[10]` → 回 `[值低][值高][10 ^ 值低 ^ 值高]`，值 = int16 小端；第 N 路的編號 = 0x10 + (N − 1)。
 
-<pre class="blocks">(神攝手 WRO 連接埠 [1 v] 色點 [1 v] 顏色碼 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 WRO 連接埠 [1 v] 色點 [1 v] 顏色碼 :: sensing)</pre>
 
 </details>
 
@@ -221,7 +221,7 @@ Serial.println();
 
 積木傳回 色點 1~12 鮮豔度（0~255）。主機送 `[20]` → 回 `[值低][值高][20 ^ 值低 ^ 值高]`，值 = int16 小端；第 N 路的編號 = 0x20 + (N − 1)。
 
-<pre class="blocks">(神攝手 WRO 連接埠 [1 v] 色點 [1 v] 鮮豔度 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 WRO 連接埠 [1 v] 色點 [1 v] 鮮豔度 :: sensing)</pre>
 
 </details>
 
@@ -301,7 +301,7 @@ bool ready = st & (1 << 0);   // 就緒
 
 狀態旗標 F3 的各 bit 由擴展拆成布林積木（就緒、校準中…）。
 
-<pre class="blocks"><神攝手 WRO 連接埠 [1 v] 連線正常？ :: sensing></pre>
+<pre class="blocks"><神攝手舊版 WRO 連接埠 [1 v] 連線正常？ :: sensing></pre>
 
 </details>
 

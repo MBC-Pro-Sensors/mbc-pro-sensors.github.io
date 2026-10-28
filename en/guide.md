@@ -117,7 +117,7 @@ Works with mBot, mBot Ranger, Orion and Ultimate 2.0 (MegaPi). Choose the MakeBl
 | Use servos with SPIKE | [SPIKE 6-Port Servo Expander](/en/sensors/servo6/index.md) | Six servos from one port, hub-powered (coming soon) |
 | Remote control at crowded events | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bonds to your gamepad only, stops on signal loss |
 | Remote control for classes on a budget | [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad, best value |
-| Track colors, find objects, sample points, sequences and lines | [Sharpshooter Vision](/en/sensors/unicam/index.md) | 4 camera modes switched in its menu, six host families (SPIKE, EV3, Arduino, mBlock, MATRIX, micro:bit) (in development) |
+| Track colors, find objects, sample points, sequences and lines | [Sharpshooter Vision](/en/sensors/unicam/index.md) | 5 camera modes switched in its menu (including object detection: color + shape), six host families (SPIKE, EV3, Arduino, mBlock, MATRIX, micro:bit) (in development) |
 | Drive straight, turn precisely | [IMU Gyro](/en/sensors/imu/index.md) | Any mounting angle, compass fusion without drift (coming soon) |
 
 <div class="lp-final">

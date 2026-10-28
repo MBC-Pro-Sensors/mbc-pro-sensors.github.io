@@ -34,6 +34,9 @@ struct UcSpot { int h, s, v; };
 // 循線 14 個值（近／中／遠偏移 -100~100：線在左 = 負）
 struct UcLine { int nearOff, midOff, farOff, angle, width, flags, junction, junctionDist,
                 leftEdge, rightEdge, farWidth, marker, markerCount, lost; };
+// 一個物體（模式 51／52）：code 物體代碼＝色號×10＋形狀（0 = 沒有）、color 色號 1~8、shape 形狀 0~9、x、y 質心像素、
+// w、h 外框像素（52）、area 面積 %；angle、vertices、trackId MATRIX 沒給（-1，要用 I2C 版）；沒給的是 -1
+struct UcObject { int code, color, shape, x, y, w, h, area, angle, vertices, trackId; };
 // ==== MBC_UNICAM_MX_TOP_END ====
 
 const uint8_t MODE = 13;                 // 模式編號 = 相機模式 1 × 10 + 子選項 3 / mode number
@@ -167,6 +170,41 @@ void ucLine(UcLine &l) {
   l.leftEdge = ucLo(8) - 100;        l.rightEdge = ucHi(8) - 100;
   l.farWidth = ucLo(9);              l.marker = ucHi(9);
   l.markerCount = ucLo(10);          l.lost = ucHi(10);
+}
+
+// 物體偵測：這個模式最多幾個物體：51 → 4、52 → 3
+uint8_t ucMaxObject(uint8_t mode) {
+  if (mode == 51) return 4;
+  if (mode == 52) return 3;
+  return 0;
+}
+
+// 畫面裡有幾個物體 0~8（模式 51／52 第 1 格）；其他模式回傳 -1
+int ucObjectCount(uint8_t mode) {
+  if (mode == 51 || mode == 52) return (int)CamData[0];
+  return -1;
+}
+
+// 讀物體 i（1 = 面積最大）：51 每個物體 2 格（代碼＋面積、X＋Y）、52 每個 3 格（再加 寬＋高）
+bool ucObject(uint8_t mode, uint8_t i, UcObject &o) {
+  if (i < 1 || i > ucMaxObject(mode)) return false;
+  uint8_t base = (mode == 51) ? 2 * i : 3 * i - 1;     // 代碼＋面積 在第 base 格
+  o.code = ucLo(base); o.area = ucHi(base);
+  o.color = o.code / 10; o.shape = o.code % 10;
+  o.x = ucLo(base + 1); o.y = ucHi(base + 1);
+  o.w = -1; o.h = -1; o.angle = -1; o.vertices = -1; o.trackId = -1;
+  if (mode == 52) { o.w = ucLo(base + 2); o.h = ucHi(base + 2); }
+  return true;
+}
+
+// 形狀編號 → 英文名稱：0 other 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid
+const char *ucShapeName(int s) {
+  switch (s) {
+    case 0: return "other";    case 1: return "circle";    case 2: return "ellipse";  case 3: return "triangle";
+    case 4: return "square";   case 5: return "rectangle"; case 6: return "pentagon"; case 7: return "hexagon";
+    case 8: return "star";     case 9: return "trapezoid";
+  }
+  return "?";
 }
 
 // 色相碼 → 顏色代號：1 紅 2 橙 3 黃 4 綠 5 青 6 藍 7 紫 8 白／灰 9 黑

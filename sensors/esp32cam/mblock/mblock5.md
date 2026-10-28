@@ -21,7 +21,7 @@
 
 ## 讀值（學校版）
 
-裝好 MBC Pro Sensors 擴展後，在「神攝手」分類找積木，連接埠選感應器實際插的孔。
+裝好 MBC Pro Sensors 擴展後，在「神攝手舊版」分類找積木，連接埠選感應器實際插的孔。
 
 <section id="v01" class="ref-item">
 
@@ -33,7 +33,7 @@
 | :--- | :--- |
 | `-1~100` | S1 取樣點色相 0~100（色相環 0~240 等比縮放）；−1 = 黑白灰（飽和度 < 10）；S1 沒設定 = 0 |
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 色相 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 色相 :: sensing)</pre>
 
 <p class="ref-note">積木傳回 色相（-1~100）。主機送 <code>[01]</code> → 回 <code>[值低][值高][01 ^ 值低 ^ 值高]</code>，值 = int16 小端。</p>
 
@@ -49,7 +49,7 @@
 | :--- | :--- |
 | `0~100` | S1 取樣點飽和度 0~100 |
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 飽和度 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 飽和度 :: sensing)</pre>
 
 <p class="ref-note">積木傳回 飽和度（0~100）。主機送 <code>[02]</code> → 回 <code>[值低][值高][02 ^ 值低 ^ 值高]</code>，值 = int16 小端。</p>
 
@@ -65,7 +65,7 @@
 | :--- | :--- |
 | `0~100` | S1 取樣點明度 0~100 |
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 明度 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 明度 :: sensing)</pre>
 
 <p class="ref-note">積木傳回 明度（0~100）。主機送 <code>[03]</code> → 回 <code>[值低][值高][03 ^ 值低 ^ 值高]</code>，值 = int16 小端。</p>
 
@@ -81,7 +81,7 @@
 | :--- | :--- |
 | `0~100` | 全畫面動態量 0~100（畫面變化越多越大） |
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 動態 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 動態 :: sensing)</pre>
 
 <p class="ref-note">積木傳回 動態（0~100）。主機送 <code>[04]</code> → 回 <code>[值低][值高][04 ^ 值低 ^ 值高]</code>，值 = int16 小端。</p>
 
@@ -97,7 +97,7 @@
 | :--- | :--- |
 | `0~100` | 色塊中心 X 0~100，左 = 0；沒找到 = 0 |
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 色塊 X :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 色塊 X :: sensing)</pre>
 
 <p class="ref-note">積木傳回 色塊 X（0~100）。主機送 <code>[05]</code> → 回 <code>[值低][值高][05 ^ 值低 ^ 值高]</code>，值 = int16 小端。</p>
 
@@ -113,7 +113,7 @@
 | :--- | :--- |
 | `0~75` | 色塊中心 Y 0~75，下 = 0、上 = 75；沒找到 = 0 |
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 色塊 Y :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 色塊 Y :: sensing)</pre>
 
 <p class="ref-note">積木傳回 色塊 Y（0~75）。主機送 <code>[06]</code> → 回 <code>[值低][值高][06 ^ 值低 ^ 值高]</code>，值 = int16 小端。</p>
 
@@ -129,7 +129,7 @@
 | :--- | :--- |
 | `0~100` | 色塊寬 W 0~100；0 = 沒找到 |
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 色塊寬 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 色塊寬 :: sensing)</pre>
 
 <p class="ref-note">積木傳回 色塊寬（0~100）。主機送 <code>[07]</code> → 回 <code>[值低][值高][07 ^ 值低 ^ 值高]</code>，值 = int16 小端。</p>
 
@@ -145,7 +145,7 @@
 | :--- | :--- |
 | `0~75` | 色塊高 H 0~75；沒找到 = 0 |
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 色塊高 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 色塊高 :: sensing)</pre>
 
 <p class="ref-note">積木傳回 色塊高（0~75）。主機送 <code>[08]</code> → 回 <code>[值低][值高][08 ^ 值低 ^ 值高]</code>，值 = int16 小端。</p>
 
@@ -161,7 +161,7 @@
 | :--- | :--- |
 | `0~7500` | W×H（0~7500）；沒找到 = 0 |
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 色塊面積 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 色塊面積 :: sensing)</pre>
 
 <p class="ref-note">積木傳回 色塊面積（0~7500）。主機送 <code>[09]</code> → 回 <code>[值低][值高][09 ^ 值低 ^ 值高]</code>，值 = int16 小端。</p>
 
@@ -175,7 +175,7 @@
 | :--- | :--- |
 | `0~1` | 1 = 畫面裡有目標色的色塊（W > 0），0 = 沒有 |
 
-<pre class="blocks">(神攝手 連接埠 [1 v] 有找到色塊？ :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 連接埠 [1 v] 有找到色塊？ :: sensing)</pre>
 
 <p class="ref-note">積木傳回 有找到色塊（0~1）。主機送 <code>[0A]</code> → 回 <code>[值低][值高][0A ^ 值低 ^ 值高]</code>，值 = int16 小端。</p>
 
@@ -189,13 +189,13 @@
 
 一次讀整張值表進快取（FD 整包）；接下來 10 ms 內的讀值積木直接用快取，不再逐一詢問
 
-<pre class="blocks">神攝手 連接埠 [1 v] 更新全部數值 :: sensing</pre>
+<pre class="blocks">神攝手舊版 連接埠 [1 v] 更新全部數值 :: sensing</pre>
 
 </section>
 
 ## 讀值（WRO 版）
 
-裝好 MBC Pro Sensors 擴展後，在「神攝手 WRO」分類找積木，連接埠選感應器實際插的孔。
+裝好 MBC Pro Sensors 擴展後，在「神攝手舊版 WRO」分類找積木，連接埠選感應器實際插的孔。
 
 <section id="w10" class="ref-item">
 
@@ -207,7 +207,7 @@
 | :--- | :--- |
 | `0~255` | 10~1B = S1~S12 顏色碼：0~239 彩色（色相 0~255 等比縮成 0~239）、240~245 白（飽和度 < 30，越低越大）、246~250 黑（明度 < 30，越暗越大）、255 = 色點沒開 |
 
-<pre class="blocks">(神攝手 WRO 連接埠 [1 v] 色點 [1 v] 顏色碼 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 WRO 連接埠 [1 v] 色點 [1 v] 顏色碼 :: sensing)</pre>
 
 <p class="ref-note">積木傳回 色點 1~12 顏色碼（0~255）。主機送 <code>[10]</code> → 回 <code>[值低][值高][10 ^ 值低 ^ 值高]</code>，值 = int16 小端；第 N 路的編號 = 0x10 + (N − 1)。</p>
 
@@ -223,7 +223,7 @@
 | :--- | :--- |
 | `0~255` | 20~2B = S1~S12 鮮豔度（飽和度）0~255：黑 = 1、白／彩色 = 實際飽和度；色點沒開 = 0 |
 
-<pre class="blocks">(神攝手 WRO 連接埠 [1 v] 色點 [1 v] 鮮豔度 :: sensing)</pre>
+<pre class="blocks">(神攝手舊版 WRO 連接埠 [1 v] 色點 [1 v] 鮮豔度 :: sensing)</pre>
 
 <p class="ref-note">積木傳回 色點 1~12 鮮豔度（0~255）。主機送 <code>[20]</code> → 回 <code>[值低][值高][20 ^ 值低 ^ 值高]</code>，值 = int16 小端；第 N 路的編號 = 0x20 + (N − 1)。</p>
 
@@ -237,7 +237,7 @@
 
 一次讀整張值表進快取（FD 整包）；接下來 10 ms 內的讀值積木直接用快取，不再逐一詢問
 
-<pre class="blocks">神攝手 WRO 連接埠 [1 v] 更新全部數值 :: sensing</pre>
+<pre class="blocks">神攝手舊版 WRO 連接埠 [1 v] 更新全部數值 :: sensing</pre>
 
 </section>
 
@@ -254,6 +254,7 @@
 
 ## 下載
 
+- [MBC_Pro_Sensors_mBlock5_v2.2.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.2.0_import.mext)
 - [MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.1.0_import.mext)
 - [MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext](/downloads/MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext)
 - [MBC_Pro_Sensors_mBlock5_v1.0.0.mext（舊版，2026-10 以前出貨的感應器）](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext)

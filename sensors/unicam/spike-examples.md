@@ -8,7 +8,7 @@
 > [!WARNING]
 > **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
 
-這一頁有 **Pybricks 5 個範例**（用 MBC 函式庫 `MBC_UniCam.py`）和 **樂高官方 SPIKE App（教育版）Python 2 個範例**，最後是官方 App 積木的拆值表（教育版、家用版）。題目都是學生最常用的：跟著色塊轉、多色找位置、座標取色判斷顏色、照順序給色號（WRO 顏色順序）、PD 循線＋路口停車。
+這一頁有 **Pybricks 6 個範例**（用 MBC 函式庫 `MBC_UniCam.py`）和 **樂高官方 SPIKE App（教育版）Python 2 個範例**，最後是官方 App 積木的拆值表（教育版、家用版）。題目都是學生最常用的：跟著色塊轉、多色找位置、座標取色判斷顏色、照順序給色號（WRO 顏色順序）、PD 循線＋路口停車、物體偵測（找最大的紅色三角形）。
 
 | 寫法 | 適合誰 | 怎麼用 |
 |---|---|---|
@@ -26,8 +26,9 @@
 ## 開始之前：在相機上教色、切模式
 
 1. **教色**：即時畫面用左右鍵停在「目標 1」→ 按 **OK** → 用左右鍵把十字移到色塊上（AxisX → AxisY）→ **OK** 取色（按住 OK 0.8 秒直接完成）。目標 2、3…照做。停在目標上按**側鍵**＝清除這個目標。
-2. **切模式**：左右鍵停在 **MODE** → **OK** → 選相機模式 1～4 → **OK** → 選子選項 → **OK**。子選項會顯示這台主機實際給幾個（例如 Pybricks「7 XY」）。螢幕右上的「1-3」就是現在的模式（＝模式編號 13）。
-3. 設定斷電會記住（目標色、模式、子選項）。
+2. **切模式**：左右鍵停在 **MODE** → **OK** → 選相機模式 1～5 → **OK** → 選子選項 → **OK**。子選項會顯示這台主機實際給幾個（例如 Pybricks「7 XY」）。螢幕右上的「1-3」就是現在的模式（＝模式編號 13）。
+3. **物體偵測（相機模式 5）**：教完目標 1～8 會跳出 `Target N shape`，可以指定形狀（Any＝不指定）或按側鍵跳過；只有目標色 1～8 會當成物體。
+4. 設定斷電會記住（目標色、模式、子選項、指定形狀）。
 
 | 模式編號 | 相機選單 | Pybricks 給什麼 |
 |---|---|---|
@@ -38,8 +39,12 @@
 | 21／22／23 | 2 座標取色 ①②③ | 14 點色相／7 點色相＋飽和／4 點色相＋飽和＋明度 |
 | 30 | 3 照順序給色號 | 左起 13 塊的色相碼＋總塊數 |
 | 41／42／43 | 4 循線 黑線／白線／色線 | 14 個值（近中遠偏移、角度、線寬、旗標、路口、左右緣、標記線、離線方向） |
+| 51 | 5 物體偵測 ① 物體清單 | 4 個物體的代碼、X、Y（像素）＋物體數 |
+| 52 | 5 物體偵測 ② 物體詳細 | 2 個物體的色號、形狀、X、Y、寬、高、面積 %（沒有物體數、角度） |
 
 **數字怎麼看**：座標是像素，X 0～159（左→右）、Y 0～119（上→下），**(0, 0)＝沒找到**。色相碼 0～255：紅 0／240、黃 40、綠 80、青 120、藍 160、紫 200；241～248 白／灰；249～255 黑。循線偏移 −100～100，**站在車後往前看，線在左＝負**。
+
+**物體（模式 51／52）**：物體代碼＝**色號×10＋形狀**（例 13＝目標 1 的三角形），0＝沒有。形狀 0 其他、1 圓、2 橢圓、3 三角、4 正方、5 長方、6 五邊、7 六邊、8 星、9 梯形。物體 1、2…＝**面積由大到小**（物體 1 最大）；X、Y 是質心。只看目標色 1～8。
 
 ## 函式庫 MBC_UniCam.py 的方法
 
@@ -58,9 +63,16 @@
 | `order()`、`total()` | 左起每塊的色相碼（≤13）、總塊數 | 30 |
 | `line_all()` | 14 個值一次讀 | 41～43 |
 | `near()` `mid()` `far()` `angle()` `width()` `flags()` `junction()` `junction_dist()` `edges()` `far_width()` `marker()` `lost()` | 循線各值 | 41～43 |
+| `max_object()` | 這個模式給幾個物體：51→4、52→2 | 51、52 |
+| `object_count()` | 畫面裡有幾個物體 0～8 | 51 |
+| `object(i)`、`object_found(i)` | 物體 i 的代碼（色號×10＋形狀，0＝沒有）、有沒有 | 51、52 |
+| `object_color(i)`、`object_shape(i)` | 色號 1～8、形狀 0～9 | 51、52 |
+| `object_xy(i)` | 質心 (X, Y) 像素，(0, 0)＝沒有 | 51、52 |
+| `object_size(i)`、`object_area(i)` | 外框 (寬, 高) 像素、面積 % | 52 |
 | `device_id()`、`is_unicam()`、`firmware_version()` | 模式 8：(0x4C, 3, 100)、True、(1, 0) | 全部 |
 | `sensor_ok()`、`mode_number()` | 最近有沒有讀到、建構時的模式編號 | 全部 |
 | `color_name(h)`（模組函式） | 色相碼 → `'red'`…`'black'` | — |
+| `shape_name(s, zh=False)`（模組函式） | 形狀 0～9 → `'other'` `'circle'` `'ellipse'` `'triangle'` `'square'` `'rectangle'` `'pentagon'` `'hexagon'` `'star'` `'trapezoid'`；`zh=True` 回中文 | — |
 
 - 模式不對（例如模式 21 叫 `xy()`）或色號超出範圍會丟 `ValueError`，訊息中英並列，不會默默回錯的值。
 - 拔線不會讓程式停：回傳上一次的值；從來沒讀到過回傳 `None`。
@@ -418,6 +430,100 @@ while True:
 
 ---
 
+## 範例 6：找最大的紅色三角形
+
+**這個範例會做什麼**：相機把畫面裡的物體由大到小排好，程式從最大的往下找「目標 1（紅色）的三角形」，轉過去開到它前面（它跑到畫面最下面）就停車嗶一聲；看不到就原地慢慢轉著找。主機螢幕顯示畫面裡有幾個物體。
+
+**相機要切到**：相機模式 5 物體偵測 ・子選項 ① 物體清單＝**模式編號 51**；先把「目標 1」教成紅色（形狀可以不指定，相機會自己判斷）。
+
+**要準備什麼**：SPIKE 主機、驅動底座（左輪 **E**、右輪 **F**）、相機插 **C 孔**、紅色三角形的紙板或積木（再放幾個別的形狀更好玩）。
+
+**下載**：[ex06_object_pick.py](/examples/unicam/pybricks/ex06_object_pick.py)＋[MBC_UniCam.py](/examples/unicam/pybricks/MBC_UniCam.py)
+
+<details>
+<summary>🐍 Pybricks 程式碼</summary>
+
+```python
+# 神攝手 × Pybricks（SPIKE）範例 6：找最大的紅色三角形、轉過去
+# Sharpshooter Vision × Pybricks (SPIKE) example 6: find the biggest red triangle and drive to it
+# 需要把相機選單切到 相機模式 5 物體偵測 ・子選項 ① 物體清單＝模式編號 51
+# Camera menu: camera mode 5 Object detection, option 1 Object list = mode number 51
+# 準備：在相機上把「目標 1」教成紅色（形狀可以不指定）/ teach "target 1" as red on the camera
+# 接線 Wiring：相機 → C 孔 / camera → port C；左輪 E、右輪 F / left wheel E, right wheel F
+# 同一個資料夾要有 MBC_UniCam.py / MBC_UniCam.py must be imported too
+#
+# 物體代碼＝色號×10＋形狀：目標 1 的三角形＝1×10＋3＝13。物體 1、2、3、4 是面積由大到小，
+# 所以從物體 1 往下找，第一個代碼是 13 的就是「最大的紅色三角形」。
+# Object code = colour × 10 + shape: target 1 triangle = 13. Objects 1~4 are sorted largest first,
+# so the first object with code 13 is the biggest red triangle.
+from pybricks.hubs import PrimeHub
+from pybricks.pupdevices import Motor
+from pybricks.parameters import Port, Direction, Color
+from pybricks.robotics import DriveBase
+from pybricks.tools import wait
+from MBC_UniCam import UniCam, shape_name
+
+hub = PrimeHub()
+cam = UniCam(Port.C, mode=51)                    # 模式編號要跟相機選單一樣 / must match the camera menu
+left = Motor(Port.E, Direction.COUNTERCLOCKWISE)
+right = Motor(Port.F)
+robot = DriveBase(left, right, 56, 112)          # 輪徑 56 mm、輪距 112 mm / wheel 56 mm, axle 112 mm
+
+WANT = 1 * 10 + 3  # 👉 可以改：目標 1 × 10 ＋ 形狀 3（三角）；正方形改成 14、圓改成 11 / square 14, circle 11
+KP = 3             # 👉 可以改：偏 1 像素就多轉幾度／秒 / turn rate per pixel of error
+NEAR_Y = 100       # 👉 可以改：物體的 Y ≥ 100（畫面最下面）就算到了 / Y at the bottom of the picture = arrived
+
+
+def find(want):
+    # 從最大的物體往下找代碼＝want 的，回傳它的 (X, Y)；找不到 (0, 0) / largest first; (0, 0) = not found
+    for i in range(1, cam.max_object() + 1):     # SPIKE 模式 51 給 4 個物體 / 4 objects on SPIKE
+        if cam.object(i) == want:
+            return cam.object_xy(i)
+    return (0, 0)
+
+
+print('要找 looking for: 目標 target', WANT // 10, shape_name(WANT % 10, True), shape_name(WANT % 10))
+while True:
+    n = cam.object_count()                       # 畫面裡有幾個物體 0~8 / objects in view
+    if n is None:                                # 從來沒讀到相機 / camera never answered
+        robot.stop()
+        hub.light.on(Color.RED)
+        wait(100)
+        continue
+    hub.display.number(n)
+    x, y = find(WANT)
+    if x == 0:                                   # 沒看到紅色三角形：原地慢慢轉著找 / not seen: spin to search
+        robot.drive(0, 60)
+        hub.light.on(Color.ORANGE)
+    elif y >= NEAR_Y:                            # 到了：停車、嗶一聲 / arrived: stop and beep
+        robot.stop()
+        hub.light.on(Color.GREEN)
+        hub.speaker.beep()
+        break
+    else:
+        error = x - 80                           # 畫面中間 X = 80；在右 → 正 → 右轉 / right of centre = positive
+        robot.drive(80, error * KP)
+        hub.light.on(Color.BLUE)
+    wait(20)
+```
+
+</details>
+
+**一步一步看懂程式**
+1. `WANT = 1 × 10 + 3`：物體代碼＝色號×10＋形狀，目標 1 的三角形＝13。要找正方形改 14、圓改 11。
+2. `cam.object(i)`：物體 i 的代碼；物體 1 最大，所以從 1 往下找到的第一個就是最大的。SPIKE 模式 51 給 4 個物體（`cam.max_object()`）。
+3. `cam.object_xy(i)`：質心 (X, Y) 像素；`X − 80` 在右是正的 → 往右轉。
+4. `cam.object_count()`：畫面裡總共幾個物體（0～8，可能比 4 多）。
+
+**跑起來應該看到什麼**：紅色三角形在左邊車子往左轉、在右邊往右轉，邊轉邊前進；開到它前面停車嗶一聲，程式結束。旁邊的紅色圓形、藍色三角形都不理。
+
+**常見問題**
+- **一直轉圈找不到？** → 相機螢幕右上要顯示 `5-1`；看相機畫面每個物體旁邊標的「色號 形狀」，三角形被判成別的形狀就到目標 1 的 `Target 1 shape` 指定成 Tri，或在 SET 選單把 **ShapeTol** 調大。
+- **畫面裡東西太多？** → SPIKE 只給最大的 4 個；紅色三角形比較小時可能排不進來，把背景雜物移開。
+- **想要大小、面積？** → 改用模式 52：`cam.object_size(i)`、`cam.object_area(i)`（只給 2 個物體）。
+
+---
+
 ## 樂高官方 SPIKE App（教育版）Python 範例
 
 官方 App 把相機當成「顏色感應器」，Python 用 `color_sensor.color()`、`reflection()`、`rgbi()` 讀到 **byte 0～7**（顏色、反射光、原始紅綠藍）。範例最上面的「讀值小工具」`UniCamApp` 會照模式把它拆好（小工具單獨下載：[MBC_UniCam_App_helper.py](/examples/unicam/spike_app/MBC_UniCam_App_helper.py)）。byte 8～15 只有 `device.data()` 可能讀得到，**還沒上機確認（任務 #77）**，小工具先不用。
@@ -430,6 +536,10 @@ while True:
 | `hue(i)`、`sat(i)`、`val(i)` | 21：點 1～6 色相；22、23：點 1～3 色相＋飽和；23 點 1 明度 | 21～23 |
 | `order()` | (左起前 6 塊色相碼, 總塊數) | 30 |
 | `line()` | (近處偏移, 遠處偏移, 角度, 路口類型, 近處線寬) | 41～43 |
+| `max_object()`、`object_count()` | 給幾個物體的代碼（51→3、52→2）、畫面裡幾個物體（51） | 51、52 |
+| `object(i)`、`object_color(i)`、`object_shape(i)` | 物體代碼、色號、形狀（51：物體 1～3；52：物體 1～2） | 51、52 |
+| `object_cell(i)` | 物體 1～3 的 8×6 格 (X, Y)（Y 上＝小） | 51 |
+| `object_xy(1)`、`object_size(1)`、`object_area(i)` | 物體 1 的質心、外框像素；物體 1、2 的面積 % | 52 |
 
 ### App 範例 1：跟著色塊轉
 
@@ -528,6 +638,68 @@ class UniCamApp:
     def line(self):
         """循線：(近處偏移, 遠處偏移, 角度, 路口類型, 近處線寬)；偏移、角度 −100~100（線在左＝負）"""
         return (self._w(0) - 100, self._w(1) - 100, self._w(2) - 100, self.b[0], self.b[1])
+
+    # ── 物體偵測（51 物體清單、52 物體詳細）：物體代碼＝色號×10＋形狀，0＝沒有；物體 1＝面積最大 ──
+    # ── object detection (51 list, 52 detail): code = colour×10 + shape, 0 = none; object 1 = largest ──
+    def _obj(self, i, n, modes=(51, 52)):
+        if self.mode not in modes:
+            raise ValueError('模式 %d 沒有這個值，要用模式 %s / not available in mode %d, use %s' % (self.mode, modes, self.mode, modes))
+        if not 1 <= i <= n:
+            raise ValueError('第幾個物體要填 1~%d / object must be 1~%d' % (n, n))
+
+    def max_object(self):
+        """byte 0~7 給幾個物體的代碼：51→3、52→2（52 的位置、大小只有物體 1）"""
+        self._obj(1, 1)
+        return 3 if self.mode == 51 else 2
+
+    def object_count(self):
+        """51：畫面裡有幾個物體 0~8（顏色）/ objects in view (colour)"""
+        self._obj(1, 1, (51,))
+        return self.b[0]
+
+    def object(self, i):
+        """物體 i 的代碼（51：物體 1~3；52：物體 1~2）/ object code"""
+        if self.mode == 51:
+            self._obj(i, 3)
+            return self.b[1] if i == 1 else self._w(i - 1) // 100
+        self._obj(i, 2)
+        return self.b[0] if i == 1 else self._w(2) & 255
+
+    def object_color(self, i):
+        """物體 i 的色號 1~8，0＝沒有"""
+        return self.object(i) // 10
+
+    def object_shape(self, i):
+        """物體 i 的形狀 0~9（沒有物體也是 0）"""
+        return self.object(i) % 10
+
+    def object_cell(self, i):
+        """51：物體 i（1~3）的 8×6 格 (X 格, Y 格)，(0, 0)＝沒有（Y 上＝小；像素 ≈ 格×20−10）"""
+        self._obj(i, 3, (51,))
+        g = self._w(0) if i == 1 else self._w(i - 1) % 100
+        return (g // 10, g % 10)
+
+    def object_xy(self, i):
+        """52：物體 1 的質心 (X, Y) 像素，(0, 0)＝沒有"""
+        self._obj(i, 1, (52,))
+        return (self._w(0) & 255, self._w(0) >> 8)
+
+    def object_size(self, i):
+        """52：物體 1 的外框 (寬, 高) 像素"""
+        self._obj(i, 1, (52,))
+        return (self._w(1) & 255, self._w(1) >> 8)
+
+    def object_area(self, i):
+        """52：物體 1、2 的面積（佔畫面 %）"""
+        self._obj(i, 2, (52,))
+        return self.b[1] if i == 1 else self._w(2) >> 8
+
+
+def shape_name(s, zh=False):
+    """形狀 0~9 → 'other' 'circle' 'ellipse' 'triangle' 'square' 'rectangle' 'pentagon' 'hexagon' 'star' 'trapezoid'（zh=True 中文）"""
+    if s is None or not 0 <= s <= 9:
+        return None
+    return ('其他', '圓', '橢圓', '三角', '正方', '長方', '五邊', '六邊', '星', '梯形')[s] if zh else         ('other', 'circle', 'ellipse', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon', 'star', 'trapezoid')[s]
 
 
 def color_name(h):
@@ -678,6 +850,68 @@ class UniCamApp:
         """循線：(近處偏移, 遠處偏移, 角度, 路口類型, 近處線寬)；偏移、角度 −100~100（線在左＝負）"""
         return (self._w(0) - 100, self._w(1) - 100, self._w(2) - 100, self.b[0], self.b[1])
 
+    # ── 物體偵測（51 物體清單、52 物體詳細）：物體代碼＝色號×10＋形狀，0＝沒有；物體 1＝面積最大 ──
+    # ── object detection (51 list, 52 detail): code = colour×10 + shape, 0 = none; object 1 = largest ──
+    def _obj(self, i, n, modes=(51, 52)):
+        if self.mode not in modes:
+            raise ValueError('模式 %d 沒有這個值，要用模式 %s / not available in mode %d, use %s' % (self.mode, modes, self.mode, modes))
+        if not 1 <= i <= n:
+            raise ValueError('第幾個物體要填 1~%d / object must be 1~%d' % (n, n))
+
+    def max_object(self):
+        """byte 0~7 給幾個物體的代碼：51→3、52→2（52 的位置、大小只有物體 1）"""
+        self._obj(1, 1)
+        return 3 if self.mode == 51 else 2
+
+    def object_count(self):
+        """51：畫面裡有幾個物體 0~8（顏色）/ objects in view (colour)"""
+        self._obj(1, 1, (51,))
+        return self.b[0]
+
+    def object(self, i):
+        """物體 i 的代碼（51：物體 1~3；52：物體 1~2）/ object code"""
+        if self.mode == 51:
+            self._obj(i, 3)
+            return self.b[1] if i == 1 else self._w(i - 1) // 100
+        self._obj(i, 2)
+        return self.b[0] if i == 1 else self._w(2) & 255
+
+    def object_color(self, i):
+        """物體 i 的色號 1~8，0＝沒有"""
+        return self.object(i) // 10
+
+    def object_shape(self, i):
+        """物體 i 的形狀 0~9（沒有物體也是 0）"""
+        return self.object(i) % 10
+
+    def object_cell(self, i):
+        """51：物體 i（1~3）的 8×6 格 (X 格, Y 格)，(0, 0)＝沒有（Y 上＝小；像素 ≈ 格×20−10）"""
+        self._obj(i, 3, (51,))
+        g = self._w(0) if i == 1 else self._w(i - 1) % 100
+        return (g // 10, g % 10)
+
+    def object_xy(self, i):
+        """52：物體 1 的質心 (X, Y) 像素，(0, 0)＝沒有"""
+        self._obj(i, 1, (52,))
+        return (self._w(0) & 255, self._w(0) >> 8)
+
+    def object_size(self, i):
+        """52：物體 1 的外框 (寬, 高) 像素"""
+        self._obj(i, 1, (52,))
+        return (self._w(1) & 255, self._w(1) >> 8)
+
+    def object_area(self, i):
+        """52：物體 1、2 的面積（佔畫面 %）"""
+        self._obj(i, 2, (52,))
+        return self.b[1] if i == 1 else self._w(2) >> 8
+
+
+def shape_name(s, zh=False):
+    """形狀 0~9 → 'other' 'circle' 'ellipse' 'triangle' 'square' 'rectangle' 'pentagon' 'hexagon' 'star' 'trapezoid'（zh=True 中文）"""
+    if s is None or not 0 <= s <= 9:
+        return None
+    return ('其他', '圓', '橢圓', '三角', '正方', '長方', '五邊', '六邊', '星', '梯形')[s] if zh else         ('other', 'circle', 'ellipse', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon', 'star', 'trapezoid')[s]
+
 
 def color_name(h):
     """色相碼 → 'red' 'orange' 'yellow' 'green' 'cyan' 'blue' 'purple' 'white' 'black'"""
@@ -756,6 +990,8 @@ runloop.run(main())
 | 2 ③ 色相＋飽和＋明度 | — | S1 明度 | S1 色相 ＋ S1 飽和 ×256 | S2 色相 ＋ S2 飽和 ×256 | S3 色相 ＋ S3 飽和 ×256 |
 | 3 照順序給色號 | 總塊數 | — | 左起第 1 塊色相 ＋ 左起第 2 塊色相 ×256 | 左起第 3 塊色相 ＋ 左起第 4 塊色相 ×256 | 左起第 5 塊色相 ＋ 左起第 6 塊色相 ×256 |
 | 4 循線（①②③ 相同） | 路口類型 | 近處線寬 % | 近處偏移＋100 | 遠處偏移＋100 | 線角度＋100 |
+| 5 ① 物體清單 | 物體數 | 物體 1 代碼 | 物體 1 X×10＋Y（8×6 格） | 物體 2 代碼 ×100 ＋ 物體 2 X×10＋Y（8×6 格） | 物體 3 代碼 ×100 ＋ 物體 3 X×10＋Y（8×6 格） |
+| 5 ② 物體詳細 | 物體 1 代碼 | 物體 1 面積 % | 物體 1 X ＋ 物體 1 Y ×256 | 物體 1 寬 ＋ 物體 1 高 ×256 | 物體 2 代碼 ＋ 物體 2 面積 % ×256 |
 
 ### 家用版（Robot Inventor App，藍綠色主機）
 
@@ -772,6 +1008,8 @@ runloop.run(main())
 | 2 ③ 色相＋飽和＋明度 | — | S2 飽和÷10×10＋明度÷10 | S1 色相 | S1 飽和÷10×10＋明度÷10 | S2 色相 |
 | 3 照順序給色號 | — | 總塊數 | 左起第 1 塊色相 | 左起第 2 塊色相 | 左起第 3 塊色相 |
 | 4 循線（①②③ 相同） | 路口類型 | 近處線寬 % | 近處偏移＋100 | 遠處偏移＋100 | 線角度＋100 |
+| 5 ① 物體清單 | 物體數 | 物體 1 代碼 | 物體 1 X×10＋Y（8×6 格） | 物體 2 代碼 | 物體 2 X×10＋Y（8×6 格） |
+| 5 ② 物體詳細 | 物體數 | 物體 1 代碼 | 物體 1 X | 物體 1 Y | 物體 1 面積 % |
 
 > [!CAUTION]
 > 官方 App 裡**不要用「顏色是 [紅色]？」這種選顏色的積木**，它比對的是樂高自己的色號。一律把數字放進變數再比大小。家用版 App 的 Python 讀法還沒驗證，這頁只列積木讀法。
