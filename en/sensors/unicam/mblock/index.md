@@ -111,7 +111,7 @@ Pick the port the sensor is actually plugged into. **Colour c** = target c on th
 - Read: the host sends **1 byte [id]** → the camera replies **[low][high][id ^ low ^ high]** (int16 little-endian); unknown ids reply `[00][80][id^80]` (−32768). The library waits 10 ms.
 - Write: **E0 [camera mode, sub-option]**, **E1 [point, X, Y]**; the camera ACKs `[00][00][id]` only after all parameters arrived, then runs it; an incomplete command is dropped after 20 ms. EF ACKs and reboots; there is no F8 (re-addressing only matters for I2C).
 - The **FD** pack-all reply is 235 bytes (116 values), more than the Arduino UNO 64-byte serial buffer, so the extension **has no "update all values" block**: each block asks only for the value it needs (about 1 ms per value).
-- Shared values: F0 device id = `0x034C` (what "sensor OK?" checks), F1 protocol 2, F2 firmware 100, F3 status flags.
+- Shared values: F0 device id = `0x034C` (what "sensor OK?" checks), F1 protocol 2, F2 firmware 100, F3 status flags (bit 0 ready = booted and camera running, bit 1 something found in the current mode).
 
 ## Smallest program
 
