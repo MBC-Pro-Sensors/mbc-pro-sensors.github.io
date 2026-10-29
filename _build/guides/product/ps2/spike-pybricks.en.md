@@ -18,5 +18,37 @@ The PS2 2.4G gamepad and its receiver are **paired at the factory**; no pairing 
 > [!NOTE]
 > The Pybricks 3.6.1 examples are no longer updated; the old files are under "Legacy (no longer updated)" on the [Downloads page](/en/downloads.md).
 
+### All buttons as one number: buttons() and buttons_psx()
+
+The library has two ways to pack the 16 buttons into one number. The buttons are the same; **each button just has a different value**:
+
+| Button | `pad.buttons()` (MBC order) | `pad.buttons_psx()` (PSX order) |
+| :--- | :--- | :--- |
+| Up / Right / Down / Left | 1 / 2 / 4 / 8 | 16 / 32 / 64 / 128 |
+| ▲ / ● / ✕ / ■ | 16 / 32 / 64 / 128 | 4096 / 8192 / 16384 / 32768 |
+| L2 / R2 / L1 / R1 | 256 / 512 / 1024 / 2048 | 256 / 512 / 1024 / 2048 |
+| SELECT / L3 / R3 / START | 4096 / 8192 / 16384 / 32768 | 1 / 2 / 4 / 8 |
+| Check one button | `pad.pressed('CROSS')` | `pad.pressed_psx('CROSS')` or `pad.buttons_psx() & PSX_CROSS` |
+
+- **Beginners: use `buttons()` / `pressed()`.** The D-pad and shape-button values match the official App's "reflected light"; every example on this page uses them.
+- **`buttons_psx()` uses the PS2 gamepad's native button order.** PS2 and PS4 receivers send the same number, and Arduino (I2C) reads the 16 buttons in this order too, so use it when your program shares button values with Arduino code. SPIKE edition only (the 7th value of mode 9).
+- Both are 0 while no gamepad is connected.
+
+```python
+from pybricks.parameters import Port
+from pybricks.tools import wait
+from MBC_gamepad_Lib import MBC_GAMEPAD, PSX_CROSS
+
+pad = MBC_GAMEPAD(Port.C)
+while True:
+    pad.update()                 # update once per loop
+    n = pad.buttons_psx()        # 16 buttons, PSX order
+    if n & PSX_CROSS:            # ✕ pressed
+        print('CROSS')
+    if pad.pressed_psx('L1'):    # or check by name
+        print('L1')
+    wait(50)
+```
+
 > [!TIP]
 > How to use the Controller PS2 with EV3, the SPIKE App and Pybricks blocks is also summarised in the [command guide (PDF)](/examples/ps2/PS2_Controller_Command_Guide_EN_Taiwan_only.pdf).

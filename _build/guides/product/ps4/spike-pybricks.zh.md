@@ -21,3 +21,35 @@
 
 > [!NOTE]
 > Pybricks 3.6.1 版範例已不再更新，舊檔放在[下載專區](/downloads.md)的「舊版（不再更新）」。
+
+### 全部按鍵合成一個數字：buttons() 和 buttons_psx()
+
+函式庫有兩種「16 個鍵合成一個數字」的寫法。按鍵是同一組，只是**每個鍵代表的數字不一樣**：
+
+| 按鍵 | `pad.buttons()`（MBC 排列） | `pad.buttons_psx()`（PSX 排列） |
+| :--- | :--- | :--- |
+| 上／右／下／左 | 1／2／4／8 | 16／32／64／128 |
+| ▲／●／✕／■ | 16／32／64／128 | 4096／8192／16384／32768 |
+| L2／R2／L1／R1 | 256／512／1024／2048 | 256／512／1024／2048 |
+| SHARE（PS5：建立）／L3／R3／OPTIONS | 4096／8192／16384／32768 | 1／2／4／8 |
+| 判斷某一個鍵 | `pad.pressed('CROSS')` | `pad.pressed_psx('CROSS')` 或 `pad.buttons_psx() & PSX_CROSS` |
+
+- **新手用 `buttons()`／`pressed()`**：方向鍵、圖形鍵的數字跟官方 App「反射光」一樣，本頁範例都用這個。
+- **`buttons_psx()` 用 PS2 手把原本的按鍵順序**，PS2 和 PS4 接收器送出的數字相同；Arduino（I2C）讀到的十六鍵也是這個排列，程式要跟 Arduino 共用同一套按鍵數字時用它。只有 SPIKE 版能用（讀模式 9 的第 7 個數字）。
+- 沒連上手把時兩個都是 0。
+
+```python
+from pybricks.parameters import Port
+from pybricks.tools import wait
+from MBC_gamepad_Lib import MBC_GAMEPAD, PSX_CROSS
+
+pad = MBC_GAMEPAD(Port.C)
+while True:
+    pad.update()                 # 每圈先更新一次
+    n = pad.buttons_psx()        # PSX 排列的十六鍵
+    if n & PSX_CROSS:            # ✕ 有按
+        print('CROSS')
+    if pad.pressed_psx('L1'):    # 用名稱判斷也可以
+        print('L1')
+    wait(50)
+```
