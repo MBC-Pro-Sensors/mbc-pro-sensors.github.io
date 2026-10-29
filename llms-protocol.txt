@@ -134,9 +134,9 @@ assumptions:
 ## 循行者 8 路 / Line Follower 8-ch (id line8, I2C 0x16, hw0 8, model LINE8)
 hosts: ev3, spike, i2c, mblock, matrix, microbit
 values:
-  01 linePos: 線位置 / line position; range -8~+8; 線在哪一路：−8（最左）~+8（最右），0 = 正中間；站在車後往前看，負 = 線在左 / which channel the line is under: −8 (far left) to +8 (far right), 0 = centre; seen from behind the robot, negative = left; EV3 mode0[0]; SPIKE mode0 b1-8,mode0 b0-8,mode1 b0-8,mode9 v4lo-8; MATRIX 0x22 cmd4-8
-  02 linePosFine: 細位置 / fine position; range -100~+100; 線位置的細分：−100 ~ +100，0 = 正中間，負 = 線在左（與線位置同號） / sub-channel position: −100 to +100, 0 = centre, negative = left (same sign as line position); EV3 mode2[0]; SPIKE mode0 b2-100,mode3 b0-100,mode4 v0-100,mode9 v5lo-100; MATRIX 0x22 cmd6-100
-  03 lineWidth: 線寬 / line width; range 0~8 路; 壓到線的路數 0~8，0 = 找不到線 / number of channels on the line, 0~8; 0 = no line; EV3 mode2[1]; SPIKE mode0 b0,mode0 b1,mode2 b0,mode9 v4hi; MATRIX 0x22 cmd5
+  01 linePos: 線位置 / line position; range -8~+8; 線在哪一路：−8（最左）~+8（最右），0 = 正中間；站在車後往前看，負 = 線在左 / which channel the line is under: −8 (far left) to +8 (far right), 0 = centre; seen from behind the robot, negative = left; EV3 mode0[0]; SPIKE mode0 b1-8,mode0 b0-8,mode1 b0-8,mode5 v0,mode9 v4lo-8; MATRIX 0x22 cmd4-8
+  02 linePosFine: 細位置 / fine position; range -100~+100; 線位置的細分：−100 ~ +100，0 = 正中間，負 = 線在左（與線位置同號） / sub-channel position: −100 to +100, 0 = centre, negative = left (same sign as line position); EV3 mode2[0]; SPIKE mode0 b2-100,mode3 b0-100,mode4 v0-100,mode7 v0,mode9 v5lo-100; MATRIX 0x22 cmd6-100
+  03 lineWidth: 線寬 / line width; range 0~8 路; 壓到線的路數 0~8，0 = 找不到線 / number of channels on the line, 0~8; 0 = no line; EV3 mode2[1]; SPIKE mode0 b0,mode0 b1,mode2 b0,mode5 v0,mode7 v0,mode9 v4hi; MATRIX 0x22 cmd5
   04 groupCount: 線段數 / line segments; range 0~4; 看到幾段線：0 丟線、1 一條線、2 以上 = 分岔／十字 / number of separate line segments: 0 = lost, 1 = one line, ≥2 = fork / crossing; SPIKE mode9 v5hi
   05 bitmap: 壓線位元圖 / line bitmap; range 0~255 bit; bit0 = 第 1 路（最左）… bit7 = 第 8 路，1 = 那一路在線上 / bit0 = channel 1 (left) … bit7 = channel 8; 1 = that channel sees the line; EV3 mode3[0]; SPIKE mode4 v1,mode9 v6lo
   06 lastDir: 最後離線方向 / last exit direction; range -8~+8; 丟線前線最後在哪一側：−8 ~ +8（負 = 左），找回線後維持最後一次 / where the line was before it was lost: −8 to +8 (negative = left); keeps the last value

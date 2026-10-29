@@ -450,7 +450,7 @@ function L_(o, lang) { return (o && (o[lang] || o.zh)) || ''; }
 // 網站產品 → 教學（神攝手分學校版、WRO 版；PS2／PS4 共用一套）；主機 → 軟體 → 教學種類。只列實際有檔的頁。
 const LEARN = { line8: ['line8'], line16: ['line16'], tof2: ['laser2'], tof8: ['laser8'], ps2: ['gamepad'], ps4: ['gamepad'], esp32cam: ['cam_school', 'hue12'], exp6: ['exp6'], servo6: ['servo6'], imu: ['imu'], unicam: ['unicam'] };
 const LEARN_KINDS = {
-  spike: { pybricks: ['micropython', 'pybricks-blocks'], mbcblocks: ['mbc-blocks'], official: ['spike-app'] },
+  spike: { pybricks: ['micropython', 'pybricks-blocks', 'pybricks-builtin'], mbcblocks: ['mbc-blocks'], official: ['spike-app', 'spike-app-python'] },
   ev3: { pybricks: ['ev3-pybricks'], clev3r: ['clev3r'], classroom: ['ev3-classroom'], ev3g: ['ev3g'] },
   arduino: { ide: ['arduino'] },
   mblock: { mblock5: ['mblock'] },
@@ -460,14 +460,14 @@ const LEARN_KINDS = {
 const LEARN_HOST_NAME = { spike: 'SPIKE', ev3: 'EV3', arduino: 'Arduino', mblock: 'mBlock', matrix: 'MATRIX', microbit: 'micro:bit' };
 const LK = {
   zh: { title: '互動教學', sub: '不用接主機，先在網頁上點點看：左邊選功能，右邊的程式或積木跟著長出來，還能拖拉模擬感應器看數值。',
-    swSub: '第一次用？先跟著互動教學在網頁上做一遍，再照下面的步驟接主機。', all: '全部產品的互動教學', guide: '產品說明', product: '① 選產品', host: '② 選主機', go: '③ 點一下，開始互動教學', allList: '全部產品一覽', short: { 'spike-app': '官方 SPIKE App', 'ev3-pybricks': 'Pybricks', 'ev3-classroom': 'Classroom', ev3g: 'EV3-G', micropython: 'MicroPython' },
-    kinds: { micropython: 'MicroPython（Pybricks）', 'pybricks-blocks': 'Pybricks 積木', 'mbc-blocks': 'MBC 積木網站', 'spike-app': '樂高官方 SPIKE App',
+    swSub: '第一次用？先跟著互動教學在網頁上做一遍，再照下面的步驟接主機。', all: '全部產品的互動教學', guide: '產品說明', product: '① 選產品', host: '② 選主機', go: '③ 點一下，開始互動教學', allList: '全部產品一覽', short: { 'spike-app': '官方 SPIKE App', 'spike-app-python': 'App Python', 'pybricks-builtin': '內建積木', 'ev3-pybricks': 'Pybricks', 'ev3-classroom': 'Classroom', ev3g: 'EV3-G', micropython: 'MicroPython' },
+    kinds: { micropython: 'MicroPython（Pybricks）', 'pybricks-blocks': 'Pybricks 積木', 'pybricks-builtin': 'Pybricks 內建積木（不匯入函式庫）', 'mbc-blocks': 'MBC 積木網站', 'spike-app': '樂高官方 SPIKE App', 'spike-app-python': '官方 SPIKE App Python',
       'ev3-pybricks': 'Pybricks／EV3 MicroPython', clev3r: 'clev3r', 'ev3-classroom': 'EV3 Classroom', ev3g: 'EV3-G 官方軟體',
       arduino: 'Arduino IDE', mblock: 'mBlock 5', matrix: 'MATRIXblock', makecode: 'MakeCode' },
     eds: { cam_school: '學校版', hue12: 'WRO 版' }, gamepad: '掌控者 PS2／PS4' },
   en: { title: 'Interactive tutorial', sub: 'No hub needed: click through it in your browser. Pick a function on the left, watch the code or blocks build up on the right, and drag the simulated sensor to see the values.',
-    swSub: 'First time? Try the interactive tutorial in your browser first, then follow the steps below with your hub.', all: 'Interactive tutorials for all products', guide: 'Product guide', product: '① Product', host: '② Hub', go: '③ Tap to start the tutorial', allList: 'All products at a glance', short: { 'spike-app': 'SPIKE App', 'ev3-pybricks': 'Pybricks', 'ev3-classroom': 'Classroom', ev3g: 'EV3-G', micropython: 'MicroPython' },
-    kinds: { micropython: 'MicroPython (Pybricks)', 'pybricks-blocks': 'Pybricks blocks', 'mbc-blocks': 'MBC Blocks website', 'spike-app': 'LEGO SPIKE App',
+    swSub: 'First time? Try the interactive tutorial in your browser first, then follow the steps below with your hub.', all: 'Interactive tutorials for all products', guide: 'Product guide', product: '① Product', host: '② Hub', go: '③ Tap to start the tutorial', allList: 'All products at a glance', short: { 'spike-app': 'SPIKE App', 'spike-app-python': 'App Python', 'pybricks-builtin': 'Built-in blocks', 'ev3-pybricks': 'Pybricks', 'ev3-classroom': 'Classroom', ev3g: 'EV3-G', micropython: 'MicroPython' },
+    kinds: { micropython: 'MicroPython (Pybricks)', 'pybricks-blocks': 'Pybricks blocks', 'pybricks-builtin': 'Pybricks built-in blocks (no library)', 'mbc-blocks': 'MBC Blocks website', 'spike-app': 'LEGO SPIKE App', 'spike-app-python': 'LEGO SPIKE App Python',
       'ev3-pybricks': 'Pybricks / EV3 MicroPython', clev3r: 'clev3r', 'ev3-classroom': 'EV3 Classroom', ev3g: 'EV3-G (LEGO software)',
       arduino: 'Arduino IDE', mblock: 'mBlock 5', matrix: 'MATRIXblock', makecode: 'MakeCode' },
     eds: { cam_school: 'School edition', hue12: 'WRO edition' }, gamepad: 'Controller PS2 / PS4' },

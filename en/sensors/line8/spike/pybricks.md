@@ -47,7 +47,7 @@ line = MBC_LINE8(Port.A)
 linePos = line.pos8()
 ```
 
-<p class="ref-note">mode 0 (edu) byte 1 −8 🔒; mode 0 (toy) byte 0 −8 🔒; mode 1 byte 0 −8; mode 9 v[4] lo −8 🔒</p>
+<p class="ref-note">mode 0 (edu) byte 1 −8 🔒; mode 0 (toy) byte 0 −8 🔒; mode 1 byte 0 −8; mode 5 v[0] 🔒; mode 9 v[4] lo −8 🔒. Note: Pybricks reflection() 編碼：X = (線位置+8)×10 + 線寬（0~168），a = X/25、b = (X−a×25+1)×10−1，3 個 int16 = a×256+b → reflection() ≈ X，主機 ÷10 取整−8 = 線位置、取餘數 = 線寬（INO:947-950）</p>
 
 </section>
 
@@ -81,7 +81,7 @@ line = MBC_LINE8(Port.A)
 linePosFine = line.pos100()
 ```
 
-<p class="ref-note">mode 0 (edu) byte 2 −100 🔒; mode 3 byte 0 −100; mode 4 v[0] −100; mode 9 v[5] lo −100 🔒</p>
+<p class="ref-note">mode 0 (edu) byte 2 −100 🔒; mode 3 byte 0 −100; mode 4 v[0] −100; mode 7 v[0] 🔒; mode 9 v[5] lo −100 🔒. Note: Pybricks ambient()：4 個相同 int16 = (細位置+100)×100 + 線寬（0~20008），主機 ÷100 → 位置.線寬（INO:956-961）</p>
 
 </section>
 
@@ -115,7 +115,7 @@ line = MBC_LINE8(Port.A)
 lineWidth = line.width()
 ```
 
-<p class="ref-note">mode 0 (edu) byte 0 🔒; mode 0 (toy) byte 1 🔒; mode 2 byte 0; mode 9 v[4] hi 🔒</p>
+<p class="ref-note">mode 0 (edu) byte 0 🔒; mode 0 (toy) byte 1 🔒; mode 2 byte 0; mode 5 v[0] 🔒; mode 7 v[0] 🔒; mode 9 v[4] hi 🔒. Note: 跟線位置合在 reflection() 的個位數（見線位置）; 跟細位置合在 ambient() 的小數兩位（見細位置）</p>
 
 </section>
 
