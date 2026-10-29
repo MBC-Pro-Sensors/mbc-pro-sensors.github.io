@@ -73,6 +73,26 @@ junction = b[6]                  # 路口類型：0 無 1 十字 2 T 3 左 4 右
 - **模式 6**：只有顏色追蹤 ① 最多色、② 多色要讀數量時才讀（`cam.read(6)`，換模式多等約 30 ms）；排法看 [讀值參考](/sensors/unicam/reference.md#pyb-11)。
 - **模式 8**：裝置 ID（全產品共用，MBC 積木網站用它認產品）。
 
+### 插在 EXP6 擴充器上
+
+孔不夠用時，神攝手可以插在 [EXP6 六路擴充器](/sensors/exp6/index.md) 的 1～6 號孔。改用 EXP6 v2 函式庫 `MBC_exp6_obj_Lib_v2.py`（[下載區](/downloads.md)），功能名稱跟上面的 `UniCam` 一樣；讀不到時回傳 `None`。EXP6 韌體要是 v2。官方 SPIKE App 也有同名寫法（`MBC_exp6_SPIKE_App_Lib_v2.py`）。
+
+```python
+from MBC_exp6_obj_Lib_v2 import MBC_EXP6, run_task
+
+exp6 = MBC_EXP6(1, True)      # EXP6 插在主機 A 孔
+cam = exp6.unicam(5, 13)      # 神攝手插在 EXP6 的 5 號孔，mode 要跟相機選單一樣
+
+async def main():
+    while True:
+        print(await cam.xy(1))
+
+run_task(main())
+```
+
+> [!NOTE]
+> 函式庫已用電腦跟直插版 `UniCam` 逐項比對過，**尚未上機驗證**。
+
 ## Pybricks 內建積木（模式 5／7）
 
 不裝函式庫，只用 Pybricks 內建的**顏色感應器**積木：`reflection()`（模式 5）和 `ambient()`（模式 7），每種相機模式各給 1～2 色。顏色追蹤跟 Kito 版一樣是 40×30 格：

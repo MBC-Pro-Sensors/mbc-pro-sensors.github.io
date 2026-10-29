@@ -73,6 +73,26 @@ junction = b[6]                  # junction: 0 none 1 cross 2 T 3 left 4 right 5
 - **Mode 6**: read it only when you need counts in Color tracking ① Max colors or ② Multi-color (`cam.read(6)`, switching modes adds about 30 ms); layout in the [value reference](/en/sensors/unicam/reference.md#pyb-11).
 - **Mode 8**: device ID (shared by every MBC product; the MBC Blocks website uses it to recognise the product).
 
+### Plugged into the EXP6 expander
+
+When you run out of ports, plug the Sharpshooter Vision into port 1–6 of the [EXP6 six-port expander](/en/sensors/exp6/index.md). Use the EXP6 v2 library `MBC_exp6_obj_Lib_v2.py` ([downloads](/en/downloads.md)); the function names are the same as `UniCam` above, and a reading that cannot be made returns `None`. The EXP6 needs firmware v2. The official SPIKE App library has the same calls (`MBC_exp6_SPIKE_App_Lib_v2.py`).
+
+```python
+from MBC_exp6_obj_Lib_v2 import MBC_EXP6, run_task
+
+exp6 = MBC_EXP6(1, True)      # EXP6 on hub port A
+cam = exp6.unicam(5, 13)      # camera on EXP6 port 5; mode must match the camera menu
+
+async def main():
+    while True:
+        print(await cam.xy(1))
+
+run_task(main())
+```
+
+> [!NOTE]
+> The library was compared item by item with the direct `UniCam` library on a computer; **not yet verified on hardware**.
+
 ## Pybricks built-in blocks (modes 5 / 7)
 
 No library, just the Pybricks built-in **color sensor** blocks `reflection()` (mode 5) and `ambient()` (mode 7); each camera mode gives one or two colors. Color tracking uses a 40×30 grid, the same as the Kito edition:

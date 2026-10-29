@@ -26,7 +26,7 @@
         "examples/10_Multitask_KeepAlive.py",
         "examples/11_MBC_Sensors_v2.py"
       ],
-      "size": 1589609
+      "size": 1594507
     },
     {
       "out": "/downloads/MBC_EXP6_Official_App_Lib_v2.zip",
@@ -63,7 +63,7 @@
         "examples/08_Stop_Modes.py",
         "examples/09_MBC_Sensors_v2.py"
       ],
-      "size": 1251845
+      "size": 1263345
     },
     {
       "out": "/downloads/MBC_EXP6_Pybricks_Lib.zip",
@@ -177,7 +177,7 @@
         "spike_app/examples/ex01_track_turn.py",
         "spike_app/examples/ex02_line_follow.py"
       ],
-      "size": 59613
+      "size": 59629
     },
     {
       "out": "/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext",

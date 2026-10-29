@@ -1,6 +1,6 @@
 // 下載區打包：照 _build/downloads.json 用 tar -a -c -f 打 zip（Windows 內建 bsdtar），並輸出 _build/generated/downloads.json 供產生 downloads.md
 // 用法：node _build/pack-downloads.mjs            重新打包（legacy 項目不動）
-//       node _build/pack-downloads.mjs --check    檢查 zip 存在、內容清單一致、generated/downloads.json 一致；不一致結束碼 1
+//       node _build/pack-downloads.mjs --check    檢查 zip 存在、檔案清單與每個檔的內容都跟正本一致、generated/downloads.json 一致；不一致結束碼 1
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
@@ -41,6 +41,11 @@ function listFiles(src, include) {
   return out.sort();
 }
 const zipList = (zip) => execFileSync(TAR, ['-t', '-f', zip], { encoding: 'utf8' }).split(/\r?\n/).filter((l) => l && !l.endsWith('/')).map((l) => l.replace(/\\/g, '/')).sort();
+// zip 裡跟正本內容不同的檔（只比檔名清單會漏掉「正本改了內容」）；回傳不同的檔名，清單不同時回傳 null
+function zipDiff(zip, files, src, srcOf) {
+  if (JSON.stringify(zipList(zip)) !== JSON.stringify(files)) return null;
+  return files.filter((f) => !execFileSync(TAR, ['-x', '-O', '-f', zip, f], { maxBuffer: 64 << 20 }).equals(fs.readFileSync(path.join(src, srcOf[f]))));
+}
 
 const generated = [];
 let bad = 0;
@@ -67,10 +72,14 @@ for (const it of spec.items) {
   if (CHECK) {
     if (!fs.existsSync(outAbs)) { console.log(`未打包：${it.out}`); bad++; }
     else {
-      const inZip = zipList(outAbs);
-      if (JSON.stringify(inZip) !== JSON.stringify(files)) { console.log(`內容不一致：${it.out}\n    zip：${inZip.join(', ')}\n    正本：${files.join(', ')}`); bad++; }
+      const diff = zipDiff(outAbs, files, src, srcOf);
+      if (!diff) { console.log(`內容不一致：${it.out}\n    zip：${zipList(outAbs).join(', ')}\n    正本：${files.join(', ')}`); bad++; }
+      else if (diff.length) { console.log(`檔案內容跟正本不同：${it.out}\n    ${diff.join(', ')}`); bad++; }
       entry.size = fs.statSync(outAbs).size;
     }
+  } else if (fs.existsSync(outAbs) && zipDiff(outAbs, files, src, srcOf)?.length === 0) {
+    // 內容跟正本完全一樣就不重打（重打只會改時間戳，git 會多一筆無意義的變更）
+    entry.size = fs.statSync(outAbs).size;
   } else {
     // 先複製到暫存（排除備份檔），再打包，zip 裡只有乾淨的檔案
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mbc-pack-'));
