@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The LEGO SPIKE App (Education) runs Python too, with no firmware change. In the App, the Ranger is a color sensor, and the App cannot import your own files, so ">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/laser2/spike-app-python.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/laser2/spike-app-python.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/laser2/spike-app-python.html">
+<title>Ranger 2-Way (TOF2) SPIKE App Python Tutorial | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+
+:root {
+  --bg: #f3f6f5;          
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;      
+  --accent-soft: #dff1ef;
+  --tape: #121212;        
+  --ir: #e04a3b;          
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+.conv { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+.conv th, .conv td { border: 1px solid var(--rule); padding: 6px 8px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.conv th { background: var(--accent-soft); }
+.tblwrap { overflow-x: auto; max-width: 100%; }
+.cant { font-size: 0.92rem; }
+.pend { display: inline-block; background: var(--warn-soft, #fff3d6); color: var(--warn); border-radius: 999px; padding: 1px 10px; font-size: 0.85rem; font-weight: 700; margin-left: 6px; vertical-align: middle; }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+[hidden] { display: none !important; }  /* 頁面用 hidden 切換「積木／程式」，.ws{display:grid} 會蓋掉它 */
+.learn-nav .tabs .tl { color: var(--muted, #666); font-size: 0.8rem; align-self: center; }
+.learn-nav .tabs .tsep { flex-basis: 100%; height: 0; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
+   排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
+@media (max-width: 900px) {
+  .learn-nav { position: static; width: 100vw; margin: -24px 0 14px calc(50% - 50vw); }
+  .learn-nav .in { padding: 6px 12px 8px; gap: 4px 14px; font-size: 0.85rem; }
+  .learn-nav .in > a { min-height: 36px; display: inline-flex; align-items: center; }
+  .learn-nav .tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .learn-nav .tabs::-webkit-scrollbar { display: none; }
+  .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
+  body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
+  .panel.follow { margin: 12px 0 16px; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow, .ctrl > .panel.follow { grid-column: 1 / -1; }
+  .flash { animation: followFlash 1.2s ease-out; }
+  @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
+  /* 點選目標放大：選項、勾選框、拉桿 */
+  .wrap > *, .main > *, .steps > *, .step-body > * { min-width: 0; }
+  label:has(input[type=radio]), label:has(input[type=checkbox]) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  button.copy, .viewtabs button { min-height: 36px; }
+  label:has(select) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  label select { min-height: 36px; }
+  input[type=radio], input[type=checkbox] { width: 20px; height: 20px; flex: none; }
+  input[type=range] { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/tof2/spike/">← Ranger 2-Way SPIKE guide</a><a class="lang" href="/learn/laser2/spike-app-python.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/laser2/micropython.html" aria-current="page">SPIKE</a><a href="/en/learn/laser2/ev3-pybricks.html">EV3</a><a href="/en/learn/laser2/arduino.html">Arduino</a><a href="/en/learn/laser2/mblock.html">mBlock</a><a href="/en/learn/laser2/matrix.html">MATRIX</a><a href="/en/learn/laser2/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/laser2/micropython.html">MicroPython (Pybricks)</a><a href="/en/learn/laser2/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/laser2/pybricks-builtin.html">Pybricks built-in blocks</a><a href="/en/learn/laser2/mbc-blocks.html">MBC Blocks website</a><a href="/en/learn/laser2/spike-app.html">LEGO SPIKE App</a><a href="/en/learn/laser2/spike-app-python.html" aria-current="page">SPIKE App Python</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC Ranger 2-Way (TOF2) × LEGO SPIKE App (Python)</span>
+    <h1>Read the Ranger with SPIKE App Python in three steps</h1>
+    <p class="lead">The LEGO SPIKE App (Education) runs Python too, with no firmware change. In the App, the Ranger is a <b>color sensor</b>, and the App cannot import your own files, so the order is: first <b>paste the reading helper at the top</b>, then <b>create an object and name the sensor</b>, then call <code>update()</code> once per loop and <b>call its functions</b> with that name. Work down the steps on the left and watch the program grow on the right; drag the left and right obstacle distances to see what the program prints.</p>
+  </header>
+
+  <section class="main" aria-label="Tutorial">
+    <div class="steps">
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>Paste the reading helper</h2></div>
+        <div class="step-body">
+          <p class="why">A SPIKE App Python project is a single file and <b>cannot import</b> your own .py, so <b>paste the whole "reading helper" at the very top</b> (its first lines say so: copy it as is). Without it the hub does not know <code>Laser2App</code> and stops with <code>NameError</code>.</p>
+          <ol class="howto">
+            <li>Open the LEGO SPIKE App (Education, yellow SPIKE Prime hub), create a project and choose "<b>Python</b>".</li>
+            <li>Paste the program marked ① on the right at the top (only the first helper line shows; press "Show helper" to see it all, and "Copy program" always copies everything). The helper alone: <a href="/examples/tof2/spike_app/MBC_laser2_App_helper.py" download>MBC_laser2_App_helper.py</a> (open it in a text editor and copy all; the file has Chinese and English comments).</li>
+            <li>Plug the Ranger into <b>any port A–F</b>; the hub powers it. The App sees it as a color sensor, so there is nothing to install.</li>
+          </ol>
+          <p class="small">The helper reads three of the App's color sensor values and converts them the same way as the <a href="/en/learn/laser2/spike-app.html">SPIKE App blocks page</a>:</p>
+          <div class="tblwrap"><table class="conv">
+            <tr><th scope="col">App value</th><th scope="col">Holds</th><th scope="col">Helper function</th></tr>
+            <tr><td><b>Raw red</b> <code>rgbi()[0]</code></td><td>left distance × 256</td><td><code>left()</code>: ÷ 256, whole number → 0 to 120 cm</td></tr>
+            <tr><td><b>Raw green</b> <code>rgbi()[1]</code></td><td>right distance × 256</td><td><code>right()</code>: ÷ 256, whole number → 0 to 120 cm</td></tr>
+            <tr><td><b>Raw blue</b> <code>rgbi()[2]</code></td><td>average distance × 256</td><td><code>average()</code>: ÷ 256, whole number → 0 to 120 cm</td></tr>
+          </table></div>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">Done, next step</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>Create the object: name the sensor</h2></div>
+        <div class="step-body">
+          <p class="why">A robot can have several sensors, so you "create an object": tell the helper which port the Ranger is on (<code>port.C</code> comes from <code>from hub import port</code>) and give it a name. You use that name for every reading.</p>
+          <div class="row">
+            <span class="small">Which port is the sensor on?</span>
+            <div class="ports" id="ports" role="group" aria-label="Port"></div>
+          </div>
+          <label class="f" for="varname"><span>Name it (start with a letter; letters, digits and _ only)</span>
+            <input type="text" id="varname" value="laser2" autocomplete="off" spellcheck="false">
+          </label>
+          <p class="err" id="nameerr" hidden></p>
+          <p class="small">In the App, ports are <code>port.A</code>–<code>port.F</code>: not Pybricks' <code>Port.C</code> and not a number.</p>
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2" disabled>Created, next step</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>update() every loop, then use a function</h2></div>
+        <div class="step-body">
+          <p class="why">App programs go in <code>async def main():</code> and <code>runloop.run(main())</code> starts them; wait with <code>await runloop.sleep_ms(100)</code> (not Pybricks' <code>wait()</code>). Each loop first reads once with <code><span id="nm1">laser2</span>.update()</code>, then uses "name + dot + function". Click a function to switch the program and output to its example.</p>
+          <div id="picker" class="ref"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+          <div class="sim-box">
+        <div class="sim-title">Sensor simulator (seen from above, front of the robot facing up): drag the left and right obstacle distances and watch the output on the right change</div>
+        <div class="sim">
+          <svg id="field" viewBox="0 0 460 190" role="img" aria-label="Robot, two lasers and obstacles"></svg>
+          <div class="ctrl">
+            <label class="f" for="dl">Distance to the left obstacle: <b id="dlv">30</b> cm (drag to 120 = nothing in front)
+              <input autocomplete="off" type="range" id="dl" min="0" max="120" step="0.5" value="30">
+            </label>
+            <label class="f" for="dr">Distance to the right obstacle: <b id="drv">120</b> cm
+              <input autocomplete="off" type="range" id="dr" min="0" max="120" step="0.5" value="120">
+            </label>
+            <div class="toggles">
+              <label><input autocomplete="off" type="checkbox" id="fault"> Left laser broken (always reads 120)</label>
+              <label><input autocomplete="off" type="checkbox" id="unplug"> Unplug the sensor</label>
+            </div>
+          </div>
+          <p class="note">The simulator is only a picture: the distance comes straight from where the obstacle is on the screen. A real laser can be off by 1 to 2 cm and only updates about every 0.1 seconds. 120 = nothing in front (or farther than 120 cm).</p>
+        </div>
+          </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">An example for every function</h2>
+        <p class="ref-intro">Every function has an example you can drop into <code>async def main():</code> (name laser2). "Try it" jumps to step 3 and switches the program and output on the right to that example.</p>
+        <div class="cards" id="cards"></div>
+        <p class="cant"><b>What the helper cannot read:</b> the App only reads the sensor's combined data (mode 0). <code>distances in mm</code>, <code>laser OK / start-up / fault bits</code>, <code>device ID</code>, <code>firmware version</code> and <code>sensor connected</code> are not in it. For these, use <a href="/en/learn/laser2/micropython.html">Pybricks MicroPython</a> (the hub needs the Pybricks firmware) or <a href="/en/learn/laser2/pybricks-blocks.html">Pybricks blocks</a>.</p>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="Your program and output">
+      <div class="panel">
+        <div class="panel-head"><span>Your program (SPIKE App Python)</span><span class="row"><button type="button" class="copy" id="helperbtn" aria-pressed="false">Show helper</button><button type="button" class="copy" id="copymain">Copy program</button></span></div>
+        <pre class="code" id="maincode" aria-live="polite"></pre>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>App console output (updates every 0.6 s)</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="ref" aria-labelledby="fullh">
+    <h2 id="fullh">Complete examples</h2>
+    <p class="ref-intro">Press "Copy" for the whole program (helper included) and paste it into a SPIKE App Python project. Downloads: <a href="/examples/tof2/spike_app/ex01_avoid.py" download>ex01_avoid.py</a>, <a href="/examples/tof2/spike_app/ex02_stop_at_wall.py" download>ex02_stop_at_wall.py</a>.</p>
+    <div class="full">
+      <div class="panel">
+        <div class="panel-head"><span>Avoid obstacles (left wheel E, right wheel F)</span><button type="button" class="copy" data-copy="ex01">Copy</button></div>
+        <pre class="code" id="ex-ex01"></pre>
+        <p class="bubble"><i>!</i><span>When the nearer distance is below <code>NEAR</code> it spins toward the clearer side, otherwise it drives straight; the display shows the nearer distance.</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>Stop 20 cm in front of a wall</span><button type="button" class="copy" data-copy="ex02">Copy</button></div>
+        <pre class="code" id="ex-ex02"></pre>
+        <p class="bubble"><i>!</i><span>P control on the average distance: too far drives forward, too near backs up, and it slows down near <code>TARGET</code>. Face the wall squarely.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">Good to know</h2>
+    <ol>
+      <li><b>These readings are worked out from the sensor firmware and not yet checked on hardware one by one (the same as the SPIKE App blocks page).</b> If the numbers look wrong (always 0, or thousands), use Pybricks and let us know.</li>
+      <li><b>Call <code>update()</code> every loop.</b> All helper functions split the values from the last <code>update()</code>; without it they never change (they start as all 0).</li>
+      <li><b>This is SPIKE App 3 style, not Pybricks.</b> Ports are <code>port.C</code> from <code>from hub import port</code> (not <code>Port.C</code> or a number), and waiting is <code>await runloop.sleep_ms()</code> (not <code>wait()</code>), so Pybricks programs cannot be pasted in. Python in the Robot Inventor (home) App is not verified yet; this page is for the Education App.</li>
+      <li><b>120 can mean four things:</b> nothing in front, something farther than 120 cm, the laser is still starting up (about 1–2 s after power-on), or that laser is broken. Black, shiny or clear objects are harder to measure; black ones are often lost beyond about 30–50 cm.</li>
+      <li><b>Direction:</b> looking forward from behind the robot, <code>left()</code> is the left laser and <code>right()</code> the right one; negative <code>diff()</code> = left is nearer. The helper only uses raw red, green and blue (color and reflection may be clipped by the App to 0–10 and 0–100).</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  var CFG = {"ports":["A","B","C","D","E","F"],"cls":"Laser2App","name":"laser2","helper":["# ===== Ranger 2-Way reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====","# In the SPIKE App the Ranger is a colour sensor: raw red = left × 256, raw green = right × 256, raw blue = average × 256 (cm).","# colour and reflection may be clipped by the App, so they are not used.","# 120 = nothing in range (or that laser failed)","import color_sensor","","","class Laser2App:","    def __init__(self, port_number):","        self.port = port_number","        self.b = [0] * 8                      # bytes 0~7; bytes 0, 1 are not read and stay 0","","    def update(self):","        \"\"\"read once\"\"\"","        rgb = color_sensor.rgbi(self.port)             # raw red, green, blue","        b = [0, 0]","        for v in rgb[:3]:","            v = int(v) & 0xFFFF                        # negatives back to 0~65535","            b += [v & 255, v >> 8]","        self.b = b","        return True","","    def _w(self, i):","        # raw red, green, blue word","        return self.b[2 + 2 * i] | (self.b[3 + 2 * i] << 8)","","    def left(self):","        \"\"\"left distance 0~120 cm (raw red ÷ 256)\"\"\"","        return self._w(0) >> 8","","    def right(self):","        \"\"\"right distance 0~120 cm (raw green ÷ 256)\"\"\"","        return self._w(1) >> 8","","    def average(self):","        \"\"\"average 0~120 cm (raw blue ÷ 256, worked out by the sensor)\"\"\"","        return self._w(2) >> 8","","    def min_distance(self):","        \"\"\"the nearer of left and right, 0~120 cm\"\"\"","        return min(self.left(), self.right())","","    def diff(self):","        \"\"\"left minus right: negative = left is nearer\"\"\"","        return self.left() - self.right()","# ===== end of helper ====="],"ex":{"ex01":["# Ranger 2-Way × LEGO SPIKE App (Education, Python) example 1: avoid obstacles","# Wiring: Ranger → port C; left wheel E, right wheel F","# turns toward the clearer side; the display shows the nearer distance","@HELPER","from hub import port, light_matrix","import motor_pair","import runloop","","laser2 = Laser2App(port.C)","BASE = 300        # forward speed (deg/s)","NEAR = 20         # turn when nearer than this (cm)","","","async def main():","    motor_pair.pair(motor_pair.PAIR_1, port.E, port.F)","    while True:","        laser2.update()","        if laser2.min_distance() < NEAR:","            if laser2.diff() < 0:                 # left is nearer → turn right","                motor_pair.move_tank(motor_pair.PAIR_1, 200, -200)","            else:                                 # right is nearer → turn left","                motor_pair.move_tank(motor_pair.PAIR_1, -200, 200)","        else:","            motor_pair.move_tank(motor_pair.PAIR_1, BASE, BASE)","        light_matrix.write(str(laser2.min_distance()))","        await runloop.sleep_ms(50)","","runloop.run(main())"],"ex02":["# Ranger 2-Way × LEGO SPIKE App (Education, Python) example 2: stop 20 cm in front of a wall","# Wiring: Ranger → port C; left wheel E, right wheel F","# too far: forward, too near: back up, slower near 20 cm","@HELPER","from hub import port","import motor_pair","import runloop","","laser2 = Laser2App(port.C)","TARGET = 20       # distance to stop at (cm)","KP = 15           # speed per cm of error","","","async def main():","    motor_pair.pair(motor_pair.PAIR_1, port.E, port.F)","    while True:","        laser2.update()","        error = laser2.average() - TARGET         # too far = positive","        speed = max(-400, min(400, KP * error))","        motor_pair.move_tank(motor_pair.PAIR_1, speed, speed)","        await runloop.sleep_ms(50)","","runloop.run(main())"]},"simIds":["dl","dr","fault"],"beforeDraw":[["dlv","dl"],["drv","dr"]],"U":{"copied":"Copied","copyManual":"Select and copy by hand","ctorCmt":"sensor on port @P","readOnce":"read once per loop","moreLines":"⋯ @N more lines (press \"Show helper\")","miniHelper":"⋯ @N helper lines: press \"Show helper\" on the right","lineRange":"line @R","dash":"–","plusHelper":", plus the helper from line @H","miniHead":"What this step writes (@R)","bubble1":"Step 1: the whole reading helper goes at the top (only its first line shows; press \"Show helper\"); then import the App's port and runloop.","bubble2":"Step 2: create the object. @N (left of =) is your name; the right side tells the helper the sensor is on @P.","bubble3":"Step 3: code goes in async def main(), and runloop.run(main()) starts it. while True repeats: each loop calls @N.update() first, then \"@N.function()\"; await runloop.sleep_ms(100) loops every 0.1 s.","errEmpty":"The name cannot be empty.","errChars":"Use only letters, digits and _, and do not start with a digit.","errUsed":"\"@V\" is already used by Python or the program; pick another name.","portAria":"port @P","ret":"Returns: ","retShort":"Returns","exShort":"Example","place":"inside the while True loop of async def main()","simPrints":"The simulator prints: ","tryIt":"Try it","exHelper":"… paste the step-1 helper here (\"Copy\" adds it for you) …","idle":"(finish step 3 and the program output appears here)","showHelper":"Show helper","hideHelper":"Hide helper","sep":" — "}}, U = CFG.U;
+  var S = { host: 'spike', port: 2, name: CFG.name, step: 1, viewStep: 1, fn: null, showHelper: false };
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function pr() { return Array.prototype.slice.call(arguments).join(' '); }
+  function pack(st) { var l = st.l & 255, r = st.r & 255; return [l, r, 0, l, 0, r, 0, (l + r) >> 1]; }
+  function view(b) {
+    function w(i) { return b[2 + 2 * i] | (b[3 + 2 * i] << 8); }
+    var V = { b: b, left: function () { return w(0) >> 8; }, right: function () { return w(1) >> 8; }, average: function () { return w(2) >> 8; } };
+    V.min_distance = function () { return Math.min(V.left(), V.right()); };
+    V.diff = function () { return V.left() - V.right(); };
+    return V;
+  }
+  function simExport(st) { return { l: st.l, r: st.r }; }
+  var FNS = [
+    { id: "left", label: "left()", name: "Left distance", grp: "Distance", ret: "0 to 120 (cm)", what: "Distance from the left laser (raw red ÷ 256). 120 = nothing in front, or farther than 120 cm. Drag the left obstacle.",
+      body: ["print(\"left:\", {n}.left(), \"cm\")"],
+      out: function (V, st) { return pr("left:", V.left(), "cm"); } },
+    { id: "right", label: "right()", name: "Right distance", grp: "Distance", ret: "0 to 120 (cm)", what: "Distance from the right laser (raw green ÷ 256).",
+      body: ["print(\"right:\", {n}.right(), \"cm\")"],
+      out: function (V, st) { return pr("right:", V.right(), "cm"); } },
+    { id: "average", label: "average()", name: "Average distance", grp: "Distance", ret: "0 to 120 (cm)", what: "(left + right) ÷ 2, worked out by the sensor (raw blue ÷ 256). With the robot facing a wall, use it to tell how far the wall is.",
+      body: ["print(\"average:\", {n}.average(), \"cm\")"],
+      out: function (V, st) { return pr("average:", V.average(), "cm"); } },
+    { id: "min_distance", label: "min_distance()", name: "Nearer distance", grp: "Distance", ret: "0 to 120 (cm)", what: "The nearer of the two lasers. For obstacle avoidance, this alone tells you whether something is ahead.",
+      body: ["print(\"nearer:\", {n}.min_distance(), \"cm\")"],
+      out: function (V, st) { return pr("nearer:", V.min_distance(), "cm"); } },
+    { id: "too_close", label: "min_distance() < 20", name: "Too close?", grp: "Distance", ret: "decided from min_distance()", what: "Nearer distance below 20 cm means too close (the same as \"left &lt; 20 or right &lt; 20\" on the SPIKE App blocks page). Drag an obstacle within 20.",
+      body: ["d = {n}.min_distance()","if d < 20:","    print(\"too close!\", d)","else:","    print(\"clear\", d)"],
+      out: function (V, st) { return (V.min_distance() < 20 ? pr("too close!", V.min_distance()) : pr("clear", V.min_distance())); } },
+    { id: "diff", label: "diff()", name: "Left minus right", grp: "Which side is nearer?", ret: "−120 to +120", what: "Left minus right. Negative = left is nearer, positive = right is nearer, 0 = the same (also when there is nothing on either side).",
+      body: ["print(\"left - right:\", {n}.diff())"],
+      out: function (V, st) { return pr("left - right:", V.diff()); } },
+    { id: "side", label: "diff() left/right", name: "Which side is nearer?", grp: "Which side is nearer?", ret: "decided from diff()", what: "Left minus right below 0 = left is nearer, above 0 = right is nearer, 0 = the same. An obstacle-avoiding robot turns toward the clearer side like this.",
+      body: ["d = {n}.diff()","if d < 0:","    print(\"left is nearer\")","elif d > 0:","    print(\"right is nearer\")","else:","    print(\"the same\")"],
+      out: function (V, st) { return (V.diff() < 0 ? "left is nearer" : V.diff() > 0 ? "right is nearer" : "the same"); } }
+  ];
+  var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; });
+  S.fn = FNS[0].id;
+  var frozen = null, warned = false, everRead = false, lastSide = 0;
+  function rawState() {
+    var dl = Number($('dl').value), dr = Number($('dr').value), bad = $('fault').checked;
+    var lmm = bad ? 1200 : Math.round(dl * 10), rmm = Math.round(dr * 10);
+    var l = Math.floor(lmm / 10), r = Math.floor(rmm / 10);
+    return {
+      dl: dl, dr: dr, bad: bad, l: l, r: r, lmm: lmm, rmm: rmm, amm: Math.floor((lmm + rmm) / 2),
+      avg: Math.floor((l + r) / 2), min: Math.min(l, r), side: l < r ? -1 : (r < l ? 1 : 0), diff: l - r,
+      init: [true, true], fault: [bad, false], ok1: !bad, ok2: true, ok: true
+    };
+  }
+  function drawField(st) {
+    var svg = $('field'), W = 460, H = 190, y0 = 156, k = 136 / 120, xs = [185, 275];
+    var tok = getComputedStyle(document.documentElement);
+    var ir = tok.getPropertyValue('--ir').trim(), rule = tok.getPropertyValue('--rule').trim();
+    var w = rawState(), unplug = $('unplug').checked;
+    var h = '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#f7f7f2" stroke="' + rule + '"/>';
+    // distance grid (one line every 20 cm)
+    for (var c = 20; c <= 120; c += 20) {
+      var yy = y0 - c * k;
+      h += '<line x1="34" y1="' + yy + '" x2="' + (W - 10) + '" y2="' + yy + '" stroke="#e1e5e3" stroke-width="1"/>';
+      h += '<text x="30" y="' + (yy + 4) + '" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6b7875">' + c + '</text>';
+    }
+    // laser beams and obstacles
+    [w.dl, w.dr].forEach(function (d, i) {
+      var x = xs[i], dead = i === 0 && w.bad;
+      var yHit = d >= 120 ? 8 : y0 - d * k;
+      if (!unplug && !dead) h += '<line x1="' + x + '" y1="' + (y0 - 8) + '" x2="' + x + '" y2="' + yHit + '" stroke="' + ir + '" stroke-width="3" stroke-dasharray="6 4" opacity="0.75"/>';
+      if (d < 120) h += '<rect x="' + (x - 36) + '" y="' + (yHit - 16) + '" width="72" height="16" rx="3" fill="#8a5a2b"/><text x="' + x + '" y="' + (yHit - 4) + '" text-anchor="middle" font-size="11" fill="#fff">obstacle</text>';
+      else h += '<text x="' + x + '" y="20" text-anchor="middle" font-size="11" fill="#6b7875">(nothing)</text>';
+    });
+    // robot and the two lasers
+    h += '<rect x="130" y="' + y0 + '" width="200" height="' + (H - y0) + '" rx="8" fill="#1b2422"/>';
+    h += '<text x="230" y="' + (y0 + 22) + '" text-anchor="middle" font-size="12" fill="#e4ecea">front of robot (sensor here)</text>';
+    xs.forEach(function (x, i) {
+      var dead = i === 0 && w.bad;
+      h += '<circle cx="' + x + '" cy="' + y0 + '" r="9" fill="' + (unplug || dead ? '#7d918c' : ir) + '" stroke="#fff" stroke-width="2"/>';
+      if (dead) h += '<text x="' + x + '" y="' + (y0 + 4) + '" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">✕</text>';
+      var v = st.none ? '?' : (i === 0 ? st.l : st.r);
+      h += '<text x="' + (i === 0 ? x - 16 : x + 16) + '" y="' + (y0 - 8) + '" text-anchor="' + (i === 0 ? 'end' : 'start') + '" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#16201e">' + (i === 0 ? 'L ' : 'R ') + v + ' cm</text>';
+    });
+    h += '<text x="14" y="' + (H - 12) + '" font-size="13" fill="#3d4a47">← left (negative)</text><text x="' + (W - 14) + '" y="' + (H - 12) + '" text-anchor="end" font-size="13" fill="#3d4a47">right (positive) →</text>';
+    if (unplug) h += '<text x="' + (W / 2) + '" y="70" text-anchor="middle" font-size="15" font-weight="700" fill="' + ir + '">Sensor unplugged: values stay at the last reading</text>';
+    svg.innerHTML = h;
+  }
+
+  var KW = /^(False|None|True|and|as|async|await|break|class|continue|def|elif|else|for|from|if|import|in|is|not|or|pass|return|while)$/;
+  function hiPy(line) {
+    var out = '', i = 0;
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest[0] === '#') { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if ((m = rest.match(/^("""|"[^"]*"|'[^']*')/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (KW.test(w)) out += '<span class="tk-kw">' + w + '</span>';
+        else if (after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^\d+/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  function render(el, lines, opts) {
+    opts = opts || {};
+    el.innerHTML = lines.map(function (l, k) {
+      var cls = 'ln' + (l.hl ? ' hl' : '') + (l.isNew ? ' new' : '');
+      var tag = opts.noTag ? '' : '<span class="tag">' + (l.tag && !l.tagHide ? '<i>' + l.tag + '</i>' : '') + '</span>';
+      return '<span class="' + cls + '"><span class="no">' + (l.no || k + 1) + '</span>' + tag + '<span>' + (l.t ? hiPy(l.t) : ' ') + '</span></span>';
+    }).join('');
+  }
+  function copyText(text, btn) {
+    var done = function () { var o = btn.textContent; btn.textContent = U.copied; setTimeout(function () { btn.textContent = o; }, 1400); };
+    function fallback(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e2) { btn.textContent = U.copyManual; }
+      document.body.removeChild(ta);
+    }
+    try { navigator.clipboard.writeText(text).then(done, function () { fallback(text); }); } catch (e) { fallback(text); }
+  }
+
+  function portRef() { return 'port.' + CFG.ports[S.port]; }
+  function bodyOf(f, name) { return f.body.map(function (b) { return b.replace(/\{n\}/g, name); }); }
+  function fullLines(step) {
+    var f = BY[S.fn], L = [];
+    CFG.helper.forEach(function (t) { L.push({ t: t, tag: 1, helper: true }); });
+    L.push({ t: 'from hub import port', tag: 1 });
+    L.push({ t: 'import runloop', tag: 1 });
+    if (step >= 2) {
+      L.push({ t: '' });
+      L.push({ t: S.name + ' = ' + CFG.cls + '(' + portRef() + ')    # ' + U.ctorCmt.replace('@P', CFG.ports[S.port]), tag: 2 });
+    }
+    if (step >= 3) {
+      L.push({ t: '' });
+      L.push({ t: '' });
+      L.push({ t: 'async def main():', tag: 3 });
+      L.push({ t: '    while True:', tag: 3 });
+      L.push({ t: '        ' + S.name + '.update()            # ' + U.readOnce, tag: 3 });
+      bodyOf(f, S.name).forEach(function (b) { L.push({ t: '        ' + b, tag: 3 }); });
+      L.push({ t: '        await runloop.sleep_ms(100)', tag: 3 });
+      L.push({ t: '' });
+      L.push({ t: 'runloop.run(main())', tag: 3 });
+    }
+    return L;
+  }
+  function plain(L) { return L.map(function (l) { return l.t; }).join('\n') + '\n'; }
+  var lastKeys = '';
+  function drawMain() {
+    var v = S.viewStep || S.step, L = fullLines(v);
+    L.forEach(function (l, k) { l.no = k + 1; l.hl = l.tag === v; });
+    if (!S.showHelper) {
+      var nH = L.filter(function (l) { return l.helper; }).length, seen = false, F = [];
+      L.forEach(function (l) {
+        if (!l.helper) { F.push(l); return; }
+        if (seen) return;
+        seen = true; F.push(l);
+        F.push({ t: '# ' + U.moreLines.replace('@N', nH - 1), no: '⋮', tag: l.tag, tagHide: true, hl: l.hl, helper: true });
+      });
+      L = F;
+    }
+    var prev = lastKeys ? lastKeys.split('\n') : [];
+    L.forEach(function (l) { if (l.t && lastKeys && prev.indexOf(l.t) < 0) l.isNew = true; });
+    lastKeys = L.map(function (l) { return l.t; }).join('\n');
+    render($('maincode'), L);
+    var b = $('bubble'); b.querySelector('i').textContent = v; b.querySelector('span').textContent = bubble(v);
+    $('nm1').textContent = S.name;
+    drawMinis();
+  }
+  function bubble(step) {
+    if (step === 1) return U.bubble1;
+    if (step === 2) return U.bubble2.replace(/@N/g, S.name).replace(/@P/g, portRef());
+    return U.bubble3.replace(/@N/g, S.name);
+  }
+  var miniPrev = {};
+  function drawMinis() {
+    var full = fullLines(3);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('mini' + k); if (!el) return;
+      var lines = [], nh = 0, total = 0, h0 = 0, nums = [];
+      full.forEach(function (l) { if (l.tag === k && l.helper) total++; });
+      full.forEach(function (l, i) {
+        if (l.tag !== k) return;
+        if (l.helper) {
+          nh++; if (!h0) h0 = i + 1;
+          if (nh <= 2) lines.push({ t: l.t, no: i + 1 });
+          else if (nh === 3) lines.push({ t: '# ' + U.miniHelper.replace('@N', total), no: '⋮' });
+          return;
+        }
+        nums.push(i + 1); lines.push({ t: l.t, no: i + 1 });
+      });
+      if (!lines.length) { el.innerHTML = ''; return; }
+      var a = nums.length ? nums[0] : h0, z = nums.length ? nums[nums.length - 1] : h0;
+      var range = U.lineRange.replace('@R', a + (z !== a ? U.dash + z : ''));
+      if (h0 && nums.length) range += U.plusHelper.replace('@H', h0);
+      var txt = lines.map(function (l) { return l.no + l.t; }).join('\n');
+      el.innerHTML = '<span>' + U.miniHead.replace('@R', range) + '</span><pre class="code"></pre>';
+      render(el.querySelector('pre'), lines, { noTag: true });
+      if (miniPrev[k] !== undefined && miniPrev[k] !== txt) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      miniPrev[k] = txt;
+    });
+  }
+
+  function setStep(n) {
+    S.step = Math.max(S.step, n);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    S.viewStep = n;
+    drawMain();
+    $('next2').disabled = !validName();
+  }
+  var USED = ['port', 'runloop', 'main', 'print', 'color_sensor', 'hub', 'range', 'min', 'max', 'int', 'str', 'self', 'motor_pair', 'light_matrix', 'sound', CFG.cls];
+  function validName() {
+    var v = $('varname').value.trim(), bad = '';
+    if (!v) bad = U.errEmpty;
+    else if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(v)) bad = U.errChars;
+    else if (KW.test(v) || USED.indexOf(v) >= 0) bad = U.errUsed.replace('@V', v);
+    $('nameerr').hidden = !bad; $('nameerr').textContent = bad;
+    if (!bad) S.name = v;
+    return !bad;
+  }
+  function drawPorts() {
+    var box = $('ports'); box.innerHTML = '';
+    CFG.ports.forEach(function (l, i) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = l;
+      b.setAttribute('aria-pressed', String(S.port === i)); b.setAttribute('aria-label', U.portAria.replace('@P', l));
+      b.addEventListener('click', function () { S.port = i; drawPorts(); drawMain(); });
+      box.appendChild(b);
+    });
+  }
+
+  function drawPicker() {
+    var g = {}, order = [];
+    FNS.forEach(function (f) { if (!g[f.grp]) { g[f.grp] = []; order.push(f.grp); } g[f.grp].push(f); });
+    var box = $('picker'); box.innerHTML = '';
+    order.forEach(function (k) {
+      var w = document.createElement('div'); w.className = 'fgroup'; w.innerHTML = '<span>' + k + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      g[k].forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = f.label; b.title = f.name;
+        b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      w.appendChild(chips); box.appendChild(w);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + esc(f.label) + U.sep + f.name + '</b><span>' + f.what + '</span><span class="small">' + U.ret + f.ret + '</span>';
+  }
+  function pick(id) { S.fn = id; setStep(3); drawPicker(); tick(true); }
+  function cardLines(f) {
+    return ['while True:', '    ' + CFG.name + '.update()'].concat(bodyOf(f, CFG.name).map(function (b) { return '    ' + b; }), ['    await runloop.sleep_ms(100)']);
+  }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    FNS.forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      c.innerHTML = '<div class="card-head"><h3>' + esc(f.label) + '<span class="zh">' + f.name + '</span></h3></div>' +
+        '<p>' + f.what + '</p>' +
+        '<dl class="meta"><dt>' + U.retShort + '</dt><dd>' + f.ret + '</dd><dt>' + U.exShort + '</dt><dd>' + U.place + '</dd></dl>' +
+        '<pre class="code"></pre><p class="out">' + U.simPrints + '<code></code></p><button type="button" class="try">' + U.tryIt + '</button>';
+      render(c.querySelector('pre'), cardLines(f).map(function (t) { return { t: t }; }), { noTag: true });
+      c.querySelector('.try').addEventListener('click', function () {
+        pick(f.id);
+        var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      });
+      box.appendChild(c);
+    });
+  }
+  function runOut(f, st) { return f.out(view(pack(st)), st); }
+  function updateCardOutputs(st) {
+    FNS.forEach(function (f) { var el = document.querySelector('#fn-' + f.id + ' .out code'); if (el) el.textContent = runOut(f, st); });
+  }
+
+  var EX = CFG.ex;
+  function exFull(id) { var out = []; EX[id].forEach(function (t) { if (t === '@HELPER') out = out.concat(CFG.helper); else out.push(t); }); return out; }
+  function drawExamples() {
+    Object.keys(EX).forEach(function (k) {
+      var el = $('ex-' + k); if (!el) return;
+      render(el, EX[k].map(function (t) { return { t: t === '@HELPER' ? '# ' + U.exHelper : t }; }), { noTag: true });
+    });
+  }
+
+  var log = [];
+  function tick(reset) {
+    var st = rawState(), f = BY[S.fn];
+    if (CFG.beforeDraw) CFG.beforeDraw.forEach(function (p) { var e = $(p[0]); if (e) e.textContent = $(p[1]).value; });
+    drawField(st);
+    updateCardOutputs(st);
+    if (reset) log = [];
+    if (S.step < 3) log = [U.idle];
+    else log.push(runOut(f, st));
+    while (log.length > 7) log.shift();
+    $('console').innerHTML = log.map(esc).join('\n');
+  }
+  function expect(id) { var st = rawState(); return { lines: [runOut(BY[id], st)], st: simExport(st) }; }
+
+  var un = $('unplug'); if (un) un.closest('label').hidden = true;
+  $('next1').addEventListener('click', function () { setStep(2); $('varname').focus(); });
+  $('next2').addEventListener('click', function () { if (validName()) { setStep(3); drawPicker(); tick(true); } });
+  $('varname').addEventListener('input', function () { var ok = validName(); $('next2').disabled = !ok; if (ok) { drawMain(); drawPicker(); } });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) {
+    $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } });
+  });
+  CFG.simIds.forEach(function (id) { $(id).addEventListener('input', function () { tick(false); }); });
+  $('copymain').addEventListener('click', function (e) { copyText(plain(fullLines(Math.max(S.viewStep, 1))), e.currentTarget); });
+  $('helperbtn').addEventListener('click', function (e) {
+    S.showHelper = !S.showHelper;
+    e.currentTarget.setAttribute('aria-pressed', String(S.showHelper));
+    e.currentTarget.textContent = S.showHelper ? U.hideHelper : U.showHelper;
+    drawMain();
+  });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { copyText(exFull(b.getAttribute('data-copy')).join('\n') + '\n', b); });
+  });
+
+  drawPorts(); drawPicker(); drawCards(); drawExamples(); drawMain(); tick(true);
+  setInterval(function () { if (S.step >= 3) tick(false); }, 600);
+  window.__ap = { S: S, FNS: FNS, pick: pick, tick: tick, fullLines: fullLines, expect: expect, EX: EX, exFull: exFull, pack: pack, view: view };
+})();
+
+</script>
+<script>
+(function () {
+  var side = document.querySelector('.side'); if (!side) return;
+  var mq = window.matchMedia('(max-width: 900px)');
+  var home = side.parentNode, homeNext = side.nextSibling;
+  var con = document.getElementById('console'), conP = con && con.closest('.panel');
+  if (conP && conP.parentNode !== side) conP = null;
+  var last = null, ready = false;
+  var STOP = '.step-body, .cards, .ref, .steps, .main, .wrap, body';
+  function anchorOf(el) { var a = el; while (a && a.parentElement && !a.parentElement.matches(STOP)) a = a.parentElement; return a && a.parentElement ? a : null; }
+  function flash(el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  // 把 box 搬到 a 那一塊的後面；a 在畫面上的位置維持不動（點下去時就記住 a：頁面常在點擊後重畫按鈕，按鈕本身會被換掉）
+  function moveAfter(box, a) {
+    if (!a || !a.isConnected || a === box || a.contains(box)) return false;
+    if (a.nextElementSibling === box) return true;
+    var y = a.getBoundingClientRect().top;
+    a.parentNode.insertBefore(box, a.nextSibling); box.classList.add('follow');
+    var d = a.getBoundingClientRect().top - y; if (d) window.scrollBy(0, d);
+    return true;
+  }
+  function inPanel(el) { return side.contains(el) || (conP && conP.contains(el)); }
+  function placeSide(a, scroll) {
+    if (!mq.matches || !a) return;
+    if (conP && conP.parentNode !== side) { conP.classList.remove('follow'); side.appendChild(conP); }
+    if (!moveAfter(side, a)) return;
+    if (scroll) { var r = side.getBoundingClientRect(); if (r.top > window.innerHeight * 0.7) window.scrollBy({ top: r.top - window.innerHeight * 0.3, behavior: 'smooth' }); }
+  }
+  function placeConsole(el) {
+    if (!mq.matches || !conP || inPanel(el)) return;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在「正在操作的那一排」正下方（排＝控制區的直接子元素），
+    // 畫面、那一排、輸出同一屏；控制區很長或那一排在最下面（例如拔線勾選）都不會跑出畫面
+    var sim = el.closest('.sim'), ctrl = null, row = null;
+    if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (ctrl && ctrl !== el) for (var j = 0; j < ctrl.children.length; j++) if (ctrl.children[j].contains(el)) row = ctrl.children[j];
+    if (sim && ctrl) {
+      var box = row ? ctrl : sim, after = row || null;
+      if (after ? after.nextElementSibling === conP : conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var y = el.getBoundingClientRect().top;
+      if (after) box.insertBefore(conP, after.nextSibling); else sim.insertBefore(conP, ctrl);
+      conP.classList.add('follow');
+      var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
+      return;
+    }
+    var a = anchorOf(el); if (a && a.nextElementSibling === side) return; // 程式那格已經緊接在下面，輸出就在它裡面
+    moveAfter(conP, a);
+  }
+  function reset() {
+    if (mq.matches) { var b = document.querySelector('#step1 .step-body button') || document.querySelector('#step1 button'); if (b) placeSide(anchorOf(b), false); return; }
+    if (conP) { conP.classList.remove('follow'); side.appendChild(conP); }
+    side.classList.remove('follow'); home.insertBefore(side, homeNext);
+  }
+  function remember(e) { if (!inPanel(e.target)) last = anchorOf(e.target); }
+  document.addEventListener('pointerdown', remember, true);
+  document.addEventListener('focusin', remember, true);
+  var mo = new MutationObserver(function () { if (ready && mq.matches) { placeSide(last, true); flash(side); } });
+  ['maincode', 'mainblocks'].forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true }); });
+  function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
+  document.addEventListener('input', sim, true);
+  document.addEventListener('change', sim, true);
+  // 模擬器裡的按鈕（掌控者按鍵、色點調色盤…）也算在操作模擬器
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.sim button'); if (b) placeConsole(b); }, true);
+  reset(); setTimeout(function () { ready = true; }, 800);
+  if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
+})();
+</script>
+</body>
+</html>

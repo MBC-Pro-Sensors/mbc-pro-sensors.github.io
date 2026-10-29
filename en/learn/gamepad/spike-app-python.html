@@ -1,0 +1,890 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The LEGO SPIKE App (Education) runs Python too, with no hub firmware change. In the App the Controller receiver is a color sensor, and the App cannot import you">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/gamepad/spike-app-python.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/gamepad/spike-app-python.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/gamepad/spike-app-python.html">
+<title>PS2 / PS4 Controller LEGO SPIKE App Python tutorial | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+
+:root {
+  --bg: #f3f6f5;
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;
+  --accent-soft: #dff1ef;
+  --tape: #121212;
+  --ir: #e04a3b;
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+.conv { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+.conv th, .conv td { border: 1px solid var(--rule); padding: 6px 8px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.conv th { background: var(--accent-soft); }
+.tblwrap { overflow-x: auto; max-width: 100%; }
+.cant td:first-child, .cant th:first-child { width: 34%; }
+.cant code { white-space: normal; overflow-wrap: anywhere; }
+.panel-head .row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+[hidden] { display: none !important; }  /* 頁面用 hidden 切換「積木／程式」，.ws{display:grid} 會蓋掉它 */
+.learn-nav .tabs .tl { color: var(--muted, #666); font-size: 0.8rem; align-self: center; }
+.learn-nav .tabs .tsep { flex-basis: 100%; height: 0; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
+   排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
+@media (max-width: 900px) {
+  .learn-nav { position: static; width: 100vw; margin: -24px 0 14px calc(50% - 50vw); }
+  .learn-nav .in { padding: 6px 12px 8px; gap: 4px 14px; font-size: 0.85rem; }
+  .learn-nav .in > a { min-height: 36px; display: inline-flex; align-items: center; }
+  .learn-nav .tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .learn-nav .tabs::-webkit-scrollbar { display: none; }
+  .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
+  body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
+  .panel.follow { margin: 12px 0 16px; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow, .ctrl > .panel.follow { grid-column: 1 / -1; }
+  .flash { animation: followFlash 1.2s ease-out; }
+  @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
+  /* 點選目標放大：選項、勾選框、拉桿 */
+  .wrap > *, .main > *, .steps > *, .step-body > * { min-width: 0; }
+  label:has(input[type=radio]), label:has(input[type=checkbox]) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  button.copy, .viewtabs button { min-height: 36px; }
+  label:has(select) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  label select { min-height: 36px; }
+  input[type=radio], input[type=checkbox] { width: 20px; height: 20px; flex: none; }
+  input[type=range] { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/ps2/spike/">← Controller SPIKE guide</a><a class="back" href="/en/sensors/ps4/spike/">PS4</a><a class="lang" href="/learn/gamepad/spike-app-python.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/gamepad/micropython.html" aria-current="page">SPIKE</a><a href="/en/learn/gamepad/ev3-pybricks.html">EV3</a><a href="/en/learn/gamepad/arduino.html">Arduino</a><a href="/en/learn/gamepad/mblock.html">mBlock</a><a href="/en/learn/gamepad/matrix.html">MATRIX</a><a href="/en/learn/gamepad/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/gamepad/micropython.html">MicroPython (Pybricks)</a><a href="/en/learn/gamepad/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/gamepad/pybricks-builtin.html">Pybricks built-in blocks</a><a href="/en/learn/gamepad/mbc-blocks.html">MBC Blocks website</a><a href="/en/learn/gamepad/spike-app.html">LEGO SPIKE App</a><a href="/en/learn/gamepad/spike-app-python.html" aria-current="page">SPIKE App Python</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC PS2 / PS4 Controller × LEGO SPIKE App (Python)</span>
+    <h1>Read the Controller with SPIKE App Python in three steps</h1>
+    <p class="lead">The LEGO SPIKE App (Education) runs Python too, with no hub firmware change. In the App the Controller receiver is a <b>color sensor</b>, and the App cannot import your own files, so the order is: first <b>paste the reading helper at the top</b>, then <b>create an object and name the receiver</b>, then call <code>update()</code> once per loop and <b>call its functions</b> with that name. PS2 and PS4 receivers are written exactly the same way. Work down the steps on the left and watch the program grow on the right; click buttons and drag the sticks on the simulated pad to see what the program prints.</p>
+  </header>
+
+  <section class="main" aria-label="Tutorial">
+    <div class="steps">
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>Paste the reading helper</h2></div>
+        <div class="step-body">
+          <p class="why">A SPIKE App Python project is a single file and <b>cannot import</b> your own .py, so <b>paste the whole "reading helper" at the very top</b> (its first lines say so: copy it as is). Without it the hub does not know <code>GamepadApp</code> and stops with <code>NameError</code>.</p>
+          <ol class="howto">
+            <li>Open the LEGO SPIKE App (Education, yellow SPIKE Prime hub), create a project and choose "<b>Python</b>".</li>
+            <li>Paste the program marked ① on the right at the top (only the first helper line shows; press "Show helper" to see it all, and "Copy program" always copies everything). The helper alone: <a href="/examples/ps2/spike_app/MBC_gamepad_App_helper.py" download>MBC_gamepad_App_helper.py</a> (open it in a text editor and copy all; the file has Chinese and English comments).</li>
+            <li>Plug the receiver into <b>any port A–F</b>; the hub powers it. The receiver needs the SPIKE firmware. <b>PS2 and PS4 receivers are written the same way</b> (the helper is also in the PS4 download folder: <a href="/examples/ps4/spike_app/MBC_gamepad_App_helper.py" download>PS4 download</a>, same file); switch PS2 / PS4 under the simulated pad.</li>
+          </ol>
+          <p class="small">The helper splits the numbers the App reads for you (the same conversion as the <a href="/en/learn/gamepad/spike-app.html">SPIKE App blocks page</a>):</p>
+          <div class="tblwrap"><table class="conv">
+            <tr><th>What the App reads</th><th>What it holds</th><th>Helper function</th></tr>
+            <tr><td><code>color_sensor.reflection()</code> (reflection)</td><td>D-pad + shape buttons: up 1, right 2, down 4, left 8, △ 16, ○ 32, ✕ 64, □ 128, added up when held together</td><td><code>pressed('UP')</code>…, low 8 bits of <code>buttons()</code></td></tr>
+            <tr><td><code>color_sensor.color()</code> (color)</td><td>shoulder + function buttons: L2 1, R2 2, L1 4, R1 8, SELECT (PS4: SHARE) 16, L3 32, R3 64, START (PS4: OPTIONS) <b>−128</b></td><td><code>pressed('L1')</code>…, high 8 bits of <code>buttons()</code></td></tr>
+            <tr><td><code>color_sensor.rgbi()</code> item 1 (raw red)</td><td>left stick X×10 + Y (each 1–9, 55 when released)</td><td><code>stick('LX')</code> (whole part of ÷ 10), <code>stick('LY')</code> (remainder)</td></tr>
+            <tr><td><code>rgbi()</code> item 2 (raw green)</td><td>right stick X×10 + Y</td><td><code>stick('RX')</code>, <code>stick('RY')</code></td></tr>
+            <tr><td><code>rgbi()</code> item 3 (raw blue)</td><td>the 16 buttons in another layout (PSX)</td><td>not used (same as the SPIKE App blocks page; see "Values the SPIKE App cannot read")</td></tr>
+          </table></div>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">Pasted, next step</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>Create the object: name the sensor</h2></div>
+        <div class="step-body">
+          <p class="why">A robot can have several sensors, so you "create an object": tell the helper which port the receiver is on (<code>port.C</code> comes from <code>from hub import port</code>) and give it a name. You use that name for every reading.</p>
+          <div class="row">
+            <span class="small">Which port is the receiver on?</span>
+            <div class="ports" id="ports" role="group" aria-label="Port"></div>
+          </div>
+          <label class="f" for="varname"><span>Name it (start with a letter; letters, digits and _ only)</span>
+            <input type="text" id="varname" value="pad" autocomplete="off" spellcheck="false">
+          </label>
+          <p class="err" id="nameerr" hidden></p>
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2" disabled>Created, next step</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>update() every loop, then use a function</h2></div>
+        <div class="step-body">
+          <p class="why">App programs go in <code>async def main():</code> and <code>runloop.run(main())</code> starts them; wait with <code>await runloop.sleep_ms(100)</code> (not Pybricks' <code>wait()</code>). Each loop first reads once with <code><span id="nm1"></span>.update()</code>, then uses "name + dot + function". Pick a function and the program and output switch to its example.</p>
+          <div id="picker" class="ref"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+          <div class="sim-box">
+          <div class="sim-title">Gamepad simulator: click the buttons, drag the sticks, and watch the output on the right</div>
+          <div class="sim">
+            <svg id="field" viewBox="0 0 460 250" role="group" aria-label="Gamepad simulator: click the buttons; drag the sticks or move them with the arrow keys"></svg>
+            <div class="ctrl">
+              <div class="toggles">
+                <label><input autocomplete="off" type="radio" name="kind" id="k2" value="PS2" checked> PS2 receiver</label>
+                <label><input autocomplete="off" type="radio" name="kind" id="k4" value="PS4"> PS4 receiver</label>
+                <label><input autocomplete="off" type="checkbox" id="nopad"> Gamepad not connected</label>
+                <label hidden><input autocomplete="off" type="checkbox" id="unplug"> Unplug the sensor</label>
+                <button type="button" class="copy" id="release">Release all</button>
+              </div>
+            </div>
+            <p class="note">The simulator is only a sketch: click a button once to hold it, click it again to let go. Drag the dot on a stick to move it (it stays where you let go; press "Release all" to centre it). Sticks go from 1 to 9, 5 = centre, and the number gets bigger to the right and up. The PS4 gamepad battery is fixed at 80 in this demo.</p>
+          </div>
+            </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">An example for every function</h2>
+        <p class="ref-intro">Every function has an example you can drop into <code>main()</code> (port C). "Try it" jumps to step 3 and the program and output on the right switch to it.</p>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="Your program and output">
+      <div class="panel">
+        <div class="panel-head"><span>Your program (SPIKE App Python)</span><span class="row"><button type="button" class="copy" id="helperbtn" aria-pressed="false">Show helper</button><button type="button" class="copy" id="copymain">Copy program</button></span></div>
+        <pre class="code" id="maincode" aria-live="polite"></pre>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>App console output (updates every 0.6 s)</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="ref" aria-labelledby="fullh">
+    <h2 id="fullh">Full examples</h2>
+    <p class="ref-intro">Press "Copy" for the whole program (helper included).</p>
+    <div class="full">
+      <div class="panel">
+        <div class="panel-head"><span>Drive with the sticks (left wheel E, right wheel F)</span><button type="button" class="copy" data-copy="drive">Copy</button></div>
+        <pre class="code" id="ex-drive"></pre>
+        <p class="bubble"><i>!</i><span>Left stick up/down drives the left wheel, right stick the right wheel (tank style); hold ✕ to stop. Too fast: lower <code>SPEED</code>; it drives backwards: swap the motor cables or make <code>SPEED</code> negative.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="ref" aria-labelledby="canth">
+    <h2 id="canth">Values the SPIKE App cannot read</h2>
+    <p class="ref-intro">The App only reads the receiver's "combined data" (buttons and sticks), so the functions below are out of reach. For them use <a href="/en/learn/gamepad/micropython.html">Pybricks MicroPython</a>, <a href="/en/learn/gamepad/pybricks-blocks.html">Pybricks blocks</a> (the hub needs the Pybricks firmware) or <a href="/en/learn/gamepad/mbc-blocks.html">the MBC Blocks website</a>.</p>
+    <div class="tblwrap"><table class="conv cant">
+        <tr><th scope="col">Function (Pybricks library)</th><th scope="col">Why not / what to use</th></tr>
+        <tr><td><code>connected()</code></td><td>Whether the pad is connected is not readable. With no pad the receiver sends "all released, sticks centred", which looks the same as really letting go.</td></tr>
+        <tr><td><code>battery()</code></td><td>Pad battery (PS4 / PS5 only) is not readable.</td></tr>
+        <tr><td><code>kind()</code></td><td>Whether the receiver is PS2 or PS4 is not readable; both are written the same way.</td></tr>
+        <tr><td><code>buttons_psx()</code>, <code>pressed_psx()</code></td><td>The PSX layout is in raw blue, but older PS4 receiver firmware lays it out differently, so the helper leaves it out like the SPIKE App blocks page; use Pybricks for it.</td></tr>
+        <tr><td><code>device_id()</code>, <code>firmware_version()</code>, <code>sensor_ok()</code></td><td>Device ID, firmware version and "is it connected" are not readable; what the App does when the cable is pulled is not yet tested, so the simulator has no unplug option.</td></tr>
+    </table></div>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">Tips</h2>
+    <ol>
+      <li><b>Call <code>update()</code> every loop.</b> All helper functions split the 8 numbers from the last <code>update()</code>; without it the values never change (they start as all 0, so the sticks read 0).</li>
+      <li><b>This is SPIKE App 3 style, not Pybricks.</b> Ports are <code>port.C</code> from <code>from hub import port</code> (not <code>Port.C</code>), and waiting is <code>await runloop.sleep_ms()</code> (not <code>wait()</code>), so Pybricks programs cannot be pasted in. The Robot Inventor (home) App reads differently; this page is for the Education App.</li>
+      <li><b>Button names are upper-case strings.</b> For example <code>pressed('CROSS')</code>; on PS4 / PS5 pads SHARE = <code>'SELECT'</code> and OPTIONS = <code>'START'</code>, and <code>'SHARE'</code>, <code>'OPTIONS'</code> work too. The PS button and touchpad are not readable. A wrong name gives <code>ValueError</code>.</li>
+      <li><b>Use 7 and up, 3 and down when a stick is a switch.</b> Pushed a little, left and down quickly become 4, while right and up need about half way to become 6, so the two sides differ; treat 4–6 as "centre". Right and up give bigger numbers (9 at the end), 5 when released.</li>
+      <li><b>The App Python readings are not yet checked one by one on a real hub.</b> The conversion follows the firmware and the SPIKE App blocks page; START reads −128 from <code>color()</code>, and the helper turns it into 128 with <code>&amp; 255</code>, so <code>pressed()</code> still works.</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  var CFG = {"ports":["A","B","C","D","E","F"],"port":2,"name":"pad","cls":"GamepadApp","fn0":"pressed","helper":["# ===== Controller PS2 / PS4 reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====","# In the SPIKE App the receiver is a colour sensor: reflection = D-pad + shape buttons, colour = shoulder + function buttons, raw red = left stick X×10+Y, raw green = right stick.","# PS2 and PS4 receivers use the same layout; SHARE = SELECT, OPTIONS = START","# raw blue (another 16-button layout) is not used by this helper","import color_sensor","","# button name → bit (same as buttons() in the Pybricks library)","BUTTONS = {","    'UP': 0, 'RIGHT': 1, 'DOWN': 2, 'LEFT': 3,","    'TRIANGLE': 4, 'CIRCLE': 5, 'CROSS': 6, 'SQUARE': 7,","    'L2': 8, 'R2': 9, 'L1': 10, 'R1': 11,","    'SELECT': 12, 'L3': 13, 'R3': 14, 'START': 15,","    'SHARE': 12, 'CREATE': 12, 'OPTIONS': 15,","}","STICKS = ('LX', 'LY', 'RX', 'RY')","","","class GamepadApp:","    def __init__(self, port_number):","        self.port = port_number","        self.b = [0] * 8                      # byte 0~7","","    def update(self):","        \"\"\"read once\"\"\"","        c = color_sensor.color(self.port)              # shoulder + function buttons","        r = color_sensor.reflection(self.port)         # D-pad + shape buttons","        rgb = color_sensor.rgbi(self.port)             # raw red, green, blue","        b = [int(c) & 255, int(r) & 255]               # START reads -128, & 255 makes it 128","        for v in rgb[:3]:","            v = int(v) & 0xFFFF                        # negatives back to 0~65535","            b += [v & 255, v >> 8]","        self.b = b","        return True","","    def _w(self, i):","        # raw red, green, blue word","        return self.b[2 + 2 * i] | (self.b[3 + 2 * i] << 8)","","    def buttons(self):","        \"\"\"all buttons in one number 0~65535, 0 = none\"\"\"","        return self.b[1] | (self.b[0] << 8)","","    def pressed(self, name):","        \"\"\"is this button held: True or False\"\"\"","        if name not in BUTTONS:","            raise ValueError('unknown button name: ' + str(name))","        return (self.buttons() >> BUTTONS[name]) & 1 == 1","","    def any_pressed(self):","        \"\"\"is any button held\"\"\"","        return self.buttons() != 0","","    def stick(self, name):","        \"\"\"stick position 1~9 (5 = centre)\"\"\"","        if name not in STICKS:","            raise ValueError('unknown stick name: ' + str(name))","        w = self._w(0 if name[0] == 'L' else 1)        # X×10+Y","        return w // 10 if name[1] == 'X' else w % 10","","    def stick_centered(self, name):","        \"\"\"stick position minus 5: -4~4 (0 = centre)\"\"\"","        return self.stick(name) - 5","# ===== end of helper ====="],"ex":{"drive":["# Controller PS2 / PS4 × LEGO SPIKE App (Education, Python) example 1: drive with the sticks","# Wiring: receiver → port C; left wheel E, right wheel F","# left stick = left wheel, right stick = right wheel (tank style); hold ✕ to stop","# new Python project in the SPIKE App, paste all of this","@HELPER","from hub import port, light_matrix","import motor_pair","import runloop","","pad = GamepadApp(port.C)","SPEED = 200       # speed per stick step (deg/s)","","","async def main():","    motor_pair.pair(motor_pair.PAIR_1, port.E, port.F)","    while True:","        pad.update()","        if pad.pressed('CROSS'):                       # hold ✕: stop","            motor_pair.stop(motor_pair.PAIR_1)","            light_matrix.write('X')","        else:","            left = pad.stick_centered('LY') * SPEED    # speed","            right = pad.stick_centered('RY') * SPEED","            motor_pair.move_tank(motor_pair.PAIR_1, left, right)","        await runloop.sleep_ms(20)","","runloop.run(main())"]},"reserved":["y","left","right","SPEED","BUTTONS","STICKS"],"draw":"paintPad","lang":"en"};
+  var S = { port: CFG.port, name: CFG.name, step: 1, viewStep: 1, fn: CFG.fn0, showHelper: false };
+  var HELPER = CFG.helper;
+
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function idiv(a, b) { return Math.floor(a / b); }
+  function PyErr(m) { this.message = m; }
+  function tup(a) { return { __t: a }; }
+  function py(x, inner) {
+    if (x === null || x === undefined) return 'None';
+    if (x === true) return 'True';
+    if (x === false) return 'False';
+    if (typeof x === 'number') return String(x);
+    if (typeof x === 'string') return inner ? "'" + x + "'" : x;
+    if (Array.isArray(x)) return '[' + x.map(function (v) { return py(v, true); }).join(', ') + ']';
+    if (x.__t) return '(' + x.__t.map(function (v) { return py(v, true); }).join(', ') + (x.__t.length === 1 ? ',' : '') + ')';
+    throw new Error('py()');
+  }
+  function prn() { return Array.prototype.map.call(arguments, function (a) { return py(a, false); }).join(' '); }
+  function unpack(t) { return t.__t; }
+  var KW = /\b(from|import|while|True|False|None|if|else|elif|not|and|or|async|def|await|for|in|return|class|break|lambda|pass|is|global|try|except|raise|with|yield|del|continue|finally|nonlocal|assert|as)\b/;
+  function isKw(w) { return new RegExp('^' + KW.source + '$').test(w); }
+  function hiPy(line) {
+    var out = '', i = 0;
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest[0] === '#') { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if ((m = rest.match(/^("""[^]*?"""|"[^"]*"|'[^']*')/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (isKw(w)) out += '<span class="tk-kw">' + w + '</span>';
+        else if (after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^\d+/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  function render(el, lines, opts) {
+    opts = opts || {};
+    el.innerHTML = lines.map(function (l, k) {
+      var cls = 'ln' + (l.hl ? ' hl' : '') + (l.isNew ? ' new' : '');
+      var tag = opts.noTag ? '' : '<span class="tag">' + (l.tag && !l.tagHide ? '<i>' + l.tag + '</i>' : '') + '</span>';
+      return '<span class="' + cls + '"><span class="no">' + (l.no || k + 1) + '</span>' + tag + '<span>' + (l.t ? hiPy(l.t) : ' ') + '</span></span>';
+    }).join('');
+  }
+  function plain(lines) { return lines.map(function (l) { return l.t; }).join('\n') + '\n'; }
+  function copyText(text, btn) {
+    var done = function () { var o = btn.textContent; btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = o; }, 1400); };
+    try {
+      navigator.clipboard.writeText(text).then(done, function () { fallback(text); });
+    } catch (e) { fallback(text); }
+    function fallback(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e2) { btn.textContent = 'Please select and copy by hand'; }
+      document.body.removeChild(ta);
+    }
+  }
+  function portRef() { return 'port.' + CFG.ports[S.port]; }
+
+  function appRead(st) {
+    var h = (st.bits >> 8) & 255;
+    return { c: h >= 128 ? h - 256 : h, r: st.bits & 255, rgb: [st.LX * 10 + st.LY, st.RX * 10 + st.RY, st.psx] };
+  }
+  var HB = { UP: 0, RIGHT: 1, DOWN: 2, LEFT: 3, TRIANGLE: 4, CIRCLE: 5, CROSS: 6, SQUARE: 7, L2: 8, R2: 9, L1: 10, R1: 11, SELECT: 12, L3: 13, R3: 14, START: 15, SHARE: 12, CREATE: 12, OPTIONS: 15 };
+  function view(b) {
+    function w(i) { return b[2 + 2 * i] | (b[3 + 2 * i] << 8); }
+    var V = {
+      b: b.slice(),
+      buttons: function () { return b[1] | (b[0] << 8); },
+      pressed: function (n) { if (!HB.hasOwnProperty(n)) throw new PyErr('ValueError: ' + '' + 'unknown button name: ' + n); return ((V.buttons() >> HB[n]) & 1) === 1; },
+      any_pressed: function () { return V.buttons() !== 0; },
+      stick: function (n) {
+        if (['LX', 'LY', 'RX', 'RY'].indexOf(n) < 0) throw new PyErr('ValueError: ' + '' + 'unknown stick name: ' + n);
+        var x = w(n[0] === 'L' ? 0 : 1); return n[1] === 'X' ? idiv(x, 10) : x % 10;
+      },
+      stick_centered: function (n) { return V.stick(n) - 5; }
+    };
+    return V;
+  }
+  var FNS = [
+    { id: 'pressed', label: 'pressed(name)', name: 'Is a button held', grp: 'Buttons', ret: 'True or False',
+      what: "Whether one button is held. Put the button name in the brackets (quoted, upper case): 'UP' 'RIGHT' 'DOWN' 'LEFT', 'TRIANGLE' 'CIRCLE' 'CROSS' 'SQUARE', 'L1' 'R1' 'L2' 'R2', 'SELECT' 'START' 'L3' 'R3'; on PS4 'SHARE' and 'OPTIONS' work too. A wrong name gives <code>ValueError</code>. The example checks ✕; click ✕ on the simulated pad.",
+      body: ["if {n}.pressed('CROSS'):", '    print("' + '✕ is pressed' + '")', 'else:', '    print("' + '✕ is not pressed' + '")'],
+      out: function (V) { return V.pressed('CROSS') ? '✕ is pressed' : '✕ is not pressed'; } },
+    { id: 'start', label: "pressed('START')", name: 'Is START held', grp: 'Buttons', ret: 'True or False',
+      what: 'START (PS4: OPTIONS) reads as −128 from <code>color_sensor.color()</code>; the helper already converts it, so <code>pressed()</code> just works. Click START on the simulated pad.',
+      body: ["if {n}.pressed('START'):", '    print("' + 'START is pressed' + '")', 'else:', '    print("' + 'START is not pressed' + '")'],
+      out: function (V) { return V.pressed('START') ? 'START is pressed' : 'START is not pressed'; } },
+    { id: 'any_pressed', label: 'any_pressed()', name: 'Is any button held', grp: 'Buttons', ret: 'True or False',
+      what: 'True as soon as any button is held. Press "Release all" to see it turn False.',
+      body: ['if {n}.any_pressed():', '    print("' + 'a button is held' + '")', 'else:', '    print("' + 'all released' + '")'],
+      out: function (V) { return V.any_pressed() ? 'a button is held' : 'all released'; } },
+    { id: 'buttons', label: 'buttons()', name: 'All buttons as one number', grp: 'Buttons', ret: '0–65535 (none = 0)',
+      what: 'The 16 buttons as one number: the low 8 bits are the reflection value (D-pad + shape buttons), the high 8 bits the colour value (shoulder + function buttons), the same layout as <code>buttons()</code> in the Pybricks library. Hold several buttons.',
+      body: ['print("' + 'buttons:' + '", {n}.buttons())'], out: function (V) { return prn('buttons:', V.buttons()); } },
+    { id: 'stick', label: 'stick(name)', name: 'Stick position', grp: 'Sticks', ret: '1–9 (5 = centre)',
+      what: "Stick position 1–9, 5 when released. Names: 'LX' left stick left/right, 'LY' left stick up/down, 'RX', 'RY' the right stick. Right and up give bigger numbers. The example reads the left stick up/down; drag the left stick on the simulated pad.",
+      body: ['print("' + 'left stick LY:' + '", {n}.stick(\'LY\'))'], out: function (V) { return prn('left stick LY:', V.stick('LY')); } },
+    { id: 'sticks', label: 'stick() all four', name: 'Both sticks at once', grp: 'Sticks', ret: 'four numbers 1–9',
+      what: 'Prints LX, LY, RX, RY at once. With the pad not connected all four are 5 (tick "Gamepad not connected" under the simulated pad).',
+      body: ["print('LX', {n}.stick('LX'), 'LY', {n}.stick('LY'), 'RX', {n}.stick('RX'), 'RY', {n}.stick('RY'))"],
+      out: function (V) { return prn('LX', V.stick('LX'), 'LY', V.stick('LY'), 'RX', V.stick('RX'), 'RY', V.stick('RY')); } },
+    { id: 'stick_centered', label: 'stick_centered(name)', name: 'Stick forward / back', grp: 'Sticks', ret: '-4 to 4 (0 = centre)',
+      what: 'Stick position minus 5: 0 in the middle, positive pushed forward, negative pulled back. The example counts above 1 (7 or more) as forward and below −1 (3 or less) as back, the same as the SPIKE App blocks page.',
+      body: ["y = {n}.stick_centered('LY')", 'if y > 1:', '    print("' + 'forward' + '", y)', 'elif y < -1:', '    print("' + 'back' + '", y)', 'else:', '    print("' + 'centre' + '", y)'],
+      out: function (V) { var y = V.stick_centered('LY'); return y > 1 ? prn('forward', y) : y < -1 ? prn('back', y) : prn('centre', y); } },
+    { id: 'bytes', label: 'pad.b (8 bytes)', name: 'The raw 8 bytes', grp: 'Raw data', ret: 'eight numbers 0–255',
+      what: 'The raw bytes 0–7 from <code>update()</code>: [shoulder + function, D-pad + shape, left stick low, left stick high, right stick low, right stick high, raw blue low, raw blue high]. Print them when numbers look wrong and compare with the table in step 1.',
+      body: ['print("byte 0~7:", {n}.b)'], out: function (V) { return prn('byte 0~7:', V.b); } }
+  ];
+
+
+    // ───── Button positions (same as the name table in the MBC_gamepad.py library) ─────
+  var BTN = { UP: 0, RIGHT: 1, DOWN: 2, LEFT: 3, TRIANGLE: 4, CIRCLE: 5, CROSS: 6, SQUARE: 7, L2: 8, R2: 9, L1: 10, R1: 11, SELECT: 12, L3: 13, R3: 14, START: 15 };
+  var PSX = { SELECT: 0, L3: 1, R3: 2, START: 3, UP: 4, RIGHT: 5, DOWN: 6, LEFT: 7, L2: 8, R2: 9, L1: 10, R1: 11, TRIANGLE: 12, CIRCLE: 13, CROSS: 14, SQUARE: 15 };
+  function pr(s, n) { return ((s.bits >> BTN[n]) & 1) === 1; }
+  function pyB(b) { return b ? 'True' : 'False'; }
+
+  // ───── Gamepad simulator ─────
+  // buttons on screen: [name, shape r=box / c=circle, x, y, w or radius, h, label]
+  var PADG = [
+    ['L2', 'r', 46, 8, 92, 22, 'L2'], ['L1', 'r', 46, 34, 92, 22, 'L1'], ['R2', 'r', 322, 8, 92, 22, 'R2'], ['R1', 'r', 322, 34, 92, 22, 'R1'],
+    ['UP', 'r', 88, 72, 26, 28, '↑'], ['DOWN', 'r', 88, 126, 26, 28, '↓'], ['LEFT', 'r', 60, 100, 28, 26, '←'], ['RIGHT', 'r', 114, 100, 28, 26, '→'],
+    ['TRIANGLE', 'c', 359, 84, 14, 0, '△'], ['CIRCLE', 'c', 387, 112, 14, 0, '○'], ['CROSS', 'c', 359, 140, 14, 0, '✕'], ['SQUARE', 'c', 331, 112, 14, 0, '□'],
+    ['SELECT', 'r', 180, 96, 46, 18, 'SELECT'], ['START', 'r', 234, 96, 46, 18, 'START']
+  ];
+  var ZH = { UP: 'Up', DOWN: 'Down', LEFT: 'Left', RIGHT: 'Right', TRIANGLE: 'Triangle △', CIRCLE: 'Circle ○', CROSS: 'Cross ✕', SQUARE: 'Square □' };
+  var STK = { L: [172, 176], R: [288, 176] }, STK_R = 18;
+  var held = {}, stk = { L: [0, 0], R: [0, 0] }, drag = null;
+  function axisVal(a) { return Math.max(1, Math.min(9, Math.round(5 + a * 4))); }   // sketch: how far the dot is from the centre → 1~9
+  function kindNow() { return $('k4').checked ? 'PS4' : 'PS2'; }
+  function buildPad() {
+    var svg = $('field'), h = '';
+    h += '<rect x="0" y="0" width="460" height="250" fill="#f7f7f2"/>';
+    h += '<rect x="30" y="58" width="400" height="150" rx="64" fill="#26302e"/>';
+    PADG.forEach(function (b) {
+      var lab = b[0] === 'SELECT' || b[0] === 'START' ? b[0] : (ZH[b[0]] || b[0]);
+      h += '<g data-btn="' + b[0] + '" tabindex="0" role="button" aria-pressed="false" aria-label="' + lab + '" style="cursor:pointer">';
+      if (b[1] === 'r') h += '<rect x="' + b[2] + '" y="' + b[3] + '" width="' + b[4] + '" height="' + b[5] + '" rx="6" fill="#55605d" stroke="#1b2422" stroke-width="1.5"/>' +
+        '<text x="' + (b[2] + b[4] / 2) + '" y="' + (b[3] + b[5] / 2 + 5) + '" text-anchor="middle" font-size="' + (b[6].length > 2 ? 10 : 14) + '" font-weight="700" fill="#fff" pointer-events="none">' + b[6] + '</text>';
+      else h += '<circle cx="' + b[2] + '" cy="' + b[3] + '" r="' + b[4] + '" fill="#55605d" stroke="#1b2422" stroke-width="1.5"/>' +
+        '<text x="' + b[2] + '" y="' + (b[3] + 5) + '" text-anchor="middle" font-size="14" font-weight="700" fill="#fff" pointer-events="none">' + b[6] + '</text>';
+      h += '</g>';
+    });
+    ['L', 'R'].forEach(function (k) {
+      var c = STK[k];
+      h += '<g data-stick="' + k + '" tabindex="0" role="slider" aria-label="' + (k === 'L' ? 'Left' : 'Right') + ' stick (move with the arrow keys)" aria-valuemin="1" aria-valuemax="9" aria-valuenow="5" style="cursor:grab">' +
+        '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="30" fill="#3b4846" stroke="#1b2422" stroke-width="2"/>' +
+        '<line x1="' + (c[0] - 24) + '" y1="' + c[1] + '" x2="' + (c[0] + 24) + '" y2="' + c[1] + '" stroke="#55605d"/><line x1="' + c[0] + '" y1="' + (c[1] - 24) + '" x2="' + c[0] + '" y2="' + (c[1] + 24) + '" stroke="#55605d"/>' +
+        '<circle id="knob' + k + '" cx="' + c[0] + '" cy="' + c[1] + '" r="15" fill="#8a9794" stroke="#f7f7f2" stroke-width="2"/></g>';
+    });
+    h += '<text id="padsel" x="203" y="90" text-anchor="middle" font-size="10" fill="#9aaba7"></text><text id="padsta" x="257" y="90" text-anchor="middle" font-size="10" fill="#9aaba7"></text>';
+    h += '<text id="padval" x="230" y="234" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#3d4a47"></text>';
+    h += '<text id="padmsg" x="230" y="76" text-anchor="middle" font-size="14" font-weight="700"></text>';
+    svg.innerHTML = h;
+    svg.style.touchAction = 'none';
+    svg.addEventListener('pointerdown', function (e) {
+      var t = e.target.closest ? e.target.closest('[data-stick],[data-btn]') : null;
+      if (!t) return;
+      e.preventDefault();
+      if (t.hasAttribute('data-stick')) { drag = t.getAttribute('data-stick'); try { svg.setPointerCapture(e.pointerId); } catch (x) {} moveStick(e); }
+      else toggleBtn(t.getAttribute('data-btn'));
+    });
+    svg.addEventListener('pointermove', function (e) { if (drag) moveStick(e); });
+    svg.addEventListener('pointerup', function () { drag = null; });
+    svg.addEventListener('pointercancel', function () { drag = null; });
+    svg.addEventListener('keydown', function (e) {
+      var t = e.target;
+      if (t.hasAttribute && t.hasAttribute('data-btn') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggleBtn(t.getAttribute('data-btn')); }
+      if (t.hasAttribute && t.hasAttribute('data-stick')) {
+        var d = { ArrowLeft: [-0.25, 0], ArrowRight: [0.25, 0], ArrowUp: [0, 0.25], ArrowDown: [0, -0.25] }[e.key];
+        if (d) { e.preventDefault(); var k = t.getAttribute('data-stick'); stk[k] = [Math.max(-1, Math.min(1, stk[k][0] + d[0])), Math.max(-1, Math.min(1, stk[k][1] + d[1]))]; tick(false); }
+      }
+    });
+  }
+  function toggleBtn(n) { held[n] = !held[n]; tick(false); }
+  function moveStick(e) {
+    var svg = $('field'), m = svg.getScreenCTM(); if (!m) return;
+    var p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; var q = p.matrixTransform(m.inverse());
+    var c = STK[drag], dx = (q.x - c[0]) / STK_R, dy = -(q.y - c[1]) / STK_R, r = Math.sqrt(dx * dx + dy * dy);
+    if (r > 1) { dx /= r; dy /= r; }
+    stk[drag] = [dx, dy]; tick(false);
+  }
+  var frozen = null, warned = false;
+  function rawState() {
+    var conn = !$('nopad').checked, kind = kindNow(), bits = 0, psx = 0;
+    // gamepad not connected: the receiver sends "all buttons released, sticks centred"
+    if (conn) Object.keys(held).forEach(function (k) { if (held[k]) { bits |= 1 << BTN[k]; psx |= 1 << PSX[k]; } });
+    return { bits: bits, psx: psx, LX: conn ? axisVal(stk.L[0]) : 5, LY: conn ? axisVal(stk.L[1]) : 5, RX: conn ? axisVal(stk.R[0]) : 5, RY: conn ? axisVal(stk.R[1]) : 5,
+      conn: conn, kind: kind, battery: conn && kind === 'PS4' ? 80 : 0, ok: true };
+  }
+  function state() {
+    var unplug = $('unplug').checked;
+    if (!unplug) { frozen = rawState(); warned = false; return frozen; }
+    var s = frozen ? JSON.parse(JSON.stringify(frozen)) : null;
+    if (!s) return { none: true, ok: false };
+    s.ok = false; return s;
+  }
+  function paintPad(st) {
+    var svg = $('field'), tok = getComputedStyle(document.documentElement);
+    var acc = tok.getPropertyValue('--accent').trim() || '#0a7c78', ir = tok.getPropertyValue('--ir').trim() || '#e04a3b';
+    svg.querySelectorAll('[data-btn]').forEach(function (g) {
+      var n = g.getAttribute('data-btn'), on = !!held[n];
+      g.setAttribute('aria-pressed', String(on));
+      g.firstChild.setAttribute('fill', on ? acc : '#55605d');
+    });
+    ['L', 'R'].forEach(function (k) {
+      var c = STK[k], kn = $('knob' + k);
+      kn.setAttribute('cx', (c[0] + stk[k][0] * STK_R).toFixed(1)); kn.setAttribute('cy', (c[1] - stk[k][1] * STK_R).toFixed(1));
+      kn.setAttribute('fill', stk[k][0] || stk[k][1] ? acc : '#8a9794');
+      kn.parentNode.setAttribute('aria-valuetext', k + 'X ' + axisVal(stk[k][0]) + ', ' + k + 'Y ' + axisVal(stk[k][1]));
+    });
+    var ps4 = kindNow() === 'PS4';
+    $('padsel').textContent = ps4 ? 'SHARE' : ''; $('padsta').textContent = ps4 ? 'OPTIONS' : '';
+    var q = function (x) { return st.none ? '?' : x; };
+    $('padval').textContent = 'Program reads  LX ' + q(st.LX) + '  LY ' + q(st.LY) + '  RX ' + q(st.RX) + '  RY ' + q(st.RY) + '  buttons ' + q(st.bits);
+    var msg = $('padmsg');
+    if ($('unplug').checked) { msg.textContent = 'Sensor unplugged: values stay at the last reading'; msg.setAttribute('fill', ir); }
+    else if ($('nopad').checked) { msg.textContent = 'Gamepad not connected: buttons released, sticks centred'; msg.setAttribute('fill', ir); }
+    else msg.textContent = '';
+  }
+
+
+  function appBytes(st) {
+    var a = appRead(st), b = [a.c & 255, a.r & 255];
+    for (var i = 0; i < 3; i++) { var x = a.rgb[i] & 0xFFFF; b.push(x & 255, x >> 8); }
+    return b;
+  }
+  var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; });
+  function runOut(f, st) {
+    try { return f.out(view(appBytes(st))); } catch (e) { if (e instanceof PyErr) return e.message; throw e; }
+  }
+  function bodyOf(f, name) { return f.body.map(function (b) { return b.replace(/\{n\}/g, name); }); }
+
+  function programLines(step) {
+    var f = BY[S.fn], L = [], n = S.name;
+    HELPER.forEach(function (t) { L.push({ t: t, tag: 1, helper: true }); });
+    L.push({ t: 'from hub import port', tag: 1 });
+    L.push({ t: 'import runloop', tag: 1 });
+    if (step >= 2) {
+      L.push({ t: '' });
+      L.push({ t: n + ' = ' + CFG.cls + '(' + portRef() + ')    # ' + 'on port ' + CFG.ports[S.port] + '', tag: 2 });
+    }
+    if (step >= 3) {
+      L.push({ t: '' });
+      L.push({ t: '' });
+      L.push({ t: 'async def main():', tag: 3 });
+      L.push({ t: '    while True:', tag: 3 });
+      L.push({ t: '        ' + n + '.update()            # ' + 'read once per loop', tag: 3 });
+      bodyOf(f, n).forEach(function (b) { L.push({ t: '        ' + b, tag: 3 }); });
+      L.push({ t: '        await runloop.sleep_ms(100)', tag: 3 });
+      L.push({ t: '' });
+      L.push({ t: 'runloop.run(main())', tag: 3 });
+    }
+    return L;
+  }
+  var lastKeys = '';
+  function drawMain() {
+    var L = programLines(S.viewStep);
+    L.forEach(function (l, k) { l.no = k + 1; l.hl = l.tag === S.viewStep; });
+    if (!S.showHelper) {
+      var nH = L.filter(function (l) { return l.helper; }).length, seen = false, F = [];
+      L.forEach(function (l) {
+        if (!l.helper) { F.push(l); return; }
+        if (seen) return;
+        seen = true; F.push(l);
+        F.push({ t: '# ' + '⋯ ' + (nH - 1) + ' more lines (press "Show helper")', no: '⋮', tag: l.tag, tagHide: true, hl: l.hl, helper: true });
+      });
+      L = F;
+    }
+    var prev = lastKeys ? lastKeys.split('\n') : [];
+    L.forEach(function (l) { if (l.t && lastKeys && prev.indexOf(l.t) < 0) l.isNew = true; });
+    lastKeys = L.map(function (l) { return l.t; }).join('\n');
+    render($('maincode'), L);
+    var tips = {
+      1: 'Step 1: the whole reading helper goes at the top (only its first line shows; press "Show helper"); then import the App\'s port and runloop.',
+      2: 'Step 2: create the object. ' + S.name + ' (left of =) is your name; the right side tells the helper the sensor is on ' + portRef() + '.',
+      3: 'Step 3: code goes in async def main(), and runloop.run(main()) starts it. while True repeats: each loop calls ' + S.name + '.update() first, then "' + S.name + '.function()"; await runloop.sleep_ms(100) loops every 0.1 s.'
+    };
+    var b = $('bubble'); b.querySelector('i').textContent = S.viewStep; b.querySelector('span').textContent = tips[S.viewStep];
+    drawMinis();
+  }
+  var miniPrev = {};
+  function drawMinis() {
+    var full = programLines(3);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('mini' + k); if (!el) return;
+      var lines = [], nh = 0, total = 0, h0 = 0, nums = [];
+      full.forEach(function (l) { if (l.tag === k && l.helper) total++; });
+      full.forEach(function (l, i) {
+        if (l.tag !== k) return;
+        if (l.helper) {
+          nh++; if (!h0) h0 = i + 1;
+          if (nh <= 2) lines.push({ t: l.t, no: i + 1 });
+          else if (nh === 3) lines.push({ t: '# ' + '⋯ ' + total + ' helper lines: press "Show helper" on the right', no: '⋮' });
+          return;
+        }
+        nums.push(i + 1); lines.push({ t: l.t, no: i + 1 });
+      });
+      if (!lines.length) { el.innerHTML = ''; return; }
+      var a = nums[0], z = nums[nums.length - 1];
+      var range = a === z ? 'line ' + a + '' : 'lines ' + a + '–' + z + '';
+      if (h0) range += ', plus the helper from line ' + h0 + '';
+      var txt = lines.map(function (l) { return l.no + l.t; }).join('\n');
+      el.innerHTML = '<span>' + 'What this step writes (' + range + ')' + '</span><pre class="code"></pre>';
+      render(el.querySelector('pre'), lines, { noTag: true });
+      if (miniPrev[k] !== undefined && miniPrev[k] !== txt) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      miniPrev[k] = txt;
+    });
+  }
+
+  function setStep(n) {
+    S.step = Math.max(S.step, n);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    S.viewStep = n;
+    drawMain();
+    $('next2').disabled = !validName();
+  }
+  var RESERVED = ['port', 'runloop', 'main', 'print', 'color_sensor', 'hub', 'range', 'min', 'max', 'int', 'str', 'list', 'abs', 'len', 'motor_pair', 'light_matrix', 'sound', 'device', CFG.cls].concat(CFG.reserved);
+  function validName() {
+    var v = $('varname').value.trim(), bad = '';
+    if (!v) bad = 'The name cannot be empty.';
+    else if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(v)) bad = 'Use only letters, digits and _, and do not start with a digit.';
+    else if (isKw(v) || RESERVED.indexOf(v) >= 0) bad = '"' + v + '" is already used by Python or the program; pick another name.';
+    $('nameerr').hidden = !bad; $('nameerr').textContent = bad;
+    if (!bad) S.name = v;
+    return !bad;
+  }
+  function drawPorts() {
+    var box = $('ports'); box.innerHTML = '';
+    CFG.ports.forEach(function (l, i) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = l;
+      b.setAttribute('aria-pressed', String(S.port === i)); b.setAttribute('aria-label', 'port ' + l + '');
+      b.addEventListener('click', function () { S.port = i; drawPorts(); drawMain(); });
+      box.appendChild(b);
+    });
+  }
+
+  function drawPicker() {
+    var g = {}, order = []; FNS.forEach(function (f) { if (!g[f.grp]) { g[f.grp] = []; order.push(f.grp); } g[f.grp].push(f); });
+    var box = $('picker'); box.innerHTML = '';
+    order.forEach(function (k) {
+      var w = document.createElement('div'); w.className = 'fgroup'; w.innerHTML = '<span>' + esc(k) + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      g[k].forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = f.label; b.title = f.name;
+        b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      w.appendChild(chips); box.appendChild(w);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + esc(f.label) + ' · ' + f.name + '</b><span>' + f.what + '</span><span class="small">' + 'Returns: ' + f.ret + '</span>';
+    $('nm1').textContent = S.name;
+  }
+  function pick(id) { S.fn = id; setStep(3); drawPicker(); tick(true); }
+  function cardLines(f) {
+    var body = bodyOf(f, CFG.name);
+    return ['while True:', '    ' + CFG.name + '.update()'].concat(body.map(function (b) { return '    ' + b; }), ['    await runloop.sleep_ms(100)']);
+  }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    FNS.forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      c.innerHTML = '<div class="card-head"><h3>' + esc(f.label) + '<span class="zh">' + f.name + '</span></h3></div>' +
+        '<p>' + f.what + '</p>' +
+        '<dl class="meta"><dt>' + 'Returns' + '</dt><dd>' + f.ret + '</dd><dt>' + 'Example' + '</dt><dd>' + 'inside the while True loop of async def main()' + '</dd></dl>' +
+        '<pre class="code"></pre>' +
+        '<p class="out">' + 'The simulator prints: ' + '<code></code></p>' +
+        '<button type="button" class="try">' + 'Try it' + '</button>';
+      render(c.querySelector('pre'), cardLines(f).map(function (t) { return { t: t }; }), { noTag: true });
+      c.querySelector('.try').addEventListener('click', function () {
+        pick(f.id);
+        var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      });
+      box.appendChild(c);
+    });
+    updateCardOutputs();
+  }
+  function updateCardOutputs() {
+    var st = state();
+    FNS.forEach(function (f) { var el = document.querySelector('#fn-' + f.id + ' .out code'); if (el) el.textContent = runOut(f, st); });
+  }
+
+  var EX = CFG.ex;
+  function exFull(id) { var out = []; EX[id].forEach(function (t) { if (t === '@HELPER') out = out.concat(HELPER); else out.push(t); }); return out; }
+  function drawExamples() {
+    Object.keys(EX).forEach(function (k) {
+      var shown = EX[k].map(function (t) { return t === '@HELPER' ? '# ' + '… paste the step-1 helper here ("Copy" adds it for you) …' : t; });
+      render($('ex-' + k), shown.map(function (t) { return { t: t }; }), { noTag: true });
+    });
+  }
+
+  var log = [];
+  function tick(reset) {
+    var st = state(), f = BY[S.fn];
+    paintPad(st);
+    updateCardOutputs();
+    if (reset) log = [];
+    if (S.step < 3) log = [{ c: '', t: '(Finish step 3 and what the program prints shows up here)' }];
+    else {
+      var line = runOut(f, st);
+      log.push({ c: /Error/.test(line) ? 'errline' : '', t: line });
+    }
+    while (log.length > 7) log.shift();
+    $('console').innerHTML = log.map(function (l) { return '<span class="' + l.c + '">' + esc(l.t) + '</span>'; }).join('\n');
+  }
+
+  $('next1').addEventListener('click', function () { setStep(2); $('varname').focus(); });
+  $('next2').addEventListener('click', function () { if (validName()) { setStep(3); drawPicker(); tick(true); } });
+  $('varname').addEventListener('input', function () { var ok = validName(); $('next2').disabled = !ok; if (ok) { drawMain(); drawPicker(); } });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) {
+    $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } });
+  });
+  $('helperbtn').addEventListener('click', function (e) {
+    S.showHelper = !S.showHelper;
+    e.currentTarget.textContent = S.showHelper ? 'Hide helper' : 'Show helper';
+    e.currentTarget.setAttribute('aria-pressed', String(S.showHelper));
+    drawMain();
+  });
+  $('copymain').addEventListener('click', function (e) { copyText(plain(programLines(S.viewStep)), e.currentTarget); });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { copyText(exFull(b.getAttribute('data-copy')).join('\n') + '\n', b); });
+  });
+  buildPad();
+  ['k2', 'k4', 'nopad'].forEach(function (id) { $(id).addEventListener('input', function () { tick(false); }); });
+  $('release').addEventListener('click', function () { held = {}; stk = { L: [0, 0], R: [0, 0] }; tick(false); });
+
+  drawPorts(); drawPicker(); drawCards(); drawExamples(); drawMain(); tick(true);
+  setInterval(function () { if (S.step >= 3) tick(false); }, 600);
+  window.__ap = { S: S, FNS: FNS, BY: BY, pick: pick, tick: tick, state: state, runOut: runOut, appBytes: appBytes, programText: function () { return plain(programLines(3)); }, exFull: exFull, EX: EX, setStep: setStep };
+})();
+
+</script>
+<script>
+(function () {
+  var side = document.querySelector('.side'); if (!side) return;
+  var mq = window.matchMedia('(max-width: 900px)');
+  var home = side.parentNode, homeNext = side.nextSibling;
+  var con = document.getElementById('console'), conP = con && con.closest('.panel');
+  if (conP && conP.parentNode !== side) conP = null;
+  var last = null, ready = false;
+  var STOP = '.step-body, .cards, .ref, .steps, .main, .wrap, body';
+  function anchorOf(el) { var a = el; while (a && a.parentElement && !a.parentElement.matches(STOP)) a = a.parentElement; return a && a.parentElement ? a : null; }
+  function flash(el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  // 把 box 搬到 a 那一塊的後面；a 在畫面上的位置維持不動（點下去時就記住 a：頁面常在點擊後重畫按鈕，按鈕本身會被換掉）
+  function moveAfter(box, a) {
+    if (!a || !a.isConnected || a === box || a.contains(box)) return false;
+    if (a.nextElementSibling === box) return true;
+    var y = a.getBoundingClientRect().top;
+    a.parentNode.insertBefore(box, a.nextSibling); box.classList.add('follow');
+    var d = a.getBoundingClientRect().top - y; if (d) window.scrollBy(0, d);
+    return true;
+  }
+  function inPanel(el) { return side.contains(el) || (conP && conP.contains(el)); }
+  function placeSide(a, scroll) {
+    if (!mq.matches || !a) return;
+    if (conP && conP.parentNode !== side) { conP.classList.remove('follow'); side.appendChild(conP); }
+    if (!moveAfter(side, a)) return;
+    if (scroll) { var r = side.getBoundingClientRect(); if (r.top > window.innerHeight * 0.7) window.scrollBy({ top: r.top - window.innerHeight * 0.3, behavior: 'smooth' }); }
+  }
+  function placeConsole(el) {
+    if (!mq.matches || !conP || inPanel(el)) return;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在「正在操作的那一排」正下方（排＝控制區的直接子元素），
+    // 畫面、那一排、輸出同一屏；控制區很長或那一排在最下面（例如拔線勾選）都不會跑出畫面
+    var sim = el.closest('.sim'), ctrl = null, row = null;
+    if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (ctrl && ctrl !== el) for (var j = 0; j < ctrl.children.length; j++) if (ctrl.children[j].contains(el)) row = ctrl.children[j];
+    if (sim && ctrl) {
+      var box = row ? ctrl : sim, after = row || null;
+      if (after ? after.nextElementSibling === conP : conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var y = el.getBoundingClientRect().top;
+      if (after) box.insertBefore(conP, after.nextSibling); else sim.insertBefore(conP, ctrl);
+      conP.classList.add('follow');
+      var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
+      return;
+    }
+    var a = anchorOf(el); if (a && a.nextElementSibling === side) return; // 程式那格已經緊接在下面，輸出就在它裡面
+    moveAfter(conP, a);
+  }
+  function reset() {
+    if (mq.matches) { var b = document.querySelector('#step1 .step-body button') || document.querySelector('#step1 button'); if (b) placeSide(anchorOf(b), false); return; }
+    if (conP) { conP.classList.remove('follow'); side.appendChild(conP); }
+    side.classList.remove('follow'); home.insertBefore(side, homeNext);
+  }
+  function remember(e) { if (!inPanel(e.target)) last = anchorOf(e.target); }
+  document.addEventListener('pointerdown', remember, true);
+  document.addEventListener('focusin', remember, true);
+  var mo = new MutationObserver(function () { if (ready && mq.matches) { placeSide(last, true); flash(side); } });
+  ['maincode', 'mainblocks'].forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true }); });
+  function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
+  document.addEventListener('input', sim, true);
+  document.addEventListener('change', sim, true);
+  // 模擬器裡的按鈕（掌控者按鍵、色點調色盤…）也算在操作模擬器
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.sim button'); if (b) placeConsole(b); }, true);
+  reset(); setTimeout(function () { ready = true; }, 800);
+  if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
+})();
+</script>
+</body>
+</html>

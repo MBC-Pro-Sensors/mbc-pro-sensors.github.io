@@ -1,0 +1,906 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="樂高官方 SPIKE App（教育版）也能寫 Python，不用換主機韌體。神攝手在 App 裡是一顆顏色感應器，App 不能匯入自己的檔案，所以照這個順序寫：先把讀值小幫手貼在最上面，再建立物件、幫相機取名字，最後每圈 update() 一次、用名字呼叫功能。左邊一步一步做，右邊的程式會跟著長出來；在模擬的相機畫面裡">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/cam_school/spike-app-python.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/cam_school/spike-app-python.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/cam_school/spike-app-python.html">
+<title>神攝手官方 SPIKE App Python 教學 | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* 版面：左邊是照順序走的教學步驟，右邊固定「你的程式＋模擬感應器」；下面是 16 個功能的範例卡 */
+:root {
+  --bg: #f3f6f5;          /* 場地墊的淺色 */
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;      /* MBC 青綠 */
+  --accent-soft: #dff1ef;
+  --tape: #121212;        /* 黑膠帶線 */
+  --ir: #e04a3b;          /* 感應器紅外燈 */
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* 頁首 */
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+/* 主區：左教學、右程式 */
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+/* 右邊：程式＋模擬 */
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+/* 右邊固定區只放程式和輸出，高度不超過一個畫面，往下捲時一直看得到 */
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+/* 每一步卡片裡的「這一步寫的程式」：設定一改就更新並閃一下 */
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+/* 功能範例卡 */
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+/* 完整範例與注意事項 */
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+.conv { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+.conv th, .conv td { border: 1px solid var(--rule); padding: 6px 8px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.conv th { background: var(--accent-soft); }
+.tblwrap { overflow-x: auto; max-width: 100%; }
+.cant td:first-child, .cant th:first-child { width: 34%; }
+.cant code { white-space: normal; overflow-wrap: anywhere; }
+.panel-head .row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+[hidden] { display: none !important; }  /* 頁面用 hidden 切換「積木／程式」，.ws{display:grid} 會蓋掉它 */
+.learn-nav .tabs .tl { color: var(--muted, #666); font-size: 0.8rem; align-self: center; }
+.learn-nav .tabs .tsep { flex-basis: 100%; height: 0; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
+   排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
+@media (max-width: 900px) {
+  .learn-nav { position: static; width: 100vw; margin: -24px 0 14px calc(50% - 50vw); }
+  .learn-nav .in { padding: 6px 12px 8px; gap: 4px 14px; font-size: 0.85rem; }
+  .learn-nav .in > a { min-height: 36px; display: inline-flex; align-items: center; }
+  .learn-nav .tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .learn-nav .tabs::-webkit-scrollbar { display: none; }
+  .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
+  body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
+  .panel.follow { margin: 12px 0 16px; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow, .ctrl > .panel.follow { grid-column: 1 / -1; }
+  .flash { animation: followFlash 1.2s ease-out; }
+  @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
+  /* 點選目標放大：選項、勾選框、拉桿 */
+  .wrap > *, .main > *, .steps > *, .step-body > * { min-width: 0; }
+  label:has(input[type=radio]), label:has(input[type=checkbox]) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  button.copy, .viewtabs button { min-height: 36px; }
+  label:has(select) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  label select { min-height: 36px; }
+  input[type=radio], input[type=checkbox] { width: 20px; height: 20px; flex: none; }
+  input[type=range] { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/learn/">全部互動教學</a><a class="back" href="/sensors/esp32cam/spike/">← 神攝手 SPIKE 說明</a><a class="lang" href="/en/learn/cam_school/spike-app-python.html" hreflang="en">EN</a><div class="tabs"><span class="tl">主機</span><a href="/learn/cam_school/micropython.html" aria-current="page">SPIKE</a><a href="/learn/cam_school/ev3-pybricks.html">EV3</a><a href="/learn/cam_school/arduino.html">Arduino</a><a href="/learn/cam_school/mblock.html">mBlock</a><a href="/learn/cam_school/matrix.html">MATRIX</a><a href="/learn/cam_school/makecode.html">micro:bit</a><span class="tsep"></span><a href="/learn/cam_school/micropython.html">MicroPython（Pybricks）</a><a href="/learn/cam_school/pybricks-blocks.html">Pybricks 積木</a><a href="/learn/cam_school/pybricks-builtin.html">Pybricks 內建積木</a><a href="/learn/cam_school/mbc-blocks.html">MBC 積木網站</a><a href="/learn/cam_school/spike-app.html">樂高官方 SPIKE App</a><a href="/learn/cam_school/spike-app-python.html" aria-current="page">官方 App Python</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC 神攝手 × 樂高官方 SPIKE App（Python）</span>
+    <h1>三個步驟用官方 SPIKE App 的 Python 讀神攝手</h1>
+    <p class="lead">樂高官方 SPIKE App（教育版）也能寫 Python，不用換主機韌體。神攝手在 App 裡是一顆<b>顏色感應器</b>，App 不能匯入自己的檔案，所以照這個順序寫：先<b>把讀值小幫手貼在最上面</b>，再<b>建立物件、幫相機取名字</b>，最後每圈 <code>update()</code> 一次、用名字<b>呼叫功能</b>。左邊一步一步做，右邊的程式會跟著長出來；在模擬的相機畫面裡拖動色塊、改顏色和大小，就能看到程式會印出什麼。</p>
+  </header>
+
+  <section class="main" aria-label="教學">
+    <div class="steps">
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>貼上讀值小幫手</h2></div>
+        <div class="step-body">
+          <p class="why">官方 App 的 Python 專案只有一個檔案，<b>不能匯入</b>自己的 .py，所以把「讀值小幫手」<b>整段貼在程式最上面</b>（小幫手開頭也寫了：照抄就好、不用改）。沒有它，後面寫的 <code>CamSchoolApp</code> 主機看不懂，會出現 <code>NameError</code>。</p>
+          <ol class="howto">
+            <li>打開樂高官方 SPIKE App（教育版，SPIKE Prime 黃色主機），新增專案，選「<b>Python</b>」。</li>
+            <li>把右邊標 ① 的程式貼到最上面（小幫手只露第一行，按「顯示小幫手」看全部；「複製程式」一定是完整的）。小幫手也可以單獨下載：<a href="/examples/esp32cam/spike_app/MBC_cam_school_App_helper.py" download>MBC_cam_school_App_helper.py</a>（用記事本打開、全選複製）。</li>
+            <li>相機插主機 <b>A～F 任一孔</b>，由主機供電；孔要跟第 2 步選的一樣。顏色要先在相機上設定：「設定 1：COLOR」選取色點、「設定 2：TRACK」選要追的顏色（程式改不了）。</li>
+          </ol>
+          <p class="small">小幫手幫你把官方 App 讀到的數字拆好（跟<a href="/learn/cam_school/spike-app.html">官方 App 積木頁</a>同一套換算）：</p>
+          <div class="tblwrap"><table class="conv">
+            <tr><th>官方 App 讀到的</th><th>裝的是</th><th>小幫手的功能</th></tr>
+            <tr><td><code>color_sensor.color()</code>（顏色）</td><td>色相（取色點的顏色）：−1、0 ~ 100</td><td><code>hue()</code></td></tr>
+            <tr><td><code>color_sensor.reflection()</code>（反射光）</td><td>動態值（畫面變了多少）0 ~ 100</td><td><code>motion()</code></td></tr>
+            <tr><td><code>color_sensor.rgbi()</code> 第 1 個（原始紅）</td><td>色塊 X：左 0 ~ 右 98；沒找到 0</td><td><code>blob_x()</code></td></tr>
+            <tr><td><code>rgbi()</code> 第 2 個（原始綠）</td><td>色塊 Y：下 1 ~ 上 75；沒找到 0</td><td><code>blob_y()</code></td></tr>
+            <tr><td><code>rgbi()</code> 第 3 個（原始藍）</td><td>色塊面積 0 ~ 100，<b>0 = 沒找到</b></td><td><code>area()</code>、<code>found()</code></td></tr>
+          </table></div>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">貼好了，下一步</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>建立物件：幫感應器取名字</h2></div>
+        <div class="step-body">
+          <p class="why">一台車可能接好幾個感應器，所以要「建立一個物件」：告訴小幫手相機接在哪個孔（<code>port.C</code> 來自 <code>from hub import port</code>），並幫它取個名字。之後每次讀值都叫這個名字。</p>
+          <div class="row">
+            <span class="small">相機接在哪個孔？</span>
+            <div class="ports" id="ports" role="group" aria-label="孔位"></div>
+          </div>
+          <label class="f" for="varname"><span>幫它取名字（英文字母開頭，可以用數字和底線）</span>
+            <input type="text" id="varname" value="cam" autocomplete="off" spellcheck="false">
+          </label>
+          <p class="err" id="nameerr" hidden></p>
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2" disabled>建立好了，下一步</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>每圈 update()，再使用功能</h2></div>
+        <div class="step-body">
+          <p class="why">官方 App 的程式放在 <code>async def main():</code> 裡，最後 <code>runloop.run(main())</code> 讓它開始跑；等待用 <code>await runloop.sleep_ms(100)</code>（不是 Pybricks 的 <code>wait()</code>）。每圈先 <code><span id="nm1"></span>.update()</code> 讀一次，再用「名字＋小數點＋功能」。點一個功能，程式和輸出會換成它的範例。</p>
+          <div id="picker" class="ref"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+          <div class="sim-box">
+          <div class="sim-title">模擬感應器（相機看到的畫面）：拖動色塊，看右邊的輸出怎麼變</div>
+          <div class="sim">
+            <svg id="field" viewBox="0 0 460 330" role="img" tabindex="0" aria-label="相機畫面示意：用滑鼠或手指拖動色塊，也可以按方向鍵移動"></svg>
+            <div class="ctrl">
+              <label class="f" for="size">色塊大小（同一個色塊，越近看起來越大）
+                <input autocomplete="off" type="range" id="size" min="8" max="110" value="40">
+              </label>
+              <label class="f" for="hue"><span>色塊的顏色（色相 <span id="huename">33，綠</span>）</span>
+                <input autocomplete="off" type="range" id="hue" min="0" max="100" value="33">
+              </label>
+              <label class="f" for="motion">動態（畫面裡有東西在動的程度；拖動色塊也會變大）
+                <input autocomplete="off" type="range" id="motion" min="0" max="100" value="3">
+              </label>
+              <div class="toggles">
+                <label><input autocomplete="off" type="checkbox" id="gone"> 拿走色塊（看不到）</label>
+                <label hidden><input autocomplete="off" type="checkbox" id="unplug"> 拔掉感應器</label>
+              </div>
+            </div>
+            <p class="note">模擬畫面是示意：數值換算簡化過，實際感應器會因為光線差幾格。十字 = 取色點（感應器上「設定 1：COLOR」選的位置），色相、飽和度、明度讀的是十字那一點；綠框 = 感應器追到的色塊（「設定 2：TRACK」選的顏色）。X 左 0、右 98；Y 下 1、上 75。</p>
+          </div>
+            </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">每個功能的範例</h2>
+        <p class="ref-intro">每個功能都有一段可以直接放進 <code>main()</code> 的範例（孔 C）。按「試試看」會切到第 3 步，右邊的程式和輸出會換成這個範例。</p>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="你的程式與輸出">
+      <div class="panel">
+        <div class="panel-head"><span>你的程式（SPIKE App Python）</span><span class="row"><button type="button" class="copy" id="helperbtn" aria-pressed="false">顯示小幫手</button><button type="button" class="copy" id="copymain">複製程式</button></span></div>
+        <pre class="code" id="maincode" aria-live="polite"></pre>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>App 主控台的輸出（每 0.6 秒更新）</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="ref" aria-labelledby="fullh">
+    <h2 id="fullh">完整範例</h2>
+    <p class="ref-intro">按「複製」拿到完整程式（小幫手已經接好）。</p>
+    <div class="full">
+      <div class="panel">
+        <div class="panel-head"><span>跟著色塊轉（左輪 E、右輪 F）</span><button type="button" class="copy" data-copy="follow">複製</button></div>
+        <pre class="code" id="ex-follow"></pre>
+        <p class="bubble"><i>!</i><span>先在相機上做「設定 2：TRACK」選顏色。看不到就原地轉著找；看到了就照 X 偏左偏右修正。左右搖擺太大就把 <code>GAIN</code> 調小。</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="ref" aria-labelledby="canth">
+    <h2 id="canth">官方 App 讀不到的值</h2>
+    <p class="ref-intro">官方 App 只讀相機的「組合資料」（色相、動態、色塊 X／Y／面積），下面這些功能讀不到。飽和度、明度、色塊寬高可以改用 <a href="/learn/cam_school/mbc-blocks.html">MBC 積木網站</a>；全部的功能用 <a href="/learn/cam_school/micropython.html">Pybricks MicroPython</a> 或 <a href="/learn/cam_school/pybricks-blocks.html">Pybricks 積木</a> 都讀得到（兩種都要把主機換成 Pybricks 韌體）。</p>
+    <div class="tblwrap"><table class="conv cant">
+        <tr><th scope="col">功能（Pybricks 函式庫）</th><th scope="col">為什麼讀不到／改用什麼</th></tr>
+        <tr><td><code>saturation()</code>、<code>brightness()</code></td><td>取色點的飽和度、明度讀不到，App 只拿到色相。</td></tr>
+        <tr><td><code>blob_w()</code>、<code>blob_h()</code></td><td>色塊寬、高讀不到；要知道遠近用 <code>area()</code>（0 ~ 100）。</td></tr>
+        <tr><td><code>area()</code>（Pybricks）</td><td>Pybricks 的面積是寬 × 高（0 ~ 7500）；官方 App 拿到的是另一種 0 ~ 100 的面積，數字不能直接比。</td></tr>
+        <tr><td><code>blob_xya()</code>、<code>read_all()</code></td><td>一次讀好幾個值的功能沒有；用 <code>blob_x()</code>、<code>blob_y()</code>、<code>area()</code> 分開讀（都是同一次 <code>update()</code> 的值）。</td></tr>
+        <tr><td><code>device_id()</code>、<code>firmware_version()</code>、<code>sensor_ok()</code></td><td>感應器身分、韌體版本、有沒有接好都讀不到；拔線時官方 App 會怎樣還沒上機確認，所以模擬器沒有拔線選項。</td></tr>
+    </table></div>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">使用注意</h2>
+    <ol>
+      <li><b>每圈先 <code>update()</code>。</b>小幫手的功能都是拆「最近一次 <code>update()</code> 讀到的 8 個數字」；沒 <code>update()</code> 就一直是舊的（一開始全是 0，跟「沒找到」一樣）。</li>
+      <li><b>這是官方 App 3 的寫法，跟 Pybricks 不一樣。</b>孔位是 <code>from hub import port</code> 的 <code>port.C</code>（不是 <code>Port.C</code>）、等待是 <code>await runloop.sleep_ms()</code>（不是 <code>wait()</code>），Pybricks 的程式不能直接貼過來。家用版（Robot Inventor）App 的顏色只有 0 ~ 10，這頁是教育版的。</li>
+      <li><b>不要跟 App 的顏色常數比。</b><code>color_sensor.color()</code> 在這裡回傳的是神攝手的色相數字，不是樂高自己的色號；一律用 <code>hue()</code> 的數字比大小。顏色要在相機上設定：沒做「設定 1：COLOR」時色相一直是 0，跟紅色一樣。</li>
+      <li><b>先判斷有沒有找到色塊。</b><code>found()</code> 是 False（面積 0）時 X、Y 也都是 0，看起來像在左下角。這裡的面積是 0 ~ 100，跟 Pybricks 的 <code>area()</code>（寬 × 高）單位不一樣。</li>
+      <li><b>座標方向：</b>站在車後面往前看，X 左 0、右 98、中間約 50（X − 50 左負右正）；Y 是下面小、上面大（下 1、上 75）。動態值要機器人停住才準。App Python 的讀法照韌體和官方 App 積木頁整理，還沒上機逐一確認。</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  // 官方 SPIKE App Python 頁的共用程式（apppy_build.js 組頁時把產品的 appRead／view／FNS 和模擬器放進來）
+  var CFG = {"ports":["A","B","C","D","E","F"],"port":2,"name":"cam","cls":"CamSchoolApp","fn0":"blob_x","helper":["# ===== 神攝手（學校版）讀值小工具（樂高官方 SPIKE App 3 教育版 Python，照抄就好、不用改）=====","# ===== Sharpshooter Vision (school) reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====","# 相機在 SPIKE App 裡是「顏色感應器」：顏色＝色相、反射光＝動態值、原始紅＝色塊 X、原始綠＝色塊 Y、原始藍＝色塊面積。","# In the SPIKE App the camera is a colour sensor: colour = hue, reflection = motion, raw red = blob X, raw green = blob Y, raw blue = blob area.","# 顏色看「設定 1：COLOR」的取色點、色塊看「設定 2：TRACK」選的顏色，都在相機機身上設定 / set up \"1: COLOR\" and \"2: TRACK\" on the camera itself","import color_sensor","","","class CamSchoolApp:","    def __init__(self, port_number):","        self.port = port_number","        self.b = [0] * 8                      # byte 0~7","","    def update(self):","        \"\"\"讀一次最新資料 / read once\"\"\"","        c = color_sensor.color(self.port)              # byte 0 = 色相 / hue","        r = color_sensor.reflection(self.port)         # byte 1 = 動態值 / motion","        rgb = color_sensor.rgbi(self.port)             # 原始紅、綠、藍＝X、Y、面積 / raw red, green, blue = X, Y, area","        b = [int(c) & 255, int(r) & 255]","        for v in rgb[:3]:","            v = int(v) & 0xFFFF                        # 負數也換回 0~65535 / negatives back to 0~65535","            b += [v & 255, v >> 8]","        self.b = b","        return True","","    def _w(self, i):","        # 原始紅（i=0）、綠（1）、藍（2）的 0~65535 / raw red, green, blue word","        return self.b[2 + 2 * i] | (self.b[3 + 2 * i] << 8)","","    def hue(self):","        \"\"\"取色點的色相 0~100（紅 0、黃約 17、綠約 33、青約 50、藍約 67、洋紅約 83，100 也是紅）；-1＝沒有顏色（黑白灰） / hue at the colour point 0~100, -1 = no colour\"\"\"","        h = self.b[0]","        return h - 256 if h > 127 else h","","    def motion(self):","        \"\"\"動態值 0~100：畫面變了多少（機器人要停住才準） / motion 0~100: how much the picture changed\"\"\"","        return self.b[1]","","    def blob_x(self):","        \"\"\"色塊 X：左 0~右 98，中間約 50；沒找到是 0 / blob X: left 0 ~ right 98; 0 = not found\"\"\"","        return self._w(0)","","    def blob_y(self):","        \"\"\"色塊 Y：下 1~上 75；沒找到是 0 / blob Y: bottom 1 ~ top 75; 0 = not found\"\"\"","        return self._w(1)","","    def area(self):","        \"\"\"色塊面積 0~100，0＝沒找到（跟 Pybricks 的 area() 單位不一樣） / blob area 0~100, 0 = not found (not the same unit as Pybricks area())\"\"\"","        return self._w(2)","","    def found(self):","        \"\"\"有沒有找到色塊：面積大於 0 / is a blob found: area above 0\"\"\"","        return self._w(2) > 0","# ===== 小工具到這裡結束 / end of helper ====="],"ex":{"follow":["# 神攝手（學校版）× 樂高官方 SPIKE App（教育版 Python）範例 1：跟著色塊轉","# Sharpshooter Vision (school) × LEGO SPIKE App (Education, Python) example 1: turn toward a blob","# 接線：相機 → C 孔；左輪 E、右輪 F / Wiring: camera → port C; left wheel E, right wheel F","# 準備：先在相機上做「設定 2：TRACK」選顏色 / choose the colour with \"2: TRACK\" on the camera first","# 用法：SPIKE App 新增「Python」專案，整支貼上 / new Python project in the SPIKE App, paste all of this","@HELPER","from hub import port, light_matrix","import motor_pair","import runloop","","cam = CamSchoolApp(port.C)","BASE = 150        # 👉 可以改：前進速度（度／秒）/ forward speed (deg/s)","GAIN = 4          # 👉 可以改：X 偏 1 多轉多少 / turn per step of X error","","","async def main():","    motor_pair.pair(motor_pair.PAIR_1, port.E, port.F)","    while True:","        cam.update()","        if not cam.found():                       # 沒找到：原地轉著找 / not found: spin to search","            motor_pair.move_tank(motor_pair.PAIR_1, 120, -120)","            light_matrix.write('?')","        else:","            error = cam.blob_x() - 50             # 中間 50；在右 → 正 / middle = 50; right = positive","            motor_pair.move_tank(motor_pair.PAIR_1, BASE + GAIN * error, BASE - GAIN * error)","        await runloop.sleep_ms(30)","","runloop.run(main())"]},"reserved":["h","m","error","BASE","GAIN"],"draw":"drawField","lang":"zh"};
+  var S = { port: CFG.port, name: CFG.name, step: 1, viewStep: 1, fn: CFG.fn0, showHelper: false };
+  var HELPER = CFG.helper;
+
+  // ───── 小工具 ─────
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function idiv(a, b) { return Math.floor(a / b); }
+  function PyErr(m) { this.message = m; }
+  // Python 的 print：tuple 用 tup([...])，list 用陣列，True／False／None
+  function tup(a) { return { __t: a }; }
+  function py(x, inner) {
+    if (x === null || x === undefined) return 'None';
+    if (x === true) return 'True';
+    if (x === false) return 'False';
+    if (typeof x === 'number') return String(x);
+    if (typeof x === 'string') return inner ? "'" + x + "'" : x;
+    if (Array.isArray(x)) return '[' + x.map(function (v) { return py(v, true); }).join(', ') + ']';
+    if (x.__t) return '(' + x.__t.map(function (v) { return py(v, true); }).join(', ') + (x.__t.length === 1 ? ',' : '') + ')';
+    throw new Error('py()');
+  }
+  function prn() { return Array.prototype.map.call(arguments, function (a) { return py(a, false); }).join(' '); }
+  function unpack(t) { return t.__t; }
+  var KW = /\b(from|import|while|True|False|None|if|else|elif|not|and|or|async|def|await|for|in|return|class|break|lambda|pass|is|global|try|except|raise|with|yield|del|continue|finally|nonlocal|assert|as)\b/;
+  function isKw(w) { return new RegExp('^' + KW.source + '$').test(w); }
+  function hiPy(line) {
+    var out = '', i = 0;
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest[0] === '#') { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if ((m = rest.match(/^("""[^]*?"""|"[^"]*"|'[^']*')/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (isKw(w)) out += '<span class="tk-kw">' + w + '</span>';
+        else if (after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^\d+/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  function render(el, lines, opts) {
+    opts = opts || {};
+    el.innerHTML = lines.map(function (l, k) {
+      var cls = 'ln' + (l.hl ? ' hl' : '') + (l.isNew ? ' new' : '');
+      var tag = opts.noTag ? '' : '<span class="tag">' + (l.tag && !l.tagHide ? '<i>' + l.tag + '</i>' : '') + '</span>';
+      return '<span class="' + cls + '"><span class="no">' + (l.no || k + 1) + '</span>' + tag + '<span>' + (l.t ? hiPy(l.t) : ' ') + '</span></span>';
+    }).join('');
+  }
+  function plain(lines) { return lines.map(function (l) { return l.t; }).join('\n') + '\n'; }
+  function copyText(text, btn) {
+    var done = function () { var o = btn.textContent; btn.textContent = '已複製'; setTimeout(function () { btn.textContent = o; }, 1400); };
+    try {
+      navigator.clipboard.writeText(text).then(done, function () { fallback(text); });
+    } catch (e) { fallback(text); }
+    function fallback(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e2) { btn.textContent = '請手動選取複製'; }
+      document.body.removeChild(ta);
+    }
+  }
+  function portRef() { return 'port.' + CFG.ports[S.port]; }
+
+  // ───── 產品：appRead(st) = 官方 App 讀到的 {c: 顏色, r: 反射光, rgb: [原始紅, 綠, 藍]}；view(b) = 小幫手；FNS = 功能 ─────
+    // 神攝手（學校版）：官方 App 讀模式 0（教育版），跟官方 App 積木頁（spike-app.html）同一套換算：
+  //   顏色＝色相（−1、0~100）、反射光＝動態值、原始紅＝色塊 X、原始綠＝色塊 Y、原始藍＝色塊面積 0~100（0＝沒找到）
+  //   面積：模擬畫面的色塊是 size×size 像素，跟官方 App 積木頁一樣換成 0~100（÷ 50）
+  function appRead(st) {
+    var area = st.gone ? 0 : clamp(Math.round(st.size * st.size / 50), 1, 100);
+    return { c: st.hue, r: st.mot, rgb: [st.bx, st.by, area] };
+  }
+  // 小幫手 MBC_cam_school_App_helper.py 換成 JS
+  function view(b) {
+    function w(i) { return b[2 + 2 * i] | (b[3 + 2 * i] << 8); }
+    return {
+      b: b.slice(),
+      hue: function () { return b[0] > 127 ? b[0] - 256 : b[0]; },
+      motion: function () { return b[1]; },
+      blob_x: function () { return w(0); },
+      blob_y: function () { return w(1); },
+      area: function () { return w(2); },
+      found: function () { return w(2) > 0; }
+    };
+  }
+  var FNS = [
+    { id: 'hue', label: 'hue()', name: '色相（顏色）', grp: '顏色（取色點）', ret: '-1，或 0 ~ 100',
+      what: '「取色點」（相機上「設定 1：COLOR」選的那一點）的色相：紅 0（100 也是紅）、黃約 17、綠約 33、青約 50、藍約 67、洋紅約 83；−1 = 沒有顏色（黑、白、灰）。把色塊拖到十字上、拉動顏色試試看。',
+      body: ['print("' + '色相:' + '", {n}.hue())'], out: function (V) { return prn('色相:', V.hue()); } },
+    { id: 'red', label: 'hue() 是紅色？', name: '看到紅色', grp: '顏色（取色點）', ret: '用 hue() 判斷',
+      what: '紅色在色相的頭和尾，所以「0 ~ 5，或大於 94」就是紅色（跟官方 App 積木頁同一個判斷）；−1 沒有顏色不算。',
+      body: ['h = {n}.hue()', 'if 0 <= h <= 5 or h > 94:', '    print("' + '紅色！' + '", h)', 'else:', '    print("' + '不是紅色' + '", h)'],
+      out: function (V) { var h = V.hue(); return (h >= 0 && h <= 5) || h > 94 ? prn('紅色！', h) : prn('不是紅色', h); } },
+    { id: 'found', label: 'found()', name: '有沒有找到色塊', grp: '色塊（追蹤）', ret: 'True 或 False',
+      what: '相機有沒有追到「設定 2：TRACK」選的顏色：面積大於 0 就是有。沒找到時 X、Y 也都是 0，所以先看這個。勾「拿走色塊」試試看。',
+      body: ['if {n}.found():', '    print("' + '找到色塊' + '")', 'else:', '    print("' + '沒找到色塊' + '")'],
+      out: function (V) { return V.found() ? '找到色塊' : '沒找到色塊'; } },
+    { id: 'blob_x', label: 'blob_x()', name: '色塊 X（左右）', grp: '色塊（追蹤）', ret: '0 ~ 98（沒找到是 0）',
+      what: '色塊在畫面的左右位置：左 0、右 98，正中間約 50。拖動色塊試試看。',
+      body: ['print("' + '色塊 X:' + '", {n}.blob_x())'], out: function (V) { return prn('色塊 X:', V.blob_x()); } },
+    { id: 'blob_y', label: 'blob_y()', name: '色塊 Y（上下）', grp: '色塊（追蹤）', ret: '1 ~ 75（沒找到是 0）',
+      what: '色塊的上下位置：<b>下面小、上面大</b>（下 1、上 75）。',
+      body: ['print("' + '色塊 Y:' + '", {n}.blob_y())'], out: function (V) { return prn('色塊 Y:', V.blob_y()); } },
+    { id: 'area', label: 'area()', name: '色塊面積', grp: '色塊（追蹤）', ret: '0 ~ 100（0 = 沒找到）',
+      what: '色塊有多大：0 ~ 100，越近越大，0 = 沒找到。這是官方 App 的單位，跟 Pybricks 的 <code>area()</code>（寬 × 高，0 ~ 7500）不一樣。拉動色塊大小試試看。',
+      body: ['print("' + '面積:' + '", {n}.area())'], out: function (V) { return prn('面積:', V.area()); } },
+    { id: 'side', label: 'blob_x() 左右', name: '色塊在左還是右', grp: '色塊（追蹤）', ret: '用 found() 和 blob_x() 判斷',
+      what: '先看有沒有找到，找到了再看 X：小於 50 在左邊，否則在右邊（跟官方 App 積木頁一樣）。',
+      body: ['if not {n}.found():', '    print("' + '沒找到色塊' + '")', 'elif {n}.blob_x() < 50:', '    print("' + '色塊在左邊' + '", {n}.blob_x())', 'else:', '    print("' + '色塊在右邊' + '", {n}.blob_x())'],
+      out: function (V) { return !V.found() ? '沒找到色塊' : V.blob_x() < 50 ? prn('色塊在左邊', V.blob_x()) : prn('色塊在右邊', V.blob_x()); } },
+    { id: 'motion', label: 'motion()', name: '動態偵測', grp: '動態', ret: '0 ~ 100',
+      what: '整個畫面跟上一張比變了多少：有東西在動，數字就變大。範例大於 20 算「有東西在動」（跟官方 App 積木頁一樣）。機器人要停住才準。拉動「動態」或快速拖動色塊試試看。',
+      body: ['m = {n}.motion()', 'if m > 20:', '    print("' + '有東西在動！' + '", m)', 'else:', '    print("' + '沒動靜' + '", m)'],
+      out: function (V) { var m = V.motion(); return m > 20 ? prn('有東西在動！', m) : prn('沒動靜', m); } },
+    { id: 'bytes', label: 'cam.b（8 byte）', name: '原始 8 byte', grp: '原始資料', ret: '8 個 0 ~ 255',
+      what: '<code>update()</code> 讀到的原始 byte 0～7：[色相, 動態, X 低, X 高, Y 低, Y 高, 面積低, 面積高]（色相 −1 會變 255）。數字怪怪的時候印出來，跟第 1 步的換算表比。',
+      body: ['print("byte 0~7:", {n}.b)'], out: function (V) { return prn('byte 0~7:', V.b); } }
+  ];
+
+
+  // ───── 模擬器（搬自這款的 MicroPython 頁，rawState 原樣）─────
+  
+  // ───── 模擬感應器：相機畫面 160×120（左上角 0,0），畫在 SVG 上放大 2.5 倍 ─────
+  // 示意換算：直接用畫面上色塊的位置和大小換成感應器的單位（X 0~98、Y 下 1~上 75、寬高 ÷1.6），不是感應器內部的算法
+  var FW = 160, FH = 120, K = 2.5, OX = 30, OY = 10, PT = { x: 80, y: 60 };
+  var SIM = { cx: 90, cy: 62, bump: 0 };
+  var frozen = null, warned = false;
+  function hueName(h) {
+    return h <= 5 || h >= 92 ? '紅' : h <= 11 ? '橘' : h <= 24 ? '黃' : h <= 41 ? '綠' : h <= 58 ? '青' : h <= 75 ? '藍' : '洋紅';
+  }
+  function rawState() {
+    var size = Number($('size').value), col = Number($('hue').value), gone = $('gone').checked, half = size / 2;
+    SIM.cx = clamp(SIM.cx, half, FW - half); SIM.cy = clamp(SIM.cy, half, FH - half);
+    var onPt = !gone && Math.abs(SIM.cx - PT.x) <= half && Math.abs(SIM.cy - PT.y) <= half;
+    var s = { size: size, col: col, gone: gone, cx: SIM.cx, cy: SIM.cy, onPt: onPt, ok: true };
+    // 取色點在色塊上：讀到色塊的顏色；不在：讀到白色桌面（沒有顏色 = -1）
+    s.hue = onPt ? Math.round(col) : -1;
+    s.sat = onPt ? 82 : 4;
+    s.bri = onPt ? 66 : 86;
+    s.mot = Math.max(Number($('motion').value), Math.round(SIM.bump));
+    if (gone) { s.bx = 0; s.by = 0; s.bw = 0; s.bh = 0; s.found = false; }
+    else {
+      s.bx = clamp(Math.round(SIM.cx / 1.6), 0, 98);
+      s.by = clamp(Math.round((FH - SIM.cy) / 1.6), 1, 75);
+      s.bw = clamp(Math.round(size / 1.6), 1, 98);
+      s.bh = clamp(Math.round(size / 1.6), 1, 73);
+      s.found = true;
+    }
+    s.area = s.bw * s.bh;
+    s.all = [s.hue, s.sat, s.bri, s.mot, s.bx, s.by, s.bw, s.bh];
+    return s;
+  }
+  function state() {
+    var unplug = $('unplug').checked;
+    if (!unplug) { frozen = rawState(); warned = false; return frozen; }
+    var s = frozen ? JSON.parse(JSON.stringify(frozen)) : null;
+    // 從來沒讀到過：函式庫每個值都回傳 None
+    if (!s) return { none: true, ok: false, hue: null, sat: null, bri: null, mot: null, bx: null, by: null, bw: null, bh: null, area: null, found: null, all: null };
+    s.ok = false; return s;
+  }
+  function drawField(st) {
+    var svg = $('field'), W = 460, H = 330;
+    var ir = getComputedStyle(document.documentElement).getPropertyValue('--ir').trim();
+    var live = rawState(), fx = function (x) { return OX + x * K; }, fy = function (y) { return OY + y * K; };
+    var h = '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#f7f7f2"/>';
+    h += '<rect x="' + OX + '" y="' + OY + '" width="' + FW * K + '" height="' + FH * K + '" fill="#e8e4da" stroke="#55605d" stroke-width="2"/>';
+    // 中線 X = 50
+    h += '<line x1="' + fx(80) + '" y1="' + fy(10) + '" x2="' + fx(80) + '" y2="' + fy(FH) + '" stroke="#9aa3a0" stroke-dasharray="6 6"/>';
+    h += '<text x="' + (fx(80) + 6) + '" y="' + (fy(FH) - 8) + '" font-size="12" fill="#5b6b67">中間 X 50</text>';
+    // 色塊（樂高積木的樣子）
+    if (!live.gone) {
+      var half = live.size / 2, x0 = fx(live.cx - half), y0 = fy(live.cy - half), side = live.size * K;
+      var fill = 'hsl(' + Math.round(live.col * 3.6) + ', 75%, 50%)';
+      h += '<rect x="' + x0 + '" y="' + y0 + '" width="' + side + '" height="' + side + '" rx="6" fill="' + fill + '" stroke="rgba(0,0,0,0.35)" stroke-width="2"/>';
+      [0.3, 0.7].forEach(function (a) { [0.3, 0.7].forEach(function (b) {
+        h += '<circle cx="' + (x0 + side * a) + '" cy="' + (y0 + side * b) + '" r="' + Math.max(2, side * 0.11) + '" fill="' + fill + '" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>';
+      }); });
+      // 綠框 = 感應器追到的色塊（拔掉感應器時就沒有框）
+      if (st.ok) {
+        h += '<rect x="' + (x0 - 5) + '" y="' + (y0 - 5) + '" width="' + (side + 10) + '" height="' + (side + 10) + '" fill="none" stroke="#19a974" stroke-width="3"/>';
+        var ly = y0 - 10 < OY + 40 ? y0 + side + 22 : y0 - 10;
+        h += '<text x="' + (x0 - 4) + '" y="' + ly + '" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#0b6b47">X ' + st.bx + '  Y ' + st.by + '</text>';
+      }
+    }
+    // 取色點（十字）
+    var px = fx(PT.x), pyy = fy(PT.y);
+    h += '<g stroke-linecap="round"><line x1="' + (px - 13) + '" y1="' + pyy + '" x2="' + (px + 13) + '" y2="' + pyy + '" stroke="#fff" stroke-width="6"/><line x1="' + px + '" y1="' + (pyy - 13) + '" x2="' + px + '" y2="' + (pyy + 13) + '" stroke="#fff" stroke-width="6"/>';
+    h += '<line x1="' + (px - 12) + '" y1="' + pyy + '" x2="' + (px + 12) + '" y2="' + pyy + '" stroke="#111" stroke-width="2.5"/><line x1="' + px + '" y1="' + (pyy - 12) + '" x2="' + px + '" y2="' + (pyy + 12) + '" stroke="#111" stroke-width="2.5"/></g>';
+    h += '<text x="' + (px + 16) + '" y="' + (pyy - 14) + '" font-size="12" fill="#111" stroke="#fff" stroke-width="3" paint-order="stroke">取色點</text>';
+    // 上方：感應器讀到的值（拔掉時停在上一次）
+    var q = function (v) { return v === null || v === undefined ? '?' : v; };
+    h += '<rect x="' + OX + '" y="' + OY + '" width="' + FW * K + '" height="28" fill="#1b2422" opacity="0.88"/>';
+    h += '<text x="' + (OX + 10) + '" y="' + (OY + 19) + '" font-family="JetBrains Mono, monospace" font-size="13" fill="#e3ece9">色相 ' + q(st.hue) + '  X ' + q(st.bx) + '  Y ' + q(st.by) + '  寬 ' + q(st.bw) + '  高 ' + q(st.bh) + '  動態 ' + q(st.mot) + '</text>';
+    h += '<text x="' + (OX + 8) + '" y="' + (OY + 48) + '" font-size="12" fill="#3d4a47">上 Y 75</text>';
+    h += '<text x="' + (OX + 8) + '" y="' + (fy(FH) - 8) + '" font-size="12" fill="#3d4a47">下 Y 1</text>';
+    h += '<text x="' + OX + '" y="' + (H - 4) + '" font-size="13" fill="#3d4a47">← 左 X 0</text><text x="' + (OX + FW * K) + '" y="' + (H - 4) + '" text-anchor="end" font-size="13" fill="#3d4a47">X 98 右 →</text>';
+    if ($('unplug').checked) h += '<text x="' + (W / 2) + '" y="' + (fy(FH / 2) + 50) + '" text-anchor="middle" font-size="16" font-weight="700" fill="' + ir + '" stroke="#fff" stroke-width="4" paint-order="stroke">感應器拔掉了：數值停在上一次</text>';
+    svg.innerHTML = h;
+    $('huename').textContent = Number($('hue').value) + '，' + hueName(Number($('hue').value));
+  }
+  // 拖動色塊：滑鼠、手指或方向鍵；移動越快，動態值越大
+  function moveTo(p) {
+    var dx = p.x - SIM.cx, dy = p.y - SIM.cy;
+    SIM.bump = Math.min(100, SIM.bump + Math.sqrt(dx * dx + dy * dy) * 0.8);
+    SIM.cx = p.x; SIM.cy = p.y;
+    drawField(state()); updateCardOutputs();
+  }
+  function toCam(e) {
+    var r = $('field').getBoundingClientRect();
+    if (!r.width || !r.height) return { x: SIM.cx, y: SIM.cy };
+    return { x: ((e.clientX - r.left) / r.width * 460 - OX) / K, y: ((e.clientY - r.top) / r.height * 330 - OY) / K };
+  }
+  var dragging = false, fieldEl = $('field');
+  fieldEl.style.touchAction = 'none'; fieldEl.style.cursor = 'grab';
+  fieldEl.addEventListener('pointerdown', function (e) {
+    if ($('gone').checked) return;
+    dragging = true; try { fieldEl.setPointerCapture(e.pointerId); } catch (err) { /* 舊瀏覽器 */ }
+    moveTo(toCam(e)); e.preventDefault();
+  });
+  fieldEl.addEventListener('pointermove', function (e) { if (dragging) moveTo(toCam(e)); });
+  ['pointerup', 'pointercancel'].forEach(function (ev) { fieldEl.addEventListener(ev, function () { dragging = false; }); });
+  fieldEl.addEventListener('keydown', function (e) {
+    var k = { ArrowLeft: [-4, 0], ArrowRight: [4, 0], ArrowUp: [0, -4], ArrowDown: [0, 4] }[e.key];
+    if (!k || $('gone').checked) return;
+    e.preventDefault(); moveTo({ x: SIM.cx + k[0], y: SIM.cy + k[1] });
+  });
+
+
+  // 小幫手的 update()：顏色、反射光各 1 byte，原始紅綠藍各拆成 2 byte（跟正本一行一行對）
+  function appBytes(st) {
+    var a = appRead(st), b = [a.c & 255, a.r & 255];
+    for (var i = 0; i < 3; i++) { var x = a.rgb[i] & 0xFFFF; b.push(x & 255, x >> 8); }
+    return b;
+  }
+  var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; });
+  function runOut(f, st) {
+    try { return f.out(view(appBytes(st))); } catch (e) { if (e instanceof PyErr) return e.message; throw e; }
+  }
+  function bodyOf(f, name) { return f.body.map(function (b) { return b.replace(/\{n\}/g, name); }); }
+
+  // ───── 主程式組裝 ─────
+  function programLines(step) {
+    var f = BY[S.fn], L = [], n = S.name;
+    HELPER.forEach(function (t) { L.push({ t: t, tag: 1, helper: true }); });
+    L.push({ t: 'from hub import port', tag: 1 });
+    L.push({ t: 'import runloop', tag: 1 });
+    if (step >= 2) {
+      L.push({ t: '' });
+      L.push({ t: n + ' = ' + CFG.cls + '(' + portRef() + ')    # ' + '接在 ' + CFG.ports[S.port] + ' 孔', tag: 2 });
+    }
+    if (step >= 3) {
+      L.push({ t: '' });
+      L.push({ t: '' });
+      L.push({ t: 'async def main():', tag: 3 });
+      L.push({ t: '    while True:', tag: 3 });
+      L.push({ t: '        ' + n + '.update()            # ' + '每圈先讀一次', tag: 3 });
+      bodyOf(f, n).forEach(function (b) { L.push({ t: '        ' + b, tag: 3 }); });
+      L.push({ t: '        await runloop.sleep_ms(100)', tag: 3 });
+      L.push({ t: '' });
+      L.push({ t: 'runloop.run(main())', tag: 3 });
+    }
+    return L;
+  }
+  var lastKeys = '';
+  function drawMain() {
+    var L = programLines(S.viewStep);
+    L.forEach(function (l, k) { l.no = k + 1; l.hl = l.tag === S.viewStep; });
+    if (!S.showHelper) {
+      var nH = L.filter(function (l) { return l.helper; }).length, seen = false, F = [];
+      L.forEach(function (l) {
+        if (!l.helper) { F.push(l); return; }
+        if (seen) return;
+        seen = true; F.push(l);
+        F.push({ t: '# ' + '⋯ 還有 ' + (nH - 1) + ' 行（按「顯示小幫手」看）', no: '⋮', tag: l.tag, tagHide: true, hl: l.hl, helper: true });
+      });
+      L = F;
+    }
+    var prev = lastKeys ? lastKeys.split('\n') : [];
+    L.forEach(function (l) { if (l.t && lastKeys && prev.indexOf(l.t) < 0) l.isNew = true; });
+    lastKeys = L.map(function (l) { return l.t; }).join('\n');
+    render($('maincode'), L);
+    var tips = {
+      1: '第 1 步：讀值小幫手整段貼在最上面（這裡只露第一行，按「顯示小幫手」展開）；接著匯入官方 App 的孔位 port 和 runloop。',
+      2: '第 2 步：建立物件。等號左邊的 ' + S.name + ' 是你取的名字，右邊告訴小幫手感應器接在 ' + portRef() + '。',
+      3: '第 3 步：程式放在 async def main() 裡，最後 runloop.run(main()) 讓它開始跑。while True 一直重複：每圈先 ' + S.name + '.update()，再用「' + S.name + '.功能()」；await runloop.sleep_ms(100) 每 0.1 秒一圈。'
+    };
+    var b = $('bubble'); b.querySelector('i').textContent = S.viewStep; b.querySelector('span').textContent = tips[S.viewStep];
+    drawMinis();
+  }
+  var miniPrev = {};
+  function drawMinis() {
+    var full = programLines(3);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('mini' + k); if (!el) return;
+      var lines = [], nh = 0, total = 0, h0 = 0, nums = [];
+      full.forEach(function (l) { if (l.tag === k && l.helper) total++; });
+      full.forEach(function (l, i) {
+        if (l.tag !== k) return;
+        if (l.helper) {
+          nh++; if (!h0) h0 = i + 1;
+          if (nh <= 2) lines.push({ t: l.t, no: i + 1 });
+          else if (nh === 3) lines.push({ t: '# ' + '⋯ 小幫手共 ' + total + ' 行，按右邊「顯示小幫手」看全部', no: '⋮' });
+          return;
+        }
+        nums.push(i + 1); lines.push({ t: l.t, no: i + 1 });
+      });
+      if (!lines.length) { el.innerHTML = ''; return; }
+      var a = nums[0], z = nums[nums.length - 1];
+      var range = a === z ? '第 ' + a + ' 行' : '第 ' + a + '～' + z + ' 行';
+      if (h0) range += '，和第 ' + h0 + ' 行起的小幫手';
+      var txt = lines.map(function (l) { return l.no + l.t; }).join('\n');
+      el.innerHTML = '<span>' + '這一步寫的程式（' + range + '）' + '</span><pre class="code"></pre>';
+      render(el.querySelector('pre'), lines, { noTag: true });
+      if (miniPrev[k] !== undefined && miniPrev[k] !== txt) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      miniPrev[k] = txt;
+    });
+  }
+
+  // ───── 步驟 ─────
+  function setStep(n) {
+    S.step = Math.max(S.step, n);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    S.viewStep = n;
+    drawMain();
+    $('next2').disabled = !validName();
+  }
+  var RESERVED = ['port', 'runloop', 'main', 'print', 'color_sensor', 'hub', 'range', 'min', 'max', 'int', 'str', 'list', 'abs', 'len', 'motor_pair', 'light_matrix', 'sound', 'device', CFG.cls].concat(CFG.reserved);
+  function validName() {
+    var v = $('varname').value.trim(), bad = '';
+    if (!v) bad = '名字不能空白。';
+    else if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(v)) bad = '只能用英文字母、數字、底線，而且第一個字不能是數字。';
+    else if (isKw(v) || RESERVED.indexOf(v) >= 0) bad = '「' + v + '」已經被 Python 或程式用掉了，換一個名字。';
+    $('nameerr').hidden = !bad; $('nameerr').textContent = bad;
+    if (!bad) S.name = v;
+    return !bad;
+  }
+  function drawPorts() {
+    var box = $('ports'); box.innerHTML = '';
+    CFG.ports.forEach(function (l, i) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = l;
+      b.setAttribute('aria-pressed', String(S.port === i)); b.setAttribute('aria-label', '' + l + ' 孔');
+      b.addEventListener('click', function () { S.port = i; drawPorts(); drawMain(); });
+      box.appendChild(b);
+    });
+  }
+
+  // ───── 功能選擇器（第 3 步）與範例卡 ─────
+  function drawPicker() {
+    var g = {}, order = []; FNS.forEach(function (f) { if (!g[f.grp]) { g[f.grp] = []; order.push(f.grp); } g[f.grp].push(f); });
+    var box = $('picker'); box.innerHTML = '';
+    order.forEach(function (k) {
+      var w = document.createElement('div'); w.className = 'fgroup'; w.innerHTML = '<span>' + esc(k) + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      g[k].forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = f.label; b.title = f.name;
+        b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      w.appendChild(chips); box.appendChild(w);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + esc(f.label) + '　' + f.name + '</b><span>' + f.what + '</span><span class="small">' + '回傳：' + f.ret + '</span>';
+    $('nm1').textContent = S.name;
+  }
+  function pick(id) { S.fn = id; setStep(3); drawPicker(); tick(true); }
+  function cardLines(f) {
+    var body = bodyOf(f, CFG.name);
+    return ['while True:', '    ' + CFG.name + '.update()'].concat(body.map(function (b) { return '    ' + b; }), ['    await runloop.sleep_ms(100)']);
+  }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    FNS.forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      c.innerHTML = '<div class="card-head"><h3>' + esc(f.label) + '<span class="zh">' + f.name + '</span></h3></div>' +
+        '<p>' + f.what + '</p>' +
+        '<dl class="meta"><dt>' + '回傳' + '</dt><dd>' + f.ret + '</dd><dt>' + '範例' + '</dt><dd>' + '放在 async def main() 的 while True 迴圈裡' + '</dd></dl>' +
+        '<pre class="code"></pre>' +
+        '<p class="out">' + '模擬畫面上會印出：' + '<code></code></p>' +
+        '<button type="button" class="try">' + '試試看' + '</button>';
+      render(c.querySelector('pre'), cardLines(f).map(function (t) { return { t: t }; }), { noTag: true });
+      c.querySelector('.try').addEventListener('click', function () {
+        pick(f.id);
+        var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      });
+      box.appendChild(c);
+    });
+    updateCardOutputs();
+  }
+  function updateCardOutputs() {
+    var st = state();
+    FNS.forEach(function (f) { var el = document.querySelector('#fn-' + f.id + ' .out code'); if (el) el.textContent = runOut(f, st); });
+  }
+
+  // ───── 完整範例（@HELPER＝第 1 步的小幫手，按「複製」才帶上）─────
+  var EX = CFG.ex;
+  function exFull(id) { var out = []; EX[id].forEach(function (t) { if (t === '@HELPER') out = out.concat(HELPER); else out.push(t); }); return out; }
+  function drawExamples() {
+    Object.keys(EX).forEach(function (k) {
+      var shown = EX[k].map(function (t) { return t === '@HELPER' ? '# ' + '……第 1 步的小幫手貼在這裡（按「複製」會自動帶上）……' : t; });
+      render($('ex-' + k), shown.map(function (t) { return { t: t }; }), { noTag: true });
+    });
+  }
+
+  // ───── 輸出 ─────
+  var log = [];
+  function tick(reset) {
+    var st = state(), f = BY[S.fn];
+    drawField(st);
+    updateCardOutputs();
+    if (reset) log = [];
+    if (S.step < 3) log = [{ c: '', t: '（做完第 3 步，這裡會出現程式印出的內容）' }];
+    else {
+      var line = runOut(f, st);
+      log.push({ c: /Error/.test(line) ? 'errline' : '', t: line });
+    }
+    while (log.length > 7) log.shift();
+    $('console').innerHTML = log.map(function (l) { return '<span class="' + l.c + '">' + esc(l.t) + '</span>'; }).join('\n');
+  }
+
+  // ───── 事件 ─────
+  $('next1').addEventListener('click', function () { setStep(2); $('varname').focus(); });
+  $('next2').addEventListener('click', function () { if (validName()) { setStep(3); drawPicker(); tick(true); } });
+  $('varname').addEventListener('input', function () { var ok = validName(); $('next2').disabled = !ok; if (ok) { drawMain(); drawPicker(); } });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) {
+    $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } });
+  });
+  $('helperbtn').addEventListener('click', function (e) {
+    S.showHelper = !S.showHelper;
+    e.currentTarget.textContent = S.showHelper ? '收起小幫手' : '顯示小幫手';
+    e.currentTarget.setAttribute('aria-pressed', String(S.showHelper));
+    drawMain();
+  });
+  $('copymain').addEventListener('click', function (e) { copyText(plain(programLines(S.viewStep)), e.currentTarget); });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { copyText(exFull(b.getAttribute('data-copy')).join('\n') + '\n', b); });
+  });
+  ['size', 'hue', 'motion', 'gone'].forEach(function (id) { $(id).addEventListener('input', function () { tick(false); }); });
+
+  // ───── 開始 ─────
+  drawPorts(); drawPicker(); drawCards(); drawExamples(); drawMain(); tick(true);
+  setInterval(function () { if (S.step >= 3) tick(false); }, 600);
+  // 自我檢查用（jsdom）：不影響頁面
+  window.__ap = { S: S, FNS: FNS, BY: BY, pick: pick, tick: tick, state: state, runOut: runOut, appBytes: appBytes, programText: function () { return plain(programLines(3)); }, exFull: exFull, EX: EX, setStep: setStep };
+})();
+
+</script>
+<script>
+(function () {
+  var side = document.querySelector('.side'); if (!side) return;
+  var mq = window.matchMedia('(max-width: 900px)');
+  var home = side.parentNode, homeNext = side.nextSibling;
+  var con = document.getElementById('console'), conP = con && con.closest('.panel');
+  if (conP && conP.parentNode !== side) conP = null;
+  var last = null, ready = false;
+  var STOP = '.step-body, .cards, .ref, .steps, .main, .wrap, body';
+  function anchorOf(el) { var a = el; while (a && a.parentElement && !a.parentElement.matches(STOP)) a = a.parentElement; return a && a.parentElement ? a : null; }
+  function flash(el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  // 把 box 搬到 a 那一塊的後面；a 在畫面上的位置維持不動（點下去時就記住 a：頁面常在點擊後重畫按鈕，按鈕本身會被換掉）
+  function moveAfter(box, a) {
+    if (!a || !a.isConnected || a === box || a.contains(box)) return false;
+    if (a.nextElementSibling === box) return true;
+    var y = a.getBoundingClientRect().top;
+    a.parentNode.insertBefore(box, a.nextSibling); box.classList.add('follow');
+    var d = a.getBoundingClientRect().top - y; if (d) window.scrollBy(0, d);
+    return true;
+  }
+  function inPanel(el) { return side.contains(el) || (conP && conP.contains(el)); }
+  function placeSide(a, scroll) {
+    if (!mq.matches || !a) return;
+    if (conP && conP.parentNode !== side) { conP.classList.remove('follow'); side.appendChild(conP); }
+    if (!moveAfter(side, a)) return;
+    if (scroll) { var r = side.getBoundingClientRect(); if (r.top > window.innerHeight * 0.7) window.scrollBy({ top: r.top - window.innerHeight * 0.3, behavior: 'smooth' }); }
+  }
+  function placeConsole(el) {
+    if (!mq.matches || !conP || inPanel(el)) return;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在「正在操作的那一排」正下方（排＝控制區的直接子元素），
+    // 畫面、那一排、輸出同一屏；控制區很長或那一排在最下面（例如拔線勾選）都不會跑出畫面
+    var sim = el.closest('.sim'), ctrl = null, row = null;
+    if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (ctrl && ctrl !== el) for (var j = 0; j < ctrl.children.length; j++) if (ctrl.children[j].contains(el)) row = ctrl.children[j];
+    if (sim && ctrl) {
+      var box = row ? ctrl : sim, after = row || null;
+      if (after ? after.nextElementSibling === conP : conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var y = el.getBoundingClientRect().top;
+      if (after) box.insertBefore(conP, after.nextSibling); else sim.insertBefore(conP, ctrl);
+      conP.classList.add('follow');
+      var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
+      return;
+    }
+    var a = anchorOf(el); if (a && a.nextElementSibling === side) return; // 程式那格已經緊接在下面，輸出就在它裡面
+    moveAfter(conP, a);
+  }
+  function reset() {
+    if (mq.matches) { var b = document.querySelector('#step1 .step-body button') || document.querySelector('#step1 button'); if (b) placeSide(anchorOf(b), false); return; }
+    if (conP) { conP.classList.remove('follow'); side.appendChild(conP); }
+    side.classList.remove('follow'); home.insertBefore(side, homeNext);
+  }
+  function remember(e) { if (!inPanel(e.target)) last = anchorOf(e.target); }
+  document.addEventListener('pointerdown', remember, true);
+  document.addEventListener('focusin', remember, true);
+  var mo = new MutationObserver(function () { if (ready && mq.matches) { placeSide(last, true); flash(side); } });
+  ['maincode', 'mainblocks'].forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true }); });
+  function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
+  document.addEventListener('input', sim, true);
+  document.addEventListener('change', sim, true);
+  // 模擬器裡的按鈕（掌控者按鍵、色點調色盤…）也算在操作模擬器
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.sim button'); if (b) placeConsole(b); }, true);
+  reset(); setTimeout(function () { ready = true; }, 800);
+  if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
+})();
+</script>
+</body>
+</html>

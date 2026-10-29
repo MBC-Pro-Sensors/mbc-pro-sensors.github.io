@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="樂高官方 SPIKE App（教育版）也能寫 Python，不用換韌體。循行者在 App 裡是一顆顏色感應器，App 不能匯入自己的檔案，所以照這個順序寫：先把讀值小幫手貼在最上面，再建立物件、幫循行者取名字，最後每圈 update() 一次、用名字呼叫功能。左邊一步一步做，右邊的程式會跟著長出來；拖動模擬感應器下面的">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/line8/spike-app-python.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/line8/spike-app-python.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/line8/spike-app-python.html">
+<title>循行者 8 路官方 SPIKE App Python 教學 | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* 版面：左邊是照順序走的教學步驟，右邊固定「你的程式＋模擬感應器」；下面是 16 個功能的範例卡 */
+:root {
+  --bg: #f3f6f5;          /* 場地墊的淺色 */
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;      /* MBC 青綠 */
+  --accent-soft: #dff1ef;
+  --tape: #121212;        /* 黑膠帶線 */
+  --ir: #e04a3b;          /* 感應器紅外燈 */
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* 頁首 */
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+/* 主區：左教學、右程式 */
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+/* 右邊：程式＋模擬 */
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+/* 右邊固定區只放程式和輸出，高度不超過一個畫面，往下捲時一直看得到 */
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+/* 每一步卡片裡的「這一步寫的程式」：設定一改就更新並閃一下 */
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+/* 功能範例卡 */
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+/* 完整範例與注意事項 */
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+.conv { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+.conv th, .conv td { border: 1px solid var(--rule); padding: 6px 8px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.conv th { background: var(--accent-soft); }
+.tblwrap { overflow-x: auto; max-width: 100%; }
+.cant { font-size: 0.92rem; }
+.pend { display: inline-block; background: var(--warn-soft, #fff3d6); color: var(--warn); border-radius: 999px; padding: 1px 10px; font-size: 0.85rem; font-weight: 700; margin-left: 6px; vertical-align: middle; }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+[hidden] { display: none !important; }  /* 頁面用 hidden 切換「積木／程式」，.ws{display:grid} 會蓋掉它 */
+.learn-nav .tabs .tl { color: var(--muted, #666); font-size: 0.8rem; align-self: center; }
+.learn-nav .tabs .tsep { flex-basis: 100%; height: 0; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
+   排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
+@media (max-width: 900px) {
+  .learn-nav { position: static; width: 100vw; margin: -24px 0 14px calc(50% - 50vw); }
+  .learn-nav .in { padding: 6px 12px 8px; gap: 4px 14px; font-size: 0.85rem; }
+  .learn-nav .in > a { min-height: 36px; display: inline-flex; align-items: center; }
+  .learn-nav .tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .learn-nav .tabs::-webkit-scrollbar { display: none; }
+  .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
+  body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
+  .panel.follow { margin: 12px 0 16px; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow, .ctrl > .panel.follow { grid-column: 1 / -1; }
+  .flash { animation: followFlash 1.2s ease-out; }
+  @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
+  /* 點選目標放大：選項、勾選框、拉桿 */
+  .wrap > *, .main > *, .steps > *, .step-body > * { min-width: 0; }
+  label:has(input[type=radio]), label:has(input[type=checkbox]) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  button.copy, .viewtabs button { min-height: 36px; }
+  label:has(select) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  label select { min-height: 36px; }
+  input[type=radio], input[type=checkbox] { width: 20px; height: 20px; flex: none; }
+  input[type=range] { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/learn/">全部互動教學</a><a class="back" href="/sensors/line8/spike/">← 循行者 8 路 SPIKE 說明</a><a class="lang" href="/en/learn/line8/spike-app-python.html" hreflang="en">EN</a><div class="tabs"><span class="tl">主機</span><a href="/learn/line8/micropython.html" aria-current="page">SPIKE</a><a href="/learn/line8/ev3-pybricks.html">EV3</a><a href="/learn/line8/arduino.html">Arduino</a><a href="/learn/line8/mblock.html">mBlock</a><a href="/learn/line8/matrix.html">MATRIX</a><a href="/learn/line8/makecode.html">micro:bit</a><span class="tsep"></span><a href="/learn/line8/micropython.html">MicroPython（Pybricks）</a><a href="/learn/line8/pybricks-blocks.html">Pybricks 積木</a><a href="/learn/line8/pybricks-builtin.html">Pybricks 內建積木</a><a href="/learn/line8/mbc-blocks.html">MBC 積木網站</a><a href="/learn/line8/spike-app.html">樂高官方 SPIKE App</a><a href="/learn/line8/spike-app-python.html" aria-current="page">官方 App Python</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC 循行者 8 路 × 樂高官方 SPIKE App（Python）</span>
+    <h1>三個步驟用官方 SPIKE App 的 Python 讀循行者</h1>
+    <p class="lead">樂高官方 SPIKE App（教育版）也能寫 Python，不用換韌體。循行者在 App 裡是一顆<b>顏色感應器</b>，App 不能匯入自己的檔案，所以照這個順序寫：先<b>把讀值小幫手貼在最上面</b>，再<b>建立物件、幫循行者取名字</b>，最後每圈 <code>update()</code> 一次、用名字<b>呼叫功能</b>。左邊一步一步做，右邊的程式會跟著長出來；拖動模擬感應器下面的黑線，就能看到程式會印出什麼。</p>
+  </header>
+
+  <section class="main" aria-label="教學">
+    <div class="steps">
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>貼上讀值小幫手</h2></div>
+        <div class="step-body">
+          <p class="why">官方 App 的 Python 專案只有一個檔案，<b>不能匯入</b>自己的 .py，所以把「讀值小幫手」<b>整段貼在程式最上面</b>（小幫手開頭也寫了：照抄就好、不用改）。沒有它，後面寫的 <code>Line8App</code> 主機看不懂，會出現 <code>NameError</code>。</p>
+          <ol class="howto">
+            <li>打開樂高官方 SPIKE App（教育版，SPIKE Prime 黃色主機），新增專案，選「<b>Python</b>」。</li>
+            <li>把右邊標 ① 的程式貼到最上面（小幫手只露第一行，按「顯示小幫手」看全部；「複製程式」一定是完整的）。小幫手也可以單獨下載：<a href="/examples/line8/spike_app/MBC_line8_App_helper.py" download>MBC_line8_App_helper.py</a>（用記事本打開、全選複製）。</li>
+            <li>循行者插主機 <b>A～F 任一孔</b>，由主機供電；App 會把它當成顏色感應器，不用另外裝東西。</li>
+          </ol>
+          <p class="small">小幫手讀的是 App 的三個顏色感應器讀值，換算跟<a href="/learn/line8/spike-app.html">官方 App 積木頁</a>一樣：</p>
+          <div class="tblwrap"><table class="conv">
+            <tr><th scope="col">App 的讀值</th><th scope="col">放的是</th><th scope="col">小幫手的功能</th></tr>
+            <tr><td><b>反射光</b> <code>reflection()</code></td><td>線位置（粗）＋8</td><td><code>pos8()</code>：減 8 → −8～+8</td></tr>
+            <tr><td><b>原始紅</b> <code>rgbi()[0]</code></td><td>線位置（細）＋100</td><td><code>pos100()</code>：減 100 → −100～+100</td></tr>
+            <tr><td><b>顏色</b> <code>color()</code></td><td>線寬（幾路踩在線上）</td><td><code>width()</code>：直接用 → 0～8，0＝看不到線</td></tr>
+          </table></div>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">貼好了，下一步</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>建立物件：幫循行者取名字</h2></div>
+        <div class="step-body">
+          <p class="why">一台車可能接好幾個感應器，所以要「建立一個物件」：告訴小幫手循行者接在哪個孔（<code>port.C</code> 來自 <code>from hub import port</code>），並幫它取個名字。之後每次讀值都叫這個名字。</p>
+          <div class="row">
+            <span class="small">循行者接在哪個孔？</span>
+            <div class="ports" id="ports" role="group" aria-label="孔位"></div>
+          </div>
+          <label class="f" for="varname"><span>幫它取名字（英文字母開頭，可以用數字和底線）</span>
+            <input type="text" id="varname" value="line8" autocomplete="off" spellcheck="false">
+          </label>
+          <p class="err" id="nameerr" hidden></p>
+          <p class="small">官方 App 的孔位寫 <code>port.A</code>～<code>port.F</code>，不是 Pybricks 的 <code>Port.C</code>，也不是數字。</p>
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2" disabled>建立好了，下一步</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>每圈 update()，再使用功能</h2></div>
+        <div class="step-body">
+          <p class="why">官方 App 的程式放在 <code>async def main():</code> 裡，最後 <code>runloop.run(main())</code> 讓它開始跑；等待用 <code>await runloop.sleep_ms(100)</code>（不是 Pybricks 的 <code>wait()</code>）。每圈先 <code><span id="nm1">line8</span>.update()</code> 讀一次，再用「名字＋小數點＋功能」。點一個功能，程式和輸出會換成它的範例。</p>
+          <div id="picker" class="ref"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+          <div class="sim-box">
+        <div class="sim-title">模擬感應器（從車子後面往前看）：拖動黑線，看右邊的輸出怎麼變</div>
+        <div class="sim">
+          <svg id="field" viewBox="0 0 460 190" role="img" aria-label="場地與感應器示意"></svg>
+          <div class="ctrl">
+            <label class="f" for="pos">黑線的位置（往左拖 = 線在左邊）
+              <input autocomplete="off" type="range" id="pos" min="-100" max="100" value="-30">
+            </label>
+            <div class="toggles">
+              <label><input autocomplete="off" type="radio" name="thick" id="t1" value="0.9"> 細線</label>
+              <label><input autocomplete="off" type="radio" name="thick" id="t2" value="1.8" checked> 一般</label>
+              <label><input autocomplete="off" type="radio" name="thick" id="t3" value="2.8"> 粗線</label>
+              <label><input autocomplete="off" type="checkbox" id="fork"> 岔路（看到兩段線）</label>
+              <label><input autocomplete="off" type="checkbox" id="cross"> 十字路口（整排都踩到）</label>
+              <label><input autocomplete="off" type="checkbox" id="noline"> 沒有線（全白）</label>
+              <label><input autocomplete="off" type="checkbox" id="unplug"> 拔掉感應器</label>
+            </div>
+          </div>
+          <p class="note">模擬畫面是示意：數值算法簡化過，實際感應器可能差一兩格。光值 0 = 黑、100 = 白；紅框 = 那一路判斷在線上（光值低於 50）。</p>
+        </div>
+          </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">每個功能的範例</h2>
+        <p class="ref-intro">每個功能都有一段可以直接放進 <code>async def main():</code> 的範例（名字 line8）。按「試試看」會切到第 3 步，右邊的程式和輸出會換成這個範例。</p>
+        <div class="cards" id="cards"></div>
+        <p class="cant"><b>小幫手讀不到的：</b>官方 App 只讀感應器的「組合資料」（模式 0）。<code>線段數</code>、<code>踩到哪幾路</code>、<code>位元圖</code>、<code>感應器身分</code>、<code>韌體版本</code>、<code>有沒有接好</code> 都不在裡面；<code>每一路的光值</code>雖然壓成 4 bit 放在原始綠、藍，但每一路的排列順序還沒上機確認，小幫手不拆。要用這些功能，請改用 <a href="/learn/line8/micropython.html">Pybricks MicroPython</a>（主機要換 Pybricks 韌體）或 <a href="/learn/line8/pybricks-blocks.html">Pybricks 積木</a>。</p>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="你的程式與輸出">
+      <div class="panel">
+        <div class="panel-head"><span>你的程式（SPIKE App Python）</span><span class="row"><button type="button" class="copy" id="helperbtn" aria-pressed="false">顯示小幫手</button><button type="button" class="copy" id="copymain">複製程式</button></span></div>
+        <pre class="code" id="maincode" aria-live="polite"></pre>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>App 主控台的輸出（每 0.6 秒更新）</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="ref" aria-labelledby="fullh">
+    <h2 id="fullh">完整範例</h2>
+    <p class="ref-intro">按「複製」拿到完整程式（小幫手已經接好），貼進 App 的 Python 專案就能跑。也可以下載：<a href="/examples/line8/spike_app/ex01_line_follow.py" download>ex01_line_follow.py</a>、<a href="/examples/line8/spike_app/ex02_which_side.py" download>ex02_which_side.py</a>。</p>
+    <div class="full">
+      <div class="panel">
+        <div class="panel-head"><span>循線＋十字路口停車（左輪 E、右輪 F）</span><button type="button" class="copy" data-copy="ex01">複製</button></div>
+        <pre class="code" id="ex-ex01"></pre>
+        <p class="bubble"><i>!</i><span>只改「👉 可以改」那幾行。車子左右甩：把 <code>KP</code> 調小；轉不過彎：調大。看不到線時細位置停在 ±100，車子會自己轉回去找線。</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>燈陣顯示線在左還是右</span><button type="button" class="copy" data-copy="ex02">複製</button></div>
+        <pre class="code" id="ex-ex02"></pre>
+        <p class="bubble"><i>!</i><span>主機燈陣顯示 L／R／|，看不到線顯示 ? 並嗶一聲。不用馬達，拿著車子在線上左右移動就能試。</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">使用注意</h2>
+    <ol>
+      <li><b>每圈先 <code>update()</code>。</b>小幫手的功能都是拆「最近一次 <code>update()</code> 讀到的值」；沒 <code>update()</code> 就一直是舊的（一開始全是 0，<code>pos8()</code> 會是 −8）。</li>
+      <li><b>這是官方 App 3 的寫法，跟 Pybricks 不一樣。</b>孔位是 <code>from hub import port</code> 的 <code>port.C</code>（不是 <code>Port.C</code> 或數字）、等待是 <code>await runloop.sleep_ms()</code>（不是 <code>wait()</code>），Pybricks 的程式不能直接貼過來。家用版（Robot Inventor）App 的 Python 讀法還沒驗證，這頁是教育版的。</li>
+      <li><b>丟線時會記住最後一側：</b>線完全離開感應器時，<code>pos8()</code> 是 −8 或 +8、<code>pos100()</code> 是 −100 或 +100，循線程式不用另外寫找線。要判斷「真的看不到線」用 <code>width() == 0</code>。</li>
+      <li><b>十字路口：</b>線寬 6 以上（整排都踩到）。</li>
+      <li><b>方向：</b>站在車後面往前看，線在左邊是負數、右邊是正數；第 1 路在最左邊。這頁的讀法依感應器韌體推算，跟官方 App 積木頁一樣還沒在每一版 App 上機確認；數字怪怪的請先改用 Pybricks，並跟我們回報。</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  var CFG = {"ports":["A","B","C","D","E","F"],"cls":"Line8App","name":"line8","helper":["# ===== 循行者 8 路 讀值小工具（樂高官方 SPIKE App 3 教育版 Python，照抄就好、不用改）=====","# ===== Pathfinder 8-Way reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====","# 循行者在 SPIKE App 裡是「顏色感應器」：顏色＝線寬、反射光＝粗位置＋8、原始紅＝細位置＋100。","# In the SPIKE App the Pathfinder is a colour sensor: colour = line width, reflection = position + 8, raw red = fine position + 100.","# 原始綠、藍放的是 8 路光值（壓成 4 bit），這個小工具不拆；要每一路的光值請改用 Pybricks。","# Raw green and blue hold the 8 channel readings (4 bits each); this helper does not split them. Use Pybricks for those.","# 站在車後往前看：線在左＝負、在右＝正 / seen from behind the robot: line on the left = negative","import color_sensor","","","class Line8App:","    def __init__(self, port_number):","        self.port = port_number","        self.b = [0] * 8                      # byte 0~7","","    def update(self):","        \"\"\"讀一次最新資料 / read once\"\"\"","        c = color_sensor.color(self.port)              # byte 0 = 線寬 / line width","        r = color_sensor.reflection(self.port)         # byte 1 = 粗位置＋8 / position + 8","        rgb = color_sensor.rgbi(self.port)             # 原始紅、綠、藍（各 2 byte）/ raw red, green, blue","        b = [int(c) & 255, int(r) & 255]","        for v in rgb[:3]:","            v = int(v) & 0xFFFF                        # 負數也換回 0~65535 / negatives back to 0~65535","            b += [v & 255, v >> 8]","        self.b = b","        return True","","    def _w(self, i):","        # 原始紅（i=0）、綠（1）、藍（2）的 0~65535 / raw red, green, blue word","        return self.b[2 + 2 * i] | (self.b[3 + 2 * i] << 8)","","    def pos8(self):","        \"\"\"粗位置 −8~+8，0＝正中間；看不到線時停在最後離開的那一側 / position −8~+8, 0 = centre; keeps the last side when the line is lost\"\"\"","        return self.b[1] - 8","","    def pos100(self):","        \"\"\"細位置 −100~+100，循線用這個比較順 / fine position −100~+100, smoother for line following\"\"\"","        return self._w(0) - 100","","    def width(self):","        \"\"\"線寬 0~8：幾路踩在線上，0＝看不到線 / line width 0~8: channels on the line, 0 = no line\"\"\"","        return self.b[0]","# ===== 小工具到這裡結束 / end of helper ====="],"ex":{"ex01":["# 循行者 8 路 × 樂高官方 SPIKE App（教育版 Python）範例 1：循線＋十字路口停車","# Pathfinder 8-Way × LEGO SPIKE App (Education, Python) example 1: line following + stop at a crossing","# 接線：循行者 → C 孔；左輪 E、右輪 F / Wiring: Pathfinder → port C; left wheel E, right wheel F","# 方向：站在車後往前看，線在左＝負 / standing behind the robot: line on the left = negative","# 看不到線時細位置停在 −100 或 +100，車子會自己往那一側轉回去找線 / when the line is lost, the robot turns back toward the last side","@HELPER","from hub import port, sound","import motor_pair","import runloop","","line8 = Line8App(port.C)","BASE = 250        # 👉 可以改：前進速度（度／秒）/ forward speed (deg/s)","KP = 2            # 👉 可以改：轉彎靈敏度，車子左右甩就調小 / steering gain, lower it if the robot wobbles","CROSS = 6         # 👉 可以改：線寬到這麼寬就當十字路口 / this wide = a crossing","","","async def main():","    motor_pair.pair(motor_pair.PAIR_1, port.E, port.F)","    while True:","        line8.update()","        if line8.width() >= CROSS:                # 整排都踩到：停車嗶一聲 / whole row on the line: stop and beep","            motor_pair.stop(motor_pair.PAIR_1)","            await sound.beep(880, 300, 100)","            break","        error = line8.pos100()                    # 線在左＝負 → 左輪慢 → 往左轉 / left = negative → left wheel slower","        motor_pair.move_tank(motor_pair.PAIR_1, int(BASE + KP * error), int(BASE - KP * error))","        await runloop.sleep_ms(10)","","runloop.run(main())"],"ex02":["# 循行者 8 路 × 樂高官方 SPIKE App（教育版 Python）範例 2：燈陣顯示線在左還是右，看不到線就嗶","# Pathfinder 8-Way × LEGO SPIKE App (Education, Python) example 2: show where the line is, beep when it is lost","# 接線：循行者 → C 孔 / Wiring: Pathfinder → port C","# 方向：站在車後往前看，線在左＝負 / standing behind the robot: line on the left = negative","@HELPER","from hub import port, light_matrix, sound","import runloop","","line8 = Line8App(port.C)","","","async def main():","    while True:","        line8.update()","        if line8.width() == 0:                    # 線寬 0＝看不到線 / width 0 = no line","            light_matrix.write('?')","            await sound.beep(440, 100, 50)","        elif line8.pos8() < 0:                    # 負＝線在左 / negative = line on the left","            light_matrix.write('L')","        elif line8.pos8() > 0:","            light_matrix.write('R')","        else:","            light_matrix.write('|')               # 0＝正中間 / 0 = centre","        await runloop.sleep_ms(100)","","runloop.run(main())"]},"simIds":["pos","fork","cross","noline","t1","t2","t3"],"beforeDraw":null,"U":{"copied":"已複製","copyManual":"請手動選取複製","ctorCmt":"循行者接在 @P 孔","readOnce":"每圈先讀一次","moreLines":"⋯ 還有 @N 行（按「顯示小幫手」看）","miniHelper":"⋯ 小幫手共 @N 行，按右邊「顯示小幫手」看全部","lineRange":"第 @R 行","dash":"～","plusHelper":"，和第 @H 行起的小幫手","miniHead":"這一步寫的程式（@R）","bubble1":"第 1 步：讀值小幫手整段貼在最上面（這裡只露第一行，按「顯示小幫手」展開）；接著匯入官方 App 的孔位 port 和 runloop。","bubble2":"第 2 步：建立物件。等號左邊的 @N 是你取的名字，右邊告訴小幫手循行者接在 @P。","bubble3":"第 3 步：程式放在 async def main() 裡，最後 runloop.run(main()) 讓它開始跑。while True 一直重複：每圈先 @N.update()，再用「@N.功能()」；await runloop.sleep_ms(100) 每 0.1 秒一圈。","errEmpty":"名字不能空白。","errChars":"只能用英文字母、數字、底線，而且第一個字不能是數字。","errUsed":"「@V」已經被 Python 或程式用掉了，換一個名字。","portAria":"@P 孔","ret":"回傳：","retShort":"回傳","exShort":"範例","place":"放在 async def main() 的 while True 迴圈裡","simPrints":"模擬畫面上會印出：","tryIt":"試試看","exHelper":"……第 1 步的小幫手貼在這裡（按「複製」會自動帶上）……","idle":"（做完第 3 步，這裡會出現程式印出的內容）","showHelper":"顯示小幫手","hideHelper":"收起小幫手","sep":"　"}}, U = CFG.U;
+  var S = { host: 'spike', port: 2, name: CFG.name, step: 1, viewStep: 1, fn: null, showHelper: false };
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function pr() { return Array.prototype.slice.call(arguments).join(' '); }   // 跟 Python print 一樣用空白隔開
+  function pack(st) { var p = st.pos100 + 100; return [st.width & 255, (st.pos8 + 8) & 255, p & 255, (p >> 8) & 255, 0, 0, 0, 0]; }
+  function view(b) {
+    function w(i) { return b[2 + 2 * i] | (b[3 + 2 * i] << 8); }
+    return { b: b, pos8: function () { return b[1] - 8; }, pos100: function () { return w(0) - 100; }, width: function () { return b[0]; } };
+  }
+  function simExport(st) { return { pos8: st.pos8, pos100: st.pos100, width: st.width, light: st.light }; }
+  var FNS = [
+    { id: "pos8", label: "pos8()", name: "粗位置", grp: "線在哪裡", ret: "−8～+8 的整數", what: "反射光減 8：線在第幾路附近。0＝正中間、負數＝線在左邊、正數＝線在右邊。看不到線時停在最後離開的那一側（−8 或 +8）。把黑線拖到最左或最右試試看。",
+      body: ["pos = {n}.pos8()","print(\"線的位置:\", pos)"],
+      out: function (V, st) { return pr("線的位置:", V.pos8()); } },
+    { id: "pos100", label: "pos100()", name: "細位置", grp: "線在哪裡", ret: "−100～+100 的整數", what: "原始紅減 100：跟粗位置一樣是「線在哪裡」，但分得更細，循線（P 控制）用這個車子比較順。看不到線時停在 −100 或 +100，車子會往那一側轉回去找線。",
+      body: ["error = {n}.pos100()","print(\"偏了多少:\", error)"],
+      out: function (V, st) { return pr("偏了多少:", V.pos100()); } },
+    { id: "side", label: "pos8() 分左右", name: "線在左還是右", grp: "線在哪裡", ret: "用 pos8() 判斷", what: "粗位置小於 0＝線在左邊、大於 0＝在右邊、0＝正中間（站在車後往前看）。",
+      body: ["pos = {n}.pos8()","if pos < 0:","    print(\"線在左邊\")","elif pos > 0:","    print(\"線在右邊\")","else:","    print(\"線在中間\")"],
+      out: function (V, st) { return (V.pos8() < 0 ? "線在左邊" : V.pos8() > 0 ? "線在右邊" : "線在中間"); } },
+    { id: "width", label: "width()", name: "線寬", grp: "壓到線的狀態", ret: "0～8 的整數", what: "顏色讀到的就是線寬：有幾路踩在線上。0＝一路都沒踩到，也就是「看不到線」。",
+      body: ["if {n}.width() == 0:","    print(\"看不到線！\")","else:","    print(\"踩到\", {n}.width(), \"路\")"],
+      out: function (V, st) { return (V.width() === 0 ? "看不到線！" : pr("踩到", V.width(), "路")); } },
+    { id: "has_line", label: "width() > 0", name: "有沒有看到線", grp: "壓到線的狀態", ret: "用 width() 判斷", what: "線寬大於 0 就是有看到線。看不到線時，<code>pos8()</code> 會告訴你線最後從哪一邊離開。勾「沒有線」試試看。",
+      body: ["if {n}.width() > 0:","    print(\"有看到線\")","elif {n}.pos8() < 0:","    print(\"看不到線，最後在左邊\")","else:","    print(\"看不到線，最後在右邊\")"],
+      out: function (V, st) { return (V.width() > 0 ? "有看到線" : V.pos8() < 0 ? "看不到線，最後在左邊" : "看不到線，最後在右邊"); } },
+    { id: "at_junction", label: "width() > 5", name: "十字路口", grp: "壓到線的狀態", ret: "用 width() 判斷", what: "線寬大於 5（6 路以上踩到）就是十字路口，跟官方 App 積木頁一樣。勾「十字路口」試試看。",
+      body: ["if {n}.width() > 5:","    print(\"十字路口！\")","else:","    print(\"線寬\", {n}.width(), \"不是十字路口\")"],
+      out: function (V, st) { return (V.width() > 5 ? "十字路口！" : pr("線寬", V.width(), "不是十字路口")); } }
+  ];
+  var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; });
+  S.fn = FNS[0].id;
+  var frozen = null, warned = false, everRead = false, lastSide = 0;
+  function rawState() {
+    var c = Number($('pos').value) / 100 * 4.5;
+    var w = Number(document.querySelector('input[name="thick"]:checked').value);
+    var lines = $('noline').checked ? [] : [c];
+    if ($('fork').checked && !$('noline').checked && !$('cross').checked) lines.push(c <= 0 ? c + 2.9 : c - 2.9);
+    var light = [], on = [], bits = 0;
+    for (var i = 0; i < 8; i++) {
+      var x = i - 3.5, best = 100;
+      lines.forEach(function (lc) {
+        var d = Math.abs(x - lc) - w / 2;               // 離線邊多遠（單位：一路的間距）
+        var v = Math.round(Math.max(0, Math.min(1, d + 0.3)) * 100);   // 細線落在兩路中間時，兩邊也都讀得到黑
+        if (v < best) best = v;
+      });
+      best = Math.max(3, Math.min(98, best)); if ($('cross').checked && lines.length) best = 3;          // 實際感應器很少剛好 0 或 100
+      light.push(best);
+      if (best < 50) { on.push(i + 1); bits |= (1 << i); }
+    }
+    var width = on.length, pos8 = 0, pos100 = 0;
+    if (width) {
+      // 示意：直接用模擬畫面上黑線的位置換算（越靠邊數字越大、到邊緣是 ±8／±100），不是感應器內部的算法
+      var cc = $('cross').checked ? 0 : (lines.length ? lines[0] : 0);
+      pos8 = Math.max(-8, Math.min(8, Math.round(cc * 2)));
+      pos100 = Math.max(-100, Math.min(100, Math.round(cc / 4 * 100)));
+    }
+    // 丟線：記住線最後從哪一側離開，粗位置回傳 ±8、細位置回傳 ±100（跟感應器一樣）
+    if (width) { if (pos100 > 0 || pos8 > 0) lastSide = 1; else if (pos100 < 0 || pos8 < 0) lastSide = -1; }
+    else { pos8 = lastSide * 8; pos100 = lastSide * 100; }
+    var groups = 0, prev = 0;
+    for (var g = 0; g < 8; g++) { var b = (bits >> g) & 1; if (b && !prev) groups++; prev = b; }
+    var jname = groups === 0 ? 'none' : groups === 1 ? 'line' : 'junction';
+    return { lines: lines, w: w, light: light, on: on, bits: bits, width: width, pos8: pos8, pos100: pos100, junction: groups, jname: jname, ok: true };
+  }
+  function drawField(st) {
+    var svg = $('field'), W = 460, H = 190, ox = 70, gap = 46, sy = 128;
+    var tok = getComputedStyle(document.documentElement);
+    var tape = tok.getPropertyValue('--tape').trim(), ir = tok.getPropertyValue('--ir').trim(), ink = tok.getPropertyValue('--ink').trim(),
+        muted = tok.getPropertyValue('--muted').trim(), surf = tok.getPropertyValue('--surface').trim(), rule = tok.getPropertyValue('--rule').trim();
+    var h = '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#f7f7f2" stroke="' + rule + '"/>';
+    var s = rawState();
+    s.lines.forEach(function (lc, k) {
+      var cx = ox + (lc + 3.5) * gap, half = s.w / 2 * gap;
+      if (k === 0) h += '<rect x="' + (cx - half) + '" y="0" width="' + (half * 2) + '" height="' + H + '" fill="' + tape + '"/>';
+      else {
+        var x0 = ox + (s.lines[0] + 3.5) * gap;
+        h += '<polygon points="' + (x0 - half) + ',' + H + ' ' + (x0 + half) + ',' + H + ' ' + (cx + half) + ',0 ' + (cx - half) + ',0" fill="' + tape + '"/>';
+      }
+    });
+    if ($('cross').checked && s.lines.length) h += '<rect x="0" y="40" width="' + W + '" height="34" fill="' + tape + '"/>';
+    h += '<rect x="' + (ox - 32) + '" y="' + (sy - 30) + '' + '" width="' + (gap * 7 + 64) + '" height="60" rx="10" fill="#1b2422" opacity="0.9"/>';
+    h += '<rect x="0" y="' + (sy + 32) + '" width="' + W + '" height="' + (H - sy - 32) + '" fill="#f7f7f2" opacity="0.92"/>';
+    for (var i = 0; i < 8; i++) {
+      var x = ox + i * gap, v = st.none ? null : (st.light ? st.light[i] : null);
+      var g = v == null ? 128 : Math.round(255 * v / 100);
+      var onl = !st.none && st.on && st.on.indexOf(i + 1) >= 0;
+      h += '<circle cx="' + x + '" cy="' + sy + '" r="15" fill="rgb(' + g + ',' + g + ',' + g + ')" stroke="' + (onl ? ir : '#55605d') + '" stroke-width="' + (onl ? 4 : 2) + '"/>';
+      h += '<text x="' + x + '" y="' + (sy + 5) + '" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="' + (g > 120 ? '#111' : '#fff') + '">' + (v == null ? '?' : v) + '</text>';
+      h += '<text x="' + x + '" y="' + (sy + 46) + '" text-anchor="middle" font-size="12" fill="#3d4a47">' + (i + 1) + '</text>';
+    }
+    h += '<text x="14" y="22" font-size="13" fill="#3d4a47">← 左（負）</text><text x="' + (W - 14) + '" y="22" text-anchor="end" font-size="13" fill="#3d4a47">右（正）→</text>';
+    if ($('unplug').checked) h += '<text x="' + (W / 2) + '" y="70" text-anchor="middle" font-size="15" font-weight="700" fill="' + ir + '">感應器拔掉了：數值停在上一次</text>';
+    svg.innerHTML = h;
+  }
+
+  // ───── 程式上色與顯示 ─────
+  var KW = /^(False|None|True|and|as|async|await|break|class|continue|def|elif|else|for|from|if|import|in|is|not|or|pass|return|while)$/;
+  function hiPy(line) {
+    var out = '', i = 0;
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest[0] === '#') { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if ((m = rest.match(/^("""|"[^"]*"|'[^']*')/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (KW.test(w)) out += '<span class="tk-kw">' + w + '</span>';
+        else if (after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^\d+/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  function render(el, lines, opts) {
+    opts = opts || {};
+    el.innerHTML = lines.map(function (l, k) {
+      var cls = 'ln' + (l.hl ? ' hl' : '') + (l.isNew ? ' new' : '');
+      var tag = opts.noTag ? '' : '<span class="tag">' + (l.tag && !l.tagHide ? '<i>' + l.tag + '</i>' : '') + '</span>';
+      return '<span class="' + cls + '"><span class="no">' + (l.no || k + 1) + '</span>' + tag + '<span>' + (l.t ? hiPy(l.t) : ' ') + '</span></span>';
+    }).join('');
+  }
+  function copyText(text, btn) {
+    var done = function () { var o = btn.textContent; btn.textContent = U.copied; setTimeout(function () { btn.textContent = o; }, 1400); };
+    function fallback(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e2) { btn.textContent = U.copyManual; }
+      document.body.removeChild(ta);
+    }
+    try { navigator.clipboard.writeText(text).then(done, function () { fallback(text); }); } catch (e) { fallback(text); }
+  }
+
+  // ───── 程式組裝 ─────
+  function portRef() { return 'port.' + CFG.ports[S.port]; }
+  function bodyOf(f, name) { return f.body.map(function (b) { return b.replace(/\{n\}/g, name); }); }
+  function fullLines(step) {
+    var f = BY[S.fn], L = [];
+    CFG.helper.forEach(function (t) { L.push({ t: t, tag: 1, helper: true }); });
+    L.push({ t: 'from hub import port', tag: 1 });
+    L.push({ t: 'import runloop', tag: 1 });
+    if (step >= 2) {
+      L.push({ t: '' });
+      L.push({ t: S.name + ' = ' + CFG.cls + '(' + portRef() + ')    # ' + U.ctorCmt.replace('@P', CFG.ports[S.port]), tag: 2 });
+    }
+    if (step >= 3) {
+      L.push({ t: '' });
+      L.push({ t: '' });
+      L.push({ t: 'async def main():', tag: 3 });
+      L.push({ t: '    while True:', tag: 3 });
+      L.push({ t: '        ' + S.name + '.update()            # ' + U.readOnce, tag: 3 });
+      bodyOf(f, S.name).forEach(function (b) { L.push({ t: '        ' + b, tag: 3 }); });
+      L.push({ t: '        await runloop.sleep_ms(100)', tag: 3 });
+      L.push({ t: '' });
+      L.push({ t: 'runloop.run(main())', tag: 3 });
+    }
+    return L;
+  }
+  function plain(L) { return L.map(function (l) { return l.t; }).join('\n') + '\n'; }
+  var lastKeys = '';
+  function drawMain() {
+    var v = S.viewStep || S.step, L = fullLines(v);
+    L.forEach(function (l, k) { l.no = k + 1; l.hl = l.tag === v; });
+    if (!S.showHelper) {
+      var nH = L.filter(function (l) { return l.helper; }).length, seen = false, F = [];
+      L.forEach(function (l) {
+        if (!l.helper) { F.push(l); return; }
+        if (seen) return;
+        seen = true; F.push(l);
+        F.push({ t: '# ' + U.moreLines.replace('@N', nH - 1), no: '⋮', tag: l.tag, tagHide: true, hl: l.hl, helper: true });
+      });
+      L = F;
+    }
+    var prev = lastKeys ? lastKeys.split('\n') : [];
+    L.forEach(function (l) { if (l.t && lastKeys && prev.indexOf(l.t) < 0) l.isNew = true; });
+    lastKeys = L.map(function (l) { return l.t; }).join('\n');
+    render($('maincode'), L);
+    var b = $('bubble'); b.querySelector('i').textContent = v; b.querySelector('span').textContent = bubble(v);
+    $('nm1').textContent = S.name;
+    drawMinis();
+  }
+  function bubble(step) {
+    if (step === 1) return U.bubble1;
+    if (step === 2) return U.bubble2.replace(/@N/g, S.name).replace(/@P/g, portRef());
+    return U.bubble3.replace(/@N/g, S.name);
+  }
+  var miniPrev = {};
+  function drawMinis() {
+    var full = fullLines(3);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('mini' + k); if (!el) return;
+      var lines = [], nh = 0, total = 0, h0 = 0, nums = [];
+      full.forEach(function (l) { if (l.tag === k && l.helper) total++; });
+      full.forEach(function (l, i) {
+        if (l.tag !== k) return;
+        if (l.helper) {
+          nh++; if (!h0) h0 = i + 1;
+          if (nh <= 2) lines.push({ t: l.t, no: i + 1 });
+          else if (nh === 3) lines.push({ t: '# ' + U.miniHelper.replace('@N', total), no: '⋮' });
+          return;
+        }
+        nums.push(i + 1); lines.push({ t: l.t, no: i + 1 });
+      });
+      if (!lines.length) { el.innerHTML = ''; return; }
+      var a = nums.length ? nums[0] : h0, z = nums.length ? nums[nums.length - 1] : h0;
+      var range = U.lineRange.replace('@R', a + (z !== a ? U.dash + z : ''));
+      if (h0 && nums.length) range += U.plusHelper.replace('@H', h0);
+      var txt = lines.map(function (l) { return l.no + l.t; }).join('\n');
+      el.innerHTML = '<span>' + U.miniHead.replace('@R', range) + '</span><pre class="code"></pre>';
+      render(el.querySelector('pre'), lines, { noTag: true });
+      if (miniPrev[k] !== undefined && miniPrev[k] !== txt) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      miniPrev[k] = txt;
+    });
+  }
+
+  // ───── 步驟、名字、孔位 ─────
+  function setStep(n) {
+    S.step = Math.max(S.step, n);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    S.viewStep = n;
+    drawMain();
+    $('next2').disabled = !validName();
+  }
+  var USED = ['port', 'runloop', 'main', 'print', 'color_sensor', 'hub', 'range', 'min', 'max', 'int', 'str', 'self', 'motor_pair', 'light_matrix', 'sound', CFG.cls];
+  function validName() {
+    var v = $('varname').value.trim(), bad = '';
+    if (!v) bad = U.errEmpty;
+    else if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(v)) bad = U.errChars;
+    else if (KW.test(v) || USED.indexOf(v) >= 0) bad = U.errUsed.replace('@V', v);
+    $('nameerr').hidden = !bad; $('nameerr').textContent = bad;
+    if (!bad) S.name = v;
+    return !bad;
+  }
+  function drawPorts() {
+    var box = $('ports'); box.innerHTML = '';
+    CFG.ports.forEach(function (l, i) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = l;
+      b.setAttribute('aria-pressed', String(S.port === i)); b.setAttribute('aria-label', U.portAria.replace('@P', l));
+      b.addEventListener('click', function () { S.port = i; drawPorts(); drawMain(); });
+      box.appendChild(b);
+    });
+  }
+
+  // ───── 第 3 步的功能選擇與範例卡 ─────
+  function drawPicker() {
+    var g = {}, order = [];
+    FNS.forEach(function (f) { if (!g[f.grp]) { g[f.grp] = []; order.push(f.grp); } g[f.grp].push(f); });
+    var box = $('picker'); box.innerHTML = '';
+    order.forEach(function (k) {
+      var w = document.createElement('div'); w.className = 'fgroup'; w.innerHTML = '<span>' + k + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      g[k].forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = f.label; b.title = f.name;
+        b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      w.appendChild(chips); box.appendChild(w);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + esc(f.label) + U.sep + f.name + '</b><span>' + f.what + '</span><span class="small">' + U.ret + f.ret + '</span>';
+  }
+  function pick(id) { S.fn = id; setStep(3); drawPicker(); tick(true); }
+  function cardLines(f) {
+    return ['while True:', '    ' + CFG.name + '.update()'].concat(bodyOf(f, CFG.name).map(function (b) { return '    ' + b; }), ['    await runloop.sleep_ms(100)']);
+  }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    FNS.forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      c.innerHTML = '<div class="card-head"><h3>' + esc(f.label) + '<span class="zh">' + f.name + '</span></h3></div>' +
+        '<p>' + f.what + '</p>' +
+        '<dl class="meta"><dt>' + U.retShort + '</dt><dd>' + f.ret + '</dd><dt>' + U.exShort + '</dt><dd>' + U.place + '</dd></dl>' +
+        '<pre class="code"></pre><p class="out">' + U.simPrints + '<code></code></p><button type="button" class="try">' + U.tryIt + '</button>';
+      render(c.querySelector('pre'), cardLines(f).map(function (t) { return { t: t }; }), { noTag: true });
+      c.querySelector('.try').addEventListener('click', function () {
+        pick(f.id);
+        var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      });
+      box.appendChild(c);
+    });
+  }
+  function runOut(f, st) { return f.out(view(pack(st)), st); }
+  function updateCardOutputs(st) {
+    FNS.forEach(function (f) { var el = document.querySelector('#fn-' + f.id + ' .out code'); if (el) el.textContent = runOut(f, st); });
+  }
+
+  // ───── 完整範例：小幫手在畫面上收成一行，複製時帶上 ─────
+  var EX = CFG.ex;
+  function exFull(id) { var out = []; EX[id].forEach(function (t) { if (t === '@HELPER') out = out.concat(CFG.helper); else out.push(t); }); return out; }
+  function drawExamples() {
+    Object.keys(EX).forEach(function (k) {
+      var el = $('ex-' + k); if (!el) return;
+      render(el, EX[k].map(function (t) { return { t: t === '@HELPER' ? '# ' + U.exHelper : t }; }), { noTag: true });
+    });
+  }
+
+  // ───── 模擬輸出 ─────
+  var log = [];
+  function tick(reset) {
+    var st = rawState(), f = BY[S.fn];
+    if (CFG.beforeDraw) CFG.beforeDraw.forEach(function (p) { var e = $(p[0]); if (e) e.textContent = $(p[1]).value; });
+    drawField(st);
+    updateCardOutputs(st);
+    if (reset) log = [];
+    if (S.step < 3) log = [U.idle];
+    else log.push(runOut(f, st));
+    while (log.length > 7) log.shift();
+    $('console').innerHTML = log.map(esc).join('\n');
+  }
+  function expect(id) { var st = rawState(); return { lines: [runOut(BY[id], st)], st: simExport(st) }; }
+
+  // ───── 事件 ─────
+  var un = $('unplug'); if (un) un.closest('label').hidden = true;   // 官方 App 拔線行為沒有依據，不模擬
+  $('next1').addEventListener('click', function () { setStep(2); $('varname').focus(); });
+  $('next2').addEventListener('click', function () { if (validName()) { setStep(3); drawPicker(); tick(true); } });
+  $('varname').addEventListener('input', function () { var ok = validName(); $('next2').disabled = !ok; if (ok) { drawMain(); drawPicker(); } });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) {
+    $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } });
+  });
+  CFG.simIds.forEach(function (id) { $(id).addEventListener('input', function () { tick(false); }); });
+  $('copymain').addEventListener('click', function (e) { copyText(plain(fullLines(Math.max(S.viewStep, 1))), e.currentTarget); });
+  $('helperbtn').addEventListener('click', function (e) {
+    S.showHelper = !S.showHelper;
+    e.currentTarget.setAttribute('aria-pressed', String(S.showHelper));
+    e.currentTarget.textContent = S.showHelper ? U.hideHelper : U.showHelper;
+    drawMain();
+  });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { copyText(exFull(b.getAttribute('data-copy')).join('\n') + '\n', b); });
+  });
+
+  // ───── 開始 ─────
+  drawPorts(); drawPicker(); drawCards(); drawExamples(); drawMain(); tick(true);
+  setInterval(function () { if (S.step >= 3) tick(false); }, 600);
+  window.__ap = { S: S, FNS: FNS, pick: pick, tick: tick, fullLines: fullLines, expect: expect, EX: EX, exFull: exFull, pack: pack, view: view };
+})();
+
+</script>
+<script>
+(function () {
+  var side = document.querySelector('.side'); if (!side) return;
+  var mq = window.matchMedia('(max-width: 900px)');
+  var home = side.parentNode, homeNext = side.nextSibling;
+  var con = document.getElementById('console'), conP = con && con.closest('.panel');
+  if (conP && conP.parentNode !== side) conP = null;
+  var last = null, ready = false;
+  var STOP = '.step-body, .cards, .ref, .steps, .main, .wrap, body';
+  function anchorOf(el) { var a = el; while (a && a.parentElement && !a.parentElement.matches(STOP)) a = a.parentElement; return a && a.parentElement ? a : null; }
+  function flash(el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  // 把 box 搬到 a 那一塊的後面；a 在畫面上的位置維持不動（點下去時就記住 a：頁面常在點擊後重畫按鈕，按鈕本身會被換掉）
+  function moveAfter(box, a) {
+    if (!a || !a.isConnected || a === box || a.contains(box)) return false;
+    if (a.nextElementSibling === box) return true;
+    var y = a.getBoundingClientRect().top;
+    a.parentNode.insertBefore(box, a.nextSibling); box.classList.add('follow');
+    var d = a.getBoundingClientRect().top - y; if (d) window.scrollBy(0, d);
+    return true;
+  }
+  function inPanel(el) { return side.contains(el) || (conP && conP.contains(el)); }
+  function placeSide(a, scroll) {
+    if (!mq.matches || !a) return;
+    if (conP && conP.parentNode !== side) { conP.classList.remove('follow'); side.appendChild(conP); }
+    if (!moveAfter(side, a)) return;
+    if (scroll) { var r = side.getBoundingClientRect(); if (r.top > window.innerHeight * 0.7) window.scrollBy({ top: r.top - window.innerHeight * 0.3, behavior: 'smooth' }); }
+  }
+  function placeConsole(el) {
+    if (!mq.matches || !conP || inPanel(el)) return;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在「正在操作的那一排」正下方（排＝控制區的直接子元素），
+    // 畫面、那一排、輸出同一屏；控制區很長或那一排在最下面（例如拔線勾選）都不會跑出畫面
+    var sim = el.closest('.sim'), ctrl = null, row = null;
+    if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (ctrl && ctrl !== el) for (var j = 0; j < ctrl.children.length; j++) if (ctrl.children[j].contains(el)) row = ctrl.children[j];
+    if (sim && ctrl) {
+      var box = row ? ctrl : sim, after = row || null;
+      if (after ? after.nextElementSibling === conP : conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var y = el.getBoundingClientRect().top;
+      if (after) box.insertBefore(conP, after.nextSibling); else sim.insertBefore(conP, ctrl);
+      conP.classList.add('follow');
+      var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
+      return;
+    }
+    var a = anchorOf(el); if (a && a.nextElementSibling === side) return; // 程式那格已經緊接在下面，輸出就在它裡面
+    moveAfter(conP, a);
+  }
+  function reset() {
+    if (mq.matches) { var b = document.querySelector('#step1 .step-body button') || document.querySelector('#step1 button'); if (b) placeSide(anchorOf(b), false); return; }
+    if (conP) { conP.classList.remove('follow'); side.appendChild(conP); }
+    side.classList.remove('follow'); home.insertBefore(side, homeNext);
+  }
+  function remember(e) { if (!inPanel(e.target)) last = anchorOf(e.target); }
+  document.addEventListener('pointerdown', remember, true);
+  document.addEventListener('focusin', remember, true);
+  var mo = new MutationObserver(function () { if (ready && mq.matches) { placeSide(last, true); flash(side); } });
+  ['maincode', 'mainblocks'].forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true }); });
+  function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
+  document.addEventListener('input', sim, true);
+  document.addEventListener('change', sim, true);
+  // 模擬器裡的按鈕（掌控者按鍵、色點調色盤…）也算在操作模擬器
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.sim button'); if (b) placeConsole(b); }, true);
+  reset(); setTimeout(function () { ready = true; }, 800);
+  if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
+})();
+</script>
+</body>
+</html>

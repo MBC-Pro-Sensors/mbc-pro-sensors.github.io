@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The LEGO SPIKE App (Education) runs Python too, with no hub firmware change. In the App, Sharpshooter Vision is a color sensor, and the App cannot import your o">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/cam_school/spike-app-python.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/cam_school/spike-app-python.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/cam_school/spike-app-python.html">
+<title>Sharpshooter Vision LEGO SPIKE App Python tutorial | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+
+:root {
+  --bg: #f3f6f5;
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;
+  --accent-soft: #dff1ef;
+  --tape: #121212;
+  --ir: #e04a3b;
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+.conv { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+.conv th, .conv td { border: 1px solid var(--rule); padding: 6px 8px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.conv th { background: var(--accent-soft); }
+.tblwrap { overflow-x: auto; max-width: 100%; }
+.cant td:first-child, .cant th:first-child { width: 34%; }
+.cant code { white-space: normal; overflow-wrap: anywhere; }
+.panel-head .row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+[hidden] { display: none !important; }  /* 頁面用 hidden 切換「積木／程式」，.ws{display:grid} 會蓋掉它 */
+.learn-nav .tabs .tl { color: var(--muted, #666); font-size: 0.8rem; align-self: center; }
+.learn-nav .tabs .tsep { flex-basis: 100%; height: 0; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
+   排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
+@media (max-width: 900px) {
+  .learn-nav { position: static; width: 100vw; margin: -24px 0 14px calc(50% - 50vw); }
+  .learn-nav .in { padding: 6px 12px 8px; gap: 4px 14px; font-size: 0.85rem; }
+  .learn-nav .in > a { min-height: 36px; display: inline-flex; align-items: center; }
+  .learn-nav .tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .learn-nav .tabs::-webkit-scrollbar { display: none; }
+  .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
+  body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
+  .panel.follow { margin: 12px 0 16px; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow, .ctrl > .panel.follow { grid-column: 1 / -1; }
+  .flash { animation: followFlash 1.2s ease-out; }
+  @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
+  /* 點選目標放大：選項、勾選框、拉桿 */
+  .wrap > *, .main > *, .steps > *, .step-body > * { min-width: 0; }
+  label:has(input[type=radio]), label:has(input[type=checkbox]) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  button.copy, .viewtabs button { min-height: 36px; }
+  label:has(select) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  label select { min-height: 36px; }
+  input[type=radio], input[type=checkbox] { width: 20px; height: 20px; flex: none; }
+  input[type=range] { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/esp32cam/spike/">← Sharpshooter Vision SPIKE guide</a><a class="lang" href="/learn/cam_school/spike-app-python.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/cam_school/micropython.html" aria-current="page">SPIKE</a><a href="/en/learn/cam_school/ev3-pybricks.html">EV3</a><a href="/en/learn/cam_school/arduino.html">Arduino</a><a href="/en/learn/cam_school/mblock.html">mBlock</a><a href="/en/learn/cam_school/matrix.html">MATRIX</a><a href="/en/learn/cam_school/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/cam_school/micropython.html">MicroPython (Pybricks)</a><a href="/en/learn/cam_school/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/cam_school/pybricks-builtin.html">Pybricks built-in blocks</a><a href="/en/learn/cam_school/mbc-blocks.html">MBC Blocks website</a><a href="/en/learn/cam_school/spike-app.html">LEGO SPIKE App</a><a href="/en/learn/cam_school/spike-app-python.html" aria-current="page">SPIKE App Python</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC Sharpshooter Vision × LEGO SPIKE App (Python)</span>
+    <h1>Read Sharpshooter Vision with SPIKE App Python in three steps</h1>
+    <p class="lead">The LEGO SPIKE App (Education) runs Python too, with no hub firmware change. In the App, Sharpshooter Vision is a <b>color sensor</b>, and the App cannot import your own files, so the order is: first <b>paste the reading helper at the top</b>, then <b>create an object and name the camera</b>, then call <code>update()</code> once per loop and <b>call its functions</b> with that name. Work down the steps on the left and watch the program grow on the right; drag the blob and change its colour and size in the simulated camera view to see what the program prints.</p>
+  </header>
+
+  <section class="main" aria-label="Tutorial">
+    <div class="steps">
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>Paste the reading helper</h2></div>
+        <div class="step-body">
+          <p class="why">A SPIKE App Python project is a single file and <b>cannot import</b> your own .py, so <b>paste the whole "reading helper" at the very top</b> (its first lines say so: copy it as is). Without it the hub does not know <code>CamSchoolApp</code> and stops with <code>NameError</code>.</p>
+          <ol class="howto">
+            <li>Open the LEGO SPIKE App (Education, yellow SPIKE Prime hub), create a project and choose "<b>Python</b>".</li>
+            <li>Paste the program marked ① on the right at the top (only the first helper line shows; press "Show helper" to see it all, and "Copy program" always copies everything). The helper alone: <a href="/examples/esp32cam/spike_app/MBC_cam_school_App_helper.py" download>MBC_cam_school_App_helper.py</a> (open it in a text editor and copy all; the file has Chinese and English comments).</li>
+            <li>Plug the camera into <b>any port A–F</b>; the hub powers it. Use the same port as in step 2. Set the colours on the camera first: "1: COLOR" picks the colour point and "2: TRACK" the colour to follow (the program cannot change them).</li>
+          </ol>
+          <p class="small">The helper splits the numbers the App reads for you (the same conversion as the <a href="/en/learn/cam_school/spike-app.html">SPIKE App blocks page</a>):</p>
+          <div class="tblwrap"><table class="conv">
+            <tr><th>What the App reads</th><th>What it holds</th><th>Helper function</th></tr>
+            <tr><td><code>color_sensor.color()</code> (color)</td><td>hue at the colour point: −1, 0–100</td><td><code>hue()</code></td></tr>
+            <tr><td><code>color_sensor.reflection()</code> (reflection)</td><td>motion (how much the picture changed) 0–100</td><td><code>motion()</code></td></tr>
+            <tr><td><code>color_sensor.rgbi()</code> item 1 (raw red)</td><td>blob X: left 0 – right 98; 0 = not found</td><td><code>blob_x()</code></td></tr>
+            <tr><td><code>rgbi()</code> item 2 (raw green)</td><td>blob Y: bottom 1 – top 75; 0 = not found</td><td><code>blob_y()</code></td></tr>
+            <tr><td><code>rgbi()</code> item 3 (raw blue)</td><td>blob area 0–100, <b>0 = not found</b></td><td><code>area()</code>, <code>found()</code></td></tr>
+          </table></div>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">Pasted, next step</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>Create the object: name the sensor</h2></div>
+        <div class="step-body">
+          <p class="why">A robot can have several sensors, so you "create an object": tell the helper which port the camera is on (<code>port.C</code> comes from <code>from hub import port</code>) and give it a name. You use that name for every reading.</p>
+          <div class="row">
+            <span class="small">Which port is the camera on?</span>
+            <div class="ports" id="ports" role="group" aria-label="Port"></div>
+          </div>
+          <label class="f" for="varname"><span>Name it (start with a letter; letters, digits and _ only)</span>
+            <input type="text" id="varname" value="cam" autocomplete="off" spellcheck="false">
+          </label>
+          <p class="err" id="nameerr" hidden></p>
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2" disabled>Created, next step</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>update() every loop, then use a function</h2></div>
+        <div class="step-body">
+          <p class="why">App programs go in <code>async def main():</code> and <code>runloop.run(main())</code> starts them; wait with <code>await runloop.sleep_ms(100)</code> (not Pybricks' <code>wait()</code>). Each loop first reads once with <code><span id="nm1"></span>.update()</code>, then uses "name + dot + function". Pick a function and the program and output switch to its example.</p>
+          <div id="picker" class="ref"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+          <div class="sim-box">
+          <div class="sim-title">Pretend sensor (what the camera sees): drag the blob and watch the output on the right</div>
+          <div class="sim">
+            <svg id="field" viewBox="0 0 460 330" role="img" tabindex="0" aria-label="Pretend camera picture: drag the blob with a mouse or finger, or move it with the arrow keys"></svg>
+            <div class="ctrl">
+              <label class="f" for="size">Blob size (the same blob looks bigger when it is closer)
+                <input autocomplete="off" type="range" id="size" min="8" max="110" value="40">
+              </label>
+              <label class="f" for="hue"><span>Blob colour (hue <span id="huename">33, green</span>)</span>
+                <input autocomplete="off" type="range" id="hue" min="0" max="100" value="33">
+              </label>
+              <label class="f" for="motion">Motion (how much is moving in the picture; dragging the blob also makes it bigger)
+                <input autocomplete="off" type="range" id="motion" min="0" max="100" value="3">
+              </label>
+              <div class="toggles">
+                <label><input autocomplete="off" type="checkbox" id="gone"> Take the blob away (cannot see it)</label>
+                <label hidden><input autocomplete="off" type="checkbox" id="unplug"> Unplug the sensor</label>
+              </div>
+            </div>
+            <p class="note">The pretend picture is only a guide: the numbers are simplified, and a real sensor can be a few steps off because of the light. Cross = sample point (the spot you picked on the sensor in "Setup 1: COLOR"); hue, saturation and brightness are read at the cross. Green box = the blob the sensor is tracking (the colour you picked in "Setup 2: TRACK"). X: left 0, right 98. Y: bottom 1, top 75.</p>
+          </div>
+            </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">An example for every function</h2>
+        <p class="ref-intro">Every function has an example you can drop into <code>main()</code> (port C). "Try it" jumps to step 3 and the program and output on the right switch to it.</p>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="Your program and output">
+      <div class="panel">
+        <div class="panel-head"><span>Your program (SPIKE App Python)</span><span class="row"><button type="button" class="copy" id="helperbtn" aria-pressed="false">Show helper</button><button type="button" class="copy" id="copymain">Copy program</button></span></div>
+        <pre class="code" id="maincode" aria-live="polite"></pre>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>App console output (updates every 0.6 s)</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="ref" aria-labelledby="fullh">
+    <h2 id="fullh">Full examples</h2>
+    <p class="ref-intro">Press "Copy" for the whole program (helper included).</p>
+    <div class="full">
+      <div class="panel">
+        <div class="panel-head"><span>Turn toward a blob (left wheel E, right wheel F)</span><button type="button" class="copy" data-copy="follow">Copy</button></div>
+        <pre class="code" id="ex-follow"></pre>
+        <p class="bubble"><i>!</i><span>Choose the colour with "2: TRACK" on the camera first. Not seen: it spins to search; seen: it steers by how far X is from the middle. Swings too much: lower <code>GAIN</code>.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="ref" aria-labelledby="canth">
+    <h2 id="canth">Values the SPIKE App cannot read</h2>
+    <p class="ref-intro">The App only reads the camera's "combined data" (hue, motion, blob X / Y / area), so the functions below are out of reach. Saturation, brightness and blob width / height are on <a href="/en/learn/cam_school/mbc-blocks.html">the MBC Blocks website</a>; everything is readable with <a href="/en/learn/cam_school/micropython.html">Pybricks MicroPython</a> or <a href="/en/learn/cam_school/pybricks-blocks.html">Pybricks blocks</a> (both need the Pybricks firmware on the hub).</p>
+    <div class="tblwrap"><table class="conv cant">
+        <tr><th scope="col">Function (Pybricks library)</th><th scope="col">Why not / what to use</th></tr>
+        <tr><td><code>saturation()</code>, <code>brightness()</code></td><td>Saturation and brightness at the colour point are not readable; the App only gets the hue.</td></tr>
+        <tr><td><code>blob_w()</code>, <code>blob_h()</code></td><td>Blob width and height are not readable; for near / far use <code>area()</code> (0–100).</td></tr>
+        <tr><td><code>area()</code> (Pybricks)</td><td>Pybricks area is width × height (0–7500); the App gets a different 0–100 area, so the numbers do not compare directly.</td></tr>
+        <tr><td><code>blob_xya()</code>, <code>read_all()</code></td><td>No "read several at once" functions; read <code>blob_x()</code>, <code>blob_y()</code>, <code>area()</code> one by one (all from the same <code>update()</code>).</td></tr>
+        <tr><td><code>device_id()</code>, <code>firmware_version()</code>, <code>sensor_ok()</code></td><td>Device ID, firmware version and "is it connected" are not readable; what the App does when the cable is pulled is not yet tested, so the simulator has no unplug option.</td></tr>
+    </table></div>
+  </section>
+
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">Tips</h2>
+    <ol>
+      <li><b>Call <code>update()</code> every loop.</b> All helper functions split the 8 numbers from the last <code>update()</code>; without it the values never change (they start as all 0, the same as "not found").</li>
+      <li><b>This is SPIKE App 3 style, not Pybricks.</b> Ports are <code>port.C</code> from <code>from hub import port</code> (not <code>Port.C</code>), and waiting is <code>await runloop.sleep_ms()</code> (not <code>wait()</code>), so Pybricks programs cannot be pasted in. In the Robot Inventor (home) App the colour is only 0–10; this page is for the Education App.</li>
+      <li><b>Do not compare with the App's colour constants.</b> Here <code>color_sensor.color()</code> returns the camera's hue number, not a LEGO colour code; always compare the <code>hue()</code> number. Colours are set on the camera: without "1: COLOR" the hue stays 0, which looks like red.</li>
+      <li><b>Check that a blob is found first.</b> When <code>found()</code> is False (area 0), X and Y are 0 too, which looks like the bottom-left corner. This area is 0–100, a different unit from Pybricks <code>area()</code> (width × height).</li>
+      <li><b>Directions:</b> looking forward from behind the robot, X is left 0, right 98, middle about 50 (X − 50: left negative, right positive); Y is small at the bottom and big at the top (bottom 1, top 75). Motion is only reliable while the robot stands still. The App Python readings follow the firmware and the SPIKE App blocks page and are not yet checked one by one on a real hub.</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  var CFG = {"ports":["A","B","C","D","E","F"],"port":2,"name":"cam","cls":"CamSchoolApp","fn0":"blob_x","helper":["# ===== Sharpshooter Vision (school) reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====","# In the SPIKE App the camera is a colour sensor: colour = hue, reflection = motion, raw red = blob X, raw green = blob Y, raw blue = blob area.","# set up \"1: COLOR\" and \"2: TRACK\" on the camera itself","import color_sensor","","","class CamSchoolApp:","    def __init__(self, port_number):","        self.port = port_number","        self.b = [0] * 8                      # byte 0~7","","    def update(self):","        \"\"\"read once\"\"\"","        c = color_sensor.color(self.port)              # hue","        r = color_sensor.reflection(self.port)         # motion","        rgb = color_sensor.rgbi(self.port)             # raw red, green, blue = X, Y, area","        b = [int(c) & 255, int(r) & 255]","        for v in rgb[:3]:","            v = int(v) & 0xFFFF                        # negatives back to 0~65535","            b += [v & 255, v >> 8]","        self.b = b","        return True","","    def _w(self, i):","        # raw red, green, blue word","        return self.b[2 + 2 * i] | (self.b[3 + 2 * i] << 8)","","    def hue(self):","        \"\"\"hue at the colour point 0~100, -1 = no colour\"\"\"","        h = self.b[0]","        return h - 256 if h > 127 else h","","    def motion(self):","        \"\"\"motion 0~100: how much the picture changed\"\"\"","        return self.b[1]","","    def blob_x(self):","        \"\"\"blob X: left 0 ~ right 98; 0 = not found\"\"\"","        return self._w(0)","","    def blob_y(self):","        \"\"\"blob Y: bottom 1 ~ top 75; 0 = not found\"\"\"","        return self._w(1)","","    def area(self):","        \"\"\"blob area 0~100, 0 = not found (not the same unit as Pybricks area())\"\"\"","        return self._w(2)","","    def found(self):","        \"\"\"is a blob found: area above 0\"\"\"","        return self._w(2) > 0","# ===== end of helper ====="],"ex":{"follow":["# Sharpshooter Vision (school) × LEGO SPIKE App (Education, Python) example 1: turn toward a blob","# Wiring: camera → port C; left wheel E, right wheel F","# choose the colour with \"2: TRACK\" on the camera first","# new Python project in the SPIKE App, paste all of this","@HELPER","from hub import port, light_matrix","import motor_pair","import runloop","","cam = CamSchoolApp(port.C)","BASE = 150        # forward speed (deg/s)","GAIN = 4          # turn per step of X error","","","async def main():","    motor_pair.pair(motor_pair.PAIR_1, port.E, port.F)","    while True:","        cam.update()","        if not cam.found():                       # not found: spin to search","            motor_pair.move_tank(motor_pair.PAIR_1, 120, -120)","            light_matrix.write('?')","        else:","            error = cam.blob_x() - 50             # middle = 50; right = positive","            motor_pair.move_tank(motor_pair.PAIR_1, BASE + GAIN * error, BASE - GAIN * error)","        await runloop.sleep_ms(30)","","runloop.run(main())"]},"reserved":["h","m","error","BASE","GAIN"],"draw":"drawField","lang":"en"};
+  var S = { port: CFG.port, name: CFG.name, step: 1, viewStep: 1, fn: CFG.fn0, showHelper: false };
+  var HELPER = CFG.helper;
+
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function idiv(a, b) { return Math.floor(a / b); }
+  function PyErr(m) { this.message = m; }
+  function tup(a) { return { __t: a }; }
+  function py(x, inner) {
+    if (x === null || x === undefined) return 'None';
+    if (x === true) return 'True';
+    if (x === false) return 'False';
+    if (typeof x === 'number') return String(x);
+    if (typeof x === 'string') return inner ? "'" + x + "'" : x;
+    if (Array.isArray(x)) return '[' + x.map(function (v) { return py(v, true); }).join(', ') + ']';
+    if (x.__t) return '(' + x.__t.map(function (v) { return py(v, true); }).join(', ') + (x.__t.length === 1 ? ',' : '') + ')';
+    throw new Error('py()');
+  }
+  function prn() { return Array.prototype.map.call(arguments, function (a) { return py(a, false); }).join(' '); }
+  function unpack(t) { return t.__t; }
+  var KW = /\b(from|import|while|True|False|None|if|else|elif|not|and|or|async|def|await|for|in|return|class|break|lambda|pass|is|global|try|except|raise|with|yield|del|continue|finally|nonlocal|assert|as)\b/;
+  function isKw(w) { return new RegExp('^' + KW.source + '$').test(w); }
+  function hiPy(line) {
+    var out = '', i = 0;
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest[0] === '#') { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if ((m = rest.match(/^("""[^]*?"""|"[^"]*"|'[^']*')/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (isKw(w)) out += '<span class="tk-kw">' + w + '</span>';
+        else if (after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^\d+/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  function render(el, lines, opts) {
+    opts = opts || {};
+    el.innerHTML = lines.map(function (l, k) {
+      var cls = 'ln' + (l.hl ? ' hl' : '') + (l.isNew ? ' new' : '');
+      var tag = opts.noTag ? '' : '<span class="tag">' + (l.tag && !l.tagHide ? '<i>' + l.tag + '</i>' : '') + '</span>';
+      return '<span class="' + cls + '"><span class="no">' + (l.no || k + 1) + '</span>' + tag + '<span>' + (l.t ? hiPy(l.t) : ' ') + '</span></span>';
+    }).join('');
+  }
+  function plain(lines) { return lines.map(function (l) { return l.t; }).join('\n') + '\n'; }
+  function copyText(text, btn) {
+    var done = function () { var o = btn.textContent; btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = o; }, 1400); };
+    try {
+      navigator.clipboard.writeText(text).then(done, function () { fallback(text); });
+    } catch (e) { fallback(text); }
+    function fallback(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e2) { btn.textContent = 'Please select and copy by hand'; }
+      document.body.removeChild(ta);
+    }
+  }
+  function portRef() { return 'port.' + CFG.ports[S.port]; }
+
+  function appRead(st) {
+    var area = st.gone ? 0 : clamp(Math.round(st.size * st.size / 50), 1, 100);
+    return { c: st.hue, r: st.mot, rgb: [st.bx, st.by, area] };
+  }
+  function view(b) {
+    function w(i) { return b[2 + 2 * i] | (b[3 + 2 * i] << 8); }
+    return {
+      b: b.slice(),
+      hue: function () { return b[0] > 127 ? b[0] - 256 : b[0]; },
+      motion: function () { return b[1]; },
+      blob_x: function () { return w(0); },
+      blob_y: function () { return w(1); },
+      area: function () { return w(2); },
+      found: function () { return w(2) > 0; }
+    };
+  }
+  var FNS = [
+    { id: 'hue', label: 'hue()', name: 'Hue (colour)', grp: 'Colour (colour point)', ret: '-1, or 0–100',
+      what: 'Hue at the "colour point" (the spot chosen with "1: COLOR" on the camera): red 0 (100 is red too), yellow about 17, green about 33, cyan about 50, blue about 67, magenta about 83; −1 = no colour (black, white, grey). Drag the blob onto the cross and move the colour slider.',
+      body: ['print("' + 'hue:' + '", {n}.hue())'], out: function (V) { return prn('hue:', V.hue()); } },
+    { id: 'red', label: 'hue() is red?', name: 'Red seen', grp: 'Colour (colour point)', ret: 'decided with hue()',
+      what: 'Red sits at both ends of the hue, so "0–5, or above 94" is red (the same test as the SPIKE App blocks page); −1 (no colour) does not count.',
+      body: ['h = {n}.hue()', 'if 0 <= h <= 5 or h > 94:', '    print("' + 'red!' + '", h)', 'else:', '    print("' + 'not red' + '", h)'],
+      out: function (V) { var h = V.hue(); return (h >= 0 && h <= 5) || h > 94 ? prn('red!', h) : prn('not red', h); } },
+    { id: 'found', label: 'found()', name: 'Is a blob found', grp: 'Blob (tracking)', ret: 'True or False',
+      what: 'Whether the camera tracks the colour chosen with "2: TRACK": area above 0 means yes. When nothing is found X and Y are 0 too, so check this first. Tick "Take the blob away".',
+      body: ['if {n}.found():', '    print("' + 'blob found' + '")', 'else:', '    print("' + 'no blob' + '")'],
+      out: function (V) { return V.found() ? 'blob found' : 'no blob'; } },
+    { id: 'blob_x', label: 'blob_x()', name: 'Blob X (left/right)', grp: 'Blob (tracking)', ret: '0–98 (0 = not found)',
+      what: 'Where the blob is left to right: left 0, right 98, middle about 50. Drag the blob.',
+      body: ['print("' + 'blob X:' + '", {n}.blob_x())'], out: function (V) { return prn('blob X:', V.blob_x()); } },
+    { id: 'blob_y', label: 'blob_y()', name: 'Blob Y (up/down)', grp: 'Blob (tracking)', ret: '1–75 (0 = not found)',
+      what: 'Where the blob is bottom to top: <b>bottom small, top big</b> (bottom 1, top 75).',
+      body: ['print("' + 'blob Y:' + '", {n}.blob_y())'], out: function (V) { return prn('blob Y:', V.blob_y()); } },
+    { id: 'area', label: 'area()', name: 'Blob area', grp: 'Blob (tracking)', ret: '0–100 (0 = not found)',
+      what: 'How big the blob is: 0–100, bigger when closer, 0 = not found. This is the App\'s unit, not the same as Pybricks <code>area()</code> (width × height, 0–7500). Move the "Blob size" slider.',
+      body: ['print("' + 'area:' + '", {n}.area())'], out: function (V) { return prn('area:', V.area()); } },
+    { id: 'side', label: 'blob_x() side', name: 'Blob left or right', grp: 'Blob (tracking)', ret: 'decided with found() and blob_x()',
+      what: 'First check that a blob is found, then look at X: below 50 is left, otherwise right (the same as the SPIKE App blocks page).',
+      body: ['if not {n}.found():', '    print("' + 'no blob' + '")', 'elif {n}.blob_x() < 50:', '    print("' + 'blob on the left' + '", {n}.blob_x())', 'else:', '    print("' + 'blob on the right' + '", {n}.blob_x())'],
+      out: function (V) { return !V.found() ? 'no blob' : V.blob_x() < 50 ? prn('blob on the left', V.blob_x()) : prn('blob on the right', V.blob_x()); } },
+    { id: 'motion', label: 'motion()', name: 'Motion', grp: 'Motion', ret: '0–100',
+      what: 'How much the whole picture changed since the last one: something moving makes it bigger. The example counts above 20 as "something moving" (the same as the SPIKE App blocks page). Only reliable while the robot stands still. Move the "Motion" slider or drag the blob quickly.',
+      body: ['m = {n}.motion()', 'if m > 20:', '    print("' + 'something is moving!' + '", m)', 'else:', '    print("' + 'all still' + '", m)'],
+      out: function (V) { var m = V.motion(); return m > 20 ? prn('something is moving!', m) : prn('all still', m); } },
+    { id: 'bytes', label: 'cam.b (8 bytes)', name: 'The raw 8 bytes', grp: 'Raw data', ret: 'eight numbers 0–255',
+      what: 'The raw bytes 0–7 from <code>update()</code>: [hue, motion, X low, X high, Y low, Y high, area low, area high] (hue −1 shows as 255). Print them when numbers look wrong and compare with the table in step 1.',
+      body: ['print("byte 0~7:", {n}.b)'], out: function (V) { return prn('byte 0~7:', V.b); } }
+  ];
+
+
+  
+  // ───── Pretend sensor: camera picture 160×120 (top-left is 0,0), drawn on the SVG 2.5 times bigger ─────
+  // Simple guide maths: the blob position and size in the picture are turned into sensor units (X 0~98, Y bottom 1 ~ top 75, width/height ÷1.6). This is not the sensor's own method.
+  var FW = 160, FH = 120, K = 2.5, OX = 30, OY = 10, PT = { x: 80, y: 60 };
+  var SIM = { cx: 90, cy: 62, bump: 0 };
+  var frozen = null, warned = false;
+  function hueName(h) {
+    return h <= 5 || h >= 92 ? 'red' : h <= 11 ? 'orange' : h <= 24 ? 'yellow' : h <= 41 ? 'green' : h <= 58 ? 'cyan' : h <= 75 ? 'blue' : 'magenta';
+  }
+  function rawState() {
+    var size = Number($('size').value), col = Number($('hue').value), gone = $('gone').checked, half = size / 2;
+    SIM.cx = clamp(SIM.cx, half, FW - half); SIM.cy = clamp(SIM.cy, half, FH - half);
+    var onPt = !gone && Math.abs(SIM.cx - PT.x) <= half && Math.abs(SIM.cy - PT.y) <= half;
+    var s = { size: size, col: col, gone: gone, cx: SIM.cx, cy: SIM.cy, onPt: onPt, ok: true };
+    // sample point on the blob: reads the blob colour; not on it: reads the white table (no colour = -1)
+    s.hue = onPt ? Math.round(col) : -1;
+    s.sat = onPt ? 82 : 4;
+    s.bri = onPt ? 66 : 86;
+    s.mot = Math.max(Number($('motion').value), Math.round(SIM.bump));
+    if (gone) { s.bx = 0; s.by = 0; s.bw = 0; s.bh = 0; s.found = false; }
+    else {
+      s.bx = clamp(Math.round(SIM.cx / 1.6), 0, 98);
+      s.by = clamp(Math.round((FH - SIM.cy) / 1.6), 1, 75);
+      s.bw = clamp(Math.round(size / 1.6), 1, 98);
+      s.bh = clamp(Math.round(size / 1.6), 1, 73);
+      s.found = true;
+    }
+    s.area = s.bw * s.bh;
+    s.all = [s.hue, s.sat, s.bri, s.mot, s.bx, s.by, s.bw, s.bh];
+    return s;
+  }
+  function state() {
+    var unplug = $('unplug').checked;
+    if (!unplug) { frozen = rawState(); warned = false; return frozen; }
+    var s = frozen ? JSON.parse(JSON.stringify(frozen)) : null;
+    // never read: the library returns None for every value
+    if (!s) return { none: true, ok: false, hue: null, sat: null, bri: null, mot: null, bx: null, by: null, bw: null, bh: null, area: null, found: null, all: null };
+    s.ok = false; return s;
+  }
+  function drawField(st) {
+    var svg = $('field'), W = 460, H = 330;
+    var ir = getComputedStyle(document.documentElement).getPropertyValue('--ir').trim();
+    var live = rawState(), fx = function (x) { return OX + x * K; }, fy = function (y) { return OY + y * K; };
+    var h = '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#f7f7f2"/>';
+    h += '<rect x="' + OX + '" y="' + OY + '" width="' + FW * K + '" height="' + FH * K + '" fill="#e8e4da" stroke="#55605d" stroke-width="2"/>';
+    // centre line X = 50
+    h += '<line x1="' + fx(80) + '" y1="' + fy(10) + '" x2="' + fx(80) + '" y2="' + fy(FH) + '" stroke="#9aa3a0" stroke-dasharray="6 6"/>';
+    h += '<text x="' + (fx(80) + 6) + '" y="' + (fy(FH) - 8) + '" font-size="12" fill="#5b6b67">centre X 50</text>';
+    // the blob (looks like a LEGO brick)
+    if (!live.gone) {
+      var half = live.size / 2, x0 = fx(live.cx - half), y0 = fy(live.cy - half), side = live.size * K;
+      var fill = 'hsl(' + Math.round(live.col * 3.6) + ', 75%, 50%)';
+      h += '<rect x="' + x0 + '" y="' + y0 + '" width="' + side + '" height="' + side + '" rx="6" fill="' + fill + '" stroke="rgba(0,0,0,0.35)" stroke-width="2"/>';
+      [0.3, 0.7].forEach(function (a) { [0.3, 0.7].forEach(function (b) {
+        h += '<circle cx="' + (x0 + side * a) + '" cy="' + (y0 + side * b) + '" r="' + Math.max(2, side * 0.11) + '" fill="' + fill + '" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>';
+      }); });
+      // green box = the blob the sensor is tracking (no box when the sensor is unplugged)
+      if (st.ok) {
+        h += '<rect x="' + (x0 - 5) + '" y="' + (y0 - 5) + '" width="' + (side + 10) + '" height="' + (side + 10) + '" fill="none" stroke="#19a974" stroke-width="3"/>';
+        var ly = y0 - 10 < OY + 40 ? y0 + side + 22 : y0 - 10;
+        h += '<text x="' + (x0 - 4) + '" y="' + ly + '" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#0b6b47">X ' + st.bx + '  Y ' + st.by + '</text>';
+      }
+    }
+    // sample point (cross)
+    var px = fx(PT.x), pyy = fy(PT.y);
+    h += '<g stroke-linecap="round"><line x1="' + (px - 13) + '" y1="' + pyy + '" x2="' + (px + 13) + '" y2="' + pyy + '" stroke="#fff" stroke-width="6"/><line x1="' + px + '" y1="' + (pyy - 13) + '" x2="' + px + '" y2="' + (pyy + 13) + '" stroke="#fff" stroke-width="6"/>';
+    h += '<line x1="' + (px - 12) + '" y1="' + pyy + '" x2="' + (px + 12) + '" y2="' + pyy + '" stroke="#111" stroke-width="2.5"/><line x1="' + px + '" y1="' + (pyy - 12) + '" x2="' + px + '" y2="' + (pyy + 12) + '" stroke="#111" stroke-width="2.5"/></g>';
+    h += '<text x="' + (px + 16) + '" y="' + (pyy - 14) + '" font-size="12" fill="#111" stroke="#fff" stroke-width="3" paint-order="stroke">sample point</text>';
+    // top bar: what the sensor reads (stays at the last value when unplugged)
+    var q = function (v) { return v === null || v === undefined ? '?' : v; };
+    h += '<rect x="' + OX + '" y="' + OY + '" width="' + FW * K + '" height="28" fill="#1b2422" opacity="0.88"/>';
+    h += '<text x="' + (OX + 10) + '" y="' + (OY + 19) + '" font-family="JetBrains Mono, monospace" font-size="13" fill="#e3ece9">hue ' + q(st.hue) + '  X ' + q(st.bx) + '  Y ' + q(st.by) + '  W ' + q(st.bw) + '  H ' + q(st.bh) + '  motion ' + q(st.mot) + '</text>';
+    h += '<text x="' + (OX + 8) + '" y="' + (OY + 48) + '" font-size="12" fill="#3d4a47">top Y 75</text>';
+    h += '<text x="' + (OX + 8) + '" y="' + (fy(FH) - 8) + '" font-size="12" fill="#3d4a47">bottom Y 1</text>';
+    h += '<text x="' + OX + '" y="' + (H - 4) + '" font-size="13" fill="#3d4a47">← left X 0</text><text x="' + (OX + FW * K) + '" y="' + (H - 4) + '" text-anchor="end" font-size="13" fill="#3d4a47">X 98 right →</text>';
+    if ($('unplug').checked) h += '<text x="' + (W / 2) + '" y="' + (fy(FH / 2) + 50) + '" text-anchor="middle" font-size="16" font-weight="700" fill="' + ir + '" stroke="#fff" stroke-width="4" paint-order="stroke">Sensor unplugged: values stay at the last reading</text>';
+    svg.innerHTML = h;
+    $('huename').textContent = Number($('hue').value) + ', ' + hueName(Number($('hue').value));
+  }
+  // Drag the blob: mouse, finger or arrow keys; the faster it moves, the bigger the motion value
+  function moveTo(p) {
+    var dx = p.x - SIM.cx, dy = p.y - SIM.cy;
+    SIM.bump = Math.min(100, SIM.bump + Math.sqrt(dx * dx + dy * dy) * 0.8);
+    SIM.cx = p.x; SIM.cy = p.y;
+    drawField(state()); updateCardOutputs();
+  }
+  function toCam(e) {
+    var r = $('field').getBoundingClientRect();
+    if (!r.width || !r.height) return { x: SIM.cx, y: SIM.cy };
+    return { x: ((e.clientX - r.left) / r.width * 460 - OX) / K, y: ((e.clientY - r.top) / r.height * 330 - OY) / K };
+  }
+  var dragging = false, fieldEl = $('field');
+  fieldEl.style.touchAction = 'none'; fieldEl.style.cursor = 'grab';
+  fieldEl.addEventListener('pointerdown', function (e) {
+    if ($('gone').checked) return;
+    dragging = true; try { fieldEl.setPointerCapture(e.pointerId); } catch (err) { /* old browsers */ }
+    moveTo(toCam(e)); e.preventDefault();
+  });
+  fieldEl.addEventListener('pointermove', function (e) { if (dragging) moveTo(toCam(e)); });
+  ['pointerup', 'pointercancel'].forEach(function (ev) { fieldEl.addEventListener(ev, function () { dragging = false; }); });
+  fieldEl.addEventListener('keydown', function (e) {
+    var k = { ArrowLeft: [-4, 0], ArrowRight: [4, 0], ArrowUp: [0, -4], ArrowDown: [0, 4] }[e.key];
+    if (!k || $('gone').checked) return;
+    e.preventDefault(); moveTo({ x: SIM.cx + k[0], y: SIM.cy + k[1] });
+  });
+
+
+  function appBytes(st) {
+    var a = appRead(st), b = [a.c & 255, a.r & 255];
+    for (var i = 0; i < 3; i++) { var x = a.rgb[i] & 0xFFFF; b.push(x & 255, x >> 8); }
+    return b;
+  }
+  var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; });
+  function runOut(f, st) {
+    try { return f.out(view(appBytes(st))); } catch (e) { if (e instanceof PyErr) return e.message; throw e; }
+  }
+  function bodyOf(f, name) { return f.body.map(function (b) { return b.replace(/\{n\}/g, name); }); }
+
+  function programLines(step) {
+    var f = BY[S.fn], L = [], n = S.name;
+    HELPER.forEach(function (t) { L.push({ t: t, tag: 1, helper: true }); });
+    L.push({ t: 'from hub import port', tag: 1 });
+    L.push({ t: 'import runloop', tag: 1 });
+    if (step >= 2) {
+      L.push({ t: '' });
+      L.push({ t: n + ' = ' + CFG.cls + '(' + portRef() + ')    # ' + 'on port ' + CFG.ports[S.port] + '', tag: 2 });
+    }
+    if (step >= 3) {
+      L.push({ t: '' });
+      L.push({ t: '' });
+      L.push({ t: 'async def main():', tag: 3 });
+      L.push({ t: '    while True:', tag: 3 });
+      L.push({ t: '        ' + n + '.update()            # ' + 'read once per loop', tag: 3 });
+      bodyOf(f, n).forEach(function (b) { L.push({ t: '        ' + b, tag: 3 }); });
+      L.push({ t: '        await runloop.sleep_ms(100)', tag: 3 });
+      L.push({ t: '' });
+      L.push({ t: 'runloop.run(main())', tag: 3 });
+    }
+    return L;
+  }
+  var lastKeys = '';
+  function drawMain() {
+    var L = programLines(S.viewStep);
+    L.forEach(function (l, k) { l.no = k + 1; l.hl = l.tag === S.viewStep; });
+    if (!S.showHelper) {
+      var nH = L.filter(function (l) { return l.helper; }).length, seen = false, F = [];
+      L.forEach(function (l) {
+        if (!l.helper) { F.push(l); return; }
+        if (seen) return;
+        seen = true; F.push(l);
+        F.push({ t: '# ' + '⋯ ' + (nH - 1) + ' more lines (press "Show helper")', no: '⋮', tag: l.tag, tagHide: true, hl: l.hl, helper: true });
+      });
+      L = F;
+    }
+    var prev = lastKeys ? lastKeys.split('\n') : [];
+    L.forEach(function (l) { if (l.t && lastKeys && prev.indexOf(l.t) < 0) l.isNew = true; });
+    lastKeys = L.map(function (l) { return l.t; }).join('\n');
+    render($('maincode'), L);
+    var tips = {
+      1: 'Step 1: the whole reading helper goes at the top (only its first line shows; press "Show helper"); then import the App\'s port and runloop.',
+      2: 'Step 2: create the object. ' + S.name + ' (left of =) is your name; the right side tells the helper the sensor is on ' + portRef() + '.',
+      3: 'Step 3: code goes in async def main(), and runloop.run(main()) starts it. while True repeats: each loop calls ' + S.name + '.update() first, then "' + S.name + '.function()"; await runloop.sleep_ms(100) loops every 0.1 s.'
+    };
+    var b = $('bubble'); b.querySelector('i').textContent = S.viewStep; b.querySelector('span').textContent = tips[S.viewStep];
+    drawMinis();
+  }
+  var miniPrev = {};
+  function drawMinis() {
+    var full = programLines(3);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('mini' + k); if (!el) return;
+      var lines = [], nh = 0, total = 0, h0 = 0, nums = [];
+      full.forEach(function (l) { if (l.tag === k && l.helper) total++; });
+      full.forEach(function (l, i) {
+        if (l.tag !== k) return;
+        if (l.helper) {
+          nh++; if (!h0) h0 = i + 1;
+          if (nh <= 2) lines.push({ t: l.t, no: i + 1 });
+          else if (nh === 3) lines.push({ t: '# ' + '⋯ ' + total + ' helper lines: press "Show helper" on the right', no: '⋮' });
+          return;
+        }
+        nums.push(i + 1); lines.push({ t: l.t, no: i + 1 });
+      });
+      if (!lines.length) { el.innerHTML = ''; return; }
+      var a = nums[0], z = nums[nums.length - 1];
+      var range = a === z ? 'line ' + a + '' : 'lines ' + a + '–' + z + '';
+      if (h0) range += ', plus the helper from line ' + h0 + '';
+      var txt = lines.map(function (l) { return l.no + l.t; }).join('\n');
+      el.innerHTML = '<span>' + 'What this step writes (' + range + ')' + '</span><pre class="code"></pre>';
+      render(el.querySelector('pre'), lines, { noTag: true });
+      if (miniPrev[k] !== undefined && miniPrev[k] !== txt) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      miniPrev[k] = txt;
+    });
+  }
+
+  function setStep(n) {
+    S.step = Math.max(S.step, n);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    S.viewStep = n;
+    drawMain();
+    $('next2').disabled = !validName();
+  }
+  var RESERVED = ['port', 'runloop', 'main', 'print', 'color_sensor', 'hub', 'range', 'min', 'max', 'int', 'str', 'list', 'abs', 'len', 'motor_pair', 'light_matrix', 'sound', 'device', CFG.cls].concat(CFG.reserved);
+  function validName() {
+    var v = $('varname').value.trim(), bad = '';
+    if (!v) bad = 'The name cannot be empty.';
+    else if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(v)) bad = 'Use only letters, digits and _, and do not start with a digit.';
+    else if (isKw(v) || RESERVED.indexOf(v) >= 0) bad = '"' + v + '" is already used by Python or the program; pick another name.';
+    $('nameerr').hidden = !bad; $('nameerr').textContent = bad;
+    if (!bad) S.name = v;
+    return !bad;
+  }
+  function drawPorts() {
+    var box = $('ports'); box.innerHTML = '';
+    CFG.ports.forEach(function (l, i) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = l;
+      b.setAttribute('aria-pressed', String(S.port === i)); b.setAttribute('aria-label', 'port ' + l + '');
+      b.addEventListener('click', function () { S.port = i; drawPorts(); drawMain(); });
+      box.appendChild(b);
+    });
+  }
+
+  function drawPicker() {
+    var g = {}, order = []; FNS.forEach(function (f) { if (!g[f.grp]) { g[f.grp] = []; order.push(f.grp); } g[f.grp].push(f); });
+    var box = $('picker'); box.innerHTML = '';
+    order.forEach(function (k) {
+      var w = document.createElement('div'); w.className = 'fgroup'; w.innerHTML = '<span>' + esc(k) + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      g[k].forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = f.label; b.title = f.name;
+        b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      w.appendChild(chips); box.appendChild(w);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + esc(f.label) + ' · ' + f.name + '</b><span>' + f.what + '</span><span class="small">' + 'Returns: ' + f.ret + '</span>';
+    $('nm1').textContent = S.name;
+  }
+  function pick(id) { S.fn = id; setStep(3); drawPicker(); tick(true); }
+  function cardLines(f) {
+    var body = bodyOf(f, CFG.name);
+    return ['while True:', '    ' + CFG.name + '.update()'].concat(body.map(function (b) { return '    ' + b; }), ['    await runloop.sleep_ms(100)']);
+  }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    FNS.forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      c.innerHTML = '<div class="card-head"><h3>' + esc(f.label) + '<span class="zh">' + f.name + '</span></h3></div>' +
+        '<p>' + f.what + '</p>' +
+        '<dl class="meta"><dt>' + 'Returns' + '</dt><dd>' + f.ret + '</dd><dt>' + 'Example' + '</dt><dd>' + 'inside the while True loop of async def main()' + '</dd></dl>' +
+        '<pre class="code"></pre>' +
+        '<p class="out">' + 'The simulator prints: ' + '<code></code></p>' +
+        '<button type="button" class="try">' + 'Try it' + '</button>';
+      render(c.querySelector('pre'), cardLines(f).map(function (t) { return { t: t }; }), { noTag: true });
+      c.querySelector('.try').addEventListener('click', function () {
+        pick(f.id);
+        var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      });
+      box.appendChild(c);
+    });
+    updateCardOutputs();
+  }
+  function updateCardOutputs() {
+    var st = state();
+    FNS.forEach(function (f) { var el = document.querySelector('#fn-' + f.id + ' .out code'); if (el) el.textContent = runOut(f, st); });
+  }
+
+  var EX = CFG.ex;
+  function exFull(id) { var out = []; EX[id].forEach(function (t) { if (t === '@HELPER') out = out.concat(HELPER); else out.push(t); }); return out; }
+  function drawExamples() {
+    Object.keys(EX).forEach(function (k) {
+      var shown = EX[k].map(function (t) { return t === '@HELPER' ? '# ' + '… paste the step-1 helper here ("Copy" adds it for you) …' : t; });
+      render($('ex-' + k), shown.map(function (t) { return { t: t }; }), { noTag: true });
+    });
+  }
+
+  var log = [];
+  function tick(reset) {
+    var st = state(), f = BY[S.fn];
+    drawField(st);
+    updateCardOutputs();
+    if (reset) log = [];
+    if (S.step < 3) log = [{ c: '', t: '(Finish step 3 and what the program prints shows up here)' }];
+    else {
+      var line = runOut(f, st);
+      log.push({ c: /Error/.test(line) ? 'errline' : '', t: line });
+    }
+    while (log.length > 7) log.shift();
+    $('console').innerHTML = log.map(function (l) { return '<span class="' + l.c + '">' + esc(l.t) + '</span>'; }).join('\n');
+  }
+
+  $('next1').addEventListener('click', function () { setStep(2); $('varname').focus(); });
+  $('next2').addEventListener('click', function () { if (validName()) { setStep(3); drawPicker(); tick(true); } });
+  $('varname').addEventListener('input', function () { var ok = validName(); $('next2').disabled = !ok; if (ok) { drawMain(); drawPicker(); } });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) {
+    $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } });
+  });
+  $('helperbtn').addEventListener('click', function (e) {
+    S.showHelper = !S.showHelper;
+    e.currentTarget.textContent = S.showHelper ? 'Hide helper' : 'Show helper';
+    e.currentTarget.setAttribute('aria-pressed', String(S.showHelper));
+    drawMain();
+  });
+  $('copymain').addEventListener('click', function (e) { copyText(plain(programLines(S.viewStep)), e.currentTarget); });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { copyText(exFull(b.getAttribute('data-copy')).join('\n') + '\n', b); });
+  });
+  ['size', 'hue', 'motion', 'gone'].forEach(function (id) { $(id).addEventListener('input', function () { tick(false); }); });
+
+  drawPorts(); drawPicker(); drawCards(); drawExamples(); drawMain(); tick(true);
+  setInterval(function () { if (S.step >= 3) tick(false); }, 600);
+  window.__ap = { S: S, FNS: FNS, BY: BY, pick: pick, tick: tick, state: state, runOut: runOut, appBytes: appBytes, programText: function () { return plain(programLines(3)); }, exFull: exFull, EX: EX, setStep: setStep };
+})();
+
+</script>
+<script>
+(function () {
+  var side = document.querySelector('.side'); if (!side) return;
+  var mq = window.matchMedia('(max-width: 900px)');
+  var home = side.parentNode, homeNext = side.nextSibling;
+  var con = document.getElementById('console'), conP = con && con.closest('.panel');
+  if (conP && conP.parentNode !== side) conP = null;
+  var last = null, ready = false;
+  var STOP = '.step-body, .cards, .ref, .steps, .main, .wrap, body';
+  function anchorOf(el) { var a = el; while (a && a.parentElement && !a.parentElement.matches(STOP)) a = a.parentElement; return a && a.parentElement ? a : null; }
+  function flash(el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  // 把 box 搬到 a 那一塊的後面；a 在畫面上的位置維持不動（點下去時就記住 a：頁面常在點擊後重畫按鈕，按鈕本身會被換掉）
+  function moveAfter(box, a) {
+    if (!a || !a.isConnected || a === box || a.contains(box)) return false;
+    if (a.nextElementSibling === box) return true;
+    var y = a.getBoundingClientRect().top;
+    a.parentNode.insertBefore(box, a.nextSibling); box.classList.add('follow');
+    var d = a.getBoundingClientRect().top - y; if (d) window.scrollBy(0, d);
+    return true;
+  }
+  function inPanel(el) { return side.contains(el) || (conP && conP.contains(el)); }
+  function placeSide(a, scroll) {
+    if (!mq.matches || !a) return;
+    if (conP && conP.parentNode !== side) { conP.classList.remove('follow'); side.appendChild(conP); }
+    if (!moveAfter(side, a)) return;
+    if (scroll) { var r = side.getBoundingClientRect(); if (r.top > window.innerHeight * 0.7) window.scrollBy({ top: r.top - window.innerHeight * 0.3, behavior: 'smooth' }); }
+  }
+  function placeConsole(el) {
+    if (!mq.matches || !conP || inPanel(el)) return;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在「正在操作的那一排」正下方（排＝控制區的直接子元素），
+    // 畫面、那一排、輸出同一屏；控制區很長或那一排在最下面（例如拔線勾選）都不會跑出畫面
+    var sim = el.closest('.sim'), ctrl = null, row = null;
+    if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (ctrl && ctrl !== el) for (var j = 0; j < ctrl.children.length; j++) if (ctrl.children[j].contains(el)) row = ctrl.children[j];
+    if (sim && ctrl) {
+      var box = row ? ctrl : sim, after = row || null;
+      if (after ? after.nextElementSibling === conP : conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var y = el.getBoundingClientRect().top;
+      if (after) box.insertBefore(conP, after.nextSibling); else sim.insertBefore(conP, ctrl);
+      conP.classList.add('follow');
+      var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
+      return;
+    }
+    var a = anchorOf(el); if (a && a.nextElementSibling === side) return; // 程式那格已經緊接在下面，輸出就在它裡面
+    moveAfter(conP, a);
+  }
+  function reset() {
+    if (mq.matches) { var b = document.querySelector('#step1 .step-body button') || document.querySelector('#step1 button'); if (b) placeSide(anchorOf(b), false); return; }
+    if (conP) { conP.classList.remove('follow'); side.appendChild(conP); }
+    side.classList.remove('follow'); home.insertBefore(side, homeNext);
+  }
+  function remember(e) { if (!inPanel(e.target)) last = anchorOf(e.target); }
+  document.addEventListener('pointerdown', remember, true);
+  document.addEventListener('focusin', remember, true);
+  var mo = new MutationObserver(function () { if (ready && mq.matches) { placeSide(last, true); flash(side); } });
+  ['maincode', 'mainblocks'].forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true }); });
+  function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
+  document.addEventListener('input', sim, true);
+  document.addEventListener('change', sim, true);
+  // 模擬器裡的按鈕（掌控者按鍵、色點調色盤…）也算在操作模擬器
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.sim button'); if (b) placeConsole(b); }, true);
+  reset(); setTimeout(function () { ready = true; }, 800);
+  if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
+})();
+</script>
+</body>
+</html>
