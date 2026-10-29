@@ -1,0 +1,1481 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The LEGO SPIKE App (Education) runs Python too, with no firmware change. In the App, Sharpshooter Vision is a color sensor, and the App cannot import your own f">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/unicam/spike-app-python.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/unicam/spike-app-python.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/unicam/spike-app-python.html">
+<title>Sharpshooter Vision LEGO SPIKE App Python tutorial | MBC-Pro Sensors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+
+:root {
+  --bg: #f3f6f5;          
+  --surface: #ffffff;
+  --ink: #16201e;
+  --muted: #5b6b67;
+  --rule: #d6dfdc;
+  --accent: #0a7c78;      
+  --accent-soft: #dff1ef;
+  --tape: #121212;        
+  --ir: #e04a3b;          
+  --warn: #b25e00;
+  --warn-soft: #fff1dc;
+  --code-bg: #0f1716;
+  --code-ink: #e3ece9;
+  --code-dim: #7d918c;
+  --code-kw: #ff8f6b;
+  --code-str: #9ad98a;
+  --code-num: #f5c46b;
+  --code-fn: #78d3f0;
+  --code-hl: #1d3a37;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  --font-code: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --on-accent: #ffffff;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+    --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+    --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1413; --surface: #141d1c; --ink: #e4ecea; --muted: #9aaba7; --rule: #26332f;
+  --accent: #3fc7bf; --accent-soft: #123331; --tape: #000000; --ir: #ff6a5a;
+  --warn: #ffb547; --warn-soft: #33260f; --code-bg: #070c0b; --code-hl: #183330; --on-accent: #062321;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.3; margin: 0; }
+h1 { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 900; letter-spacing: 0.01em; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--font-code); font-size: 0.92em; }
+:not(pre) > code { background: var(--accent-soft); color: var(--ink); padding: 0.05em 0.35em; border-radius: 4px; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+
+header.top { display: grid; gap: 10px; }
+.eyebrow { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.lead { color: var(--muted); max-width: 62ch; }
+.draft { display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; background: var(--warn-soft); color: var(--warn); padding: 4px 10px; border-radius: 999px; width: fit-content; }
+.hostbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 6px 14px; border-radius: 999px; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+
+
+.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .main { grid-template-columns: 1fr; } }
+.steps { display: grid; gap: 14px; min-width: 0; }
+.step { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 16px; display: grid; gap: 12px; }
+.step.current { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.step.locked { opacity: 0.55; }
+.step-head { display: flex; gap: 12px; align-items: center; }
+.num { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent-soft); color: var(--accent); font-family: var(--font-code); }
+.step.current .num { background: var(--accent); color: var(--on-accent); }
+.step.done .num { background: var(--accent); color: var(--on-accent); }
+.step-body { display: grid; gap: 10px; }
+.why { color: var(--muted); font-size: 0.95rem; }
+.choice { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 8px; padding: 10px 12px; color: var(--ink); display: grid; gap: 2px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt b { font-size: 0.98rem; }
+.opt small { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.howto { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: 0.95rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ports { display: flex; flex-wrap: wrap; gap: 6px; }
+.ports button { width: 42px; height: 38px; border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 8px; font-weight: 700; font-family: var(--font-code); }
+.ports button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+label.f { display: grid; gap: 4px; font-size: 0.9rem; color: var(--muted); }
+input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 10px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--ink); width: 12ch; }
+.err { color: var(--warn); font-size: 0.88rem; }
+.next { justify-self: start; border: 0; background: var(--accent); color: var(--on-accent); padding: 8px 16px; border-radius: 8px; font-weight: 700; }
+.next[disabled] { opacity: 0.4; cursor: not-allowed; }
+.fgroup { display: grid; gap: 6px; }
+.fgroup > span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 4px 11px; font-family: var(--font-code); font-size: 0.86rem; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chip.no-ev3 { text-decoration: line-through; opacity: 0.55; }
+.explain { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; font-size: 0.95rem; display: grid; gap: 4px; }
+
+
+.side { display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); min-width: 0; }
+@media (max-width: 900px) { .side { position: static; } }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; min-width: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-weight: 700; font-size: 0.95rem; }
+.copy { border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 3px 10px; font-size: 0.82rem; }
+.code { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.86rem; line-height: 1.75; overflow-x: auto; margin: 0; padding: 12px 0; }
+.ln { display: grid; grid-template-columns: 2.6em 2.2em minmax(0, 1fr); align-items: start; padding-right: 14px; white-space: pre; }
+.ln .no { color: var(--code-dim); text-align: right; padding-right: 0.8em; user-select: none; }
+.ln .tag { text-align: center; user-select: none; }
+.ln .tag i { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; font-style: normal; font-size: 0.75rem; font-weight: 700; background: #2c3f3c; color: var(--code-ink); }
+.ln.hl { background: var(--code-hl); }
+.ln.hl .tag i { background: var(--accent); color: var(--on-accent); }
+.ln.new { animation: grow 0.5s ease-out; }
+@keyframes grow { from { background: #2f6f69; } to { background: var(--code-hl); } }
+@media (prefers-reduced-motion: reduce) { .ln.new { animation: none; } }
+.tk-kw { color: var(--code-kw); } .tk-str { color: var(--code-str); } .tk-num { color: var(--code-num); }
+.tk-com { color: var(--code-dim); font-style: italic; } .tk-fn { color: var(--code-fn); }
+.bubble { margin: 0; padding: 10px 14px; font-size: 0.9rem; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: flex-start; }
+.bubble i { flex: none; font-style: normal; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 0.85rem; }
+
+.sim { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.sim svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.ctrl { display: grid; gap: 8px; }
+.ctrl input[type="range"] { width: 100%; accent-color: var(--accent); }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.9rem; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+.console { background: var(--code-bg); color: var(--code-ink); font-family: var(--font-code); font-size: 0.84rem; line-height: 1.6; padding: 10px 12px; border-radius: 8px; min-height: 9.5em; overflow-x: auto; white-space: pre; }
+.console .warnline { color: var(--code-num); }
+.console .errline { color: var(--code-kw); }
+.note { font-size: 0.82rem; color: var(--muted); }
+
+.side { max-height: calc(100vh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 900px) { .side { max-height: none; overflow: visible; } }
+.panel .console { border-radius: 0; min-height: 8.5em; }
+
+.mini { display: grid; gap: 4px; }
+.mini > span { font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.06em; }
+.mini pre.code { border-radius: 8px; padding: 8px 0; font-size: 0.82rem; }
+.mini pre.code .ln { grid-template-columns: 2.6em minmax(0, 1fr); }
+.mini.flash pre.code { animation: flash 0.9s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 4px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mini.flash pre.code { animation: none; } }
+.sim-box { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-title { padding: 8px 12px; font-weight: 700; font-size: 0.92rem; border-bottom: 1px solid var(--rule); }
+
+
+.ref { display: grid; gap: 14px; }
+.ref-intro { color: var(--muted); max-width: 70ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.card-head h3 { font-family: var(--font-code); font-size: 1rem; }
+.card-head .zh { color: var(--muted); font-size: 0.88rem; font-family: var(--font-body); font-weight: 500; margin-left: 6px; }
+.badges { display: flex; gap: 4px; }
+.badge { font-size: 0.72rem; border: 1px solid var(--rule); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.badge.yes { border-color: var(--accent); color: var(--accent); }
+.badge.no { text-decoration: line-through; }
+.meta { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; font-size: 0.88rem; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; }
+.card pre.code { border-radius: 8px; padding: 10px 0; font-size: 0.82rem; }
+.card .ln { grid-template-columns: 2.2em minmax(0, 1fr); }
+.try { justify-self: start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 6px; padding: 4px 12px; font-size: 0.86rem; font-weight: 700; }
+.out { font-size: 0.86rem; color: var(--muted); }
+.out code { white-space: pre-wrap; }
+
+
+.full { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+@media (max-width: 400px) { .full { grid-template-columns: 1fr; } }
+.tips { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+.tips ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.small { font-size: 0.85rem; color: var(--muted); }
+
+.learn-nav { position: sticky; top: 0; z-index: 20; background: var(--surface, #fff); border-bottom: 1px solid var(--rule, #ddd); }
+.learn-nav .in { max-width: 1240px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.learn-nav a { color: inherit; text-decoration: none; }
+.learn-nav .brand { font-weight: 800; }
+.learn-nav .back { color: var(--muted, #666); }
+.learn-nav .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.learn-nav .tabs a { border: 1px solid var(--rule, #ddd); border-radius: 999px; padding: 3px 11px; }
+.learn-nav .tabs a[aria-current="page"] { background: var(--accent, #0f6b62); border-color: var(--accent, #0f6b62); color: var(--on-accent, #fff); }
+.learn-nav .lang { font-weight: 700; }
+[hidden] { display: none !important; }  /* 頁面用 hidden 切換「積木／程式」，.ws{display:grid} 會蓋掉它 */
+.learn-nav .tabs .tl { color: var(--muted, #666); font-size: 0.8rem; align-self: center; }
+.learn-nav .tabs .tsep { flex-basis: 100%; height: 0; }
+@media (max-width: 700px) { .learn-nav .tabs { margin-left: 0; } }
+/* 手機：導覽不黏頂、四個版本一排可左右滑；「你的程式／結果」跟著走：搬到剛點的選項正下方、輸出搬到模擬感應器正下方，
+   排在頁面裡，不蓋住任何內容（2026-10-26 底部抽屜在 iPhone 遮太多，改這個） */
+@media (max-width: 900px) {
+  .learn-nav { position: static; width: 100vw; margin: -24px 0 14px calc(50% - 50vw); }
+  .learn-nav .in { padding: 6px 12px 8px; gap: 4px 14px; font-size: 0.85rem; }
+  .learn-nav .in > a { min-height: 36px; display: inline-flex; align-items: center; }
+  .learn-nav .tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .learn-nav .tabs::-webkit-scrollbar { display: none; }
+  .learn-nav .tabs a { white-space: nowrap; min-height: 36px; display: inline-flex; align-items: center; }
+  body .side.follow { position: static; top: auto; margin: 14px 0 18px; max-height: none; overflow: visible; }
+  .panel.follow { margin: 12px 0 16px; }
+  .cards > .side.follow, .cards > .panel.follow, .sim > .panel.follow, .ctrl > .panel.follow { grid-column: 1 / -1; }
+  .flash { animation: followFlash 1.2s ease-out; }
+  @keyframes followFlash { 0% { outline: 3px solid var(--accent, #0a7c78); outline-offset: 3px; } 100% { outline: 3px solid transparent; outline-offset: 3px; } }
+  /* 點選目標放大：選項、勾選框、拉桿 */
+  .wrap > *, .main > *, .steps > *, .step-body > * { min-width: 0; }
+  label:has(input[type=radio]), label:has(input[type=checkbox]) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  button.copy, .viewtabs button { min-height: 36px; }
+  label:has(select) { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+  label select { min-height: 36px; }
+  input[type=radio], input[type=checkbox] { width: 20px; height: 20px; flex: none; }
+  input[type=range] { height: 36px; }
+}
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+</style>
+<style>
+/* functions of another camera mode: dashed + dimmed (not line-through, which reads as "not available"); clicking switches the mode */
+.chip.other-mode { border-style: dashed; border-color: var(--ink); opacity: 0.7; }
+.chip.other-mode:hover, .chip.other-mode:focus-visible { opacity: 1; }
+.v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
+.v1warn b { white-space: nowrap; }
+/* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
+.ucpick { display: grid; gap: 14px; }
+#modes { gap: 8px; }
+#modes .chip { font-family: inherit; }
+.ctrl select { font: inherit; padding: 4px 6px; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); }
+</style>
+</head>
+<body>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/unicam/spike/">← Sharpshooter Vision SPIKE guide</a><a class="lang" href="/learn/unicam/spike-app-python.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/unicam/micropython.html" aria-current="page">SPIKE</a><a href="/en/learn/unicam/ev3-pybricks.html">EV3</a><a href="/en/learn/unicam/arduino.html">Arduino</a><a href="/en/learn/unicam/mblock.html">mBlock</a><a href="/en/learn/unicam/matrix.html">MATRIX</a><a href="/en/learn/unicam/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/unicam/micropython.html">MicroPython (Pybricks)</a><a href="/en/learn/unicam/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/unicam/pybricks-builtin.html">Pybricks built-in blocks</a><a href="/en/learn/unicam/mbc-blocks.html">MBC Blocks website</a><a href="/en/learn/unicam/spike-app.html">LEGO SPIKE App</a><a href="/en/learn/unicam/spike-app-python.html" aria-current="page">SPIKE App Python</a></div></div></nav>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MBC Sharpshooter Vision × LEGO SPIKE App (Python)</span>
+    <h1>Read Sharpshooter Vision with SPIKE App Python in three steps</h1>
+    <p class="lead">The LEGO SPIKE App (Education) runs Python too, with no firmware change. In the App, Sharpshooter Vision is a <b>color sensor</b>, and the App cannot import your own files, so the order is: first <b>paste the reading helper at the top and pick the camera mode</b>, then <b>create an object and name the camera</b>, then call <code>update()</code> once per loop and <b>call its functions</b> with that name. Work down the steps on the left and watch the program grow on the right; drag the blobs, papers, blocks or line in the simulated camera view to see what the program prints.</p>
+    <p class="v1warn" role="note"><b>v1 not yet hardware-verified</b><span>The value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after hardware testing.</span></p>
+  </header>
+
+  <section class="main" aria-label="Tutorial">
+    <div class="steps">
+      <article class="step current" id="step1">
+        <div class="step-head"><span class="num">1</span><h2>Paste the helper, pick the camera mode</h2></div>
+        <div class="step-body">
+          <style>
+.b8 .tblwrap { overflow-x: auto; max-width: 100%; }
+.b8 table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+.b8 th, .b8 td { border-bottom: 1px solid var(--rule); padding: 6px 8px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.b8 th { width: 32%; min-width: 7em; font-weight: 700; }
+.b8 th .small { display: block; font-weight: 400; white-space: normal; }
+.b8 .pend { display: inline-block; background: var(--warn-soft); color: var(--warn); border-radius: 999px; padding: 1px 10px; font-size: 0.85rem; font-weight: 700; margin-left: 6px; vertical-align: middle; }
+.b8 pre.code { white-space: pre-wrap; overflow-wrap: anywhere; }
+</style>
+          <p class="why">A SPIKE App Python project is a single file and <b>cannot import</b> your own .py, so <b>paste the whole "reading helper" at the very top</b> (its first lines say so: copy it as is). Without it the hub does not know <code>UniCamApp</code> and stops with <code>NameError</code>.</p>
+          <ol class="howto">
+            <li>Open the LEGO SPIKE App (Education, yellow SPIKE Prime hub), create a project and choose "<b>Python</b>".</li>
+            <li>Paste the program marked ① on the right at the top (only the first helper line shows; press "Show helper" to see it all, and "Copy program" always copies everything). The helper alone: <a href="/examples/unicam/spike_app/MBC_UniCam_App_helper.py" download>MBC_UniCam_App_helper.py</a> (open it in a text editor and copy all; the file has Chinese and English comments).</li>
+            <li>Plug the camera into <b>any port A–F</b>; the hub powers it. The camera needs the <b>SPIKE firmware</b> (the same firmware tells the App and Pybricks apart by itself).</li>
+            <li>Pick the camera mode: choose the camera mode and sub-option in the camera's <b>MODE</b> menu, and click the <b>same mode number</b> below (mode number = camera mode × 10 + sub-option).</li>
+          </ol>
+          <div id="modes" class="ucpick" role="group" aria-label="Camera mode"></div>
+          <div class="explain" id="modenow" aria-live="polite"></div>
+          <div class="mini" id="mini1" aria-live="polite"></div>
+          <button type="button" class="next" id="next1">Done, next step</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step2">
+        <div class="step-head"><span class="num">2</span><h2>Create the object: name the camera</h2></div>
+        <div class="step-body">
+          <p class="why">A robot can have several sensors, so you "create an object": tell the helper which port the camera is on (<code>port.C</code> comes from <code>from hub import port</code>) and which mode it is in, and give it a name. You use that name for every reading.</p>
+          <div class="row">
+            <span class="small">Which port is the camera on?</span>
+            <div class="ports" id="ports" role="group" aria-label="Port"></div>
+          </div>
+          <label class="f" for="varname">Name it (start with a letter; letters, digits and _ only)
+            <input type="text" id="varname" value="cam" autocomplete="off" spellcheck="false">
+          </label>
+          <p class="err" id="nameerr" hidden></p>
+          <p class="small">The second number is the mode number from step 1; <b>switch the camera menu to the same mode</b> (the App cannot read the camera's mode, so the helper splits the numbers by what you wrote; a mismatch gives nonsense).</p>
+
+          <div class="mini" id="mini2" aria-live="polite"></div>
+          <button type="button" class="next" id="next2">Done, next step</button>
+        </div>
+      </article>
+
+      <article class="step locked" id="step3">
+        <div class="step-head"><span class="num">3</span><h2>update() every loop, then use a function</h2></div>
+        <div class="step-body">
+          <p class="why">App programs go in <code>async def main():</code> and <code>runloop.run(main())</code> starts them; wait with <code>await runloop.sleep_ms(100)</code> (not Pybricks' <code>wait()</code>). Each loop first reads once with <code><span id="nm1">cam</span>.update()</code>, then uses "name + dot + function". Functions are grouped by camera mode; dashed ones belong to another mode (clicking one switches the mode for you).</p>
+          <div id="picker" class="ucpick"></div>
+          <div class="explain" id="explain" aria-live="polite"></div>
+          <div class="mini" id="mini3" aria-live="polite"></div>
+          <div class="sim-box">
+        <div class="sim-title">Simulated camera view: drag things in the picture and watch the output change</div>
+        <div class="sim">
+          <svg id="field" viewBox="0 0 460 330" role="img" tabindex="0" aria-label="Camera view: drag with mouse or finger, or use the arrow keys to move the selected item"></svg>
+          <div class="ctrl">
+            <label class="f" for="tsize" data-g="track"><span>Blob size (selected: <span id="selname">color 1</span>; tap a blob to select it)</span>
+              <input autocomplete="off" type="range" id="tsize" min="8" max="90" value="30">
+            </label>
+            <label class="f" for="tcount" data-g="track"><span>How many blobs of <span id="selname2">color 1</span></span>
+              <input autocomplete="off" type="range" id="tcount" min="1" max="3" value="1">
+            </label>
+            <label class="f" for="phue" data-g="spot"><span>Color of paper 1 (hue code <span id="phueval">0</span>; drag the papers onto the spots)</span>
+              <input autocomplete="off" type="range" id="phue" min="0" max="239" value="0">
+            </label>
+            <label class="f" for="ocount" data-g="order"><span>Blocks in the picture (drag them to change the order)</span>
+              <input autocomplete="off" type="range" id="ocount" min="0" max="5" value="4">
+            </label>
+            <label class="f" for="lwidth" data-g="line"><span>Line width (drag the green dots to bend the line)</span>
+              <input autocomplete="off" type="range" id="lwidth" min="4" max="60" value="16">
+            </label>
+            <label class="f" for="ljunc" data-g="line"><span>Junction</span>
+              <select id="ljunc"><option value="0">0 none</option><option value="1">1 cross</option><option value="2">2 T</option><option value="3">3 left</option><option value="4">4 right</option><option value="5">5 dead end</option></select>
+            </label>
+            <label class="f" for="ljd" data-g="line"><span>Junction distance (0 = bottom, 100 = top)</span>
+              <input autocomplete="off" type="range" id="ljd" min="5" max="95" value="60">
+            </label>
+            <label class="f" for="lmark" data-g="line"><span>Colored marker line under the robot now</span>
+              <select id="lmark"><option value="0">none</option><option value="2">target color 2 (green)</option><option value="3">target color 3 (blue)</option><option value="4">target color 4 (yellow)</option></select>
+            </label>
+            <label class="f" for="jshape" data-g="obj"><span>Selected object (<span id="jname">track id 1</span>; tap a shape to select it): shape</span>
+              <select id="jshape"><option value="1">1 circle</option><option value="2">2 ellipse</option><option value="3">3 triangle</option><option value="4">4 square</option><option value="5">5 rectangle</option><option value="6">6 pentagon</option><option value="7">7 hexagon</option><option value="8">8 star</option><option value="9">9 trapezoid</option></select>
+            </label>
+            <label class="f" for="jcolor" data-g="obj"><span>Color (target color 1–8 taught on the camera)</span>
+              <select id="jcolor"><option value="1">target color 1 (red)</option><option value="2">target color 2 (green)</option><option value="3">target color 3 (blue)</option><option value="4">target color 4 (yellow)</option><option value="5">target color 5 (purple)</option><option value="6">target color 6 (orange)</option><option value="7">target color 7 (cyan)</option><option value="8">target color 8 (pink)</option></select>
+            </label>
+            <label class="f" for="jsize" data-g="obj"><span>Size (closer looks bigger)</span>
+              <input autocomplete="off" type="range" id="jsize" min="12" max="70" value="42">
+            </label>
+            <label class="f" for="jrot" data-g="obj"><span>Rotation (0–179°)</span>
+              <input autocomplete="off" type="range" id="jrot" min="0" max="179" value="0">
+            </label>
+            <div class="toggles">
+              <label data-g="obj"><input autocomplete="off" type="checkbox" id="jgone"> Remove this object (<span id="jname2">track id 1</span>)</label>
+              <label data-g="track"><input autocomplete="off" type="checkbox" id="tgone"> Remove <span id="selname3">color 1</span></label>
+              <label data-g="line"><input autocomplete="off" type="checkbox" id="lgone"> Remove the line (robot left the line)</label>
+              <label><input autocomplete="off" type="checkbox" id="unplug"> Unplug the sensor</label>
+            </div>
+          </div>
+          <p class="note">The view is a sketch: values come straight from where things are on screen (X 0–159 left→right, Y 0–119 top→bottom, area % = width × height ÷ whole picture); a hue code is the color the paper or block really has (red 0, yellow 40, green 80, blue 160, purple 200, white table 244, black tape 252). It is not the camera's own algorithm, and real numbers vary with the light. Color tracking assumes 4 colors were taught on the camera: color 1 red, 2 green, 3 blue, 4 yellow. In object detection you pick each shape yourself (the camera does not judge it here); objects 1, 2… are sorted by area, largest first; X, Y is the shape's centroid (white dot), the dashed box is its bounding box, and the angle is the rotation you set.</p>
+        </div>
+          </div>
+        </div>
+      </article>
+
+      <section class="ref" aria-labelledby="refh">
+        <h2 id="refh">An example for every function</h2>
+        <p class="ref-intro">Every function has an example you can drop into <code>main()</code> (name cam); the badge shows which modes it works in. "Try it" jumps to step 3 (and switches the mode if needed).</p>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+
+    <aside class="side" aria-label="Your program and output">
+      <div class="panel">
+        <div class="panel-head"><span>Your program (SPIKE App Python)</span><span class="row"><button type="button" class="copy" id="helperbtn" aria-pressed="false">Show helper</button><button type="button" class="copy" id="copymain">Copy program</button></span></div>
+        <pre class="code" id="maincode" aria-live="polite"></pre>
+        <p class="bubble" id="bubble"><i>1</i><span></span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>App console output (updates every 0.6 s)</span></div>
+        <div class="console" id="console" aria-live="polite"></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="ref" aria-labelledby="fullh">
+    <h2 id="fullh">Full examples</h2>
+    <p class="ref-intro">Press "Copy" for the whole program (the same as on the <a href="/en/sensors/unicam/spike-examples.html">SPIKE examples page</a>). Values the helper cannot read (counts, areas, line flags, device ID…) are all in <a href="/en/learn/unicam/micropython.html">Pybricks MicroPython</a> (the hub needs the Pybricks firmware).</p>
+    <div class="full">
+      <div class="panel">
+        <div class="panel-head"><span>Turn toward a blob (mode 13, left wheel E, right wheel F)</span><button type="button" class="copy" data-copy="track">Copy</button></div>
+        <pre class="code" id="ex-track"></pre>
+        <p class="bubble"><i>!</i><span>Teach "target 1" on the camera first and set the camera menu to mode 13. Not seen: it spins to search; the hub display shows the X cell of color 1. "Copy" gives the whole program (helper included).</span></p>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>PD line following + stop at a junction (mode 41 black line)</span><button type="button" class="copy" data-copy="line">Copy</button></div>
+        <pre class="code" id="ex-line"></pre>
+        <p class="bubble"><i>!</i><span>Point the camera down and forward. Left = negative; it stops and beeps at a cross or T junction, and searches toward the last side when the near line is gone.</span></p>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="ref b8" aria-labelledby="b8h">
+    <h2 id="b8h">Bytes 8–15: values the helper cannot read<span class="pend">not yet tested</span></h2>
+    <p class="ref-intro">The camera sends 16 bytes each time. The App's <code>color_sensor.color()</code>, <code>reflection()</code> and <code>rgbi()</code> only get the first 8, which is what the helper uses. The other 8 bytes (table below) <b>might</b> be readable with App Python's <code>device.data()</code>, but this is <b>not yet verified on hardware</b> (task #77): how many numbers it returns and in what format is unknown, so this page does not show how to split them and the helper does not use them. To use these values now, switch to <a href="/en/learn/unicam/micropython.html">Pybricks MicroPython</a> (same camera, same firmware; with the Pybricks firmware on the hub they can be read). Full layouts are in the <a href="/en/sensors/unicam/reference.html#edu-13">value reference</a>.</p>
+    <div class="tblwrap"><table>
+          <tr><th scope="col">Mode</th><th scope="col">In bytes 8–15 (not read by the helper)</th></tr>
+          <tr><th scope="row">11<span class="small">Color tracking ① Max colors</span></th><td>color 8–14 X×10 + Y (8×6 grid, top = small)</td></tr>
+          <tr><th scope="row">12<span class="small">Color tracking ② Multi-color</span></th><td>color 1–7 count</td></tr>
+          <tr><th scope="row">13<span class="small">Color tracking ③ Standard</span></th><td>color 1–4 count, color 1–4 area (% of picture)</td></tr>
+          <tr><th scope="row">14<span class="small">Color tracking ④ Fine</span></th><td>color 1–2 count, color 1–2 area (% of picture)</td></tr>
+          <tr><th scope="row">21<span class="small">Color at points ① Hue</span></th><td>S7–14 hue</td></tr>
+          <tr><th scope="row">22<span class="small">Color at points ② Hue + saturation</span></th><td>S4–5 hue, S5 saturation, S6 hue, S6 saturation, S7 hue, S7 saturation</td></tr>
+          <tr><th scope="row">23<span class="small">Color at points ③ Hue + sat + value</span></th><td>S2–3 value, S4 hue, S4 saturation, S4 value</td></tr>
+          <tr><th scope="row">30<span class="small">Color order</span></th><td>block 7–13 from the left, hue</td></tr>
+          <tr><th scope="row">41<span class="small">Line ① Black line</span></th><td>mid offset (+100), line flags (near 1 + mid 2 + far 4), junction distance %, colored marker line color, marker line count, far line width %, near line left edge (+100), near line right edge (+100)</td></tr>
+          <tr><th scope="row">42<span class="small">Line ② White line</span></th><td>mid offset (+100), line flags (near 1 + mid 2 + far 4), junction distance %, colored marker line color, marker line count, far line width %, near line left edge (+100), near line right edge (+100)</td></tr>
+          <tr><th scope="row">43<span class="small">Line ③ Colored line</span></th><td>mid offset (+100), line flags (near 1 + mid 2 + far 4), junction distance %, colored marker line color, marker line count, far line width %, near line left edge (+100), near line right edge (+100)</td></tr>
+          <tr><th scope="row">51<span class="small">Objects ① Object list</span></th><td>object 4 code (color × 10 + shape), object 4 X×10 + Y (8×6 grid, top = small), object 5 code (color × 10 + shape), object 5 X×10 + Y (8×6 grid, top = small), object 6 code (color × 10 + shape), object 6 X×10 + Y (8×6 grid, top = small), object 7 code (color × 10 + shape), object 7 X×10 + Y (8×6 grid, top = small)</td></tr>
+          <tr><th scope="row">52<span class="small">Objects ② Object details</span></th><td>object 1 angle, object 2 X (pixels), object 2 Y (pixels, top = small), object 2 width (pixels), object 2 height (pixels), object 2 angle, object 1 vertex count, object count</td></tr>
+    </table></div>
+    <p class="small">To peek at what <code>device.data()</code> returns when you test on a hub, try these lines (<b>unverified</b>: it may fail or return only a few numbers; please tell us what you get):</p>
+    <pre class="code">import device
+from hub import port
+import runloop
+
+
+async def main():
+    while True:
+        print(device.data(port.C))   # not yet hardware-tested: count and format unknown
+        await runloop.sleep_ms(500)
+
+runloop.run(main())</pre>
+  </section>
+  <section class="tips" aria-labelledby="tiph">
+    <h2 id="tiph">Good to know</h2>
+    <ol>
+      <li><b>Call <code>update()</code> every loop.</b> All helper functions split the 8 bytes from the last <code>update()</code>; without it the values never change (they start as all 0).</li>
+      <li><b>The mode number must match the camera menu.</b> The App cannot read the camera's mode, so the helper splits by <code>UniCamApp(port.C, mode)</code>; object functions in the wrong mode raise <code>ValueError</code>, the others just give meaningless numbers.</li>
+      <li><b>This is SPIKE App 3 style, not Pybricks.</b> Ports are <code>port.C</code> from <code>from hub import port</code> (not <code>Port.C</code>), and waiting is <code>await runloop.sleep_ms()</code> (not <code>wait()</code>), so Pybricks programs cannot be pasted in. Python in the Robot Inventor (home) App is not verified yet; this page is for the Education App.</li>
+      <li><b>Positions are grid cells, not pixels.</b> Modes 13 and 14 use a 16×12 grid (pixel ≈ cell×10−5); modes 11, 12 and object list 51 use 8×6 (pixel ≈ cell×20−10); (0, 0) = not seen. Only object 1 in mode 52 is in pixels. Y top = small; line offset: left = negative, right = positive (looking forward from behind the robot).</li>
+      <li><b>The helper reads bytes 0–7 only.</b> Step 1 lists what each mode gives; for the rest (counts, areas, mid offset, flags…) see "Bytes 8–15" above or use <a href="/en/learn/unicam/micropython.html">Pybricks MicroPython</a>. Colors are taught on the camera; the program cannot change them.</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+var PAGE = {"lang":"en","code":"py"};
+var CFG = {"ports":["A","B","C","D","E","F"],"port":2,"EDU":{"11":{"rows":[{"k":"cnt","f":"x100"},{"k":"d8k:1","f":"x100"},{"k":["d8k:2","d8k:3"],"f":"x100"},{"k":["d8k:4","d8k:5"],"f":"x100"},{"k":["d8k:6","d8k:7"],"f":"x100"}]},"12":{"rows":[{"k":"cnt","f":"x100"},{"k":"d8k:1","f":"x100"},{"k":["d8k:2","d8k:3"],"f":"x100"},{"k":["d8k:4","d8k:5"],"f":"x100"},{"k":["d8k:6","d8k:7"],"f":"x100"}]},"13":{"rows":[{"k":"k16:X1","f":"b256"},{"k":"k12:Y1","f":"b256"},{"k":["k16:X2","k12:Y2"],"f":"b256"},{"k":["k16:X3","k12:Y3"],"f":"b256"},{"k":["k16:X4","k12:Y4"],"f":"b256"}]},"14":{"rows":[{"k":"k16:X1","f":"b256"},{"k":"k12:Y1","f":"b256"},{"k":["k16:X2","k12:Y2"],"f":"b256"},{"k":["k16:W1","k12s:H1"],"f":"b256"},{"k":["k16:W2","k12s:H2"],"f":"b256"}]},"21":{"rows":[{"k":null,"f":"b256"},{"k":null,"f":"b256"},{"k":["h1","h2"],"f":"b256"},{"k":["h3","h4"],"f":"b256"},{"k":["h5","h6"],"f":"b256"}]},"22":{"rows":[{"k":null,"f":"b256"},{"k":"t4","f":"b256"},{"k":["h1","t1"],"f":"b256"},{"k":["h2","t2"],"f":"b256"},{"k":["h3","t3"],"f":"b256"}]},"23":{"rows":[{"k":null,"f":"b256"},{"k":"v1","f":"b256"},{"k":["h1","t1"],"f":"b256"},{"k":["h2","t2"],"f":"b256"},{"k":["h3","t3"],"f":"b256"}]},"30":{"rows":[{"k":"total","f":"b256"},{"k":null,"f":"b256"},{"k":["o1","o2"],"f":"b256"},{"k":["o3","o4"],"f":"b256"},{"k":["o5","o6"],"f":"b256"}]},"41":{"rows":[{"k":"jt","f":"x100"},{"k":"wid","f":"x100"},{"k":"near+100","f":"x100"},{"k":"far+100","f":"x100"},{"k":"ang+100","f":"x100"}]},"42":{"rows":[{"k":"jt","f":"x100"},{"k":"wid","f":"x100"},{"k":"near+100","f":"x100"},{"k":"far+100","f":"x100"},{"k":"ang+100","f":"x100"}]},"43":{"rows":[{"k":"jt","f":"x100"},{"k":"wid","f":"x100"},{"k":"near+100","f":"x100"},{"k":"far+100","f":"x100"},{"k":"ang+100","f":"x100"}]},"51":{"rows":[{"k":"on","f":"x100"},{"k":"O1","f":"x100"},{"k":"d8k:1","f":"x100"},{"k":["O2","d8k:2"],"f":"x100"},{"k":["O3","d8k:3"],"f":"x100"}]},"52":{"rows":[{"k":"O1","f":"b256"},{"k":"A1","f":"b256"},{"k":["px:X1","py:Y1"],"f":"b256"},{"k":["pw:W1","ph:H1"],"f":"b256"},{"k":["O2","A2"],"f":"b256"}]}},"helper":["# ===== Sharpshooter Vision reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====","# The camera shows up as a colour sensor: colour, reflection, raw red/green/blue (bytes 0~7).","# Bytes 8~15 may only be readable with device.data() (not yet verified, #77); this helper does not use them.","# mode = camera menu mode number","import color_sensor","","","class UniCamApp:","    def __init__(self, port_number, mode):","        self.port = port_number","        self.mode = mode","        self.b = [0] * 8                      # byte 0~7","","    def update(self):","        \"\"\"read once\"\"\"","        c = color_sensor.color(self.port)              # byte 0","        r = color_sensor.reflection(self.port)         # byte 1","        rgb = color_sensor.rgbi(self.port)","        b = [int(c) & 255, int(r) & 255]","        for v in rgb[:3]:","            v = int(v) & 0xFFFF","            b += [v & 255, v >> 8]","        self.b = b","        return True","","    def _w(self, i):","        # raw red, green, blue word","        return self.b[2 + 2 * i] | (self.b[3 + 2 * i] << 8)","","    def cell(self, color):","        \"\"\"Colour tracking: (X cell, Y cell) of colour `color`, (0, 0) = not found (Y top = small). Modes 13, 14: 16x12 grid (pixel ≈ cell×10−5); modes 11, 12: 8x6 grid (pixel ≈ cell×20−10), colours 1~7\"\"\"","        m = self.mode","        if m in (13, 14):","            if color == 1:","                return (self.b[0], self.b[1])","            return (self.b[2 * color - 2], self.b[2 * color - 1])","        if color == 1:","            g = self.b[1]","        else:","            w = self._w((color - 2) // 2)","            g = w // 100 if color % 2 == 0 else w % 100","        return (g // 10, g % 10)","","    def size_cell(self, color):","        \"\"\"Mode 14: (width cells, height cells) of colour 1 or 2 (16x12 grid: width ≈ cells×10)\"\"\"","        w = self._w(color)","        return (w & 255, w >> 8)","","    def colors_found(self):","        \"\"\"Modes 11, 12: how many colours are found (colour)\"\"\"","        return self.b[0]","","    def hue(self, point):","        \"\"\"Colour at points: hue code 0~255 of a point (21: points 1~6; 22, 23: points 1~3)\"\"\"","        if self.mode == 21:","            return self.b[1 + point]","        return self.b[2 * point]","","    def sat(self, point):","        \"\"\"Saturation (22, 23: points 1~3; point 4 of mode 22 is in reflection)\"\"\"","        if self.mode == 22 and point == 4:","            return self.b[1]","        return self.b[2 * point + 1]","","    def val(self, point):","        \"\"\"Value (23: point 1 only, in reflection; the other points are in bytes 8~15)\"\"\"","        return self.b[1] if point == 1 else None","","    def order(self):","        \"\"\"Colour order: (hue codes of the first 6 blocks from the left, total blocks)\"\"\"","        n = min(6, self.b[0])","        return (self.b[2:2 + n], self.b[0])","","    def line(self):","        \"\"\"Line: (near offset, far offset, angle, junction type, near width); offsets and angle −100~100 (line on the left = negative)\"\"\"","        return (self._w(0) - 100, self._w(1) - 100, self._w(2) - 100, self.b[0], self.b[1])","","    # ── object detection (51 list, 52 detail): code = colour×10 + shape, 0 = none; object 1 = largest ──","    def _obj(self, i, n, modes=(51, 52)):","        if self.mode not in modes:","            raise ValueError('not available in mode %d, use %s' % (self.mode, modes))","        if not 1 <= i <= n:","            raise ValueError('object must be 1~%d' % n)","","    def max_object(self):","        \"\"\"How many object codes bytes 0~7 give: 51→3, 52→2 (in 52, position and size are for object 1 only)\"\"\"","        self._obj(1, 1)","        return 3 if self.mode == 51 else 2","","    def object_count(self):","        \"\"\"51: objects in view 0~8 (colour)\"\"\"","        self._obj(1, 1, (51,))","        return self.b[0]","","    def object(self, i):","        \"\"\"Code of object i (51: objects 1~3; 52: objects 1~2)\"\"\"","        if self.mode == 51:","            self._obj(i, 3)","            return self.b[1] if i == 1 else self._w(i - 1) // 100","        self._obj(i, 2)","        return self.b[0] if i == 1 else self._w(2) & 255","","    def object_color(self, i):","        \"\"\"Colour number 1~8 of object i, 0 = none\"\"\"","        return self.object(i) // 10","","    def object_shape(self, i):","        \"\"\"Shape 0~9 of object i (also 0 when there is no object)\"\"\"","        return self.object(i) % 10","","    def object_cell(self, i):","        \"\"\"51: 8x6 grid cell (X, Y) of object i (1~3), (0, 0) = none (Y top = small; pixel ≈ cell×20−10)\"\"\"","        self._obj(i, 3, (51,))","        g = self._w(0) if i == 1 else self._w(i - 1) % 100","        return (g // 10, g % 10)","","    def object_xy(self, i):","        \"\"\"52: centroid (X, Y) of object 1 in pixels, (0, 0) = none\"\"\"","        self._obj(i, 1, (52,))","        return (self._w(0) & 255, self._w(0) >> 8)","","    def object_size(self, i):","        \"\"\"52: bounding box (width, height) of object 1 in pixels\"\"\"","        self._obj(i, 1, (52,))","        return (self._w(1) & 255, self._w(1) >> 8)","","    def object_area(self, i):","        \"\"\"52: area of object 1 or 2 (% of the picture)\"\"\"","        self._obj(i, 2, (52,))","        return self.b[1] if i == 1 else self._w(2) >> 8","","","def shape_name(s, zh=False):","    \"\"\"Shape 0~9 → 'other' 'circle' 'ellipse' 'triangle' 'square' 'rectangle' 'pentagon' 'hexagon' 'star' 'trapezoid'\"\"\"","    if s is None or not 0 <= s <= 9:","        return None","    return ('other', 'circle', 'ellipse', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon', 'star', 'trapezoid')[s]","","","def color_name(h):","    \"\"\"Hue code → 'red' 'orange' 'yellow' 'green' 'cyan' 'blue' 'purple' 'white' 'black'\"\"\"","    if h > 248:","        return 'black'","    if h > 240:","        return 'white'","    if h < 12 or h >= 220:","        return 'red'","    if h < 28:","        return 'orange'","    if h < 56:","        return 'yellow'","    if h < 100:","        return 'green'","    if h < 140:","        return 'cyan'","    if h < 180:","        return 'blue'","    return 'purple'","# ===== end of helper ====="],"ex":{"track":["# Sharpshooter Vision × LEGO SPIKE App (Education, Python) example 1: turn to follow a colour blob","# Camera menu: camera mode 1 Colour tracking, option 3 Standard (XY + area) = mode number 13","# teach \"target 1\" on the camera first","# camera → port C; left wheel E, right wheel F","# new Python project in the SPIKE App, paste all of this","@HELPER","from hub import port, light_matrix","import motor_pair","import runloop","","cam = UniCamApp(port.C, 13)                       # must match the camera menu","BASE = 200        # forward speed (deg/s)","K = 40            # turn per grid cell of error","","","async def main():","    motor_pair.pair(motor_pair.PAIR_1, port.E, port.F)","    while True:","        cam.update()","        cx, cy = cam.cell(1)                      # grid cell","        if cx == 0:                               # not seen: spin to search","            motor_pair.move_tank(motor_pair.PAIR_1, 120, -120)","            light_matrix.write('?')","        else:","            error = cx - 8.5                      # centre = 8.5; right = positive","            motor_pair.move_tank(motor_pair.PAIR_1, int(BASE + K * error), int(BASE - K * error))","            light_matrix.write(str(cx))","        await runloop.sleep_ms(30)","","runloop.run(main())"],"line":["# Sharpshooter Vision × LEGO SPIKE App (Education, Python) example 2: PD line following + stop at a junction","# Camera menu: camera mode 4 Line, option 1 Black line = mode number 41 (42 / 43 work the same)","# camera at the front, looking down and forward","# camera → port C; left wheel E, right wheel F","# standing behind the robot: line on the left = negative","@HELPER","from hub import port, light_matrix, sound","import motor_pair","import runloop","","cam = UniCamApp(port.C, 41)","BASE = 250        # forward speed (deg/s)","KP = 3            # proportional gain","KD = 8            # derivative gain","","","async def main():","    motor_pair.pair(motor_pair.PAIR_1, port.E, port.F)","    last_error = 0","    while True:","        cam.update()","        near, far, angle, junction, width = cam.line()","        if junction in (1, 2):                    # cross or T: stop","            motor_pair.stop(motor_pair.PAIR_1)","            await sound.beep(880, 300, 100)","            break","        if width == 0:                            # line lost: search","            turn = -150 if last_error < 0 else 150","            motor_pair.move_tank(motor_pair.PAIR_1, turn, -turn)","        else:","            error = 0.7 * near + 0.3 * far        # mostly near, a bit of far","            turn = KP * error + KD * (error - last_error)","            last_error = error","            motor_pair.move_tank(motor_pair.PAIR_1, int(BASE + turn), int(BASE - turn))","        light_matrix.write(str(junction))","        await runloop.sleep_ms(20)","","runloop.run(main())"]}};
+function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
+  function $(id) { return document.getElementById(id); }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function idiv(a, b) { return Math.floor(a / b); }
+  var MODES = [
+    { n: 11, g: 'track', cm: 1, sub: 1, name: ('① Max colors') },
+    { n: 12, g: 'track', cm: 1, sub: 2, name: ('② Multi-color') },
+    { n: 13, g: 'track', cm: 1, sub: 3, name: ('③ Standard (XY + area)') },
+    { n: 14, g: 'track', cm: 1, sub: 4, name: ('④ Fine (XYWH)') },
+    { n: 21, g: 'spot', cm: 2, sub: 1, name: ('① Hue') },
+    { n: 22, g: 'spot', cm: 2, sub: 2, name: ('② Hue + saturation') },
+    { n: 23, g: 'spot', cm: 2, sub: 3, name: ('③ Hue + sat + value') },
+    { n: 30, g: 'order', cm: 3, sub: 0, name: ('(no sub-option)') },
+    { n: 41, g: 'line', cm: 4, sub: 1, name: ('① Black line') },
+    { n: 42, g: 'line', cm: 4, sub: 2, name: ('② White line') },
+    { n: 43, g: 'line', cm: 4, sub: 3, name: ('③ Colored line') },
+    { n: 51, g: 'obj', cm: 5, sub: 1, name: ('① Object list') },
+    { n: 52, g: 'obj', cm: 5, sub: 2, name: ('② Object details') }
+  ];
+  var GROUPS = {
+    track: { cm: 1, name: ('1 Color tracking'), modes: [11, 12, 13, 14] },
+    spot: { cm: 2, name: ('2 Color at points'), modes: [21, 22, 23] },
+    order: { cm: 3, name: ('3 Color order'), modes: [30] },
+    line: { cm: 4, name: ('4 Line following'), modes: [41, 42, 43] },
+    obj: { cm: 5, name: ('5 Object detection'), modes: [51, 52] },
+    info: { cm: 0, name: ('Sensor info (any mode)'), modes: null }
+  };
+  var GORDER = ['track', 'spot', 'order', 'line', 'obj', 'info'];
+  function modeOf(n) { for (var i = 0; i < MODES.length; i++) if (MODES[i].n === n) return MODES[i]; return MODES[2]; }
+  function modeTitle(n) { var m = modeOf(n); return n + ' = ' + GROUPS[m.g].name.replace(/^\d /, '') + ' ' + m.name; }
+  function modeList(ms) {
+    if (!ms) return ('any mode');
+    var out = [], i = 0;
+    while (i < ms.length) {
+      var j = i; while (j + 1 < ms.length && ms[j + 1] === ms[j] + 1) j++;
+      out.push(j - i >= 2 ? ms[i] + ('–') + ms[j] : ms.slice(i, j + 1).join((', ')));
+      i = j + 1;
+    }
+    return ('mode ') + out.join((', '));
+  }
+  var CNAME = ['', 'red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'white', 'black'];
+  var CNAME_ZH = ['', ('red'), ('orange'), ('yellow'), ('green'), ('cyan'), ('blue'), ('purple'), ('white/grey'), ('black')];
+  function colorCode(h) {
+    if (h > 248) return 9; if (h > 240) return 8;
+    if (h < 12 || h >= 220) return 1; if (h < 28) return 2; if (h < 56) return 3;
+    if (h < 100) return 4; if (h < 140) return 5; if (h < 180) return 6; return 7;
+  }
+  var SHAPES = ['other', 'circle', 'ellipse', 'triangle', 'square', 'rectangle', 'pentagon', 'hexagon', 'star', 'trapezoid'];
+  var SHAPES_ZH = [('other'), ('circle'), ('ellipse'), ('triangle'), ('square'), ('rectangle'), ('pentagon'), ('hexagon'), ('star'), ('trapezoid')];
+  function py(v) {
+    if (v === null || v === undefined) return 'None';
+    if (v === true) return 'True'; if (v === false) return 'False';
+    if (v && v.tuple) return '(' + v.tuple.map(pyIn).join(', ') + (v.tuple.length === 1 ? ',' : '') + ')';
+    if (Array.isArray(v)) return '[' + v.map(pyIn).join(', ') + ']';
+    return String(v);
+  }
+  function pyIn(v) { return typeof v === 'string' ? "'" + v + "'" : py(v); }
+  function tup(a) { return a === null || a === undefined ? null : { tuple: a }; }
+  function pr() { return Array.prototype.slice.call(arguments).map(py).join(' '); }   
+  function PyErr(msg) { this.err = msg; }
+  function cmp(op, a, b) {
+    var nm = { '<': '__lt__', '>': '__gt__', '<=': '__le__', '>=': '__ge__' }[op];
+    if (a === null || b === null || a === undefined || b === undefined) throw new PyErr("TypeError: unsupported types for " + nm + ": '" + (a == null ? 'NoneType' : 'int') + "', '" + (b == null ? 'NoneType' : 'int') + "'");
+    return op === '<' ? a < b : op === '>' ? a > b : op === '<=' ? a <= b : a >= b;
+  }
+  function unpack(v) { if (v === null || v === undefined) throw new PyErr("TypeError: 'NoneType' object isn't iterable"); return v.tuple || v; }
+  function sub(a, b) { if (a === null || a === undefined) throw new PyErr("TypeError: unsupported types for __sub__: 'NoneType', 'int'"); return a - b; }
+  var KWS = {
+    py: /^(from|import|while|True|False|None|if|else|elif|not|and|or|async|def|await|for|in|return|is|break|continue|pass)$/,
+    cpp: /^(void|bool|int|long|unsigned|char|float|double|const|if|else|while|for|return|true|false|switch|case|break|continue|default|static|struct|uint8_t|uint16_t|int16_t|int32_t|byte|auto)$/,
+    ts: /^(const|let|var|function|if|else|while|for|return|true|false|number|boolean|string|break|continue)$/
+  };
+  var LANGC = PAGE.code;
+  function hi(line) {
+    var out = '', i = 0, KW = KWS[LANGC], com = LANGC === 'py' ? '#' : '//';
+    while (i < line.length) {
+      var rest = line.slice(i), m;
+      if (rest.slice(0, com.length) === com) { out += '<span class="tk-com">' + esc(rest) + '</span>'; break; }
+      if (LANGC === 'cpp' && (m = rest.match(/^#[a-z]+/))) { out += '<span class="tk-kw">' + m[0] + '</span>'; i += m[0].length; continue; }
+      if (LANGC === 'cpp' && (m = rest.match(/^<[A-Za-z0-9_.\/]+\.h>/)) && /#include\s*$/.test(line.slice(0, i))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/))) { out += '<span class="tk-str">' + esc(m[0]) + '</span>'; i += m[0].length; continue; }
+      if ((m = rest.match(/^[A-Za-z_][A-Za-z0-9_]*/))) {
+        var w = m[0], after = rest.slice(w.length);
+        if (KW.test(w)) out += '<span class="tk-kw">' + w + '</span>';
+        else if (after[0] === '(') out += '<span class="tk-fn">' + w + '</span>';
+        else out += esc(w);
+        i += w.length; continue;
+      }
+      if ((m = rest.match(/^(0[xX][0-9A-Fa-f]+|\d+(\.\d+)?)/))) { out += '<span class="tk-num">' + m[0] + '</span>'; i += m[0].length; continue; }
+      out += esc(rest[0]); i++;
+    }
+    return out;
+  }
+  function render(el, lines, opts) {
+    opts = opts || {};
+    el.innerHTML = lines.map(function (l, k) {
+      var cls = 'ln' + (l.hl ? ' hl' : '') + (l.isNew ? ' new' : '');
+      var tag = opts.noTag ? '' : '<span class="tag">' + (l.tag && !l.tagHide ? '<i>' + l.tag + '</i>' : '') + '</span>';
+      return '<span class="' + cls + '"><span class="no">' + (l.no !== undefined ? l.no : k + 1) + '</span>' + tag + '<span>' + (l.t ? hi(l.t) : ' ') + '</span></span>';
+    }).join('');
+  }
+  function plain(lines) { return lines.map(function (l) { return typeof l === 'string' ? l : l.t; }).join('\n') + '\n'; }
+  function copyText(text, btn) {
+    var done = function () { var o = btn.textContent; btn.textContent = ('Copied'); setTimeout(function () { btn.textContent = o; }, 1400); };
+    try { navigator.clipboard.writeText(text).then(done, function () { fallback(text); }); } catch (e) { fallback(text); }
+    function fallback(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e2) { btn.textContent = ('Select and copy by hand'); }
+      document.body.removeChild(ta);
+    }
+  }
+    var S = { step: 1, viewStep: 1, fn: 'cell', mode: 13, name: 'cam', port: CFG.port, showHelper: false };
+    var EDU = CFG.EDU, HELPER = CFG.helper;
+    $('unplug').closest('label').hidden = true;   
+    function eduVal(st, m, key) {
+      if (key === null || key === undefined) return 0;
+      var objMode = Math.floor(m / 10) === 5;
+      var Lq = st.line, ob = st.obj;
+      function Tc(c) {
+        if (objMode) { var o = ob[c - 1]; if (!o) return { found: 0, px: 0, py: 0, w: 0, h: 0, n: 0, area: 0 }; return { found: 1, px: o[2], py: o[3], w: o[6] - o[4] + 1, h: o[7] - o[5] + 1, n: 0, area: o[8] }; }
+        var b = st.blobs[c]; if (!b || !b.f) return { found: 0, px: 0, py: 0, w: 0, h: 0, n: 0, area: 0 };
+        return { found: 1, px: b.x, py: b.y, w: b.w, h: b.h, n: b.n, area: b.ap };
+      }
+      function apct(c) { var o = Tc(c); return o.found ? Math.max(1, idiv(o.area * 100 + 9600, 19200)) : 0; }
+      var LN = { near: Lq.near, mid: Lq.mid, far: Lq.far, ang: Lq.angle, wid: Lq.width, st: Lq.flags, jt: Lq.junction, jd: Lq.jdist, le: Lq.left, re: Lq.right, fw: Lq.farw, mk: Lq.marker, mkn: Lq.mcount, lost: Lq.lost };
+      function plain(k) {
+        if (objMode) {
+          if (k === 'on') return ob.length;
+          var i = Number(k.slice(1));
+          if (k[0] === 'A') return apct(i);
+          var o = ob[i - 1]; if (!o) return 0;
+          return { O: o[0] * 10 + o[1], K: o[0], S: o[1], G: o[9], V: o[10], I: o[11] }[k[0]];
+        }
+        if (k in LN) return LN[k];
+        if (k === 'cnt') { var n = 0; for (var c = 1; c < st.blobs.length; c++) if (st.blobs[c] && st.blobs[c].f) n++; return n; }
+        if (k === 'total') return st.order.total;
+        var j = Number(k.slice(1));
+        if (k[0] === 'h') return st.spot[j].h;
+        if (k[0] === 't') return st.spot[j].s;
+        if (k[0] === 'v') return st.spot[j].v;
+        if (k[0] === 'o') return j <= st.order.hues.length ? st.order.hues[j - 1] : 0;
+        if (k[0] === 'N') return Tc(j).n;
+        if (k[0] === 'A') return apct(j);
+        return 0;
+      }
+      var suf = 0;
+      if (/\+100$/.test(key)) { key = key.slice(0, -4); suf = 100; }
+      if (key.indexOf(':') < 0) return plain(key) + suf;
+      var pre = key.split(':')[0], arg = key.split(':')[1];
+      if (pre === 'd8k') { var o1 = Tc(Number(arg)); return o1.found ? (idiv(o1.px, 20) + 1) * 10 + idiv(o1.py, 20) + 1 : 0; }
+      var c2 = Number(arg.slice(1)), o2 = Tc(c2);
+      if (!o2.found) return 0;
+      var v = { X: o2.px, Y: o2.py, W: o2.w, H: o2.h }[arg[0]];
+      if (pre === 'px' || pre === 'py') return Math.max(1, v);
+      if (pre === 'pw' || pre === 'ph') return v;
+      return idiv(v, 10) + 1;   
+    }
+    function cellVal(st, m, r) {
+      if (Array.isArray(r.k)) {
+        var a = eduVal(st, m, r.k[0]), b = eduVal(st, m, r.k[1]);
+        return r.f === 'b256' ? (a & 255) | ((b & 255) << 8) : a * 100 + Math.min(99, b);
+      }
+      return eduVal(st, m, r.k);
+    }
+    function view(st, m) {
+      var rows = (EDU[m] || EDU[13]).rows;
+      var v = rows.map(function (r) { return cellVal(st, m, r); });
+      var b = [v[0] & 255, v[1] & 255];
+      for (var i = 2; i < 5; i++) { var x = v[i] & 0xFFFF; b.push(x & 255, x >> 8); }
+      function w(k) { return b[2 + 2 * k] | (b[3 + 2 * k] << 8); }
+      function pmod(ms) { return '(' + ms.join(', ') + (ms.length === 1 ? ',' : '') + ')'; }
+      function need(k, n, ms) {
+        ms = ms || [51, 52];
+        if (ms.indexOf(m) < 0) throw new PyErr('ValueError: ' + ('') + 'not available in mode ' + m + ', use ' + pmod(ms));
+        if (!(k >= 1 && k <= n)) throw new PyErr('ValueError: ' + ('') + 'object must be 1~' + n);
+      }
+      var V = {
+        b: b.slice(), mode: m,
+        cell: function (c) {
+          if (m === 13 || m === 14) return c === 1 ? tup([b[0], b[1]]) : tup([b[2 * c - 2], b[2 * c - 1]]);
+          var g;
+          if (c === 1) g = b[1]; else { var ww = w(idiv(c - 2, 2)); g = c % 2 === 0 ? idiv(ww, 100) : ww % 100; }
+          return tup([idiv(g, 10), g % 10]);
+        },
+        size_cell: function (c) { var ww = w(c); return tup([ww & 255, ww >> 8]); },
+        colors_found: function () { return b[0]; },
+        hue: function (p) { return m === 21 ? b[1 + p] : b[2 * p]; },
+        sat: function (p) { return m === 22 && p === 4 ? b[1] : b[2 * p + 1]; },
+        val: function (p) { return p === 1 ? b[1] : null; },
+        order: function () { var n = Math.min(6, b[0]); return tup([b.slice(2, 2 + n), b[0]]); },
+        line: function () { return tup([w(0) - 100, w(1) - 100, w(2) - 100, b[0], b[1]]); },
+        max_object: function () { need(1, 1); return m === 51 ? 3 : 2; },
+        object_count: function () { need(1, 1, [51]); return b[0]; },
+        object: function (k) {
+          if (m === 51) { need(k, 3); return k === 1 ? b[1] : idiv(w(k - 1), 100); }
+          need(k, 2); return k === 1 ? b[0] : w(2) & 255;
+        },
+        object_color: function (k) { return idiv(V.object(k), 10); },
+        object_shape: function (k) { return V.object(k) % 10; },
+        object_cell: function (k) { need(k, 3, [51]); var g = k === 1 ? w(0) : w(k - 1) % 100; return tup([idiv(g, 10), g % 10]); },
+        object_xy: function (k) { need(k, 1, [52]); return tup([w(0) & 255, w(0) >> 8]); },
+        object_size: function (k) { need(k, 1, [52]); return tup([w(1) & 255, w(1) >> 8]); },
+        object_area: function (k) { need(k, 2, [52]); return k === 1 ? b[1] : w(2) >> 8; },
+        __n: 1
+      };
+      return V;
+    }
+    function shapeName(s, zh) { return s === null || s < 0 || s > 9 ? null : (zh ? SHAPES_ZH[s] : SHAPES[s]); }
+    function colorName(h) { return CNAME[colorCode(h)]; }
+    var JN = [('none'), ('cross'), ('T'), ('left turn'), ('right turn'), ('dead end')];
+    var FNS = [
+      { id: 'cell', label: 'cell(c)', name: ('Grid cell of a blob'), grp: 'track', modes: [11, 12, 13, 14],
+        what: ('Grid cell of color c: (X cell, Y cell), (0, 0) = not seen; X left→right, Y top→bottom (top = small). Modes 13, 14 use a 16×12 grid (mode 13 colors 1–4, mode 14 colors 1, 2); modes 11, 12 use 8×6 (colors 1–7). c is the "target" number taught on the camera. Drag blob 1.'),
+        ret: ('(X cell, Y cell)'),
+        body: ['print("' + ('color 1 cell:') + '", {n}.cell(1))'], out: function (V) { return pr(('color 1 cell:'), V.cell(1)); } },
+      { id: 'side', label: ('left/middle/right'), name: ('Is the blob left or right'), grp: 'track', modes: [13, 14],
+        what: ('Turns the 16-cell X into rough pixels (cell×10−5, 0–159), then splits it in three: below 60 = left, above 100 = right, else middle. A blob-chasing robot steers like this.'),
+        ret: ('decided from X'),
+        body: ['gx, gy = {n}.cell(1)', 'if gx == 0:', '    print("' + ('color 1 not seen') + '")', 'else:', '    x = gx * 10 - 5              # ' + ('cell to pixels (roughly)'), '    if x < 60:', '        print("' + ('color 1 is left') + '", x)', '    elif x > 100:', '        print("' + ('color 1 is right') + '", x)', '    else:', '        print("' + ('color 1 is in the middle') + '", x)'],
+        out: function (V) { var t = unpack(V.cell(1)), gx = t[0]; if (gx === 0) return ('color 1 not seen'); var x = gx * 10 - 5; return x < 60 ? pr(('color 1 is left'), x) : x > 100 ? pr(('color 1 is right'), x) : pr(('color 1 is in the middle'), x); } },
+      { id: 'size_cell', label: 'size_cell(c)', name: ('Width, height (cells)'), grp: 'track', modes: [14],
+        what: ('Mode 14: (width, height) of color 1 or 2 in 16×12 grid cells (width ≈ cells×10 pixels). Much taller than wide = something standing up.'),
+        ret: ('(width cells, height cells)'),
+        body: ['w, h = {n}.size_cell(1)', 'print("' + ('width') + '", w, "' + ('cells, height') + '", h, "' + ('cells') + '")'], out: function (V) { var t = unpack(V.size_cell(1)); return pr(('width'), t[0], ('cells, height'), t[1], ('cells')); } },
+      { id: 'colors_found', label: 'colors_found()', name: ('Colors found'), grp: 'track', modes: [11, 12],
+        what: ('Modes 11, 12: how many of the taught colors are in the picture (in the color slot). Remove a blob to see it drop.'),
+        ret: ('0–16'), body: ['print("' + ('colors found:') + '", {n}.colors_found())'], out: function (V) { return pr(('colors found:'), V.colors_found()); } },
+      { id: 'hue', label: 'hue(i)', name: ('Hue code at a spot'), grp: 'spot', modes: [21, 22, 23],
+        what: ('Hue code 0–255 at spot i: red 0 (240 is red too), yellow 40, green 80, cyan 120, blue 160, purple 200; 241–248 white/grey, 249–255 black. The helper reads spots 1–6 in mode 21 and 1–3 in modes 22, 23. Drag a paper onto spot 1.'),
+        ret: ('0–255'), body: ['print("' + ('spot 1 hue code:') + '", {n}.hue(1))'], out: function (V) { return pr(('spot 1 hue code:'), V.hue(1)); } },
+      { id: 'color', label: 'color_name(h)', name: ('Hue code → color name'), grp: 'spot', modes: [21, 22, 23],
+        what: ('The helper\'s <code>color_name()</code> turns a hue code into a color name: <code>red</code> <code>orange</code> <code>yellow</code> <code>green</code> <code>cyan</code> <code>blue</code> <code>purple</code> <code>white</code> <code>black</code>. The borders are set in the helper; under different light, look at <code>hue()</code> and adjust.'),
+        ret: ("string, e.g. 'red'"),
+        body: ['c = color_name({n}.hue(1))', 'if c == "red":', '    print("' + ('spot 1 is red!') + '")', 'else:', '    print("' + ('spot 1 is') + '", c)'],
+        out: function (V) { var c = colorName(V.hue(1)); return c === 'red' ? ('spot 1 is red!') : pr(('spot 1 is'), c); } },
+      { id: 'sat', label: 'sat(i)', name: ('Saturation'), grp: 'spot', modes: [22, 23],
+        what: ('How vivid the spot is: 0 = greyish, 100 = vivid. Spots 1–3 in modes 22 and 23; mode 22 also has spot 4 (in the reflection slot).'),
+        ret: ('0–100'), body: ['print("' + ('spot 1 saturation:') + '", {n}.sat(1))'], out: function (V) { return pr(('spot 1 saturation:'), V.sat(1)); } },
+      { id: 'val', label: 'val(i)', name: ('Value (brightness)'), grp: 'spot', modes: [23],
+        what: ('Mode 23: how bright spot 1 is (0 = dark, 100 = bright), in the reflection slot. The other spots\' values are in bytes 8–15, so the helper returns <code>None</code>.'),
+        ret: ('0–100 (None from spot 2 on)'), body: ['print("' + ('spot 1 value:') + '", {n}.val(1))'], out: function (V) { return pr(('spot 1 value:'), V.val(1)); } },
+      { id: 'order', label: 'order()', name: ('Hue codes left to right'), grp: 'order', modes: [30],
+        what: ('Returns (hue codes of the first 6 blocks from the left, total blocks). Red is 0, so use the list length or the total; blocks 7 and up are in bytes 8–15, out of the helper\'s reach. Drag the blocks to reorder.'),
+        ret: ('(list, total)'),
+        body: ['hues, total = {n}.order()', 'print("' + ('left to right:') + '", hues, "' + ('total') + '", total)'], out: function (V) { var t = unpack(V.order()); return pr(('left to right:'), t[0], ('total'), t[1]); } },
+      { id: 'total', label: ('order() total'), name: ('Total blocks'), grp: 'order', modes: [30],
+        what: ('The second value of <code>order()</code>: how many blocks there are in total (can be more than the list).'),
+        ret: ('integer'),
+        body: ['n = {n}.order()[1]', 'if n == 0:', '    print("' + ('no blocks') + '")', 'else:', '    print("' + ('total') + '", n, "' + ('blocks') + '")'],
+        out: function (V) { var n = unpack(V.order())[1]; return n === 0 ? ('no blocks') : pr(('total'), n, ('blocks')); } },
+      { id: 'near', label: 'line() → near', name: ('Near offset'), grp: 'line', modes: [41, 42, 43],
+        what: ('<code>line()</code> returns 5 values: (near offset, far offset, angle, junction type, near width). Near offset −100–100, <b>left = negative, right = positive</b>; width 0 = no line near. Drag the "near" green dot.'),
+        ret: ('−100–100'),
+        body: ['near, far, angle, junction, width = {n}.line()', 'if width == 0:', '    print("' + ('no line near') + '")', 'elif near < -10:', '    print("' + ('line on the left') + '", near)', 'elif near > 10:', '    print("' + ('line on the right') + '", near)', 'else:', '    print("' + ('line in the middle') + '", near)'],
+        out: function (V) { var t = unpack(V.line()), e = t[0]; return t[4] === 0 ? ('no line near') : e < -10 ? pr(('line on the left'), e) : e > 10 ? pr(('line on the right'), e) : pr(('line in the middle'), e); } },
+      { id: 'far', label: 'line() → far', name: ('Far offset'), grp: 'line', modes: [41, 42, 43],
+        what: ('Offset on the top scan row: tells you a bend is coming. Example 2 follows the line with "0.7 × near + 0.3 × far".'), ret: ('−100–100'),
+        body: ['near, far, angle, junction, width = {n}.line()', 'print("' + ('near') + '", near, "' + ('far') + '", far)'], out: function (V) { var t = unpack(V.line()); return pr(('near'), t[0], ('far'), t[1]); } },
+      { id: 'angle', label: 'line() → angle', name: ('Line angle'), grp: 'line', modes: [41, 42, 43],
+        what: ('Which way the line leans: −90–90, positive = leans right (a right bend ahead).'), ret: ('−90–90'),
+        body: ['angle = {n}.line()[2]', 'if angle > 20:', '    print("' + ('bend to the right ahead') + '", angle)', 'elif angle < -20:', '    print("' + ('bend to the left ahead') + '", angle)', 'else:', '    print("' + ('straight') + '", angle)'],
+        out: function (V) { var a = unpack(V.line())[2]; return a > 20 ? pr(('bend to the right ahead'), a) : a < -20 ? pr(('bend to the left ahead'), a) : pr(('straight'), a); } },
+      { id: 'junction', label: 'line() → junction', name: ('Junction type'), grp: 'line', modes: [41, 42, 43],
+        what: ('Junction ahead: 0 none, 1 cross, 2 T, 3 left, 4 right, 5 dead end. The junction distance is in bytes 8–15, out of the helper\'s reach. Pick one on the right.'), ret: ('0–5'),
+        body: ['NAMES = ["' + JN.join('", "') + '"]', 'print("' + ('junction:') + '", NAMES[{n}.line()[3]])'], out: function (V) { return pr(('junction:'), JN[unpack(V.line())[3]]); } },
+      { id: 'width', label: 'line() → width', name: ('Near line width %'), grp: 'line', modes: [41, 42, 43],
+        what: ('Width of the near line in % of the picture. Suddenly much wider = maybe a junction or cross line; 0 = no line near.'), ret: ('0–100'),
+        body: ['print("' + ('width:') + '", {n}.line()[4], "%")'], out: function (V) { return pr(('width:'), unpack(V.line())[4], '%'); } },
+      { id: 'line_all', label: 'line()', name: ('All 5 line values'), grp: 'line', modes: [41, 42, 43],
+        what: ('Prints (near offset, far offset, angle, junction type, near width) at once. Mid offset, flags, junction distance, marker lines, edges and far width are in bytes 8–15, out of the helper\'s reach.'),
+        ret: ('tuple (5 values)'), body: ['print({n}.line())'], out: function (V) { return py(V.line()); } },
+      { id: 'max_object', label: 'max_object()', name: ('Objects in this mode'), grp: 'obj', modes: [51, 52], once: true,
+        what: ('How many object codes the helper gets in this mode: 51→3, 52→2 (in 52, position and size are for object 1 only). Object 1 is the largest. No camera read.'),
+        ret: ('integer'), body: ['print("' + ('max objects:') + '", {n}.max_object())'], out: function (V) { return pr(('max objects:'), V.max_object()); } },
+      { id: 'object_count', label: 'object_count()', name: ('Objects in view'), grp: 'obj', modes: [51],
+        what: ('Mode 51: how many objects are in view (0–8, can be more than max_object()). Only target colors 1–8 count. Remove an object to see it drop.'),
+        ret: ('0–8'), body: ['print("' + ('objects in view:') + '", {n}.object_count())'], out: function (V) { return pr(('objects in view:'), V.object_count()); } },
+      { id: 'object', label: 'object(i)', name: ('Object code'), grp: 'obj', modes: [51, 52],
+        what: ('Code of object i = color × 10 + shape, e.g. 13 = a triangle of target color 1, 24 = a square of target color 2; 0 = none. Shapes: 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid 0 other. Objects 1–3 in mode 51, 1–2 in mode 52. Change the shape and color on the right.'),
+        ret: ('0, 10–89'), body: ['print("' + ('object 1 code:') + '", {n}.object(1))'], out: function (V) { return pr(('object 1 code:'), V.object(1)); } },
+      { id: 'object_color', label: 'object_color(i)', name: ('Object color'), grp: 'obj', modes: [51, 52],
+        what: ('Which taught target color object i is (1–8); 0 = none.'),
+        ret: ('0–8'), body: ['print("' + ('object 1 is target color') + '", {n}.object_color(1))'], out: function (V) { return pr(('object 1 is target color'), V.object_color(1)); } },
+      { id: 'object_shape', label: 'object_shape(i)', name: ('Object shape'), grp: 'obj', modes: [51, 52],
+        what: ('Shape 0–9 of object i; the helper\'s <code>shape_name(s)</code> turns it into a name. It is also 0 when there is no object, so check object(i) first.'),
+        ret: ('0–9'), body: ['s = {n}.object_shape(1)', 'print("' + ('object 1 shape:') + '", s, ' + ('shape_name(s)') + ')'],
+        out: function (V) { var x = V.object_shape(1); return pr(('object 1 shape:'), x, shapeName(x, (false))); } },
+      { id: 'object_cell', label: 'object_cell(i)', name: ('Object grid cell (8×6)'), grp: 'obj', modes: [51],
+        what: ('Mode 51: 8×6 grid cell (X, Y) of object i (1–3), (0, 0) = none; Y top = small (pixel ≈ cell×20−10).'),
+        ret: ('(X cell, Y cell)'), body: ['print("' + ('object 1 cell:') + '", {n}.object_cell(1))'], out: function (V) { return pr(('object 1 cell:'), V.object_cell(1)); } },
+      { id: 'object_xy', label: 'object_xy(1)', name: ('Object position (centroid, pixels)'), grp: 'obj', modes: [52],
+        what: ('Mode 52: centroid (X, Y) of object 1 in pixels; (0, 0) = none. The centroid is the shape\'s balance point (white dot). Object 1 only.'),
+        ret: ('(X, Y)'), body: ['print("' + ('object 1 at:') + '", {n}.object_xy(1))'], out: function (V) { return pr(('object 1 at:'), V.object_xy(1)); } },
+      { id: 'object_size', label: 'object_size(1)', name: ('Object width, height'), grp: 'obj', modes: [52],
+        what: ('Mode 52: (width, height) of the bounding box of object 1 in pixels (dashed box). Much taller than wide = standing up.'),
+        ret: ('(width, height)'), body: ['w, h = {n}.object_size(1)', 'print("' + ('width') + '", w, "' + ('height') + '", h)'],
+        out: function (V) { var t = unpack(V.object_size(1)); return pr(('width'), t[0], ('height'), t[1]); } },
+      { id: 'object_area', label: 'object_area(i)', name: ('Object area %'), grp: 'obj', modes: [52],
+        what: ('Mode 52: how many % of the picture object 1 or 2 covers (0 = none). Bigger = closer. Make it bigger.'),
+        ret: ('0–100'),
+        body: ['a = {n}.object_area(1)', 'if a == 0:', '    print("' + ('no object') + '")', 'elif a >= 20:', '    print("' + ('close enough! area') + '", a)', 'else:', '    print("' + ('object 1 area') + '", a, "%")'],
+        out: function (V) { var a = V.object_area(1); return a === 0 ? ('no object') : a >= 20 ? pr(('close enough! area'), a) : pr(('object 1 area'), a, '%'); } },
+      { id: 'object_find', label: ('find object 13'), name: ('Find the red triangle'), grp: 'obj', modes: [51, 52],
+        what: ('Checks objects 1 to max_object() for code 13 (a triangle of target color 1) and prints which one it is, or "not seen". Change the triangle into another shape.'),
+        ret: ('decided with object()'),
+        body: ['for i in range(1, {n}.max_object() + 1):', '    if {n}.object(i) == 13:', '        print("' + ('red triangle is object') + '", i)', '        break', 'else:', '    print("' + ('no red triangle') + '")'],
+        out: function (V) { var n = V.max_object(); for (var i = 1; i <= n; i++) if (V.object(i) === 13) return pr(('red triangle is object'), i); return ('no red triangle'); } },
+      { id: 'bytes', label: ('cam.b (8 bytes)'), name: ('The raw 8 bytes'), grp: 'info', modes: null,
+        what: ('The raw bytes 0–7 from <code>update()</code>: [color, reflection, raw red low, raw red high, raw green low, raw green high, raw blue low, raw blue high]. Print them when numbers look wrong and compare with the value reference.'),
+        ret: ('list of 8 numbers 0–255'), body: ['print("byte 0~7:", {n}.b)'], out: function (V) { return pr('byte 0~7:', V.b); } },
+      { id: 'mode', label: ('cam.mode'), name: ('Mode number'), grp: 'info', modes: null, once: true,
+        what: ('The mode number you wrote when creating the object (the App cannot read the camera\'s mode, so the helper splits by this).'),
+        ret: ('11–52'), body: ['print("' + ('mode number:') + '", {n}.mode)'], out: function (V) { return pr(('mode number:'), V.mode); } }
+    ];
+    FNS = FNS.map(function (f, i) { return [GORDER.indexOf(f.grp), i, f]; }).sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; }).map(function (x) { return x[2]; });
+    var READ = { 11: ('the helper reads the cells (8×6) of colors 1–7 and the color count'), 13: ('the helper reads the cells (16×12) of colors 1–4'), 14: ('the helper reads the cells and sizes of colors 1, 2'),
+      21: ('the helper reads the hue codes of spots 1–6'), 22: ('the helper reads hue + saturation of spots 1–3 and the saturation of spot 4'), 23: ('the helper reads hue + saturation of spots 1–3 and the value of spot 1'), 30: ('the helper reads the total and blocks 1–6 from the left'),
+      41: ('the helper reads near/far offset, angle, junction type and near width'), 51: ('the helper reads the object count and the codes and cells of objects 1–3'), 52: ('the helper reads code, area, position and size of object 1 and code and area of object 2') };
+    READ[12] = READ[11]; READ[42] = READ[43] = READ[41];
+    function portRef() { return 'port.' + CFG.ports[S.port]; }
+    function ctor() { return S.name + ' = UniCamApp(' + portRef() + ', ' + S.mode + ')'; }
+    function bodyOf(f, name) { return f.body.map(function (b) { return b.replace(/\{n\}\./g, name + '.'); }); }
+    var HOST = {
+      collapse: true, helper: HELPER,
+      counts: function (m) { return { col: { 11: 14, 12: 7, 13: 4, 14: 2 }[m], pt: { 21: 14, 22: 7, 23: 4 }[m], order: 13, line: 13, obj: { 51: 7, 52: 2 }[m] }; },
+      cmt: function (s) { return '# ' + s; },
+      lines: function (f) {
+        var L = [], mi = modeOf(S.mode);
+        HELPER.forEach(function (t) { L.push({ t: t, tag: 1, helper: true }); });
+        L.push({ t: 'from hub import port', tag: 1 });
+        L.push({ t: 'import runloop', tag: 1 });
+        L.push({ t: '# ' + ('camera menu: mode ') + S.mode + ' = ' + GROUPS[mi.g].name.replace(/^\d /, '') + (mi.sub ? ' ' + mi.name : ''), tag: 1 });
+        if (S.step >= 2) {
+          L.push({ t: '' });
+          L.push({ t: ctor() + '    # ' + ('mode must match the camera menu'), tag: 2 });
+        }
+        if (S.step >= 3) {
+          L.push({ t: '' });
+          L.push({ t: '' });
+          L.push({ t: 'async def main():', tag: 3 });
+          var body = bodyOf(f, S.name);
+          if (f.once) {
+            L.push({ t: '    ' + S.name + '.update()', tag: 3 });
+            body.forEach(function (b) { L.push({ t: '    ' + b, tag: 3 }); });
+          } else {
+            L.push({ t: '    while True:', tag: 3 });
+            L.push({ t: '        ' + S.name + '.update()            # ' + ('read once per loop'), tag: 3 });
+            body.forEach(function (b) { L.push({ t: '        ' + b, tag: 3 }); });
+            L.push({ t: '        await runloop.sleep_ms(100)', tag: 3 });
+          }
+          L.push({ t: '' });
+          L.push({ t: 'runloop.run(main())', tag: 3 });
+        }
+        return L;
+      },
+      card: function (f) {
+        var body = f.body.map(function (b) { return b.replace(/\{n\}/g, 'cam'); });
+        return f.once ? ['cam.update()'].concat(body) : ['while True:', '    cam.update()'].concat(body.map(function (b) { return '    ' + b; }), ['    await runloop.sleep_ms(100)']);
+      },
+      place: function (f) { return f.once ? ('inside async def main(), read once') : ('inside the while True loop of async def main()'); },
+      outLabel: ('The simulator prints: '),
+      bubble: function (step, f) {
+        if (step === 1) return ('Step 1: the whole reading helper goes at the top (only its first line shows; press "Show helper"); then import the App\'s port and runloop; the comment reminds you to set the camera menu to mode ') + S.mode + ('.');
+        if (step === 2) return ('Step 2: create the object. ') + S.name + (' (left of =) is your name; the right side tells the helper the camera is on ') + portRef() + (', mode ') + S.mode + ('.');
+        return ('Step 3: code goes in async def main(), and runloop.run(main()) starts it. ') + (f.once ? ('This one runs once: update(), then print.') : ('while True repeats: each loop calls ' + S.name + '.update() first, then "' + S.name + '.function()"; await runloop.sleep_ms(100) loops every 0.1 s.'));
+      },
+      valid: function () {
+        var v = $('varname').value.trim(), bad = '';
+        if (!v) bad = ('The name cannot be empty.');
+        else if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(v)) bad = ('Use only letters, digits and _, and do not start with a digit.');
+        else if (KWS.py.test(v) || ['UniCamApp', 'port', 'runloop', 'main', 'print', 'color_sensor', 'shape_name', 'color_name', 'device', 'hub', 'range'].indexOf(v) >= 0) bad = ('"' + v + '" is already used by Python or the program; pick another name.');
+        $('nameerr').hidden = !bad; $('nameerr').textContent = bad;
+        if (!bad) S.name = v;
+        return !bad;
+      },
+      modeWarn: function (m) { return ('Set the camera menu to mode ' + m + ' too: the App cannot read the camera\'s mode, so a mismatch gives nonsense numbers.') + ' ' + READ[m] + ('; the rest is in bytes 8–15, which the helper cannot read (see "Bytes 8–15" below, not yet tested).'); },
+      view: view,
+      warn: function () { return []; },
+      bind: function (cb) {
+        function drawPorts() {
+          var box = $('ports'); box.innerHTML = '';
+          CFG.ports.forEach(function (l, i) {
+            var b = document.createElement('button'); b.type = 'button'; b.textContent = l;
+            b.setAttribute('aria-pressed', String(S.port === i)); b.setAttribute('aria-label', ('port ' + l));
+            b.addEventListener('click', function () { S.port = i; drawPorts(); cb(false); });
+            box.appendChild(b);
+          });
+        }
+        drawPorts();
+        $('varname').addEventListener('input', function () { var ok = HOST.valid(); $('next2').disabled = !ok; if (ok) cb(false); });
+      }
+    };
+    var EX = { track: CFG.ex.track, line: CFG.ex.line };
+  var FW = 160, FH = 120, K = 2.5, OX = 30, OY = 10, SW = 460, SH = 330;
+  var SC = {
+    blobs: [
+      { hue: 0, fill: '#d8392b', nm: ('red'), cx: 42, cy: 46, size: 30, n: 1, gone: false },
+      { hue: 80, fill: '#2f9e44', nm: ('green'), cx: 112, cy: 40, size: 24, n: 1, gone: false },
+      { hue: 160, fill: '#1f6fd1', nm: ('blue'), cx: 70, cy: 90, size: 20, n: 1, gone: false },
+      { hue: 40, fill: '#f2c318', nm: ('yellow'), cx: 128, cy: 92, size: 26, n: 1, gone: false }
+    ],
+    sel: 0,
+    patches: [
+      { hue: 0, s: 84, v: 72, cx: 30, cy: 45, w: 34, h: 26 },
+      { hue: 40, s: 80, v: 88, cx: 75, cy: 30, w: 30, h: 24 },
+      { hue: 80, s: 70, v: 56, cx: 112, cy: 64, w: 32, h: 26 },
+      { hue: 160, s: 76, v: 50, cx: 140, cy: 32, w: 26, h: 24 }
+    ],
+    psel: 0,
+    blocks: [
+      { hue: 0, fill: '#d8392b', cx: 22, cy: 62 }, { hue: 80, fill: '#2f9e44', cx: 52, cy: 58 }, { hue: 160, fill: '#1f6fd1', cx: 84, cy: 64 },
+      { hue: 40, fill: '#f2c318', cx: 112, cy: 60 }, { hue: 200, fill: '#8a3fc4', cx: 140, cy: 62 }
+    ],
+    osel: 0,
+    line: { ys: [100, 62, 24], xs: [66, 74, 88] }, lsel: 0,
+    mk: 0, mkn: 0, lastSide: -1,
+    objs: [
+      { id: 1, color: 1, shape: 3, cx: 40, cy: 44, size: 42, rot: 0, gone: false },
+      { id: 2, color: 2, shape: 4, cx: 112, cy: 38, size: 30, rot: 20, gone: false },
+      { id: 3, color: 3, shape: 1, cx: 74, cy: 88, size: 28, rot: 0, gone: false },
+      { id: 4, color: 4, shape: 5, cx: 128, cy: 90, size: 34, rot: 150, gone: false },
+      { id: 5, color: 5, shape: 8, cx: 30, cy: 96, size: 26, rot: 0, gone: false }
+    ],
+    jsel: 0
+  };
+  var OBJFILL = ['#888', '#d8392b', '#2f9e44', '#1f6fd1', '#f2c318', '#8a3fc4', '#f08a24', '#18a8b8', '#e0559a'];
+  var VERTS = [0, 0, 0, 3, 4, 4, 5, 6, 10, 4];
+  function objPoly(o) {
+    var s = o.size, pts = [], i, n, r;
+    if (o.shape === 1 || o.shape === 2) { var a = s / 2, b = o.shape === 1 ? s / 2 : s / 3; for (i = 0; i < 48; i++) { var t = i * Math.PI * 2 / 48; pts.push([a * Math.cos(t), b * Math.sin(t)]); } }
+    else if (o.shape === 3) { r = s / Math.sqrt(3); for (i = 0; i < 3; i++) { var t3 = -Math.PI / 2 + i * Math.PI * 2 / 3; pts.push([r * Math.cos(t3), r * Math.sin(t3) + r / 4]); } }
+    else if (o.shape === 4) pts = [[-s / 2, -s / 2], [s / 2, -s / 2], [s / 2, s / 2], [-s / 2, s / 2]];
+    else if (o.shape === 5) pts = [[-s / 2, -s * 0.28], [s / 2, -s * 0.28], [s / 2, s * 0.28], [-s / 2, s * 0.28]];
+    else if (o.shape === 6 || o.shape === 7) { n = o.shape === 6 ? 5 : 6; for (i = 0; i < n; i++) { var t5 = -Math.PI / 2 + i * Math.PI * 2 / n; pts.push([s / 2 * Math.cos(t5), s / 2 * Math.sin(t5)]); } }
+    else if (o.shape === 8) { for (i = 0; i < 10; i++) { var t8 = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? s * 0.2 : s / 2; pts.push([rr * Math.cos(t8), rr * Math.sin(t8)]); } }
+    else pts = [[-s / 2, s * 0.3], [s / 2, s * 0.3], [s * 0.28, -s * 0.3], [-s * 0.28, -s * 0.3]];
+    var c = Math.cos(o.rot * Math.PI / 180), sn = Math.sin(o.rot * Math.PI / 180);
+    return pts.map(function (q) { return [o.cx + q[0] * c - q[1] * sn, o.cy + q[0] * sn + q[1] * c]; });
+  }
+  function polyArea(P) { var a = 0; for (var i = 0; i < P.length; i++) { var j = (i + 1) % P.length; a += P[i][0] * P[j][1] - P[j][0] * P[i][1]; } return a / 2; }
+  function polyCentroid(P) {
+    var A = polyArea(P), x = 0, y = 0;
+    for (var i = 0; i < P.length; i++) { var j = (i + 1) % P.length, f = P[i][0] * P[j][1] - P[j][0] * P[i][1]; x += (P[i][0] + P[j][0]) * f; y += (P[i][1] + P[j][1]) * f; }
+    return [x / (6 * A), y / (6 * A)];
+  }
+  function objTruth(o) {
+    var P = objPoly(o), xs = P.map(function (q) { return q[0]; }), ys = P.map(function (q) { return q[1]; });
+    var l = clamp(Math.floor(Math.min.apply(null, xs)), 0, 159), r = clamp(Math.floor(Math.max.apply(null, xs)), 0, 159);
+    var t = clamp(Math.floor(Math.min.apply(null, ys)), 0, 119), b = clamp(Math.floor(Math.max.apply(null, ys)), 0, 119);
+    var c = polyCentroid(P);
+    var ang = o.shape === 1 ? 0 : ((Math.round(o.rot) % 180) + 180) % 180;
+    return [o.color, o.shape, clamp(Math.round(c[0]), 0, 159), clamp(Math.round(c[1]), 0, 119), l, t, r, b, Math.max(1, Math.round(Math.abs(polyArea(P)))), ang, VERTS[o.shape], o.id];
+  }
+  var WHITE = { h: 244, s: 4, v: 92 }, BLACK = { h: 252, s: 8, v: 7 };
+  var TAPE = { y0: 104, y1: 112 };
+  function hueFill(h) { return 'hsl(' + Math.round(h * 1.5) + ', 72%, 48%)'; }   
+  function ctl(id) { return $(id); }
+  function num(id, d) { var e = $(id); return e ? Number(e.value) : d; }
+  function curG() { return modeOf(S.mode).g; }
+  function selBlob() { return SC.blobs[SC.sel]; }
+  function points(n) {
+    var out = [], rows = n > 8 ? 2 : 1, per = Math.ceil(n / rows);
+    for (var i = 0; i < n; i++) {
+      var r = rows === 1 ? 0 : (i < per ? 0 : 1), k = rows === 1 ? i : (r === 0 ? i : i - per), cnt = r === 0 ? per : n - per;
+      out.push({ x: Math.round((k + 0.5) * FW / cnt), y: rows === 1 ? 60 : (r === 0 ? 40 : 80) });
+    }
+    return out;
+  }
+  function colorAt(x, y) {
+    for (var i = SC.patches.length - 1; i >= 0; i--) {
+      var p = SC.patches[i];
+      if (Math.abs(x - p.cx) <= p.w / 2 && Math.abs(y - p.cy) <= p.h / 2) return { h: p.hue, s: p.s, v: p.v };
+    }
+    if (y >= TAPE.y0 && y <= TAPE.y1) return BLACK;
+    return WHITE;
+  }
+  function lineRows() {
+    var jt = num('ljunc', 0), jd = num('ljd', 60), jy = Math.round(FH - jd * 1.2);
+    var top = (jt >= 2) ? jy : 0;
+    return { jt: jt, jd: jd, jy: jy, top: top };
+  }
+  function xAtY(y) {
+    var ys = SC.line.ys, xs = SC.line.xs;
+    if (y >= ys[0]) return xs[0];
+    if (y >= ys[1]) return xs[0] + (xs[1] - xs[0]) * (ys[0] - y) / (ys[0] - ys[1]);
+    if (y >= ys[2]) return xs[1] + (xs[2] - xs[1]) * (ys[1] - y) / (ys[1] - ys[2]);
+    return xs[2] + (xs[2] - xs[1]) * (ys[2] - y) / (ys[1] - ys[2]);
+  }
+  function off(x) { return clamp(Math.round((x - 80) * 100 / 80), -100, 100); }
+  function rawState() {
+    var s = { ok: true, none: false, mode: S.mode };
+    s.blobs = [null];
+    for (var c = 1; c <= 20; c++) {
+      var b = SC.blobs[c - 1];
+      if (!b || b.gone) { s.blobs.push({ f: false, x: 0, y: 0, w: 0, h: 0, n: 0, a: 0, ap: 0 }); continue; }
+      var half = b.size / 2;
+      b.cx = clamp(b.cx, half, FW - half); b.cy = clamp(b.cy, half, FH - half);
+      var x = clamp(Math.round(b.cx), 1, 159), y = clamp(Math.round(b.cy), 1, 119);
+      var ap = Math.round(b.size * b.size + (b.n - 1) * b.size * b.size * 0.25);
+      s.blobs.push({ f: true, x: x, y: y, w: Math.round(b.size), h: Math.round(b.size), n: b.n, ap: ap, a: clamp(idiv(ap * 100 + 9600, FW * FH), 1, 100) });
+    }
+    s.found = SC.blobs.filter(function (b) { return !b.gone; }).length;
+    var pts = points(20);
+    s.spot = [null];
+    var np = HOST.counts(S.mode).pt || 4;
+    var lay = points(np);
+    for (var i = 1; i <= 20; i++) { var p = lay[i - 1] || pts[i - 1]; var v = colorAt(p.x, p.y); s.spot.push({ h: v.h, s: v.s, v: v.v, x: p.x, y: p.y }); }
+    var k = num('ocount', 4), vis = SC.blocks.slice(0, k).slice().sort(function (a, b) { return a.cx - b.cx; });
+    s.order = { hues: vis.map(function (b) { return b.hue; }), total: vis.length };
+    var R = lineRows(), gone = $('lgone') && $('lgone').checked, wpx = num('lwidth', 16);
+    var L = { near: 0, mid: 0, far: 0, angle: 0, width: 0, flags: 0, junction: 0, jdist: 0, left: 0, right: 0, farw: 0, marker: SC.mk, mcount: SC.mkn, lost: 0 };
+    if (!gone) {
+      var vis2 = function (y) { return y >= R.top; };
+      var nx = xAtY(SC.line.ys[0]), mx = xAtY(SC.line.ys[1]), fx = xAtY(SC.line.ys[2]);
+      L.flags = 1 + (vis2(SC.line.ys[1]) ? 2 : 0) + (vis2(SC.line.ys[2]) ? 4 : 0);
+      L.near = off(nx); L.mid = (L.flags & 2) ? off(mx) : 0; L.far = (L.flags & 4) ? off(fx) : 0;
+      var ty = (L.flags & 4) ? SC.line.ys[2] : (L.flags & 2) ? SC.line.ys[1] : SC.line.ys[0];
+      L.angle = ty === SC.line.ys[0] ? 0 : clamp(Math.round(Math.atan2(xAtY(ty) - nx, SC.line.ys[0] - ty) * 180 / Math.PI), -90, 90);
+      L.width = clamp(Math.round(wpx * 100 / FW), 0, 100);
+      L.farw = (L.flags & 4) ? clamp(Math.round(wpx * 0.6 * 100 / FW), 0, 100) : 0;
+      L.left = off(nx - wpx / 2); L.right = off(nx + wpx / 2);
+      if (R.jt) { L.junction = R.jt; L.jdist = R.jd; }
+      SC.lastSide = L.near < 0 ? -1 : L.near > 0 ? 1 : SC.lastSide;
+    } else {
+      L.lost = SC.lastSide < 0 ? 1 : 2;
+    }
+    s.line = L;
+    s.obj = SC.objs.filter(function (o) { return !o.gone; }).map(function (o) {
+      var P = objPoly(o), xs = P.map(function (q) { return q[0]; }), ys = P.map(function (q) { return q[1]; });
+      o.cx = clamp(o.cx, o.cx - Math.min.apply(null, xs), FW - 1 - (Math.max.apply(null, xs) - o.cx));
+      o.cy = clamp(o.cy, o.cy - Math.min.apply(null, ys), FH - 1 - (Math.max.apply(null, ys) - o.cy));
+      return objTruth(o);
+    }).sort(function (a, b) { return b[8] - a[8] || a[11] - b[11]; }).slice(0, 8);
+    return s;
+  }
+  var frozen = null, everOk = false;
+  function state() {
+    var unplug = $('unplug').checked;
+    if (!unplug) { frozen = rawState(); everOk = true; return frozen; }
+    if (!frozen) { var z = rawState(); z.ok = false; z.none = true; return z; }
+    var s = JSON.parse(JSON.stringify(frozen)); s.ok = false; s.mode = S.mode; return s;
+  }
+  function fx(x) { return OX + x * K; }
+  function fy(y) { return OY + y * K; }
+  function txt(x, y, s, o) {
+    o = o || {};
+    return '<text x="' + x + '" y="' + y + '" font-size="' + (o.size || 12) + '"' + (o.anchor ? ' text-anchor="' + o.anchor + '"' : '') + (o.bold ? ' font-weight="700"' : '') +
+      ' fill="' + (o.fill || '#3d4a47') + '"' + (o.halo ? ' stroke="#fff" stroke-width="3" paint-order="stroke"' : '') + (o.mono ? ' font-family="JetBrains Mono, monospace"' : '') + '>' + esc(s) + '</text>';
+  }
+  function draw(st) {
+    var g = curG(), live = rawState(), h = '';
+    var ir = getComputedStyle(document.documentElement).getPropertyValue('--ir').trim() || '#c0392b';
+    var floor = g === 'obj' ? '#f6f4ee' : g === 'line' ? (S.mode === 42 ? '#2b2f33' : '#f2f0ea') : g === 'spot' ? '#f6f4ee' : '#e8e4da';
+    h += '<rect x="0" y="0" width="' + SW + '" height="' + SH + '" fill="#f7f7f2"/>';
+    h += '<rect x="' + OX + '" y="' + OY + '" width="' + FW * K + '" height="' + FH * K + '" fill="' + floor + '" stroke="#55605d" stroke-width="2"/>';
+    var top = '';
+    if (g === 'track') {
+      SC.blobs.forEach(function (b, i) {
+        if (b.gone) return;
+        var half = b.size / 2, x0 = fx(b.cx - half), y0 = fy(b.cy - half), side = b.size * K;
+        for (var e = b.n - 1; e >= 1; e--) {   
+          var ex = fx(clamp(b.cx + (e % 2 ? 1 : -1) * (half + 8), 6, FW - 6)) - side * 0.25, ey = fy(clamp(b.cy + e * 6, 6, FH - 6)) - side * 0.25;
+          h += '<rect x="' + ex + '" y="' + ey + '" width="' + side * 0.5 + '" height="' + side * 0.5 + '" rx="4" fill="' + b.fill + '" opacity="0.85" stroke="rgba(0,0,0,0.3)"/>';
+        }
+        h += '<rect x="' + x0 + '" y="' + y0 + '" width="' + side + '" height="' + side + '" rx="6" fill="' + b.fill + '" stroke="' + (i === SC.sel ? '#111' : 'rgba(0,0,0,0.35)') + '" stroke-width="' + (i === SC.sel ? 3 : 2) + '"/>';
+        h += txt(x0 + side / 2, y0 + side / 2 + 5, ('C') + (i + 1), { anchor: 'middle', bold: true, fill: '#fff', size: 13 });
+        if (st.ok) h += '<rect x="' + (x0 - 4) + '" y="' + (y0 - 4) + '" width="' + (side + 8) + '" height="' + (side + 8) + '" fill="none" stroke="#19a974" stroke-width="2.5"/>';
+      });
+      var b0 = st.blobs[SC.sel + 1];
+      top = ('Color ') + (SC.sel + 1) + (st.none ? '  ?' : b0.f ? '  X ' + b0.x + '  Y ' + b0.y + '  ' + ('W') + ' ' + b0.w + '  ' + ('area') + ' ' + b0.a + '%' : ('  not seen'));
+    } else if (g === 'spot') {
+      h += '<rect x="' + fx(0) + '" y="' + fy(TAPE.y0) + '" width="' + FW * K + '" height="' + (TAPE.y1 - TAPE.y0) * K + '" fill="#161616"/>';
+      SC.patches.forEach(function (p, i) {
+        h += '<rect x="' + fx(p.cx - p.w / 2) + '" y="' + fy(p.cy - p.h / 2) + '" width="' + p.w * K + '" height="' + p.h * K + '" rx="3" fill="' + hueFill(p.hue) + '" stroke="' + (i === SC.psel ? '#111' : 'rgba(0,0,0,0.25)') + '" stroke-width="' + (i === SC.psel ? 3 : 1.5) + '"/>';
+      });
+      var np = HOST.counts(S.mode).pt || 4, lay = points(np);
+      lay.forEach(function (p, i) {
+        var X = fx(p.x), Y = fy(p.y), r = i < 4 ? 9 : 6;
+        h += '<g stroke-linecap="round"><line x1="' + (X - r) + '" y1="' + Y + '" x2="' + (X + r) + '" y2="' + Y + '" stroke="#fff" stroke-width="5"/><line x1="' + X + '" y1="' + (Y - r) + '" x2="' + X + '" y2="' + (Y + r) + '" stroke="#fff" stroke-width="5"/>' +
+          '<line x1="' + (X - r) + '" y1="' + Y + '" x2="' + (X + r) + '" y2="' + Y + '" stroke="#111" stroke-width="2"/><line x1="' + X + '" y1="' + (Y - r) + '" x2="' + X + '" y2="' + (Y + r) + '" stroke="#111" stroke-width="2"/></g>';
+        h += txt(X + 4, Y - 6, String(i + 1), { size: 11, bold: true, fill: '#111', halo: true });
+      });
+      top = ('Spot 1 hue code ') + (st.none ? '?' : st.spot[1].h) + ('  spot 2 ') + (st.none ? '?' : st.spot[2].h) + ('  spot 3 ') + (st.none ? '?' : st.spot[3].h);
+    } else if (g === 'order') {
+      var k = num('ocount', 4);
+      SC.blocks.forEach(function (b, i) {
+        if (i >= k) return;
+        var s2 = 22 * K;
+        h += '<rect x="' + (fx(b.cx) - s2 / 2) + '" y="' + (fy(b.cy) - s2 / 2) + '" width="' + s2 + '" height="' + s2 + '" rx="6" fill="' + b.fill + '" stroke="' + (i === SC.osel ? '#111' : 'rgba(0,0,0,0.35)') + '" stroke-width="' + (i === SC.osel ? 3 : 2) + '"/>';
+        h += txt(fx(b.cx), fy(b.cy) + 5, String(b.hue), { anchor: 'middle', bold: true, fill: '#fff', size: 13 });
+      });
+      top = ('Left to right ') + (st.none ? '?' : '[' + st.order.hues.join(', ') + ']') + ('  total ') + (st.none ? '?' : st.order.total) + ('');
+    } else if (g === 'obj') {
+      var rank = {}; st.obj.forEach(function (o, k) { rank[o[11]] = k + 1; });
+      SC.objs.forEach(function (o, i) {
+        if (o.gone) return;
+        var P = objPoly(o);
+        h += '<polygon points="' + P.map(function (q) { return fx(q[0]).toFixed(1) + ',' + fy(q[1]).toFixed(1); }).join(' ') + '" fill="' + OBJFILL[o.color] + '" stroke="' + (i === SC.jsel ? '#111' : 'rgba(0,0,0,0.3)') + '" stroke-width="' + (i === SC.jsel ? 3 : 1.5) + '"/>';
+        var tr = objTruth(o);
+        if (st.ok && rank[o.id]) {
+          h += '<rect x="' + fx(tr[4]) + '" y="' + fy(tr[5]) + '" width="' + (tr[6] - tr[4] + 1) * K + '" height="' + (tr[7] - tr[5] + 1) * K + '" fill="none" stroke="#19a974" stroke-width="1.5" stroke-dasharray="4 3"/>';
+          h += '<circle cx="' + fx(tr[2]) + '" cy="' + fy(tr[3]) + '" r="3.5" fill="#fff" stroke="#111" stroke-width="1.5"/>';
+          h += txt(fx(tr[4]) + 2, fy(tr[5]) - 4, '#' + rank[o.id] + ' ' + (tr[0] * 10 + tr[1]), { size: 12, bold: true, fill: '#0b6b47', halo: true });
+        }
+      });
+      var o1 = st.obj[0];
+      top = st.none ? ('objects ?') : ('objects ') + st.obj.length + (o1 ? ('  largest code ') + (o1[0] * 10 + o1[1]) + '  X ' + o1[2] + '  Y ' + o1[3] : '');
+    } else {
+      var R = lineRows(), wpx = num('lwidth', 16), ink = S.mode === 42 ? '#f7f7f7' : S.mode === 43 ? '#d8392b' : '#1b1b1b';
+      var gone = $('lgone').checked;
+      if (!gone) {
+        var pts = [], y;
+        for (y = FH; y >= R.top; y -= 4) pts.push(fx(xAtY(y)) + ',' + fy(y));
+        pts.push(fx(xAtY(R.top)) + ',' + fy(R.top));
+        h += '<polyline points="' + pts.join(' ') + '" fill="none" stroke="' + ink + '" stroke-width="' + wpx * K + '" stroke-linejoin="round"/>';
+        if (R.jt && R.jt <= 4) {
+          var jx = xAtY(R.jy), x1 = R.jt === 4 ? jx : 0, x2 = R.jt === 3 ? jx : FW;
+          h += '<line x1="' + fx(x1) + '" y1="' + fy(R.jy) + '" x2="' + fx(x2) + '" y2="' + fy(R.jy) + '" stroke="' + ink + '" stroke-width="' + wpx * K + '"/>';
+        }
+        if (SC.mkNow) h += '<rect x="' + fx(xAtY(84) - wpx) + '" y="' + fy(80) + '" width="' + wpx * 2 * K + '" height="' + 8 * K + '" fill="' + SC.blobs[SC.mkNow - 1].fill + '"/>';
+      }
+      SC.line.ys.forEach(function (yy, i) {
+        h += '<line x1="' + fx(0) + '" y1="' + fy(yy) + '" x2="' + fx(FW) + '" y2="' + fy(yy) + '" stroke="#19a974" stroke-dasharray="5 5" stroke-width="1.5"/>';
+        h += txt(fx(2), fy(yy) - 4, [('near'), ('mid'), ('far')][i], { size: 11, fill: '#0b6b47', halo: true, bold: true });
+        if (!gone) h += '<circle cx="' + fx(SC.line.xs[i]) + '" cy="' + fy(yy) + '" r="' + (i === SC.lsel ? 9 : 7) + '" fill="#19a974" stroke="#fff" stroke-width="2"/>';
+      });
+      h += '<line x1="' + fx(80) + '" y1="' + fy(0) + '" x2="' + fx(80) + '" y2="' + fy(FH) + '" stroke="#9aa3a0" stroke-dasharray="6 6"/>';
+      var Lq = st.line;
+      top = st.none ? ('near ?  mid ?  far ?') : ('near ') + Lq.near + ('  mid ') + Lq.mid + ('  far ') + Lq.far + ('  angle ') + Lq.angle + ('  flags ') + Lq.flags;
+    }
+    h += '<rect x="' + OX + '" y="' + OY + '" width="' + FW * K + '" height="26" fill="#1b2422" opacity="0.88"/>';
+    h += txt(OX + 10, OY + 18, top, { size: 13, fill: '#e3ece9', mono: true });
+    h += txt(OX, SH - 4, ('← left X 0'), { size: 13 }) + txt(OX + FW * K, SH - 4, ('X 159 right →'), { size: 13, anchor: 'end' });
+    h += txt(OX + FW * K - 6, OY + 44, ('top Y 0'), { size: 12, anchor: 'end', halo: true }) + txt(OX + FW * K - 6, fy(FH) - 6, ('bottom Y 119'), { size: 12, anchor: 'end', halo: true });
+    if ($('unplug').checked) h += txt(SW / 2, fy(FH / 2) + 40, ('Sensor unplugged'), { anchor: 'middle', size: 17, bold: true, fill: ir, halo: true });
+    $('field').innerHTML = h;
+    syncCtrl();
+  }
+  function syncCtrl() {
+    var g = curG();
+    document.querySelectorAll('[data-g]').forEach(function (el) { el.hidden = el.getAttribute('data-g').split(' ').indexOf(g) < 0; });
+    var b = selBlob();
+    if ($('selname')) $('selname').textContent = ('color ') + (SC.sel + 1) + (' (') + b.nm + (')');
+    if ($('selname2')) $('selname2').textContent = ('color ') + (SC.sel + 1);
+    if ($('selname3')) $('selname3').textContent = ('color ') + (SC.sel + 1);
+    if ($('tsize') && Number($('tsize').value) !== b.size) $('tsize').value = b.size;
+    if ($('tcount') && Number($('tcount').value) !== b.n) $('tcount').value = b.n;
+    if ($('tgone')) $('tgone').checked = b.gone;
+    var ob = SC.objs[SC.jsel];
+    if ($('jname')) $('jname').textContent = ('track id ') + ob.id;
+    if ($('jname2')) $('jname2').textContent = ('track id ') + ob.id;
+    if ($('jshape') && Number($('jshape').value) !== ob.shape) $('jshape').value = ob.shape;
+    if ($('jcolor') && Number($('jcolor').value) !== ob.color) $('jcolor').value = ob.color;
+    if ($('jsize') && Number($('jsize').value) !== ob.size) $('jsize').value = ob.size;
+    if ($('jrot') && Number($('jrot').value) !== ob.rot) $('jrot').value = ob.rot;
+    if ($('jgone')) $('jgone').checked = ob.gone;
+    if ($('phueval')) { var h0 = SC.patches[0].hue; $('phueval').textContent = h0 + (', ') + CNAME_ZH[colorCode(h0)]; }
+  }
+  function simInput(id) {
+    var b = selBlob();
+    if (id === 'tsize') b.size = Number($('tsize').value);
+    if (id === 'tcount') b.n = Number($('tcount').value);
+    if (id === 'tgone') b.gone = $('tgone').checked;
+    if (id === 'phue') SC.patches[0].hue = Number($('phue').value);
+    var ob = SC.objs[SC.jsel];
+    if (id === 'jshape') ob.shape = Number($('jshape').value);
+    if (id === 'jcolor') ob.color = Number($('jcolor').value);
+    if (id === 'jsize') ob.size = Number($('jsize').value);
+    if (id === 'jrot') ob.rot = Number($('jrot').value);
+    if (id === 'jgone') ob.gone = $('jgone').checked;
+    if (id === 'lmark') {
+      var m = Number($('lmark').value);
+      SC.mkNow = m;
+      if (m) { SC.mk = m; SC.mkn = (SC.mkn + 1) % 100; }
+    }
+  }
+  function toCam(e) {
+    var r = $('field').getBoundingClientRect();
+    if (!r.width || !r.height) return null;
+    return { x: ((e.clientX - r.left) / r.width * SW - OX) / K, y: ((e.clientY - r.top) / r.height * SH - OY) / K };
+  }
+  function grab(p) {
+    var g = curG(), i;
+    if (g === 'track') { for (i = SC.blobs.length - 1; i >= 0; i--) { var b = SC.blobs[i]; if (!b.gone && Math.abs(p.x - b.cx) <= b.size / 2 + 4 && Math.abs(p.y - b.cy) <= b.size / 2 + 4) { SC.sel = i; return true; } } return false; }
+    if (g === 'spot') { for (i = SC.patches.length - 1; i >= 0; i--) { var q = SC.patches[i]; if (Math.abs(p.x - q.cx) <= q.w / 2 + 3 && Math.abs(p.y - q.cy) <= q.h / 2 + 3) { SC.psel = i; return true; } } return false; }
+    if (g === 'obj') { for (i = SC.objs.length - 1; i >= 0; i--) { var q2 = SC.objs[i]; if (!q2.gone && Math.abs(p.x - q2.cx) <= q2.size / 2 + 3 && Math.abs(p.y - q2.cy) <= q2.size / 2 + 3) { SC.jsel = i; return true; } } return false; }
+    if (g === 'order') { var k = num('ocount', 4); for (i = k - 1; i >= 0; i--) { var o = SC.blocks[i]; if (Math.abs(p.x - o.cx) <= 13 && Math.abs(p.y - o.cy) <= 13) { SC.osel = i; return true; } } return false; }
+    if ($('lgone').checked) return false;
+    var best = 0, bd = 1e9;
+    SC.line.ys.forEach(function (y, j) { var d = Math.abs(p.y - y); if (d < bd) { bd = d; best = j; } });
+    SC.lsel = best; return true;
+  }
+  function moveSel(p) {
+    var g = curG();
+    if (g === 'track') { var b = selBlob(); b.cx = p.x; b.cy = p.y; }
+    else if (g === 'spot') { var q = SC.patches[SC.psel]; q.cx = clamp(p.x, q.w / 2, FW - q.w / 2); q.cy = clamp(p.y, q.h / 2, FH - q.h / 2); }
+    else if (g === 'obj') { var q3 = SC.objs[SC.jsel]; q3.cx = p.x; q3.cy = p.y; }
+    else if (g === 'order') { var o = SC.blocks[SC.osel]; o.cx = clamp(p.x, 11, FW - 11); o.cy = clamp(p.y, 11, FH - 11); }
+    else SC.line.xs[SC.lsel] = clamp(p.x, 2, FW - 2);
+  }
+  function selPos() {
+    var g = curG();
+    if (g === 'track') return { x: selBlob().cx, y: selBlob().cy };
+    if (g === 'spot') return { x: SC.patches[SC.psel].cx, y: SC.patches[SC.psel].cy };
+    if (g === 'order') return { x: SC.blocks[SC.osel].cx, y: SC.blocks[SC.osel].cy };
+    if (g === 'obj') return { x: SC.objs[SC.jsel].cx, y: SC.objs[SC.jsel].cy };
+    return { x: SC.line.xs[SC.lsel], y: SC.line.ys[SC.lsel] };
+  }
+  function bindSim(onMove, onInput) {
+    var el = $('field'), dragging = false;
+    el.style.touchAction = 'none'; el.style.cursor = 'grab';
+    el.addEventListener('pointerdown', function (e) {
+      var p = toCam(e); if (!p || !grab(p)) return;
+      dragging = true; try { el.setPointerCapture(e.pointerId); } catch (err) {  }
+      moveSel(p); onMove(); e.preventDefault();
+    });
+    el.addEventListener('pointermove', function (e) { if (!dragging) return; var p = toCam(e); if (p) { moveSel(p); onMove(); } });
+    ['pointerup', 'pointercancel'].forEach(function (ev) { el.addEventListener(ev, function () { dragging = false; }); });
+    el.addEventListener('keydown', function (e) {
+      var k = { ArrowLeft: [-3, 0], ArrowRight: [3, 0], ArrowUp: [0, -3], ArrowDown: [0, 3] }[e.key];
+      if (!k) return;
+      e.preventDefault(); var p = selPos(); moveSel({ x: p.x + k[0], y: p.y + k[1] }); onMove();
+    });
+    ['tsize', 'tcount', 'tgone', 'phue', 'ocount', 'lwidth', 'ljunc', 'ljd', 'lmark', 'lgone', 'jshape', 'jcolor', 'jsize', 'jrot', 'jgone', 'unplug'].forEach(function (id) {
+      var c = $(id); if (!c) return;
+      c.addEventListener(c.tagName === 'SELECT' ? 'change' : 'input', function () { simInput(id); onInput(id); });
+    });
+  }
+  var BY = {}; FNS.forEach(function (f) { BY[f.id] = f; });
+  if (!BY[S.fn]) S.fn = FNS[0].id;
+  function fnOk(f, m) { return !f.modes || f.modes.indexOf(m) >= 0; }
+  function bestMode(f) {
+    if (fnOk(f, S.mode)) return S.mode;
+    var g = modeOf(S.mode).g;
+    for (var i = 0; i < f.modes.length; i++) if (modeOf(f.modes[i]).g === g) return f.modes[i];
+    return f.modes[0];
+  }
+  var lastKeys = '';
+  function fullLines(step) { var keep = S.step; S.step = step; var L = HOST.lines(BY[S.fn]); S.step = keep; return L; }
+  function drawMain() {
+    var L = fullLines(S.viewStep || S.step);
+    L.forEach(function (l, k) { l.no = k + 1; l.hl = l.tag === (S.viewStep || S.step); });
+    if (HOST.collapse && !S.showHelper) {
+      var nH = L.filter(function (l) { return l.helper; }).length, seen = false, F = [];
+      L.forEach(function (l) {
+        if (!l.helper) { F.push(l); return; }
+        if (seen) return;
+        seen = true; F.push(l);
+        F.push({ t: HOST.cmt(('⋯ ' + (nH - 1) + ' more lines (press "Show helper")')), no: '⋮', tag: l.tag, tagHide: true, hl: l.hl, helper: true });
+      });
+      L = F;
+    }
+    var prev = lastKeys ? lastKeys.split('\n') : [];
+    L.forEach(function (l) { if (l.t && lastKeys && prev.indexOf(l.t) < 0) l.isNew = true; });
+    lastKeys = L.map(function (l) { return l.t; }).join('\n');
+    render($('maincode'), L);
+    var b = $('bubble'); b.querySelector('i').textContent = S.viewStep || S.step; b.querySelector('span').textContent = HOST.bubble(S.viewStep || S.step, BY[S.fn]);
+    drawMinis();
+  }
+  var miniPrev = {};
+  function drawMinis() {
+    var full = fullLines(3);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('mini' + k); if (!el) return;
+      var lines = [], nh = 0, total = 0, h0 = 0, nums = [];
+      full.forEach(function (l) { if (l.tag === k && l.helper) total++; });
+      full.forEach(function (l, i) {
+        if (l.tag !== k) return;
+        if (l.helper) {
+          nh++; if (!h0) h0 = i + 1;
+          if (nh <= 2) lines.push({ t: l.t, no: i + 1 });
+          else if (nh === 3) lines.push({ t: HOST.cmt(('⋯ ' + total + ' helper lines: press "Show helper" on the right')), no: '⋮' });
+          return;
+        }
+        nums.push(i + 1); lines.push({ t: l.t, no: i + 1 });
+      });
+      if (!lines.length) { el.innerHTML = ''; return; }
+      var a = nums.length ? nums[0] : h0, z = nums.length ? nums[nums.length - 1] : h0;
+      var range = ('line ' + a + (z !== a ? '–' + z : ''));
+      if (h0 && nums.length) range += (', plus the helper from line ' + h0);
+      var txt = lines.map(function (l) { return l.no + l.t; }).join('\n');
+      el.innerHTML = '<span>' + ('What this step writes (') + range + (')') + '</span><pre class="code"></pre>';
+      render(el.querySelector('pre'), lines, { noTag: true });
+      if (miniPrev[k] !== undefined && miniPrev[k] !== txt) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+      miniPrev[k] = txt;
+    });
+  }
+  function setStep(n) {
+    S.step = Math.max(S.step, n);
+    [1, 2, 3].forEach(function (k) {
+      var el = $('step' + k);
+      el.classList.toggle('current', k === n);
+      el.classList.toggle('done', k < S.step && k !== n);
+      el.classList.toggle('locked', k > S.step);
+    });
+    S.viewStep = n;
+    drawMain();
+    $('next2').disabled = !HOST.valid();
+  }
+  function drawModes() {
+    var box = $('modes'); if (!box) return;
+    box.innerHTML = '';
+    ['track', 'spot', 'order', 'line', 'obj'].forEach(function (g) {
+      var w = document.createElement('div'); w.className = 'fgroup';
+      w.innerHTML = '<span>' + GROUPS[g].name + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      MODES.filter(function (m) { return m.g === g; }).forEach(function (m) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip';
+        b.textContent = m.n + ' ' + m.name; b.setAttribute('aria-pressed', String(S.mode === m.n));
+        b.addEventListener('click', function () { setMode(m.n, false); });
+        chips.appendChild(b);
+      });
+      w.appendChild(chips); box.appendChild(w);
+    });
+    var c = HOST.counts(S.mode), m = modeOf(S.mode);
+    var have = m.g === 'track' ? ('This host gets ' + c.col + ' colors in this mode')
+      : m.g === 'spot' ? ('This host gets ' + c.pt + ' sample spots in this mode')
+      : m.g === 'order' ? ('This host gets the hue codes of up to ' + c.order + ' blocks')
+      : m.g === 'obj' ? ('This host gets ' + c.obj + ' objects in this mode')
+      : ('This host gets ' + c.line + ' line values');
+    $('modenow').innerHTML = '<b>' + ('You picked mode number ') + S.mode + '</b><span>' + ('= camera mode ') + m.cm + ' ' + GROUPS[m.g].name.replace(/^\d /, '') + (m.sub ? (' · sub-option ') + m.name : '') + ('. ') + have + ('.') + '</span><span class="err">' + HOST.modeWarn(S.mode) + '</span>';
+  }
+  function setMode(n, auto) {
+    S.mode = n;
+    if (!fnOk(BY[S.fn], n)) {
+      var g = modeOf(n).g, first = FNS.filter(function (f) { return f.grp === g && fnOk(f, n); })[0];
+      if (first) S.fn = first.id;
+    }
+    S.autoNote = auto ? auto : '';
+    drawModes(); drawPicker(); drawCards(); drawMain(); tick(true);
+  }
+  function drawPicker() {
+    var box = $('picker'); box.innerHTML = '';
+    GORDER.forEach(function (g) {
+      var list = FNS.filter(function (f) { return f.grp === g; }); if (!list.length) return;
+      var w = document.createElement('div'); w.className = 'fgroup';
+      w.innerHTML = '<span>' + GROUPS[g].name + (GROUPS[g].modes ? (' (mode ') + GROUPS[g].modes.join((', ')) + (')') : '') + '</span>';
+      var chips = document.createElement('div'); chips.className = 'chips';
+      list.forEach(function (f) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (fnOk(f, S.mode) ? '' : ' other-mode');
+        b.textContent = f.label; b.setAttribute('aria-pressed', String(S.fn === f.id));
+        b.title = f.name + (fnOk(f, S.mode) ? '' : (' (click to switch to ') + modeList(f.modes) + (')'));
+        b.addEventListener('click', function () { pick(f.id); });
+        chips.appendChild(b);
+      });
+      w.appendChild(chips); box.appendChild(w);
+    });
+    var f = BY[S.fn];
+    $('explain').innerHTML = '<b>' + esc(f.label) + (' · ') + f.name + '</b><span>' + f.what + '</span><span class="small">' +
+      (f.cmd ? ('Command: ') : ('Returns: ')) + f.ret + (' | ') + ('Works in ') + modeList(f.modes) + '</span>' +
+      (S.autoNote ? '<span class="err">' + S.autoNote + '</span>' : '');
+    if ($('nm1') && S.name) $('nm1').textContent = S.name;
+  }
+  function pick(id) {
+    var f = BY[id]; S.fn = id;
+    if (!fnOk(f, S.mode)) {
+      var m = bestMode(f);
+      setStep(3);
+      setMode(m, ('Mode switched to ' + m + ' for you: ' + f.label + ' needs ' + modeList(f.modes) + '. Switch the camera menu to ' + m + ' too.'));
+      return;
+    }
+    S.autoNote = '';
+    setStep(3);
+    drawPicker(); drawCards(); tick(true);
+  }
+  function drawCards() {
+    var box = $('cards'); box.innerHTML = '';
+    FNS.forEach(function (f) {
+      var c = document.createElement('article'); c.className = 'card'; c.id = 'fn-' + f.id;
+      c.innerHTML =
+        '<div class="card-head"><h3>' + esc(f.label) + '<span class="zh">' + f.name + '</span></h3>' +
+        '<span class="badges"><span class="badge yes">' + modeList(f.modes) + '</span>' + (f.cmd ? '<span class="badge yes">' + ('command') + '</span>' : '') + '</span></div>' +
+        '<p>' + f.what + '</p>' +
+        '<dl class="meta"><dt>' + (f.cmd ? ('Command') : ('Returns')) + '</dt><dd>' + f.ret + '</dd><dt>' + ('Example') + '</dt><dd>' + HOST.place(f) + '</dd></dl>' +
+        '<pre class="code"></pre>' +
+        '<p class="out">' + HOST.outLabel + '<code></code></p>' +
+        '<button type="button" class="try">' + ('Try it') + '</button>';
+      render(c.querySelector('pre'), HOST.card(f).map(function (t) { return { t: t }; }), { noTag: true });
+      c.querySelector('.try').addEventListener('click', function () {
+        pick(f.id);
+        var st = $('step3'); if (st.scrollIntoView) st.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      });
+      box.appendChild(c);
+    });
+    var cnt = $('fncount'); if (cnt) cnt.textContent = FNS.length;
+  }
+  function runOut(f, st, m) {
+    var V = HOST.view(st, m);
+    try { var o = f.out(V, st); return { lines: Array.isArray(o) ? o : [String(o)], err: false, reads: V.__n || 0 }; }
+    catch (e) { if (e && e.err) return { lines: [e.err], err: true, reads: V.__n || 0 }; throw e; }
+  }
+  function updateCardOutputs(st) {
+    FNS.forEach(function (f) {
+      var el = document.querySelector('#fn-' + f.id + ' .out code'); if (!el) return;
+      var m = bestMode(f), r = runOut(f, Object.assign({}, st, { mode: m }), m);
+      el.textContent = r.lines.join('\n');
+    });
+  }
+  function exFull(id) { var out = []; EX[id].forEach(function (t) { if (t === '@HELPER') out = out.concat(HOST.helper || []); else out.push(t); }); return out; }
+  function drawExamples() {
+    Object.keys(EX).forEach(function (k) {
+      var el = $('ex-' + k); if (!el) return;
+      var shown = EX[k].map(function (t) { return t === '@HELPER' ? HOST.cmt(('… paste the step-1 helper here ("Copy" adds it for you) …')) : t; });
+      render(el, shown.map(function (t) { return { t: t }; }), { noTag: true });
+    });
+  }
+  var log = [], booted = false, halted = false;
+  function push(t, c) { log.push({ c: c || '', t: t }); }
+  function tick(reset) {
+    var st = state(), f = BY[S.fn];
+    draw(st);
+    updateCardOutputs(st);
+    if (S.step < 3) {
+      log = [{ c: '', t: ('(Finish step 3 "Use a function" to see what the program prints here)') }];
+      booted = false; halted = false;
+    } else if (reset || !booted) {
+      log = []; booted = true; halted = false; HOST.reset && HOST.reset();
+      var b = HOST.boot ? HOST.boot(st, f) : null;
+      if (b) { b.lines.forEach(function (t) { push(t, (/!|Error|-32768|not found|no data/i).test(t) ? 'warnline' : ''); }); halted = !!b.halt; }
+      if (!halted) once(f, st);
+    } else if (!f.once && !halted) {
+      once(f, st);
+    }
+    while (log.length > 8) log.shift();
+    $('console').innerHTML = log.map(function (l) { return '<span class="' + l.c + '">' + esc(l.t) + '</span>'; }).join('\n');
+  }
+  function once(f, st) {
+    var r = runOut(f, st, S.mode);
+    (HOST.warn ? HOST.warn(st, r.reads) : []).forEach(function (w) { push(w, 'warnline'); });
+    r.lines.forEach(function (t) { push(t, r.err ? 'errline' : (HOST.warnRe && HOST.warnRe.test(t) ? 'warnline' : '')); });
+    if (r.err) { halted = true; push(('(The program stopped: check the value before using it)'), ''); }
+  }
+  $('next1').addEventListener('click', function () { setStep(2); });
+  $('next2').addEventListener('click', function () { if (HOST.valid()) { setStep(3); drawPicker(); tick(true); } });
+  ['step1', 'step2', 'step3'].forEach(function (id, k) {
+    $(id).querySelector('.step-head').addEventListener('click', function () { if (k + 1 <= S.step) { setStep(k + 1); tick(true); } });
+  });
+  HOST.bind(function (rerun) { drawMain(); drawPicker(); $('next2').disabled = !HOST.valid(); if (rerun && S.step >= 3) tick(true); });
+  bindSim(function () { draw(state()); updateCardOutputs(state()); }, function (id) { tick(id === 'unplug' && (BY[S.fn].once || !!HOST.bootOnUnplug)); });
+  if ($('helperbtn')) $('helperbtn').addEventListener('click', function (e) {
+    S.showHelper = !S.showHelper;
+    e.currentTarget.textContent = S.showHelper ? ('Hide helper') : ('Show helper');
+    e.currentTarget.setAttribute('aria-pressed', String(!!S.showHelper));
+    drawMain();
+  });
+  $('copymain').addEventListener('click', function (e) { copyText(plain(fullLines(S.viewStep || S.step)), e.currentTarget); });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { copyText(exFull(b.getAttribute('data-copy')).join('\n') + '\n', b); });
+  });
+  S.viewStep = 1;
+  drawModes(); drawPicker(); drawCards(); drawExamples(); setStep(1); tick(true);
+  setInterval(function () { if (S.step >= 3 && !BY[S.fn].once) tick(false); }, 600);
+  function expect(id, m, none) {
+    var f = BY[id], st = rawState();
+    if (none) { st.ok = false; st.none = true; }
+    HOST.reset && HOST.reset();
+    var r = runOut(f, st, m), w = HOST.warn ? HOST.warn(st, r.reads) : [];
+    return { st: st, lines: w.concat(r.lines), err: r.err };
+  }
+  window.__uc = { expect: expect, S: S, FNS: FNS, setMode: setMode, pick: pick, tick: tick, state: state, fullLines: fullLines, EX: EX, exFull: exFull, SC: SC };
+})();
+</script>
+<script>
+(function () {
+  var side = document.querySelector('.side'); if (!side) return;
+  var mq = window.matchMedia('(max-width: 900px)');
+  var home = side.parentNode, homeNext = side.nextSibling;
+  var con = document.getElementById('console'), conP = con && con.closest('.panel');
+  if (conP && conP.parentNode !== side) conP = null;
+  var last = null, ready = false;
+  var STOP = '.step-body, .cards, .ref, .steps, .main, .wrap, body';
+  function anchorOf(el) { var a = el; while (a && a.parentElement && !a.parentElement.matches(STOP)) a = a.parentElement; return a && a.parentElement ? a : null; }
+  function flash(el) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  // 把 box 搬到 a 那一塊的後面；a 在畫面上的位置維持不動（點下去時就記住 a：頁面常在點擊後重畫按鈕，按鈕本身會被換掉）
+  function moveAfter(box, a) {
+    if (!a || !a.isConnected || a === box || a.contains(box)) return false;
+    if (a.nextElementSibling === box) return true;
+    var y = a.getBoundingClientRect().top;
+    a.parentNode.insertBefore(box, a.nextSibling); box.classList.add('follow');
+    var d = a.getBoundingClientRect().top - y; if (d) window.scrollBy(0, d);
+    return true;
+  }
+  function inPanel(el) { return side.contains(el) || (conP && conP.contains(el)); }
+  function placeSide(a, scroll) {
+    if (!mq.matches || !a) return;
+    if (conP && conP.parentNode !== side) { conP.classList.remove('follow'); side.appendChild(conP); }
+    if (!moveAfter(side, a)) return;
+    if (scroll) { var r = side.getBoundingClientRect(); if (r.top > window.innerHeight * 0.7) window.scrollBy({ top: r.top - window.innerHeight * 0.3, behavior: 'smooth' }); }
+  }
+  function placeConsole(el) {
+    if (!mq.matches || !conP || inPanel(el)) return;
+    // 模擬感應器（.sim = 畫面＋.ctrl 控制區）：輸出放在「正在操作的那一排」正下方（排＝控制區的直接子元素），
+    // 畫面、那一排、輸出同一屏；控制區很長或那一排在最下面（例如拔線勾選）都不會跑出畫面
+    var sim = el.closest('.sim'), ctrl = null, row = null;
+    if (sim) for (var i = 0; i < sim.children.length; i++) if (sim.children[i].contains(el)) ctrl = sim.children[i];
+    if (ctrl && ctrl !== el) for (var j = 0; j < ctrl.children.length; j++) if (ctrl.children[j].contains(el)) row = ctrl.children[j];
+    if (sim && ctrl) {
+      var box = row ? ctrl : sim, after = row || null;
+      if (after ? after.nextElementSibling === conP : conP.parentNode === sim && conP.nextElementSibling === ctrl) return;
+      var y = el.getBoundingClientRect().top;
+      if (after) box.insertBefore(conP, after.nextSibling); else sim.insertBefore(conP, ctrl);
+      conP.classList.add('follow');
+      var dy = el.getBoundingClientRect().top - y; if (dy) window.scrollBy(0, dy);
+      return;
+    }
+    var a = anchorOf(el); if (a && a.nextElementSibling === side) return; // 程式那格已經緊接在下面，輸出就在它裡面
+    moveAfter(conP, a);
+  }
+  function reset() {
+    if (mq.matches) { var b = document.querySelector('#step1 .step-body button') || document.querySelector('#step1 button'); if (b) placeSide(anchorOf(b), false); return; }
+    if (conP) { conP.classList.remove('follow'); side.appendChild(conP); }
+    side.classList.remove('follow'); home.insertBefore(side, homeNext);
+  }
+  function remember(e) { if (!inPanel(e.target)) last = anchorOf(e.target); }
+  document.addEventListener('pointerdown', remember, true);
+  document.addEventListener('focusin', remember, true);
+  var mo = new MutationObserver(function () { if (ready && mq.matches) { placeSide(last, true); flash(side); } });
+  ['maincode', 'mainblocks'].forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { childList: true, subtree: true, characterData: true }); });
+  function sim(e) { var t = e.target; if (/^(range|checkbox|radio|select-one)$/.test(t.type || '')) placeConsole(t); }
+  document.addEventListener('input', sim, true);
+  document.addEventListener('change', sim, true);
+  // 模擬器裡的按鈕（掌控者按鍵、色點調色盤…）也算在操作模擬器
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.sim button'); if (b) placeConsole(b); }, true);
+  reset(); setTimeout(function () { ready = true; }, 800);
+  if (mq.addEventListener) mq.addEventListener('change', reset); else mq.addListener(reset);
+})();
+</script>
+</body>
+</html>
