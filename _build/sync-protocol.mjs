@@ -28,6 +28,7 @@ const BIG_TEXT = /大通道|big[- ]channel|LauMo|bigU\d/i;
 const BIG_RULES = [
   [/R4 大通道版：/g, 'R4 版：'], [/R4 大通道版/g, 'R4 版'],
   [/；MATRIX 大通道 byte 24 同一個 byte/g, ''], [/; same byte as MATRIX big-channel byte 24/g, ''],
+  [/（MATRIX 大通道 byte 24 同一個 byte）/g, ''], [/ \(same byte as MATRIX big-channel byte 24\)/g, ''],
   [/；16 路大通道尾段鎖住為 0，不進大通道/g, ''], [/; not in the MATRIX big channel \(tail bytes locked at 0 for the 16-ch\)/g, ''],
   [/、大通道 \[\d+\.\.\d+\]/g, ''], [/, SPIKE mode 6 and big-channel \[\d+\.\.\d+\] carry/g, ' and SPIKE mode 6 carry'],
   [/／大通道/g, ''], [/大通道／/g, ''],
@@ -59,7 +60,12 @@ function render(src) {
 }
 
 // 有頂層 layout 的產品（神攝手 unicam：0x10 起的值表依相機模式而變）不進 gen-reference 的通用頁，網站頁由 gen-unicam.mjs 產生 → 不複製
-const files = fs.readdirSync(SRC).filter((f) => f.endsWith('.json') && !JSON.parse(fs.readFileSync(path.join(SRC, f), 'utf8')).layout).sort();
+// 頂層 site: false（停產不上網站，例：循行者 5 路 line5）→ 不複製
+const files = fs.readdirSync(SRC).filter((f) => {
+  if (!f.endsWith('.json')) return false;
+  const d = JSON.parse(fs.readFileSync(path.join(SRC, f), 'utf8'));
+  return !d.layout && d.site !== false;
+}).sort();
 let diff = 0;
 for (const f of files) {
   let src = fs.readFileSync(path.join(SRC, f), 'utf8');

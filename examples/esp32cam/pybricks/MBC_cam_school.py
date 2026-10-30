@@ -32,7 +32,7 @@
 
 from pybricks.iodevices import PUPDevice
 from pybricks.parameters import Port
-from pybricks.tools import StopWatch as _StopWatch
+from pybricks.tools import StopWatch as _StopWatch, wait as _wait
 
 # EV3 的 Port 有 S1~S4，SPIKE 沒有（EV3 上 hubs 也有 PrimeHub 別名，所以不能用主機類別判斷）
 _EV3 = hasattr(Port, 'S1')
@@ -131,6 +131,11 @@ class _MBC:
         self._c = {}        # 模式 → (時間, 原始資料)
         self._bad = 0       # 1 = 目前讀不到（提醒已經印過）
         self._try = None    # 上一次嘗試建立裝置的時間
+        self._sq = None     # 下命令：最後一個序號（還沒下過 = None）
+        self._ck = None     # 　　　　最後一個 (命令碼, 參數…)
+        self._pk = None     # 　　　　最後送出的 8 個值（重送用）
+        self._ct = 0        # 　　　　最後送出的時間
+        self._rs = False
         if self._a:
             # 多工：run_task() 開始後就不能建立裝置，所以現在就建
             self._open()
@@ -220,6 +225,124 @@ class _MBC:
     def firmware_version(self):
         """感應器韌體版本 (主版, 次版)，例如 (1, 0)"""
         return self._q('firmware_version')
+
+    # ───── 下命令（只有 SPIKE；感應器韌體要支援命令：模式 8 v1 的 bit 8 = 1）─────
+    #  送：PUPDevice.write(9, (序號, 命令碼, p1~p5))，命令碼與參數照 I2C 命令表
+    #  回：模式 8 v3 = (感應器最後收下的序號 << 8) | 狀態（0 完成、1 執行中、2 失敗、3 拒絕）
+    #  序號 1~255：同一個命令＋同樣參數沿用同一個序號（放在迴圈裡也只做一次），感應器看到同序號不會重做
+    def cmd(self, code, *p, again=False):
+        """下命令：code = 命令碼（例 0xE2），p = 參數（最多 5 個）。
+        同一個命令＋同樣參數再呼叫不會重做；要再做一次寫 again=True。回傳這次的序號"""
+        if self._a:
+            return self._cmda(code, p, again)
+        pk = self._cpk(code, p, again, self._rd(8, 1) if self._sq is None else None)
+        if pk is not None:
+            d = self._open()
+            if d is not None:
+                try:
+                    d.write(9, pk)
+                except OSError as e:
+                    self._warn(e)
+            self._c.pop(8, None)
+        return self._sq
+
+    async def _cmda(self, code, p, again):
+        pk = self._cpk(code, p, again, (await self._rda(8, 1)) if self._sq is None else None)
+        if pk is not None:
+            d = self._open()
+            if d is not None:
+                try:
+                    await d.write(9, pk)
+                except OSError as e:
+                    self._warn(e)
+            self._c.pop(8, None)
+        return self._sq
+
+    def _cpk(self, code, p, again, v):
+        # 算出要送的 7 個值；None = 不用送（同命令同參數，或還讀不到感應器）
+        if _EV3:
+            raise ValueError('cmd(): EV3 不能下命令 / EV3 cannot send commands')
+        if len(p) > 5:
+            raise ValueError('cmd(): 參數最多 5 個 / at most 5 parameters')
+        k = (code,) + tuple(p)
+        if k == self._ck and not again:
+            return None
+        if self._sq is None:
+            if v is None:
+                return None
+            if len(v) < 4 or not (_u(v[1]) & 0x100):
+                raise ValueError('cmd(): 感應器韌體太舊，不支援命令，請更新韌體 / sensor firmware too old for commands')
+            self._sq = _hi(v[3])       # 新程式：從感應器最後收下的序號 +1 開始，才不會跟上一個程式撞號
+        self._sq = self._sq % 255 + 1  # 1~255；0 = 不是命令
+        self._ck = k
+        self._pk = (self._sq, code) + tuple(p) + (0,) * (5 - len(p))
+        self._ct = _watch.time()
+        return self._pk
+
+    def _cs(self, v):
+        # 最後一個命令的狀態；感應器還沒收到（或沒下過命令）= None
+        if self._sq is None or len(v) < 4 or _hi(v[3]) != self._sq:
+            return None
+        return _lo(v[3])
+
+    def cmd_state(self):
+        """最後一個命令的狀態：0 完成、1 執行中、2 失敗、3 拒絕；感應器還沒收到 = None"""
+        return self._g(8, self._cs, (), 1)
+
+    def _bz(self, v):
+        if self._sq is None:
+            return False
+        s = self._cs(v)
+        return s is None or s == 1
+
+    def busy(self):
+        """最後一個命令還沒做完（或感應器還沒收到）= True"""
+        return self._g(8, self._bz, (), 1)
+
+    def _wd(self, v, t0, to):
+        # wait_done 的一步：True／False = 結束；None = 繼續等（self._rs = 要重送）
+        self._rs = False
+        if self._sq is None:
+            return True
+        s = None if v is None else self._cs(v)
+        t = _watch.time()
+        if s is not None and s != 1:
+            return s == 0
+        if t - t0 >= to:
+            return False
+        if s is None and t - self._ct >= 300:   # 300 ms 還沒收到：同一個序號重送（感應器不會重做）
+            self._ct = t
+            self._rs = True
+        return None
+
+    def wait_done(self, timeout=10000):
+        """等最後一個命令做完：True = 完成；False = 失敗、拒絕或等超過 timeout 毫秒"""
+        if self._a:
+            return self._wda(timeout)
+        t0 = _watch.time()
+        while True:
+            r = self._wd(self._rd(8, 1), t0, timeout)
+            if r is not None:
+                return r
+            if self._rs and self._open() is not None:
+                try:
+                    self._d.write(9, self._pk)
+                except OSError as e:
+                    self._warn(e)
+            _wait(20)
+
+    async def _wda(self, timeout):
+        t0 = _watch.time()
+        while True:
+            r = self._wd(await self._rda(8, 1), t0, timeout)
+            if r is not None:
+                return r
+            if self._rs and self._open() is not None:
+                try:
+                    await self._d.write(9, self._pk)
+                except OSError as e:
+                    self._warn(e)
+            await _wait(20)
 
 
 # ════════════════════════════════════════════════════════════════

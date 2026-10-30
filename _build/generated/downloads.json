@@ -130,7 +130,7 @@
         "line8_python_native.py",
         "line8_python_with_lib.py"
       ],
-      "size": 31865
+      "size": 39493
     },
     {
       "out": "/downloads/MBC_TOF8_Pybricks_Lib.zip",
@@ -145,7 +145,7 @@
         "MBC_laser8_obj_Lib.py",
         "MBC_sensors.py"
       ],
-      "size": 21985
+      "size": 28950
     },
     {
       "out": "/downloads/MBC_UniCam_v1_Host_Libraries.zip",

@@ -18,6 +18,7 @@
 #    MBC_GAMEPAD(port)     掌控者 PS2／PS4 遙控接收器
 #    MBC_CAM_SCHOOL(port)  神攝手（學校老師創意賽版）
 #    MBC_HUE12(port)       神攝手 WRO 版（HUE12）
+#    MBC_IMU(port)         陀螺儀（IMU）
 #
 #  孔位 port：
 #    SPIKE：1~6 = A~F，也可以直接寫 Port.A ~ Port.F
@@ -49,6 +50,18 @@
 #    - 多工模式的裝置只能在 run_task() 之前建立：開機時就沒接上，要重新執行程式。
 #    - obj.sensor_ok() 可以查目前有沒有讀到（True／False）。
 #
+#  下命令（只有 SPIKE；感應器韌體要支援命令：2026-10 以後的版本）：
+#      line8.cmd(0xE2)                       # 命令碼照 I2C 命令表，例 E2 = 黑色校準
+#      line8.wait_done()                     # 等做完：True = 完成；False = 失敗／拒絕／逾時（預設 10 秒）
+#      line8.cmd(0xE4, 50)                   # 帶參數（最多 5 個）
+#    - 同一個命令＋同樣參數再呼叫不會重做（放在迴圈裡也只做一次）；要再做一次寫 cmd(0xE2, again=True)
+#      （「動作」型的方法本來就每次都做，例：陀螺儀 zero_heading()、set_heading()；設定型的才不重做）
+#    - busy() = 還在做；cmd_state() = 0 完成、1 執行中、2 失敗、3 拒絕
+#    - 送出去就可以不管（感應器靠序號，不會重做）；要確認做完才用 wait_done()／busy()
+#    - wait_done()／busy()／cmd_state() 要切到模式 8 讀回覆，每次多約 40～60 ms，這段時間讀不到別的值：
+#      只在校準這類「停下來做」的命令用，不要放在循線迴圈裡
+#    - 會做超過 10 秒的命令，wait_done() 要給更長的時間，例：掌控者 PS4 重新配對 pad.cmd(0xE0); pad.wait_done(35000)
+#
 #  換模式會多花時間（SPIKE 幾十 ms、EV3 約 0.5 秒）：
 #    device_id()、firmware_version()、毫米距離這類「別的模式」放在迴圈外，或偶爾呼叫就好。
 
@@ -56,7 +69,7 @@
 
 from pybricks.iodevices import PUPDevice
 from pybricks.parameters import Port
-from pybricks.tools import StopWatch as _StopWatch
+from pybricks.tools import StopWatch as _StopWatch, wait as _wait
 
 # EV3 的 Port 有 S1~S4，SPIKE 沒有（EV3 上 hubs 也有 PrimeHub 別名，所以不能用主機類別判斷）
 _EV3 = hasattr(Port, 'S1')
@@ -155,6 +168,11 @@ class _MBC:
         self._c = {}        # 模式 → (時間, 原始資料)
         self._bad = 0       # 1 = 目前讀不到（提醒已經印過）
         self._try = None    # 上一次嘗試建立裝置的時間
+        self._sq = None     # 下命令：最後一個序號（還沒下過 = None）
+        self._ck = None     # 　　　　最後一個 (命令碼, 參數…)
+        self._pk = None     # 　　　　最後送出的 8 個值（重送用）
+        self._ct = 0        # 　　　　最後送出的時間
+        self._rs = False
         if self._a:
             # 多工：run_task() 開始後就不能建立裝置，所以現在就建
             self._open()
@@ -244,6 +262,124 @@ class _MBC:
     def firmware_version(self):
         """感應器韌體版本 (主版, 次版)，例如 (1, 0)"""
         return self._q('firmware_version')
+
+    # ───── 下命令（只有 SPIKE；感應器韌體要支援命令：模式 8 v1 的 bit 8 = 1）─────
+    #  送：PUPDevice.write(9, (序號, 命令碼, p1~p5))，命令碼與參數照 I2C 命令表
+    #  回：模式 8 v3 = (感應器最後收下的序號 << 8) | 狀態（0 完成、1 執行中、2 失敗、3 拒絕）
+    #  序號 1~255：同一個命令＋同樣參數沿用同一個序號（放在迴圈裡也只做一次），感應器看到同序號不會重做
+    def cmd(self, code, *p, again=False):
+        """下命令：code = 命令碼（例 0xE2），p = 參數（最多 5 個）。
+        同一個命令＋同樣參數再呼叫不會重做；要再做一次寫 again=True。回傳這次的序號"""
+        if self._a:
+            return self._cmda(code, p, again)
+        pk = self._cpk(code, p, again, self._rd(8, 1) if self._sq is None else None)
+        if pk is not None:
+            d = self._open()
+            if d is not None:
+                try:
+                    d.write(9, pk)
+                except OSError as e:
+                    self._warn(e)
+            self._c.pop(8, None)
+        return self._sq
+
+    async def _cmda(self, code, p, again):
+        pk = self._cpk(code, p, again, (await self._rda(8, 1)) if self._sq is None else None)
+        if pk is not None:
+            d = self._open()
+            if d is not None:
+                try:
+                    await d.write(9, pk)
+                except OSError as e:
+                    self._warn(e)
+            self._c.pop(8, None)
+        return self._sq
+
+    def _cpk(self, code, p, again, v):
+        # 算出要送的 7 個值；None = 不用送（同命令同參數，或還讀不到感應器）
+        if _EV3:
+            raise ValueError('cmd(): EV3 不能下命令 / EV3 cannot send commands')
+        if len(p) > 5:
+            raise ValueError('cmd(): 參數最多 5 個 / at most 5 parameters')
+        k = (code,) + tuple(p)
+        if k == self._ck and not again:
+            return None
+        if self._sq is None:
+            if v is None:
+                return None
+            if len(v) < 4 or not (_u(v[1]) & 0x100):
+                raise ValueError('cmd(): 感應器韌體太舊，不支援命令，請更新韌體 / sensor firmware too old for commands')
+            self._sq = _hi(v[3])       # 新程式：從感應器最後收下的序號 +1 開始，才不會跟上一個程式撞號
+        self._sq = self._sq % 255 + 1  # 1~255；0 = 不是命令
+        self._ck = k
+        self._pk = (self._sq, code) + tuple(p) + (0,) * (5 - len(p))
+        self._ct = _watch.time()
+        return self._pk
+
+    def _cs(self, v):
+        # 最後一個命令的狀態；感應器還沒收到（或沒下過命令）= None
+        if self._sq is None or len(v) < 4 or _hi(v[3]) != self._sq:
+            return None
+        return _lo(v[3])
+
+    def cmd_state(self):
+        """最後一個命令的狀態：0 完成、1 執行中、2 失敗、3 拒絕；感應器還沒收到 = None"""
+        return self._g(8, self._cs, (), 1)
+
+    def _bz(self, v):
+        if self._sq is None:
+            return False
+        s = self._cs(v)
+        return s is None or s == 1
+
+    def busy(self):
+        """最後一個命令還沒做完（或感應器還沒收到）= True"""
+        return self._g(8, self._bz, (), 1)
+
+    def _wd(self, v, t0, to):
+        # wait_done 的一步：True／False = 結束；None = 繼續等（self._rs = 要重送）
+        self._rs = False
+        if self._sq is None:
+            return True
+        s = None if v is None else self._cs(v)
+        t = _watch.time()
+        if s is not None and s != 1:
+            return s == 0
+        if t - t0 >= to:
+            return False
+        if s is None and t - self._ct >= 300:   # 300 ms 還沒收到：同一個序號重送（感應器不會重做）
+            self._ct = t
+            self._rs = True
+        return None
+
+    def wait_done(self, timeout=10000):
+        """等最後一個命令做完：True = 完成；False = 失敗、拒絕或等超過 timeout 毫秒"""
+        if self._a:
+            return self._wda(timeout)
+        t0 = _watch.time()
+        while True:
+            r = self._wd(self._rd(8, 1), t0, timeout)
+            if r is not None:
+                return r
+            if self._rs and self._open() is not None:
+                try:
+                    self._d.write(9, self._pk)
+                except OSError as e:
+                    self._warn(e)
+            _wait(20)
+
+    async def _wda(self, timeout):
+        t0 = _watch.time()
+        while True:
+            r = self._wd(await self._rda(8, 1), t0, timeout)
+            if r is not None:
+                return r
+            if self._rs and self._open() is not None:
+                try:
+                    await self._d.write(9, self._pk)
+                except OSError as e:
+                    self._warn(e)
+            await _wait(20)
 
 
 # ════════════════════════════════════════════════════════════════
@@ -412,7 +548,8 @@ class MBC_LINE16(_LINE):
 
 
 # ════════════════════════════════════════════════════════════════
-#  測距者共用：距離單位「公分」0~120（120 = 沒有目標或超過 120 cm）
+#  測距者共用：距離單位「公分」，一般模式 0~120、遠距離模式（E0 = 1）0~200；上限 = 沒有目標或超過上限
+#  （EV3 的公分值一律 0~120；mm 一般 0~1200、遠距離 0~2000）
 # ════════════════════════════════════════════════════════════════
 def _side(a, b):
     return -1 if a < b else (1 if b < a else 0)
@@ -484,11 +621,11 @@ class MBC_LASER2(_MBC):
     _S, _E = _laser2()
 
     def left(self):
-        """左雷射距離 0~120 cm"""
+        """左雷射距離 0~120 cm（遠距離模式 0~200）"""
         return self._q('left')
 
     def right(self):
-        """右雷射距離 0~120 cm"""
+        """右雷射距離 0~120 cm（遠距離模式 0~200）"""
         return self._q('right')
 
     def ch(self, ch):
@@ -498,11 +635,11 @@ class MBC_LASER2(_MBC):
         return self._q('ch', ch)
 
     def average(self):
-        """左右平均距離 0~120 cm"""
+        """左右平均距離 0~120 cm（遠距離模式 0~200）"""
         return self._q('average')
 
     def min_distance(self):
-        """左右比較近的那一個 0~120 cm"""
+        """左右比較近的那一個 0~120 cm（遠距離模式 0~200）"""
         return self._q('min_distance')
 
     def min_side(self):
@@ -510,7 +647,7 @@ class MBC_LASER2(_MBC):
         return self._q('min_side')
 
     def diff(self):
-        """左減右 -120~+120（正 = 右邊比較近）"""
+        """左減右 -120~+120（遠距離模式 -200~+200；正 = 右邊比較近）"""
         return self._q('diff')
 
     def is_ok(self, ch):
@@ -532,15 +669,15 @@ class MBC_LASER2(_MBC):
         return self._q('read_all')
 
     def left_mm(self):
-        """左雷射距離 0~1200 mm"""
+        """左雷射距離 0~1200 mm（遠距離模式 0~2000）"""
         return self._q('left_mm')
 
     def right_mm(self):
-        """右雷射距離 0~1200 mm"""
+        """右雷射距離 0~1200 mm（遠距離模式 0~2000）"""
         return self._q('right_mm')
 
     def average_mm(self):
-        """左右平均距離 0~1200 mm"""
+        """左右平均距離 0~1200 mm（遠距離模式 0~2000）"""
         return self._q('average_mm')
 
 
@@ -606,7 +743,7 @@ class MBC_LASER8(_MBC):
         return self._q('distances')
 
     def ch(self, ch):
-        """第 ch 顆（1~8）的距離 0~120 cm"""
+        """第 ch 顆（1~8）的距離 0~120 cm（遠距離模式 0~200）"""
         _ch(8, ch)
         return self._q('ch', ch)
 
@@ -615,7 +752,7 @@ class MBC_LASER8(_MBC):
         return self._q('min_direction')
 
     def min_distance(self):
-        """最近目標的距離 0~120 cm"""
+        """最近目標的距離 0~120 cm（遠距離模式 0~200）"""
         return self._q('min_distance')
 
     def max_direction(self):
@@ -623,7 +760,7 @@ class MBC_LASER8(_MBC):
         return self._q('max_direction')
 
     def max_distance(self):
-        """最空曠方向的距離 0~120 cm"""
+        """最空曠方向的距離 0~120 cm（遠距離模式 0~200）"""
         return self._q('max_distance')
 
     def is_ok(self, ch):
@@ -644,11 +781,11 @@ class MBC_LASER8(_MBC):
         return self._q('read_all')
 
     def nearest_mm(self):
-        """最近目標的距離 0~1200 mm"""
+        """最近目標的距離 0~1200 mm（遠距離模式 0~2000）"""
         return self._q('nearest_mm')
 
     def front_mm(self):
-        """正前方（第 4、5 顆平均）的距離 0~1200 mm"""
+        """正前方（第 4、5 顆平均）的距離 0~1200 mm（遠距離模式 0~2000）"""
         return self._q('front_mm')
 
     def nearest_dir(self):
@@ -664,6 +801,8 @@ class MBC_LASER8(_MBC):
 #        模式 3：[已連線, 電量, 0]；模式 8：識別
 #  EV3   模式 1：[方向鍵, LX, 圖形鍵, LY, 肩鍵, RX, 功能鍵, RY]（搖桿 0~99，換成 1~9）
 #        模式 3：方向鍵 | 圖形鍵<<4 | 已連線<<8；模式 5：識別
+#  PS4 重新配對（E0）要等配對窗關掉才回報，最久約 30 秒：pad.cmd(0xE0) 之後用 pad.wait_done(35000)，
+#  預設的 10 秒會在配好之前就回 False
 # ════════════════════════════════════════════════════════════════
 _BUTTONS = {
     'UP': 0, 'RIGHT': 1, 'DOWN': 2, 'LEFT': 3,
@@ -877,6 +1016,135 @@ class MBC_CAM_SCHOOL(_MBC):
 
 
 # ════════════════════════════════════════════════════════════════
+#  陀螺儀（IMU）：航向都是「度」，開機／歸零 = 0，連續累積可以超過 360
+#  SPIKE 模式 9（7 個 int16）：[3D 航向, 融合航向, 1D 航向, 磁力航向, 轉向角速度（0.1 度/秒）, 俯仰角, F3 狀態旗標]
+#        模式 6：[俯仰角, 俯仰角速度（0.1 度/秒）, 朝上的面]
+#  EV3：模式 0 = 3D 航向；1 = 融合航向；2 = 轉向角速度；3 = [1D 航向, 磁力航向]；4 = 識別；5 = 俯仰角速度；6 = 俯仰角
+#  F3 狀態旗標：bit1 靜止、bit2 已擷取安裝軸、bit4 加速度計校準中、bit5 磁力計校準中、bit6 磁力融合可用
+# ════════════════════════════════════════════════════════════════
+def _imu():
+    def al(v):
+        f = _lo(v[6])
+        return {'heading': int(v[0]), 'heading_fused': int(v[1]), 'heading_1d': int(v[2]), 'heading_mag': int(v[3]),
+                'yaw_rate': int(v[4]) / 10, 'pitch': int(v[5]), 'status_flags': f}
+
+    s = {
+        'heading': (9, lambda v: int(v[0])),
+        'heading_fused': (9, lambda v: int(v[1])),
+        'heading_1d': (9, lambda v: int(v[2])),
+        'heading_mag': (9, lambda v: int(v[3])),
+        'yaw_rate': (9, lambda v: int(v[4]) / 10),
+        'pitch': (9, lambda v: int(v[5])),
+        'status_flags': (9, lambda v: _lo(v[6])),
+        'still': (9, lambda v: (_lo(v[6]) >> 1) & 1 == 1),
+        'calibrating': (9, lambda v: _lo(v[6]) & 0x30 != 0),
+        'read_all': (9, al),
+        'pitch_rate': (6, lambda v: int(v[1]) / 10),
+        'face_up': (6, lambda v: int(v[2])),
+        'device_id': (8, _id8),
+        'firmware_version': (8, _fw8),
+    }
+    e = {
+        'heading': (0, lambda v: int(v[0])),
+        'heading_fused': (1, lambda v: int(v[0])),
+        'yaw_rate': (2, lambda v: int(v[0]) / 10),
+        'heading_1d': (3, lambda v: int(v[0])),
+        'heading_mag': (3, lambda v: int(v[1])),
+        'pitch_rate': (5, lambda v: int(v[0]) / 10),
+        'pitch': (6, lambda v: int(v[0])),
+        'device_id': (4, _id5),
+        'firmware_version': (4, _fw5),
+    }
+    return s, e
+
+
+class MBC_IMU(_MBC):
+    """陀螺儀：imu = MBC_IMU(port, multitask=False)"""
+    _S, _E = _imu()
+
+    def heading(self):
+        """3D 航向（度，四元數算出來的；開機／歸零 = 0，可以超過 360）"""
+        return self._q('heading')
+
+    def heading_fused(self):
+        """融合航向（度，3D 航向加磁力計慢慢修正）"""
+        return self._q('heading_fused')
+
+    def heading_1d(self):
+        """1D 航向（度，只繞轉向軸積分）"""
+        return self._q('heading_1d')
+
+    def heading_mag(self):
+        """磁力航向（度，磁力計傾斜補償，減去相對零點）"""
+        return self._q('heading_mag')
+
+    def yaw_rate(self):
+        """轉向角速度（度/秒，正負跟航向同向）"""
+        return self._q('yaw_rate')
+
+    def pitch(self):
+        """俯仰角 -90~+90 度（板子 X 軸朝上 = +90）"""
+        return self._q('pitch')
+
+    def pitch_rate(self):
+        """俯仰角速度（度/秒）"""
+        return self._q('pitch_rate')
+
+    def face_up(self):
+        """哪個軸朝上：0 +X、1 +Y、2 +Z、3 −X、4 −Y、5 −Z（只有 SPIKE）"""
+        return self._q('face_up')
+
+    def status_flags(self):
+        """F3 狀態旗標 0~255（只有 SPIKE）"""
+        return self._q('status_flags')
+
+    def still(self):
+        """感應器靜止中 = True（只有 SPIKE）"""
+        return self._q('still')
+
+    def calibrating(self):
+        """加速度計或磁力計校準中 = True（只有 SPIKE）"""
+        return self._q('calibrating')
+
+    def read_all(self):
+        """一次讀全部（只有 SPIKE）：dict"""
+        return self._q('read_all')
+
+    def zero_heading(self):
+        """四個航向都歸零（下命令 E0，只有 SPIKE；每次叫都會做）"""
+        return self.cmd(0xE0, again=True)
+
+    def set_heading(self, deg):
+        """四個航向都設成 deg 度（下命令 E5，只有 SPIKE；每次叫都會做）"""
+        return self.cmd(0xE5, int(deg), again=True)
+
+    def north_zero(self):
+        """以磁北為 0（E6，約 3 秒，要等做完就接 wait_done()；每次叫都會做）"""
+        return self.cmd(0xE6, again=True)
+
+    def recalibrate_gyro(self):
+        """陀螺零點重估（E7，要靜止約 1.5 秒，最多 4 秒；接 wait_done()；每次叫都會做）"""
+        return self.cmd(0xE7, again=True)
+
+    def recapture_axis(self):
+        """重抓安裝軸（E8，最多 5 秒；接 wait_done()；每次叫都會做）"""
+        return self.cmd(0xE8, again=True)
+
+    def cancel_calibration(self):
+        """取消進行中的校準，不存檔（E9；每次叫都會做）"""
+        return self.cmd(0xE9, again=True)
+
+    def set_heading_correction(self, deg_per_rev):
+        """航向修正係數：轉一圈實際是幾度（350.0~370.0；0 或 360 = 回預設、清掉存檔；EA，存檔、改完航向歸零）"""
+        return self.cmd(0xEA, int(round(deg_per_rev * 10)))
+
+    def factory_reset(self):
+        """校準回出廠（加速度計、磁力計、修正係數；EB，馬上存）"""
+        return self.cmd(0xEB, 0xA5)
+
+
+
+# ════════════════════════════════════════════════════════════════
 #  神攝手 WRO 版（HUE12）：12 格顏色，SPIKE 和 EV3 都是模式 0 的 8 個 int32
 #    cam.update()                     讀一次最新資料（成功 True、失敗 False）
 #    name, hue, sat = cam.get_slot(1) 第 1 格：顏色名稱、色相、飽和度
@@ -890,6 +1158,7 @@ class MBC_HUE12(_MBC):
     """神攝手 WRO 版：cam = MBC_HUE12(port, multitask=False)"""
 
     def __init__(self, port, multitask=False):
+        self.device = None   # 舊函式庫的 self.device（PUPDevice；沒接上 = None）。Pybricks 4.1.2 主機沒有 property，用一般屬性
         _MBC.__init__(self, port, multitask)
         d = self._open()
         try:
@@ -899,10 +1168,10 @@ class MBC_HUE12(_MBC):
         print("Connected to ID:", i)
         self.slots = [(255, 0, "NONE")] * 12
 
-    @property
-    def device(self):
-        # 舊函式庫的 self.device（PUPDevice；沒接上 = None）
-        return self._d
+    def _open(self):
+        # 建立（或重試建立）裝置時同步更新 self.device
+        self.device = _MBC._open(self)
+        return self.device
 
     def _get_color_name(self, hue):
         # 色相數字 → 顏色名稱
