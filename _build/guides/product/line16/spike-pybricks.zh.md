@@ -69,6 +69,16 @@
 
 範例：積木版 [line16_block_with_lib.py](/examples/line16/pybricks/For%20firmware%204.x/line16_block_with_lib.py)；Python 版 [line16_python_with_lib.py](/examples/line16/pybricks/For%20firmware%204.x/line16_python_with_lib.py)
 
+### 下命令範例（校準、左右反向）
+
+用 MBC 統一函式庫下命令（寫法和每個命令的說明見本頁下方「命令」段）。先把 [MBC_sensors.py](/examples/line16/pybricks/For%20firmware%204.x/MBC_sensors.py) 上傳到 Pybricks Code，跟範例放在同一個專案列表；感應器接 **C 埠**；照輸出區的提示按主機**左鍵**進下一步（中間鍵照常是停止程式）。要 2026-10 以後的感應器韌體。3 支都在主機上跑過。
+
+| 範例 | 做什麼 | 怎麼確認成功 |
+| :--- | :--- | :--- |
+| [line16_cmd_calib_bw.py](/examples/line16/pybricks/For%20firmware%204.x/line16_cmd_calib_bw.py) | 黑白校準（E2 黑、E3 白）：整排放在黑色上按左鍵，再整排放在白紙上按左鍵（高度固定） | 黑色光值全 0；白紙光值（`ir_calibration()`，0～15）13 以上 |
+| [line16_cmd_calib_auto.py](/examples/line16/pybricks/For%20firmware%204.x/line16_cmd_calib_auto.py) | E7 5 秒自動校準：5 秒內把感應器在黑線和白底之間來回掃（高度固定、不要傾斜） | 狀態從「執行中」變「完成」；白紙光值 11 以上（校準品質看手掃的高度） |
+| [line16_cmd_reverse.py](/examples/line16/pybricks/For%20firmware%204.x/line16_cmd_reverse.py) | E9 左右反向，也示範送錯參數會回「失敗」 | 線位置正負號對調（例如 −15 → +15，再送 0 換回來）；送 5 回「失敗」 |
+
 ### PD 循線示範（速度 50）
 
 同一套 PD 循線邏輯，4 種讀法各有積木版和 Python 版，共 8 支；看到十字路口（整排踩到線）會停車。8 支都在 Pybricks 主機上跑過。

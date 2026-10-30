@@ -69,6 +69,16 @@ Examples: blocks [line8_block_native.py](/examples/line8/pybricks/For%20firmware
 
 Examples: blocks [line8_block_with_lib.py](/examples/line8/pybricks/For%20firmware%204.x/line8_block_with_lib.py); Python [line8_python_with_lib.py](/examples/line8/pybricks/For%20firmware%204.x/line8_python_with_lib.py)
 
+### Command examples (calibration, mirror)
+
+These send commands with the shared MBC library (see "Commands" further down this page for each command). First upload [MBC_sensors.py](/examples/line8/pybricks/For%20firmware%204.x/MBC_sensors.py) to Pybricks Code into the same project list; sensor on **port C**; follow the hints in the output pane and press the hub's **left button** to go on (the centre button still stops the program). Needs sensor firmware from 2026-10 or later. All 3 have been run on a hub.
+
+| Example | What it does | How to tell it worked |
+| :--- | :--- | :--- |
+| [line8_cmd_calib_bw.py](/examples/line8/pybricks/For%20firmware%204.x/line8_cmd_calib_bw.py) | Black/white calibration (E2 black, E3 white): put the whole row on black and press left, then on white paper and press left (keep the height fixed) | Black light values all 0; white-paper light values (`ir_calibration()`, 0–100) 80 or more |
+| [line8_cmd_calib_auto.py](/examples/line8/pybricks/For%20firmware%204.x/line8_cmd_calib_auto.py) | E7 5-second auto calibration: sweep the sensor across the black line and white surface for 5 s (fixed height, no tilt) | State goes from busy to done; white-paper light values 70 or more (quality depends on how you sweep) |
+| [line8_cmd_reverse.py](/examples/line8/pybricks/For%20firmware%204.x/line8_cmd_reverse.py) | E9 mirror left/right, and shows that a wrong parameter returns "failed" | Line position changes sign (e.g. −7 → +7, send 0 to switch back); sending 5 returns "failed" |
+
 ### PD line-following demos (speed 50)
 
 One PD line-following logic in 4 reading methods, each as blocks and as Python: 8 programs. They stop at a crossing (the whole row on the line). All 8 have been run on a Pybricks hub.
