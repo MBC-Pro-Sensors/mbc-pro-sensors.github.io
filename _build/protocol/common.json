@@ -13,6 +13,30 @@
     "unknown": "[00][80][編號^0x80]（= -32768）",
     "packAll": "FD → [AA][N][N 個 int16 小端][xor]，xor = AA ^ N ^ 所有資料 byte；N = 值表已定義編號數（不含跳號、共用編號、命令）"
   },
+  "spikeCmd": {
+    "_說明": "SPIKE 命令通道（2026-10-29 方案丙，使用者定案；核心 MBC_LEGO_SPIKE_CMD，產品 lego.spikeCmd = true 才有）",
+    "write": "PUPDevice(port).write(9, (序號, I2C 命令碼, p1, p2, p3, p4, p5))：7 個 int16（模式 9 照原廠 7×int16，只開寫入旗標）；命令碼與參數直接用 I2C 表（commands[].spike = true 的才開放）",
+    "seq": "序號 0 = 不是命令（全 0 = 安全）；跟上一次收下的序號相同 = 重送，不重做；新序號 = 執行。函式庫：同命令＋同參數沿用同序號，新程式從模式 8 v3 的序號 +1 開始",
+    "reply": {
+      "mode": 8,
+      "v": 3,
+      "format": "(最後收下的序號 & 0xFF) << 8 | 狀態",
+      "state": {
+        "0": "閒置／完成",
+        "1": "忙碌",
+        "2": "失敗（SPIKE 參數超出範圍也回 2）",
+        "3": "拒絕（不認得的命令碼、EF／F8、產品不支援）"
+      },
+      "init": "還沒收過命令、斷線重連（reset）後 = 0；切模式不清除",
+      "optional": "回覆是選用的：命令靠序號冪等，送出就可以不管；wait_done() 要切到模式 8 再切回來（約 40～60 ms，期間讀不到模式 9），只給校準這類停下來做的命令用"
+    },
+    "flag": "模式 8 v1 = 協議版 | 0x100（bit 8 = 有命令通道）；主機判斷能不能下命令看這個 bit（read(8) 失敗或沒有 bit 8 = 舊韌體，不送）。I2C F1、EV3 模式 5 的協議版不變",
+    "mode9": "模式 9 讀值格式不變（舊函式庫 data1…data7 = read(9) 照常能用）",
+    "range": "參數超出範圍：SPIKE 回失敗（2）；I2C 照舊默默不理",
+    "whitelist": "0xE0~0xEE；EF 重開機、F8 換位址不開放（拒絕）",
+    "light": "模式 3 lights.on([a,b,c]) 只當燈號（R3：有照明燈的照做，其他略過；0,0,0 = 回預設），不當命令",
+    "hosts": "只有 MBC Pybricks 函式庫、MBC SPIKE 積木網站能送；Pybricks 內建 ColorSensor 積木、舊版 SPIKE 2、官方 SPIKE App 3 不能送"
+  },
   "values": [
     {
       "id": "F0",
@@ -149,7 +173,8 @@
       ],
       "i2c": true,
       "mblock": false,
-      "microbit": true
+      "microbit": true,
+      "spike": false
     },
     {
       "id": "EF",
@@ -174,7 +199,8 @@
       ],
       "i2c": true,
       "mblock": true,
-      "microbit": true
+      "microbit": true,
+      "spike": false
     }
   ],
   "matrixBig": {

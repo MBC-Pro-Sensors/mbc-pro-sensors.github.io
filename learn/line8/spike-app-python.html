@@ -361,7 +361,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     <h2 id="tiph">使用注意</h2>
     <ol>
       <li><b>每圈先 <code>update()</code>。</b>小幫手的功能都是拆「最近一次 <code>update()</code> 讀到的值」；沒 <code>update()</code> 就一直是舊的（一開始全是 0，<code>pos8()</code> 會是 −8）。</li>
-      <li><b>這是官方 App 3 的寫法，跟 Pybricks 不一樣。</b>孔位是 <code>from hub import port</code> 的 <code>port.C</code>（不是 <code>Port.C</code> 或數字）、等待是 <code>await runloop.sleep_ms()</code>（不是 <code>wait()</code>），Pybricks 的程式不能直接貼過來。家用版（Robot Inventor）App 的 Python 讀法還沒驗證，這頁是教育版的。</li>
+      <li><b>這是官方 App 3 的寫法，跟 Pybricks 不一樣。</b>孔位是 <code>from hub import port</code> 的 <code>port.C</code>（不是 <code>Port.C</code> 或數字）、等待是 <code>await runloop.sleep_ms()</code>（不是 <code>wait()</code>），Pybricks 的程式不能直接貼過來。這頁是教育版的；家用版（Robot Inventor）App 的 Python 讀法不一樣（已實機量過：細位置＝<code>get_rgb_intensity()[0] − 100</code>、線寬＝<code>get_reflected_light()</code>），請用<a href="/sensors/line8/spike/official.html">官方 App 說明頁</a>的玩具版小幫手。LEGO 已在 2026-10-01 停止支援 Robot Inventor App。</li>
       <li><b>丟線時會記住最後一側：</b>線完全離開感應器時，<code>pos8()</code> 是 −8 或 +8、<code>pos100()</code> 是 −100 或 +100，循線程式不用另外寫找線。要判斷「真的看不到線」用 <code>width() == 0</code>。</li>
       <li><b>十字路口：</b>線寬 6 以上（整排都踩到）。</li>
       <li><b>方向：</b>站在車後面往前看，線在左邊是負數、右邊是正數；第 1 路在最左邊。這頁的讀法依感應器韌體推算，跟官方 App 積木頁一樣還沒在每一版 App 上機確認；數字怪怪的請先改用 Pybricks，並跟我們回報。</li>

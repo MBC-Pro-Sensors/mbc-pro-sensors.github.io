@@ -73,6 +73,8 @@ function scratch(call, lang) {
 const pre = (s) => `<pre class="blocks">${s}</pre>`;
 const jsOf = (call, n) => call.replace(/\bN\b/, String(n));
 const calls = (mb) => (mb && mb.js ? (Array.isArray(mb.js) ? mb.js : [mb.js]) : []);
+// 命令：已發版的擴充還沒有這顆積木（新命令、擴充尚未發版）→ 當成沒有專屬積木，改列 mbc.writeCmd()；值表照舊找不到就報錯
+const cmdCalls = (mb) => calls(mb).filter((k) => { const m = String(k).match(/^mbc\.(\w+)\(/); return !m || EXT.blocks[m[1]]; });
 // 事件積木的 JavaScript：補一個空的 function () {}
 const stmt = (call) => (parse(call).b.kind === 'event' ? `${call.replace(/\)$/, '')}, function () {\n})` : call);
 
@@ -90,7 +92,7 @@ export function blockText(product, v, lang) {
   return one.replace(first, T(lang, `［${opts}］`, `[${opts}]`));
 }
 export function commandText(product, c, lang) {
-  const k = calls(c.microbit);
+  const k = cmdCalls(c.microbit);
   return k.length ? labelText(k[0], lang) : null;
 }
 // 值表以外、擴充另外有的積木（是／否、事件），掛在相關的值底下：microbit.also
@@ -137,7 +139,7 @@ export function value(product, v, lang) {
 }
 
 export function command(product, c, lang) {
-  const k = calls(c.microbit);
+  const k = cmdCalls(c.microbit);
   if (!k.length) return { text: T(lang, `擴充沒有這顆積木；在 JavaScript 用 \`mbc.writeCmd(${product.addr}, ${hex(c.id)}, [參數])\`。`, `No dedicated block; in JavaScript use \`mbc.writeCmd(${product.addr}, ${hex(c.id)}, [params])\`.`), codeLang: TS };
   return { html: pre(scratch(k[0], lang)), code: `${k[0]}   // ${L(c.name, lang)}`, codeLang: TS, extra: also(c, lang), note: '' };
 }

@@ -47,6 +47,28 @@
 
 ![循行者 16 路 Robot Inventor App 的 PID 循線積木](/images/sensors/line16/spike-ri-example.webp)
 
+### PD 循線示範（速度 50）
+
+跟 Pybricks 版同一套 PD 循線邏輯，教育版和玩具版各有積木和 Python，共 4 支，都在主機上跑過。
+
+- 教育版（SPIKE App 3）：[📥 積木 .llsp3](/examples/line16/pd50/spike_app/line16_pd50_edu_blocks.llsp3)・[📥 Python（小幫手已內嵌）](/examples/line16/pd50/spike_app/line16_pd50_edu_python.py)
+- 玩具版（Robot Inventor App）：[📥 積木 .lms](/examples/line16/pd50/spike_app/line16_pd50_ri_blocks.lms)・[📥 Python（小幫手已內嵌）](/examples/line16/pd50/spike_app/line16_pd50_ri_python.py)
+- [📥 全部打包（含 Pybricks 版）](/examples/line16/line16_pd50_examples.zip)
+
+- **接線**：感應器 C 埠、左馬達 E 埠、右馬達 F 埠。左右馬達裝的方向相反，**左馬達要給負的功率才會往前**：左＝−(速度＋PD)、右＝速度−PD。
+- **讀值**：細位置＝「原始紅」− 100（兩版一樣）。線寬：**積木版（教育版、玩具版都一樣）用「顏色」積木**；只有**玩具版 Python** 用反射光 `get_reflected_light()`。
+- 速度 50（功率 %）、KP 0.4、KD 1.5 是建議值；十字路口停車：教育版線寬 > 10；玩具版積木 > 9（玩具版「顏色」最多只到 10）；玩具版 Python > 10。
+- 舊韌體也能用：官方 App 讀的是模式 0，不受模式 7 改版影響。
+
+### 玩具版（Robot Inventor App）Python
+
+> [!WARNING]
+> LEGO 已在 2026-10-01 停止支援 Robot Inventor App，這段只給手上還有玩具版主機的人用；新專案建議用 SPIKE App 3 或 Pybricks。
+
+- 讀法（實機量過）：細位置＝`get_rgb_intensity()[0] − 100`、線寬＝`get_reflected_light()`。`get_color()` 只有少數位置有顏色名稱，不能當位置；粗位置和每一路的光值這個 App 讀不到。
+- 小幫手：[MBC_line16_ri_App_helper.py](/examples/line16/spike_app_ri/MBC_line16_ri_App_helper.py)（類別 `Line16RI`：`pos100()`、`width()`），整份貼在程式最上面。
+- 範例：[ex01_line_follow.py](/examples/line16/spike_app_ri/ex01_line_follow.py)（小幫手已貼好）：循線＋十字路口停車，接線 C／E／F，已在 51515（App 10.5.4）實機跑過。
+
 ### 想學更厲害的循線方法？
 
 可以找這幾位有豐富比賽與教學經驗的教練：[LegoLauXiao 教練](https://www.youtube.com/@LegoLauXiao)（[示範影片](https://www.youtube.com/watch?v=WgacdWLatbk)）、[legolaumo 教練](https://www.youtube.com/@legolaumo)（[示範影片](https://www.youtube.com/watch?v=T9bcndBNQvQ)）。

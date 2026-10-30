@@ -81,7 +81,7 @@ line = MBC_LINE16(Port.A)
 linePosFine = line.pos100()
 ```
 
-<p class="ref-note">mode 0 (edu) byte 2 −100 🔒; mode 0 (toy) byte 2 −100 🔒; mode 3 byte 0 −100; mode 4 v[0] −100; mode 7 v[0] 🔒; mode 9 v[5] lo −100 🔒. Note: byte2 = 細位置+100（0~200）、byte3 = 0；App 原始紅讀成 int16; 細位置+100 經玩具版查表編碼成 byte2~3; Pybricks ambient()：4 個相同 int16 = (細位置+100)×100 + 線寬（0~20016），主機 ÷100 → 位置.線寬</p>
+<p class="ref-note">mode 0 (edu) byte 2 −100 🔒; mode 0 (toy) byte 2 −100 🔒; mode 3 byte 0 −100; mode 4 v[0] −100; mode 7 v[0] 🔒; mode 9 v[5] lo −100 🔒. Note: byte2 = 細位置+100（0~200）、byte3 = 0；App 原始紅讀成 int16; 細位置+100 經玩具版查表編碼成 byte2~3; 4 個 int16：第 1、2、4 格 = (細位置+100)×100 + 線寬（0~20016；Pybricks hsv(surface=False).h 讀第 1 格，原封不動）；第 3 格 = (細位置+100)×100 + min(線寬,9)×10（Pybricks ambient() 讀這格：4.1.2 先 ÷10 去尾再 ÷10、3.6.1／4.0.0 ÷100，都得到 細位置+100 . 線寬，線寬最多顯示 9）。2026-10-30 起第 3 格改這個編碼</p>
 
 </section>
 
@@ -227,7 +227,145 @@ light = line.ir_calibration()   # list, channel 1 = [0]
 
 ## Commands
 
-The SPIKE port is read-only, so this software cannot send commands: calibrate with the button on the sensor and change settings over Arduino I2C, mBlock or micro:bit.
+Commands need the **MBC library** (2026-10 or later) and **sensor firmware from 2026-10 or later**: send with `cmd(code, params…)`, then `wait_done()` waits for it (True = done; False = failed, rejected or timed out). Sensor states: 0 done, 1 busy, 2 failed (e.g. parameter out of range), 3 rejected (unknown command, or another command sent during calibration).
+
+- On older firmware `cmd()` reports "firmware too old"; readings keep working.
+- The same command with the same parameters is not repeated (even inside a loop); pass `cmd(…, again=True)` to run it again.
+- `wait_done()` costs 40–60 ms each time: use it for stop-and-do commands such as calibration, not inside a line-following loop.
+- The official SPIKE App 3 and Pybricks' built-in ColorSensor blocks cannot send commands.
+
+<section id="ce0" class="ref-item ref-cmd">
+
+### black line mode <small>blackLine</small>
+
+follow a black line (default); RAM only, back to the default after reset
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE16
+
+line = MBC_LINE16(Port.A)
+line.cmd(0xE0)   # black line mode
+ok = line.wait_done()   # True = done; False = failed / rejected / timed out
+```
+
+<p class="ref-note">Pybricks + the MBC library only (not the official app or built-in ColorSensor blocks); needs sensor firmware from 2026-10 or later.</p>
+
+</section>
+
+<section id="ce1" class="ref-item ref-cmd">
+
+### white line mode <small>whiteLine</small>
+
+follow a white line (F3 b1 = 1); RAM only, back to the default after reset
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE16
+
+line = MBC_LINE16(Port.A)
+line.cmd(0xE1)   # white line mode
+ok = line.wait_done()   # True = done; False = failed / rejected / timed out
+```
+
+<p class="ref-note">Pybricks + the MBC library only (not the official app or built-in ColorSensor blocks); needs sensor firmware from 2026-10 or later.</p>
+
+</section>
+
+<section id="ce2" class="ref-item ref-cmd">
+
+### calibrate black <small>calibBlack</small>
+
+store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE16
+
+line = MBC_LINE16(Port.A)
+line.cmd(0xE2)   # calibrate black
+ok = line.wait_done()   # True = done; False = failed / rejected / timed out
+```
+
+<p class="ref-note">Pybricks + the MBC library only (not the official app or built-in ColorSensor blocks); needs sensor firmware from 2026-10 or later.</p>
+
+</section>
+
+<section id="ce3" class="ref-item ref-cmd">
+
+### calibrate white <small>calibWhite</small>
+
+store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE16
+
+line = MBC_LINE16(Port.A)
+line.cmd(0xE3)   # calibrate white
+ok = line.wait_done()   # True = done; False = failed / rejected / timed out
+```
+
+<p class="ref-note">Pybricks + the MBC library only (not the official app or built-in ColorSensor blocks); needs sensor firmware from 2026-10 or later.</p>
+
+</section>
+
+<section id="ce4" class="ref-item ref-cmd">
+
+### set threshold <small>setThreshold</small>
+
+threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2)
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE16
+
+line = MBC_LINE16(Port.A)
+line.cmd(0xE4, 50)   # set threshold（threshold 1~99）
+ok = line.wait_done()   # True = done; False = failed / rejected / timed out
+```
+
+<p class="ref-note">Pybricks + the MBC library only (not the official app or built-in ColorSensor blocks); needs sensor firmware from 2026-10 or later.</p>
+
+</section>
+
+<section id="ce7" class="ref-item ref-cmd">
+
+### 5-second auto calibration <small>calibAuto</small>
+
+sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE16
+
+line = MBC_LINE16(Port.A)
+line.cmd(0xE7)   # 5-second auto calibration
+ok = line.wait_done(8000)   # True = done; False = failed / rejected / timed out
+```
+
+<p class="ref-note">Pybricks + the MBC library only (not the official app or built-in ColorSensor blocks); needs sensor firmware from 2026-10 or later.</p>
+
+</section>
+
+<section id="ce9" class="ref-item ref-cmd">
+
+### mirror left/right <small>reverse</small>
+
+[0 normal / 1 mirrored]: for a sensor mounted backwards — channel order and line position are mirrored; calibration stays per physical channel; RAM only, 0 after reset (not in legacy mBlock); on SPIKE an out-of-range value returns failed (state 2)
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE16
+
+line = MBC_LINE16(Port.A)
+line.cmd(0xE9, 1)   # mirror left/right（mirrored 0~1）
+ok = line.wait_done()   # True = done; False = failed / rejected / timed out
+```
+
+<p class="ref-note">Pybricks + the MBC library only (not the official app or built-in ColorSensor blocks); needs sensor firmware from 2026-10 or later.</p>
+
+</section>
 
 ## Examples
 

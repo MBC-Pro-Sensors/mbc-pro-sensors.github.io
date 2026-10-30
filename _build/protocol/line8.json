@@ -40,7 +40,8 @@
       3,
       4,
       6
-    ]
+    ],
+    "spikeCmd": true
   },
   "values": [
     {
@@ -193,7 +194,8 @@
           "mode": 7,
           "v": 0,
           "offset": 0,
-          "note": "Pybricks ambient()：4 個相同 int16 = (細位置+100)×100 + 線寬（0~20008），主機 ÷100 → 位置.線寬（INO:956-961）"
+          "note": "4 個 int16：第 1、2、4 格 = (細位置+100)×100 + 線寬（0~20008；Pybricks hsv(surface=False).h 讀第 1 格，原封不動）；第 3 格 = (細位置+100)×100 + min(線寬,9)×10（Pybricks ambient() 讀這格：4.1.2 先 ÷10 去尾再 ÷10、3.6.1／4.0.0 ÷100，都得到 細位置+100 . 線寬）。2026-10-30 起第 3 格改這個編碼",
+          "ambientOnes": "0"
         },
         {
           "mode": 9,
@@ -281,7 +283,8 @@
         {
           "mode": 7,
           "v": 0,
-          "note": "跟細位置合在 ambient() 的小數兩位（見細位置）"
+          "note": "跟細位置合在一起（見細位置）：第 1、2、4 格是個位數（hsv(surface=False).h），第 3 格是十位數、最多 9（ambient() 的小數第 1 位）",
+          "ambientOnes": "0"
         },
         {
           "mode": 9,
@@ -606,8 +609,8 @@
         "en": "black line mode"
       },
       "desc": {
-        "zh": "追黑線（預設）",
-        "en": "follow a black line (default)"
+        "zh": "追黑線（預設）；存 RAM，重開機回預設",
+        "en": "follow a black line (default); RAM only, back to the default after reset"
       },
       "params": [],
       "i2c": true,
@@ -616,7 +619,8 @@
       "microbit": {
         "js": "mbc.lineSetColor(MbcLineColor.Black)"
       },
-      "busyFlag": null
+      "busyFlag": null,
+      "spike": true
     },
     {
       "id": "E1",
@@ -626,8 +630,8 @@
         "en": "white line mode"
       },
       "desc": {
-        "zh": "追白線（F3 b1 = 1）",
-        "en": "follow a white line (F3 b1 = 1)"
+        "zh": "追白線（F3 b1 = 1）；存 RAM，重開機回預設",
+        "en": "follow a white line (F3 b1 = 1); RAM only, back to the default after reset"
       },
       "params": [],
       "i2c": true,
@@ -636,7 +640,8 @@
       "microbit": {
         "js": "mbc.lineSetColor(MbcLineColor.White)"
       },
-      "busyFlag": null
+      "busyFlag": null,
+      "spike": true
     },
     {
       "id": "E2",
@@ -655,7 +660,8 @@
       "microbit": {
         "js": "mbc.lineCalibrate(MbcLineCalib.Black)"
       },
-      "busyFlag": 2
+      "busyFlag": 2,
+      "spike": true
     },
     {
       "id": "E3",
@@ -674,7 +680,8 @@
       "microbit": {
         "js": "mbc.lineCalibrate(MbcLineCalib.White)"
       },
-      "busyFlag": 2
+      "busyFlag": 2,
+      "spike": true
     },
     {
       "id": "E4",
@@ -684,8 +691,8 @@
         "en": "set threshold"
       },
       "desc": {
-        "zh": "二值化門檻 1~99（RAM，重開機回預設 50）",
-        "en": "threshold 1~99 (RAM only, back to 50 after reboot)"
+        "zh": "二值化門檻 1~99（RAM，重開機回預設 50）；SPIKE 參數超出範圍回失敗（狀態 2）",
+        "en": "threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2)"
       },
       "params": [
         {
@@ -703,7 +710,8 @@
       "microbit": {
         "js": "mbc.lineSetThreshold(50)"
       },
-      "busyFlag": null
+      "busyFlag": null,
+      "spike": true
     },
     {
       "id": "E7",
@@ -719,11 +727,44 @@
       "params": [],
       "i2c": true,
       "mblock": true,
-      "matrix": null,
       "microbit": {
         "js": "mbc.lineCalibrate(MbcLineCalib.Auto)"
       },
-      "busyFlag": 2
+      "busyFlag": 2,
+      "spike": true
+    },
+    {
+      "id": "E9",
+      "key": "reverse",
+      "name": {
+        "zh": "左右反向",
+        "en": "mirror left/right"
+      },
+      "desc": {
+        "zh": "[0 正常／1 左右反向]：感應器反裝時用，通道順序與線位置左右對調；校準值照實體通道存，切換不用重校；存 RAM，重開機回 0（舊 mBlock 沒有）；SPIKE 參數超出範圍回失敗（狀態 2）",
+        "en": "[0 normal / 1 mirrored]: for a sensor mounted backwards — channel order and line position are mirrored; calibration stays per physical channel; RAM only, 0 after reset (not in legacy mBlock); on SPIKE an out-of-range value returns failed (state 2)"
+      },
+      "params": [
+        {
+          "name": {
+            "zh": "反向",
+            "en": "mirrored"
+          },
+          "range": "0~1",
+          "bytes": 1
+        }
+      ],
+      "i2c": true,
+      "mblock": true,
+      "matrix": null,
+      "microbit": {
+        "js": "mbc.lineSetReversed(true)",
+        "also": [
+          "mbc.lineReversed()"
+        ]
+      },
+      "busyFlag": null,
+      "spike": true
     }
   ],
   "flags": [
@@ -785,6 +826,18 @@
       "desc": {
         "zh": "線段數 ≥ 2",
         "en": "segment count ≥ 2"
+      }
+    },
+    {
+      "bit": 5,
+      "key": "reversed",
+      "name": {
+        "zh": "左右反向",
+        "en": "mirrored"
+      },
+      "desc": {
+        "zh": "E9 = 1（感應器反裝，左右對調）",
+        "en": "E9 = 1 (sensor mounted backwards, left/right mirrored)"
       }
     }
   ],

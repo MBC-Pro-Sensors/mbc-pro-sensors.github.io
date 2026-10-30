@@ -81,7 +81,7 @@ line = MBC_LINE8(Port.A)
 linePosFine = line.pos100()
 ```
 
-<p class="ref-note">模式 0 (edu) byte 2 −100 🔒；模式 3 byte 0 −100；模式 4 v[0] −100；模式 7 v[0] 🔒；模式 9 v[5] lo −100 🔒。備註：Pybricks ambient()：4 個相同 int16 = (細位置+100)×100 + 線寬（0~20008），主機 ÷100 → 位置.線寬（INO:956-961）</p>
+<p class="ref-note">模式 0 (edu) byte 2 −100 🔒；模式 3 byte 0 −100；模式 4 v[0] −100；模式 7 v[0] 🔒；模式 9 v[5] lo −100 🔒。備註：4 個 int16：第 1、2、4 格 = (細位置+100)×100 + 線寬（0~20008；Pybricks hsv(surface=False).h 讀第 1 格，原封不動）；第 3 格 = (細位置+100)×100 + min(線寬,9)×10（Pybricks ambient() 讀這格：4.1.2 先 ÷10 去尾再 ÷10、3.6.1／4.0.0 ÷100，都得到 細位置+100 . 線寬）。2026-10-30 起第 3 格改這個編碼</p>
 
 </section>
 
@@ -115,7 +115,7 @@ line = MBC_LINE8(Port.A)
 lineWidth = line.width()
 ```
 
-<p class="ref-note">模式 0 (edu) byte 0 🔒；模式 0 (toy) byte 1 🔒；模式 2 byte 0；模式 5 v[0] 🔒；模式 7 v[0] 🔒；模式 9 v[4] hi 🔒。備註：跟線位置合在 reflection() 的個位數（見線位置）; 跟細位置合在 ambient() 的小數兩位（見細位置）</p>
+<p class="ref-note">模式 0 (edu) byte 0 🔒；模式 0 (toy) byte 1 🔒；模式 2 byte 0；模式 5 v[0] 🔒；模式 7 v[0] 🔒；模式 9 v[4] hi 🔒。備註：跟線位置合在 reflection() 的個位數（見線位置）; 跟細位置合在一起（見細位置）：第 1、2、4 格是個位數（hsv(surface=False).h），第 3 格是十位數、最多 9（ambient() 的小數第 1 位）</p>
 
 </section>
 
@@ -228,7 +228,145 @@ light = line.ir_calibration()   # list，第 1 路 = [0]
 
 ## 命令
 
-SPIKE 接頭是唯讀的，這個軟體不能送命令：校準用感應器上的按鈕，切黑白線、門檻等設定改用 Arduino I2C、mBlock 或 micro:bit。
+下命令要用 **MBC 函式庫**（2026-10 以後的版本）和 **2026-10 以後的感應器韌體**：`cmd(命令碼, 參數…)` 送出，`wait_done()` 等它做完（回 True＝完成；False＝失敗、拒絕或逾時）。感應器回的狀態：0 完成、1 執行中、2 失敗（例如參數超出範圍）、3 拒絕（不認得的命令，或校準中又送別的命令）。
+
+- 舊韌體呼叫 `cmd()` 會顯示「韌體太舊」，讀值照常。
+- 同一個命令＋同樣參數再呼叫不會重做（放在迴圈裡也只做一次），要再做一次寫 `cmd(…, again=True)`。
+- `wait_done()` 每次多 40～60 ms，只在校準這類「停下來做」的命令用，不要放在循線迴圈裡。
+- 官方 SPIKE App 3、Pybricks 內建 ColorSensor 積木送不了命令。
+
+<section id="ce0" class="ref-item ref-cmd">
+
+### 切黑線 <small>blackLine</small>
+
+追黑線（預設）；存 RAM，重開機回預設
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE8
+
+line = MBC_LINE8(Port.A)
+line.cmd(0xE0)   # 切黑線
+ok = line.wait_done()   # True＝做完；False＝失敗／拒絕／逾時
+```
+
+<p class="ref-note">Pybricks＋MBC 函式庫才送得了（官方 App、內建 ColorSensor 積木不行）；要 2026-10 以後的感應器韌體。</p>
+
+</section>
+
+<section id="ce1" class="ref-item ref-cmd">
+
+### 切白線 <small>whiteLine</small>
+
+追白線（F3 b1 = 1）；存 RAM，重開機回預設
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE8
+
+line = MBC_LINE8(Port.A)
+line.cmd(0xE1)   # 切白線
+ok = line.wait_done()   # True＝做完；False＝失敗／拒絕／逾時
+```
+
+<p class="ref-note">Pybricks＋MBC 函式庫才送得了（官方 App、內建 ColorSensor 積木不行）；要 2026-10 以後的感應器韌體。</p>
+
+</section>
+
+<section id="ce2" class="ref-item ref-cmd">
+
+### 黑色校準 <small>calibBlack</small>
+
+把目前讀值記為黑（感應器壓在黑線上），約 50 ms；寫入 EEPROM
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE8
+
+line = MBC_LINE8(Port.A)
+line.cmd(0xE2)   # 黑色校準
+ok = line.wait_done()   # True＝做完；False＝失敗／拒絕／逾時
+```
+
+<p class="ref-note">Pybricks＋MBC 函式庫才送得了（官方 App、內建 ColorSensor 積木不行）；要 2026-10 以後的感應器韌體。</p>
+
+</section>
+
+<section id="ce3" class="ref-item ref-cmd">
+
+### 白色校準 <small>calibWhite</small>
+
+把目前讀值記為白（感應器壓在白底上），約 50 ms；寫入 EEPROM
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE8
+
+line = MBC_LINE8(Port.A)
+line.cmd(0xE3)   # 白色校準
+ok = line.wait_done()   # True＝做完；False＝失敗／拒絕／逾時
+```
+
+<p class="ref-note">Pybricks＋MBC 函式庫才送得了（官方 App、內建 ColorSensor 積木不行）；要 2026-10 以後的感應器韌體。</p>
+
+</section>
+
+<section id="ce4" class="ref-item ref-cmd">
+
+### 設定門檻 <small>setThreshold</small>
+
+二值化門檻 1~99（RAM，重開機回預設 50）；SPIKE 參數超出範圍回失敗（狀態 2）
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE8
+
+line = MBC_LINE8(Port.A)
+line.cmd(0xE4, 50)   # 設定門檻（門檻 1~99）
+ok = line.wait_done()   # True＝做完；False＝失敗／拒絕／逾時
+```
+
+<p class="ref-note">Pybricks＋MBC 函式庫才送得了（官方 App、內建 ColorSensor 積木不行）；要 2026-10 以後的感應器韌體。</p>
+
+</section>
+
+<section id="ce7" class="ref-item ref-cmd">
+
+### 5 秒動態校準 <small>calibAuto</small>
+
+5 秒內把感應器在黑線與白底上來回掃，取極值當黑白參考（共識 B-12，= v1 的 0x20=0x01）；期間 F3 b2 = 1
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE8
+
+line = MBC_LINE8(Port.A)
+line.cmd(0xE7)   # 5 秒動態校準
+ok = line.wait_done(8000)   # True＝做完；False＝失敗／拒絕／逾時
+```
+
+<p class="ref-note">Pybricks＋MBC 函式庫才送得了（官方 App、內建 ColorSensor 積木不行）；要 2026-10 以後的感應器韌體。</p>
+
+</section>
+
+<section id="ce9" class="ref-item ref-cmd">
+
+### 左右反向 <small>reverse</small>
+
+[0 正常／1 左右反向]：感應器反裝時用，通道順序與線位置左右對調；校準值照實體通道存，切換不用重校；存 RAM，重開機回 0（舊 mBlock 沒有）；SPIKE 參數超出範圍回失敗（狀態 2）
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE8
+
+line = MBC_LINE8(Port.A)
+line.cmd(0xE9, 1)   # 左右反向（反向 0~1）
+ok = line.wait_done()   # True＝做完；False＝失敗／拒絕／逾時
+```
+
+<p class="ref-note">Pybricks＋MBC 函式庫才送得了（官方 App、內建 ColorSensor 積木不行）；要 2026-10 以後的感應器韌體。</p>
+
+</section>
 
 ## 範例
 

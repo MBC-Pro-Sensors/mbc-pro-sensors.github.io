@@ -57,7 +57,45 @@ export function value(product, v, lang) {
   return { code, codeLang: PY, extra, note: where + (v.spike.some((e) => e.note) ? T(lang, '。備註：', '. Note: ') + v.spike.filter((e) => e.note).map((e) => e.note).join('; ') : '') };
 }
 
+// SPIKE 命令通道（方案丙，common.spikeCmd）：產品 lego.spikeCmd = true、命令 spike = true 才能送，用 MBC 函式庫 cmd()＋wait_done()
+// wait_done() 預設最多等 10 秒；比較久的命令另外給（循行者 E7 掃 5 秒、PS4 重新配對最多 30 秒）
+const WAIT_MS = { calibAuto: 8000, rePair: 35000 };
+export const canCmd = (product, c) => !!(product.lego && product.lego.spikeCmd && c.spike);
+function sampleArg(p) {
+  const m = String(p.range || '').match(/^(-?\d+)~(-?\d+)$/);
+  return m ? Math.round((Number(m[1]) + Number(m[2])) / 2) : 0;
+}
+function cmdCode(product, c, lang) {
+  const lib = LIB[product.id];
+  const args = (c.params || []).map((p) => `${L(p.name, lang)}${p.range ? ` ${p.range}` : ''}`);
+  const sample = (c.params || []).map(sampleArg);
+  const ms = WAIT_MS[c.key];
+  return `from pybricks.parameters import Port
+from MBC_sensors import ${lib.cls}
+
+${lib.obj} = ${lib.cls}(Port.A)
+` +
+    `${lib.obj}.cmd(0x${c.id}${sample.length ? ', ' + sample.join(', ') : ''})   # ${L(c.name, lang)}${args.length ? `（${args.join(T(lang, '、', ', '))}）` : ''}
+` +
+    `ok = ${lib.obj}.wait_done(${ms || ''})   # ${T(lang, 'True＝做完；False＝失敗／拒絕／逾時', 'True = done; False = failed / rejected / timed out')}`;
+}
+export const CMD_INTRO = (lang) => T(lang, [
+  '下命令要用 **MBC 函式庫**（2026-10 以後的版本）和 **2026-10 以後的感應器韌體**：`cmd(命令碼, 參數…)` 送出，`wait_done()` 等它做完（回 True＝完成；False＝失敗、拒絕或逾時）。感應器回的狀態：0 完成、1 執行中、2 失敗（例如參數超出範圍）、3 拒絕（不認得的命令，或校準中又送別的命令）。',
+  '',
+  '- 舊韌體呼叫 `cmd()` 會顯示「韌體太舊」，讀值照常。',
+  '- 同一個命令＋同樣參數再呼叫不會重做（放在迴圈裡也只做一次），要再做一次寫 `cmd(…, again=True)`。',
+  '- `wait_done()` 每次多 40～60 ms，只在校準這類「停下來做」的命令用，不要放在循線迴圈裡。',
+  '- 官方 SPIKE App 3、Pybricks 內建 ColorSensor 積木送不了命令。',
+].join('\n'), [
+  'Commands need the **MBC library** (2026-10 or later) and **sensor firmware from 2026-10 or later**: send with `cmd(code, params…)`, then `wait_done()` waits for it (True = done; False = failed, rejected or timed out). Sensor states: 0 done, 1 busy, 2 failed (e.g. parameter out of range), 3 rejected (unknown command, or another command sent during calibration).',
+  '',
+  '- On older firmware `cmd()` reports "firmware too old"; readings keep working.',
+  '- The same command with the same parameters is not repeated (even inside a loop); pass `cmd(…, again=True)` to run it again.',
+  '- `wait_done()` costs 40–60 ms each time: use it for stop-and-do commands such as calibration, not inside a line-following loop.',
+  "- The official SPIKE App 3 and Pybricks' built-in ColorSensor blocks cannot send commands.",
+].join('\n'));
 export function command(product, c, lang) {
+  if (canCmd(product, c) && LIB[product.id]) return { code: cmdCode(product, c, lang), codeLang: PY, note: T(lang, 'Pybricks＋MBC 函式庫才送得了（官方 App、內建 ColorSensor 積木不行）；要 2026-10 以後的感應器韌體。', 'Pybricks + the MBC library only (not the official app or built-in ColorSensor blocks); needs sensor firmware from 2026-10 or later.') };
   return { text: T(lang, 'SPIKE 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduino I2C／mBlock。', 'The SPIKE port carries no write commands: calibrate with the button on the sensor, change settings over Arduino I2C / mBlock.') };
 }
 
@@ -123,4 +161,5 @@ export function bySoftware(sw, product, v, lang) {
   }
   return null;
 }
-export function commandBySoftware() { return null; } // SPIKE 接頭沒有寫入命令
+// Pybricks 用 MBC 函式庫 cmd()；官方 App、MBC 積木網站（命令積木還沒部署）送不了
+export function commandBySoftware(sw, product, c, lang) { return sw === 'pybricks' && canCmd(product, c) && LIB[product.id] ? command(product, c, lang) : null; }

@@ -47,6 +47,28 @@ In the home-edition App some single-channel blocks are limited to `0 ~ 126`, so 
 
 ![Pathfinder 8-Way PID line following in the Robot Inventor App](/images/sensors/line8/spike-ri-example.webp)
 
+### PD line-following demos (speed 50)
+
+The same PD logic as the Pybricks version, as blocks and Python for both the Education and the Robot Inventor app: 4 programs, all run on a hub.
+
+- Education (SPIKE App 3): [📥 blocks .llsp3](/examples/line8/pd50/spike_app/line8_pd50_edu_blocks.llsp3) · [📥 Python (helper built in)](/examples/line8/pd50/spike_app/line8_pd50_edu_python.py)
+- Robot Inventor App: [📥 blocks .lms](/examples/line8/pd50/spike_app/line8_pd50_ri_blocks.lms) · [📥 Python (helper built in)](/examples/line8/pd50/spike_app/line8_pd50_ri_python.py)
+- [📥 Download all (with the Pybricks versions)](/examples/line8/line8_pd50_examples.zip)
+
+- **Wiring**: sensor on port C, left motor on E, right motor on F. The motors face opposite ways, so **the left motor needs negative power to drive forward**: left = −(speed + PD), right = speed − PD.
+- **Reading**: fine position = "raw red" − 100 (both apps). Width: **blocks (Education and Robot Inventor alike) use the "color" block**; only **Robot Inventor Python** uses reflected light `get_reflected_light()`.
+- Speed 50 (power %), KP 0.4 and KD 1.5 are starting values; stop at a crossing: width > 5.
+- Works with older firmware too: the official apps read mode 0, which the mode 7 change does not touch.
+
+### Robot Inventor App Python
+
+> [!WARNING]
+> LEGO ended support for the Robot Inventor App on 2026-10-01. This section is only for people who still have a Robot Inventor hub; for new projects use SPIKE App 3 or Pybricks.
+
+- Reading (measured on hardware): fine position = `get_rgb_intensity()[0] − 100`, width = `get_reflected_light()`. `get_color()` only names a few positions, so it is not a position; coarse position and per-channel readings are not available in this app.
+- Helper: [MBC_line8_ri_App_helper.py](/examples/line8/spike_app_ri/MBC_line8_ri_App_helper.py) (class `Line8RI`: `pos100()`, `width()`); paste the whole file at the top of your program.
+- Example: [ex01_line_follow.py](/examples/line8/spike_app_ri/ex01_line_follow.py) (helper already included): line following + stop at a crossing, wiring C / E / F, run on a 51515 hub (App 10.5.4).
+
 ### Want to learn more advanced line following?
 
 These coaches have plenty of competition and teaching experience: [Coach LegoLauXiao](https://www.youtube.com/@LegoLauXiao) ([demo video](https://www.youtube.com/watch?v=WgacdWLatbk)), [Coach legolaumo](https://www.youtube.com/@legolaumo) ([demo video](https://www.youtube.com/watch?v=T9bcndBNQvQ)).

@@ -37,12 +37,19 @@ Read with Pybricks' built-in `ColorSensor` commands, no extra file. These values
 | Basic (less sensitive to calibration, but calibrate once) | `getLinePos16()` | `-16 ~ +16` | Line position (integer), 0 centre, negative left, positive right |
 | | `getLineWidth16()` | `0 ~ 16` | Line width (sensors triggered), for crossings and T-junctions |
 | High precision (calibrate properly first) | `getLinePos100()` | `-100 ~ +100` | High-resolution interpolated position for advanced PID |
-| | `getLineWidth100()` | `0 ~ 16` | Line width in high-precision mode, in sync with `getLinePos100()` |
+| | `getLineWidth100()` | `0 ~ 9` | Line width in high-precision mode, in sync with `getLinePos100()` |
 
 > [!TIP]
 > Use position and width from **the same set**: `getLinePos16()` with `getLineWidth16()`, `getLinePos100()` with `getLineWidth100()`, so both come from the same moment.
 
 Examples: blocks [line16_block_native.py](/examples/line16/pybricks/For%20firmware%204.x/line16_block_native.py); Python [line16_python_native.py](/examples/line16/pybricks/For%20firmware%204.x/line16_python_native.py)
+
+> [!IMPORTANT]
+> **Decoding on Pybricks 4.1** (the examples above already do this)
+> - `reflection()` (mode 5) = coarse position + width. From Pybricks 4.1 it carries one decimal, so **convert to an integer first**: `r = int(line.reflection())`; 16-ch: add 6399 when negative, then position = `r // 100 - 16` (−16 to +16), width = `r % 100`. Blocks have no "integer" block: use "floor" for values ≥ 0 and "ceiling" for negative ones, which equals `int()`.
+> - `ambient()` (mode 7) = "fine position + 100 . width", width in the first decimal: fine position = integer part − 100, width = `round(line.ambient() * 10) % 10` (16-ch shows at most 9 = 9 or more). **Needs sensor firmware from 2026-10-30 or later**; on older firmware the width reads 0 (position still works).
+> - Positions are sent with an offset and subtracted after reading; negative numbers are never sent directly.
+> - Advanced (Python only): `line.hsv(surface=False).h` = (fine position + 100) × 100 + width, giving the full width.
 
 ### Method 2: import the library
 
@@ -61,6 +68,24 @@ Examples: blocks [line16_block_native.py](/examples/line16/pybricks/For%20firmwa
 | `line_read_all()` | `dict` | Everything at once: `ir_calibration`, `line_pos16`, `line_pos100`, `line_width`, `bin_raw`, `on_sensors`, `junction`, `junction_name` |
 
 Examples: blocks [line16_block_with_lib.py](/examples/line16/pybricks/For%20firmware%204.x/line16_block_with_lib.py); Python [line16_python_with_lib.py](/examples/line16/pybricks/For%20firmware%204.x/line16_python_with_lib.py)
+
+### PD line-following demos (speed 50)
+
+One PD line-following logic in 4 reading methods, each as blocks and as Python: 8 programs. They stop at a crossing (the whole row on the line). All 8 have been run on a Pybricks hub.
+
+- [📥 Download all (8 Pybricks programs + libraries + official app versions)](/examples/line16/line16_pd50_examples.zip)
+
+| Method | Reads | Suggested KP / KD | Stops at crossing | Blocks | Python |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Built-in reflection (mode 5) | `ColorSensor.reflection()`: coarse position + width | 2.5 / 10 | width > 10 | [mode5_block](/examples/line16/pd50/pybricks/line16_pd50_mode5_block.py) | [mode5_python](/examples/line16/pd50/pybricks/line16_pd50_mode5_python.py) |
+| Built-in ambient (mode 7) | `ColorSensor.ambient()`: fine position + width (firmware 2026-10-30 or later) | 0.4 / 1.5 | width > 8 | [mode7_block](/examples/line16/pd50/pybricks/line16_pd50_mode7_block.py) | [mode7_python](/examples/line16/pd50/pybricks/line16_pd50_mode7_python.py) |
+| Product library | `MBC_line16_obj_Lib`: `pos100()` + `width()` (mode 9) | 0.4 / 1.5 | width > 10 | [lib_block](/examples/line16/pd50/pybricks/line16_pd50_lib_block.py) | [lib_python](/examples/line16/pd50/pybricks/line16_pd50_lib_python.py) |
+| Shared library | `MBC_sensors`: same | 0.4 / 1.5 | width > 10 | [sensors_block](/examples/line16/pd50/pybricks/line16_pd50_sensors_block.py) | [sensors_python](/examples/line16/pd50/pybricks/line16_pd50_sensors_python.py) |
+
+- **Wiring**: sensor on port C, left motor on E (set to COUNTERCLOCKWISE in the program), right motor on F.
+- Speed 50 (power %). KP and KD are starting values; tune them on your robot: lower KP if it wobbles, lower KD if turns are too slow.
+- For the two library methods, first upload `MBC_line16_obj_Lib.py` or `MBC_sensors.py` to Pybricks Code into the same project list as the program (included in the zip).
+- The block files open as Pybricks blocks; the first line holds the block data, so import the whole file rather than copying only the Python part.
 
 ### Want to learn more advanced line following?
 

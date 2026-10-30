@@ -44,6 +44,13 @@ Read with Pybricks' built-in `ColorSensor` commands, no extra file. These values
 
 Examples: blocks [line8_block_native.py](/examples/line8/pybricks/For%20firmware%204.x/line8_block_native.py); Python [line8_python_native.py](/examples/line8/pybricks/For%20firmware%204.x/line8_python_native.py)
 
+> [!IMPORTANT]
+> **Decoding on Pybricks 4.1** (the examples above already do this)
+> - `reflection()` (mode 5) = coarse position + width. From Pybricks 4.1 it carries one decimal, so **convert to an integer first**: `r = int(line.reflection())`; 8-ch: position = `int(r) // 10 - 8` (−8 to +8), width = `int(r) % 10`. Blocks have no "integer" block: use "floor" for values ≥ 0 and "ceiling" for negative ones, which equals `int()`.
+> - `ambient()` (mode 7) = "fine position + 100 . width", width in the first decimal: fine position = integer part − 100, width = `round(line.ambient() * 10) % 10`. **Needs sensor firmware from 2026-10-30 or later**; on older firmware the width reads 0 (position still works).
+> - Positions are sent with an offset and subtracted after reading; negative numbers are never sent directly.
+> - Advanced (Python only): `line.hsv(surface=False).h` = (fine position + 100) × 100 + width, giving the full width.
+
 ### Method 2: import the library
 
 | Function | Range | Meaning |
@@ -61,6 +68,24 @@ Examples: blocks [line8_block_native.py](/examples/line8/pybricks/For%20firmware
 | `line_read_all()` | `dict` | Everything at once: `ir_calibration`, `line_pos8`, `line_pos100`, `line_width`, `bin_raw`, `on_sensors`, `junction`, `junction_name` |
 
 Examples: blocks [line8_block_with_lib.py](/examples/line8/pybricks/For%20firmware%204.x/line8_block_with_lib.py); Python [line8_python_with_lib.py](/examples/line8/pybricks/For%20firmware%204.x/line8_python_with_lib.py)
+
+### PD line-following demos (speed 50)
+
+One PD line-following logic in 4 reading methods, each as blocks and as Python: 8 programs. They stop at a crossing (the whole row on the line). All 8 have been run on a Pybricks hub.
+
+- [📥 Download all (8 Pybricks programs + libraries + official app versions)](/examples/line8/line8_pd50_examples.zip)
+
+| Method | Reads | Suggested KP / KD | Stops at crossing | Blocks | Python |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Built-in reflection (mode 5) | `ColorSensor.reflection()`: coarse position + width | 5 / 20 | width > 5 | [mode5_block](/examples/line8/pd50/pybricks/line8_pd50_mode5_block.py) | [mode5_python](/examples/line8/pd50/pybricks/line8_pd50_mode5_python.py) |
+| Built-in ambient (mode 7) | `ColorSensor.ambient()`: fine position + width (firmware 2026-10-30 or later) | 0.4 / 1.5 | width > 5 | [mode7_block](/examples/line8/pd50/pybricks/line8_pd50_mode7_block.py) | [mode7_python](/examples/line8/pd50/pybricks/line8_pd50_mode7_python.py) |
+| Product library | `MBC_line8_obj_Lib`: `pos100()` + `width()` (mode 9) | 0.4 / 1.5 | width > 5 | [lib_block](/examples/line8/pd50/pybricks/line8_pd50_lib_block.py) | [lib_python](/examples/line8/pd50/pybricks/line8_pd50_lib_python.py) |
+| Shared library | `MBC_sensors`: same | 0.4 / 1.5 | width > 5 | [sensors_block](/examples/line8/pd50/pybricks/line8_pd50_sensors_block.py) | [sensors_python](/examples/line8/pd50/pybricks/line8_pd50_sensors_python.py) |
+
+- **Wiring**: sensor on port C, left motor on E (set to COUNTERCLOCKWISE in the program), right motor on F.
+- Speed 50 (power %). KP and KD are starting values; tune them on your robot: lower KP if it wobbles, lower KD if turns are too slow.
+- For the two library methods, first upload `MBC_line8_obj_Lib.py` or `MBC_sensors.py` to Pybricks Code into the same project list as the program (included in the zip).
+- The block files open as Pybricks blocks; the first line holds the block data, so import the whole file rather than copying only the Python part.
 
 ### Want to learn more advanced line following?
 

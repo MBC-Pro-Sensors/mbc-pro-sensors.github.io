@@ -167,7 +167,7 @@ for w in words:
 
 ## 命令
 
-SPIKE 接頭是唯讀的，這個軟體不能送命令：校準用感應器上的按鈕，切黑白線、門檻等設定改用 Arduino I2C、mBlock 或 micro:bit。
+這個軟體送不了命令（官方 SPIKE App 3、Pybricks 內建 ColorSensor 積木都不行）。要下命令請用 [Pybricks＋MBC 函式庫](/sensors/line16/spike/pybricks.md)；校準也可以用感應器上的按鈕。
 
 ## 範例
 

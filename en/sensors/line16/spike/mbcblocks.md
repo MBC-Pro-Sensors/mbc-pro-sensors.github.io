@@ -167,7 +167,7 @@ for w in words:
 
 ## Commands
 
-The SPIKE port is read-only, so this software cannot send commands: calibrate with the button on the sensor and change settings over Arduino I2C, mBlock or micro:bit.
+This software cannot send commands (neither the official SPIKE App 3 nor Pybricks' built-in ColorSensor blocks can). To send commands use [Pybricks + the MBC library](/en/sensors/line16/spike/pybricks.md); you can also calibrate with the button on the sensor.
 
 ## Examples
 

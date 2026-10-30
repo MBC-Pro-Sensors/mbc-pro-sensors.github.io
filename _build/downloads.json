@@ -123,6 +123,28 @@
       }
     },
     {
+      "out": "examples/line8/line8_pd50_examples.zip",
+      "src": "${MBC}/95_產品網站/mbc-pro-sensors.github.io/examples/line8/pd50",
+      "version": "2026-10-30",
+      "firmware": "Pybricks 4.1／SPIKE App 3／Robot Inventor",
+      "legacy": false,
+      "label": {
+        "zh": "循行者 8 路：速度 50 的 PD 循線示範（Pybricks 8 支＋官方 App 4 支）",
+        "en": "Line Follower 8-ch: speed-50 PD line-following demos (8 Pybricks + 4 official app)"
+      }
+    },
+    {
+      "out": "examples/line16/line16_pd50_examples.zip",
+      "src": "${MBC}/95_產品網站/mbc-pro-sensors.github.io/examples/line16/pd50",
+      "version": "2026-10-30",
+      "firmware": "Pybricks 4.1／SPIKE App 3／Robot Inventor",
+      "legacy": false,
+      "label": {
+        "zh": "循行者 16 路：速度 50 的 PD 循線示範（Pybricks 8 支＋官方 App 4 支）",
+        "en": "Line Follower 16-ch: speed-50 PD line-following demos (8 Pybricks + 4 official app)"
+      }
+    },
+    {
       "out": "downloads/MBC_TOF8_Pybricks_Lib.zip",
       "src": "${MBC}/95_產品網站/mbc-pro-sensors.github.io/examples/tof8/pybricks/For firmware 4.x",
       "include": [

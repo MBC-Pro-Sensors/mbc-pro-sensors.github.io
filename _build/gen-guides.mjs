@@ -259,10 +259,15 @@ function readingsBlock(key, host, sw, p, lang, sp, avail, heading, idPre) {
     out.push(`## ${T(lang, '命令', 'Commands')}${idPre === 'w' ? T(lang, '（WRO 版）', ' (WRO edition)') : ''}`, '');
     const ok = cmds.map((c) => [c, cmdOf(host, sw, p, c, lang)]).filter(([, r]) => r);
     if (!ok.length && !extraCmds.length) {
-      out.push(host === 'spike' || host === 'ev3'
+      const spikeCmd = host === 'spike' && p.lego && p.lego.spikeCmd;   // 方案丙：SPIKE 有命令通道，但只有 Pybricks＋MBC 函式庫送得了
+      const pyMd = spikeCmd && avail[key].hosts.find((x) => x.id === host).sws.includes('pybricks') ? swMd(lang, key, host, 'pybricks') : '';
+      out.push(spikeCmd
+        ? T(lang, `這個軟體送不了命令（官方 SPIKE App 3、Pybricks 內建 ColorSensor 積木都不行）。要下命令請用 ${pyMd ? `[Pybricks＋MBC 函式庫](${pyMd})` : 'Pybricks＋MBC 函式庫'}；校準也可以用感應器上的按鈕。`, `This software cannot send commands (neither the official SPIKE App 3 nor Pybricks' built-in ColorSensor blocks can). To send commands use ${pyMd ? `[Pybricks + the MBC library](${pyMd})` : 'Pybricks + the MBC library'}; you can also calibrate with the button on the sensor.`)
+        : host === 'spike' || host === 'ev3'
         ? T(lang, `${hName} 接頭是唯讀的，這個軟體不能送命令：校準用感應器上的按鈕，切黑白線、門檻等設定改用 Arduino I2C、mBlock 或 micro:bit。`, `The ${hName} port is read-only, so this software cannot send commands: calibrate with the button on the sensor and change settings over Arduino I2C, mBlock or micro:bit.`)
         : T(lang, '這個軟體不能送命令；需要時改用 Arduino I2C、mBlock 或 micro:bit。', 'This software cannot send commands; use Arduino I2C, mBlock or micro:bit if you need them.'), '');
     } else {
+      if (host === 'spike' && sw === 'pybricks' && ok.length) out.push(SNIP.spike.CMD_INTRO(lang), '');
       for (const [c, r] of ok) {
         out.push(`<section id="${idPre === 'w' ? 'wc' : 'c'}${c.id.toLowerCase()}" class="ref-item ref-cmd">`, '');
         out.push(`### ${L(c.name, lang)} <small>${c.key}</small>`, '', L(c.desc, lang), '');

@@ -133,6 +133,60 @@
       "size": 39493
     },
     {
+      "out": "/examples/line8/line8_pd50_examples.zip",
+      "label": {
+        "zh": "循行者 8 路：速度 50 的 PD 循線示範（Pybricks 8 支＋官方 App 4 支）",
+        "en": "Line Follower 8-ch: speed-50 PD line-following demos (8 Pybricks + 4 official app)"
+      },
+      "version": "2026-10-30",
+      "firmware": "Pybricks 4.1／SPIKE App 3／Robot Inventor",
+      "legacy": false,
+      "files": [
+        "pybricks/MBC_line8_obj_Lib.py",
+        "pybricks/MBC_sensors.py",
+        "pybricks/line8_pd50_lib_block.py",
+        "pybricks/line8_pd50_lib_python.py",
+        "pybricks/line8_pd50_mode5_block.py",
+        "pybricks/line8_pd50_mode5_python.py",
+        "pybricks/line8_pd50_mode7_block.py",
+        "pybricks/line8_pd50_mode7_python.py",
+        "pybricks/line8_pd50_sensors_block.py",
+        "pybricks/line8_pd50_sensors_python.py",
+        "spike_app/line8_pd50_edu_blocks.llsp3",
+        "spike_app/line8_pd50_edu_python.py",
+        "spike_app/line8_pd50_ri_blocks.lms",
+        "spike_app/line8_pd50_ri_python.py"
+      ],
+      "size": 113713
+    },
+    {
+      "out": "/examples/line16/line16_pd50_examples.zip",
+      "label": {
+        "zh": "循行者 16 路：速度 50 的 PD 循線示範（Pybricks 8 支＋官方 App 4 支）",
+        "en": "Line Follower 16-ch: speed-50 PD line-following demos (8 Pybricks + 4 official app)"
+      },
+      "version": "2026-10-30",
+      "firmware": "Pybricks 4.1／SPIKE App 3／Robot Inventor",
+      "legacy": false,
+      "files": [
+        "pybricks/MBC_line16_obj_Lib.py",
+        "pybricks/MBC_sensors.py",
+        "pybricks/line16_pd50_lib_block.py",
+        "pybricks/line16_pd50_lib_python.py",
+        "pybricks/line16_pd50_mode5_block.py",
+        "pybricks/line16_pd50_mode5_python.py",
+        "pybricks/line16_pd50_mode7_block.py",
+        "pybricks/line16_pd50_mode7_python.py",
+        "pybricks/line16_pd50_sensors_block.py",
+        "pybricks/line16_pd50_sensors_python.py",
+        "spike_app/line16_pd50_edu_blocks.llsp3",
+        "spike_app/line16_pd50_edu_python.py",
+        "spike_app/line16_pd50_ri_blocks.lms",
+        "spike_app/line16_pd50_ri_python.py"
+      ],
+      "size": 114617
+    },
+    {
       "out": "/downloads/MBC_TOF8_Pybricks_Lib.zip",
       "label": {
         "zh": "測距者 8 路 TOF8：SPIKE Pybricks 函式庫",
@@ -177,7 +231,7 @@
         "spike_app/examples/ex01_track_turn.py",
         "spike_app/examples/ex02_line_follow.py"
       ],
-      "size": 59629
+      "size": 65855
     },
     {
       "out": "/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext",

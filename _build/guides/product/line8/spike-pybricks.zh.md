@@ -44,6 +44,13 @@
 
 範例：積木版 [line8_block_native.py](/examples/line8/pybricks/For%20firmware%204.x/line8_block_native.py)；Python 版 [line8_python_native.py](/examples/line8/pybricks/For%20firmware%204.x/line8_python_native.py)
 
+> [!IMPORTANT]
+> **Pybricks 4.1 的拆法**（上面的範例已經照這樣寫）
+> - `reflection()`（模式 5）＝粗位置＋線寬。Pybricks 4.1 起會帶 1 位小數，**要先取整數再拆**：`r = int(line.reflection())`；8 路：位置＝`int(r) // 10 - 8`（−8～+8）、線寬＝`int(r) % 10`。積木版沒有「取整數」積木：≥ 0 用「無條件捨去」、負數用「無條件進位」，結果跟 `int()` 一樣。
+> - `ambient()`（模式 7）＝「細位置＋100 . 線寬」，線寬在小數第 1 位：細位置＝整數部分 − 100，線寬＝`round(line.ambient() * 10) % 10`。**要 2026-10-30 以後的感應器韌體**；舊韌體線寬會是 0（細位置照常）。
+> - 位置都是「加偏移量送出、讀了再減」，不會直接送負數。
+> - 進階（只有 Python）：`line.hsv(surface=False).h`＝(細位置＋100)×100＋線寬，可以拿到完整的線寬。
+
 ### 方式二：匯入專屬函式庫
 
 | 函數 | 範圍 | 說明 |
@@ -61,6 +68,24 @@
 | `line_read_all()` | `dict` | 一次讀全部：`ir_calibration`、`line_pos8`、`line_pos100`、`line_width`、`bin_raw`、`on_sensors`、`junction`、`junction_name` |
 
 範例：積木版 [line8_block_with_lib.py](/examples/line8/pybricks/For%20firmware%204.x/line8_block_with_lib.py)；Python 版 [line8_python_with_lib.py](/examples/line8/pybricks/For%20firmware%204.x/line8_python_with_lib.py)
+
+### PD 循線示範（速度 50）
+
+同一套 PD 循線邏輯，4 種讀法各有積木版和 Python 版，共 8 支；看到十字路口（整排踩到線）會停車。8 支都在 Pybricks 主機上跑過。
+
+- [📥 打包下載（Pybricks 8 支＋函式庫＋官方 App 版）](/examples/line8/line8_pd50_examples.zip)
+
+| 讀法 | 讀什麼 | 建議 KP／KD | 十字路口停車 | 積木版 | Python 版 |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 內建反射光（模式 5） | `ColorSensor.reflection()`：粗位置＋線寬 | 5／20 | 線寬 > 5 | [mode5_block](/examples/line8/pd50/pybricks/line8_pd50_mode5_block.py) | [mode5_python](/examples/line8/pd50/pybricks/line8_pd50_mode5_python.py) |
+| 內建環境光（模式 7） | `ColorSensor.ambient()`：細位置＋線寬（要 2026-10-30 以後的韌體） | 0.4／1.5 | 線寬 > 5 | [mode7_block](/examples/line8/pd50/pybricks/line8_pd50_mode7_block.py) | [mode7_python](/examples/line8/pd50/pybricks/line8_pd50_mode7_python.py) |
+| 專屬函式庫 | `MBC_line8_obj_Lib`：`pos100()`＋`width()`（模式 9） | 0.4／1.5 | 線寬 > 5 | [lib_block](/examples/line8/pd50/pybricks/line8_pd50_lib_block.py) | [lib_python](/examples/line8/pd50/pybricks/line8_pd50_lib_python.py) |
+| 統一函式庫 | `MBC_sensors`：同上 | 0.4／1.5 | 線寬 > 5 | [sensors_block](/examples/line8/pd50/pybricks/line8_pd50_sensors_block.py) | [sensors_python](/examples/line8/pd50/pybricks/line8_pd50_sensors_python.py) |
+
+- **接線**：感應器 C 埠、左馬達 E 埠（程式設成反轉 COUNTERCLOCKWISE）、右馬達 F 埠。
+- 速度 50（功率 %）。KP、KD 是建議值，要在自己的車上調：車子左右甩就調小 KP，轉彎太慢就調小 KD。
+- 用函式庫的兩種，要先把 `MBC_line8_obj_Lib.py` 或 `MBC_sensors.py` 上傳到 Pybricks Code，跟主程式放在同一個專案列表（zip 裡有附）。
+- 積木版打開就是 Pybricks 積木畫面；第一行是積木資料，請整個檔案匯入，不要只複製下面的 Python。
 
 ### 想學更厲害的循線方法？
 
