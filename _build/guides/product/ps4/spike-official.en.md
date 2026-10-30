@@ -19,5 +19,7 @@
 - [📥 Education example (.llsp3, SPIKE App 3.4.3)](/examples/ps4/spike/ps4_demo_spike_prime_v3.4.3.llsp3)
 - [📥 Home-edition example (.lms, Robot Inventor App 10.5.0)](/examples/ps4/spike/ps4_demo_robot_inventor_v10.5.0.lms)
 
+Both examples expect the receiver on **port D** and motors on **ports A and B** (the beginner examples on this page use port C).
+
 > [!NOTE]
 > The beginner examples on this page use the Education edition (SPIKE 3). The home edition (Robot Inventor) reads the "Color" block differently, so the beginner examples do not apply; use the home-edition example above.

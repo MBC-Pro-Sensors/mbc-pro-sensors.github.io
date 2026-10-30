@@ -19,5 +19,7 @@
 - [📥 教育版範例（.llsp3，SPIKE App 3.4.3）](/examples/ps4/spike/ps4_demo_spike_prime_v3.4.3.llsp3)
 - [📥 家用版範例（.lms，Robot Inventor App 10.5.0）](/examples/ps4/spike/ps4_demo_robot_inventor_v10.5.0.lms)
 
+這兩個範例的接收器插 **D 埠**、馬達插 **A、B 埠**（本頁的新手範例是 C 埠，接線不一樣）。
+
 > [!NOTE]
 > 本頁的新手範例用的是教育版（SPIKE 3）。家用版（Robot Inventor）的「顏色」積木讀法不一樣，新手範例不適用，請用上面的家用版範例。

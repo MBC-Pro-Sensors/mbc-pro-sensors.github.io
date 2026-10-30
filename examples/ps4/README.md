@@ -4,8 +4,8 @@
 
 | 檔案 | 說明 |
 | :--- | :--- |
-| `spike/ps4_demo_spike_prime_v3.4.3.llsp3` | SPIKE 教育版 App（SPIKE Prime）範例：解出 16 個按鍵與 4 軸搖桿變數，左搖桿 Y 軸控制 A、B 馬達 |
-| `spike/ps4_demo_robot_inventor_v10.5.0.lms` | MINDSTORMS Robot Inventor App 範例：同上，方向鍵上／下控制 A、B 馬達 |
+| `spike/ps4_demo_spike_prime_v3.4.3.llsp3` | SPIKE 教育版 App（SPIKE Prime）範例：解出 16 個按鍵與 4 軸搖桿變數，左搖桿 Y 軸控制 A、B 馬達（接收器 D 埠） |
+| `spike/ps4_demo_robot_inventor_v10.5.0.lms` | MINDSTORMS Robot Inventor App 範例：同上，方向鍵上／下控制 A、B 馬達（接收器 D 埠） |
 | `pybricks/MBC_gamepad_Lib.py` | Pybricks 4.1 函式庫（`from MBC_gamepad_Lib import MBC_GAMEPAD`），新手範例用這個 |
 | `pybricks/MBC_sensors.py` | 共用函式庫：一個檔適用全部 MBC 感應器（`from MBC_sensors import MBC_GAMEPAD`），新專案用這個 |
 | `spike_beginner/pybricks/ex01_button_number.py` … `ex06_connected_battery.py` | Pybricks 4.1 新手範例，說明見 [SPIKE 新手範例頁](/sensors/ps4/spike-examples.md) |
@@ -30,8 +30,8 @@
 
 | File | Description |
 | :--- | :--- |
-| `spike/ps4_demo_spike_prime_v3.4.3.llsp3` | SPIKE (Education) App example for SPIKE Prime: decodes 16 buttons and 4 stick axes into variables; left stick Y drives motors A and B |
-| `spike/ps4_demo_robot_inventor_v10.5.0.lms` | MINDSTORMS Robot Inventor App example: same decoding; D-pad up/down drives motors A and B |
+| `spike/ps4_demo_spike_prime_v3.4.3.llsp3` | SPIKE (Education) App example for SPIKE Prime: decodes 16 buttons and 4 stick axes into variables; left stick Y drives motors A and B (receiver on port D) |
+| `spike/ps4_demo_robot_inventor_v10.5.0.lms` | MINDSTORMS Robot Inventor App example: same decoding; D-pad up/down drives motors A and B (receiver on port D) |
 | `pybricks/MBC_gamepad_Lib.py` | Pybricks 4.1 library (`from MBC_gamepad_Lib import MBC_GAMEPAD`), used by the beginner examples |
 | `pybricks/MBC_sensors.py` | Shared library: one file for every MBC sensor (`from MBC_sensors import MBC_GAMEPAD`); use it for new projects |
 | `spike_beginner/pybricks/ex01_button_number.py` … `ex06_connected_battery.py` | Pybricks 4.1 beginner examples, see the [SPIKE beginner examples page](/en/sensors/ps4/spike-examples.md) |
