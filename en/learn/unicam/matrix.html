@@ -592,8 +592,8 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     }
     lineFn('near', 'ucLine → l.nearOff', ('Near offset'),
       ('Offset on the bottom scan row: −100–100, <b>left = negative, right = positive</b> (mVision sends +100; the helper subtracts it). Drag the "near" green dot.'), ('−100–100'),
-      ['if (l.nearOff < -10) { ' + out([('line on the left '), v('l.nearOff')]) + ' }', 'else if (l.nearOff > 10) { ' + out([('line on the right '), v('l.nearOff')]) + ' }', 'else { ' + out([('line in the middle '), v('l.nearOff')]) + ' }'],
-      function (l) { var e = l.nearOff; return e < -10 ? ('line on the left ') + e : e > 10 ? ('line on the right ') + e : ('line in the middle ') + e; });
+      ['if (l.flags == 0) { ' + out([('no line')]) + ' }', 'else if (l.nearOff < -10) { ' + out([('line on the left '), v('l.nearOff')]) + ' }', 'else if (l.nearOff > 10) { ' + out([('line on the right '), v('l.nearOff')]) + ' }', 'else { ' + out([('line in the middle '), v('l.nearOff')]) + ' }'],
+      function (l) { var e = l.nearOff; return l.flags === 0 ? ('no line') : e < -10 ? ('line on the left ') + e : e > 10 ? ('line on the right ') + e : ('line in the middle ') + e; });
     lineFn('nmf', ('near/mid/far'), ('Near, mid, far offsets'), ('The offset on each scan row; a row with no line is 0.'), ('−100–100'),
       [out([('near '), v('l.nearOff'), (' mid '), v('l.midOff'), (' far '), v('l.farOff')])], function (l) { return ('near ') + l.nearOff + (' mid ') + l.midOff + (' far ') + l.farOff; });
     lineFn('angle', 'ucLine → l.angle', ('Line angle'), ('Which way the line leans: −90–90, positive = leans right.'), ('−90–90'),

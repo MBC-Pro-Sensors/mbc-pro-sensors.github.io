@@ -604,8 +604,8 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
     }
     lineFn('near', 'ucLine → l.nearOff', ('近處偏移'),
       ('最下面那條掃描線上，線偏離中間多少：−100～100，<b>線在左＝負、在右＝正</b>（mVision 送 ＋100，小幫手已經減回來）。拖「近」那個綠點試試看。'), ('−100～100'),
-      ['if (l.nearOff < -10) { ' + out([('線在左邊 '), v('l.nearOff')]) + ' }', 'else if (l.nearOff > 10) { ' + out([('線在右邊 '), v('l.nearOff')]) + ' }', 'else { ' + out([('線在中間 '), v('l.nearOff')]) + ' }'],
-      function (l) { var e = l.nearOff; return e < -10 ? ('線在左邊 ') + e : e > 10 ? ('線在右邊 ') + e : ('線在中間 ') + e; });
+      ['if (l.flags == 0) { ' + out([('看不到線')]) + ' }', 'else if (l.nearOff < -10) { ' + out([('線在左邊 '), v('l.nearOff')]) + ' }', 'else if (l.nearOff > 10) { ' + out([('線在右邊 '), v('l.nearOff')]) + ' }', 'else { ' + out([('線在中間 '), v('l.nearOff')]) + ' }'],
+      function (l) { var e = l.nearOff; return l.flags === 0 ? ('看不到線') : e < -10 ? ('線在左邊 ') + e : e > 10 ? ('線在右邊 ') + e : ('線在中間 ') + e; });
     lineFn('nmf', ('近／中／遠'), ('近、中、遠偏移'), ('三條掃描線各自的偏移。遠處先偏＝前面要彎了；看不到的那一條是 0。'), ('−100～100'),
       [out([('近 '), v('l.nearOff'), (' 中 '), v('l.midOff'), (' 遠 '), v('l.farOff')])], function (l) { return ('近 ') + l.nearOff + (' 中 ') + l.midOff + (' 遠 ') + l.farOff; });
     lineFn('angle', 'ucLine → l.angle', ('線角度'), ('線往哪邊斜：−90～90，正＝往右上斜。'), ('−90～90'),
