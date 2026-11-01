@@ -1,3 +1,6 @@
+# ！！這個檔案是自動產生的，不要手改！！（正本：85_共用資源\MBC_Pybricks\src\MBC_UniCam.py）
+# !! Auto-generated, do not edit by hand (master: 85_共用資源\MBC_Pybricks\src\MBC_UniCam.py) !!
+
 # MBC 神攝手（韌體 v1）：Pybricks 函式庫（SPIKE Prime／Robot Inventor）
 # MBC Sharpshooter Vision (firmware v1): Pybricks library (SPIKE Prime / Robot Inventor)
 # 作者 Author：MBC Robot　日期 Date：2026-10-28　版本 Version：v1.0（v1 尚未上機驗證 / not yet hardware-verified）
@@ -9,7 +12,7 @@
 # ════════════════════════════════════════════════════════════════
 #  用法 Usage：
 #      from MBC_UniCam import UniCam
-#      cam = UniCam(Port.C, mode=13)      # mode = 相機模式 ×10 ＋ 子選項（要跟相機選單一樣）
+#      cam = UniCam(Port.C, mode=13)      # mode = 相機模式 ×10 ＋ 子選項（建立時自動把相機切到這個模式）
 #      x, y = cam.xy(1)                   # 色 1 的位置（像素）/ colour 1 position (pixels)
 #
 #  mode（模式編號 mode number）＝ 相機模式 camera mode × 10 ＋ 子選項 option：
@@ -18,8 +21,10 @@
 #      30 照順序給色號 colour order
 #      41 循線 黑線 black line   42 白線 white line   43 色線 colour line
 #      51 物體偵測 物體清單 object list   52 物體詳細 object detail
-#  SPIKE 讀不到相機目前的模式，所以 mode 一定要跟相機選單切的一樣。
-#  SPIKE cannot read the camera's current mode: mode must match the camera menu.
+#  建立物件時自動送命令把相機切到 mode（韌體 2026-10-29 起）；舊韌體送不了，mode 要跟相機選單切的一樣。
+#  The camera is switched to mode automatically (firmware 2026-10-29+); with older firmware mode must match the camera menu.
+#  其他命令 Commands：cam.set_mode(51)、light(50)、teach(1)、clear(1)、target_range()、shape_tolerance()、
+#      target_shape()、camera_setting()、white_cal()、power(0/1/2)；cmd()／busy()／wait_done() 送任意命令。
 #
 #  座標 Coordinates：像素 X 0~159（左→右）、Y 0~119（上→下）；(0, 0)＝沒有目標 / no target.
 #  色相碼 Hue code：0~240 色相（紅 0/240、黃 40、綠 80、青 120、藍 160、紫 200）；
@@ -39,8 +44,10 @@
 from pybricks.iodevices import PUPDevice
 from pybricks.parameters import Port
 from pybricks.tools import StopWatch as _StopWatch
+from pybricks.tools import wait as _wait
 
 _CACHE_MS = 10
+_CMD_FLAG = 0x100       # 模式 8 v1（協議版）有這個 bit ＝ 有命令通道（韌體 2026-10-29 起）/ firmware has commands
 _RETRY_MS = 1000
 _watch = _StopWatch()
 MODES = (11, 12, 13, 14, 21, 22, 23, 30, 41, 42, 43, 51, 52)
@@ -149,10 +156,11 @@ def _count9(v, m, c):
 def _count6(v, m, c):
     b = _bytes(v, 6)
     if m == 11:
-        bits = 0
-        for i in range(6):
-            bits |= b[i] << (8 * i)
-        return (bits >> (3 * (c - 1))) & 7 if c else (bits >> 42) & 15
+        # 只拼需要的 2 個 byte：Pybricks 主機沒有大整數，48 位元會 small int overflow
+        o = 3 * (c - 1) if c else 42
+        i = o >> 3
+        w = b[i] | ((b[i + 1] << 8) if i + 1 < 6 else 0)
+        return (w >> (o & 7)) & (7 if c else 15)
     if c == 0:
         return b[3] & 15
     x = b[(c - 1) // 2]
@@ -214,8 +222,13 @@ class UniCam:
         self._c = {}
         self._bad = 0
         self._try = None
+        self._seq = None
+        self._last = None
+        self._oldfw = 0
         if self._a:
-            self._open()
+            self._open()        # 多工：要自己 await cam.set_mode(mode) / multitask: await cam.set_mode(mode) yourself
+        else:
+            self.set_mode(mode)  # 把相機切到 mode（不用再到相機選單切）/ switch the camera to mode automatically
 
     # ───── 讀取、快取、拔線容錯（跟 MBC_sensors.py 同一套做法）/ read, cache, unplug-safe ─────
     def _open(self):
@@ -392,7 +405,7 @@ class UniCam:
         return self._r(_NPT[self._m])
 
     def hue(self, point):
-        """取樣點 point 的色相碼 0~255 / hue code of spot"""
+        """取樣點 point 的色相碼 0~255（沒設定的點回 0）/ hue code of spot (0 if the spot is not set)"""
         self._need('hue', (21, 22, 23))
         self._col(point, _NPT[self._m])
         return self._g(9, lambda v, m, i: _hsv(v, m, i)[0], point)
@@ -540,3 +553,205 @@ class UniCam:
         """模式 52：物體 i 面積（佔畫面 %），0＝沒有 / mode 52: area in % of the picture"""
         self._obj('object_area', i, (52,))
         return self._g(9, lambda v, m, a: _ob(v, m, a)[5], i)
+
+    # ───── 下命令（韌體 2026-10-29 起）/ commands (firmware 2026-10-29 or later) ─────
+    #  送法：PUPDevice.write(9, (序號, I2C 命令碼, p1~p5))，命令碼與參數照 I2C 命令表（規格定案 §6）。
+    #  相機在模式 8 第 4 個值回 [序號, 狀態]：0 完成 done、1 忙碌 busy、2 失敗 failed、3 拒絕 rejected。
+    #  模式 8 第 2 個值（協議版）有 0x100 這個 bit 才是有命令的新韌體。busy()／wait_done() 讀模式 8，要切模式（每次多約 40～60 ms），
+    #  不要在讀值的迴圈裡一直叫：下命令 → wait_done() → 再進迴圈。
+    #  Sent with PUPDevice.write(9, (seq, I2C code, p1..p5)); the camera answers [seq, status] in value 4 of mode 8
+    #  (value 2 of mode 8 has bit 0x100 on firmware with commands). busy()/wait_done() switch to mode 8: call them before your loop.
+    #  官方 SPIKE App 送不了命令（只有 Pybricks 可以）/ the official SPIKE App cannot send commands (Pybricks only).
+    def _seqfor(self, key, v, again=False):
+        if key == self._last and not again:   # 同命令＋同參數沿用同序號（相機不會重做）；again=True 換新序號再做一次 / same command reuses its number unless again
+            return self._seq
+        if self._seq is None:          # 新程式：從相機目前的序號 +1 開始 / start after the camera's last number
+            self._seq = (int(v[3]) >> 8) & 0xFF
+        self._seq = self._seq % 255 + 1    # 1~255（0 不是命令 / 0 is not a command）
+        self._last = key
+        return self._seq
+
+    def _pack(self, code, p):
+        if len(p) > 5:
+            raise ValueError('參數最多 5 個 / at most 5 parameters')
+        return tuple(int(x) for x in p) + (0,) * (5 - len(p))
+
+    def _nocmd(self, e):
+        if not self._oldfw:
+            print('MBC: Port', self._n, '相機韌體不支援命令（2026-10-29 以前的韌體），請在相機選單切模式 / '
+                  'camera firmware has no commands (before 2026-10-29), use the camera menu:', e)
+        self._oldfw = 1
+
+    def _newfw(self, v):            # 模式 8 讀值 → 有沒有命令通道（v1 有 0x100）/ firmware has the command channel
+        if v is None or len(v) < 4 or not (int(v[1]) & _CMD_FLAG):
+            raise ValueError('模式 8 v1 = %s，沒有命令旗標 0x100' % (None if v is None or len(v) < 2 else v[1]))
+        return v
+
+    def _st(self, v):
+        if v is None or len(v) < 4 or self._seq is None:
+            return None
+        w = int(v[3]) & 0xFFFF
+        if (w >> 8) != self._seq:      # 相機還沒收到這個序號 / not received yet
+            return 1
+        return w & 0xFF
+
+    def cmd(self, code, *p, again=False):
+        """送命令、不等（回序號；送不出去回 None）。同命令＋同參數再叫不會重做，要再做一次寫 again=True
+        send a command without waiting: cam.cmd(0xE2, 50); the same command + parameters is not repeated unless again=True"""
+        q = self._pack(code, p)
+        if self._a:
+            return self._cmda(code, q, again)
+        d = self._open()
+        if d is None:
+            return None
+        try:
+            v = None if self._seq is not None else self._newfw(self._put(8, d.read(8)))
+            s = self._seqfor((code,) + q, v, again)
+            d.write(9, (s, code) + q)
+            self._c.pop(9, None)           # 讀值快取作廢 / drop the cached reading
+            return s
+        except Exception as e:
+            self._nocmd(e)
+        return None
+
+    async def _cmda(self, code, q, again=False):
+        d = self._open()
+        if d is None:
+            return None
+        try:
+            v = None if self._seq is not None else self._newfw(self._put(8, await d.read(8)))
+            s = self._seqfor((code,) + q, v, again)
+            await d.write(9, (s, code) + q)
+            self._c.pop(9, None)
+            return s
+        except Exception as e:
+            self._nocmd(e)
+        return None
+
+    def busy(self):
+        """最後一個命令還在做嗎 / is the last command still running"""
+        if self._a:
+            return self._busya()
+        d = self._open()
+        try:
+            return d is not None and self._st(self._put(8, d.read(8))) == 1
+        except OSError as e:
+            self._warn(e)
+        return False
+
+    async def _busya(self):
+        d = self._open()
+        try:
+            return d is not None and self._st(self._put(8, await d.read(8))) == 1
+        except OSError as e:
+            self._warn(e)
+        return False
+
+    def wait_done(self, timeout=5000):
+        """等最後一個命令做完：回 0 完成、2 失敗、3 拒絕；逾時回 None
+        wait for the last command: 0 done, 2 failed, 3 rejected; None on timeout"""
+        if self._a:
+            return self._waita(timeout)
+        t0 = _watch.time()
+        while _watch.time() - t0 < timeout:
+            d = self._open()
+            if d is not None:
+                try:
+                    s = self._st(self._put(8, d.read(8)))
+                    if s is not None and s != 1:
+                        return s
+                except OSError as e:
+                    self._warn(e)
+            _wait(10)
+        return None
+
+    async def _waita(self, timeout):
+        t0 = _watch.time()
+        while _watch.time() - t0 < timeout:
+            d = self._open()
+            if d is not None:
+                try:
+                    s = self._st(self._put(8, await d.read(8)))
+                    if s is not None and s != 1:
+                        return s
+                except OSError as e:
+                    self._warn(e)
+            await _wait(10)
+        return None
+
+    def _do(self, timeout, code, *p, again=False):   # 送＋等 / send and wait
+        if self._a:
+            return self._doa(timeout, code, p, again)
+        if self.cmd(code, *p, again=again) is None:
+            return None
+        return self.wait_done(timeout)
+
+    async def _doa(self, timeout, code, p, again=False):
+        if await self._cmda(code, self._pack(code, p), again) is None:
+            return None
+        return await self._waita(timeout)
+
+    def set_mode(self, mode):
+        """切相機模式（E0，存進相機；值沒變不會重寫）/ switch the camera mode (stored in the camera): cam.set_mode(51)"""
+        if mode not in MODES:
+            raise ValueError('mode 要填 %s / mode must be one of %s' % (MODES, MODES))
+        self._m = mode
+        self._c = {}
+        if self._a:
+            return self._set_modea(mode)
+        r = self._do(500, 0xE0, mode // 10, mode % 10)
+        if r == 0:
+            _wait(60)                  # 下一幀才是新模式的值 / the next frame has the new mode
+        return r
+
+    async def _set_modea(self, mode):
+        r = await self._doa(500, 0xE0, (mode // 10, mode % 10))
+        if r == 0:
+            await _wait(60)
+        return r
+
+    def light(self, pct=None):
+        """補光燈亮度 0~100 %（0＝關；None＝回相機選單的 Flash 設定；不存）/ lamp 0~100 % (None = camera menu setting)"""
+        return self._do(500, 0xE2, 255 if pct is None else max(0, min(100, int(pct))))
+
+    def teach(self, color):
+        """遠端教色（E3）：用畫面中央的顏色登錄成目標 color 1~16（存進相機）。回 0 成功、2 失敗
+        （白／灰、黑也可以教，只有完全分不出顏色才失敗）
+        teach target colour 1~16 from the centre of the picture; 0 ok, 2 failed
+        (white/grey and black can be taught too; fails only when no colour can be told apart)
+        每次叫都會重教（換色卡再 teach 同一色號也會教）/ teaches again on every call"""
+        return self._do(3000, 0xE3, color, again=True)
+
+    def clear(self, color):
+        """清除目標 color 1~16（E4；SPIKE 不開放全部清除）/ clear target colour 1~16"""
+        return self._do(1000, 0xE4, color)
+
+    def target_range(self, color, hue=255, sat=255, size=255, search=0):
+        """目標 color 的 Hue 範圍 1~119、Sta 範圍 0~31、最小面積 4~254（E5；255＝不改；要先教過）；
+        search 搜尋方式：1＝鎖住上次那塊、2＝每幀選最大塊、0＝不改
+        hue range 1~119, sat range 0~31, min area 4~254 of a taught colour (255 = keep);
+        search: 1 = locked (stay on last blob), 2 = largest blob each frame, 0 = keep"""
+        return self._do(1000, 0xE5, color, hue, sat, size, search)
+
+    def shape_tolerance(self, tol):
+        """形狀容許 1~5（E6；3＝出廠）/ shape tolerance 1~5 (3 = factory)"""
+        return self._do(500, 0xE6, tol)
+
+    def target_shape(self, color, shape):
+        """目標色 1~8 的指定形狀 0~9（E7；0＝不指定）/ expected shape 0~9 of target colour 1~8 (0 = any)"""
+        return self._do(500, 0xE7, color, shape)
+
+    def camera_setting(self, item, value):
+        """鏡頭設定（E8）：item 0~12 同相機 MENU → Setup 的順序（0 亮度 … 12 Light Hz），value 可以是負數
+        camera setting: item 0~12 in MENU → Setup order, value may be negative"""
+        return self._do(2000, 0xE8, item, value)
+
+    def white_cal(self):
+        """白色校正（E9，約 3 秒）：白紙要先蓋滿畫面中央 / white calibration (~3 s): white paper must fill the centre
+        每次叫都會重做 / runs again on every call"""
+        return self._do(8000, 0xE9, 0xA5, again=True)
+
+    def power(self, mode):
+        """工作模式（EB；不存，相機重開機回全速）：0 全速 full、1 省電 save（25fps）、2 待機 standby（鏡頭關）
+        待機 → 開工約 1～2.5 秒，這期間讀到的都是「沒有」/ standby -> working takes 1~2.5 s"""
+        return self._do(5000, 0xEB, mode)
