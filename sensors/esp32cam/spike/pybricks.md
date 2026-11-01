@@ -183,7 +183,7 @@ cam = MBC_CAM_SCHOOL(Port.A)
 blobX = cam.blob_x()
 ```
 
-<p class="ref-note">模式 0 (edu) byte 2 🔒；模式 0 (toy) byte 2 🔒；模式 6 v[0]；模式 7 v[2] 🔒；模式 9 v[2] lo 🔒。備註：byte 3 = 0; ×4 查表編碼（10-bit）; #67 改：模式 6 = [X, Y, 面積]（3×int16）; X×100+Y → Pybricks ambient() 顯示 X.Y</p>
+<p class="ref-note">模式 0 (edu) byte 2 🔒；模式 0 (toy) byte 2 🔒；模式 6 v[0]；模式 7 v[2] 🔒；模式 9 v[2] lo 🔒。備註：byte 3 = 0; ×4 查表編碼（10-bit）; #67 改：模式 6 = [X, Y, 面積]（3×int16）; X×100+Y → Pybricks ambient() 顯示 X.Y。Pybricks 4.1 起 ambient() 只剩 1 位小數，這個值的個位數讀不到：請改裝 MBC 函式庫（讀模式 9）</p>
 
 </section>
 
@@ -217,7 +217,7 @@ cam = MBC_CAM_SCHOOL(Port.A)
 blobY = cam.blob_y()
 ```
 
-<p class="ref-note">模式 0 (edu) byte 4 🔒；模式 0 (toy) byte 4 🔒；模式 6 v[1]；模式 7 v[2] 🔒；模式 9 v[2] hi 🔒。備註：byte 5 = 0; ×4 查表編碼; X×100+Y 的個位／十位</p>
+<p class="ref-note">模式 0 (edu) byte 4 🔒；模式 0 (toy) byte 4 🔒；模式 6 v[1]；模式 7 v[2] 🔒；模式 9 v[2] hi 🔒。備註：byte 5 = 0; ×4 查表編碼; X×100+Y 的個位／十位。Pybricks 4.1 起 ambient() 只剩 1 位小數，這個值的個位數讀不到：請改裝 MBC 函式庫（讀模式 9）</p>
 
 </section>
 

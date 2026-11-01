@@ -13,6 +13,7 @@
 - **「÷100 拆開」**：兩個值合成一格 A×100＋B，A＝讀到的數 ÷100（取整數）、B＝除以 100 的餘數。「÷10 拆開」同理。
 - **「餘數、÷256」**：一格＝A＋B×256，A＝讀到的數除以 256 的餘數、B＝÷256（取整數）。
 - **「A.BB」**：Pybricks `ambient()` 顯示成小數，整數部分＝A、小數兩位＝B。
+- **「A.B（整數.小數第一位）」**：Pybricks 積木（內建 ColorSensor）的 `ambient()` 只有 1 位小數（Pybricks 4.1 起只留 1 位，3.x 也照這樣拆）：A＝無條件捨去的整數部分、B＝`round(ambient() × 10) % 10`（0～9）。標「÷10」的值只到十位（× 10 是大約值），標「9 以上＝9」的值最多是 9。
 - **「（＋100）」**：會有負數的值加 100 再送，讀到後減 100。
 - 座標：像素 X 0～159（左→右）、Y 0～119（上→下）；EV3 的 Y 是「下＝小」。各種格子（16×12、8×6、40×30）的換算看 [產品首頁的數值規則](/sensors/unicam/index.md)。
 - **物體代碼（相機模式 5）**：色號×10＋形狀，例 13＝色 1 的三角形、24＝色 2 的正方形，0＝沒有物體。形狀 0 其他／判不出、1 圓、2 橢圓、3 三角、4 正方、5 長方、6 五邊、7 六邊、8 星、9 梯形。物體 1＝面積最大的那個，只看目標色 1～8。
@@ -384,7 +385,7 @@
 
 ## SPIKE App 教育版（SPIKE Prime 黃色主機）
 
-SPIKE App（3.x）把相機當成顏色感應器，讀模式 0：「顏色」「反射光」各 1 byte，「原始紅／綠／藍」各 int16，這 8 byte 積木讀得到。標準、精細兩層照 Kito（16×12 格，X＋Y×256：取餘數、÷256）；最多色、多色兩層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到，要用 App 的 Python（待上機確認）。
+SPIKE App（3.x）把相機當成顏色感應器，讀模式 0：「顏色」「反射光」各 1 byte，「原始紅／綠／藍」各 int16，這 8 byte 積木讀得到。標準、精細兩層照 Kito（16×12 格，X＋Y×256：取餘數、÷256）；最多色、多色兩層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到；App 的 Python 用 device.data(port.C) 讀得到 byte 0～13（8 個值：byte 0、byte 1、之後每 2 byte 一個 int16）。注意：App 的 color()、積木「顏色」、儀表板會把「顏色」格的 5 顯示成 6（樂高綠色碼），其他數字原樣；Python 要分清楚改讀 device.data(port.C)[0]。
 
 <details class="plat pg-spike" id="edu-11">
 <summary><span class="plat-dot"></span>相機模式 1 顏色追蹤 ① 最多色：14 色</summary>
@@ -698,7 +699,7 @@ SPIKE App（3.x）把相機當成顏色感應器，讀模式 0：「顏色」「
 
 ## SPIKE App 家用版（Robot Inventor 藍綠色主機）
 
-Robot Inventor App 讀模式 0，共 8 byte；主機送 0x25 時相機自動換成家用版排法。「顏色」只到 0～10、「反射光」最多 126、「原始紅綠藍」0～255，每格放 1 個值。
+這張表是 Robot Inventor App 的**積木**：讀模式 0，共 8 byte；主機送 0x25 時相機自動換成家用版排法。「顏色」只到 0～10、「反射光」最多 126、「原始紅綠藍」0～255，每格放 1 個值。**Python** 不看這張：程式執行時主機改送 0x26，相機用教育版排法（看上面教育版的表），hub.port.C.device.get() 回 6 個值＝教育版的顏色、反射光、原始紅、綠、藍、byte 8～9；get_reflected_light() 拿到的是教育版「顏色」格，get_color() 只回顏色名稱。
 
 <details class="plat pg-spike" id="toy-11">
 <summary><span class="plat-dot"></span>相機模式 1 顏色追蹤 ① 最多色：4 色</summary>
@@ -924,7 +925,7 @@ Robot Inventor App 讀模式 0，共 8 byte；主機送 0x25 時相機自動換�
 
 ## Pybricks 內建積木（不裝函式庫）
 
-不裝 MBC 函式庫，只用 Pybricks 內建的顏色感應器積木：reflection()（模式 5）和 ambient()（模式 7）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（40×30 格）。reflection() 超過 3199 會顯示成負數，加 6399 修回。
+不裝 MBC 函式庫，只用 Pybricks 內建的顏色感應器積木：reflection()（模式 5）和 ambient()（模式 7）。顏色追蹤：reflection()＝色 1 的 X×100＋Y（40×30 格，跟 Kito 版一樣）、ambient()＝色 2 的 X.Y（8×6 格）。reflection() 超過 3199 會顯示成負數，加 6399 修回；出貨版韌體的 reflection() 在 Pybricks 3.x、4.1 都是整數。ambient() 一律「整數.小數第一位」（Pybricks 4.1 起只留 1 位小數）：A＝無條件捨去的整數、B＝round(ambient() × 10) % 10。
 
 <details class="plat pg-spike" id="pyblk-11">
 <summary><span class="plat-dot"></span>相機模式 1 顏色追蹤 ① 最多色：2 色</summary>
@@ -938,7 +939,7 @@ Robot Inventor App 讀模式 0，共 8 byte；主機送 0x25 時相機自動換�
 | **模式 5 reflection()** | | |
 | reflection() | 色 1 X（40 格） ×100 ＋ 色 1 Y（30 格，上＝小） | ÷100 拆開（同 Kito） |
 | **模式 7 ambient()** | | |
-| ambient() | 色 2 X（40 格） . 色 2 Y（30 格，上＝小） | A.BB |
+| ambient() | 色 2 X（8 格） . 色 2 Y（6 格，上＝小） | A.B（整數.小數第一位） |
 
 </div>
 
@@ -956,7 +957,7 @@ Robot Inventor App 讀模式 0，共 8 byte；主機送 0x25 時相機自動換�
 | **模式 5 reflection()** | | |
 | reflection() | 色 1 X（40 格） ×100 ＋ 色 1 Y（30 格，上＝小） | ÷100 拆開（同 Kito） |
 | **模式 7 ambient()** | | |
-| ambient() | 色 2 X（40 格） . 色 2 Y（30 格，上＝小） | A.BB |
+| ambient() | 色 2 X（8 格） . 色 2 Y（6 格，上＝小） | A.B（整數.小數第一位） |
 
 </div>
 
@@ -974,7 +975,7 @@ Robot Inventor App 讀模式 0，共 8 byte；主機送 0x25 時相機自動換�
 | **模式 5 reflection()** | | |
 | reflection() | 色 1 X（40 格） ×100 ＋ 色 1 Y（30 格，上＝小） | ÷100 拆開（同 Kito） |
 | **模式 7 ambient()** | | |
-| ambient() | 色 2 X（40 格） . 色 2 Y（30 格，上＝小） | A.BB |
+| ambient() | 色 2 X（8 格） . 色 2 Y（6 格，上＝小） | A.B（整數.小數第一位） |
 
 </div>
 
@@ -992,7 +993,7 @@ Robot Inventor App 讀模式 0，共 8 byte；主機送 0x25 時相機自動換�
 | **模式 5 reflection()** | | |
 | reflection() | 色 1 X（40 格） ×100 ＋ 色 1 Y（30 格，上＝小） | ÷100 拆開（同 Kito） |
 | **模式 7 ambient()** | | |
-| ambient() | 色 1 寬（40 格） . 色 1 高（30 格） | A.BB |
+| ambient() | w8:W1 . h6:H1 | A.B（整數.小數第一位） |
 
 </div>
 
@@ -1010,7 +1011,7 @@ Robot Inventor App 讀模式 0，共 8 byte；主機送 0x25 時相機自動換�
 | **模式 5 reflection()** | | |
 | reflection() | S1 色相 ×10 ＋ S1 飽和度÷10 | ÷10 拆開 |
 | **模式 7 ambient()** | | |
-| ambient() | S2 色相 . S2 飽和度 | A.BB |
+| ambient() | S2 色相 . d10:pS2 | A.B（整數.小數第一位） |
 
 </div>
 
@@ -1028,7 +1029,7 @@ Robot Inventor App 讀模式 0，共 8 byte；主機送 0x25 時相機自動換�
 | **模式 5 reflection()** | | |
 | reflection() | S1 色相 ×10 ＋ S1 飽和度÷10 | ÷10 拆開 |
 | **模式 7 ambient()** | | |
-| ambient() | S2 色相 . S2 飽和度 | A.BB |
+| ambient() | S2 色相 . d10:pS2 | A.B（整數.小數第一位） |
 
 </div>
 
@@ -1046,7 +1047,7 @@ Robot Inventor App 讀模式 0，共 8 byte；主機送 0x25 時相機自動換�
 | **模式 5 reflection()** | | |
 | reflection() | S1 色相 | 0～255 |
 | **模式 7 ambient()** | | |
-| ambient() | S1 飽和度 . S1 明度 | A.BB |
+| ambient() | S1 飽和度 . d10:v1 | A.B（整數.小數第一位） |
 
 </div>
 
@@ -1064,7 +1065,7 @@ Robot Inventor App 讀模式 0，共 8 byte；主機送 0x25 時相機自動換�
 | **模式 5 reflection()** | | |
 | reflection() | 左起第 1 塊色相 | 0～255 |
 | **模式 7 ambient()** | | |
-| ambient() | 左起第 2 塊色相 . 總塊數 | A.BB |
+| ambient() | 左起第 2 塊色相 . c9:total | A.B（整數.小數第一位） |
 
 </div>
 
@@ -1082,7 +1083,7 @@ Robot Inventor App 讀模式 0，共 8 byte；主機送 0x25 時相機自動換�
 | **模式 5 reflection()** | | |
 | reflection() | 近處偏移（＋100） ×10 ＋ 路口類型（0 無 1 十字 2 T 3 左 4 右 5 盡頭） | ÷10 拆開（同 Kito） |
 | **模式 7 ambient()** | | |
-| ambient() | 遠處偏移（＋100） . 有線旗標（近 1＋中 2＋遠 4） | A.BB |
+| ambient() | 遠處偏移（＋100） . 有線旗標（近 1＋中 2＋遠 4） | A.B（整數.小數第一位） |
 
 </div>
 
@@ -1100,7 +1101,7 @@ Robot Inventor App 讀模式 0，共 8 byte；主機送 0x25 時相機自動換�
 | **模式 5 reflection()** | | |
 | reflection() | 物體 1 X（40 格） ×100 ＋ 物體 1 Y（30 格，上＝小） | ÷100 拆開（同 Kito） |
 | **模式 7 ambient()** | | |
-| ambient() | 物體 1 代碼（色號×10＋形狀） . 物體數 | A.BB |
+| ambient() | 物體 1 代碼（色號×10＋形狀） . c9:on | A.B（整數.小數第一位） |
 
 </div>
 
@@ -1118,7 +1119,7 @@ Robot Inventor App 讀模式 0，共 8 byte；主機送 0x25 時相機自動換�
 | **模式 5 reflection()** | | |
 | reflection() | 物體 1 X（40 格） ×100 ＋ 物體 1 Y（30 格，上＝小） | ÷100 拆開（同 Kito） |
 | **模式 7 ambient()** | | |
-| ambient() | 物體 1 代碼（色號×10＋形狀） . 物體 1 面積（佔畫面 %） | A.BB |
+| ambient() | 物體 1 代碼（色號×10＋形狀） . d10:A1 | A.B（整數.小數第一位） |
 
 </div>
 

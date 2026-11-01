@@ -701,8 +701,8 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         { id: 'near', label: 'near()', name: ('Near offset'), grp: 'line', modes: [41, 42, 43],
           what: ('How far the line is from the middle on the bottom scan row: −100–100, <b>left = negative, right = positive</b>. Use it for P control. Drag the "near" green dot.'),
           ret: ('−100–100'),
-          body: ['e = {n}.near()', 'if e < -10:', '    print("' + ('line on the left') + '", e)', 'elif e > 10:', '    print("' + ('line on the right') + '", e)', 'else:', '    print("' + ('line in the middle') + '", e)'],
-          out: function (V) { var e = V.near(); return cmp('<', e, -10) ? pr(('line on the left'), e) : cmp('>', e, 10) ? pr(('line on the right'), e) : pr(('line in the middle'), e); } },
+          body: ['e = {n}.near()', 'if {n}.flags() == 0:', '    print("' + ('no line') + '")', 'elif e < -10:', '    print("' + ('line on the left') + '", e)', 'elif e > 10:', '    print("' + ('line on the right') + '", e)', 'else:', '    print("' + ('line in the middle') + '", e)'],
+          out: function (V) { var e = V.near(); return V.flags() === 0 ? ('no line') : cmp('<', e, -10) ? pr(('line on the left'), e) : cmp('>', e, 10) ? pr(('line on the right'), e) : pr(('line in the middle'), e); } },
         { id: 'mid', label: 'mid()', name: ('Middle offset'), grp: 'line', modes: [41, 42, 43],
           what: ('Offset on the middle scan row (−100–100); 0 when not seen.'), ret: ('−100–100'),
           body: ['print("' + ('mid:') + '", {n}.mid())'], out: function (V) { return pr(('mid:'), V.mid()); } },
@@ -738,8 +738,8 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
           body: ['c, k = {n}.marker()', 'print("' + ('marker color') + '", c, "' + ('count') + '", k)'], out: function (V) { var t = unpack(V.marker()); return pr(('marker color'), t[0], ('count'), t[1]); } });
       if (!EV3) FNS.push({ id: 'lost', label: 'lost()', name: ('Side the line was lost'), grp: 'line', modes: [41, 42, 43],
         what: ('When the line is gone, which side it left from: 0 on the line, 1 left, 2 right. Turn that way to find it again. Drag the line to one side, then tick "Remove the line".'), ret: ('0–2'),
-        body: ['s = {n}.lost()', 'if s == 1:', '    print("' + ('line lost on the left → turn left') + '")', 'elif s == 2:', '    print("' + ('line lost on the right → turn right') + '")', 'else:', '    print("' + ('on the line') + '")'],
-        out: function (V) { var s = V.lost(); return s === 1 ? ('line lost on the left → turn left') : s === 2 ? ('line lost on the right → turn right') : ('on the line'); } });
+        body: ['s = {n}.lost()', 'if s == 1:', '    print("' + ('line lost on the left → turn left') + '")', 'elif s == 2:', '    print("' + ('line lost on the right → turn right') + '")', 'elif {n}.flags() == 0:', '    print("' + ('no line') + '")', 'else:', '    print("' + ('on the line') + '")'],
+        out: function (V) { var s = V.lost(); return s === 1 ? ('line lost on the left → turn left') : s === 2 ? ('line lost on the right → turn right') : V.flags() === 0 ? ('no line') : ('on the line'); } });
       FNS.push(
         { id: 'line_all', label: 'line_all()', name: ('All line values'), grp: 'line', modes: [41, 42, 43],
           what: ('Gets all ') + LINEN + (' values: (near, mid, far, angle, width, flags, junction, junction distance, left, right, far width, marker, marker count') + (EV3 ? ')' : (', lost)')) + ('.'),
@@ -872,7 +872,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         reset: function () { HOST.warned = false; },
         warn: function (st, reads) {
           if (st.ok) { HOST.warned = false; return []; }
-          if (!EV3 && S.multi && st.none) reads = Math.max(reads, 1);   
+          if (!EV3 && st.none) reads = Math.max(reads, 1);   
           if (!reads) return [];
           if (EV3) {
             var msg = 'MBC: 讀不到感應器 / no sensor: [Errno 19] ENODEV';

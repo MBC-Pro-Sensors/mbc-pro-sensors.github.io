@@ -47,7 +47,7 @@ pad.update()   # 每圈先更新一次
 buttons16 = pad.buttons_psx()
 ```
 
-<p class="ref-note">模式 0 (edu) byte 6 🔒；模式 5 v[0] 🔒；模式 6 v[2]；模式 9 v[6] 🔒。備註：App 原始藍 = button16（.ino:201-211）; Pybricks reflection() 編碼：11 鍵 complexXY = SELECT<<10 | R1<<9 | L1<<8 | ■<<7 | ✕<<6 | ●<<5 | ▲<<4 | 左<<3 | 下<<2 | 右<<1 | 上，a = /25、b = (餘+1)×10−1，3 個 int16 = a×256+b → reflection() = complexXY；L2、R2、L3、R3、START 讀不到（.ino:334-358）; v2 = button16（PSX）; v6 = button16（PSX）</p>
+<p class="ref-note">模式 0 (edu) byte 6 🔒；模式 5 v[0] 🔒；模式 6 v[2]；模式 9 v[6] 🔒。備註：App 原始藍 = button16（.ino:201-211）; Pybricks reflection() 編碼：11 鍵 complexXY = SELECT<<10 | R1<<9 | L1<<8 | ■<<7 | ✕<<6 | ●<<5 | ▲<<4 | 左<<3 | 下<<2 | 右<<1 | 上，a = /25、b = (餘+1)×10−1，3 個 int16 = a×256+b → reflection() = complexXY；L2、R2、L3、R3、START 讀不到（.ino:334-358）。2026-10-30 起（方案 A，使用者定案）：模式 5 總和 S = ceil((10×complexXY + RY)×3.072)，R = G = S/3、B = S−2R → Pybricks 4.1.x <code>int(reflection())</code> = complexXY（不變）、<code>round(reflection()×10) % 10</code> = RY（1~9）；3.6.1／4.0.0 的 reflection() 照舊 = complexXY; v2 = button16（PSX）; v6 = button16（PSX）</p>
 
 </section>
 
@@ -285,7 +285,7 @@ pad.update()   # 每圈先更新一次
 stick = pad.stick('LX')   # list，第 1 路 = [0]
 ```
 
-<p class="ref-note">模式 0 (edu) byte 2 🔒；模式 0 (toy) byte 2 🔒；模式 4 v[0]；模式 7 v[2] 🔒；模式 8 v[0]；模式 9 v[2] 🔒。備註：byte2~3 = LX×10+LY、byte4~5 = RX×10+RY（11~99，中心 55；App 原始紅／綠）; LX×10+LY、RX×10+RY 經玩具版查表編碼成 byte2~3、byte4~5; v0 = LX | LY<<8、v1 = RX | RY<<8; Pybricks ambient() 用：v2 = LX×1000 + LY×100 + RX×10 + RY（1111~9999，中心 5555）；v0、v1 同模式 6; 只送 4 B：v0 = LX | LY<<8、v1 = RX | RY<<8; v2~v5 = LX、LY、RX、RY（0~99 ÷10，0 補 1）</p>
+<p class="ref-note">模式 0 (edu) byte 2 🔒；模式 0 (toy) byte 2 🔒；模式 4 v[0]；模式 7 v[2] 🔒；模式 8 v[0]；模式 9 v[2] 🔒。備註：byte2~3 = LX×10+LY、byte4~5 = RX×10+RY（11~99，中心 55；App 原始紅／綠）; LX×10+LY、RX×10+RY 經玩具版查表編碼成 byte2~3、byte4~5; v0 = LX | LY<<8、v1 = RX | RY<<8; Pybricks ambient() 用：v2 = LX×1000 + LY×100 + RX×10 + RY（1111~9999，中心 5555）；v0、v1 同模式 6；個位數 RY 在 4.1.x 的 ambient() 讀不到，4.1.x 改從模式 5 reflection() 的小數位讀（見按鍵 buttons16）; 只送 4 B：v0 = LX | LY<<8、v1 = RX | RY<<8; v2~v5 = LX、LY、RX、RY（0~99 ÷10，0 補 1）</p>
 
 </section>
 

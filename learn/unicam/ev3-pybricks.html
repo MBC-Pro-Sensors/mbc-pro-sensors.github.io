@@ -717,8 +717,8 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         { id: 'near', label: 'near()', name: ('近處偏移'), grp: 'line', modes: [41, 42, 43],
           what: ('畫面最下面那條掃描線上，線偏離中間多少：−100～100，<b>線在左＝負、在右＝正</b>。循線的 P 控制就用它。拖「近」那個綠點試試看。'),
           ret: ('−100～100'),
-          body: ['e = {n}.near()', 'if e < -10:', '    print("' + ('線在左邊') + '", e)', 'elif e > 10:', '    print("' + ('線在右邊') + '", e)', 'else:', '    print("' + ('線在中間') + '", e)'],
-          out: function (V) { var e = V.near(); return cmp('<', e, -10) ? pr(('線在左邊'), e) : cmp('>', e, 10) ? pr(('線在右邊'), e) : pr(('線在中間'), e); } },
+          body: ['e = {n}.near()', 'if {n}.flags() == 0:', '    print("' + ('看不到線') + '")', 'elif e < -10:', '    print("' + ('線在左邊') + '", e)', 'elif e > 10:', '    print("' + ('線在右邊') + '", e)', 'else:', '    print("' + ('線在中間') + '", e)'],
+          out: function (V) { var e = V.near(); return V.flags() === 0 ? ('看不到線') : cmp('<', e, -10) ? pr(('線在左邊'), e) : cmp('>', e, 10) ? pr(('線在右邊'), e) : pr(('線在中間'), e); } },
         { id: 'mid', label: 'mid()', name: ('中段偏移'), grp: 'line', modes: [41, 42, 43],
           what: ('中間那條掃描線的偏移（−100～100）。看不到時是 0。'), ret: ('−100～100'),
           body: ['print("' + ('中段:') + '", {n}.mid())'], out: function (V) { return pr(('中段:'), V.mid()); } },
@@ -754,8 +754,8 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
           body: ['c, k = {n}.marker()', 'print("' + ('標記色號') + '", c, "' + ('累計') + '", k)'], out: function (V) { var t = unpack(V.marker()); return pr(('標記色號'), t[0], ('累計'), t[1]); } });
       if (!EV3) FNS.push({ id: 'lost', label: 'lost()', name: ('最後離線方向'), grp: 'line', modes: [41, 42, 43],
         what: ('看不到線時，線最後是從哪邊不見的：0 還在線上、1 左、2 右。往那一邊轉就能找回線。把線拖到一邊再勾「拿走線」。'), ret: ('0～2'),
-        body: ['s = {n}.lost()', 'if s == 1:', '    print("' + ('線從左邊不見了 → 往左轉找') + '")', 'elif s == 2:', '    print("' + ('線從右邊不見了 → 往右轉找') + '")', 'else:', '    print("' + ('在線上') + '")'],
-        out: function (V) { var s = V.lost(); return s === 1 ? ('線從左邊不見了 → 往左轉找') : s === 2 ? ('線從右邊不見了 → 往右轉找') : ('在線上'); } });
+        body: ['s = {n}.lost()', 'if s == 1:', '    print("' + ('線從左邊不見了 → 往左轉找') + '")', 'elif s == 2:', '    print("' + ('線從右邊不見了 → 往右轉找') + '")', 'elif {n}.flags() == 0:', '    print("' + ('看不到線') + '")', 'else:', '    print("' + ('在線上') + '")'],
+        out: function (V) { var s = V.lost(); return s === 1 ? ('線從左邊不見了 → 往左轉找') : s === 2 ? ('線從右邊不見了 → 往右轉找') : V.flags() === 0 ? ('看不到線') : ('在線上'); } });
       FNS.push(
         { id: 'line_all', label: 'line_all()', name: ('循線全部一次讀'), grp: 'line', modes: [41, 42, 43],
           what: ('一次拿到 ') + LINEN + (' 個值：(近, 中, 遠, 角度, 線寬, 旗標, 路口類型, 路口距離, 左緣, 右緣, 遠線寬, 標記色號, 標記條數') + (EV3 ? ')' : (', 離線方向)')) + ('。'),
@@ -894,7 +894,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         // 拔線提醒照函式庫：SPIKE 只印一次；EV3 從來沒接上時每讀一次印一次，接過再拔掉只印一次
         warn: function (st, reads) {
           if (st.ok) { HOST.warned = false; return []; }
-          if (!EV3 && S.multi && st.none) reads = Math.max(reads, 1);   // 多工：建立物件時就先連一次
+          if (!EV3 && st.none) reads = Math.max(reads, 1);   // 建立物件時就先連一次（多工；2026-10-29 起同步版也會先切相機模式）
           if (!reads) return [];
           if (EV3) {
             var msg = 'MBC: 讀不到感應器 / no sensor: [Errno 19] ENODEV';

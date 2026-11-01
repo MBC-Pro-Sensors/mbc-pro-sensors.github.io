@@ -1,5 +1,21 @@
 {
   "_說明": "網站內容開關。改完要重跑 node _build/sync-protocol.mjs、gen-guides、gen-reference、gen-figures、pack-downloads、build.mjs。",
   "hideMatrixBigChannel": true,
-  "_hideMatrixBigChannel": "2026-10-24 使用者指示：MATRIX 大通道（LauMo）函式庫只給特定客戶用，使用者要改自己電腦裡的函式庫檔，容易出事，網站先全部隱藏。true = 協議副本拿掉 matrix.big／commands.matrix.f／hosts.matrix.big、說明文字刪掉大通道字句、不產生大通道軟體頁與下載、手寫頁 <!-- hide:hideMatrixBigChannel -->…<!-- /hide --> 中間不輸出。改回 false 就全部恢復。 例外：downloads.md／en/downloads.md 的下載總表（gen:downloads-table）是手動維護，已刪掉 MiniR4ColorSensorExt_LauMo_v2.zip 那一列，恢復時要加回去。 matrix.md／en/matrix.md A 段解碼表「測距者 8 路」那列原本結尾有「；要 8 顆原始值或 mm 用大通道」，表格裡不能放標記，已直接刪掉。en/sensors/tof8/index.md、en/llms.txt、llms-full.txt 的大通道字句也是直接改掉的。"
+  "_hideMatrixBigChannel": "2026-10-24 使用者指示：MATRIX 大通道（LauMo）函式庫只給特定客戶用，使用者要改自己電腦裡的函式庫檔，容易出事，網站先全部隱藏。true = 協議副本拿掉 matrix.big／commands.matrix.f／hosts.matrix.big、說明文字刪掉大通道字句、不產生大通道軟體頁與下載、手寫頁 <!-- hide:hideMatrixBigChannel -->…<!-- /hide --> 中間不輸出。改回 false 就全部恢復。 例外：downloads.md／en/downloads.md 的下載總表（gen:downloads-table）是手動維護，已刪掉 MiniR4ColorSensorExt_LauMo_v2.zip 那一列，恢復時要加回去。 matrix.md／en/matrix.md A 段解碼表「測距者 8 路」那列原本結尾有「；要 8 顆原始值或 mm 用大通道」，表格裡不能放標記，已直接刪掉。en/sensors/tof8/index.md、en/llms.txt、llms-full.txt 的大通道字句也是直接改掉的。",
+  "holdCommands": [
+    "ps2",
+    "ps4",
+    "tof2",
+    "tof8",
+    "imu",
+    "cam_school",
+    "cam_wro"
+  ],
+  "_holdCommands": "2026-10-30 使用者定：命令表等該產品上機通過才上網站。名單上的產品，sync-protocol 照常同步讀值與說明（例如 Pybricks 4.1 的讀法公式），但 commands、flags、assumptions、lego.spikeCmd 與網站還沒有的新讀值保留網站目前的版本（只更新已有讀值的說明）。產品上機通過後從名單拿掉，重跑 sync-protocol 與各產生器。",
+  "holdSync": [
+    "tof2",
+    "tof8",
+    "imu"
+  ],
+  "_holdSync": "2026-10-30：整份先不同步（讀值本身還有沒上機的改動：測距者遠距離 200 cm 與新讀值、陀螺儀 SPIKE 模式（IMU SPIKE 版不上架））。上機通過後從名單拿掉。"
 }

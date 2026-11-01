@@ -58,7 +58,7 @@
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-模式 0 (edu) byte 6 🔒；模式 6 v[2]；模式 9 v[6] 🔒。備註：PSX 排列（#65 已改，原本是 Bluepad32 排列）; PSX 排列; PSX 排列（D3，PS2／PS4 相同；函式庫 buttons_psx()）
+模式 5 v[0] 🔒；模式 0 (edu) byte 6 🔒；模式 6 v[2]；模式 9 v[6] 🔒。備註：Pybricks reflection() 編碼：跟 PS2 同一套 11 鍵 complexXY = SELECT<<10 | R1<<9 | L1<<8 | ■<<7 | ✕<<6 | ●<<5 | ▲<<4 | 左<<3 | 下<<2 | 右<<1 | 上；L2、R2、L3、R3、START 讀不到（PS4 .ino:768）。2026-10-30 起（方案 A，使用者定案）：模式 5 總和 S = ceil((10×complexXY + RY)×3.072)，R = G = S/3、B = S−2R → Pybricks 4.1.x `int(reflection())` = complexXY（不變）、`round(reflection()×10) % 10` = RY（1~9）；3.6.1／4.0.0 的 reflection() 照舊 = complexXY; PSX 排列（#65 已改，原本是 Bluepad32 排列）; PSX 排列; PSX 排列（D3，PS2／PS4 相同；函式庫 buttons_psx()）
 
 ```python
 from pybricks.iodevices import PUPDevice
@@ -1089,7 +1089,7 @@ let padType = mbc.padType()   // 手把類型：0~4
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-模式 0 (edu) byte 2 🔒；模式 0 (toy) byte 2 🔒；模式 4 byte 0；模式 7 v[2] 🔒；模式 9 v[2] 🔒。備註：LX×10+LY（各 1~9，5 = 中間）；byte 4~5 = RX×10+RY; LX×10+LY 查表編碼；byte 4~5 = RX×10+RY；byte 6~7 = 肩鍵 byte 查表; [LX, LY, RX, RY] 0~99（宣告 2×int16，送 4 B）; LX×1000+LY×100+RX×10+RY（各 1~9）; v[2..5] = LX LY RX RY，1~9，5 = 中間
+模式 0 (edu) byte 2 🔒；模式 0 (toy) byte 2 🔒；模式 4 byte 0；模式 7 v[2] 🔒；模式 9 v[2] 🔒。備註：LX×10+LY（各 1~9，5 = 中間）；byte 4~5 = RX×10+RY; LX×10+LY 查表編碼；byte 4~5 = RX×10+RY；byte 6~7 = 肩鍵 byte 查表; [LX, LY, RX, RY] 0~99（宣告 2×int16，送 4 B）; LX×1000+LY×100+RX×10+RY（各 1~9）；個位數 RY 在 4.1.x 的 ambient() 讀不到，4.1.x 改從模式 5 reflection() 的小數位讀（見按鍵 buttons16）; v[2..5] = LX LY RX RY，1~9，5 = 中間
 
 ```python
 from pybricks.iodevices import PUPDevice

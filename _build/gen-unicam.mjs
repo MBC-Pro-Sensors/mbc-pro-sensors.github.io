@@ -55,20 +55,20 @@ const HOSTS = [
     short: { zh: 'App 教育版', en: 'SPIKE App' },
     title: { zh: 'SPIKE App 教育版（SPIKE Prime 黃色主機）', en: 'SPIKE App (SPIKE Prime, yellow hub)' },
     note: {
-      zh: 'SPIKE App（3.x）把相機當成顏色感應器，讀模式 0：「顏色」「反射光」各 1 byte，「原始紅／綠／藍」各 int16，這 8 byte 積木讀得到。標準、精細兩層照 Kito（16×12 格，X＋Y×256：取餘數、÷256）；最多色、多色兩層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到，要用 App 的 Python（待上機確認）。',
-      en: 'The SPIKE App (3.x) sees the camera as a Color Sensor and reads mode 0: "color" and "reflected light" are one byte each, "raw red / green / blue" are int16 each; the blocks can read these 8 bytes. The Standard and Fine levels follow Kito (16×12 grid, X + Y×256: mod 256, ÷256); the Max and Multi levels use an 8×6 grid with two colors per slot (X×10+Y, merged ×100). Y: small at top. Bytes 8~15 are not readable from blocks, only from the app\'s Python (to be confirmed on hardware).' } },
+      zh: 'SPIKE App（3.x）把相機當成顏色感應器，讀模式 0：「顏色」「反射光」各 1 byte，「原始紅／綠／藍」各 int16，這 8 byte 積木讀得到。標準、精細兩層照 Kito（16×12 格，X＋Y×256：取餘數、÷256）；最多色、多色兩層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到；App 的 Python 用 device.data(port.C) 讀得到 byte 0～13（8 個值：byte 0、byte 1、之後每 2 byte 一個 int16）。注意：App 的 color()、積木「顏色」、儀表板會把「顏色」格的 5 顯示成 6（樂高綠色碼），其他數字原樣；Python 要分清楚改讀 device.data(port.C)[0]。',
+      en: 'The SPIKE App (3.x) sees the camera as a Color Sensor and reads mode 0: "color" and "reflected light" are one byte each, "raw red / green / blue" are int16 each; the blocks can read these 8 bytes. The Standard and Fine levels follow Kito (16×12 grid, X + Y×256: mod 256, ÷256); the Max and Multi levels use an 8×6 grid with two colors per slot (X×10+Y, merged ×100). Y: small at top. Bytes 8~15 are not readable from blocks; in the app\'s Python device.data(port.C) reads bytes 0~13 (8 values: byte 0, byte 1, then one int16 per 2 bytes). Note: the app\'s color(), the "color" block and the dashboard show a 5 in the "color" slot as 6 (LEGO\'s green code); other numbers are shown as sent. In Python read device.data(port.C)[0] to tell them apart.' } },
   { id: 'toy', pg: 'spike', page: 'spike/index.md',
     short: { zh: 'App 家用版', en: 'Robot Inventor App' },
     title: { zh: 'SPIKE App 家用版（Robot Inventor 藍綠色主機）', en: 'Robot Inventor App (home edition, teal hub)' },
     note: {
-      zh: 'Robot Inventor App 讀模式 0，共 8 byte；主機送 0x25 時相機自動換成家用版排法。「顏色」只到 0～10、「反射光」最多 126、「原始紅綠藍」0～255，每格放 1 個值。',
-      en: 'The Robot Inventor App reads mode 0, 8 bytes in total; the camera switches to the home-edition layout by itself when the hub sends 0x25. "Color" only goes to 0~10, "reflected light" up to 126 and "raw red / green / blue" 0~255, one value per slot.' } },
+      zh: '這張表是 Robot Inventor App 的**積木**：讀模式 0，共 8 byte；主機送 0x25 時相機自動換成家用版排法。「顏色」只到 0～10、「反射光」最多 126、「原始紅綠藍」0～255，每格放 1 個值。**Python** 不看這張：程式執行時主機改送 0x26，相機用教育版排法（看上面教育版的表），hub.port.C.device.get() 回 6 個值＝教育版的顏色、反射光、原始紅、綠、藍、byte 8～9；get_reflected_light() 拿到的是教育版「顏色」格，get_color() 只回顏色名稱。',
+      en: 'This table is for the Robot Inventor App **blocks**: they read mode 0, 8 bytes in total; the camera switches to the home-edition layout by itself when the hub sends 0x25. "Color" only goes to 0~10, "reflected light" up to 126 and "raw red / green / blue" 0~255, one value per slot. **Python** does not use this table: while a program runs the hub sends 0x26 and the camera uses the Education layout (see the Education table above); hub.port.C.device.get() returns 6 values = the Education color, reflected light, raw red, green, blue, bytes 8~9; get_reflected_light() returns the Education "color" slot and get_color() only returns color names.' } },
   { id: 'pyblk', pg: 'spike', page: 'spike/index.md',
     short: { zh: 'Pybricks 積木', en: 'Pybricks blocks' },
     title: { zh: 'Pybricks 內建積木（不裝函式庫）', en: 'Pybricks built-in blocks (no library)' },
     note: {
-      zh: '不裝 MBC 函式庫，只用 Pybricks 內建的顏色感應器積木：reflection()（模式 5）和 ambient()（模式 7）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（40×30 格）。reflection() 超過 3199 會顯示成負數，加 6399 修回。',
-      en: 'No MBC library, only the Pybricks built-in color sensor blocks: reflection() (mode 5) and ambient() (mode 7). Color tracking works like the Kito edition: reflection() = color 1 as X×100+Y, ambient() = color 2 as X.Y (40×30 grid). reflection() above 3199 shows up negative; add 6399 to fix it.' } },
+      zh: '不裝 MBC 函式庫，只用 Pybricks 內建的顏色感應器積木：reflection()（模式 5）和 ambient()（模式 7）。顏色追蹤：reflection()＝色 1 的 X×100＋Y（40×30 格，跟 Kito 版一樣）、ambient()＝色 2 的 X.Y（8×6 格）。reflection() 超過 3199 會顯示成負數，加 6399 修回；出貨版韌體的 reflection() 在 Pybricks 3.x、4.1 都是整數。ambient() 一律「整數.小數第一位」（Pybricks 4.1 起只留 1 位小數）：A＝無條件捨去的整數、B＝round(ambient() × 10) % 10。',
+      en: 'No MBC library, only the Pybricks built-in color sensor blocks: reflection() (mode 5) and ambient() (mode 7). Color tracking: reflection() = color 1 as X×100+Y (40×30 grid, as in the Kito edition), ambient() = color 2 as X.Y (8×6 grid). reflection() above 3199 shows up negative; add 6399 to fix it. With the shipping firmware reflection() is a whole number on Pybricks 3.x and 4.1. ambient() is always "integer . first decimal" (Pybricks 4.1 keeps one decimal): A = the integer part rounded down, B = round(ambient() × 10) % 10.' } },
   { id: 'ev3', pg: 'ev3', page: 'ev3/index.md',
     short: { zh: 'EV3', en: 'EV3' },
     title: { zh: 'EV3（EV3-G／EV3 Classroom／EV3 MicroPython）', en: 'EV3 (EV3-G / EV3 Classroom / EV3 MicroPython)' },
@@ -123,6 +123,7 @@ if (D.length !== 91) throw new Error(`entries 應有 91 筆（7 上位機 × 13 
 // ---------------------------------------------------------------- 英文對照（照順序替換；最後檢查不能留下中文）
 const EN_RULES = [
   // 整句
+  [/A\.B（整數\.小數第一位）/g, 'A.B (integer.first decimal)'],
   [/色 1～14 的數量各 3 bit（0～7，7＝7 塊以上）＋找到幾色 4 bit，共 46 bit 放 6 B（小端），函式庫自動拆/g, 'counts of colors 1~14, 3 bits each (0~7, 7 = 7 or more) + colors found, 4 bits: 46 bits in 6 B (little-endian), split by the library'],
   [/切換模式與子選項；設定目標色、最小面積門檻、取樣點位置/g, 'switch camera mode and sub-option; set target colors, minimum area and sample-point positions'],
   [/相機模式編號（例 13＝顏色追蹤 ③ 標準、51＝物體偵測 ① 清單）/g, 'camera mode number (e.g. 13 = Color tracking ③ Standard, 51 = Object detection ① list)'],
@@ -262,6 +263,7 @@ function referencePage(lang) {
       '- **「÷100 拆開」**：兩個值合成一格 A×100＋B，A＝讀到的數 ÷100（取整數）、B＝除以 100 的餘數。「÷10 拆開」同理。',
       '- **「餘數、÷256」**：一格＝A＋B×256，A＝讀到的數除以 256 的餘數、B＝÷256（取整數）。',
       '- **「A.BB」**：Pybricks `ambient()` 顯示成小數，整數部分＝A、小數兩位＝B。',
+      '- **「A.B（整數.小數第一位）」**：Pybricks 積木（內建 ColorSensor）的 `ambient()` 只有 1 位小數（Pybricks 4.1 起只留 1 位，3.x 也照這樣拆）：A＝無條件捨去的整數部分、B＝`round(ambient() × 10) % 10`（0～9）。標「÷10」的值只到十位（× 10 是大約值），標「9 以上＝9」的值最多是 9。',
       '- **「（＋100）」**：會有負數的值加 100 再送，讀到後減 100。',
       '- 座標：像素 X 0～159（左→右）、Y 0～119（上→下）；EV3 的 Y 是「下＝小」。各種格子（16×12、8×6、40×30）的換算看 [產品首頁的數值規則](/sensors/unicam/index.md)。',
       '- **物體代碼（相機模式 5）**：色號×10＋形狀，例 13＝色 1 的三角形、24＝色 2 的正方形，0＝沒有物體。形狀 0 其他／判不出、1 圓、2 橢圓、3 三角、4 正方、5 長方、6 五邊、7 六邊、8 星、9 梯形。物體 1＝面積最大的那個，只看目標色 1～8。',
@@ -271,6 +273,7 @@ function referencePage(lang) {
       '- **"split ÷100"**: two values share one slot as A×100 + B; A = reading ÷ 100 (integer part), B = remainder of ÷100. "split ÷10" works the same way.',
       '- **"mod 256, ÷256"**: slot = A + B×256; A = reading mod 256, B = reading ÷ 256 (integer part).',
       '- **"A.BB"**: Pybricks `ambient()` shows a decimal: integer part = A, two decimals = B.',
+      '- **"A.B (integer.first decimal)"**: with Pybricks blocks (built-in ColorSensor) `ambient()` has one decimal (Pybricks 4.1 keeps only one; split it the same way on 3.x): A = the integer part rounded down, B = `round(ambient() × 10) % 10` (0–9). Values marked "÷10" give only the tens (× 10 is approximate); values marked "9 and up = 9" stop at 9.',
       '- **"(+100)"**: values that can be negative are sent +100; subtract 100 after reading.',
       '- Coordinates: pixel X 0~159 (left → right), Y 0~119 (top → bottom); on EV3, Y is small at the bottom. Grid conversions (16×12, 8×6, 40×30) are on the [product page](/en/sensors/unicam/index.md).',
       '- **Object code (camera mode 5)**: color number × 10 + shape, e.g. 13 = a triangle in color 1, 24 = a square in color 2, 0 = no object. Shapes: 0 other / unknown, 1 circle, 2 ellipse, 3 triangle, 4 square, 5 rectangle, 6 pentagon, 7 hexagon, 8 star, 9 trapezoid. Object 1 = the largest one; only target colors 1~8 count.',

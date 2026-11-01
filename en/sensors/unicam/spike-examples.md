@@ -17,7 +17,7 @@ This page has **6 Pybricks examples** (with the MBC library `MBC_UniCam.py`) and
 | 🟨 Official App blocks (Education / Robot Inventor) | Blocks only | Use the colour, reflection and raw red/green/blue blocks with the [table at the bottom](#app-table) |
 
 > [!IMPORTANT]
-> - **Pybricks cannot read the camera's current mode**: `mode=13` in the program must match the camera menu (mode number = camera mode × 10 + option; colour order = 30). A wrong mode gives jumping numbers, not an error.
+> - **The Pybricks library switches the camera mode for you**: write `mode=13` in the program (mode number = camera mode × 10 + option; colour order = 30) and the library switches the camera to it when the object is created (shipping firmware; with firmware from before 2026-10-29 set the same mode in the camera menu yourself). The official App cannot send commands, so use the camera menu.
 > - Pybricks needs the Pybricks firmware on the hub (install it from code.pybricks.com; the SPIKE App can put LEGO firmware back). The official App needs nothing.
 > - The camera must run the **SPIKE firmware**. It detects by itself whether the hub runs the official App or Pybricks.
 
@@ -109,7 +109,7 @@ from pybricks.tools import wait
 from MBC_UniCam import UniCam
 
 hub = PrimeHub()
-cam = UniCam(Port.C, mode=13)                    # 模式編號要跟相機選單一樣 / must match the camera menu
+cam = UniCam(Port.C, mode=13)                    # 函式庫會自動把相機切到這個模式 / the library switches the camera to this mode
 left = Motor(Port.E, Direction.COUNTERCLOCKWISE)
 right = Motor(Port.F)
 robot = DriveBase(left, right, 56, 112)          # 輪徑 56 mm、輪距 112 mm / wheel 56 mm, axle 112 mm
@@ -138,7 +138,7 @@ while True:
 </details>
 
 **Step by step**
-1. `UniCam(Port.C, mode=13)`: tells the library the camera is in mode 13 (SPIKE cannot read it, you type it).
+1. `UniCam(Port.C, mode=13)`: use mode 13; the library switches the camera to mode 13 when it is created.
 2. `cam.xy(1)`: (X, Y) of colour 1 in pixels. X = 0 means not seen.
 3. `error = X − 80`: the centre is 80; right of centre is positive → `robot.drive(speed, error × KP)` positive turn = turn right.
 4. `cam.area(1)`: area %, in the same packet as X and Y (mode 9), no extra wait.
@@ -464,7 +464,7 @@ from pybricks.tools import wait
 from MBC_UniCam import UniCam, shape_name
 
 hub = PrimeHub()
-cam = UniCam(Port.C, mode=51)                    # 模式編號要跟相機選單一樣 / must match the camera menu
+cam = UniCam(Port.C, mode=51)                    # 函式庫會自動把相機切到這個模式 / the library switches the camera to this mode
 left = Motor(Port.E, Direction.COUNTERCLOCKWISE)
 right = Motor(Port.F)
 robot = DriveBase(left, right, 56, 112)          # 輪徑 56 mm、輪距 112 mm / wheel 56 mm, axle 112 mm
@@ -1016,8 +1016,8 @@ On Robot Inventor the colour is only 0~10, reflection up to 126 and raw red/gree
 
 ## Please note
 
-- **Nothing here has run on hardware yet**: the byte layout was checked on a computer against the independent reference implementation of the spec; KP/KD, area limits and the junction stop are suggestions, print the numbers first and then tune.
-- When you change the camera mode, change `mode=` too (SPIKE cannot read the camera's mode).
+- **All run on hardware** (2026-11-01, shipping firmware): KP/KD, area limits and the junction stop are suggestions, print the numbers first and then tune.
+- When you change the camera mode, just change `mode=`: the Pybricks library switches the camera; with the official App use the camera menu.
 - If the hub disconnects, the hub name at the top left of the camera screen turns red; just run the program again.
 
 ## Next

@@ -54,7 +54,10 @@ export function value(product, v, lang) {
   }
   const locked = (product.lego && product.lego.spikeLocked) || [];
   const where = v.spike.map((e) => `${T(lang, '模式', 'mode')} ${e.mode}${e.hub ? ` (${e.hub})` : ''}${e.v != null ? ` v[${e.v}]${e.part ? ' ' + e.part : ''}` : e.byte != null ? ` byte ${e.byte}` : ''}${e.offset ? ` −${e.offset}` : ''}${locked.includes(e.mode) ? ' 🔒' : ''}`).join(T(lang, '；', '; '));
-  return { code, codeLang: PY, extra, note: where + (v.spike.some((e) => e.note) ? T(lang, '。備註：', '. Note: ') + v.spike.filter((e) => e.note).map((e) => e.note).join('; ') : '') };
+  // protocol 規則 8：ambientOnes = 資料 → 個位數放了資料，Pybricks 4.1 的 ambient() 讀不到
+  const lost = v.spike.some((e) => e.ambientOnes === '資料')
+    ? T(lang, '。Pybricks 4.1 起 ambient() 只剩 1 位小數，這個值的個位數讀不到：請改裝 MBC 函式庫（讀模式 9）', '. From Pybricks 4.1 ambient() keeps only one decimal, so the ones digit of this value is lost: install the MBC library (mode 9) instead') : '';
+  return { code, codeLang: PY, extra, note: where + (v.spike.some((e) => e.note) ? T(lang, '。備註：', '. Note: ') + v.spike.filter((e) => e.note).map((e) => e.note).join('; ') : '') + lost };
 }
 
 // SPIKE 命令通道（方案丙，common.spikeCmd）：產品 lego.spikeCmd = true、命令 spike = true 才能送，用 MBC 函式庫 cmd()＋wait_done()

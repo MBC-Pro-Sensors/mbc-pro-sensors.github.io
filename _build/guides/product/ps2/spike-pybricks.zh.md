@@ -52,3 +52,6 @@ while True:
 
 > [!TIP]
 > 掌控者 PS2 的 EV3／SPIKE App／Pybricks 積木用法也整理在 [指令說明（PDF）](/examples/ps2/PS2_Controller_Command_Guide_ZH.pdf)。
+
+> [!IMPORTANT]
+> **Pybricks 4.1 以上、不裝函式庫（內建 ColorSensor 積木）時**：按鍵（`reflection()` 要先取整數）和 LX、LY、RX（`ambient()`）照常讀得到，**RY 讀不到**（4.1 的 `ambient()` 只剩 1 位小數）。要 RY 請改裝 MBC 函式庫（讀模式 9，新舊韌體都行）；新韌體的替代讀法上機確認後補上。

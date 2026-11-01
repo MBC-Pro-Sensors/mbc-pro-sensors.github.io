@@ -404,7 +404,8 @@
         {
           "mode": 7,
           "v": 2,
-          "note": "X×100+Y → Pybricks ambient() 顯示 X.Y"
+          "note": "X×100+Y → Pybricks ambient() 顯示 X.Y",
+          "ambientOnes": "資料"
         },
         {
           "mode": 9,
@@ -487,7 +488,8 @@
         {
           "mode": 7,
           "v": 2,
-          "note": "X×100+Y 的個位／十位"
+          "note": "X×100+Y 的個位／十位",
+          "ambientOnes": "資料"
         },
         {
           "mode": 9,

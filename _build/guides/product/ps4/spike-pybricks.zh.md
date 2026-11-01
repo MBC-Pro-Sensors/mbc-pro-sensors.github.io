@@ -53,3 +53,6 @@ while True:
         print('L1')
     wait(50)
 ```
+
+> [!IMPORTANT]
+> **Pybricks 4.1 以上、不裝函式庫（內建 ColorSensor 積木）時**：按鍵（`reflection()` 要先取整數）和 LX、LY、RX（`ambient()`）照常讀得到，**RY 讀不到**（4.1 的 `ambient()` 只剩 1 位小數）。要 RY 請改裝 MBC 函式庫（讀模式 9，新舊韌體都行）；新韌體的替代讀法上機確認後補上。

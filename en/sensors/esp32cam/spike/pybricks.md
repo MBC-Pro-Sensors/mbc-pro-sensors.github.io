@@ -183,7 +183,7 @@ cam = MBC_CAM_SCHOOL(Port.A)
 blobX = cam.blob_x()
 ```
 
-<p class="ref-note">mode 0 (edu) byte 2 🔒; mode 0 (toy) byte 2 🔒; mode 6 v[0]; mode 7 v[2] 🔒; mode 9 v[2] lo 🔒. Note: byte 3 = 0; ×4 查表編碼（10-bit）; #67 改：模式 6 = [X, Y, 面積]（3×int16）; X×100+Y → Pybricks ambient() 顯示 X.Y</p>
+<p class="ref-note">mode 0 (edu) byte 2 🔒; mode 0 (toy) byte 2 🔒; mode 6 v[0]; mode 7 v[2] 🔒; mode 9 v[2] lo 🔒. Note: byte 3 = 0; ×4 查表編碼（10-bit）; #67 改：模式 6 = [X, Y, 面積]（3×int16）; X×100+Y → Pybricks ambient() 顯示 X.Y. From Pybricks 4.1 ambient() keeps only one decimal, so the ones digit of this value is lost: install the MBC library (mode 9) instead</p>
 
 </section>
 
@@ -217,7 +217,7 @@ cam = MBC_CAM_SCHOOL(Port.A)
 blobY = cam.blob_y()
 ```
 
-<p class="ref-note">mode 0 (edu) byte 4 🔒; mode 0 (toy) byte 4 🔒; mode 6 v[1]; mode 7 v[2] 🔒; mode 9 v[2] hi 🔒. Note: byte 5 = 0; ×4 查表編碼; X×100+Y 的個位／十位</p>
+<p class="ref-note">mode 0 (edu) byte 4 🔒; mode 0 (toy) byte 4 🔒; mode 6 v[1]; mode 7 v[2] 🔒; mode 9 v[2] hi 🔒. Note: byte 5 = 0; ×4 查表編碼; X×100+Y 的個位／十位. From Pybricks 4.1 ambient() keeps only one decimal, so the ones digit of this value is lost: install the MBC library (mode 9) instead</p>
 
 </section>
 

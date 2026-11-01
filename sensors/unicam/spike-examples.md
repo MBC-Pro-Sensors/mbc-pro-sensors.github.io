@@ -17,7 +17,7 @@
 | 🟨 官方 App 積木（教育版／家用版） | 只用積木 | 照最下面的[拆值表](#app-table)用「顏色、反射光、原始紅綠藍」積木 |
 
 > [!IMPORTANT]
-> - **Pybricks 讀不到相機目前的模式**：程式裡的 `mode=13` 要跟相機選單切的一樣（模式編號＝相機模式 ×10＋子選項，照順序給色號＝30）。切錯了數字會亂跳，但不會報錯。
+> - **Pybricks 函式庫會幫你切相機模式**：程式裡寫 `mode=13`（模式編號＝相機模式 ×10＋子選項，照順序給色號＝30），建立物件時函式庫就把相機切到這個模式（出貨版韌體；2026-10-29 以前的韌體要自己在相機選單切成一樣）。官方 App 送不了命令，相機選單要自己切。
 > - Pybricks 要先把主機換成 Pybricks 韌體（code.pybricks.com 的設定裡可以燒，之後可用 SPIKE App 換回）。官方 App 不用換。
 > - 相機一定要用 **SPIKE 版韌體**。同一個韌體會自己認出主機是官方 App 還是 Pybricks。
 
@@ -109,7 +109,7 @@ from pybricks.tools import wait
 from MBC_UniCam import UniCam
 
 hub = PrimeHub()
-cam = UniCam(Port.C, mode=13)                    # 模式編號要跟相機選單一樣 / must match the camera menu
+cam = UniCam(Port.C, mode=13)                    # 函式庫會自動把相機切到這個模式 / the library switches the camera to this mode
 left = Motor(Port.E, Direction.COUNTERCLOCKWISE)
 right = Motor(Port.F)
 robot = DriveBase(left, right, 56, 112)          # 輪徑 56 mm、輪距 112 mm / wheel 56 mm, axle 112 mm
@@ -138,7 +138,7 @@ while True:
 </details>
 
 **一步一步看懂程式**
-1. `UniCam(Port.C, mode=13)`：告訴函式庫相機切在模式 13（SPIKE 讀不到相機的模式，要自己填）。
+1. `UniCam(Port.C, mode=13)`：用模式 13，建立時函式庫會把相機切到模式 13。
 2. `cam.xy(1)`：色 1 的 (X, Y) 像素。X＝0 表示沒看到。
 3. `error = X − 80`：畫面中間是 80，色塊在右邊就是正的 → `robot.drive(速度, error × KP)` 轉向是正＝往右轉。
 4. `cam.area(1)`：面積 %，跟 X、Y 在同一包資料（模式 9），不用多等。
@@ -464,7 +464,7 @@ from pybricks.tools import wait
 from MBC_UniCam import UniCam, shape_name
 
 hub = PrimeHub()
-cam = UniCam(Port.C, mode=51)                    # 模式編號要跟相機選單一樣 / must match the camera menu
+cam = UniCam(Port.C, mode=51)                    # 函式庫會自動把相機切到這個模式 / the library switches the camera to this mode
 left = Motor(Port.E, Direction.COUNTERCLOCKWISE)
 right = Motor(Port.F)
 robot = DriveBase(left, right, 56, 112)          # 輪徑 56 mm、輪距 112 mm / wheel 56 mm, axle 112 mm
@@ -1016,8 +1016,8 @@ runloop.run(main())
 
 ## 要注意的事
 
-- **以下都還沒上機**：數值排法（逐 byte）已經用規格的獨立參考實作在電腦上比對過；車子的 KP／KD、面積門檻、路口停車時機是建議值，請先印出數字再調。
-- 換相機模式後，`mode=` 也要跟著改（SPIKE 讀不到相機的模式）。
+- **都上機跑過**（2026-11-01，出貨版韌體）：車子的 KP／KD、面積門檻、路口停車時機是建議值，請先印出數字再調。
+- 換相機模式時改 `mode=` 就好，Pybricks 函式庫會幫你切相機；官方 App 要自己在相機選單切。
 - 主機斷線時相機畫面左上的主機名稱會變紅，重新執行程式就好。
 
 ## 下一步

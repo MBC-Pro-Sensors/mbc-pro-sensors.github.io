@@ -482,7 +482,7 @@ let motion = mbc.camMotion()   // 動態：0~100
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-模式 0 (edu) byte 2 🔒；模式 0 (toy) byte 2 🔒；模式 6 v[0]；模式 7 v[2] 🔒；模式 9 v[2] lo 🔒。備註：byte 3 = 0; ×4 查表編碼（10-bit）; #67 改：模式 6 = [X, Y, 面積]（3×int16）; X×100+Y → Pybricks ambient() 顯示 X.Y
+模式 0 (edu) byte 2 🔒；模式 0 (toy) byte 2 🔒；模式 6 v[0]；模式 7 v[2] 🔒；模式 9 v[2] lo 🔒。備註：byte 3 = 0; ×4 查表編碼（10-bit）; #67 改：模式 6 = [X, Y, 面積]（3×int16）; X×100+Y → Pybricks ambient() 顯示 X.Y。Pybricks 4.1 起 ambient() 只剩 1 位小數，這個值的個位數讀不到：請改裝 MBC 函式庫（讀模式 9）
 
 ```python
 from pybricks.iodevices import PUPDevice
@@ -584,7 +584,7 @@ let blobX = mbc.camBlob(MbcCamBlob.X)   // 色塊 X：0~100
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-模式 0 (edu) byte 4 🔒；模式 0 (toy) byte 4 🔒；模式 6 v[1]；模式 7 v[2] 🔒；模式 9 v[2] hi 🔒。備註：byte 5 = 0; ×4 查表編碼; X×100+Y 的個位／十位
+模式 0 (edu) byte 4 🔒；模式 0 (toy) byte 4 🔒；模式 6 v[1]；模式 7 v[2] 🔒；模式 9 v[2] hi 🔒。備註：byte 5 = 0; ×4 查表編碼; X×100+Y 的個位／十位。Pybricks 4.1 起 ambient() 只剩 1 位小數，這個值的個位數讀不到：請改裝 MBC 函式庫（讀模式 9）
 
 ```python
 from pybricks.iodevices import PUPDevice

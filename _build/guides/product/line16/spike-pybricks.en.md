@@ -24,7 +24,7 @@ Library only: [MBC_sensors.py](/examples/line16/pybricks/For%20firmware%204.x/MB
 > The examples say `from MBC_line16_obj_Lib import MBC_LINE16`, so import `MBC_line16_obj_Lib.py` (no renaming needed). For a new program of your own, write `from MBC_sensors import MBC_LINE16` and import only `MBC_sensors.py`. The library must be in the **same project list** as the main program.
 
 > [!NOTE]
-> Pybricks 3.6.1 is no longer updated; the old files are under "Legacy (no longer updated)" on the [Downloads page](/en/downloads.md).
+> Pybricks 3.6.1 is no longer updated; the old files are under "Legacy (no longer updated)" on the [Downloads page](/en/downloads.md). The 3.6.1 built-in examples only fit sensor firmware before 2026-10-30 (with newer firmware the old split reads the width ×10).
 
 ![Importing the library into a Pybricks project](/images/sensors/line16/pybricks-upload-lib.webp)
 
@@ -47,7 +47,7 @@ Examples: blocks [line16_block_native.py](/examples/line16/pybricks/For%20firmwa
 > [!IMPORTANT]
 > **Decoding on Pybricks 4.1** (the examples above already do this)
 > - `reflection()` (mode 5) = coarse position + width. From Pybricks 4.1 it carries one decimal, so **convert to an integer first**: `r = int(line.reflection())`; 16-ch: add 6399 when negative, then position = `r // 100 - 16` (−16 to +16), width = `r % 100`. Blocks have no "integer" block: use "floor" for values ≥ 0 and "ceiling" for negative ones, which equals `int()`.
-> - `ambient()` (mode 7) = "fine position + 100 . width", width in the first decimal: fine position = integer part − 100, width = `round(line.ambient() * 10) % 10` (16-ch shows at most 9 = 9 or more). **Needs sensor firmware from 2026-10-30 or later**; on older firmware the width reads 0 (position still works).
+> - `ambient()` (mode 7) = "fine position + 100 . width", width in the first decimal: fine position = integer part − 100, width = `round(line.ambient() * 10) % 10` (16-ch shows at most 9 = 9 or more). **Needs sensor firmware from 2026-10-30 or later**; on older firmware the width reads 0 (position still works). With older firmware, take the width from reflection instead, or install the MBC library (mode 9 gives every value on old and new firmware).
 > - Positions are sent with an offset and subtracted after reading; negative numbers are never sent directly.
 > - Advanced (Python only): `line.hsv(surface=False).h` = (fine position + 100) × 100 + width, giving the full width.
 

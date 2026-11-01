@@ -53,3 +53,6 @@ while True:
         print('L1')
     wait(50)
 ```
+
+> [!IMPORTANT]
+> **Pybricks 4.1 or later without the library (built-in ColorSensor blocks)**: the buttons (`reflection()`, make it whole first) and LX, LY, RX (`ambient()`) still work, but **RY is lost** (on 4.1 `ambient()` keeps only one decimal). For RY install the MBC library (mode 9, works on old and new firmware); a new-firmware alternative will be added after hardware testing.

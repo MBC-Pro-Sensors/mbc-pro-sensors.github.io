@@ -13,6 +13,7 @@ What the Sharpshooter Vision sends on each host for each "camera mode · sub-opt
 - **"split ÷100"**: two values share one slot as A×100 + B; A = reading ÷ 100 (integer part), B = remainder of ÷100. "split ÷10" works the same way.
 - **"mod 256, ÷256"**: slot = A + B×256; A = reading mod 256, B = reading ÷ 256 (integer part).
 - **"A.BB"**: Pybricks `ambient()` shows a decimal: integer part = A, two decimals = B.
+- **"A.B (integer.first decimal)"**: with Pybricks blocks (built-in ColorSensor) `ambient()` has one decimal (Pybricks 4.1 keeps only one; split it the same way on 3.x): A = the integer part rounded down, B = `round(ambient() × 10) % 10` (0–9). Values marked "÷10" give only the tens (× 10 is approximate); values marked "9 and up = 9" stop at 9.
 - **"(+100)"**: values that can be negative are sent +100; subtract 100 after reading.
 - Coordinates: pixel X 0~159 (left → right), Y 0~119 (top → bottom); on EV3, Y is small at the bottom. Grid conversions (16×12, 8×6, 40×30) are on the [product page](/en/sensors/unicam/index.md).
 - **Object code (camera mode 5)**: color number × 10 + shape, e.g. 13 = a triangle in color 1, 24 = a square in color 2, 0 = no object. Shapes: 0 other / unknown, 1 circle, 2 ellipse, 3 triangle, 4 square, 5 rectangle, 6 pentagon, 7 hexagon, 8 star, 9 trapezoid. Object 1 = the largest one; only target colors 1~8 count.
@@ -384,7 +385,7 @@ Mode number 52.
 
 ## SPIKE App (SPIKE Prime, yellow hub)
 
-The SPIKE App (3.x) sees the camera as a Color Sensor and reads mode 0: "color" and "reflected light" are one byte each, "raw red / green / blue" are int16 each; the blocks can read these 8 bytes. The Standard and Fine levels follow Kito (16×12 grid, X + Y×256: mod 256, ÷256); the Max and Multi levels use an 8×6 grid with two colors per slot (X×10+Y, merged ×100). Y: small at top. Bytes 8~15 are not readable from blocks, only from the app's Python (to be confirmed on hardware).
+The SPIKE App (3.x) sees the camera as a Color Sensor and reads mode 0: "color" and "reflected light" are one byte each, "raw red / green / blue" are int16 each; the blocks can read these 8 bytes. The Standard and Fine levels follow Kito (16×12 grid, X + Y×256: mod 256, ÷256); the Max and Multi levels use an 8×6 grid with two colors per slot (X×10+Y, merged ×100). Y: small at top. Bytes 8~15 are not readable from blocks; in the app's Python device.data(port.C) reads bytes 0~13 (8 values: byte 0, byte 1, then one int16 per 2 bytes). Note: the app's color(), the "color" block and the dashboard show a 5 in the "color" slot as 6 (LEGO's green code); other numbers are shown as sent. In Python read device.data(port.C)[0] to tell them apart.
 
 <details class="plat pg-spike" id="edu-11">
 <summary><span class="plat-dot"></span>Camera mode 1 Color tracking ① Max colors: 14 colors</summary>
@@ -698,7 +699,7 @@ Mode number 52.
 
 ## Robot Inventor App (home edition, teal hub)
 
-The Robot Inventor App reads mode 0, 8 bytes in total; the camera switches to the home-edition layout by itself when the hub sends 0x25. "Color" only goes to 0~10, "reflected light" up to 126 and "raw red / green / blue" 0~255, one value per slot.
+This table is for the Robot Inventor App **blocks**: they read mode 0, 8 bytes in total; the camera switches to the home-edition layout by itself when the hub sends 0x25. "Color" only goes to 0~10, "reflected light" up to 126 and "raw red / green / blue" 0~255, one value per slot. **Python** does not use this table: while a program runs the hub sends 0x26 and the camera uses the Education layout (see the Education table above); hub.port.C.device.get() returns 6 values = the Education color, reflected light, raw red, green, blue, bytes 8~9; get_reflected_light() returns the Education "color" slot and get_color() only returns color names.
 
 <details class="plat pg-spike" id="toy-11">
 <summary><span class="plat-dot"></span>Camera mode 1 Color tracking ① Max colors: 4 colors</summary>
@@ -924,7 +925,7 @@ Mode number 52.
 
 ## Pybricks built-in blocks (no library)
 
-No MBC library, only the Pybricks built-in color sensor blocks: reflection() (mode 5) and ambient() (mode 7). Color tracking works like the Kito edition: reflection() = color 1 as X×100+Y, ambient() = color 2 as X.Y (40×30 grid). reflection() above 3199 shows up negative; add 6399 to fix it.
+No MBC library, only the Pybricks built-in color sensor blocks: reflection() (mode 5) and ambient() (mode 7). Color tracking: reflection() = color 1 as X×100+Y (40×30 grid, as in the Kito edition), ambient() = color 2 as X.Y (8×6 grid). reflection() above 3199 shows up negative; add 6399 to fix it. With the shipping firmware reflection() is a whole number on Pybricks 3.x and 4.1. ambient() is always "integer . first decimal" (Pybricks 4.1 keeps one decimal): A = the integer part rounded down, B = round(ambient() × 10) % 10.
 
 <details class="plat pg-spike" id="pyblk-11">
 <summary><span class="plat-dot"></span>Camera mode 1 Color tracking ① Max colors: 2 colors</summary>
@@ -938,7 +939,7 @@ Mode number 11.
 | **Mode 5 reflection()** | | |
 | reflection() | Color 1 X (40 cells) ×100 + color 1 Y (30 cells, small at top) | Split ÷100 (same as Kito) |
 | **Mode 7 ambient()** | | |
-| ambient() | Color 2 X (40 cells) . color 2 Y (30 cells, small at top) | A.BB |
+| ambient() | Color 2 X (8 cells) . color 2 Y (6 cells, small at top) | A.B (integer.first decimal) |
 
 </div>
 
@@ -956,7 +957,7 @@ Mode number 12.
 | **Mode 5 reflection()** | | |
 | reflection() | Color 1 X (40 cells) ×100 + color 1 Y (30 cells, small at top) | Split ÷100 (same as Kito) |
 | **Mode 7 ambient()** | | |
-| ambient() | Color 2 X (40 cells) . color 2 Y (30 cells, small at top) | A.BB |
+| ambient() | Color 2 X (8 cells) . color 2 Y (6 cells, small at top) | A.B (integer.first decimal) |
 
 </div>
 
@@ -974,7 +975,7 @@ Mode number 13.
 | **Mode 5 reflection()** | | |
 | reflection() | Color 1 X (40 cells) ×100 + color 1 Y (30 cells, small at top) | Split ÷100 (same as Kito) |
 | **Mode 7 ambient()** | | |
-| ambient() | Color 2 X (40 cells) . color 2 Y (30 cells, small at top) | A.BB |
+| ambient() | Color 2 X (8 cells) . color 2 Y (6 cells, small at top) | A.B (integer.first decimal) |
 
 </div>
 
@@ -992,7 +993,7 @@ Mode number 14.
 | **Mode 5 reflection()** | | |
 | reflection() | Color 1 X (40 cells) ×100 + color 1 Y (30 cells, small at top) | Split ÷100 (same as Kito) |
 | **Mode 7 ambient()** | | |
-| ambient() | Color 1 width (40 cells) . color 1 height (30 cells) | A.BB |
+| ambient() | W8:W1 . h6:H1 | A.B (integer.first decimal) |
 
 </div>
 
@@ -1010,7 +1011,7 @@ Mode number 21.
 | **Mode 5 reflection()** | | |
 | reflection() | S1 hue ×10 + S1 saturation÷10 | Split ÷10 |
 | **Mode 7 ambient()** | | |
-| ambient() | S2 hue . S2 saturation | A.BB |
+| ambient() | S2 hue . d10:pS2 | A.B (integer.first decimal) |
 
 </div>
 
@@ -1028,7 +1029,7 @@ Mode number 22.
 | **Mode 5 reflection()** | | |
 | reflection() | S1 hue ×10 + S1 saturation÷10 | Split ÷10 |
 | **Mode 7 ambient()** | | |
-| ambient() | S2 hue . S2 saturation | A.BB |
+| ambient() | S2 hue . d10:pS2 | A.B (integer.first decimal) |
 
 </div>
 
@@ -1046,7 +1047,7 @@ Mode number 23.
 | **Mode 5 reflection()** | | |
 | reflection() | S1 hue | 0~255 |
 | **Mode 7 ambient()** | | |
-| ambient() | S1 saturation . S1 value | A.BB |
+| ambient() | S1 saturation . d10:v1 | A.B (integer.first decimal) |
 
 </div>
 
@@ -1064,7 +1065,7 @@ Mode number 30.
 | **Mode 5 reflection()** | | |
 | reflection() | Hue of block 1 from the left | 0~255 |
 | **Mode 7 ambient()** | | |
-| ambient() | Hue of block 2 from the left . total blocks | A.BB |
+| ambient() | Hue of block 2 from the left . c9:total | A.B (integer.first decimal) |
 
 </div>
 
@@ -1082,7 +1083,7 @@ Mode number 41 / 42 / 43.
 | **Mode 5 reflection()** | | |
 | reflection() | Near offset (+100) ×10 + junction type (0 none, 1 cross, 2 T, 3 left, 4 right, 5 dead end) | Split ÷10 (same as Kito) |
 | **Mode 7 ambient()** | | |
-| ambient() | Far offset (+100) . line-found flags (near 1 + middle 2 + far 4) | A.BB |
+| ambient() | Far offset (+100) . line-found flags (near 1 + middle 2 + far 4) | A.B (integer.first decimal) |
 
 </div>
 
@@ -1100,7 +1101,7 @@ Mode number 51.
 | **Mode 5 reflection()** | | |
 | reflection() | Object 1 X (40 cells) ×100 + object 1 Y (30 cells, small at top) | Split ÷100 (same as Kito) |
 | **Mode 7 ambient()** | | |
-| ambient() | Object 1 code (color × 10 + shape) . object count | A.BB |
+| ambient() | Object 1 code (color × 10 + shape) . c9:on | A.B (integer.first decimal) |
 
 </div>
 
@@ -1118,7 +1119,7 @@ Mode number 52.
 | **Mode 5 reflection()** | | |
 | reflection() | Object 1 X (40 cells) ×100 + object 1 Y (30 cells, small at top) | Split ÷100 (same as Kito) |
 | **Mode 7 ambient()** | | |
-| ambient() | Object 1 code (color × 10 + shape) . object 1 area (% of frame) | A.BB |
+| ambient() | Object 1 code (color × 10 + shape) . d10:A1 | A.B (integer.first decimal) |
 
 </div>
 

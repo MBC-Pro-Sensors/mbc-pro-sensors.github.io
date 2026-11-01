@@ -1,8 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # Reading it on SPIKE
 
-> [!WARNING]
-> **v1 not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
+> [!NOTE]
+> **SPIKE verified on hardware** (2026-11-01, shipping firmware v1.0-261101): the Pybricks library (readings and commands), Pybricks built-in blocks, the official app (Education and home edition) and the MBC Blocks website have all been run on real hubs. Using the camera through the EXP6 expander is not yet tested on hardware.
 
 The Sharpshooter Vision works with SPIKE Prime (yellow hub) and Robot Inventor (teal hub). The SPIKE edition firmware detects by itself whether the hub runs the official app or Pybricks, so there is nothing to reflash. This page helps you pick one of the four ways to read it and shows the smallest working code; every slot is listed in the [value reference](/en/sensors/unicam/reference.md), full programs are in the [SPIKE examples](/en/sensors/unicam/spike-examples.md).
 
@@ -22,7 +22,7 @@ How many colors each way gets in the other camera modes: see [colors per host](/
 1. Plug the camera into **any port A~F**. It is powered by the hub, no battery needed.
 2. The top-left corner of the camera screen shows the host name: **green = connected**, red = disconnected.
 3. Pick the camera mode and sub-option in the camera's **MODE** menu (see "On the camera" on the [product page](/en/sensors/unicam/index.md)). The sub-option names show how many colors this hub actually gets.
-4. **The hub cannot read which mode the camera is in**, so your program must match the camera setting: pass the mode number to the Pybricks library (camera mode × 10 + sub-option, e.g. `mode=13`; color order = `30`); with the official app, decode according to the mode you picked.
+4. **The mode must match**: pass the mode number to the Pybricks library (camera mode × 10 + sub-option, e.g. `mode=13`; color order = `30`); when the object is created the library **sends a command that switches the camera to this mode**. The official app and the Pybricks built-in blocks cannot send commands: set the mode in the camera's MODE menu yourself and decode according to the mode you picked.
 
 ## Pybricks library (mode 9)
 
@@ -73,6 +73,29 @@ junction = b[6]                  # junction: 0 none 1 cross 2 T 3 left 4 right 5
 - **Mode 6**: read it only when you need counts in Color tracking ① Max colors or ② Multi-color (`cam.read(6)`, switching modes adds about 30 ms); layout in the [value reference](/en/sensors/unicam/reference.md#pyb-11).
 - **Mode 8**: device ID (shared by every MBC product; the MBC Blocks website uses it to recognise the product).
 
+### Commands (Pybricks library)
+
+With the MBC library your program can change the camera's settings. Each command method waits until the camera has finished: it returns `0` = done, `2` = failed, `3` = rejected (bad parameter), or `None` on timeout.
+
+| Call | Command | What it does |
+| :--- | :---: | :--- |
+| `cam.set_mode(51)` | E0 | Switch the camera mode (stored in the camera; not rewritten if unchanged). Already done once when the object is created |
+| `cam.cmd(0xE1, 1, 80, 60)` | E1 | Position of sample spot 1–20: X 0–159, Y 0–119 (stored). `(n, 255, 255)` clears spot n, `(0, 255, 255)` clears all; a spot that is not set reads 0 |
+| `cam.light(50)` | E2 | Lamp 0–100 % (0 = off); `cam.light()` goes back to the camera menu setting; not stored |
+| `cam.teach(1)` | E3 | Teach the color in the centre of the picture as target 1–16 (stored) |
+| `cam.clear(1)` | E4 | Clear target 1–16 (clearing all at once is not allowed on SPIKE) |
+| `cam.target_range(1, hue, sat, size, search)` | E5 | The target's hue range 1–119, saturation range 0–31, minimum area 4–254; 255 = keep. `search`: 1 stay on the last blob, 2 largest blob each frame, 0 keep |
+| `cam.shape_tolerance(3)` | E6 | Shape tolerance 1–5 (factory 3) |
+| `cam.target_shape(1, 3)` | E7 | Shape 0–9 to look for with target color 1–8 (0 = any) |
+| `cam.camera_setting(item, value)` | E8 | Camera setting: `item` 0–12 in the order of the camera's MENU → Setup; `value` may be negative |
+| `cam.white_cal()` | E9 | White calibration, about 3 s; cover the centre of the picture with white paper first |
+| `cam.power(0)` | EB | 0 full speed, 1 power saving, 2 standby (lens off); not stored, full speed after a restart; standby back to full speed takes about 1–2.5 s |
+
+- **The same command with the same parameters is not done again** (except `white_cal()`, which runs every time). To repeat it write `cam.cmd(0xE2, 50, again=True)`.
+- `cam.cmd(code, params…)` sends without waiting; check with `cam.busy()` and `cam.wait_done()` afterwards.
+- Waiting for a command adds about 40–60 ms, so **do not call commands inside a line-following loop**; set things up once at the start. With multitasking (`multitask=True`) put `await` in front.
+- Camera firmware from before 2026-10-29 cannot take commands: the library prints a hint to use the camera menu, and readings work as before. The official app and the Pybricks built-in blocks cannot send commands either.
+
 ### Plugged into the EXP6 expander
 
 When you run out of ports, plug the Sharpshooter Vision into port 1–6 of the [EXP6 six-port expander](/en/sensors/exp6/index.md). Use the EXP6 v2 library `MBC_exp6_obj_Lib_v2.py` ([downloads](/en/downloads.md)); the function names are the same as `UniCam` above, and a reading that cannot be made returns `None`. The EXP6 needs firmware v2. The official SPIKE App library has the same calls (`MBC_exp6_SPIKE_App_Lib_v2.py`).
@@ -95,7 +118,7 @@ run_task(main())
 
 ## Pybricks built-in blocks (modes 5 / 7)
 
-No library, just the Pybricks built-in **color sensor** blocks `reflection()` (mode 5) and `ambient()` (mode 7); each camera mode gives one or two colors. Color tracking uses a 40×30 grid, the same as the Kito edition:
+No library, just the Pybricks built-in **color sensor** blocks `reflection()` (mode 5) and `ambient()` (mode 7); each camera mode gives one or two colors. In color tracking, color 1 uses a 40×30 grid, the same as the Kito edition, and color 2 an 8×6 grid:
 
 ```python
 from pybricks.pupdevices import ColorSensor
@@ -109,14 +132,14 @@ while True:
     if r < 0:
         r += 6399                # above 3199 it shows up negative; add 6399
     x1, y1 = r // 100, r % 100   # color 1: X 1~40, Y 1~30; 0 = not seen
-    a = cam.ambient()            # color 2 shown as X.Y (e.g. 12.05 = X 12, Y 5)
-    x2 = int(a)
-    y2 = round((a - x2) * 100)
+    a = cam.ambient()            # color 2 shown as X.Y (8×6 grid, e.g. 4.3 = X 4, Y 3)
+    x2 = int(a)                  # whole part
+    y2 = round(a * 10) % 10      # first decimal
     print(x1, y1, x2, y2)
     wait(100)
 ```
 
-How color at points, color order and line following fit into these two values: [value reference: Pybricks built-in blocks](/en/sensors/unicam/reference.md#host-pyblk). Line offsets are sent **+100**; subtract 100.
+`ambient()` is always packed as "whole number . first decimal": from Pybricks 4.1 `ambient()` keeps only one decimal, and 3.x is split the same way. With the shipping firmware `reflection()` is a whole number on both 3.x and 4.1. How color at points, color order and line following fit into these two values: [value reference: Pybricks built-in blocks](/en/sensors/unicam/reference.md#host-pyblk). Line offsets are sent **+100**; subtract 100.
 
 ## Official SPIKE App
 
@@ -136,11 +159,16 @@ Example: **Color tracking ③ Standard** (4 colors, 16×12 grid):
 
 **Color tracking ① Max colors and ② Multi-color** use an 8×6 grid with two colors per slot: color = colors found, reflected light = color 1 as X×10+Y; raw red = color 2 ×100 + color 3, so split ÷100 into two "X×10+Y" codes, then split each ÷10 into X and Y.
 
-Counts and areas are in bytes 8~15 of mode 0, which **the blocks cannot read**; whether the app's Python can read them is still to be tested on hardware.
+Counts and areas are in bytes 8~15 of mode 0, which **the blocks cannot read**. In the app's Python `device.data(port.C)` reads bytes 0~13: it returns 8 values = byte 0, byte 1, then one int16 per 2 bytes (raw red, green, blue, bytes 8~9, 10~11, 12~13).
+
+> [!NOTE]
+> **"Color" 5 turns into 6**: the Education app's `color_sensor.color()`, the "color" block and the dashboard change a 5 sent by the camera into 6 (LEGO's green code); every other number is shown as sent, and reflected light is not affected. So 5 and 6 in the "color" slot cannot be told apart (for example color 1's X cell, colors found, junction type 5 dead end, object count). In Python read `device.data(port.C)[0]` instead; blocks have no way around it.
 
 ### Home edition (Robot Inventor, teal hub)
 
-When the hub sends 0x25 the camera switches to the home-edition layout: color only goes to 0~10, reflected light up to 126, raw red / green / blue 0~255, one value per slot. Color tracking uses an 8×6 grid:
+In the home-edition app the **blocks** and **Python** see different layouts, because the hub asks for a different combination:
+
+**Blocks**: the hub sends 0x25 and the camera switches to the home-edition layout: color only goes to 0~10, reflected light up to 126, raw red / green / blue 0~255, one value per slot. Color tracking uses an 8×6 grid:
 
 | Value | Block | Conversion |
 | :--- | :--- | :--- |
@@ -148,6 +176,8 @@ When the hub sends 0x25 the camera switches to the home-edition layout: color on
 | Color 1 Y (1~6) | reflected light | as read |
 | Color 2 | raw red | X = raw red ÷ 10 (integer part), Y = remainder of ÷10 |
 | Colors 3 and 4 | raw green, raw blue | same as color 2 |
+
+**Python**: while a program runs the hub sends 0x26 (the same combination as the Education app), so the camera uses the **Education layout** (the Education table above, 16×12 grid). Read it with `hub.port.C.device.get()`: it returns 6 values; convert them as the Education "color, reflected light, raw red, raw green, raw blue, bytes 8~9". `get_reflected_light()` returns the Education "color" slot (not reflected light) and `get_rgb_intensity()` returns raw red, green, blue + bytes 8~9; `get_color()` only returns color names, never numbers, so do not use it.
 
 Every slot of the other camera modes: [value reference: Education](/en/sensors/unicam/reference.md#host-edu), [home edition](/en/sensors/unicam/reference.md#host-toy). Line following and other values that can be negative are sent **+100**.
 
@@ -200,7 +230,7 @@ while True:
     wait(100)
 ```
 
-**Pybricks built-in blocks** (`reflection()`, `ambient()`, object 1 only): `reflection()` = object 1 X cell × 100 + Y cell (40×30 grid: X 1~40, Y 1~30, top = small, 0 = none; add 6399 when negative); `ambient()` shows A.BB: A = object 1 code, BB = object count (51) or object 1 area % (52, 100 shows as 99).
+**Pybricks built-in blocks** (`reflection()`, `ambient()`, object 1 only): `reflection()` = object 1 X cell × 100 + Y cell (40×30 grid: X 1~40, Y 1~30, top = small, 0 = none; add 6399 when negative); `ambient()` shows A.B (one decimal): A = object 1 code, B = object count (51, 9 and up = 9) or the tens of object 1 area % (52, × 10 is approximate).
 
 ```python
 from pybricks.pupdevices import ColorSensor
@@ -214,10 +244,10 @@ while True:
     if r < 0:
         r += 6399                # above 3199 it shows as negative: add 6399
     gx, gy = r // 100, r % 100   # object 1 position: 40×30 grid (X 1~40, Y 1~30, top = small); 0 = none
-    a = cam.ambient()            # shown as A.BB
+    a = cam.ambient()            # shown as A.B (one decimal)
     code = int(a)                # A: object 1 code (color × 10 + shape)
-    bb = round((a - code) * 100) # BB: 51 = object count, 52 = object 1 area % (100 shows as 99)
-    print("code", code, "color", code // 10, "shape", code % 10, "cell", gx, gy, bb)
+    b = round(a * 10) % 10       # B: 51 = object count (9 and up = 9), 52 = object 1 area % ÷ 10
+    print("code", code, "color", code // 10, "shape", code % 10, "cell", gx, gy, b)
     wait(100)
 ```
 

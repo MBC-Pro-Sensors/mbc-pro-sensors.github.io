@@ -9,3 +9,6 @@
 ### WRO 版（HUE12）
 
 主機要換成 Pybricks 韌體 **v4.1**（code.pybricks.com 正式版是 v4.1.1；MBC 積木網站上方選單「SPIKE 主機 → 安裝／更新 Pybricks 韌體」燒的 v4.1.0 也可以直接用）。 Pybricks 寫法要匯入 `MBC_hue12_Lib.py`（學校版是 `MBC_cam_school_Lib.py`）；自己寫新程式只要匯入 `MBC_sensors.py`（類別 `MBC_HUE12`／`MBC_CAM_SCHOOL`）。
+
+> [!IMPORTANT]
+> **Pybricks 4.1 以上請裝 MBC 函式庫**（`MBC_sensors.py` 或上面的個別函式庫，讀模式 9）。不裝函式庫、只用內建 ColorSensor 時，4.1 的 `ambient()` 只剩 1 位小數，學校版的色塊座標 Y 個位數會讀不到；`reflection()` 也會帶 1 位小數，要先取整數。神攝手舊版不再改韌體。

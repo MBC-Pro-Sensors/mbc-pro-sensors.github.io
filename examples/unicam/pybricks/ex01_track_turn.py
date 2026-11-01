@@ -13,7 +13,7 @@ from pybricks.tools import wait
 from MBC_UniCam import UniCam
 
 hub = PrimeHub()
-cam = UniCam(Port.C, mode=13)                    # 模式編號要跟相機選單一樣 / must match the camera menu
+cam = UniCam(Port.C, mode=13)                    # 函式庫會自動把相機切到這個模式 / the library switches the camera to this mode
 left = Motor(Port.E, Direction.COUNTERCLOCKWISE)
 right = Motor(Port.F)
 robot = DriveBase(left, right, 56, 112)          # 輪徑 56 mm、輪距 112 mm / wheel 56 mm, axle 112 mm

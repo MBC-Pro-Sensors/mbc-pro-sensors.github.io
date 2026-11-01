@@ -482,7 +482,7 @@ let motion = mbc.camMotion()   // motion：0~100
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-mode 0 (edu) byte 2 🔒; mode 0 (toy) byte 2 🔒; mode 6 v[0]; mode 7 v[2] 🔒; mode 9 v[2] lo 🔒. Note: byte 3 = 0; ×4 查表編碼（10-bit）; #67 改：模式 6 = [X, Y, 面積]（3×int16）; X×100+Y → Pybricks ambient() 顯示 X.Y
+mode 0 (edu) byte 2 🔒; mode 0 (toy) byte 2 🔒; mode 6 v[0]; mode 7 v[2] 🔒; mode 9 v[2] lo 🔒. Note: byte 3 = 0; ×4 查表編碼（10-bit）; #67 改：模式 6 = [X, Y, 面積]（3×int16）; X×100+Y → Pybricks ambient() 顯示 X.Y. From Pybricks 4.1 ambient() keeps only one decimal, so the ones digit of this value is lost: install the MBC library (mode 9) instead
 
 ```python
 from pybricks.iodevices import PUPDevice
@@ -584,7 +584,7 @@ let blobX = mbc.camBlob(MbcCamBlob.X)   // blob X：0~100
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-mode 0 (edu) byte 4 🔒; mode 0 (toy) byte 4 🔒; mode 6 v[1]; mode 7 v[2] 🔒; mode 9 v[2] hi 🔒. Note: byte 5 = 0; ×4 查表編碼; X×100+Y 的個位／十位
+mode 0 (edu) byte 4 🔒; mode 0 (toy) byte 4 🔒; mode 6 v[1]; mode 7 v[2] 🔒; mode 9 v[2] hi 🔒. Note: byte 5 = 0; ×4 查表編碼; X×100+Y 的個位／十位. From Pybricks 4.1 ambient() keeps only one decimal, so the ones digit of this value is lost: install the MBC library (mode 9) instead
 
 ```python
 from pybricks.iodevices import PUPDevice

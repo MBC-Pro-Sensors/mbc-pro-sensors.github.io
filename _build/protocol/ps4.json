@@ -76,6 +76,11 @@
       "ev3": [],
       "spike": [
         {
+          "mode": 5,
+          "v": 0,
+          "note": "Pybricks reflection() 編碼：跟 PS2 同一套 11 鍵 complexXY = SELECT<<10 | R1<<9 | L1<<8 | ■<<7 | ✕<<6 | ●<<5 | ▲<<4 | 左<<3 | 下<<2 | 右<<1 | 上；L2、R2、L3、R3、START 讀不到（PS4 .ino:768）。2026-10-30 起（方案 A，使用者定案）：模式 5 總和 S = ceil((10×complexXY + RY)×3.072)，R = G = S/3、B = S−2R → Pybricks 4.1.x `int(reflection())` = complexXY（不變）、`round(reflection()×10) % 10` = RY（1~9）；3.6.1／4.0.0 的 reflection() 照舊 = complexXY"
+        },
+        {
           "mode": 0,
           "hub": "edu",
           "byte": 6,
@@ -787,7 +792,8 @@
         {
           "mode": 7,
           "v": 2,
-          "note": "LX×1000+LY×100+RX×10+RY（各 1~9）"
+          "note": "LX×1000+LY×100+RX×10+RY（各 1~9）；個位數 RY 在 4.1.x 的 ambient() 讀不到，4.1.x 改從模式 5 reflection() 的小數位讀（見按鍵 buttons16）",
+          "ambientOnes": "舊版"
         },
         {
           "mode": 9,

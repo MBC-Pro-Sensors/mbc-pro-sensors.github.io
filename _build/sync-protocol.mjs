@@ -6,7 +6,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { HIDE_BIG } from './site-flags.mjs';
+import { HIDE_BIG, FLAGS } from './site-flags.mjs';
+const HOLD = FLAGS.holdCommands || [];
+const HOLD_ALL = FLAGS.holdSync || [];
 
 const BUILD = path.dirname(fileURLToPath(import.meta.url));
 export const PROTOCOL_SRC = 'D:\\AI_Agent_AI助理\\02_MBC產品開發\\85_共用資源\\MBC_LegoUART\\protocol';
@@ -68,12 +70,23 @@ const files = fs.readdirSync(SRC).filter((f) => {
 }).sort();
 let diff = 0;
 for (const f of files) {
+  if (HOLD_ALL.includes(f.replace(/\.json$/, ''))) continue;   // site-flags.json holdSync：整份先不同步
   let src = fs.readFileSync(path.join(SRC, f), 'utf8');
   // 先確認是合法 JSON，壞檔不複製
   try { JSON.parse(src); } catch (e) { console.error(`${f}：不是合法 JSON（${e.message}）`); process.exit(2); }
   src = render(src);
   const dst = path.join(PROTOCOL_DST, f);
   const cur = fs.existsSync(dst) ? fs.readFileSync(dst, 'utf8') : null;
+  // site-flags.json holdCommands：命令還沒上機的產品，讀值照常同步，命令／旗標／SPIKE 命令通道沿用網站目前的副本
+  if (HOLD.includes(f.replace(/\.json$/, '')) && cur) {
+    const d = JSON.parse(src), old = JSON.parse(cur);
+    for (const k of ['commands', 'flags', 'assumptions']) { if (k in old) d[k] = old[k]; else delete d[k]; }
+    // 網站還沒有的新讀值（多半跟新命令一起來，例如 PS4 配對狀態 0C）也先不加；已有的讀值照新說明更新
+    const had = new Set((old.values || []).map((v) => v.key));
+    if (d.values) d.values = d.values.filter((v) => had.has(v.key));
+    if (d.lego) { if (old.lego && 'spikeCmd' in old.lego) d.lego.spikeCmd = old.lego.spikeCmd; else delete d.lego.spikeCmd; }
+    src = JSON.stringify(d, null, 2) + '\n';
+  }
   if (cur === src) continue;
   diff++;
   if (CHECK) console.log(`未同步：protocol/${f}`);

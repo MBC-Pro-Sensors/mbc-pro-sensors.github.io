@@ -231,7 +231,7 @@
         "spike_app/examples/ex01_track_turn.py",
         "spike_app/examples/ex02_line_follow.py"
       ],
-      "size": 64679
+      "size": 64597
     },
     {
       "out": "/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext",

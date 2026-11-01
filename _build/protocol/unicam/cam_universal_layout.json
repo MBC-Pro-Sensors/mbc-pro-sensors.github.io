@@ -1,7 +1,7 @@
 {
  "_說明": "神攝手（韌體 v1）逐格對照（網站的單一來源）。複製自相機韌體資料夾 tests\\spec_layout.json（說明網頁第 40 版匯出，規格定案 2026-10-28）。不要手改：規格改了先在相機那邊重新匯出，再跑 node _build/gen-unicam.mjs --sync。",
  "source": "D:\\AI_Agent_AI助理\\02_MBC產品開發\\02_相機感應器\\06_通用版\\通用版v1\\tests\\spec_layout.json",
- "copied": "2026-10-28",
+ "copied": "2026-11-01",
  "entries": [
   {
    "mode": 1,
@@ -1847,7 +1847,7 @@
    "desc": "色數最多的一層：每色只給位置（和數量）。色數由上位機的容量決定，學生教了幾色就給幾色，放不下的就少給。",
    "host": "pyblk",
    "hostName": "Pybricks 積木",
-   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（40×30 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和；③：1 點原始 HSV。reflection() 超過 3199 變負數，照 Kito 範例＋6399 修正。",
+   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（8×6 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和÷10；③：1 點原始 HSV。reflection() 先取整數（Pybricks 4.1 起回小數），超過 3199 變負數，照 Kito 範例＋6399 修正。ambient() 一律「整數.小數第一位」（2026-10-30 方案 D：Pybricks 4.1 起只保留小數 1 位）。",
    "n": 2,
    "lab": "2 色",
    "eduf": "x100",
@@ -1882,13 +1882,13 @@
      "g": null,
      "p": "ambient()",
      "k": [
-      "k40:X2",
-      "k30:Y2"
+      "g8:X2",
+      "g6:Y2"
      ],
-     "f": "dot",
+     "f": "dot1",
      "t": null,
-     "lab": "色 2 X（40 格） . 色 2 Y（30 格，上＝小）",
-     "rng": "A.BB"
+     "lab": "色 2 X（8 格） . 色 2 Y（6 格，上＝小）",
+     "rng": "A.B（整數.小數第一位）"
     }
    ],
    "full": [
@@ -6449,7 +6449,7 @@
    "desc": "色數次多、位置比較準的一層。EV3 只用信標 8 格，不用換模式；Pybricks 函式庫、MATRIX 用像素。",
    "host": "pyblk",
    "hostName": "Pybricks 積木",
-   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（40×30 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和；③：1 點原始 HSV。reflection() 超過 3199 變負數，照 Kito 範例＋6399 修正。",
+   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（8×6 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和÷10；③：1 點原始 HSV。reflection() 先取整數（Pybricks 4.1 起回小數），超過 3199 變負數，照 Kito 範例＋6399 修正。ambient() 一律「整數.小數第一位」（2026-10-30 方案 D：Pybricks 4.1 起只保留小數 1 位）。",
    "n": 2,
    "lab": "2 色",
    "eduf": "x100",
@@ -6484,13 +6484,13 @@
      "g": null,
      "p": "ambient()",
      "k": [
-      "k40:X2",
-      "k30:Y2"
+      "g8:X2",
+      "g6:Y2"
      ],
-     "f": "dot",
+     "f": "dot1",
      "t": null,
-     "lab": "色 2 X（40 格） . 色 2 Y（30 格，上＝小）",
-     "rng": "A.BB"
+     "lab": "色 2 X（8 格） . 色 2 Y（6 格，上＝小）",
+     "rng": "A.B（整數.小數第一位）"
     }
    ],
    "full": [
@@ -11105,7 +11105,7 @@
    "desc": "4 種顏色的精確位置，再加面積和數量。例如場上紅黃綠藍 4 個方塊。",
    "host": "pyblk",
    "hostName": "Pybricks 積木",
-   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（40×30 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和；③：1 點原始 HSV。reflection() 超過 3199 變負數，照 Kito 範例＋6399 修正。",
+   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（8×6 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和÷10；③：1 點原始 HSV。reflection() 先取整數（Pybricks 4.1 起回小數），超過 3199 變負數，照 Kito 範例＋6399 修正。ambient() 一律「整數.小數第一位」（2026-10-30 方案 D：Pybricks 4.1 起只保留小數 1 位）。",
    "n": 2,
    "lab": "2 色 XY",
    "eduf": "b256",
@@ -11140,13 +11140,13 @@
      "g": null,
      "p": "ambient()",
      "k": [
-      "k40:X2",
-      "k30:Y2"
+      "g8:X2",
+      "g6:Y2"
      ],
-     "f": "dot",
+     "f": "dot1",
      "t": null,
-     "lab": "色 2 X（40 格） . 色 2 Y（30 格，上＝小）",
-     "rng": "A.BB"
+     "lab": "色 2 X（8 格） . 色 2 Y（6 格，上＝小）",
+     "rng": "A.B（整數.小數第一位）"
     }
    ],
    "full": [
@@ -15827,7 +15827,7 @@
    "desc": "色數最少、每色資料最多：位置、寬高、面積、塊數；寬高可以估距離。",
    "host": "pyblk",
    "hostName": "Pybricks 積木",
-   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（40×30 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和；③：1 點原始 HSV。reflection() 超過 3199 變負數，照 Kito 範例＋6399 修正。",
+   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（8×6 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和÷10；③：1 點原始 HSV。reflection() 先取整數（Pybricks 4.1 起回小數），超過 3199 變負數，照 Kito 範例＋6399 修正。ambient() 一律「整數.小數第一位」（2026-10-30 方案 D：Pybricks 4.1 起只保留小數 1 位）。",
    "n": 1,
    "lab": "1 色 XYWH",
    "eduf": "b256",
@@ -15862,13 +15862,13 @@
      "g": null,
      "p": "ambient()",
      "k": [
-      "w40:W1",
-      "h30:H1"
+      "w8:W1",
+      "h6:H1"
      ],
-     "f": "dot",
+     "f": "dot1",
      "t": null,
-     "lab": "色 1 寬（40 格） . 色 1 高（30 格）",
-     "rng": "A.BB"
+     "lab": "w8:W1 . h6:H1",
+     "rng": "A.B（整數.小數第一位）"
     }
    ],
    "full": [
@@ -20597,7 +20597,7 @@
    "desc": "點數最多的一層：每個指定位置只給色相碼。位置在相機上設，或由 Pybricks／I2C 程式寫入。WRO 任務賽「這一格放的是什麼」用這個。",
    "host": "pyblk",
    "hostName": "Pybricks 積木",
-   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（40×30 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和；③：1 點原始 HSV。reflection() 超過 3199 變負數，照 Kito 範例＋6399 修正。",
+   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（8×6 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和÷10；③：1 點原始 HSV。reflection() 先取整數（Pybricks 4.1 起回小數），超過 3199 變負數，照 Kito 範例＋6399 修正。ambient() 一律「整數.小數第一位」（2026-10-30 方案 D：Pybricks 4.1 起只保留小數 1 位）。",
    "n": 2,
    "lab": "2 點色相",
    "eduf": "b256",
@@ -20633,12 +20633,12 @@
      "p": "ambient()",
      "k": [
       "pH2",
-      "c99:pS2"
+      "d10:pS2"
      ],
-     "f": "dot",
+     "f": "dot1",
      "t": null,
-     "lab": "S2 色相 . S2 飽和度",
-     "rng": "A.BB"
+     "lab": "S2 色相 . d10:pS2",
+     "rng": "A.B（整數.小數第一位）"
     }
    ],
    "full": [
@@ -24301,7 +24301,7 @@
    "desc": "每個位置給色相和鮮豔度，可以分出淺色和深色。",
    "host": "pyblk",
    "hostName": "Pybricks 積木",
-   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（40×30 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和；③：1 點原始 HSV。reflection() 超過 3199 變負數，照 Kito 範例＋6399 修正。",
+   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（8×6 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和÷10；③：1 點原始 HSV。reflection() 先取整數（Pybricks 4.1 起回小數），超過 3199 變負數，照 Kito 範例＋6399 修正。ambient() 一律「整數.小數第一位」（2026-10-30 方案 D：Pybricks 4.1 起只保留小數 1 位）。",
    "n": 2,
    "lab": "2 點色相＋飽和",
    "eduf": "b256",
@@ -24337,12 +24337,12 @@
      "p": "ambient()",
      "k": [
       "pH2",
-      "c99:pS2"
+      "d10:pS2"
      ],
-     "f": "dot",
+     "f": "dot1",
      "t": null,
-     "lab": "S2 色相 . S2 飽和度",
-     "rng": "A.BB"
+     "lab": "S2 色相 . d10:pS2",
+     "rng": "A.B（整數.小數第一位）"
     }
    ],
    "full": [
@@ -28131,7 +28131,7 @@
    "desc": "每個位置給色相（H）、鮮豔度（S）、亮度（V）。",
    "host": "pyblk",
    "hostName": "Pybricks 積木",
-   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（40×30 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和；③：1 點原始 HSV。reflection() 超過 3199 變負數，照 Kito 範例＋6399 修正。",
+   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（8×6 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和÷10；③：1 點原始 HSV。reflection() 先取整數（Pybricks 4.1 起回小數），超過 3199 變負數，照 Kito 範例＋6399 修正。ambient() 一律「整數.小數第一位」（2026-10-30 方案 D：Pybricks 4.1 起只保留小數 1 位）。",
    "n": 1,
    "lab": "1 點原始色相＋飽和＋明度",
    "eduf": "b256",
@@ -28164,12 +28164,12 @@
      "p": "ambient()",
      "k": [
       "t1",
-      "c99:v1"
+      "d10:v1"
      ],
-     "f": "dot",
+     "f": "dot1",
      "t": null,
-     "lab": "S1 飽和度 . S1 明度",
-     "rng": "A.BB"
+     "lab": "S1 飽和度 . d10:v1",
+     "rng": "A.B（整數.小數第一位）"
     }
    ],
    "full": [
@@ -31184,7 +31184,7 @@
    "desc": "畫面裡的色塊由左到右排，依序給每塊的色相碼。WRO 任務賽排列題直接用。紅色的色相碼是 0，所以要先看「總塊數」才知道前幾格有效。",
    "host": "pyblk",
    "hostName": "Pybricks 積木",
-   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（40×30 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和；③：1 點原始 HSV。reflection() 超過 3199 變負數，照 Kito 範例＋6399 修正。",
+   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（8×6 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和÷10；③：1 點原始 HSV。reflection() 先取整數（Pybricks 4.1 起回小數），超過 3199 變負數，照 Kito 範例＋6399 修正。ambient() 一律「整數.小數第一位」（2026-10-30 方案 D：Pybricks 4.1 起只保留小數 1 位）。",
    "n": 2,
    "lab": "2 塊色相碼",
    "eduf": "b256",
@@ -31217,12 +31217,12 @@
      "p": "ambient()",
      "k": [
       "o2",
-      "total"
+      "c9:total"
      ],
-     "f": "dot",
+     "f": "dot1",
      "t": null,
-     "lab": "左起第 2 塊色相 . 總塊數",
-     "rng": "A.BB"
+     "lab": "左起第 2 塊色相 . c9:total",
+     "rng": "A.B（整數.小數第一位）"
     }
    ],
    "full": [
@@ -32696,7 +32696,7 @@
    "desc": "斜看前方循線：近處偏移拿來 PID，遠處偏移和角度提前知道彎道，路口類型直接告訴你是十字、T 字還是左右轉；也回報穿過的彩色標記線（JBC 高手組）。黑線：白色地面上的黑線，門檻自動調。",
    "host": "pyblk",
    "hostName": "Pybricks 積木",
-   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（40×30 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和；③：1 點原始 HSV。reflection() 超過 3199 變負數，照 Kito 範例＋6399 修正。",
+   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（8×6 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和÷10；③：1 點原始 HSV。reflection() 先取整數（Pybricks 4.1 起回小數），超過 3199 變負數，照 Kito 範例＋6399 修正。ambient() 一律「整數.小數第一位」（2026-10-30 方案 D：Pybricks 4.1 起只保留小數 1 位）。",
    "n": null,
    "lab": null,
    "eduf": null,
@@ -32734,10 +32734,10 @@
       "far+100",
       "st"
      ],
-     "f": "dot",
+     "f": "dot1",
      "t": null,
      "lab": "遠處偏移（＋100） . 有線旗標（近 1＋中 2＋遠 4）",
-     "rng": "A.BB"
+     "rng": "A.B（整數.小數第一位）"
     }
    ],
    "full": [
@@ -34089,7 +34089,7 @@
    "desc": "斜看前方循線：近處偏移拿來 PID，遠處偏移和角度提前知道彎道，路口類型直接告訴你是十字、T 字還是左右轉；也回報穿過的彩色標記線（JBC 高手組）。白線：深色地面上的白線。",
    "host": "pyblk",
    "hostName": "Pybricks 積木",
-   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（40×30 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和；③：1 點原始 HSV。reflection() 超過 3199 變負數，照 Kito 範例＋6399 修正。",
+   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（8×6 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和÷10；③：1 點原始 HSV。reflection() 先取整數（Pybricks 4.1 起回小數），超過 3199 變負數，照 Kito 範例＋6399 修正。ambient() 一律「整數.小數第一位」（2026-10-30 方案 D：Pybricks 4.1 起只保留小數 1 位）。",
    "n": null,
    "lab": null,
    "eduf": null,
@@ -34127,10 +34127,10 @@
       "far+100",
       "st"
      ],
-     "f": "dot",
+     "f": "dot1",
      "t": null,
      "lab": "遠處偏移（＋100） . 有線旗標（近 1＋中 2＋遠 4）",
-     "rng": "A.BB"
+     "rng": "A.B（整數.小數第一位）"
     }
    ],
    "full": [
@@ -35482,7 +35482,7 @@
    "desc": "斜看前方循線：近處偏移拿來 PID，遠處偏移和角度提前知道彎道，路口類型直接告訴你是十字、T 字還是左右轉；也回報穿過的彩色標記線（JBC 高手組）。色線：對準線按 OK 取色。",
    "host": "pyblk",
    "hostName": "Pybricks 積木",
-   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（40×30 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和；③：1 點原始 HSV。reflection() 超過 3199 變負數，照 Kito 範例＋6399 修正。",
+   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（8×6 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和÷10；③：1 點原始 HSV。reflection() 先取整數（Pybricks 4.1 起回小數），超過 3199 變負數，照 Kito 範例＋6399 修正。ambient() 一律「整數.小數第一位」（2026-10-30 方案 D：Pybricks 4.1 起只保留小數 1 位）。",
    "n": null,
    "lab": null,
    "eduf": null,
@@ -35520,10 +35520,10 @@
       "far+100",
       "st"
      ],
-     "f": "dot",
+     "f": "dot1",
      "t": null,
      "lab": "遠處偏移（＋100） . 有線旗標（近 1＋中 2＋遠 4）",
-     "rng": "A.BB"
+     "rng": "A.B（整數.小數第一位）"
     }
    ],
    "full": [
@@ -37991,7 +37991,7 @@
    "desc": "物體多的一層：每個物體給物體代碼（色號×10＋形狀）和位置，再給物體數。物體依面積由大到小排；只看目標色 1～8。例如桌上散放的色紙圓、三角、方塊。",
    "host": "pyblk",
    "hostName": "Pybricks 積木",
-   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（40×30 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和；③：1 點原始 HSV。reflection() 超過 3199 變負數，照 Kito 範例＋6399 修正。",
+   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（8×6 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和÷10；③：1 點原始 HSV。reflection() 先取整數（Pybricks 4.1 起回小數），超過 3199 變負數，照 Kito 範例＋6399 修正。ambient() 一律「整數.小數第一位」（2026-10-30 方案 D：Pybricks 4.1 起只保留小數 1 位）。",
    "n": 1,
    "lab": "1 個物體",
    "eduf": "x100",
@@ -38027,12 +38027,12 @@
      "p": "ambient()",
      "k": [
       "O1",
-      "on"
+      "c9:on"
      ],
-     "f": "dot",
+     "f": "dot1",
      "t": null,
-     "lab": "物體 1 代碼（色號×10＋形狀） . 物體數",
-     "rng": "A.BB"
+     "lab": "物體 1 代碼（色號×10＋形狀） . c9:on",
+     "rng": "A.B（整數.小數第一位）"
     }
    ],
    "full": [
@@ -42157,7 +42157,7 @@
    "desc": "物體少、每個資料多的一層：位置、寬高、面積、角度（最小外接矩形長邊），I2C 再給頂點數與追蹤編號（同一個物體跨幀不變）。",
    "host": "pyblk",
    "hostName": "Pybricks 積木",
-   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（40×30 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和；③：1 點原始 HSV。reflection() 超過 3199 變負數，照 Kito 範例＋6399 修正。",
+   "note": "不載入 MBC 函式庫、只用 Pybricks 內建顏色感應器積木（模式 5 reflection()、模式 7 ambient()）。顏色追蹤跟 Kito 版一樣：reflection()＝色 1 的 X×100＋Y、ambient()＝色 2 的 X.Y（8×6 格）。座標取色 ①②：reflection()＝S1 色相×10＋飽和÷10、ambient()＝S2 色相.飽和÷10；③：1 點原始 HSV。reflection() 先取整數（Pybricks 4.1 起回小數），超過 3199 變負數，照 Kito 範例＋6399 修正。ambient() 一律「整數.小數第一位」（2026-10-30 方案 D：Pybricks 4.1 起只保留小數 1 位）。",
    "n": 1,
    "lab": "1 個物體＋面積",
    "eduf": "b256",
@@ -42193,12 +42193,12 @@
      "p": "ambient()",
      "k": [
       "O1",
-      "A1"
+      "d10:A1"
      ],
-     "f": "dot",
+     "f": "dot1",
      "t": null,
-     "lab": "物體 1 代碼（色號×10＋形狀） . 物體 1 面積（佔畫面 %）",
-     "rng": "A.BB"
+     "lab": "物體 1 代碼（色號×10＋形狀） . d10:A1",
+     "rng": "A.B（整數.小數第一位）"
     }
    ],
    "full": [
