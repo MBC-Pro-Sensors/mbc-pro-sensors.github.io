@@ -46,6 +46,11 @@ In the official EV3 software, use the standard gyro block; each mode maps to:
 > [!NOTE]
 > In **EV3 Classroom** the Angle and Rate blocks behave as in the table above ("Rate" returns the fused heading, not degrees per second). In **Pybricks (EV3)**, `GyroSensor.angle()` returns the single-axis gyro heading and `speed()` returns the magnetometer heading (relative, not north-referenced); `reset_angle(0)` works normally.
 
+> [!TIP]
+> **Tested on the stock EV3 firmware (2026-11-02):** detected as the LEGO gyro sensor, the stock gyro reset block works, all 7 modes read correctly, and 300 mode switches plus continuous reading never dropped the connection. **ev3dev:** supported.
+>
+> **Push the plug all the way in, in one go.** If the EV3 detects the wrong device (NXT I2C or Energy Meter), unplug it and plug it back in.
+
 ## 🧭 Compass Mode (alternative firmware on the same board)
 
 The same IMU board can also be shipped with a **magnetometer-only "compass" firmware**: the EV3 gyro block's "angle" then returns the **magnetic bearing 0-359** (absolute, north-referenced, not relative to power-on), and "rate" is always 0. Use it when you only need "which way am I facing" (maze backtracking, field orientation) and do not want to reset.
@@ -57,7 +62,7 @@ The same IMU board can also be shipped with a **magnetometer-only "compass" firm
 
 | Platform | How |
 | :--- | :--- |
-| LEGO MINDSTORMS EV3 | EV3 official software (standard gyro blocks) |
+| LEGO MINDSTORMS EV3 | EV3 official software (standard gyro blocks, tested on the stock firmware); ev3dev supported |
 | LEGO SPIKE Prime / Robot Inventor | Dedicated edition |
 | Arduino / ESP32 / Raspberry Pi | Universal I2C (address `0x6A`) |
 | MATRIX Mini R4 | I2C |

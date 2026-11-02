@@ -9,7 +9,10 @@ Using the IMU 9-Axis Gyro with MINDSTORMS EV3: check the edition and the wiring,
 
 ## Which edition
 
-Get the **EV3 edition** (RJ12 plug) and plug it into sensor port 1~4. **Power the EV3 on first, then plug the sensor in**; replug if the numbers freeze.
+Get the **EV3 edition** (RJ12 plug) and plug it into sensor port 1~4. **Power the EV3 on first, then plug the sensor in**, **pushing the plug all the way in, in one go**. If the EV3 detects the wrong device (NXT I2C or Energy Meter) or the numbers freeze, unplug it and plug it back in.
+
+> [!TIP]
+> **Tested on the stock EV3 firmware (2026-11-02):** detected as the LEGO gyro sensor, the stock gyro reset block works, all 7 modes read correctly, and 300 mode switches plus continuous reading never dropped the connection. **ev3dev:** supported.
 
 ## Wiring
 

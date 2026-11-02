@@ -293,6 +293,11 @@
   ],
   "legacyProduct": ["reference"],
   "overrides": {
+    "imu": {
+      "edition": {
+        "ev3": { "zh": "買 **EV3 版**（RJ12 接頭），插 EV3 的 1~4 號感應器孔。**EV3 先開機再插感應器**，**插頭一次插到底**；EV3 認錯（顯示成 NXT I2C／能量表）或數字不動時，拔掉重插。\n\n> [!TIP]\n> **原廠 EV3 韌體實測通過（2026-11-02）**：認成原廠陀螺儀、原廠歸零積木可用、7 個模式讀值正確、切模式 300 次與連續讀不斷線。**ev3dev**：支援。", "en": "Get the **EV3 edition** (RJ12 plug) and plug it into sensor port 1~4. **Power the EV3 on first, then plug the sensor in**, **pushing the plug all the way in, in one go**. If the EV3 detects the wrong device (NXT I2C or Energy Meter) or the numbers freeze, unplug it and plug it back in.\n\n> [!TIP]\n> **Tested on the stock EV3 firmware (2026-11-02):** detected as the LEGO gyro sensor, the stock gyro reset block works, all 7 modes read correctly, and 300 mode switches plus continuous reading never dropped the connection. **ev3dev:** supported." }
+      }
+    },
     "tof8": {
       "edition": {
         "microbit": { "zh": "買 **通用 I2C 版**，接 micro:bit 擴充板的 I2C 孔（SDA = P20、SCL = P19），出廠位址 `{{addr}}`。**一定要外接 5 V 供電**（8 顆雷射同時量測，電流超過 micro:bit 3V 腳能給的），不能吃 micro:bit 的 3V 腳；外部電源的 GND 要和 micro:bit 共地。", "en": "Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `{{addr}}`. It **must use an external 5 V supply** (8 lasers measure at once, more current than the micro:bit 3V pin can supply), not the micro:bit 3V pin; share the supply GND with the micro:bit." }
