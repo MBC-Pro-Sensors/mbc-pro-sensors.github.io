@@ -402,7 +402,7 @@ Mode number 11.
 | Raw red | Color 2 X×10 + Y (8×6 grid, small at top) ×100 + color 3 X×10 + Y (8×6 grid, small at top) | Split ÷100 |
 | Raw green | Color 4 X×10 + Y (8×6 grid, small at top) ×100 + color 5 X×10 + Y (8×6 grid, small at top) | Split ÷100 |
 | Raw blue | Color 6 X×10 + Y (8×6 grid, small at top) ×100 + color 7 X×10 + Y (8×6 grid, small at top) | Split ÷100 |
-| **App Python device.data(): bytes 8~15** | | |
+| **App Python device.data(): bytes 8~15 (bytes 14~15 not readable)** | | |
 | Byte 8 | Color 8 X×10 + Y (8×6 grid, small at top) | 0, 11~86 |
 | Byte 9 | Color 9 X×10 + Y (8×6 grid, small at top) | 0, 11~86 |
 | Byte 10 | Color 10 X×10 + Y (8×6 grid, small at top) | 0, 11~86 |
@@ -430,7 +430,7 @@ Mode number 12.
 | Raw red | Color 2 X×10 + Y (8×6 grid, small at top) ×100 + color 3 X×10 + Y (8×6 grid, small at top) | Split ÷100 |
 | Raw green | Color 4 X×10 + Y (8×6 grid, small at top) ×100 + color 5 X×10 + Y (8×6 grid, small at top) | Split ÷100 |
 | Raw blue | Color 6 X×10 + Y (8×6 grid, small at top) ×100 + color 7 X×10 + Y (8×6 grid, small at top) | Split ÷100 |
-| **App Python device.data(): bytes 8~15** | | |
+| **App Python device.data(): bytes 8~15 (bytes 14~15 not readable)** | | |
 | Byte 8 | Color 1 count | 0~15 |
 | Byte 9 | Color 2 count | 0~15 |
 | Byte 10 | Color 3 count | 0~15 |
@@ -458,7 +458,7 @@ Mode number 13.
 | Raw red | Color 2 X (16 cells) + color 2 Y (12 cells, small at top)×256 | Mod 256, ÷256 |
 | Raw green | Color 3 X (16 cells) + color 3 Y (12 cells, small at top)×256 | Mod 256, ÷256 |
 | Raw blue | Color 4 X (16 cells) + color 4 Y (12 cells, small at top)×256 | Mod 256, ÷256 |
-| **App Python device.data(): bytes 8~15** | | |
+| **App Python device.data(): bytes 8~15 (bytes 14~15 not readable)** | | |
 | Byte 8 | Color 1 count | 0~15 |
 | Byte 9 | Color 2 count | 0~15 |
 | Byte 10 | Color 3 count | 0~15 |
@@ -487,7 +487,7 @@ Mode number 14.
 | Raw red | Color 2 X (16 cells) + color 2 Y (12 cells, small at top)×256 | Mod 256, ÷256 |
 | Raw green | Color 1 width (16 cells) + color 1 height (12 cells)×256 | Mod 256, ÷256 |
 | Raw blue | Color 2 width (16 cells) + color 2 height (12 cells)×256 | Mod 256, ÷256 |
-| **App Python device.data(): bytes 8~15** | | |
+| **App Python device.data(): bytes 8~15 (bytes 14~15 not readable)** | | |
 | Byte 8 | Color 1 count | 0~15 |
 | Byte 9 | Color 2 count | 0~15 |
 | Byte 10 | Color 1 area (% of frame) | 0, 1~100 % |
@@ -512,7 +512,7 @@ Mode number 21.
 | Raw red | S1 hue + S2 hue×256 | Mod 256, ÷256 |
 | Raw green | S3 hue + S4 hue×256 | Mod 256, ÷256 |
 | Raw blue | S5 hue + S6 hue×256 | Mod 256, ÷256 |
-| **App Python device.data(): bytes 8~15** | | |
+| **App Python device.data(): bytes 8~15 (bytes 14~15 not readable)** | | |
 | Byte 8 | S7 hue | 0~255 |
 | Byte 9 | S8 hue | 0~255 |
 | Byte 10 | S9 hue | 0~255 |
@@ -541,7 +541,7 @@ Mode number 22.
 | Raw red | S1 hue + S1 saturation×256 | Mod 256, ÷256 |
 | Raw green | S2 hue + S2 saturation×256 | Mod 256, ÷256 |
 | Raw blue | S3 hue + S3 saturation×256 | Mod 256, ÷256 |
-| **App Python device.data(): bytes 8~15** | | |
+| **App Python device.data(): bytes 8~15 (bytes 14~15 not readable)** | | |
 | Byte 8 | S4 hue | 0~255 |
 | Byte 9 | S5 hue | 0~255 |
 | Byte 10 | S5 saturation | 0~100 |
@@ -569,7 +569,7 @@ Mode number 23.
 | Raw red | S1 hue + S1 saturation×256 | Mod 256, ÷256 |
 | Raw green | S2 hue + S2 saturation×256 | Mod 256, ÷256 |
 | Raw blue | S3 hue + S3 saturation×256 | Mod 256, ÷256 |
-| **App Python device.data(): bytes 8~15** | | |
+| **App Python device.data(): bytes 8~15 (bytes 14~15 not readable)** | | |
 | Byte 8 | S2 value | 0~100 |
 | Byte 9 | S3 value | 0~100 |
 | Byte 10 | S4 hue | 0~255 |
@@ -595,7 +595,7 @@ Mode number 30.
 | Raw red | Hue of block 1 from the left + hue of block 2 from the left×256 | Mod 256, ÷256 |
 | Raw green | Hue of block 3 from the left + hue of block 4 from the left×256 | Mod 256, ÷256 |
 | Raw blue | Hue of block 5 from the left + hue of block 6 from the left×256 | Mod 256, ÷256 |
-| **App Python device.data(): bytes 8~15** | | |
+| **App Python device.data(): bytes 8~15 (bytes 14~15 not readable)** | | |
 | Byte 8 | Hue of block 7 from the left | 0~255 |
 | Byte 9 | Hue of block 8 from the left | 0~255 |
 | Byte 10 | Hue of block 9 from the left | 0~255 |
@@ -623,7 +623,7 @@ Mode number 41 / 42 / 43.
 | Raw red | Near offset (+100) | 0~200 |
 | Raw green | Far offset (+100) | 0~200 |
 | Raw blue | Line angle (+100) | 0~200 |
-| **App Python device.data(): bytes 8~15** | | |
+| **App Python device.data(): bytes 8~15 (bytes 14~15 not readable)** | | |
 | Byte 8 | Middle offset (+100) | 0~200 |
 | Byte 9 | Line-found flags (near 1 + middle 2 + far 4) | 0~7 |
 | Byte 10 | Junction distance % | 0~100 |
@@ -652,7 +652,7 @@ Mode number 51.
 | Raw red | Object 1 X×10 + Y (8×6 grid, small at top) | 0, 11~86 |
 | Raw green | Object 2 code (color × 10 + shape) ×100 + object 2 X×10 + Y (8×6 grid, small at top) | Split ÷100 |
 | Raw blue | Object 3 code (color × 10 + shape) ×100 + object 3 X×10 + Y (8×6 grid, small at top) | Split ÷100 |
-| **App Python device.data(): bytes 8~15** | | |
+| **App Python device.data(): bytes 8~15 (bytes 14~15 not readable)** | | |
 | Byte 8 | Object 4 code (color × 10 + shape) | 0, 10~89 |
 | Byte 9 | Object 4 X×10 + Y (8×6 grid, small at top) | 0, 11~86 |
 | Byte 10 | Object 5 code (color × 10 + shape) | 0, 10~89 |
@@ -681,7 +681,7 @@ Mode number 52.
 | Raw red | Object 1 X (px) + object 1 Y (px, small at top)×256 | Mod 256, ÷256 |
 | Raw green | Object 1 width (px) + object 1 height (px)×256 | Mod 256, ÷256 |
 | Raw blue | Object 2 code (color × 10 + shape) + object 2 area (% of frame)×256 | Mod 256, ÷256 |
-| **App Python device.data(): bytes 8~15** | | |
+| **App Python device.data(): bytes 8~15 (bytes 14~15 not readable)** | | |
 | Byte 8 | Object 1 angle | 0~179 |
 | Byte 9 | Object 2 X (px) | 0, 1~159 |
 | Byte 10 | Object 2 Y (px, small at top) | 0, 1~119 |

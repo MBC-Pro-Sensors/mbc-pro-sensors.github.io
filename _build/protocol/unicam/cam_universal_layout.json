@@ -1,7 +1,7 @@
 {
  "_說明": "神攝手（韌體 v1）逐格對照（網站的單一來源）。複製自相機韌體資料夾 tests\\spec_layout.json（說明網頁第 40 版匯出，規格定案 2026-10-28）。不要手改：規格改了先在相機那邊重新匯出，再跑 node _build/gen-unicam.mjs --sync。",
  "source": "D:\\AI_Agent_AI助理\\02_MBC產品開發\\02_相機感應器\\06_通用版\\通用版v1\\tests\\spec_layout.json",
- "copied": "2026-11-01",
+ "copied": "2026-11-02",
  "entries": [
   {
    "mode": 1,
@@ -650,7 +650,7 @@
    "desc": "色數最多的一層：每色只給位置（和數量）。色數由上位機的容量決定，學生教了幾色就給幾色，放不下的就少給。",
    "host": "edu",
    "hostName": "SPIKE App 教育版",
-   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到，留給 App Python（待上機 #77）。",
+   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到；App Python 的 device.data() 回 8 個值（byte 0、byte 1、之後 6 個 int16），byte 8～13 讀得到、14～15 讀不到（2026-11-01 上機）。官方 App 的「顏色」（積木、color()、儀表板）會把原始值 5 換成 6，5 和 6 分不出來（色 1 的 X 格、找到幾色、路口類型 5、物體數、總塊數）；Python 改讀 device.data(port)[0] 可以避開。",
    "n": 14,
    "lab": "14 色",
    "eduf": "x100",
@@ -718,7 +718,7 @@
      "rng": "÷100 拆開"
     },
     {
-     "g": "App Python device.data()：byte 8～15",
+     "g": "App Python device.data()：byte 8～15（14～15 讀不到）",
      "p": null,
      "f": null,
      "t": null
@@ -5252,7 +5252,7 @@
    "desc": "色數次多、位置比較準的一層。EV3 只用信標 8 格，不用換模式；Pybricks 函式庫、MATRIX 用像素。",
    "host": "edu",
    "hostName": "SPIKE App 教育版",
-   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到，留給 App Python（待上機 #77）。",
+   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到；App Python 的 device.data() 回 8 個值（byte 0、byte 1、之後 6 個 int16），byte 8～13 讀得到、14～15 讀不到（2026-11-01 上機）。官方 App 的「顏色」（積木、color()、儀表板）會把原始值 5 換成 6，5 和 6 分不出來（色 1 的 X 格、找到幾色、路口類型 5、物體數、總塊數）；Python 改讀 device.data(port)[0] 可以避開。",
    "n": 7,
    "lab": "7 色",
    "eduf": "x100",
@@ -5320,7 +5320,7 @@
      "rng": "÷100 拆開"
     },
     {
-     "g": "App Python device.data()：byte 8～15",
+     "g": "App Python device.data()：byte 8～15（14～15 讀不到）",
      "p": null,
      "f": null,
      "t": null
@@ -9899,7 +9899,7 @@
    "desc": "4 種顏色的精確位置，再加面積和數量。例如場上紅黃綠藍 4 個方塊。",
    "host": "edu",
    "hostName": "SPIKE App 教育版",
-   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到，留給 App Python（待上機 #77）。",
+   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到；App Python 的 device.data() 回 8 個值（byte 0、byte 1、之後 6 個 int16），byte 8～13 讀得到、14～15 讀不到（2026-11-01 上機）。官方 App 的「顏色」（積木、color()、儀表板）會把原始值 5 換成 6，5 和 6 分不出來（色 1 的 X 格、找到幾色、路口類型 5、物體數、總塊數）；Python 改讀 device.data(port)[0] 可以避開。",
    "n": 4,
    "lab": "4 色 XY＋面積",
    "eduf": "b256",
@@ -9967,7 +9967,7 @@
      "rng": "餘數、÷256"
     },
     {
-     "g": "App Python device.data()：byte 8～15",
+     "g": "App Python device.data()：byte 8～15（14～15 讀不到）",
      "p": null,
      "f": null,
      "t": null
@@ -14657,7 +14657,7 @@
    "desc": "色數最少、每色資料最多：位置、寬高、面積、塊數；寬高可以估距離。",
    "host": "edu",
    "hostName": "SPIKE App 教育版",
-   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到，留給 App Python（待上機 #77）。",
+   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到；App Python 的 device.data() 回 8 個值（byte 0、byte 1、之後 6 個 int16），byte 8～13 讀得到、14～15 讀不到（2026-11-01 上機）。官方 App 的「顏色」（積木、color()、儀表板）會把原始值 5 換成 6，5 和 6 分不出來（色 1 的 X 格、找到幾色、路口類型 5、物體數、總塊數）；Python 改讀 device.data(port)[0] 可以避開。",
    "n": 2,
    "lab": "2 色 XYWH",
    "eduf": "b256",
@@ -14725,7 +14725,7 @@
      "rng": "餘數、÷256"
     },
     {
-     "g": "App Python device.data()：byte 8～15",
+     "g": "App Python device.data()：byte 8～15（14～15 讀不到）",
      "p": null,
      "f": null,
      "t": null
@@ -19570,7 +19570,7 @@
    "desc": "點數最多的一層：每個指定位置只給色相碼。位置在相機上設，或由 Pybricks／I2C 程式寫入。WRO 任務賽「這一格放的是什麼」用這個。",
    "host": "edu",
    "hostName": "SPIKE App 教育版",
-   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到，留給 App Python（待上機 #77）。",
+   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到；App Python 的 device.data() 回 8 個值（byte 0、byte 1、之後 6 個 int16），byte 8～13 讀得到、14～15 讀不到（2026-11-01 上機）。官方 App 的「顏色」（積木、color()、儀表板）會把原始值 5 換成 6，5 和 6 分不出來（色 1 的 X 格、找到幾色、路口類型 5、物體數、總塊數）；Python 改讀 device.data(port)[0] 可以避開。",
    "n": 14,
    "lab": "14 點色相",
    "eduf": "b256",
@@ -19638,7 +19638,7 @@
      "rng": "餘數、÷256"
     },
     {
-     "g": "App Python device.data()：byte 8～15",
+     "g": "App Python device.data()：byte 8～15（14～15 讀不到）",
      "p": null,
      "f": null,
      "t": null
@@ -23283,7 +23283,7 @@
    "desc": "每個位置給色相和鮮豔度，可以分出淺色和深色。",
    "host": "edu",
    "hostName": "SPIKE App 教育版",
-   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到，留給 App Python（待上機 #77）。",
+   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到；App Python 的 device.data() 回 8 個值（byte 0、byte 1、之後 6 個 int16），byte 8～13 讀得到、14～15 讀不到（2026-11-01 上機）。官方 App 的「顏色」（積木、color()、儀表板）會把原始值 5 換成 6，5 和 6 分不出來（色 1 的 X 格、找到幾色、路口類型 5、物體數、總塊數）；Python 改讀 device.data(port)[0] 可以避開。",
    "n": 7,
    "lab": "7 點色相＋飽和",
    "eduf": "b256",
@@ -23351,7 +23351,7 @@
      "rng": "餘數、÷256"
     },
     {
-     "g": "App Python device.data()：byte 8～15",
+     "g": "App Python device.data()：byte 8～15（14～15 讀不到）",
      "p": null,
      "f": null,
      "t": null
@@ -27131,7 +27131,7 @@
    "desc": "每個位置給色相（H）、鮮豔度（S）、亮度（V）。",
    "host": "edu",
    "hostName": "SPIKE App 教育版",
-   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到，留給 App Python（待上機 #77）。",
+   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到；App Python 的 device.data() 回 8 個值（byte 0、byte 1、之後 6 個 int16），byte 8～13 讀得到、14～15 讀不到（2026-11-01 上機）。官方 App 的「顏色」（積木、color()、儀表板）會把原始值 5 換成 6，5 和 6 分不出來（色 1 的 X 格、找到幾色、路口類型 5、物體數、總塊數）；Python 改讀 device.data(port)[0] 可以避開。",
    "n": 4,
    "lab": "4 點色相＋飽和＋明度",
    "eduf": "b256",
@@ -27199,7 +27199,7 @@
      "rng": "餘數、÷256"
     },
     {
-     "g": "App Python device.data()：byte 8～15",
+     "g": "App Python device.data()：byte 8～15（14～15 讀不到）",
      "p": null,
      "f": null,
      "t": null
@@ -30776,7 +30776,7 @@
    "desc": "畫面裡的色塊由左到右排，依序給每塊的色相碼。WRO 任務賽排列題直接用。紅色的色相碼是 0，所以要先看「總塊數」才知道前幾格有效。",
    "host": "edu",
    "hostName": "SPIKE App 教育版",
-   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到，留給 App Python（待上機 #77）。",
+   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到；App Python 的 device.data() 回 8 個值（byte 0、byte 1、之後 6 個 int16），byte 8～13 讀得到、14～15 讀不到（2026-11-01 上機）。官方 App 的「顏色」（積木、color()、儀表板）會把原始值 5 換成 6，5 和 6 分不出來（色 1 的 X 格、找到幾色、路口類型 5、物體數、總塊數）；Python 改讀 device.data(port)[0] 可以避開。",
    "n": 13,
    "lab": "13 塊色相碼",
    "eduf": "b256",
@@ -30844,7 +30844,7 @@
      "rng": "餘數、÷256"
     },
     {
-     "g": "App Python device.data()：byte 8～15",
+     "g": "App Python device.data()：byte 8～15（14～15 讀不到）",
      "p": null,
      "f": null,
      "t": null
@@ -32328,7 +32328,7 @@
    "desc": "斜看前方循線：近處偏移拿來 PID，遠處偏移和角度提前知道彎道，路口類型直接告訴你是十字、T 字還是左右轉；也回報穿過的彩色標記線（JBC 高手組）。黑線：白色地面上的黑線，門檻自動調。",
    "host": "edu",
    "hostName": "SPIKE App 教育版",
-   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到，留給 App Python（待上機 #77）。",
+   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到；App Python 的 device.data() 回 8 個值（byte 0、byte 1、之後 6 個 int16），byte 8～13 讀得到、14～15 讀不到（2026-11-01 上機）。官方 App 的「顏色」（積木、color()、儀表板）會把原始值 5 換成 6，5 和 6 分不出來（色 1 的 X 格、找到幾色、路口類型 5、物體數、總塊數）；Python 改讀 device.data(port)[0] 可以避開。",
    "n": null,
    "lab": null,
    "eduf": null,
@@ -32387,7 +32387,7 @@
      "rng": "0～200"
     },
     {
-     "g": "App Python device.data()：byte 8～15",
+     "g": "App Python device.data()：byte 8～15（14～15 讀不到）",
      "p": null,
      "f": null,
      "t": null
@@ -33721,7 +33721,7 @@
    "desc": "斜看前方循線：近處偏移拿來 PID，遠處偏移和角度提前知道彎道，路口類型直接告訴你是十字、T 字還是左右轉；也回報穿過的彩色標記線（JBC 高手組）。白線：深色地面上的白線。",
    "host": "edu",
    "hostName": "SPIKE App 教育版",
-   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到，留給 App Python（待上機 #77）。",
+   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到；App Python 的 device.data() 回 8 個值（byte 0、byte 1、之後 6 個 int16），byte 8～13 讀得到、14～15 讀不到（2026-11-01 上機）。官方 App 的「顏色」（積木、color()、儀表板）會把原始值 5 換成 6，5 和 6 分不出來（色 1 的 X 格、找到幾色、路口類型 5、物體數、總塊數）；Python 改讀 device.data(port)[0] 可以避開。",
    "n": null,
    "lab": null,
    "eduf": null,
@@ -33780,7 +33780,7 @@
      "rng": "0～200"
     },
     {
-     "g": "App Python device.data()：byte 8～15",
+     "g": "App Python device.data()：byte 8～15（14～15 讀不到）",
      "p": null,
      "f": null,
      "t": null
@@ -35114,7 +35114,7 @@
    "desc": "斜看前方循線：近處偏移拿來 PID，遠處偏移和角度提前知道彎道，路口類型直接告訴你是十字、T 字還是左右轉；也回報穿過的彩色標記線（JBC 高手組）。色線：對準線按 OK 取色。",
    "host": "edu",
    "hostName": "SPIKE App 教育版",
-   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到，留給 App Python（待上機 #77）。",
+   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到；App Python 的 device.data() 回 8 個值（byte 0、byte 1、之後 6 個 int16），byte 8～13 讀得到、14～15 讀不到（2026-11-01 上機）。官方 App 的「顏色」（積木、color()、儀表板）會把原始值 5 換成 6，5 和 6 分不出來（色 1 的 X 格、找到幾色、路口類型 5、物體數、總塊數）；Python 改讀 device.data(port)[0] 可以避開。",
    "n": null,
    "lab": null,
    "eduf": null,
@@ -35173,7 +35173,7 @@
      "rng": "0～200"
     },
     {
-     "g": "App Python device.data()：byte 8～15",
+     "g": "App Python device.data()：byte 8～15（14～15 讀不到）",
      "p": null,
      "f": null,
      "t": null
@@ -36877,7 +36877,7 @@
    "desc": "物體多的一層：每個物體給物體代碼（色號×10＋形狀）和位置，再給物體數。物體依面積由大到小排；只看目標色 1～8。例如桌上散放的色紙圓、三角、方塊。",
    "host": "edu",
    "hostName": "SPIKE App 教育版",
-   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到，留給 App Python（待上機 #77）。",
+   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到；App Python 的 device.data() 回 8 個值（byte 0、byte 1、之後 6 個 int16），byte 8～13 讀得到、14～15 讀不到（2026-11-01 上機）。官方 App 的「顏色」（積木、color()、儀表板）會把原始值 5 換成 6，5 和 6 分不出來（色 1 的 X 格、找到幾色、路口類型 5、物體數、總塊數）；Python 改讀 device.data(port)[0] 可以避開。",
    "n": 7,
    "lab": "7 個物體",
    "eduf": "x100",
@@ -36942,7 +36942,7 @@
      "rng": "÷100 拆開"
     },
     {
-     "g": "App Python device.data()：byte 8～15",
+     "g": "App Python device.data()：byte 8～15（14～15 讀不到）",
      "p": null,
      "f": null,
      "t": null
@@ -41040,7 +41040,7 @@
    "desc": "物體少、每個資料多的一層：位置、寬高、面積、角度（最小外接矩形長邊），I2C 再給頂點數與追蹤編號（同一個物體跨幀不變）。",
    "host": "edu",
    "hostName": "SPIKE App 教育版",
-   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到，留給 App Python（待上機 #77）。",
+   "note": "SPIKE 3 App（黃色主機），偽裝顏色感應器 type 61，模式 0 組合封包 16 B：顏色、反射光各 1 byte，原始紅／綠／藍各 int16。顏色追蹤 ③④ 照 Kito（16×12 格、X＋Y×256：取餘數、÷256）；①② 多色層用 8×6 格、一格兩色（X×10＋Y 再 ×100 合併）。Y 上＝小。byte 8～15 積木讀不到；App Python 的 device.data() 回 8 個值（byte 0、byte 1、之後 6 個 int16），byte 8～13 讀得到、14～15 讀不到（2026-11-01 上機）。官方 App 的「顏色」（積木、color()、儀表板）會把原始值 5 換成 6，5 和 6 分不出來（色 1 的 X 格、找到幾色、路口類型 5、物體數、總塊數）；Python 改讀 device.data(port)[0] 可以避開。",
    "n": 2,
    "lab": "2 個物體＋大小、面積、角度",
    "eduf": "b256",
@@ -41108,7 +41108,7 @@
      "rng": "餘數、÷256"
     },
     {
-     "g": "App Python device.data()：byte 8～15",
+     "g": "App Python device.data()：byte 8～15（14～15 讀不到）",
      "p": null,
      "f": null,
      "t": null

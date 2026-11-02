@@ -138,6 +138,7 @@ const EN_RULES = [
   [/(\d+) 個物體 色號、形狀、XY/g, '$1 objects: color, shape, XY'], [/^1 個物體$/g, '1 object'], [/(\d+) 個物體/g, '$1 objects'],
   [/物體數/g, 'object count'], [/物體 (\d+)/g, 'object $1'],
   [/SPIKE read\(6\)：要數量時才讀（換模式多等 30 ms；模式 8 是裝置 ID）/g, 'SPIKE read(6): only when you need counts (switching modes adds 30 ms; mode 8 is the device ID)'],
+  [/App Python device\.data\(\)：byte 8～15（14～15 讀不到）/g, 'App Python device.data(): bytes 8~15 (bytes 14~15 not readable)'],
   [/App Python device\.data\(\)：byte 8～15/g, 'App Python device.data(): bytes 8~15'],
   [/讀（值編號照順序）/g, 'read (value numbers in order)'],
   [/^寫$/g, 'write'],
