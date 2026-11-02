@@ -858,6 +858,26 @@ function productLd(key, lang, url, name, description) {
       priceCurrency: en ? 'USD' : 'TWD',
       availability: 'https://schema.org/' + (p.zh.badge.includes('即將推出') ? 'PreOrder' : 'InStock'),
       seller: { '@id': SITE + '/#organization' },
+      // 台灣零售（使用者 2026-11-02 定）：運費固定 150 元；到貨 30 天內故障換新，不良品運費我們付、其他退貨運費買家付。
+      // 海外運費每單報價、退貨照各國經銷商 → 英文頁不寫
+      ...(en ? {} : {
+        shippingDetails: {
+          '@type': 'OfferShippingDetails',
+          shippingRate: { '@type': 'MonetaryAmount', value: '150', currency: 'TWD' },
+          shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'TW' },
+        },
+        hasMerchantReturnPolicy: {
+          '@type': 'MerchantReturnPolicy',
+          applicableCountry: 'TW',
+          returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+          merchantReturnDays: 30,
+          returnMethod: 'https://schema.org/ReturnByMail',
+          refundType: 'https://schema.org/ExchangeRefund',
+          returnFees: 'https://schema.org/ReturnFeesCustomerResponsibility',
+          itemDefectReturnFees: 'https://schema.org/FreeReturn',
+          merchantReturnLink: SITE + '/where-to-buy.html#台灣',
+        },
+      }),
     },
   };
 }
