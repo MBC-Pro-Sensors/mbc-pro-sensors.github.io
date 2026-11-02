@@ -300,6 +300,10 @@ function renderSidebar(lang, currentUrl, g = null) {
 
 // ----------------------------------------------------------------- template
 const HASH_REDIRECT = `(function(){function go(){var h=location.hash;if(h.indexOf('#/')!==0)return;var p=h.slice(2),f='',q=p.search(/[?#]/);if(q>-1){var m=p.slice(q).match(/id=([^&]+)/);f=m?'#'+m[1]:'';p=p.slice(0,q);}p=p.replace(/\\.md$/,'');var u;if(p===''||p==='README')u='/';else if(p==='en'||p==='en/'||p==='en/README')u='/en/';else if(p.slice(-1)==='/')u='/'+p;else if(p==='index'||/\\/index$/.test(p))u='/'+p.slice(0,-5);else u='/'+p+'.html';location.replace(u+f);}go();addEventListener('hashchange',go);})();`;
+// 瀏覽器語言不是中文 → 中文頁導向英文版（micro:bit 基金會審核 2026-11-02：英文電腦要預設英文）。
+// 按過 🌐 切換就記住（mbc.lang＝zh 不導、en 一律導）；爬蟲／Lighthouse 不導，免得 Google 收錄不到中文頁。
+const langScript = (enUrl) => `(function(){var k='mbc.lang';document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('.tn-lang');if(a)try{localStorage.setItem(k,a.getAttribute('hreflang')==='en'?'en':'zh');}catch(x){}});` +
+  (enUrl ? `var s=null;try{s=localStorage.getItem(k);}catch(x){}if(s==='zh'||location.hash.indexOf('#/')===0||/bot|crawl|spider|slurp|lighthouse|inspectiontool|headless|preview/i.test(navigator.userAgent))return;if(s!=='en'){var l=navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||''];for(var i=0;i<l.length;i++)if(/^zh/i.test(l[i]))return;}location.replace('${enUrl}'+location.search+location.hash);` : '') + '})();';
 
 const LINE_URL = 'https://line.me/R/ti/p/@692vcvuk';
 // Overseas buyers rarely use LINE: English pages ask for a quote by email instead
@@ -895,6 +899,7 @@ function page({ lang, url, title, description, ogImage, alternates, jsonLd, extr
 <head>
   <meta charset="UTF-8">
   <script>${HASH_REDIRECT}</script>
+  <script>${langScript(lang === 'zh' ? (alternates.find((a) => a.hreflang === 'en') || {}).url : null)}</script>
   <title>${escAttr(title)}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <meta name="description" content="${escAttr(description)}">
