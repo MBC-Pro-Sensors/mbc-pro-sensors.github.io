@@ -55,7 +55,7 @@ Every value and command the Line Follower 16-ch reports to each host: what it me
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-mode 0 (edu) byte 1 −16 🔒; mode 0 (toy) byte 0 −16 🔒; mode 1 byte 0 −16; mode 5 v[0] 🔒; mode 9 v[4] lo −16 🔒. Note: Pybricks reflection() 編碼：X = (線位置+16)×100 + 線寬，a = X/25、b = (X−a×25+1)×10−1，3 個 int16 = a×256+b；主機 ×3200/32768 ≈ X（X ≥ 3200 時讀到負數，F16:905）
+mode 0 (edu) byte 1 −16 🔒; mode 0 (toy) byte 0 −16 🔒; mode 1 byte 0 −16; mode 5 v[0] 🔒; mode 9 v[4] lo −16 🔒. Note: Pybricks reflection() 編碼：X = (線位置+16)×100 + 線寬，共用核心 mbcReflFill8 送出：2026-11-01 以後的韌體 reflection() 剛好是整數（3.x、4.x 都是）；舊韌體（R=G=B=a×256+b）在 4.x 帶小數，先 int()；X ≥ 3200 時讀到負數 X−6399（F16:905）
 
 ```python
 from pybricks.iodevices import PUPDevice
@@ -166,7 +166,7 @@ let linePos = mbc.linePosition()   // line position：-16~+16
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-mode 0 (edu) byte 2 −100 🔒; mode 0 (toy) byte 2 −100 🔒; mode 3 byte 0 −100; mode 4 v[0] −100; mode 7 v[0] 🔒; mode 9 v[5] lo −100 🔒. Note: byte2 = 細位置+100（0~200）、byte3 = 0；App 原始紅讀成 int16; 細位置+100 經玩具版查表編碼成 byte2~3; Pybricks ambient()：4 個相同 int16 = (細位置+100)×100 + 線寬（0~20016），主機 ÷100 → 位置.線寬
+mode 0 (edu) byte 2 −100 🔒; mode 0 (toy) byte 2 −100 🔒; mode 3 byte 0 −100; mode 4 v[0] −100; mode 7 v[0] 🔒; mode 9 v[5] lo −100 🔒. Note: byte2 = 細位置+100（0~200）、byte3 = 0；App 原始紅讀成 int16; 細位置+100 經玩具版查表編碼成 byte2~3; 4 個 int16：第 1、2、4 格 = (細位置+100)×100 + 線寬（0~20016；Pybricks hsv(surface=False).h 讀第 1 格，原封不動）；第 3 格 = (細位置+100)×100 + min(線寬,9)×10（Pybricks ambient() 讀這格：4.1.2 先 ÷10 去尾再 ÷10、3.6.1／4.0.0 ÷100，都得到 細位置+100 . 線寬，線寬最多顯示 9）。2026-10-30 起第 3 格改這個編碼
 
 ```python
 from pybricks.iodevices import PUPDevice
@@ -932,16 +932,25 @@ Only Arduino I2C, mBlock and micro:bit can send commands; the SPIKE / EV3 ports 
 
 | Item | Detail |
 | :--- | :--- |
-| Action | follow a black line (default) |
+| Action | follow a black line (default); RAM only, back to the default after reset |
 | Parameters | none |
 | Busy flag | none (immediate) |
 
 **How to send it**
 
-<details class="plat plat-spike" data-host="spike">
+<details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-The SPIKE port carries no write commands: calibrate with the button on the sensor, change settings over Arduino I2C / mBlock.
+Pybricks + the MBC library only (not the official app or built-in ColorSensor blocks); needs sensor firmware from 2026-10 or later.
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE16
+
+line = MBC_LINE16(Port.A)
+line.cmd(0xE0)   # black line mode
+ok = line.wait_done()   # True = done; False = failed / rejected / timed out
+```
 
 </details>
 
@@ -952,7 +961,7 @@ The EV3 port carries no write commands: calibrate with the button on the sensor,
 
 </details>
 
-<details class="plat plat-arduino" data-host="arduino" open>
+<details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
 ```cpp
@@ -996,16 +1005,25 @@ mbc.lineSetColor(MbcLineColor.Black)   // black line mode
 
 | Item | Detail |
 | :--- | :--- |
-| Action | follow a white line (F3 b1 = 1) |
+| Action | follow a white line (F3 b1 = 1); RAM only, back to the default after reset |
 | Parameters | none |
 | Busy flag | none (immediate) |
 
 **How to send it**
 
-<details class="plat plat-spike" data-host="spike">
+<details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-The SPIKE port carries no write commands: calibrate with the button on the sensor, change settings over Arduino I2C / mBlock.
+Pybricks + the MBC library only (not the official app or built-in ColorSensor blocks); needs sensor firmware from 2026-10 or later.
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE16
+
+line = MBC_LINE16(Port.A)
+line.cmd(0xE1)   # white line mode
+ok = line.wait_done()   # True = done; False = failed / rejected / timed out
+```
 
 </details>
 
@@ -1016,7 +1034,7 @@ The EV3 port carries no write commands: calibrate with the button on the sensor,
 
 </details>
 
-<details class="plat plat-arduino" data-host="arduino" open>
+<details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
 ```cpp
@@ -1066,10 +1084,19 @@ mbc.lineSetColor(MbcLineColor.White)   // white line mode
 
 **How to send it**
 
-<details class="plat plat-spike" data-host="spike">
+<details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-The SPIKE port carries no write commands: calibrate with the button on the sensor, change settings over Arduino I2C / mBlock.
+Pybricks + the MBC library only (not the official app or built-in ColorSensor blocks); needs sensor firmware from 2026-10 or later.
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE16
+
+line = MBC_LINE16(Port.A)
+line.cmd(0xE2)   # calibrate black
+ok = line.wait_done()   # True = done; False = failed / rejected / timed out
+```
 
 </details>
 
@@ -1080,7 +1107,7 @@ The EV3 port carries no write commands: calibrate with the button on the sensor,
 
 </details>
 
-<details class="plat plat-arduino" data-host="arduino" open>
+<details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
 ```cpp
@@ -1131,10 +1158,19 @@ mbc.lineCalibrate(MbcLineCalib.Black)   // calibrate black
 
 **How to send it**
 
-<details class="plat plat-spike" data-host="spike">
+<details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-The SPIKE port carries no write commands: calibrate with the button on the sensor, change settings over Arduino I2C / mBlock.
+Pybricks + the MBC library only (not the official app or built-in ColorSensor blocks); needs sensor firmware from 2026-10 or later.
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE16
+
+line = MBC_LINE16(Port.A)
+line.cmd(0xE3)   # calibrate white
+ok = line.wait_done()   # True = done; False = failed / rejected / timed out
+```
 
 </details>
 
@@ -1145,7 +1181,7 @@ The EV3 port carries no write commands: calibrate with the button on the sensor,
 
 </details>
 
-<details class="plat plat-arduino" data-host="arduino" open>
+<details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
 ```cpp
@@ -1190,16 +1226,25 @@ mbc.lineCalibrate(MbcLineCalib.White)   // calibrate white
 
 | Item | Detail |
 | :--- | :--- |
-| Action | threshold 1~99 (RAM only, back to 50 after reboot) |
+| Action | threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2) |
 | Parameters | threshold `1~99`（1 byte） |
 | Busy flag | none (immediate) |
 
 **How to send it**
 
-<details class="plat plat-spike" data-host="spike">
+<details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-The SPIKE port carries no write commands: calibrate with the button on the sensor, change settings over Arduino I2C / mBlock.
+Pybricks + the MBC library only (not the official app or built-in ColorSensor blocks); needs sensor firmware from 2026-10 or later.
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE16
+
+line = MBC_LINE16(Port.A)
+line.cmd(0xE4, 50)   # set threshold（threshold 1~99）
+ok = line.wait_done()   # True = done; False = failed / rejected / timed out
+```
 
 </details>
 
@@ -1210,7 +1255,7 @@ The EV3 port carries no write commands: calibrate with the button on the sensor,
 
 </details>
 
-<details class="plat plat-arduino" data-host="arduino" open>
+<details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
 ```cpp
@@ -1260,10 +1305,19 @@ mbc.lineSetThreshold(50)   // set threshold
 
 **How to send it**
 
-<details class="plat plat-spike" data-host="spike">
+<details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-The SPIKE port carries no write commands: calibrate with the button on the sensor, change settings over Arduino I2C / mBlock.
+Pybricks + the MBC library only (not the official app or built-in ColorSensor blocks); needs sensor firmware from 2026-10 or later.
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE16
+
+line = MBC_LINE16(Port.A)
+line.cmd(0xE7)   # 5-second auto calibration
+ok = line.wait_done(8000)   # True = done; False = failed / rejected / timed out
+```
 
 </details>
 
@@ -1274,7 +1328,7 @@ The EV3 port carries no write commands: calibrate with the button on the sensor,
 
 </details>
 
-<details class="plat plat-arduino" data-host="arduino" open>
+<details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
 ```cpp
@@ -1313,6 +1367,66 @@ mbc.lineCalibrate(MbcLineCalib.Auto)   // 5-second auto calibration
 
 </section>
 
+<section id="ce9" class="ref-item ref-cmd">
+
+### `E9` mirror left/right <small>reverse</small>
+
+| Item | Detail |
+| :--- | :--- |
+| Action | [0 normal / 1 mirrored]: for a sensor mounted backwards — channel order and line position are mirrored; calibration stays per physical channel; RAM only, 0 after reset (not in legacy mBlock); on SPIKE an out-of-range value returns failed (state 2) |
+| Parameters | mirrored `0~1`（1 byte） |
+| Busy flag | none (immediate) |
+
+**How to send it**
+
+<details class="plat plat-spike" data-host="spike" open>
+<summary><span class="plat-dot"></span>SPIKE</summary>
+
+Pybricks + the MBC library only (not the official app or built-in ColorSensor blocks); needs sensor firmware from 2026-10 or later.
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE16
+
+line = MBC_LINE16(Port.A)
+line.cmd(0xE9, 1)   # mirror left/right（mirrored 0~1）
+ok = line.wait_done()   # True = done; False = failed / rejected / timed out
+```
+
+</details>
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+The EV3 port carries no write commands: calibrate with the button on the sensor, change settings over Arduino I2C / mBlock.
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino">
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+```cpp
+mbcWrite(0x16, 0xE9, 1);   // mirror left/right（mirrored 0~1）
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+Not available with the stock MATRIX 0x22 blocks.
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+No dedicated block; in JavaScript use `mbc.writeCmd(0x16, 0xE9, [params])`.
+
+</details>
+
+</section>
+
 <section id="flags" class="ref-item">
 
 ## Status flags F3
@@ -1326,6 +1440,7 @@ One status per bit of `F3`; read directly over I2C, mBlock, micro:bit.
 | b2 | calibrating (`calibrating`) | E2/E3/E7 in progress; new calibration commands are ignored |
 | b3 | line lost (`lost`) | segment count = 0 |
 | b4 | fork (`fork`) | segment count ≥ 2 |
+| b5 | mirrored (`reversed`) | E9 = 1 (sensor mounted backwards, left/right mirrored) |
 
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
@@ -1373,6 +1488,7 @@ bool whiteMode = st & (1 << 1);   // white line mode
 bool calibrating = st & (1 << 2);   // calibrating
 bool lost = st & (1 << 3);   // line lost
 bool fork = st & (1 << 4);   // fork
+bool reversed = st & (1 << 5);   // mirrored
 ```
 
 </details>

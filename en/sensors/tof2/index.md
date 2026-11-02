@@ -42,8 +42,8 @@ The Ranger 2-Way uses **laser time-of-flight (ToF)**: it measures at the speed o
 
 | Platform | How |
 | :--- | :--- |
-| LEGO SPIKE Prime / Robot Inventor | Official app, Pybricks (👉 [SPIKE beginner examples: official app / MBC blocks site / Pybricks, 5 each — in Chinese](/sensors/tof2/spike-examples.md)) |
-| LEGO MINDSTORMS EV3 | EV3 official software, Pybricks ([EV3 beginner examples](/en/sensors/tof2/ev3-examples.md)) |
+| LEGO SPIKE Prime / Robot Inventor | Official app, Pybricks (👉 [SPIKE beginner examples: official app / MBC blocks site / Pybricks, 5 each — in Chinese](/sensors/tof2/spike-examples.md)); tested on Pybricks 4.1.2 (2026-11-02) |
+| LEGO MINDSTORMS EV3 | EV3 official software, Pybricks ([EV3 beginner examples](/en/sensors/tof2/ev3-examples.md)); tested on the stock EV3 firmware and Pybricks v4 (2026-11-02) |
 | MakeBlock (mBot etc.) | Dedicated edition, [blocks & wiring](/en/makeblock.md) |
 | Arduino / ESP32 (Universal I2C edition, coming soon) | Address `0x29`, [Arduino Examples](/en/sensors/tof2/arduino-examples.md) |
 
@@ -73,12 +73,13 @@ The Ranger 2-Way uses **laser time-of-flight (ToF)**: it measures at the speed o
 
 ## 🔌 Hardware Wiring
 
-1. Plug into SPIKE (Port A~F) or EV3 (Port 1~4) with a standard connection cable.
+1. Plug into SPIKE (Port A~F) or EV3 (Port 1~4) with a standard connection cable, pushing the plug all the way in.
 2. After powering on, check that the sensor indicator LED is lit — you are ready to go.
+3. Mount the sensor at the front of the robot with the lasers facing forward. **Left and right are as seen from behind the sensor, looking the way it faces (left = J5, right = J3)**; facing the sensor, they are the other way round.
 
 ## 💡 How Direction Judgment Works
 
-The two laser points sit side by side. When an object leaves the sensing range:
+The two laser points sit side by side (left and right as seen from behind the sensor, looking the way it faces: left = J5, right = J3). When an object leaves the sensing range:
 - **Left laser loses the signal first** → the object left to the **right**
 - **Right laser loses the signal first** → the object left to the **left**
 

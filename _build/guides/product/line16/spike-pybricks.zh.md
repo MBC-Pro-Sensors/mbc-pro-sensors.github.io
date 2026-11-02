@@ -14,7 +14,7 @@
 
 ### 函式庫與範例下載
 
-主機要是 **Pybricks 韌體 v4.1**。zip 裡有 `MBC_sensors.py`、`MBC_line16_obj_Lib.py` 和 4 支範例：
+主機要是 **Pybricks 韌體 v4.1**（2026-10-29～11-01 在 Pybricks 4.1.2 實測通過：函式庫、內建 ColorSensor、Pybricks Code 積木、下命令範例都在主機上跑過）。zip 裡有 `MBC_sensors.py`、`MBC_line16_obj_Lib.py` 和 4 支範例：
 
 - [📥 打包下載（Pybricks 4.1）](/examples/line16/line16_pybricks_spike_v4.x.zip)
 
@@ -22,6 +22,9 @@
 
 > [!IMPORTANT]
 > 範例程式寫的是 `from MBC_line16_obj_Lib import MBC_LINE16`，所以要匯入 `MBC_line16_obj_Lib.py`（檔名不用改）。自己寫新程式改成 `from MBC_sensors import MBC_LINE16`，只匯入 `MBC_sensors.py`。函式庫要跟主程式放在**同一個專案列表**裡。
+
+> [!WARNING]
+> 2026-10-29 以前下載的 MBC 函式庫，在 Pybricks 4.1.2 一匯入就出現 `NameError: name 'property' isn't defined`（4.1.2 主機沒有 `property`）。請重新下載本頁的檔案（已修好，4.1.2 實測通過）。
 
 > [!NOTE]
 > Pybricks 3.6.1 版已不再更新，舊檔放在[下載專區](/downloads.md)的「舊版（不再更新）」。3.6.1 的內建讀法範例只適用 2026-10-30 以前的感應器韌體（新韌體用舊拆法，線寬會讀成 ×10）。
@@ -46,9 +49,13 @@
 
 > [!IMPORTANT]
 > **Pybricks 4.1 的拆法**（上面的範例已經照這樣寫）
-> - `reflection()`（模式 5）＝粗位置＋線寬。Pybricks 4.1 起會帶 1 位小數，**要先取整數再拆**：`r = int(line.reflection())`；16 路：讀到負數先 +6399，位置＝`r // 100 - 16`（−16～+16）、線寬＝`r % 100`。積木版沒有「取整數」積木：≥ 0 用「無條件捨去」、負數用「無條件進位」，結果跟 `int()` 一樣。
+> - `reflection()`（模式 5）＝粗位置＋線寬。**一律先用 `int()` 取整數再拆**：`r = int(line.reflection())`；16 路：讀到負數先 +6399（線位置 +16 時數字超過 3199，Pybricks 會顯示成負數），位置＝`r // 100 - 16`（−16～+16）、線寬＝`r % 100`。
+>   - **要用 int()（往 0 截斷），不能用 floor**：舊韌體帶小數時，負數那段用 floor 會少 1（實測 floor 拆成位置 15、線寬 99，`int()` 才是正確的 16、0）。
+>   - 2026-11-01 以後的感應器韌體（出貨版 v1.0-261101）送出的剛好是整數；更舊的韌體在 Pybricks 4.x 上會帶 1 位小數。留著 `int()`，新舊韌體都對。
+>   - 積木版沒有「取整數」積木：≥ 0 用「無條件捨去」、負數用「無條件進位」，結果跟 `int()` 一樣（上面的積木範例已經這樣包）。
 > - `ambient()`（模式 7）＝「細位置＋100 . 線寬」，線寬在小數第 1 位：細位置＝整數部分 − 100，線寬＝`round(line.ambient() * 10) % 10`（16 路最多顯示 9＝9 以上）。**要 2026-10-30 以後的感應器韌體**；舊韌體線寬會是 0（細位置照常）。舊韌體要線寬，改用反射光的線寬，或改裝 MBC 函式庫（讀模式 9，新舊韌體都讀得到全部的值）。
 > - 位置都是「加偏移量送出、讀了再減」，不會直接送負數。
+> - 方向：位置 −16～+16，線在左＝負、在右＝正（從車子後面往前看）。
 > - 進階（只有 Python）：`line.hsv(surface=False).h`＝(細位置＋100)×100＋線寬，可以拿到完整的線寬。
 
 ### 方式二：匯入專屬函式庫
@@ -78,6 +85,8 @@
 | [line16_cmd_calib_bw.py](/examples/line16/pybricks/For%20firmware%204.x/line16_cmd_calib_bw.py) | 黑白校準（E2 黑、E3 白）：整排放在黑色上按左鍵，再整排放在白紙上按左鍵（高度固定） | 黑色光值全 0；白紙光值（`ir_calibration()`，0～15）13 以上 |
 | [line16_cmd_calib_auto.py](/examples/line16/pybricks/For%20firmware%204.x/line16_cmd_calib_auto.py) | E7 5 秒自動校準：5 秒內把感應器在黑線和白底之間來回掃（高度固定、不要傾斜） | 狀態從「執行中」變「完成」；白紙光值 11 以上（校準品質看手掃的高度） |
 | [line16_cmd_reverse.py](/examples/line16/pybricks/For%20firmware%204.x/line16_cmd_reverse.py) | E9 左右反向，也示範送錯參數會回「失敗」 | 線位置正負號對調（例如 −15 → +15，再送 0 換回來）；送 5 回「失敗」 |
+
+- 校準時感應器要**固定高度**（裝在車上或墊積木，離紙約 5～10 mm），手掃也要平推、不要傾斜。手拿著校準，白紙光值會偏低。實測（2026-10-29）：靜置黑白校準（E3）白紙 13～15，門檻 ≥ 13；手掃 E7 白紙 11 以上就可以用。
 
 ### PD 循線示範（速度 50）
 

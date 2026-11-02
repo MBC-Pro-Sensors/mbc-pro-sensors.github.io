@@ -41,8 +41,8 @@
 
 | 平台 | 支援方式 |
 | :--- | :--- |
-| LEGO SPIKE Prime / Robot Inventor | 官方 App、Pybricks（👉 [SPIKE 新手範例：官方 App／MBC 積木網站／Pybricks 各 5 個](/sensors/tof2/spike-examples.md)） |
-| LEGO MINDSTORMS EV3 | EV3 官方軟體、Pybricks（[EV3 新手範例](/sensors/tof2/ev3-examples.md)） |
+| LEGO SPIKE Prime / Robot Inventor | 官方 App、Pybricks（👉 [SPIKE 新手範例：官方 App／MBC 積木網站／Pybricks 各 5 個](/sensors/tof2/spike-examples.md)）；Pybricks 4.1.2 實測通過（2026-11-02） |
+| LEGO MINDSTORMS EV3 | EV3 官方軟體、Pybricks（[EV3 新手範例](/sensors/tof2/ev3-examples.md)）；原廠 EV3 韌體、Pybricks v4 實測通過（2026-11-02） |
 | MakeBlock（mBot 等） | 專屬版本，[積木與接法](/makeblock.md) |
 | Arduino / ESP32（通用 I2C 版，即將推出） | 位址 `0x29`，[Arduino 範例](/sensors/tof2/arduino-examples.md) |
 
@@ -69,12 +69,13 @@
 
 ## 🔌 硬體接線
 
-1. 使用標準連接線插上 SPIKE（Port A~F）或 EV3（Port 1~4）
+1. 使用標準連接線插上 SPIKE（Port A~F）或 EV3（Port 1~4），插頭要一次插到底
 2. 通電後確認感應器指示燈正常亮起即完成
+3. 感應器裝在車頭、雷射朝前。**左右以感應器朝前、從背後看為準（左＝J5、右＝J3）**；面對感應器看會剛好相反
 
 ## 💡 方向判斷說明
 
-感應器的兩個雷射點並排排列。當物體離開感測範圍時：
+感應器的兩個雷射點並排排列（左右以感應器朝前、從背後看為準：左＝J5、右＝J3）。當物體離開感測範圍時：
 - **左側雷射先失去訊號** → 物體從**右側**離開
 - **右側雷射先失去訊號** → 物體從**左側**離開
 

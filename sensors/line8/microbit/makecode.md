@@ -228,7 +228,7 @@ let light = mbc.lineChannel(1)   // 第 1~8 路光值：0~100（N = 1~8）
 
 ### 切黑線 <small>blackLine</small>
 
-追黑線（預設）
+追黑線（預設）；存 RAM，重開機回預設
 
 <pre class="blocks">循行者 循 [黑 v] 線 :: #00A4E4</pre>
 
@@ -242,7 +242,7 @@ mbc.lineSetColor(MbcLineColor.Black)   // 切黑線
 
 ### 切白線 <small>whiteLine</small>
 
-追白線（F3 b1 = 1）
+追白線（F3 b1 = 1）；存 RAM，重開機回預設
 
 <pre class="blocks">循行者 循 [白 v] 線 :: #00A4E4</pre>
 
@@ -284,7 +284,7 @@ mbc.lineCalibrate(MbcLineCalib.White)   // 白色校準
 
 ### 設定門檻 <small>setThreshold</small>
 
-二值化門檻 1~99（RAM，重開機回預設 50）
+二值化門檻 1~99（RAM，重開機回預設 50）；SPIKE 參數超出範圍回失敗（狀態 2）
 
 <pre class="blocks">循行者 門檻設為 (50) :: #00A4E4</pre>
 
@@ -305,6 +305,16 @@ mbc.lineSetThreshold(50)   // 設定門檻
 ```typescript
 mbc.lineCalibrate(MbcLineCalib.Auto)   // 5 秒動態校準
 ```
+
+</section>
+
+<section id="ce9" class="ref-item ref-cmd">
+
+### 左右反向 <small>reverse</small>
+
+[0 正常／1 左右反向]：感應器反裝時用，通道順序與線位置左右對調；校準值照實體通道存，切換不用重校；存 RAM，重開機回 0（舊 mBlock 沒有）；SPIKE 參數超出範圍回失敗（狀態 2）
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.writeCmd(0x16, 0xE9, [參數])`。
 
 </section>
 

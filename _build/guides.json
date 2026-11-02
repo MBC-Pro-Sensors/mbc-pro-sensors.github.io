@@ -78,7 +78,7 @@
       },
       "faq": [
         { "q": { "zh": "EV3 顯示成紅外線感應器？", "en": "The EV3 shows an infrared sensor?" }, "a": { "zh": "正常：感應器模擬成樂高原廠感應器，用原廠積木就能讀。", "en": "Expected: the sensor emulates a LEGO sensor so the stock blocks can read it." } },
-        { "q": { "zh": "切換模式時卡一下？", "en": "A short freeze when switching modes?" }, "a": { "zh": "EV3 每次換模式要等約 0.5 秒。整趟任務盡量只用同一個模式的積木。", "en": "The EV3 needs about 0.5 s per mode change. Stick to one mode during a run." } }
+        { "q": { "zh": "切換模式時卡一下？", "en": "A short freeze when switching modes?" }, "a": { "zh": "EV3 每次換模式要等約 1 秒。整趟任務盡量只用同一個模式的積木。", "en": "The EV3 needs about 1 s per mode change. Stick to one mode during a run." } }
       ],
       "legacy": { "ev3-hub": "", "ev3-examples": "", "ev3-official": "ev3g", "ev3-classroom": "classroom", "ev3-clev3r": "clev3r", "ev3-pybricks": "pybricks" },
       "software": [

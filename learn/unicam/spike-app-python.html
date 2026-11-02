@@ -236,6 +236,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 .chip.other-mode:hover, .chip.other-mode:focus-visible { opacity: 1; }
 .v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
 .v1warn b { white-space: nowrap; }
+.v1ok { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--accent-soft); color: var(--ink); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
+.v1ok b { white-space: nowrap; }
 /* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
 .ucpick { display: grid; gap: 14px; }
 #modes { gap: 8px; }
@@ -250,7 +252,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     <span class="eyebrow">MBC 神攝手 × 樂高官方 SPIKE App（Python）</span>
     <h1>三個步驟用官方 SPIKE App 的 Python 讀神攝手</h1>
     <p class="lead">樂高官方 SPIKE App（教育版）也能寫 Python，不用換韌體。神攝手在 App 裡是一顆<b>顏色感應器</b>，App 不能匯入自己的檔案，所以照這個順序寫：先<b>把讀值小幫手貼在最上面、選好相機模式</b>，再<b>建立物件、幫相機取名字</b>，最後每圈 <code>update()</code> 一次、用名字<b>呼叫功能</b>。左邊一步一步做，右邊的程式會跟著長出來；在模擬的相機畫面裡拖色塊、色紙、積木或線，就能看到程式會印出什麼。</p>
-    <p class="v1warn" role="note"><b>v1 尚未上機驗證</b><span>數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。</span></p>
+    <p class="v1ok" role="note"><b>SPIKE 已上機驗證</b><span>2026-11-01 用出貨版韌體 v1.0-261101 在實機跑過（Pybricks 函式庫與積木、Pybricks 內建積木、官方 App 教育版與家用版、MBC 積木網站）。</span></p>
   </header>
 
   <section class="main" aria-label="教學">
@@ -400,8 +402,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 
 
   <section class="ref b8" aria-labelledby="b8h">
-    <h2 id="b8h">byte 8～15：小幫手讀不到的值<span class="pend">待上機</span></h2>
-    <p class="ref-intro">相機每次送 16 byte。官方 App 的 <code>color_sensor.color()</code>、<code>reflection()</code>、<code>rgbi()</code> 只拿到前 8 byte，小幫手用的就是這些。後面 8 byte（下表）<b>可能</b>用 App Python 的 <code>device.data()</code> 讀得到，但<b>還沒上機確認</b>（任務 #77），會回傳幾個數字、什麼格式都還不知道，所以這頁不教怎麼拆，小幫手也不用它。現在要用這些值，請改用 <a href="/learn/unicam/micropython.html">Pybricks MicroPython</a>（同一台相機、同一個韌體，主機換 Pybricks 韌體就讀得到）。完整排法見 <a href="/sensors/unicam/reference.html#edu-13">數值對照表</a>。</p>
+    <h2 id="b8h">byte 8～15：小幫手讀不到的值</h2>
+    <p class="ref-intro">相機每次送 16 byte。官方 App 的 <code>color_sensor.color()</code>、<code>reflection()</code>、<code>rgbi()</code> 只拿到前 8 byte，小幫手用的就是這些。App Python 的 <code>device.data(port.C)</code> 上機實測（2026-11-01）回 <b>8 個值</b>：byte 0、byte 1，之後每 2 byte 一個 int16（原始紅、綠、藍、byte 8～9、10～11、12～13），所以 byte 8～13 讀得到、<b>byte 14～15 讀不到</b>。小幫手沒有用它；要用下表的值，照最下面的寫法自己拆，或改用 <a href="/learn/unicam/micropython.html">Pybricks MicroPython</a>（同一台相機、同一個韌體，主機換 Pybricks 韌體就全部讀得到）。完整排法見 <a href="/sensors/unicam/reference.html#edu-13">數值對照表</a>。</p>
     <div class="tblwrap"><table>
           <tr><th scope="col">模式</th><th scope="col">byte 8～15 放的值（小幫手讀不到）</th></tr>
           <tr><th scope="row">11<span class="small">顏色追蹤 ① 最多色</span></th><td>色 8～14 X×10＋Y（8×6 格，上＝小）</td></tr>
@@ -418,7 +420,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
           <tr><th scope="row">51<span class="small">物體偵測 ① 物體清單</span></th><td>物體 4 代碼（色號×10＋形狀）、物體 4 X×10＋Y（8×6 格，上＝小）、物體 5 代碼（色號×10＋形狀）、物體 5 X×10＋Y（8×6 格，上＝小）、物體 6 代碼（色號×10＋形狀）、物體 6 X×10＋Y（8×6 格，上＝小）、物體 7 代碼（色號×10＋形狀）、物體 7 X×10＋Y（8×6 格，上＝小）</td></tr>
           <tr><th scope="row">52<span class="small">物體偵測 ② 物體詳細</span></th><td>物體 1 角度、物體 2 X（像素）、物體 2 Y（像素，上＝小）、物體 2 寬（像素）、物體 2 高（像素）、物體 2 角度、物體 1 頂點數、物體數</td></tr>
     </table></div>
-    <p class="small">想在上機時先看看 <code>device.data()</code> 會給什麼，可以用下面這幾行（<b>未驗證</b>，可能出錯或只回幾個數字；結果請回報給我們）：</p>
+    <p class="small">用 <code>device.data()</code> 拆出 byte 8～13（每個 int16 的低位元組＝前一個 byte、高位元組＝後一個 byte）：</p>
     <pre class="code">import device
 from hub import port
 import runloop
@@ -426,7 +428,11 @@ import runloop
 
 async def main():
     while True:
-        print(device.data(port.C))   # 待上機：會印出幾個數字、什麼格式還不知道
+        d = device.data(port.C)      # 8 個值：byte 0、byte 1、原始紅、綠、藍、byte 8～9、10～11、12～13
+        b8, b9 = d[5] &amp; 255, (d[5] &gt;&gt; 8) &amp; 255
+        b10, b11 = d[6] &amp; 255, (d[6] &gt;&gt; 8) &amp; 255
+        b12, b13 = d[7] &amp; 255, (d[7] &gt;&gt; 8) &amp; 255
+        print(d[0], b8, b9, b10, b11, b12, b13)   # d[0]＝「顏色」格的原始值（5 不會變成 6）
         await runloop.sleep_ms(500)
 
 runloop.run(main())</pre>
@@ -436,7 +442,8 @@ runloop.run(main())</pre>
     <ol>
       <li><b>每圈先 <code>update()</code>。</b>小幫手的功能都是拆「最近一次 <code>update()</code> 讀到的 8 byte」；沒 <code>update()</code> 就一直是舊的（一開始全是 0）。</li>
       <li><b>模式編號一定要跟相機選單一樣。</b>官方 App 讀不到相機現在的模式，小幫手照 <code>UniCamApp(port.C, 模式)</code> 拆；物體功能用錯模式會出現 <code>ValueError</code>，其他功能不會報錯、只是數字沒有意義。</li>
-      <li><b>這是官方 App 3 的寫法，跟 Pybricks 不一樣。</b>孔位是 <code>from hub import port</code> 的 <code>port.C</code>（不是 <code>Port.C</code>）、等待是 <code>await runloop.sleep_ms()</code>（不是 <code>wait()</code>），Pybricks 的程式不能直接貼過來。家用版（Robot Inventor）App 的 Python 讀法還沒驗證，這頁是教育版的。</li>
+      <li><b>這是官方 App 3 的寫法，跟 Pybricks 不一樣。</b>孔位是 <code>from hub import port</code> 的 <code>port.C</code>（不是 <code>Port.C</code>）、等待是 <code>await runloop.sleep_ms()</code>（不是 <code>wait()</code>），Pybricks 的程式不能直接貼過來。這頁是教育版的；家用版（Robot Inventor）App 的 Python 寫法不一樣（用 <code>hub.port.C.device.get()</code> 讀 6 個值，排法跟教育版相同），見 <a href="/sensors/unicam/spike/index.html">SPIKE 讀值教學</a>的家用版段落。</li>
+      <li><b><code>color()</code> 的 5 會變成 6。</b>教育版 App 的 <code>color_sensor.color()</code> 會把相機送的 5 換成 6（樂高的綠色碼），其他數字照原樣，<code>reflection()</code> 不受影響；所以「顏色」那格的 5 和 6 分不出來（例如色 1 的 X 格、找到幾色、路口類型 5 盡頭、物體數、總塊數）。要分清楚，改讀 <code>device.data(port.C)[0]</code>（原始值）。</li>
       <li><b>位置是格子，不是像素。</b>模式 13、14 是 16×12 格（像素 ≈ 格×10−5），模式 11、12 和物體清單 51 是 8×6 格（像素 ≈ 格×20−10）；(0, 0)＝沒看到。只有模式 52 的物體 1 位置是像素。Y 上＝小；循線偏移線在左＝負、在右＝正（站在車後面往前看）。</li>
       <li><b>小幫手只讀 byte 0～7。</b>每個模式讀得到哪些，第 1 步選模式時會寫；讀不到的（數量、面積、循線中段偏移、旗標…）見上面「byte 8～15」或改用 <a href="/learn/unicam/micropython.html">Pybricks MicroPython</a>。顏色要在相機上教，程式改不了目標色。</li>
     </ol>

@@ -236,6 +236,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 .chip.other-mode:hover, .chip.other-mode:focus-visible { opacity: 1; }
 .v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
 .v1warn b { white-space: nowrap; }
+.v1ok { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--accent-soft); color: var(--ink); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
+.v1ok b { white-space: nowrap; }
 /* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
 .ucpick { display: grid; gap: 14px; }
 #modes { gap: 8px; }
@@ -250,7 +252,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     <span class="eyebrow">MBC Sharpshooter Vision × LEGO SPIKE App (Python)</span>
     <h1>Read Sharpshooter Vision with SPIKE App Python in three steps</h1>
     <p class="lead">The LEGO SPIKE App (Education) runs Python too, with no firmware change. In the App, Sharpshooter Vision is a <b>color sensor</b>, and the App cannot import your own files, so the order is: first <b>paste the reading helper at the top and pick the camera mode</b>, then <b>create an object and name the camera</b>, then call <code>update()</code> once per loop and <b>call its functions</b> with that name. Work down the steps on the left and watch the program grow on the right; drag the blobs, papers, blocks or line in the simulated camera view to see what the program prints.</p>
-    <p class="v1warn" role="note"><b>v1 not yet hardware-verified</b><span>The value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after hardware testing.</span></p>
+    <p class="v1ok" role="note"><b>Verified on SPIKE hardware</b><span>Run on real hubs on 2026-11-01 with shipping firmware v1.0-261101 (Pybricks library and blocks, Pybricks built-in blocks, the official app Education and home edition, MBC Blocks website).</span></p>
   </header>
 
   <section class="main" aria-label="Tutorial">
@@ -400,8 +402,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 
 
   <section class="ref b8" aria-labelledby="b8h">
-    <h2 id="b8h">Bytes 8–15: values the helper cannot read<span class="pend">not yet tested</span></h2>
-    <p class="ref-intro">The camera sends 16 bytes each time. The App's <code>color_sensor.color()</code>, <code>reflection()</code> and <code>rgbi()</code> only get the first 8, which is what the helper uses. The other 8 bytes (table below) <b>might</b> be readable with App Python's <code>device.data()</code>, but this is <b>not yet verified on hardware</b> (task #77): how many numbers it returns and in what format is unknown, so this page does not show how to split them and the helper does not use them. To use these values now, switch to <a href="/en/learn/unicam/micropython.html">Pybricks MicroPython</a> (same camera, same firmware; with the Pybricks firmware on the hub they can be read). Full layouts are in the <a href="/en/sensors/unicam/reference.html#edu-13">value reference</a>.</p>
+    <h2 id="b8h">Bytes 8–15: values the helper cannot read</h2>
+    <p class="ref-intro">The camera sends 16 bytes each time. The App's <code>color_sensor.color()</code>, <code>reflection()</code> and <code>rgbi()</code> only get the first 8, which is what the helper uses. On real hubs (2026-11-01), App Python's <code>device.data(port.C)</code> returns <b>8 values</b>: byte 0, byte 1, then one int16 per 2 bytes (raw red, green, blue, bytes 8–9, 10–11, 12–13), so bytes 8–13 can be read and <b>bytes 14–15 cannot</b>. The helper does not use it; to get the values below, split them yourself as shown at the bottom, or switch to <a href="/en/learn/unicam/micropython.html">Pybricks MicroPython</a> (same camera, same firmware; with the Pybricks firmware on the hub everything can be read). Full layouts are in the <a href="/en/sensors/unicam/reference.html#edu-13">value reference</a>.</p>
     <div class="tblwrap"><table>
           <tr><th scope="col">Mode</th><th scope="col">In bytes 8–15 (not read by the helper)</th></tr>
           <tr><th scope="row">11<span class="small">Color tracking ① Max colors</span></th><td>color 8–14 X×10 + Y (8×6 grid, top = small)</td></tr>
@@ -418,7 +420,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
           <tr><th scope="row">51<span class="small">Objects ① Object list</span></th><td>object 4 code (color × 10 + shape), object 4 X×10 + Y (8×6 grid, top = small), object 5 code (color × 10 + shape), object 5 X×10 + Y (8×6 grid, top = small), object 6 code (color × 10 + shape), object 6 X×10 + Y (8×6 grid, top = small), object 7 code (color × 10 + shape), object 7 X×10 + Y (8×6 grid, top = small)</td></tr>
           <tr><th scope="row">52<span class="small">Objects ② Object details</span></th><td>object 1 angle, object 2 X (pixels), object 2 Y (pixels, top = small), object 2 width (pixels), object 2 height (pixels), object 2 angle, object 1 vertex count, object count</td></tr>
     </table></div>
-    <p class="small">To peek at what <code>device.data()</code> returns when you test on a hub, try these lines (<b>unverified</b>: it may fail or return only a few numbers; please tell us what you get):</p>
+    <p class="small">Splitting bytes 8–13 with <code>device.data()</code> (each int16: low byte = the first byte, high byte = the second):</p>
     <pre class="code">import device
 from hub import port
 import runloop
@@ -426,7 +428,11 @@ import runloop
 
 async def main():
     while True:
-        print(device.data(port.C))   # not yet hardware-tested: count and format unknown
+        d = device.data(port.C)      # 8 values: byte 0, byte 1, raw red, green, blue, bytes 8-9, 10-11, 12-13
+        b8, b9 = d[5] &amp; 255, (d[5] &gt;&gt; 8) &amp; 255
+        b10, b11 = d[6] &amp; 255, (d[6] &gt;&gt; 8) &amp; 255
+        b12, b13 = d[7] &amp; 255, (d[7] &gt;&gt; 8) &amp; 255
+        print(d[0], b8, b9, b10, b11, b12, b13)   # d[0] = the raw "color" slot (5 stays 5)
         await runloop.sleep_ms(500)
 
 runloop.run(main())</pre>
@@ -436,7 +442,8 @@ runloop.run(main())</pre>
     <ol>
       <li><b>Call <code>update()</code> every loop.</b> All helper functions split the 8 bytes from the last <code>update()</code>; without it the values never change (they start as all 0).</li>
       <li><b>The mode number must match the camera menu.</b> The App cannot read the camera's mode, so the helper splits by <code>UniCamApp(port.C, mode)</code>; object functions in the wrong mode raise <code>ValueError</code>, the others just give meaningless numbers.</li>
-      <li><b>This is SPIKE App 3 style, not Pybricks.</b> Ports are <code>port.C</code> from <code>from hub import port</code> (not <code>Port.C</code>), and waiting is <code>await runloop.sleep_ms()</code> (not <code>wait()</code>), so Pybricks programs cannot be pasted in. Python in the Robot Inventor (home) App is not verified yet; this page is for the Education App.</li>
+      <li><b>This is SPIKE App 3 style, not Pybricks.</b> Ports are <code>port.C</code> from <code>from hub import port</code> (not <code>Port.C</code>), and waiting is <code>await runloop.sleep_ms()</code> (not <code>wait()</code>), so Pybricks programs cannot be pasted in. This page is for the Education App; Python in the Robot Inventor (home) App is written differently (<code>hub.port.C.device.get()</code> returns 6 values in the Education layout), see the home-edition part of <a href="/en/sensors/unicam/spike/index.html">Reading it on SPIKE</a>.</li>
+      <li><b><code>color()</code> turns 5 into 6.</b> The Education app's <code>color_sensor.color()</code> changes a 5 sent by the camera into 6 (LEGO's green code); other numbers are as sent and <code>reflection()</code> is not affected, so 5 and 6 in the "color" slot cannot be told apart (e.g. color 1's X cell, colors found, junction type 5 dead end, object count, total blocks). To tell them apart read <code>device.data(port.C)[0]</code> (the raw value) instead.</li>
       <li><b>Positions are grid cells, not pixels.</b> Modes 13 and 14 use a 16×12 grid (pixel ≈ cell×10−5); modes 11, 12 and object list 51 use 8×6 (pixel ≈ cell×20−10); (0, 0) = not seen. Only object 1 in mode 52 is in pixels. Y top = small; line offset: left = negative, right = positive (looking forward from behind the robot).</li>
       <li><b>The helper reads bytes 0–7 only.</b> Step 1 lists what each mode gives; for the rest (counts, areas, mid offset, flags…) see "Bytes 8–15" above or use <a href="/en/learn/unicam/micropython.html">Pybricks MicroPython</a>. Colors are taught on the camera; the program cannot change them.</li>
     </ol>

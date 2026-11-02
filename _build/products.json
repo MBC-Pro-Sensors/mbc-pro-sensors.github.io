@@ -925,7 +925,7 @@
           ],
           [
             "狀態",
-            "韌體 v1 尚未上機驗證，數值排法已定案"
+            "SPIKE 版已上機驗證（2026-11-01）；其他平台待上機"
           ]
         ]
       },
@@ -942,7 +942,7 @@
           ],
           [
             "Status",
-            "Firmware v1 not yet hardware-verified; value layout is final"
+            "SPIKE edition hardware-verified (2026-11-01); other platforms pending"
           ]
         ]
       }
@@ -1204,7 +1204,7 @@
       "en": "WRO RoboMission: allowed in all age groups"
     },
     "zh": {
-      "badge": "IMU-9AX · 即將推出",
+      "badge": "IMU-9AX",
       "pitch": "走直線、轉精準角度的關鍵：任意角度安裝都能算對航向，磁力計融合讓長距離也不飄移。",
       "stats": [
         [
@@ -1236,7 +1236,7 @@
       ]
     },
     "en": {
-      "badge": "IMU-9AX · COMING SOON",
+      "badge": "IMU-9AX",
       "pitch": "The key to driving straight and turning precisely: correct heading at any mounting angle, and compass fusion that does not drift over long runs.",
       "stats": [
         [

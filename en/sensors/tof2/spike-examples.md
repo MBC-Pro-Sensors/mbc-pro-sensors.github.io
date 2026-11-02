@@ -27,7 +27,7 @@ This page is written for people who have **never written a program before**. The
 
 ## Before you start: meet the Ranger 2-Way
 
-The Ranger 2-Way has **two lasers side by side on the front, both pointing straight ahead**. They measure how far away the thing in front of the "left one" and the "right one" is. No calibration needed, just plug it in and go; after power-on, wait 1 to 2 seconds for the lasers to get ready.
+The Ranger 2-Way has **two lasers side by side on the front, both pointing straight ahead**. They measure how far away the thing in front of the "left one" and the "right one" is. **Left and right are as seen from behind the sensor, looking the way it faces (left = J5, right = J3)**; facing the sensor, they are the other way round. No calibration needed, just plug it in and go; after power-on, wait 1 to 2 seconds for the lasers to get ready.
 
 **Values used on this page**
 
@@ -121,7 +121,7 @@ while True:
 - **Cover only the left laser with your hand**: the first number drops, the second one stays the same.
 
 > [!IMPORTANT]
-> **Use this example to confirm left and right first.** With the sensor facing forward and the component side up, cover only the laser you see on the "left": the **first number** should drop. If the second number drops instead, your sensor is mounted the opposite way from the examples (for example upside down), and you will need to swap "left" and "right" in the later examples too.
+> **Use this example to confirm left and right first.** With the sensor facing forward and the component side up, stand behind it looking the same way and cover only the left laser (J5): the **first number** should drop. If the second number drops instead, your sensor is mounted the opposite way from the examples (for example upside down), and you will need to swap "left" and "right" in the later examples too.
 
 **Common questions**
 - **It always shows 120 120?** → There really is nothing in front, or the object is too far away, or it is black/transparent. Try a white book 20 cm in front. It also shows 120 for the first 1 to 2 seconds after power-on.
@@ -268,7 +268,7 @@ while True:
 
 **Common questions**
 - **Why does it have to differ by more than 5 cm?** → The lasers themselves have an error of 1 to 2 cm. Leaving some room keeps the arrow from flickering back and forth.
-- **The left and right arrows are swapped?** → Go back to Example 1 and confirm left and right; the sensor may be mounted the other way round.
+- **The left and right arrows are swapped?** → Left and right are as seen from behind the sensor, looking the way it faces (left = J5, right = J3); facing the sensor, they are the other way round. If they are still swapped seen from behind, go back to Example 1 and confirm left and right; the sensor may be mounted the other way round.
 - **The arrow jumps around when the object is far away?** → The two laser beams get wider with distance and overlap far away, so beyond 50 cm it is hard to tell left from right. Play with this example within 50 cm.
 
 ---
@@ -436,7 +436,7 @@ hub.display.icon(Icon.HAPPY)
 
 **Common questions**
 - **It keeps turning left and right and never stops?** → The wall is not flat, or "within 1 cm" is too strict. Change the "1" to "2" (in the official App, change "< 2" to "< 3").
-- **It squares up the wrong way and gets more crooked?** → Go back to Example 1 and confirm left and right; if they are swapped, swap "turn left" and "turn right".
+- **It squares up the wrong way and gets more crooked?** → Left and right are as seen from behind the sensor, looking the way it faces (left = J5, right = J3). Go back to Example 1 and confirm left and right; if they are swapped, swap "turn left" and "turn right".
 - **It cannot square up when the angle is too big (over 30 degrees)?** → At a big angle one laser misses the wall completely (reads 120). Line the car up roughly first, then start.
 - **The wall is black?** → Black walls read shorter and less accurately. Use a light-colored wall or stick white paper on it.
 

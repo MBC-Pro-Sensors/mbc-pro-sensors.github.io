@@ -39,11 +39,11 @@ Sensor → mBot adapter → RJ25 port on the board (S1 = host TX, S2 = host RX).
 
 | Block | Id | Meaning |
 | :--- | :--- | :--- |
-| Pathfinder port [port] black line mode | [`E0`](/en/sensors/line16/reference.md#ce0) | follow a black line (default) |
-| Pathfinder port [port] white line mode | [`E1`](/en/sensors/line16/reference.md#ce1) | follow a white line (F3 b1 = 1) |
+| Pathfinder port [port] black line mode | [`E0`](/en/sensors/line16/reference.md#ce0) | follow a black line (default); RAM only, back to the default after reset |
+| Pathfinder port [port] white line mode | [`E1`](/en/sensors/line16/reference.md#ce1) | follow a white line (F3 b1 = 1); RAM only, back to the default after reset |
 | Pathfinder port [port] calibrate black | [`E2`](/en/sensors/line16/reference.md#ce2) | store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM（F3 bit2 = 1 while running） |
 | Pathfinder port [port] calibrate white | [`E3`](/en/sensors/line16/reference.md#ce3) | store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM（F3 bit2 = 1 while running） |
-| Pathfinder port [port] set threshold [threshold] | [`E4`](/en/sensors/line16/reference.md#ce4) | threshold 1~99 (RAM only, back to 50 after reboot) |
+| Pathfinder port [port] set threshold [threshold] | [`E4`](/en/sensors/line16/reference.md#ce4) | threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2) |
 | Pathfinder port [port] 5-second auto calibration | [`E7`](/en/sensors/line16/reference.md#ce7) | sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile（F3 bit2 = 1 while running） |
 | Pathfinder port [port] update all values | `FD` | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 
@@ -58,6 +58,7 @@ The extension exposes each `F3` bit as a boolean block:
 | b2 | calibrating (`calibrating`) | E2/E3/E7 in progress; new calibration commands are ignored |
 | b3 | line lost (`lost`) | segment count = 0 |
 | b4 | fork (`fork`) | segment count ≥ 2 |
+| b5 | mirrored (`reversed`) | E9 = 1 (sensor mounted backwards, left/right mirrored) |
 
 ## Packet format (for your own decoder)
 

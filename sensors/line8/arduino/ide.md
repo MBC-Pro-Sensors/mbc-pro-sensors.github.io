@@ -249,7 +249,7 @@ Serial.println();
 
 ### 切黑線 <small>blackLine</small>
 
-追黑線（預設）
+追黑線（預設）；存 RAM，重開機回預設
 
 ```cpp
 mbcWrite(0x16, 0xE0);   // 切黑線
@@ -261,7 +261,7 @@ mbcWrite(0x16, 0xE0);   // 切黑線
 
 ### 切白線 <small>whiteLine</small>
 
-追白線（F3 b1 = 1）
+追白線（F3 b1 = 1）；存 RAM，重開機回預設
 
 ```cpp
 mbcWrite(0x16, 0xE1);   // 切白線
@@ -299,7 +299,7 @@ while (mbcRead(0x16, 0xF3) & (1 << 2)) delay(10);   // 等 F3 bit2 歸零 = 做�
 
 ### 設定門檻 <small>setThreshold</small>
 
-二值化門檻 1~99（RAM，重開機回預設 50）
+二值化門檻 1~99（RAM，重開機回預設 50）；SPIKE 參數超出範圍回失敗（狀態 2）
 
 ```cpp
 mbcWrite(0x16, 0xE4, 50);   // 設定門檻（門檻 1~99）
@@ -316,6 +316,18 @@ mbcWrite(0x16, 0xE4, 50);   // 設定門檻（門檻 1~99）
 ```cpp
 mbcWrite(0x16, 0xE7);   // 5 秒動態校準
 while (mbcRead(0x16, 0xF3) & (1 << 2)) delay(10);   // 等 F3 bit2 歸零 = 做完
+```
+
+</section>
+
+<section id="ce9" class="ref-item ref-cmd">
+
+### 左右反向 <small>reverse</small>
+
+[0 正常／1 左右反向]：感應器反裝時用，通道順序與線位置左右對調；校準值照實體通道存，切換不用重校；存 RAM，重開機回 0（舊 mBlock 沒有）；SPIKE 參數超出範圍回失敗（狀態 2）
+
+```cpp
+mbcWrite(0x16, 0xE9, 1);   // 左右反向（反向 0~1）
 ```
 
 </section>

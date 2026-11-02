@@ -71,7 +71,7 @@ int raw = MiniR4.I2C1.MXColor.getColor(M);   // group 1
 
 </section>
 
-<p class="ref-missing"><b>Not readable here</b>：magnetic heading, yaw rate, pitch angle, pitch rate, magnetometer trust, magnetic disturbance, face up, gyro axis 1~3, accel axis 1~3, mag axis 1~3. Use <a href="/en/sensors/imu/arduino/ide.md">Arduino</a> / <a href="/en/sensors/imu/mblock/mblock5.md">mBlock</a> / <a href="/en/sensors/imu/microbit/makecode.md">micro:bit</a> for these.</p>
+<p class="ref-missing"><b>Not readable here</b>：magnetic heading, yaw rate, pitch angle, pitch rate, magnetometer trust, magnetic disturbance, face up, gyro axis 1~3, accel axis 1~3, mag axis 1~3, command status. Use <a href="/en/sensors/imu/arduino/ide.md">Arduino</a> / <a href="/en/sensors/imu/mblock/mblock5.md">mBlock</a> / <a href="/en/sensors/imu/microbit/makecode.md">micro:bit</a> for these.</p>
 
 ## Commands
 

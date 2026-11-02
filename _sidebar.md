@@ -40,7 +40,7 @@
   - [遠距離顏色感應器 OV3660（開發中）](/sensors/ov3660/index.md)
 
 - **🧭 姿態感測**
-  - [陀螺儀 IMU（即將推出）](/sensors/imu/index.md)
+  - [陀螺儀 IMU](/sensors/imu/index.md)
 
 - **🔌 擴充模組**
   - [SPIKE 6 路擴充器 (EXP6)](/sensors/exp6/index.md)

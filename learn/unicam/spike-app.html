@@ -236,6 +236,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 .chip.other-mode:hover, .chip.other-mode:focus-visible { opacity: 1; }
 .v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
 .v1warn b { white-space: nowrap; }
+.v1ok { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--accent-soft); color: var(--ink); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
+.v1ok b { white-space: nowrap; }
 /* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
 .ucpick { display: grid; gap: 14px; }
 #modes { gap: 8px; }
@@ -250,7 +252,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     <span class="eyebrow">MBC 神攝手 × 樂高官方 SPIKE App</span>
     <h1>三個步驟用樂高官方 SPIKE App 讀神攝手</h1>
     <p class="lead">在樂高官方 SPIKE App 裡，神攝手會被當成<b>顏色感應器</b>，所以不用匯入函式庫，直接用顏色感應器的五顆積木（顏色、反射光、原始紅／綠／藍）讀。每個相機模式放的東西不一樣，有些格子一格裝兩個值，要拆開（第 2 步有表）。左邊一步一步做，右邊的積木會跟著長出來；積木圖是直接從官方網頁版 App（spike.legoeducation.com）拼好匯出的。</p>
-    <p class="v1warn" role="note"><b>v1 尚未上機驗證</b><span>數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。</span></p>
+    <p class="v1ok" role="note"><b>SPIKE 已上機驗證</b><span>2026-11-01 用出貨版韌體 v1.0-261101 在實機跑過（Pybricks 函式庫與積木、Pybricks 內建積木、官方 App 教育版與家用版、MBC 積木網站）。</span></p>
   </header>
 
   <section class="main" aria-label="教學">
@@ -405,6 +407,7 @@ svg.lego .blocklyDropdownText { fill: #fff !important; }
     <h2 id="tiph">使用注意</h2>
     <ol>
       <li><b>官方 App 只讀「組合資料」的前 8 byte。</b>每個模式 byte 8～15 的值（例如模式 13 的面積、數量，循線的中段偏移、旗標、路口距離）積木讀不到，第 2 步表格下面有列；要用請改 <a href="/learn/unicam/pybricks-blocks.html">Pybricks 積木</a>或 <a href="/learn/unicam/micropython.html">MicroPython</a>。</li>
+      <li><b>「顏色」積木的 5 會變成 6。</b>教育版 App 的「顏色」積木和儀表板會把相機送的 5 換成 6（樂高的綠色碼），其他數字照原樣，「反射光」不受影響。所以「顏色」那格的 5 和 6 分不出來（例如色 1 的 X 格、找到幾色、路口類型 5 盡頭、物體數、總塊數），積木沒辦法避開；要分清楚請改用 <a href="/learn/unicam/spike-app-python.html">官方 App Python</a> 讀 <code>device.data(port.C)[0]</code>。</li>
       <li><b>不要用「顏色是 [紅色]？」這種選顏色的積木。</b>它比對的是樂高自己的色號。一律把讀到的數字存進變數，用數字比大小。</li>
       <li><b>相機模式要跟相機選單一樣。</b>官方 App 讀不到相機的模式；選錯模式，拆出來的數字沒有意義。</li>
       <li><b>家用版（Robot Inventor）不一樣。</b>家用版 App 的顏色只有 0～10、原始紅綠藍 0～255，相機會自動換成另一種排法（每格只放 1 個值、能讀的比較少），這頁的表是教育版（SPIKE Prime 黃色主機）的。家用版每個模式放什麼見 <a href="/sensors/unicam/reference.html#toy-11">數值對照表的家用版欄</a>。</li>
@@ -724,8 +727,8 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         { id: 'near', label: 'near()', name: ('近處偏移'), grp: 'line', modes: [41, 42, 43],
           what: ('畫面最下面那條掃描線上，線偏離中間多少：−100～100，<b>線在左＝負、在右＝正</b>。循線的 P 控制就用它。拖「近」那個綠點試試看。'),
           ret: ('−100～100'),
-          body: ['e = {n}.near()', 'if e < -10:', '    print("' + ('線在左邊') + '", e)', 'elif e > 10:', '    print("' + ('線在右邊') + '", e)', 'else:', '    print("' + ('線在中間') + '", e)'],
-          out: function (V) { var e = V.near(); return cmp('<', e, -10) ? pr(('線在左邊'), e) : cmp('>', e, 10) ? pr(('線在右邊'), e) : pr(('線在中間'), e); } },
+          body: ['e = {n}.near()', 'if {n}.flags() == 0:', '    print("' + ('看不到線') + '")', 'elif e < -10:', '    print("' + ('線在左邊') + '", e)', 'elif e > 10:', '    print("' + ('線在右邊') + '", e)', 'else:', '    print("' + ('線在中間') + '", e)'],
+          out: function (V) { var e = V.near(); return V.flags() === 0 ? ('看不到線') : cmp('<', e, -10) ? pr(('線在左邊'), e) : cmp('>', e, 10) ? pr(('線在右邊'), e) : pr(('線在中間'), e); } },
         { id: 'mid', label: 'mid()', name: ('中段偏移'), grp: 'line', modes: [41, 42, 43],
           what: ('中間那條掃描線的偏移（−100～100）。看不到時是 0。'), ret: ('−100～100'),
           body: ['print("' + ('中段:') + '", {n}.mid())'], out: function (V) { return pr(('中段:'), V.mid()); } },
@@ -761,8 +764,8 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
           body: ['c, k = {n}.marker()', 'print("' + ('標記色號') + '", c, "' + ('累計') + '", k)'], out: function (V) { var t = unpack(V.marker()); return pr(('標記色號'), t[0], ('累計'), t[1]); } });
       if (!EV3) FNS.push({ id: 'lost', label: 'lost()', name: ('最後離線方向'), grp: 'line', modes: [41, 42, 43],
         what: ('看不到線時，線最後是從哪邊不見的：0 還在線上、1 左、2 右。往那一邊轉就能找回線。把線拖到一邊再勾「拿走線」。'), ret: ('0～2'),
-        body: ['s = {n}.lost()', 'if s == 1:', '    print("' + ('線從左邊不見了 → 往左轉找') + '")', 'elif s == 2:', '    print("' + ('線從右邊不見了 → 往右轉找') + '")', 'else:', '    print("' + ('在線上') + '")'],
-        out: function (V) { var s = V.lost(); return s === 1 ? ('線從左邊不見了 → 往左轉找') : s === 2 ? ('線從右邊不見了 → 往右轉找') : ('在線上'); } });
+        body: ['s = {n}.lost()', 'if s == 1:', '    print("' + ('線從左邊不見了 → 往左轉找') + '")', 'elif s == 2:', '    print("' + ('線從右邊不見了 → 往右轉找') + '")', 'elif {n}.flags() == 0:', '    print("' + ('看不到線') + '")', 'else:', '    print("' + ('在線上') + '")'],
+        out: function (V) { var s = V.lost(); return s === 1 ? ('線從左邊不見了 → 往左轉找') : s === 2 ? ('線從右邊不見了 → 往右轉找') : V.flags() === 0 ? ('看不到線') : ('在線上'); } });
       FNS.push(
         { id: 'line_all', label: 'line_all()', name: ('循線全部一次讀'), grp: 'line', modes: [41, 42, 43],
           what: ('一次拿到 ') + LINEN + (' 個值：(近, 中, 遠, 角度, 線寬, 旗標, 路口類型, 路口距離, 左緣, 右緣, 遠線寬, 標記色號, 標記條數') + (EV3 ? ')' : (', 離線方向)')) + ('。'),
@@ -901,7 +904,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         // 拔線提醒照函式庫：SPIKE 只印一次；EV3 從來沒接上時每讀一次印一次，接過再拔掉只印一次
         warn: function (st, reads) {
           if (st.ok) { HOST.warned = false; return []; }
-          if (!EV3 && S.multi && st.none) reads = Math.max(reads, 1);   // 多工：建立物件時就先連一次
+          if (!EV3 && st.none) reads = Math.max(reads, 1);   // 建立物件時就先連一次（多工；2026-10-29 起同步版也會先切相機模式）
           if (!reads) return [];
           if (EV3) {
             var msg = 'MBC: 讀不到感應器 / no sensor: [Errno 19] ENODEV';

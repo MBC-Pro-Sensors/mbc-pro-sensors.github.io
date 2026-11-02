@@ -18,7 +18,7 @@ No extension needed. On the EV3 the sensor **emulates an original LEGO sensor** 
 - Some products come with MBC subroutines. They are already inside the example files.
 
 > [!IMPORTANT]
-> **Do not switch modes in the middle of a program.** Every time the EV3 switches a sensor mode it stalls (about 0.5 s). Pick one mode at the start and use it for the whole run.
+> **Do not switch modes in the middle of a program.** Every time the EV3 switches a sensor mode it stalls (about 1 s). Pick one mode at the start and use it for the whole run.
 
 ### Wiring
 

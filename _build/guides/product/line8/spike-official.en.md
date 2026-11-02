@@ -49,7 +49,7 @@ In the home-edition App some single-channel blocks are limited to `0 ~ 126`, so 
 
 ### PD line-following demos (speed 50)
 
-The same PD logic as the Pybricks version, as blocks and Python for both the Education and the Robot Inventor app: 4 programs, all run on a hub.
+The same PD logic as the Pybricks version, as blocks and Python for both the Education and the Robot Inventor app: 4 programs, all run on a hub (tested: Education SPIKE App 3 blocks and Python, 2026-10-29 to 30; Robot Inventor App 10.5.4 blocks and Python, 2026-10-29 to 30).
 
 - Education (SPIKE App 3): [📥 blocks .llsp3](/examples/line8/pd50/spike_app/line8_pd50_edu_blocks.llsp3) · [📥 Python (helper built in)](/examples/line8/pd50/spike_app/line8_pd50_edu_python.py)
 - Robot Inventor App: [📥 blocks .lms](/examples/line8/pd50/spike_app/line8_pd50_ri_blocks.lms) · [📥 Python (helper built in)](/examples/line8/pd50/spike_app/line8_pd50_ri_python.py)
@@ -59,6 +59,7 @@ The same PD logic as the Pybricks version, as blocks and Python for both the Edu
 - **Reading**: fine position = "raw red" − 100 (both apps). Width: **blocks (Education and Robot Inventor alike) use the "color" block**; only **Robot Inventor Python** uses reflected light `get_reflected_light()`.
 - Speed 50 (power %), KP 0.4 and KD 1.5 are starting values; stop at a crossing: width > 5.
 - Works with older firmware too: the official apps read mode 0, which the mode 7 change does not touch.
+- When you paste Python into the SPIKE App 3 editor, it shortens the spaces before end-of-line `#` comments. That is just the editor's formatting; the program is unchanged.
 
 ### Robot Inventor App Python
 

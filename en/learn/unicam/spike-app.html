@@ -236,6 +236,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 .chip.other-mode:hover, .chip.other-mode:focus-visible { opacity: 1; }
 .v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
 .v1warn b { white-space: nowrap; }
+.v1ok { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--accent-soft); color: var(--ink); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
+.v1ok b { white-space: nowrap; }
 /* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
 .ucpick { display: grid; gap: 14px; }
 #modes { gap: 8px; }
@@ -250,7 +252,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     <span class="eyebrow">MBC Sharpshooter Vision × LEGO SPIKE App</span>
     <h1>Read Sharpshooter Vision with the LEGO SPIKE App in three steps</h1>
     <p class="lead">In the LEGO SPIKE App, Sharpshooter Vision shows up as a <b>color sensor</b>, so there is no library to import: read it with the five color sensor blocks (color, reflected light, raw red/green/blue). Each camera mode puts different things in them, and some slots hold two values that you split apart (step 2 has the table). Work down the steps on the left and watch the blocks grow on the right; the pictures are exported from the web App (spike.legoeducation.com).</p>
-    <p class="v1warn" role="note"><b>v1 not yet hardware-verified</b><span>The value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after hardware testing.</span></p>
+    <p class="v1ok" role="note"><b>Verified on SPIKE hardware</b><span>Run on real hubs on 2026-11-01 with shipping firmware v1.0-261101 (Pybricks library and blocks, Pybricks built-in blocks, the official app Education and home edition, MBC Blocks website).</span></p>
   </header>
 
   <section class="main" aria-label="Tutorial">
@@ -405,6 +407,7 @@ svg.lego .blocklyDropdownText { fill: #fff !important; }
     <h2 id="tiph">Good to know</h2>
     <ol>
       <li><b>The App reads only the first 8 bytes of the combined data.</b> Bytes 8–15 of each mode (e.g. areas and counts in mode 13; mid offset, flags and junction distance in line following) are out of reach for blocks; they are listed under the step 2 table. Use <a href="/en/learn/unicam/pybricks-blocks.html">Pybricks blocks</a> or <a href="/en/learn/unicam/micropython.html">MicroPython</a> for them.</li>
+      <li><b>The "color" block turns 5 into 6.</b> The Education app's "color" block and dashboard change a 5 sent by the camera into 6 (LEGO's green code); other numbers are shown as sent and "reflected light" is not affected. So 5 and 6 in the "color" slot cannot be told apart (e.g. color 1's X cell, colors found, junction type 5 dead end, object count, total blocks), and blocks have no way around it; to tell them apart use <a href="/en/learn/unicam/spike-app-python.html">App Python</a> and read <code>device.data(port.C)[0]</code>.</li>
       <li><b>Do not use "color is [red]?" blocks.</b> They compare LEGO's own color numbers. Always store the number in a variable and compare numbers.</li>
       <li><b>The mode must match the camera menu.</b> The App cannot read the camera's mode; with the wrong mode the split numbers mean nothing.</li>
       <li><b>Robot Inventor (home) is different.</b> Its App gives color 0–10 and raw RGB 0–255, so the camera switches to another layout (one value per slot, fewer values); the tables here are for the Education App (yellow SPIKE Prime hub). For the home layout see the <a href="/en/sensors/unicam/reference.html#toy-11">Robot Inventor column of the value reference</a>.</li>
@@ -707,8 +710,8 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         { id: 'near', label: 'near()', name: ('Near offset'), grp: 'line', modes: [41, 42, 43],
           what: ('How far the line is from the middle on the bottom scan row: −100–100, <b>left = negative, right = positive</b>. Use it for P control. Drag the "near" green dot.'),
           ret: ('−100–100'),
-          body: ['e = {n}.near()', 'if e < -10:', '    print("' + ('line on the left') + '", e)', 'elif e > 10:', '    print("' + ('line on the right') + '", e)', 'else:', '    print("' + ('line in the middle') + '", e)'],
-          out: function (V) { var e = V.near(); return cmp('<', e, -10) ? pr(('line on the left'), e) : cmp('>', e, 10) ? pr(('line on the right'), e) : pr(('line in the middle'), e); } },
+          body: ['e = {n}.near()', 'if {n}.flags() == 0:', '    print("' + ('no line') + '")', 'elif e < -10:', '    print("' + ('line on the left') + '", e)', 'elif e > 10:', '    print("' + ('line on the right') + '", e)', 'else:', '    print("' + ('line in the middle') + '", e)'],
+          out: function (V) { var e = V.near(); return V.flags() === 0 ? ('no line') : cmp('<', e, -10) ? pr(('line on the left'), e) : cmp('>', e, 10) ? pr(('line on the right'), e) : pr(('line in the middle'), e); } },
         { id: 'mid', label: 'mid()', name: ('Middle offset'), grp: 'line', modes: [41, 42, 43],
           what: ('Offset on the middle scan row (−100–100); 0 when not seen.'), ret: ('−100–100'),
           body: ['print("' + ('mid:') + '", {n}.mid())'], out: function (V) { return pr(('mid:'), V.mid()); } },
@@ -744,8 +747,8 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
           body: ['c, k = {n}.marker()', 'print("' + ('marker color') + '", c, "' + ('count') + '", k)'], out: function (V) { var t = unpack(V.marker()); return pr(('marker color'), t[0], ('count'), t[1]); } });
       if (!EV3) FNS.push({ id: 'lost', label: 'lost()', name: ('Side the line was lost'), grp: 'line', modes: [41, 42, 43],
         what: ('When the line is gone, which side it left from: 0 on the line, 1 left, 2 right. Turn that way to find it again. Drag the line to one side, then tick "Remove the line".'), ret: ('0–2'),
-        body: ['s = {n}.lost()', 'if s == 1:', '    print("' + ('line lost on the left → turn left') + '")', 'elif s == 2:', '    print("' + ('line lost on the right → turn right') + '")', 'else:', '    print("' + ('on the line') + '")'],
-        out: function (V) { var s = V.lost(); return s === 1 ? ('line lost on the left → turn left') : s === 2 ? ('line lost on the right → turn right') : ('on the line'); } });
+        body: ['s = {n}.lost()', 'if s == 1:', '    print("' + ('line lost on the left → turn left') + '")', 'elif s == 2:', '    print("' + ('line lost on the right → turn right') + '")', 'elif {n}.flags() == 0:', '    print("' + ('no line') + '")', 'else:', '    print("' + ('on the line') + '")'],
+        out: function (V) { var s = V.lost(); return s === 1 ? ('line lost on the left → turn left') : s === 2 ? ('line lost on the right → turn right') : V.flags() === 0 ? ('no line') : ('on the line'); } });
       FNS.push(
         { id: 'line_all', label: 'line_all()', name: ('All line values'), grp: 'line', modes: [41, 42, 43],
           what: ('Gets all ') + LINEN + (' values: (near, mid, far, angle, width, flags, junction, junction distance, left, right, far width, marker, marker count') + (EV3 ? ')' : (', lost)')) + ('.'),
@@ -878,7 +881,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         reset: function () { HOST.warned = false; },
         warn: function (st, reads) {
           if (st.ok) { HOST.warned = false; return []; }
-          if (!EV3 && S.multi && st.none) reads = Math.max(reads, 1);   
+          if (!EV3 && st.none) reads = Math.max(reads, 1);   
           if (!reads) return [];
           if (EV3) {
             var msg = 'MBC: 讀不到感應器 / no sensor: [Errno 19] ENODEV';

@@ -236,6 +236,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 .chip.other-mode:hover, .chip.other-mode:focus-visible { opacity: 1; }
 .v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
 .v1warn b { white-space: nowrap; }
+.v1ok { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--accent-soft); color: var(--ink); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
+.v1ok b { white-space: nowrap; }
 /* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
 .ucpick { display: grid; gap: 14px; }
 #modes { gap: 8px; }
@@ -250,7 +252,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     <span class="eyebrow">MBC 神攝手 × Pybricks（SPIKE）</span>
     <h1>三個步驟用 MicroPython 讀神攝手</h1>
     <p class="lead">寫程式一定照這個順序：先<b>匯入函式庫、選好相機模式</b>，再<b>建立物件、幫相機取名字</b>，最後用這個名字去<b>呼叫功能</b>。左邊一步一步做，右邊的程式會跟著長出來；在模擬的相機畫面裡拖色塊、色紙、積木或線，就能看到程式會印出什麼。</p>
-    <p class="v1warn" role="note"><b>v1 尚未上機驗證</b><span>數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。</span></p>
+    <p class="v1ok" role="note"><b>SPIKE 已上機驗證</b><span>2026-11-01 用出貨版韌體 v1.0-261101 在實機跑過（Pybricks 函式庫與積木、Pybricks 內建積木、官方 App 教育版與家用版、MBC 積木網站）。</span></p>
   </header>
 
   <section class="main" aria-label="教學">

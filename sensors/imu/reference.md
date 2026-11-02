@@ -36,6 +36,7 @@
 | [`10~12`](#v10) | [角速度 1~3 軸](#v10) | -32768~32767 0.1 dps | — | ✓ | ✓ | — | ✓ |
 | [`13~15`](#v13) | [加速度 1~3 軸](#v13) | -32768~32767 mg | — | ✓ | ✓ | — | ✓ |
 | [`16~18`](#v16) | [磁力 1~3 軸](#v16) | -32768~32767 mG | — | ✓ | ✓ | — | ✓ |
+| [`0B`](#v0b) | [命令狀態](#v0b) | 0~0xEF03 | — | ✓ | — | — | — |
 
 ✓ = 這個平台有這個值；— = 沒有（表格裡的平台欄位只列產品支援的平台）。
 
@@ -1004,6 +1005,56 @@ let mag = [mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.X), mbc.imuAxis(MbcImuSensor.Ma
 
 </section>
 
+<section id="v0b" class="ref-item">
+
+### `0B` 命令狀態 <small>cmdStatus</small>
+
+| 項目 | 內容 |
+| :--- | :--- |
+| 用途 | (最後命令碼 << 8) \| 狀態；狀態 0 完成、1 忙碌、2 失敗、3 拒絕（跟 SPIKE 命令回覆（模式 8 v3）同一套碼）；E1~EB 都會回報；EB 以後沒定義的命令：I2C 直接不理、0B 不變（SPIKE 回 3 拒絕） |
+| 範圍 | `0~0xEF03` |
+| I2C／mBlock 編號 | `0B` |
+
+**怎麼讀**
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+EV3 模式沒有送這個值（EV3 封包以已鎖住的模式為準）。需要時改用 Arduino I2C／mBlock。
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino" open>
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+讀不到（沒接、位址錯）時回 `MBC_NONE`（−32768）。
+
+```cpp
+int16_t cmdStatus = mbcRead(0x6A, 0x0B);   // 命令狀態：0~0xEF03
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+MATRIX 原廠 0x22 積木沒有這個值。
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.readValue(位址, 編號)` 讀（讀不到 = −32768）。
+
+```typescript
+let cmdStatus = mbc.readValue(0x6A, 0x0B)   // 命令狀態：0~0xEF03
+```
+
+</details>
+
+</section>
+
 ## 寫入命令
 
 只有 Arduino I2C、mBlock、micro:bit 能送命令；SPIKE／EV3 接頭是唯讀的。
@@ -1071,7 +1122,7 @@ mbc.imuZeroHeading()   // 航向歸零
 
 | 項目 | 內容 |
 | :--- | :--- |
-| 作用 | 開始加速度計校準（= v1 的 0x20=0x01）；期間 F3 b4 = 1 |
+| 作用 | 開始加速度計校準（= v1 的 0x20=0x01）；期間 F3 b4 = 1；磁力計校準中 → 忽略（0B 狀態 3 拒絕） |
 | 參數 | 無 |
 | 忙碌旗標 | F3 bit4（執行中 = 1） |
 
@@ -1129,7 +1180,7 @@ mbc.imuCalibrate(MbcImuCalib.AccelStart)   // 加速度計校準開始
 
 | 項目 | 內容 |
 | :--- | :--- |
-| 作用 | 結束加速度計校準並存 EEPROM（= v1 的 0x20=0x02）；通過後自動航向歸零一次 |
+| 作用 | 結束加速度計校準並存 EEPROM（= v1 的 0x20=0x02）；通過後重新擷取安裝軸，擺正靜置後才航向歸零（不是馬上歸零）；沒在校準中 → 拒絕（0B 狀態 3）；驗證沒過 → 0B 狀態 2 失敗 |
 | 參數 | 無 |
 | 忙碌旗標 | 無（立即生效） |
 
@@ -1186,7 +1237,7 @@ mbc.imuCalibrate(MbcImuCalib.AccelEnd)   // 加速度計校準結束
 
 | 項目 | 內容 |
 | :--- | :--- |
-| 作用 | 開始磁力計校準（= v1 的 0x20=0x03）；期間 F3 b5 = 1 |
+| 作用 | 開始磁力計校準（= v1 的 0x20=0x03）；期間 F3 b5 = 1；磁力計故障時 → 忽略（0B 狀態 3） |
 | 參數 | 無 |
 | 忙碌旗標 | F3 bit5（執行中 = 1） |
 
@@ -1244,7 +1295,7 @@ mbc.imuCalibrate(MbcImuCalib.MagStart)   // 磁力計校準開始
 
 | 項目 | 內容 |
 | :--- | :--- |
-| 作用 | 結束磁力計校準並存 EEPROM（= v1 的 0x20=0x04） |
+| 作用 | 結束磁力計校準並存 EEPROM（= v1 的 0x20=0x04）；成功後馬上航向歸零；沒在校準中 → 拒絕（0B 狀態 3）；驗證沒過 → 0B 狀態 2 失敗 |
 | 參數 | 無 |
 | 忙碌旗標 | 無（立即生效） |
 
@@ -1290,6 +1341,314 @@ MATRIX 原廠 0x22 積木沒有這個命令。
 ```typescript
 mbc.imuCalibrate(MbcImuCalib.MagEnd)   // 磁力計校準結束
 ```
+
+</details>
+
+</section>
+
+<section id="ce5" class="ref-item ref-cmd">
+
+### `E5` 航向設成指定角度 <small>setHeading</small>
+
+| 項目 | 內容 |
+| :--- | :--- |
+| 作用 | [角度 int16 小端]：四個航向都設成這個角度（RAM）；校準中不能做 → 拒絕（0B 狀態 3） |
+| 參數 | 角度 `int16 °`（2 byte） |
+| 忙碌旗標 | 無（立即生效） |
+
+**怎麼送**
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+EV3 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduino I2C／mBlock。
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino" open>
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+```cpp
+mbcWrite(0x6A, 0xE5, 32);   // 航向設成指定角度（角度 int16 °）
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+MATRIX 原廠 0x22 積木沒有這個命令。
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.writeCmd(0x6A, 0xE5, [參數])`。
+
+</details>
+
+</section>
+
+<section id="ce6" class="ref-item ref-cmd">
+
+### `E6` 以磁北為 0 <small>zeroNorth</small>
+
+| 項目 | 內容 |
+| :--- | :--- |
+| 作用 | 陀螺航向設成目前的磁北方位 0~359，之後只扣整圈（顯示絕對方位）；融合重新初始化約 3 秒內完成，逾時 = 失敗；校準中不能做 → 拒絕（0B 狀態 3） |
+| 參數 | 無 |
+| 忙碌旗標 | 無（立即生效） |
+
+**怎麼送**
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+EV3 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduino I2C／mBlock。
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino" open>
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+```cpp
+mbcWrite(0x6A, 0xE6);   // 以磁北為 0
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+MATRIX 原廠 0x22 積木沒有這個命令。
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.writeCmd(0x6A, 0xE6, [參數])`。
+
+</details>
+
+</section>
+
+<section id="ce7" class="ref-item ref-cmd">
+
+### `E7` 陀螺零點重估 <small>gyroBiasReset</small>
+
+| 項目 | 內容 |
+| :--- | :--- |
+| 作用 | 靜止約 1.5 秒（連續 3 個靜止窗）重新估計陀螺零點；4 秒內被移動湊不滿 = 失敗；校準中不能做 → 拒絕（0B 狀態 3） |
+| 參數 | 無 |
+| 忙碌旗標 | 無（立即生效） |
+
+**怎麼送**
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+EV3 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduino I2C／mBlock。
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino" open>
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+```cpp
+mbcWrite(0x6A, 0xE7);   // 陀螺零點重估
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+MATRIX 原廠 0x22 積木沒有這個命令。
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.writeCmd(0x6A, 0xE7, [參數])`。
+
+</details>
+
+</section>
+
+<section id="ce8" class="ref-item ref-cmd">
+
+### `E8` 重抓安裝軸 <small>recaptureAxis</small>
+
+| 項目 | 內容 |
+| :--- | :--- |
+| 作用 | 重新判定安裝方向（擷取後自動歸零）；RAM；校準中不能做 → 拒絕（0B 狀態 3） |
+| 參數 | 無 |
+| 忙碌旗標 | 無（立即生效） |
+
+**怎麼送**
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+EV3 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduino I2C／mBlock。
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino" open>
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+```cpp
+mbcWrite(0x6A, 0xE8);   // 重抓安裝軸
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+MATRIX 原廠 0x22 積木沒有這個命令。
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.writeCmd(0x6A, 0xE8, [參數])`。
+
+</details>
+
+</section>
+
+<section id="ce9" class="ref-item ref-cmd">
+
+### `E9` 取消校準 <small>cancelCalib</small>
+
+| 項目 | 內容 |
+| :--- | :--- |
+| 作用 | 取消進行中的加速度計／磁力計校準，不存檔、還原舊值 |
+| 參數 | 無 |
+| 忙碌旗標 | 無（立即生效） |
+
+**怎麼送**
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+EV3 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduino I2C／mBlock。
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino" open>
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+```cpp
+mbcWrite(0x6A, 0xE9);   // 取消校準
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+MATRIX 原廠 0x22 積木沒有這個命令。
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.writeCmd(0x6A, 0xE9, [參數])`。
+
+</details>
+
+</section>
+
+<section id="cea" class="ref-item ref-cmd">
+
+### `EA` 航向修正係數 <small>headingCorrection</small>
+
+| 項目 | 內容 |
+| :--- | :--- |
+| 作用 | [uint16 小端] 轉一圈的實際度數 × 10（0.1 度／圈），3500～3700；0 = 回 360.0。存 EEPROM 0x60（停 3 秒才寫，值沒變不寫），改完航向歸零；少參數或範圍外 → 0B 狀態 2（SPIKE 也回 2） |
+| 參數 | 0.1 度／圈 `0, 3500~3700`（2 byte） |
+| 忙碌旗標 | 無（立即生效） |
+
+**怎麼送**
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+EV3 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduino I2C／mBlock。
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino" open>
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+```cpp
+mbcWrite(0x6A, 0xEA, 32);   // 航向修正係數（0.1 度／圈 0, 3500~3700）
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+MATRIX 原廠 0x22 積木沒有這個命令。
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.writeCmd(0x6A, 0xEA, [參數])`。
+
+</details>
+
+</section>
+
+<section id="ceb" class="ref-item ref-cmd">
+
+### `EB` 校準回出廠 <small>calibFactoryReset</small>
+
+| 項目 | 內容 |
+| :--- | :--- |
+| 作用 | [A5]：加速度計、磁力計校準與航向修正係數都回出廠值，馬上存 EEPROM；確認碼不對 → 0B 狀態 2；校準中 → 拒絕（3） |
+| 參數 | 確認碼 `0xA5`（1 byte） |
+| 忙碌旗標 | 無（立即生效） |
+
+**怎麼送**
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+EV3 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduino I2C／mBlock。
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino" open>
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+```cpp
+mbcWrite(0x6A, 0xEB, 0xA5);   // 校準回出廠（確認碼 0xA5）
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+MATRIX 原廠 0x22 積木沒有這個命令。
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.writeCmd(0x6A, 0xEB, [參數])`。
 
 </details>
 
@@ -1399,7 +1758,6 @@ let st = mbc.status(0x6A)   // F3
 - hw0 = 1（共識 #6）；EV3 模式 4 = [0x6A | 1<<8, 韌體主×100+次, 0, 0]（格式 B 再補 2 個 0），模式 5 改送俯仰角速度（取代 #65 放的 ID）。
 - EV3 鎖住模式 0／1／3 照盤點程式碼：0 = 陀螺 3D、1 = 融合航向、3 = [陀螺 1D, 磁力航向]（INO:213 註解寫反，以程式為準）。
 - 0x22 照 R4 版（出貨版）鎖住：命令 4~9 = 三個航向 +32768 的「低 byte 在前、高 byte 在後」；盤點檔分析的是主韌體（高在前），主韌體 #67 改成跟 R4 版逐 byte 相同。命令 10~12 = 0；0x01、0x0A、0x0F、F1~F4 都觸發航向歸零（刻意，不動）。
-- SPIKE 不做（hosts.spike = false，使用者先前決定），所有值 spike = []。
 - B-13：E1~E4 加速度計／磁力計校準開始／結束補回（v1 的 0x20 = 01/02/03/04），I2C 定案 §3 只列 E0。busyFlag：E1 → b4、E3 → b5。
 - 俯仰角範圍定案沒寫（韌體尚無現成值，#67 用 atan2 新算），range 先填「°」不給 min/max，韌體做好後再補。
 - 磁力信任度 08 = round(trust×255)，磁場干擾度 09 = round(disturbance×100) 上限 255，朝上的面 0A = 軸號 + 3×負向：公式照盤點 I2C v1 0x34~0x36。

@@ -26,9 +26,9 @@
 
 ## 已產生指令參考的產品
 
-- [IMU 陀螺儀](/sensors/imu/reference.md)：13 個值、5 個命令
-- [循行者 16 路](/sensors/line16/reference.md)：9 個值、6 個命令
-- [循行者 8 路](/sensors/line8/reference.md)：9 個值、6 個命令
+- [IMU 陀螺儀](/sensors/imu/reference.md)：14 個值、12 個命令
+- [循行者 16 路](/sensors/line16/reference.md)：9 個值、7 個命令
+- [循行者 8 路](/sensors/line8/reference.md)：9 個值、7 個命令
 - [掌控者 PS2](/sensors/ps2/reference.md)：12 個值、2 個命令
 - [掌控者 PS4／PS5 接收器](/sensors/ps4/reference.md)：12 個值、2 個命令
 - [測距者 2 路](/sensors/tof2/reference.md)：8 個值、0 個命令

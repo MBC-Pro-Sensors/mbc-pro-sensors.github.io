@@ -52,11 +52,11 @@
 
 | 積木 | 編號 | 說明 |
 | :--- | :--- | :--- |
-| 循行者 循 ［黑］ 線 | [`E0`](/sensors/line8/reference.md#ce0) | 追黑線（預設） |
-| 循行者 循 ［白］ 線 | [`E1`](/sensors/line8/reference.md#ce1) | 追白線（F3 b1 = 1） |
+| 循行者 循 ［黑］ 線 | [`E0`](/sensors/line8/reference.md#ce0) | 追黑線（預設）；存 RAM，重開機回預設 |
+| 循行者 循 ［白］ 線 | [`E1`](/sensors/line8/reference.md#ce1) | 追白線（F3 b1 = 1）；存 RAM，重開機回預設 |
 | 循行者 校準 ［目前讀值記為黑］ | [`E2`](/sensors/line8/reference.md#ce2) | 把目前讀值記為黑（感應器壓在黑線上），約 50 ms；寫入 EEPROM |
 | 循行者 校準 ［目前讀值記為白］ | [`E3`](/sensors/line8/reference.md#ce3) | 把目前讀值記為白（感應器壓在白底上），約 50 ms；寫入 EEPROM |
-| 循行者 門檻設為 50 | [`E4`](/sensors/line8/reference.md#ce4) | 二值化門檻 1~99（RAM，重開機回預設 50） |
+| 循行者 門檻設為 50 | [`E4`](/sensors/line8/reference.md#ce4) | 二值化門檻 1~99（RAM，重開機回預設 50）；SPIKE 參數超出範圍回失敗（狀態 2） |
 | 循行者 校準 ［自動（來回掃 5 秒）］ | [`E7`](/sensors/line8/reference.md#ce7) | 5 秒內把感應器在黑線與白底上來回掃，取極值當黑白參考（共識 B-12，= v1 的 0x20=0x01）；期間 F3 b2 = 1 |
 
 ## 狀態
@@ -68,6 +68,7 @@
 | b2 | 校準中 (`calibrating`) | E2／E3／E7 執行中；此時拒收新的校準命令 |
 | b3 | 丟線 (`lost`) | 線段數 = 0 |
 | b4 | 分岔 (`fork`) | 線段數 ≥ 2 |
+| b5 | 左右反向 (`reversed`) | E9 = 1（感應器反裝，左右對調） |
 
 ## JavaScript 寫法
 

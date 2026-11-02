@@ -71,7 +71,7 @@ int raw = MiniR4.I2C1.MXColor.getColor(M);   // 第 1 組
 
 </section>
 
-<p class="ref-missing"><b>這個軟體讀不到</b>：磁力航向、轉向軸角速度、俯仰角、俯仰角速度、磁力信任度、磁場干擾度、朝上的面、角速度 1~3 軸、加速度 1~3 軸、磁力 1~3 軸。要用這些值請改用 <a href="/sensors/imu/arduino/ide.md">Arduino</a>／<a href="/sensors/imu/mblock/mblock5.md">mBlock</a>／<a href="/sensors/imu/microbit/makecode.md">micro:bit</a>。</p>
+<p class="ref-missing"><b>這個軟體讀不到</b>：磁力航向、轉向軸角速度、俯仰角、俯仰角速度、磁力信任度、磁場干擾度、朝上的面、角速度 1~3 軸、加速度 1~3 軸、磁力 1~3 軸、命令狀態。要用這些值請改用 <a href="/sensors/imu/arduino/ide.md">Arduino</a>／<a href="/sensors/imu/mblock/mblock5.md">mBlock</a>／<a href="/sensors/imu/microbit/makecode.md">micro:bit</a>。</p>
 
 ## 命令
 

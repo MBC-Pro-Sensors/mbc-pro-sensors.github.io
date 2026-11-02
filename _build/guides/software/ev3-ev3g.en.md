@@ -18,7 +18,7 @@ No extension and no driver needed. On the EV3 the sensor **emulates an original 
 - Some products come with MBC My Blocks. They are already inside the example projects; open an example and they are there.
 
 > [!IMPORTANT]
-> **Do not switch modes in the middle of a program.** Every time the EV3 switches a sensor mode (for example from Proximity to Remote) it stalls for about **0.5 s**, which can make a fast robot lose control. Pick one mode at the start and use it for the whole run.
+> **Do not switch modes in the middle of a program.** Every time the EV3 switches a sensor mode (for example from Proximity to Remote) it stalls for about **1 s**, which can make a fast robot lose control. Pick one mode at the start and use it for the whole run.
 
 ### Wiring
 
@@ -36,4 +36,4 @@ No extension and no driver needed. On the EV3 the sensor **emulates an original 
 - **The number never changes?** Unplug the sensor and plug it back in (the EV3 must be on first).
 - **The EV3 shows an "Infrared Sensor"?** That is normal: read the values with the infrared sensor blocks.
 - **Some examples have no EV3-G version?** Examples marked "Pybricks / EV3 MicroPython / clev3r only" use a mode the EV3-G blocks cannot read.
-- **The program hiccups now and then?** It switches sensor modes; each switch costs about 0.5 s. Use one mode only.
+- **The program hiccups now and then?** It switches sensor modes; each switch costs about 1 s. Use one mode only.

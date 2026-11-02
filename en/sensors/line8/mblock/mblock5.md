@@ -179,7 +179,7 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Pathfinder" 
 
 ### black line mode <small>blackLine</small>
 
-follow a black line (default)
+follow a black line (default); RAM only, back to the default after reset
 
 <pre class="blocks">Pathfinder port [1 v] black line mode :: sensing</pre>
 
@@ -191,7 +191,7 @@ follow a black line (default)
 
 ### white line mode <small>whiteLine</small>
 
-follow a white line (F3 b1 = 1)
+follow a white line (F3 b1 = 1); RAM only, back to the default after reset
 
 <pre class="blocks">Pathfinder port [1 v] white line mode :: sensing</pre>
 
@@ -227,7 +227,7 @@ store the current reading as white (sensor over the white surface), ~50 ms; save
 
 ### set threshold <small>setThreshold</small>
 
-threshold 1~99 (RAM only, back to 50 after reboot)
+threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2)
 
 <pre class="blocks">Pathfinder port [1 v] set threshold (50) :: sensing</pre>
 
@@ -256,6 +256,8 @@ reads the whole value table into a cache (FD pack-all); reporter blocks within t
 <pre class="blocks">Pathfinder port [1 v] update all values :: sensing</pre>
 
 </section>
+
+<p class="ref-missing"><b>Not available here</b>：mirror left/right</p>
 
 ## Examples
 

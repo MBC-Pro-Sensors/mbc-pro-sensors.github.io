@@ -1,13 +1,9 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-# 陀螺儀 IMU 九軸感應器（即將推出）
+# 陀螺儀 IMU 九軸感應器
 
 <!-- product-hero -->
 
 <!-- platform-grid -->
-
-
-> [!NOTE]
-> 本產品開發中，規格以正式上市版本為準。想搶先試用或了解上市時間，歡迎 [聯絡我們](/contact.md)。
 
 ## 🚀 產品概述
 
@@ -44,7 +40,7 @@ MBC 陀螺儀 IMU 結合 6 軸慣性感測（陀螺儀＋加速度計）與磁�
 > 磁力計會受到馬達、鐵製場地、喇叭等磁場影響。在磁場干擾大的環境，請使用 **Gyro3D**。
 
 > [!NOTE]
-> **EV3 Classroom** 的「角度」「速率」積木與上表相同（「速率」讀到的是融合航向，不是每秒幾度）。**Pybricks（EV3）** 的 `GyroSensor.angle()` 讀到的是「單軸陀螺儀」航向，`speed()` 讀到的是磁力計航向（相對值，不是指北）；`reset_angle(0)` 可正常歸零。新手範例請看 [EV3 新手範例](/sensors/imu/ev3-examples.md)。
+> **EV3 Classroom** 的「角度」「速率」積木與上表相同（「速率」讀到的是融合航向，不是每秒幾度）。**Pybricks（EV3）** 的 `GyroSensor.angle()` 讀到的是「單軸陀螺儀」航向，`speed()` 讀到的是磁力計航向（相對值，不是指北）；`reset_angle(0)` 可正常歸零；`calibrate()` 之後約 3.5 秒才讀得到值（原廠陀螺儀也一樣）。要角速度（每秒幾度）請用 `LUMPDevice` 讀模式 2（見範例 7）。**ev3dev** 的 `speed()` 讀到的是融合航向。新手範例請看 [EV3 新手範例](/sensors/imu/ev3-examples.md)。
 
 > [!TIP]
 > **原廠 EV3 韌體實測通過（2026-11-02）**：認成原廠陀螺儀、原廠歸零積木可用、7 個模式讀值正確、切模式 300 次與連續讀不斷線。**ev3dev**：支援。
@@ -62,10 +58,10 @@ MBC 陀螺儀 IMU 結合 6 軸慣性感測（陀螺儀＋加速度計）與磁�
 
 | 平台 | 支援方式 |
 | :--- | :--- |
-| LEGO MINDSTORMS EV3 | EV3 官方軟體（原廠陀螺儀積木，原廠韌體實測通過）、ev3dev 支援 |
-| LEGO SPIKE Prime / Robot Inventor | 專屬版本 |
-| Arduino / ESP32 / 樹莓派 | 通用 I2C（位址 `0x6A`） |
-| MATRIX Mini R4 | I2C |
+| LEGO MINDSTORMS EV3 | 原廠 EV3 韌體實測通過（2026-11-02）：EV3 Lab（EV3-G）、EV3 Classroom（原廠陀螺儀積木）、clev3r、Pybricks v4、ev3dev 都能用 |
+| LEGO SPIKE Prime / Robot Inventor | 不提供 |
+| Arduino / ESP32 / 樹莓派 | 通用 I2C（位址 `0x6A`）；Arduino Nano 實測通過（2026-11-02） |
+| MATRIX Mini R4 | I2C；原廠函式庫實測通過（2026-11-02） |
 
 ## ∿ 通用 I2C 暫存器（位址 `0x6A`）
 

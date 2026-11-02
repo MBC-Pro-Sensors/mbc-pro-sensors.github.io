@@ -236,6 +236,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 .chip.other-mode:hover, .chip.other-mode:focus-visible { opacity: 1; }
 .v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
 .v1warn b { white-space: nowrap; }
+.v1ok { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--accent-soft); color: var(--ink); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
+.v1ok b { white-space: nowrap; }
 /* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
 .ucpick { display: grid; gap: 14px; }
 #modes { gap: 8px; }
@@ -250,7 +252,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     <span class="eyebrow">MBC 神攝手 × MBC SPIKE 積木網站</span>
     <h1>三個步驟用 MBC 積木網站讀神攝手</h1>
     <p class="lead"><a href="https://mbc-spike-blocks.mbcrobot.workers.dev/" target="_blank" rel="noopener">MBC SPIKE 積木網站</a>不用匯入函式庫：在「開機時執行一次」放<b>設定積木（哪個埠、哪個相機模式）</b>，「主迴圈」一直重複，再用<b>讀值積木</b>讀相機。左邊一步一步做，右邊的積木會跟著長出來；積木圖是直接從網站匯出的。主機要先換成 Pybricks 韌體（網站可以幫你燒）。</p>
-    <p class="v1warn" role="note"><b>v1 尚未上機驗證</b><span>數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。</span></p>
+    <p class="v1ok" role="note"><b>SPIKE 已上機驗證</b><span>2026-11-01 用出貨版韌體 v1.0-261101 在實機跑過（Pybricks 函式庫與積木、Pybricks 內建積木、官方 App 教育版與家用版、MBC 積木網站）。</span></p>
   </header>
 
   <section class="main" aria-label="教學">

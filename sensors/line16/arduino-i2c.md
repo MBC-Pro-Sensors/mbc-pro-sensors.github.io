@@ -59,12 +59,13 @@
 
 | 編號 | 命令 | 參數 | 說明 |
 | :--- | :--- | :--- | :--- |
-| [`E0`](/sensors/line16/reference.md#ce0) | 切黑線 `blackLine` | — | 追黑線（預設） |
-| [`E1`](/sensors/line16/reference.md#ce1) | 切白線 `whiteLine` | — | 追白線（F3 b1 = 1） |
+| [`E0`](/sensors/line16/reference.md#ce0) | 切黑線 `blackLine` | — | 追黑線（預設）；存 RAM，重開機回預設 |
+| [`E1`](/sensors/line16/reference.md#ce1) | 切白線 `whiteLine` | — | 追白線（F3 b1 = 1）；存 RAM，重開機回預設 |
 | [`E2`](/sensors/line16/reference.md#ce2) | 黑色校準 `calibBlack` | — | 把目前讀值記為黑（感應器壓在黑線上），約 50 ms；寫入 EEPROM（執行中 F3 bit2 = 1） |
 | [`E3`](/sensors/line16/reference.md#ce3) | 白色校準 `calibWhite` | — | 把目前讀值記為白（感應器壓在白底上），約 50 ms；寫入 EEPROM（執行中 F3 bit2 = 1） |
-| [`E4`](/sensors/line16/reference.md#ce4) | 設定門檻 `setThreshold` | 門檻 1~99 | 二值化門檻 1~99（RAM，重開機回預設 50） |
+| [`E4`](/sensors/line16/reference.md#ce4) | 設定門檻 `setThreshold` | 門檻 1~99 | 二值化門檻 1~99（RAM，重開機回預設 50）；SPIKE 參數超出範圍回失敗（狀態 2） |
 | [`E7`](/sensors/line16/reference.md#ce7) | 5 秒動態校準 `calibAuto` | — | 5 秒內把感應器在黑線與白底上來回掃，取極值當黑白參考（共識 B-12，= v1 的 0x20=0x01）；期間 F3 b2 = 1（執行中 F3 bit2 = 1） |
+| [`E9`](/sensors/line16/reference.md#ce9) | 左右反向 `reverse` | 反向 0~1 | [0 正常／1 左右反向]：感應器反裝時用，通道順序與線位置左右對調；校準值照實體通道存，切換不用重校；存 RAM，重開機回 0（舊 mBlock 沒有）；SPIKE 參數超出範圍回失敗（狀態 2） |
 
 ## 狀態旗標 F3
 
@@ -75,6 +76,7 @@
 | b2 | 校準中 (`calibrating`) | E2／E3／E7 執行中；此時拒收新的校準命令 |
 | b3 | 丟線 (`lost`) | 線段數 = 0 |
 | b4 | 分岔 (`fork`) | 線段數 ≥ 2 |
+| b5 | 左右反向 (`reversed`) | E9 = 1（感應器反裝，左右對調） |
 
 ## 共用暫存器
 

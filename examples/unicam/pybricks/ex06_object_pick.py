@@ -2,7 +2,8 @@
 # Sharpshooter Vision × Pybricks (SPIKE) example 6: find the biggest red triangle and drive to it
 # 需要把相機選單切到 相機模式 5 物體偵測 ・子選項 ① 物體清單＝模式編號 51
 # Camera menu: camera mode 5 Object detection, option 1 Object list = mode number 51
-# 準備：在相機上把「目標 1」教成紅色（形狀可以不指定）/ teach "target 1" as red on the camera
+# 準備：用要找的物體本身（紅色三角形）教「目標 1」，並指定形狀 Tri（相機選單 Target 1 shape，或 cam.target_shape(1, 3)）
+# teach "target 1" with the red triangle itself and set its shape to Tri (camera menu, or cam.target_shape(1, 3))
 # 接線 Wiring：相機 → C 孔 / camera → port C；左輪 E、右輪 F / left wheel E, right wheel F
 # 同一個資料夾要有 MBC_UniCam.py / MBC_UniCam.py must be imported too
 #

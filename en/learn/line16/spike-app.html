@@ -350,7 +350,7 @@ svg.lego .blocklyDropdownText { fill: #fff !important; }
       <li><b>In the official App, use the "Color Sensor" blocks.</b> To the official App, the Pathfinder 16-Way is just a Color Sensor. You do not need to install anything.</li>
       <li><b>Always convert.</b> Subtract 16 from reflected light and 100 from raw red to get the line position. If you forget, the number is always positive (with the line in the centre, reflected light is 16).</li>
       <li><b>Check "is there a line?" with line width.</b> Line width = 0 means no line. When the line leaves completely, line position stays at the side where it left (-16 / 16).</li>
-      <li><b>Crossroads:</b> line width is 11 or more (the whole row on black), so the example uses "line width &gt; 10". This page is for the Education edition (SPIKE 3). In the home edition (Robot Inventor), line width only goes up to 10, so use "line width &gt; 8" for a crossroads.</li>
+      <li><b>Crossroads:</b> line width is 11 or more (the whole row on black), so the example uses "line width &gt; 10". This page is for the Education edition (SPIKE 3). In the home edition (Robot Inventor), "color" only goes up to 10, so use "line width &gt; 9" for a crossroads (tested 2026-10). In the Education hub test (2026-10-29), "color" showed NaN once the width went above 10, and the 16-way crossroads stop in blocks is still being re-tested; to be sure it stops, use <a href="/en/learn/line16/spike-app-python.html">SPIKE App Python</a> for now.</li>
       <li><b>Direction:</b> stand behind the robot and look forward. A line on the left gives a negative number, a line on the right gives a positive number. Channel 1 is on the far left.</li>
     </ol>
   </section>

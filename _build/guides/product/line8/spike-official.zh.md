@@ -49,7 +49,7 @@
 
 ### PD 循線示範（速度 50）
 
-跟 Pybricks 版同一套 PD 循線邏輯，教育版和玩具版各有積木和 Python，共 4 支，都在主機上跑過。
+跟 Pybricks 版同一套 PD 循線邏輯，教育版和玩具版各有積木和 Python，共 4 支，都在主機上跑過（實測通過：教育版 SPIKE App 3 的積木與 Python 2026-10-29～30、玩具版 Robot Inventor App 10.5.4 的積木與 Python 2026-10-29～30）。
 
 - 教育版（SPIKE App 3）：[📥 積木 .llsp3](/examples/line8/pd50/spike_app/line8_pd50_edu_blocks.llsp3)・[📥 Python（小幫手已內嵌）](/examples/line8/pd50/spike_app/line8_pd50_edu_python.py)
 - 玩具版（Robot Inventor App）：[📥 積木 .lms](/examples/line8/pd50/spike_app/line8_pd50_ri_blocks.lms)・[📥 Python（小幫手已內嵌）](/examples/line8/pd50/spike_app/line8_pd50_ri_python.py)
@@ -59,6 +59,7 @@
 - **讀值**：細位置＝「原始紅」− 100（兩版一樣）。線寬：**積木版（教育版、玩具版都一樣）用「顏色」積木**；只有**玩具版 Python** 用反射光 `get_reflected_light()`。
 - 速度 50（功率 %）、KP 0.4、KD 1.5 是建議值；十字路口停車：線寬 > 5。
 - 舊韌體也能用：官方 App 讀的是模式 0，不受模式 7 改版影響。
+- 把 Python 貼進 SPIKE App 3 編輯器時，編輯器會把行尾 `#` 註解前面的空格縮短，這是自動排版，不影響程式。
 
 ### 玩具版（Robot Inventor App）Python
 

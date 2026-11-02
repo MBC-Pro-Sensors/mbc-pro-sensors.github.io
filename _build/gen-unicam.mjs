@@ -246,8 +246,8 @@ function countsTable(lang) {
 const AI_NOTE = '<!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->';
 const GEN_NOTE = '<!-- 本頁由 _build/gen-unicam.mjs 從 _build/protocol/unicam/cam_universal_layout.json 產生，請勿手改；規格改了跑 node _build/gen-unicam.mjs --sync -->';
 const notVerified = (lang) => T(lang,
-  '> [!WARNING]\n> **韌體 v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。',
-  '> [!WARNING]\n> **Firmware v1 not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.');
+  '> [!WARNING]\n> **SPIKE 版已上機驗證（2026-11-01，出貨版 v1.0-261101）**；EV3、MATRIX、Arduino、micro:bit、mBlock 還沒上機，數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。',
+  '> [!WARNING]\n> **The SPIKE edition is hardware-verified (2026-11-01, shipping firmware v1.0-261101)**; EV3, MATRIX, Arduino, micro:bit and mBlock are not yet. The value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.');
 function referencePage(lang) {
   const P = pre(lang);
   const out = [AI_NOTE, GEN_NOTE];

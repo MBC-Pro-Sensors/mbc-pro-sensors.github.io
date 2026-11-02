@@ -58,16 +58,24 @@ IMU 陀螺儀通用 I2C 版用 **MBC I2C 協議 v2**：寫一個編號、讀 2 b
 | [`10~12`](/sensors/imu/reference.md#v10) | 角速度 1~3 軸 `gyro` | -32768~32767 0.1 dps | 10 X、11 Y、12 Z 角速度，0.1 度／秒（實體軸，已套軸向號誌） |
 | [`13~15`](/sensors/imu/reference.md#v13) | 加速度 1~3 軸 `accel` | -32768~32767 mg | 13 X、14 Y、15 Z 加速度，mg（1000 = 1 g） |
 | [`16~18`](/sensors/imu/reference.md#v16) | 磁力 1~3 軸 `mag` | -32768~32767 mG | 16 X、17 Y、18 Z 磁場強度，mG（毫高斯） |
+| [`0B`](/sensors/imu/reference.md#v0b) | 命令狀態 `cmdStatus` | 0~0xEF03 | (最後命令碼 << 8) \| 狀態；狀態 0 完成、1 忙碌、2 失敗、3 拒絕（跟 SPIKE 命令回覆（模式 8 v3）同一套碼）；E1~EB 都會回報；EB 以後沒定義的命令：I2C 直接不理、0B 不變（SPIKE 回 3 拒絕） |
 
 ## 寫入命令
 
 | 編號 | 命令 | 參數 | 說明 |
 | :--- | :--- | :--- | :--- |
 | [`E0`](/sensors/imu/reference.md#ce0) | 航向歸零 `zeroHeading` | — | 四個航向都歸零（zeroHeadings()）；EV3 另有原廠 WRITE 0x11 陀螺歸零 |
-| [`E1`](/sensors/imu/reference.md#ce1) | 加速度計校準開始 `accelCalStart` | — | 開始加速度計校準（= v1 的 0x20=0x01）；期間 F3 b4 = 1（執行中 F3 bit4 = 1） |
-| [`E2`](/sensors/imu/reference.md#ce2) | 加速度計校準結束 `accelCalEnd` | — | 結束加速度計校準並存 EEPROM（= v1 的 0x20=0x02）；通過後自動航向歸零一次 |
-| [`E3`](/sensors/imu/reference.md#ce3) | 磁力計校準開始 `magCalStart` | — | 開始磁力計校準（= v1 的 0x20=0x03）；期間 F3 b5 = 1（執行中 F3 bit5 = 1） |
-| [`E4`](/sensors/imu/reference.md#ce4) | 磁力計校準結束 `magCalEnd` | — | 結束磁力計校準並存 EEPROM（= v1 的 0x20=0x04） |
+| [`E1`](/sensors/imu/reference.md#ce1) | 加速度計校準開始 `accelCalStart` | — | 開始加速度計校準（= v1 的 0x20=0x01）；期間 F3 b4 = 1；磁力計校準中 → 忽略（0B 狀態 3 拒絕）（執行中 F3 bit4 = 1） |
+| [`E2`](/sensors/imu/reference.md#ce2) | 加速度計校準結束 `accelCalEnd` | — | 結束加速度計校準並存 EEPROM（= v1 的 0x20=0x02）；通過後重新擷取安裝軸，擺正靜置後才航向歸零（不是馬上歸零）；沒在校準中 → 拒絕（0B 狀態 3）；驗證沒過 → 0B 狀態 2 失敗 |
+| [`E3`](/sensors/imu/reference.md#ce3) | 磁力計校準開始 `magCalStart` | — | 開始磁力計校準（= v1 的 0x20=0x03）；期間 F3 b5 = 1；磁力計故障時 → 忽略（0B 狀態 3）（執行中 F3 bit5 = 1） |
+| [`E4`](/sensors/imu/reference.md#ce4) | 磁力計校準結束 `magCalEnd` | — | 結束磁力計校準並存 EEPROM（= v1 的 0x20=0x04）；成功後馬上航向歸零；沒在校準中 → 拒絕（0B 狀態 3）；驗證沒過 → 0B 狀態 2 失敗 |
+| [`E5`](/sensors/imu/reference.md#ce5) | 航向設成指定角度 `setHeading` | 角度 int16 ° | [角度 int16 小端]：四個航向都設成這個角度（RAM）；校準中不能做 → 拒絕（0B 狀態 3） |
+| [`E6`](/sensors/imu/reference.md#ce6) | 以磁北為 0 `zeroNorth` | — | 陀螺航向設成目前的磁北方位 0~359，之後只扣整圈（顯示絕對方位）；融合重新初始化約 3 秒內完成，逾時 = 失敗；校準中不能做 → 拒絕（0B 狀態 3） |
+| [`E7`](/sensors/imu/reference.md#ce7) | 陀螺零點重估 `gyroBiasReset` | — | 靜止約 1.5 秒（連續 3 個靜止窗）重新估計陀螺零點；4 秒內被移動湊不滿 = 失敗；校準中不能做 → 拒絕（0B 狀態 3） |
+| [`E8`](/sensors/imu/reference.md#ce8) | 重抓安裝軸 `recaptureAxis` | — | 重新判定安裝方向（擷取後自動歸零）；RAM；校準中不能做 → 拒絕（0B 狀態 3） |
+| [`E9`](/sensors/imu/reference.md#ce9) | 取消校準 `cancelCalib` | — | 取消進行中的加速度計／磁力計校準，不存檔、還原舊值 |
+| [`EA`](/sensors/imu/reference.md#cea) | 航向修正係數 `headingCorrection` | 0.1 度／圈 0, 3500~3700 | [uint16 小端] 轉一圈的實際度數 × 10（0.1 度／圈），3500～3700；0 = 回 360.0。存 EEPROM 0x60（停 3 秒才寫，值沒變不寫），改完航向歸零；少參數或範圍外 → 0B 狀態 2（SPIKE 也回 2） |
+| [`EB`](/sensors/imu/reference.md#ceb) | 校準回出廠 `calibFactoryReset` | 確認碼 0xA5 | [A5]：加速度計、磁力計校準與航向修正係數都回出廠值，馬上存 EEPROM；確認碼不對 → 0B 狀態 2；校準中 → 拒絕（3） |
 
 ## 狀態旗標 F3
 
@@ -190,6 +198,7 @@ void loop() {
   { int16_t a[3]; mbcReadMany(ADDR, 0x10, 3, a); Serial.print("gyro: "); for (uint8_t i = 0; i < 3; i++) { Serial.print(a[i]); Serial.print(' '); } Serial.println(); }
   { int16_t a[3]; mbcReadMany(ADDR, 0x13, 3, a); Serial.print("accel: "); for (uint8_t i = 0; i < 3; i++) { Serial.print(a[i]); Serial.print(' '); } Serial.println(); }
   { int16_t a[3]; mbcReadMany(ADDR, 0x16, 3, a); Serial.print("mag: "); for (uint8_t i = 0; i < 3; i++) { Serial.print(a[i]); Serial.print(' '); } Serial.println(); }
+  Serial.print("cmdStatus: "); Serial.println(mbcRead(ADDR, 0x0B));   // 命令狀態
   Serial.println();
   delay(200);
 }
@@ -204,7 +213,6 @@ void loop() {
 - hw0 = 1（共識 #6）；EV3 模式 4 = [0x6A | 1<<8, 韌體主×100+次, 0, 0]（格式 B 再補 2 個 0），模式 5 改送俯仰角速度（取代 #65 放的 ID）。
 - EV3 鎖住模式 0／1／3 照盤點程式碼：0 = 陀螺 3D、1 = 融合航向、3 = [陀螺 1D, 磁力航向]（INO:213 註解寫反，以程式為準）。
 - 0x22 照 R4 版（出貨版）鎖住：命令 4~9 = 三個航向 +32768 的「低 byte 在前、高 byte 在後」；盤點檔分析的是主韌體（高在前），主韌體 #67 改成跟 R4 版逐 byte 相同。命令 10~12 = 0；0x01、0x0A、0x0F、F1~F4 都觸發航向歸零（刻意，不動）。
-- SPIKE 不做（hosts.spike = false，使用者先前決定），所有值 spike = []。
 - B-13：E1~E4 加速度計／磁力計校準開始／結束補回（v1 的 0x20 = 01/02/03/04），I2C 定案 §3 只列 E0。busyFlag：E1 → b4、E3 → b5。
 - 俯仰角範圍定案沒寫（韌體尚無現成值，#67 用 atan2 新算），range 先填「°」不給 min/max，韌體做好後再補。
 - 磁力信任度 08 = round(trust×255)，磁場干擾度 09 = round(disturbance×100) 上限 255，朝上的面 0A = 軸號 + 3×負向：公式照盤點 I2C v1 0x34~0x36。

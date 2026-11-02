@@ -5,8 +5,8 @@
 
 [🔙 回到神攝手](/sensors/unicam/index.md)　｜　[SPIKE 讀法說明](/sensors/unicam/spike/index.md)　｜　[📋 讀值參考](/sensors/unicam/reference.md)
 
-> [!WARNING]
-> **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
+> [!NOTE]
+> **SPIKE 已上機驗證（2026-11-01，出貨版 v1.0-261101）**：官方 App 教育版、家用版、Pybricks 函式庫、Pybricks 內建積木、這頁的範例都在實機跑過。
 
 這一頁有 **Pybricks 6 個範例**（用 MBC 函式庫 `MBC_UniCam.py`）和 **樂高官方 SPIKE App（教育版）Python 2 個範例**，最後是官方 App 積木的拆值表（教育版、家用版）。題目都是學生最常用的：跟著色塊轉、多色找位置、座標取色判斷顏色、照順序給色號（WRO 顏色順序）、PD 循線＋路口停車、物體偵測（找最大的紅色三角形）。
 
@@ -17,7 +17,7 @@
 | 🟨 官方 App 積木（教育版／家用版） | 只用積木 | 照最下面的[拆值表](#app-table)用「顏色、反射光、原始紅綠藍」積木 |
 
 > [!IMPORTANT]
-> - **Pybricks 函式庫會幫你切相機模式**：程式裡寫 `mode=13`（模式編號＝相機模式 ×10＋子選項，照順序給色號＝30），建立物件時函式庫就把相機切到這個模式（出貨版韌體；2026-10-29 以前的韌體要自己在相機選單切成一樣）。官方 App 送不了命令，相機選單要自己切。
+> - **Pybricks 函式庫會自動切相機模式**：`UniCam(Port.C, mode=13)` 建立時就把相機切到 13（模式編號＝相機模式 ×10＋子選項，照順序給色號＝30），不用先在選單切（出貨版韌體；2026-10-29 以前的韌體要自己在相機選單切成一樣）。官方 App 沒辦法遠端切，要在相機選單切好。
 > - Pybricks 要先把主機換成 Pybricks 韌體（code.pybricks.com 的設定裡可以燒，之後可用 SPIKE App 換回）。官方 App 不用換。
 > - 相機一定要用 **SPIKE 版韌體**。同一個韌體會自己認出主機是官方 App 還是 Pybricks。
 
@@ -26,7 +26,7 @@
 ## 開始之前：在相機上教色、切模式
 
 1. **教色**：即時畫面用左右鍵停在「目標 1」→ 按 **OK** → 用左右鍵把十字移到色塊上（AxisX → AxisY）→ **OK** 取色（按住 OK 0.8 秒直接完成）。目標 2、3…照做。停在目標上按**側鍵**＝清除這個目標。
-2. **切模式**：左右鍵停在 **MODE** → **OK** → 選相機模式 1～5 → **OK** → 選子選項 → **OK**。子選項會顯示這台主機實際給幾個（例如 Pybricks「7 XY」）。螢幕右上的「1-3」就是現在的模式（＝模式編號 13）。
+2. **切模式**：左右鍵停在 **MODE** → **OK** → 選相機模式 1～5 → **OK** → 選子選項 → **OK**。子選項會顯示這台主機實際給幾個（例如 Pybricks「7 XY」）。螢幕右上的「1-3」就是現在的模式（＝模式編號 13）。子選項的數量是**進選單那一刻**看主機決定的：先退回即時畫面、等主機開始讀之後再進選單；停在選單裡，數量不會跟著變。
 3. **物體偵測（相機模式 5）**：教完目標 1～8 會跳出 `Target N shape`，可以指定形狀（Any＝不指定）或按側鍵跳過；只有目標色 1～8 會當成物體。
 4. 設定斷電會記住（目標色、模式、子選項、指定形狀）。
 
@@ -147,7 +147,7 @@ while True:
 
 **常見問題**
 - **轉的方向反了？** → 左右輪接反了，把 E、F 對調，或把 `Direction.COUNTERCLOCKWISE` 改到右輪。
-- **一直轉圈找不到？** → 相機螢幕右上要顯示 `1-3`；目標 1 要教過；`mode=` 要跟選單一樣。
+- **一直轉圈找不到？** → 相機螢幕右上要顯示 `1-3`；目標 1 要教過；官方 App 要在相機選單切到 13。
 - **左右晃個不停？** → `KP` 改小（例如 2）。
 
 ---
@@ -426,7 +426,7 @@ while True:
 **常見問題**
 - **左右晃得厲害？** → `KP` 改小、`KD` 改大；或 `SPEED` 改慢。
 - **彎道衝出去？** → 遠處的比重改大（例如 0.5／0.5）。
-- **還沒到路口就停？** → 路口判斷的門檻在相機裡，v1 還沒上機調過；先把 `if junction in (1, 2)` 改成也要 `cam.junction_dist() < 40`（路口夠近才停）。
+- **還沒到路口就停？** → SPIKE 上機十字／T 停車已通過；你的場地誤停才把 `if junction in (1, 2)` 改成也要 `cam.junction_dist() < 40`（路口夠近才停）。
 
 ---
 
@@ -434,7 +434,7 @@ while True:
 
 **這個範例會做什麼**：相機把畫面裡的物體由大到小排好，程式從最大的往下找「目標 1（紅色）的三角形」，轉過去開到它前面（它跑到畫面最下面）就停車嗶一聲；看不到就原地慢慢轉著找。主機螢幕顯示畫面裡有幾個物體。
 
-**相機要切到**：相機模式 5 物體偵測 ・子選項 ① 物體清單＝**模式編號 51**；先把「目標 1」教成紅色（形狀可以不指定，相機會自己判斷）。
+**相機要切到**：相機模式 5 物體偵測 ・子選項 ① 物體清單＝**模式編號 51**；用要找的物體本身（紅色三角形）教「目標 1」，並指定形狀 **Tri**（教完跳出的 `Target 1 shape` 選 Tri，或程式裡 `cam.target_shape(1, 3)` 一次）。上機時用紅色卡教，三角形紙顏色不一樣會被切成好幾塊；用三角形本身重教才找到。
 
 **要準備什麼**：SPIKE 主機、驅動底座（左輪 **E**、右輪 **F**）、相機插 **C 孔**、紅色三角形的紙板或積木（再放幾個別的形狀更好玩）。
 
@@ -448,7 +448,8 @@ while True:
 # Sharpshooter Vision × Pybricks (SPIKE) example 6: find the biggest red triangle and drive to it
 # 需要把相機選單切到 相機模式 5 物體偵測 ・子選項 ① 物體清單＝模式編號 51
 # Camera menu: camera mode 5 Object detection, option 1 Object list = mode number 51
-# 準備：在相機上把「目標 1」教成紅色（形狀可以不指定）/ teach "target 1" as red on the camera
+# 準備：用要找的物體本身（紅色三角形）教「目標 1」，並指定形狀 Tri（相機選單 Target 1 shape，或 cam.target_shape(1, 3)）
+# teach "target 1" with the red triangle itself and set its shape to Tri (camera menu, or cam.target_shape(1, 3))
 # 接線 Wiring：相機 → C 孔 / camera → port C；左輪 E、右輪 F / left wheel E, right wheel F
 # 同一個資料夾要有 MBC_UniCam.py / MBC_UniCam.py must be imported too
 #
@@ -526,7 +527,7 @@ while True:
 
 ## 樂高官方 SPIKE App（教育版）Python 範例
 
-官方 App 把相機當成「顏色感應器」，Python 用 `color_sensor.color()`、`reflection()`、`rgbi()` 讀到 **byte 0～7**（顏色、反射光、原始紅綠藍）。範例最上面的「讀值小工具」`UniCamApp` 會照模式把它拆好（小工具單獨下載：[MBC_UniCam_App_helper.py](/examples/unicam/spike_app/MBC_UniCam_App_helper.py)）。byte 8～15 只有 `device.data()` 可能讀得到，**還沒上機確認（任務 #77）**，小工具先不用。
+官方 App 把相機當成「顏色感應器」，Python 用 `color_sensor.color()`、`reflection()`、`rgbi()` 讀到 **byte 0～7**（顏色、反射光、原始紅綠藍）。範例最上面的「讀值小工具」`UniCamApp` 會照模式把它拆好（小工具單獨下載：[MBC_UniCam_App_helper.py](/examples/unicam/spike_app/MBC_UniCam_App_helper.py)）。小工具的「顏色」用 `device.data(port.C)[0]` 讀：`color_sensor.color()` 會把 5 換成 6。`device.data(port.C)` 回 8 個值：byte 0、byte 1，之後是 6 個 int16；byte 8～13 讀得到，14～15 讀不到（2026-11-01 上機）。
 
 | 小工具方法 | 回傳 | 模式 |
 |---|---|---|
@@ -559,13 +560,16 @@ while True:
 # 接線 Wiring：相機 → C 孔；左輪 E、右輪 F（驅動底座）/ camera → port C; left wheel E, right wheel F
 # 用法：SPIKE App 新增「Python」專案，整支貼上 / new Python project in the SPIKE App, paste all of this
 # ===== 神攝手 讀值小工具（樂高官方 SPIKE App 3 教育版 Python，照抄就好、不用改）=====
-# ===== UniCam reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
+# ===== Sharpshooter Vision reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
 # 相機在 SPIKE App 裡是「顏色感應器」：顏色、反射光、原始紅／綠／藍 這 5 個數字（byte 0~7）積木與 Python 都讀得到。
-# byte 8~15 只有 App Python 的 device.data() 可能讀得到，還沒上機確認（任務 #77），這個小工具不用它。
+# device.data() 回 8 個值：byte 0、byte 1，之後 6 個 int16（byte 8~13 也讀得到，14~15 讀不到；2026-11-01 上機）。
+# 「顏色」改讀 device.data() 的第 1 個值：color_sensor.color() 會把 5 換成 6（樂高的綠色），5 和 6 就分不出來。
 # The camera shows up as a colour sensor: colour, reflection, raw red/green/blue (bytes 0~7).
-# Bytes 8~15 may only be readable with device.data() (not yet verified, #77); this helper does not use them.
+# device.data() gives 8 values: byte 0, byte 1, then 6 int16 (bytes 8~13 readable, 14~15 not; tested 2026-11-01).
+# The colour byte is read with device.data(): color_sensor.color() turns 5 into 6 (LEGO green).
 # mode = 你在相機選單切的模式編號（相機模式×10＋子選項，例 13）/ mode = camera menu mode number
 import color_sensor
+import device
 
 
 class UniCamApp:
@@ -576,7 +580,7 @@ class UniCamApp:
 
     def update(self):
         """讀一次最新資料 / read once"""
-        c = color_sensor.color(self.port)              # byte 0
+        c = device.data(self.port)[0]                  # byte 0（color() 會把 5 換成 6 / color() turns 5 into 6）
         r = color_sensor.reflection(self.port)         # byte 1
         rgb = color_sensor.rgbi(self.port)             # 原始紅、綠、藍（各 2 byte）
         b = [int(c) & 255, int(r) & 255]
@@ -770,13 +774,16 @@ runloop.run(main())
 # 接線 Wiring：相機 → C 孔；左輪 E、右輪 F / camera → port C; left wheel E, right wheel F
 # 方向：站在車後往前看，線在左＝負 / standing behind the robot: line on the left = negative
 # ===== 神攝手 讀值小工具（樂高官方 SPIKE App 3 教育版 Python，照抄就好、不用改）=====
-# ===== UniCam reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
+# ===== Sharpshooter Vision reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
 # 相機在 SPIKE App 裡是「顏色感應器」：顏色、反射光、原始紅／綠／藍 這 5 個數字（byte 0~7）積木與 Python 都讀得到。
-# byte 8~15 只有 App Python 的 device.data() 可能讀得到，還沒上機確認（任務 #77），這個小工具不用它。
+# device.data() 回 8 個值：byte 0、byte 1，之後 6 個 int16（byte 8~13 也讀得到，14~15 讀不到；2026-11-01 上機）。
+# 「顏色」改讀 device.data() 的第 1 個值：color_sensor.color() 會把 5 換成 6（樂高的綠色），5 和 6 就分不出來。
 # The camera shows up as a colour sensor: colour, reflection, raw red/green/blue (bytes 0~7).
-# Bytes 8~15 may only be readable with device.data() (not yet verified, #77); this helper does not use them.
+# device.data() gives 8 values: byte 0, byte 1, then 6 int16 (bytes 8~13 readable, 14~15 not; tested 2026-11-01).
+# The colour byte is read with device.data(): color_sensor.color() turns 5 into 6 (LEGO green).
 # mode = 你在相機選單切的模式編號（相機模式×10＋子選項，例 13）/ mode = camera menu mode number
 import color_sensor
+import device
 
 
 class UniCamApp:
@@ -787,7 +794,7 @@ class UniCamApp:
 
     def update(self):
         """讀一次最新資料 / read once"""
-        c = color_sensor.color(self.port)              # byte 0
+        c = device.data(self.port)[0]                  # byte 0（color() 會把 5 換成 6 / color() turns 5 into 6）
         r = color_sensor.reflection(self.port)         # byte 1
         rgb = color_sensor.rgbi(self.port)             # 原始紅、綠、藍（各 2 byte）
         b = [int(c) & 255, int(r) & 255]
@@ -979,6 +986,9 @@ runloop.run(main())
 
 顏色、反射光各 1 byte；原始紅／綠／藍各 2 byte：「A ＋ B ×256」＝ A 是 `原始紅 % 256`（取餘數）、B 是 `原始紅 ÷ 256`（取整數）；「A ×100 ＋ B」＝ `÷100` 拆。格子 Y 上＝小。座標取色 ①：每格兩點色相。
 
+> [!WARNING]
+> 官方 App 的「顏色」（積木、`color_sensor.color()`、儀表板）會把原始值 **5 換成 6**（樂高的綠色），其他數字原樣；所以 5 和 6 分不出來，影響色 1 的 X 格、找到幾色、路口類型 5（盡頭）、物體數、總塊數。「反射光」不受影響。Python 改讀 `device.data(port.C)[0]` 就能避開（範例的小工具已經這樣讀），積木沒辦法避開。
+
 | 模式 | 顏色 | 反射光 | 原始紅 | 原始綠 | 原始藍 |
 |---|---|---|---|---|---|
 | 1 ① 最多色 | 找到幾色 | 色 1 X×10＋Y（8×6 格） | 色 2 X×10＋Y（8×6 格） ×100 ＋ 色 3 X×10＋Y（8×6 格） | 色 4 X×10＋Y（8×6 格） ×100 ＋ 色 5 X×10＋Y（8×6 格） | 色 6 X×10＋Y（8×6 格） ×100 ＋ 色 7 X×10＋Y（8×6 格） |
@@ -1012,12 +1022,12 @@ runloop.run(main())
 | 5 ② 物體詳細 | 物體數 | 物體 1 代碼 | 物體 1 X | 物體 1 Y | 物體 1 面積 % |
 
 > [!CAUTION]
-> 官方 App 裡**不要用「顏色是 [紅色]？」這種選顏色的積木**，它比對的是樂高自己的色號。一律把數字放進變數再比大小。家用版 App 的 Python 讀法還沒驗證，這頁只列積木讀法。
+> 官方 App 裡**不要用「顏色是 [紅色]？」這種選顏色的積木**，它比對的是樂高自己的色號。一律把數字放進變數再比大小。家用版 App 的 **Python**：程式執行中主機改送教育版的組合（0x26），所以要照上面**教育版**的拆值表，用 `hub.port.C.device.get()` 讀 6 個值；上面的家用版表只給積木用。
 
 ## 要注意的事
 
-- **都上機跑過**（2026-11-01，出貨版韌體）：車子的 KP／KD、面積門檻、路口停車時機是建議值，請先印出數字再調。
-- 換相機模式時改 `mode=` 就好，Pybricks 函式庫會幫你切相機；官方 App 要自己在相機選單切。
+- 這頁的範例都在 SPIKE 實機跑過（2026-11-01）；車子的 KP／KD、面積門檻、路口停車時機是建議值，換場地請先印出數字再調。
+- 換相機模式：Pybricks 改 `mode=` 就好（函式庫會切相機）；官方 App 要在相機選單切。
 - 主機斷線時相機畫面左上的主機名稱會變紅，重新執行程式就好。
 
 ## 下一步

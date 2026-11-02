@@ -306,7 +306,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
           <p class="small">The simulator reads now: </p>
           <p class="rawnow" id="rawnow" aria-live="polite"></p>
           <p class="small" id="rest"></p>
-          <p class="small">On Pybricks 4.1 reflection() carries one decimal, so make it whole before splitting; on the Pathfinder 8-Way it is at most 168 and never negative. ambient(): before the point is fine position + 100, the first decimal is the width.</p>
+          <p class="small">On Pybricks 4.1, reflection() carries one decimal with sensor firmware before 2026-11-01 (newer firmware sends an exact integer), so always make it whole before splitting; that works on old and new firmware. On the Pathfinder 8-Way it is at most 168 and never negative. ambient(): before the point is fine position + 100, the first decimal is the width (firmware 2026-10-30 or later). Tested with Pybricks Code blocks on Pybricks 4.1.2, 2026-10-29 to 11-01.</p>
           <div class="mini" id="mini2" aria-live="polite"></div>
           <button type="button" class="next" id="next2">Done, next step</button>
         </div>

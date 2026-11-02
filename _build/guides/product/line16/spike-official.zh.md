@@ -49,9 +49,12 @@
 
 ### PD 循線示範（速度 50）
 
-跟 Pybricks 版同一套 PD 循線邏輯，教育版和玩具版各有積木和 Python，共 4 支，都在主機上跑過。
+跟 Pybricks 版同一套 PD 循線邏輯，教育版和玩具版各有積木和 Python，共 4 支。實測通過（2026-10-29～30）：教育版 SPIKE App 3 的 Python（十字路口讀到線寬 16、會停車）、玩具版 Robot Inventor App 10.5.4 的積木與 Python。
 
-- 教育版（SPIKE App 3）：[📥 積木 .llsp3](/examples/line16/pd50/spike_app/line16_pd50_edu_blocks.llsp3)・[📥 Python（小幫手已內嵌）](/examples/line16/pd50/spike_app/line16_pd50_edu_python.py)
+> [!WARNING]
+> **教育版積木 .llsp3 待重測**：2026-10-29 上機只算部分通過：十字路口沒有停車、儀表板讀值慢一步、線寬超過 10 時「顏色」顯示 NaN。要十字路口停車，先用教育版 Python。
+
+- 教育版（SPIKE App 3）：[📥 積木 .llsp3（待重測）](/examples/line16/pd50/spike_app/line16_pd50_edu_blocks.llsp3)・[📥 Python（小幫手已內嵌）](/examples/line16/pd50/spike_app/line16_pd50_edu_python.py)
 - 玩具版（Robot Inventor App）：[📥 積木 .lms](/examples/line16/pd50/spike_app/line16_pd50_ri_blocks.lms)・[📥 Python（小幫手已內嵌）](/examples/line16/pd50/spike_app/line16_pd50_ri_python.py)
 - [📥 全部打包（含 Pybricks 版）](/examples/line16/line16_pd50_examples.zip)
 
@@ -59,6 +62,7 @@
 - **讀值**：細位置＝「原始紅」− 100（兩版一樣）。線寬：**積木版（教育版、玩具版都一樣）用「顏色」積木**；只有**玩具版 Python** 用反射光 `get_reflected_light()`。
 - 速度 50（功率 %）、KP 0.4、KD 1.5 是建議值；十字路口停車：教育版線寬 > 10；玩具版積木 > 9（玩具版「顏色」最多只到 10）；玩具版 Python > 10。
 - 舊韌體也能用：官方 App 讀的是模式 0，不受模式 7 改版影響。
+- 把 Python 貼進 SPIKE App 3 編輯器時，編輯器會把行尾 `#` 註解前面的空格縮短，這是自動排版，不影響程式。
 
 ### 玩具版（Robot Inventor App）Python
 

@@ -223,6 +223,8 @@
 
 </section>
 
+<p class="ref-missing"><b>這個軟體讀不到</b>：命令狀態。要用這些值請改用 <a href="/sensors/imu/arduino/ide.md">Arduino</a>／<a href="/sensors/imu/microbit/makecode.md">micro:bit</a>。</p>
+
 ## 命令
 
 <section id="ce0" class="ref-item ref-cmd">
@@ -241,7 +243,7 @@
 
 ### 加速度計校準開始 <small>accelCalStart</small>
 
-開始加速度計校準（= v1 的 0x20=0x01）；期間 F3 b4 = 1
+開始加速度計校準（= v1 的 0x20=0x01）；期間 F3 b4 = 1；磁力計校準中 → 忽略（0B 狀態 3 拒絕）
 
 <pre class="blocks">IMU 陀螺儀 連接埠 [1 v] 加速度計校準開始 :: sensing</pre>
 
@@ -253,7 +255,7 @@
 
 ### 加速度計校準結束 <small>accelCalEnd</small>
 
-結束加速度計校準並存 EEPROM（= v1 的 0x20=0x02）；通過後自動航向歸零一次
+結束加速度計校準並存 EEPROM（= v1 的 0x20=0x02）；通過後重新擷取安裝軸，擺正靜置後才航向歸零（不是馬上歸零）；沒在校準中 → 拒絕（0B 狀態 3）；驗證沒過 → 0B 狀態 2 失敗
 
 <pre class="blocks">IMU 陀螺儀 連接埠 [1 v] 加速度計校準結束 :: sensing</pre>
 
@@ -265,7 +267,7 @@
 
 ### 磁力計校準開始 <small>magCalStart</small>
 
-開始磁力計校準（= v1 的 0x20=0x03）；期間 F3 b5 = 1
+開始磁力計校準（= v1 的 0x20=0x03）；期間 F3 b5 = 1；磁力計故障時 → 忽略（0B 狀態 3）
 
 <pre class="blocks">IMU 陀螺儀 連接埠 [1 v] 磁力計校準開始 :: sensing</pre>
 
@@ -277,7 +279,7 @@
 
 ### 磁力計校準結束 <small>magCalEnd</small>
 
-結束磁力計校準並存 EEPROM（= v1 的 0x20=0x04）
+結束磁力計校準並存 EEPROM（= v1 的 0x20=0x04）；成功後馬上航向歸零；沒在校準中 → 拒絕（0B 狀態 3）；驗證沒過 → 0B 狀態 2 失敗
 
 <pre class="blocks">IMU 陀螺儀 連接埠 [1 v] 磁力計校準結束 :: sensing</pre>
 
@@ -294,6 +296,8 @@
 <pre class="blocks">IMU 陀螺儀 連接埠 [1 v] 更新全部數值 :: sensing</pre>
 
 </section>
+
+<p class="ref-missing"><b>這個軟體送不了</b>：航向設成指定角度、以磁北為 0、陀螺零點重估、重抓安裝軸、取消校準、航向修正係數、校準回出廠</p>
 
 ## 範例
 

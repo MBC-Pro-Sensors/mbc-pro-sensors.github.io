@@ -149,7 +149,7 @@ pitchRate = Sensor.ReadRawValue(1, 0)
 
 </section>
 
-<p class="ref-missing"><b>這個軟體讀不到</b>：磁力信任度、磁場干擾度、朝上的面、角速度 1~3 軸、加速度 1~3 軸、磁力 1~3 軸。要用這些值請改用 <a href="/sensors/imu/arduino/ide.md">Arduino</a>／<a href="/sensors/imu/mblock/mblock5.md">mBlock</a>／<a href="/sensors/imu/microbit/makecode.md">micro:bit</a>。</p>
+<p class="ref-missing"><b>這個軟體讀不到</b>：磁力信任度、磁場干擾度、朝上的面、角速度 1~3 軸、加速度 1~3 軸、磁力 1~3 軸、命令狀態。要用這些值請改用 <a href="/sensors/imu/arduino/ide.md">Arduino</a>／<a href="/sensors/imu/mblock/mblock5.md">mBlock</a>／<a href="/sensors/imu/microbit/makecode.md">micro:bit</a>。</p>
 
 ## 命令
 
@@ -162,7 +162,7 @@ EV3 接頭是唯讀的，這個軟體不能送命令：校準用感應器上的�
 ## 其他問題
 
 - **EV3 顯示成紅外線感應器？** 正常：感應器模擬成樂高原廠感應器，用原廠積木就能讀。
-- **切換模式時卡一下？** EV3 每次換模式要等約 0.5 秒。整趟任務盡量只用同一個模式的積木。
+- **切換模式時卡一下？** EV3 每次換模式要等約 1 秒。整趟任務盡量只用同一個模式的積木。
 
 還有問題？到 [聯絡我們](/contact.md) 附上你用的軟體和程式截圖。
 

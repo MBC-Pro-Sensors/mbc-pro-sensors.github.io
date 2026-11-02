@@ -14,7 +14,7 @@
 
 ### 函式庫與範例下載
 
-主機要是 **Pybricks 韌體 v4.1**。zip 裡有 `MBC_sensors.py`、`MBC_line8_obj_Lib.py` 和 4 支範例：
+主機要是 **Pybricks 韌體 v4.1**（2026-10-29～11-01 在 Pybricks 4.1.2 實測通過：函式庫、內建 ColorSensor、Pybricks Code 積木、下命令範例都在主機上跑過）。zip 裡有 `MBC_sensors.py`、`MBC_line8_obj_Lib.py` 和 4 支範例：
 
 - [📥 打包下載（Pybricks 4.1）](/examples/line8/line8_pybricks_spike_v4.x.zip)
 
@@ -22,6 +22,9 @@
 
 > [!IMPORTANT]
 > 範例程式寫的是 `from MBC_line8_obj_Lib import MBC_LINE8`，所以要匯入 `MBC_line8_obj_Lib.py`（檔名不用改）。自己寫新程式改成 `from MBC_sensors import MBC_LINE8`，只匯入 `MBC_sensors.py`。函式庫要跟主程式放在**同一個專案列表**裡。
+
+> [!WARNING]
+> 2026-10-29 以前下載的 MBC 函式庫，在 Pybricks 4.1.2 一匯入就出現 `NameError: name 'property' isn't defined`（4.1.2 主機沒有 `property`）。請重新下載本頁的檔案（已修好，4.1.2 實測通過）。
 
 > [!NOTE]
 > Pybricks 3.6.1 版已不再更新，舊檔放在[下載專區](/downloads.md)的「舊版（不再更新）」。3.6.1 的內建讀法範例只適用 2026-10-30 以前的感應器韌體（新韌體用舊拆法，線寬會讀成 ×10）。
@@ -46,9 +49,10 @@
 
 > [!IMPORTANT]
 > **Pybricks 4.1 的拆法**（上面的範例已經照這樣寫）
-> - `reflection()`（模式 5）＝粗位置＋線寬。Pybricks 4.1 起會帶 1 位小數，**要先取整數再拆**：`r = int(line.reflection())`；8 路：位置＝`int(r) // 10 - 8`（−8～+8）、線寬＝`int(r) % 10`。積木版沒有「取整數」積木：≥ 0 用「無條件捨去」、負數用「無條件進位」，結果跟 `int()` 一樣。
+> - `reflection()`（模式 5）＝粗位置＋線寬。**一律先取整數再拆**：`r = int(line.reflection())`；8 路：位置＝`r // 10 - 8`（−8～+8）、線寬＝`r % 10`。2026-11-01 以後的感應器韌體（出貨版 v1.0-261101）送出的剛好是整數；更舊的韌體在 Pybricks 4.x 上會帶 1 位小數（例如 81.3），沒取整數線寬會拆成 2.5 這種值。留著 `int()`，新舊韌體都對。積木版沒有「取整數」積木：≥ 0 用「無條件捨去」、負數用「無條件進位」，結果跟 `int()` 一樣（8 路最大 168，不會變負數）。
 > - `ambient()`（模式 7）＝「細位置＋100 . 線寬」，線寬在小數第 1 位：細位置＝整數部分 − 100，線寬＝`round(line.ambient() * 10) % 10`。**要 2026-10-30 以後的感應器韌體**；舊韌體線寬會是 0（細位置照常）。舊韌體要線寬，改用反射光的線寬，或改裝 MBC 函式庫（讀模式 9，新舊韌體都讀得到全部的值）。
 > - 位置都是「加偏移量送出、讀了再減」，不會直接送負數。
+> - 方向：線在左＝負、在右＝正（從車子後面往前看）。整排在白紙上（找不到線）時線寬＝0，位置**停在最後看到線的那一側**（例如 +8），不會回 0；判斷有沒有線要看線寬。
 > - 進階（只有 Python）：`line.hsv(surface=False).h`＝(細位置＋100)×100＋線寬，可以拿到完整的線寬。
 
 ### 方式二：匯入專屬函式庫
@@ -78,6 +82,9 @@
 | [line8_cmd_calib_bw.py](/examples/line8/pybricks/For%20firmware%204.x/line8_cmd_calib_bw.py) | 黑白校準（E2 黑、E3 白）：整排放在黑色上按左鍵，再整排放在白紙上按左鍵（高度固定） | 黑色光值全 0；白紙光值（`ir_calibration()`，0～100）80 以上 |
 | [line8_cmd_calib_auto.py](/examples/line8/pybricks/For%20firmware%204.x/line8_cmd_calib_auto.py) | E7 5 秒自動校準：5 秒內把感應器在黑線和白底之間來回掃（高度固定、不要傾斜） | 狀態從「執行中」變「完成」；白紙光值 70 以上（校準品質看手掃的高度） |
 | [line8_cmd_reverse.py](/examples/line8/pybricks/For%20firmware%204.x/line8_cmd_reverse.py) | E9 左右反向，也示範送錯參數會回「失敗」 | 線位置正負號對調（例如 −7 → +7，再送 0 換回來）；送 5 回「失敗」 |
+
+- 校準時感應器要**固定高度**（裝在車上或墊積木，離紙約 5～10 mm）。用手拿著或直接貼在紙上校準，白紙光值會偏低（實測 66～85，固定高度後 86～100）。
+- 命令實測通過（2026-10-29～31，Pybricks 4.1.2）：E0、E1、E2、E3、E4、E7、E9 都照下方「命令」段動作；校準中再送 E2 會回 3（拒絕）；不支援的 E5、E6、E8、EA、EE、EF、F8 回 3；同一個命令重送不會重做。
 
 ### PD 循線示範（速度 50）
 

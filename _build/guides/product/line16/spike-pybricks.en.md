@@ -14,7 +14,7 @@ The Pathfinder has to "learn" the black and white of your mat before its numbers
 
 ### Library and example downloads
 
-The hub needs **Pybricks firmware v4.1**. The zip has `MBC_sensors.py`, `MBC_line16_obj_Lib.py` and 4 examples:
+The hub needs **Pybricks firmware v4.1** (tested on Pybricks 4.1.2 from 2026-10-29 to 11-01: the library, built-in ColorSensor, Pybricks Code blocks and the command examples all ran on a hub). The zip has `MBC_sensors.py`, `MBC_line16_obj_Lib.py` and 4 examples:
 
 - [📥 Download pack (Pybricks 4.1)](/examples/line16/line16_pybricks_spike_v4.x.zip)
 
@@ -22,6 +22,9 @@ Library only: [MBC_sensors.py](/examples/line16/pybricks/For%20firmware%204.x/MB
 
 > [!IMPORTANT]
 > The examples say `from MBC_line16_obj_Lib import MBC_LINE16`, so import `MBC_line16_obj_Lib.py` (no renaming needed). For a new program of your own, write `from MBC_sensors import MBC_LINE16` and import only `MBC_sensors.py`. The library must be in the **same project list** as the main program.
+
+> [!WARNING]
+> MBC libraries downloaded before 2026-10-29 stop with `NameError: name 'property' isn't defined` as soon as they are imported on Pybricks 4.1.2 (the 4.1.2 hub has no `property`). Download the files on this page again (fixed and tested on 4.1.2).
 
 > [!NOTE]
 > Pybricks 3.6.1 is no longer updated; the old files are under "Legacy (no longer updated)" on the [Downloads page](/en/downloads.md). The 3.6.1 built-in examples only fit sensor firmware before 2026-10-30 (with newer firmware the old split reads the width ×10).
@@ -46,9 +49,13 @@ Examples: blocks [line16_block_native.py](/examples/line16/pybricks/For%20firmwa
 
 > [!IMPORTANT]
 > **Decoding on Pybricks 4.1** (the examples above already do this)
-> - `reflection()` (mode 5) = coarse position + width. From Pybricks 4.1 it carries one decimal, so **convert to an integer first**: `r = int(line.reflection())`; 16-ch: add 6399 when negative, then position = `r // 100 - 16` (−16 to +16), width = `r % 100`. Blocks have no "integer" block: use "floor" for values ≥ 0 and "ceiling" for negative ones, which equals `int()`.
+> - `reflection()` (mode 5) = coarse position + width. **Always convert with `int()` before splitting**: `r = int(line.reflection())`; 16-ch: add 6399 when negative (at line position +16 the number goes past 3199 and Pybricks shows it as negative), then position = `r // 100 - 16` (−16 to +16), width = `r % 100`.
+>   - **Use `int()` (truncate toward 0), not `floor()`**: with older firmware's decimals, floor is one too low in the negative range (measured: floor splits into position 15, width 99; `int()` gives the correct 16, 0).
+>   - Sensor firmware from 2026-11-01 (release v1.0-261101) sends an exact integer; older firmware gives one decimal on Pybricks 4.x. Keep the `int()` and it works on old and new firmware.
+>   - Blocks have no "integer" block: use "floor" for values ≥ 0 and "ceiling" for negative ones, which equals `int()` (the block examples above already do this).
 > - `ambient()` (mode 7) = "fine position + 100 . width", width in the first decimal: fine position = integer part − 100, width = `round(line.ambient() * 10) % 10` (16-ch shows at most 9 = 9 or more). **Needs sensor firmware from 2026-10-30 or later**; on older firmware the width reads 0 (position still works). With older firmware, take the width from reflection instead, or install the MBC library (mode 9 gives every value on old and new firmware).
 > - Positions are sent with an offset and subtracted after reading; negative numbers are never sent directly.
+> - Direction: position −16 to +16, line on the left = negative, on the right = positive (seen from behind the robot).
 > - Advanced (Python only): `line.hsv(surface=False).h` = (fine position + 100) × 100 + width, giving the full width.
 
 ### Method 2: import the library
@@ -78,6 +85,8 @@ These send commands with the shared MBC library (see "Commands" further down thi
 | [line16_cmd_calib_bw.py](/examples/line16/pybricks/For%20firmware%204.x/line16_cmd_calib_bw.py) | Black/white calibration (E2 black, E3 white): put the whole row on black and press left, then on white paper and press left (keep the height fixed) | Black light values all 0; white-paper light values (`ir_calibration()`, 0–15) 13 or more |
 | [line16_cmd_calib_auto.py](/examples/line16/pybricks/For%20firmware%204.x/line16_cmd_calib_auto.py) | E7 5-second auto calibration: sweep the sensor across the black line and white surface for 5 s (fixed height, no tilt) | State goes from busy to done; white-paper light values 11 or more (quality depends on how you sweep) |
 | [line16_cmd_reverse.py](/examples/line16/pybricks/For%20firmware%204.x/line16_cmd_reverse.py) | E9 mirror left/right, and shows that a wrong parameter returns "failed" | Line position changes sign (e.g. −15 → +15, send 0 to switch back); sending 5 returns "failed" |
+
+- Keep the sensor at a **fixed height** while calibrating (mounted on the robot or propped on bricks, about 5–10 mm above the paper), and sweep it flat without tilting. Hand-held calibration gives low white readings. Measured (2026-10-29): resting black/white calibration (E3) gives white 13–15, pass mark ≥ 13; a hand-swept E7 is usable from 11.
 
 ### PD line-following demos (speed 50)
 

@@ -294,6 +294,22 @@ let mag = [mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.X), mbc.imuAxis(MbcImuSensor.Ma
 
 </section>
 
+<section id="v0b" class="ref-item">
+
+### command status <small>cmdStatus</small>
+
+| Range | Meaning |
+| :--- | :--- |
+| `0~0xEF03` | (last command code << 8) \| state; state 0 done, 1 busy, 2 failed, 3 rejected (same codes as the SPIKE command reply (mode 8 v3)); reported for E1~EB; undefined codes after EB: ignored on I2C, 0B unchanged (SPIKE replies 3 rejected) |
+
+No dedicated block; in JavaScript read it with `mbc.readValue(address, id)` (−32768 when nothing answers).
+
+```typescript
+let cmdStatus = mbc.readValue(0x6A, 0x0B)   // command status：0~0xEF03
+```
+
+</section>
+
 ## Commands
 
 <section id="ce0" class="ref-item ref-cmd">
@@ -314,7 +330,7 @@ mbc.imuZeroHeading()   // zero heading
 
 ### start accelerometer calibration <small>accelCalStart</small>
 
-start accelerometer calibration (= v1 0x20=0x01); F3 b4 = 1 meanwhile
+start accelerometer calibration (= v1 0x20=0x01); F3 b4 = 1 meanwhile; ignored during magnetometer calibration (0B state 3 rejected)
 
 <pre class="blocks">IMU calibration [accelerometer start v] :: #00A4E4</pre>
 
@@ -328,7 +344,7 @@ mbc.imuCalibrate(MbcImuCalib.AccelStart)   // start accelerometer calibration
 
 ### end accelerometer calibration <small>accelCalEnd</small>
 
-finish accelerometer calibration and save to EEPROM (= v1 0x20=0x02); headings are zeroed once on success
+finish accelerometer calibration and save to EEPROM (= v1 0x20=0x02); on success the mount axis is re-captured and headings are zeroed once the sensor is level and still (not immediately); rejected if not calibrating (0B state 3); failed check → 0B state 2
 
 <pre class="blocks">IMU calibration [accelerometer end v] :: #00A4E4</pre>
 
@@ -342,7 +358,7 @@ mbc.imuCalibrate(MbcImuCalib.AccelEnd)   // end accelerometer calibration
 
 ### start magnetometer calibration <small>magCalStart</small>
 
-start magnetometer calibration (= v1 0x20=0x03); F3 b5 = 1 meanwhile
+start magnetometer calibration (= v1 0x20=0x03); F3 b5 = 1 meanwhile; ignored if the magnetometer has failed (0B state 3)
 
 <pre class="blocks">IMU calibration [magnetometer start v] :: #00A4E4</pre>
 
@@ -356,13 +372,83 @@ mbc.imuCalibrate(MbcImuCalib.MagStart)   // start magnetometer calibration
 
 ### end magnetometer calibration <small>magCalEnd</small>
 
-finish magnetometer calibration and save to EEPROM (= v1 0x20=0x04)
+finish magnetometer calibration and save to EEPROM (= v1 0x20=0x04); headings zeroed right away on success; rejected if not calibrating (0B state 3); failed check → 0B state 2
 
 <pre class="blocks">IMU calibration [magnetometer end v] :: #00A4E4</pre>
 
 ```typescript
 mbc.imuCalibrate(MbcImuCalib.MagEnd)   // end magnetometer calibration
 ```
+
+</section>
+
+<section id="ce5" class="ref-item ref-cmd">
+
+### set heading <small>setHeading</small>
+
+[angle int16 little-endian]: all four headings set to this angle (RAM); rejected while calibrating (0B state 3)
+
+No dedicated block; in JavaScript use `mbc.writeCmd(0x6A, 0xE5, [params])`.
+
+</section>
+
+<section id="ce6" class="ref-item ref-cmd">
+
+### north as zero <small>zeroNorth</small>
+
+gyro heading set to the current magnetic bearing 0~359, then only whole turns are removed (absolute bearing); fusion re-init within ~3 s, timeout = failed; rejected while calibrating (0B state 3)
+
+No dedicated block; in JavaScript use `mbc.writeCmd(0x6A, 0xE6, [params])`.
+
+</section>
+
+<section id="ce7" class="ref-item ref-cmd">
+
+### re-estimate gyro bias <small>gyroBiasReset</small>
+
+re-estimates the gyro bias over ~1.5 s of stillness (3 still windows); moved and not done within 4 s = failed; rejected while calibrating (0B state 3)
+
+No dedicated block; in JavaScript use `mbc.writeCmd(0x6A, 0xE7, [params])`.
+
+</section>
+
+<section id="ce8" class="ref-item ref-cmd">
+
+### re-capture mount axis <small>recaptureAxis</small>
+
+re-detects the mounting orientation (headings zeroed after capture); RAM; rejected while calibrating (0B state 3)
+
+No dedicated block; in JavaScript use `mbc.writeCmd(0x6A, 0xE8, [params])`.
+
+</section>
+
+<section id="ce9" class="ref-item ref-cmd">
+
+### cancel calibration <small>cancelCalib</small>
+
+cancels the running accelerometer / magnetometer calibration without saving (old values restored)
+
+No dedicated block; in JavaScript use `mbc.writeCmd(0x6A, 0xE9, [params])`.
+
+</section>
+
+<section id="cea" class="ref-item ref-cmd">
+
+### heading correction <small>headingCorrection</small>
+
+[uint16 little-endian] actual degrees per turn × 10 (0.1°/turn), 3500~3700; 0 = back to 360.0. Saved to EEPROM 0x60 (written after 3 s, skipped if unchanged), headings zeroed afterwards; missing or out of range → 0B state 2 (SPIKE also 2)
+
+No dedicated block; in JavaScript use `mbc.writeCmd(0x6A, 0xEA, [params])`.
+
+</section>
+
+<section id="ceb" class="ref-item ref-cmd">
+
+### calibration factory reset <small>calibFactoryReset</small>
+
+[A5]: accelerometer, magnetometer calibration and heading correction back to factory values, saved immediately; wrong magic → 0B state 2; rejected while calibrating (3)
+
+No dedicated block; in JavaScript use `mbc.writeCmd(0x6A, 0xEB, [params])`.
 
 </section>
 

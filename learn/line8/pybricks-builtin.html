@@ -306,7 +306,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
           <p class="small">模擬畫面現在讀到：</p>
           <p class="rawnow" id="rawnow" aria-live="polite"></p>
           <p class="small" id="rest"></p>
-          <p class="small">Pybricks 4.1 的 reflection() 會帶 1 位小數，先取整數再拆；循行者 8 路最大 168，不會變負數。ambient() 小數點前是細位置＋100、小數第 1 位是線寬。</p>
+          <p class="small">Pybricks 4.1 的 reflection() 在 2026-11-01 以前的感應器韌體會帶 1 位小數（之後的韌體剛好是整數），一律先取整數再拆，新舊韌體都對；循行者 8 路最大 168，不會變負數。ambient() 小數點前是細位置＋100、小數第 1 位是線寬（要 2026-10-30 以後的韌體）。2026-10-29～11-01 在 Pybricks 4.1.2 的 Pybricks Code 積木實測通過。</p>
           <div class="mini" id="mini2" aria-live="polite"></div>
           <button type="button" class="next" id="next2">寫好了，下一步</button>
         </div>

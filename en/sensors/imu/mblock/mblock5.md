@@ -223,6 +223,8 @@ After adding the MBC Pro Sensors extension, find the blocks in the "IMU Gyro" ca
 
 </section>
 
+<p class="ref-missing"><b>Not readable here</b>：command status. Use <a href="/en/sensors/imu/arduino/ide.md">Arduino</a> / <a href="/en/sensors/imu/microbit/makecode.md">micro:bit</a> for these.</p>
+
 ## Commands
 
 <section id="ce0" class="ref-item ref-cmd">
@@ -241,7 +243,7 @@ zero all four headings (zeroHeadings()); EV3 also accepts the stock gyro-reset W
 
 ### start accelerometer calibration <small>accelCalStart</small>
 
-start accelerometer calibration (= v1 0x20=0x01); F3 b4 = 1 meanwhile
+start accelerometer calibration (= v1 0x20=0x01); F3 b4 = 1 meanwhile; ignored during magnetometer calibration (0B state 3 rejected)
 
 <pre class="blocks">IMU Gyro port [1 v] start accelerometer calibration :: sensing</pre>
 
@@ -253,7 +255,7 @@ start accelerometer calibration (= v1 0x20=0x01); F3 b4 = 1 meanwhile
 
 ### end accelerometer calibration <small>accelCalEnd</small>
 
-finish accelerometer calibration and save to EEPROM (= v1 0x20=0x02); headings are zeroed once on success
+finish accelerometer calibration and save to EEPROM (= v1 0x20=0x02); on success the mount axis is re-captured and headings are zeroed once the sensor is level and still (not immediately); rejected if not calibrating (0B state 3); failed check → 0B state 2
 
 <pre class="blocks">IMU Gyro port [1 v] end accelerometer calibration :: sensing</pre>
 
@@ -265,7 +267,7 @@ finish accelerometer calibration and save to EEPROM (= v1 0x20=0x02); headings a
 
 ### start magnetometer calibration <small>magCalStart</small>
 
-start magnetometer calibration (= v1 0x20=0x03); F3 b5 = 1 meanwhile
+start magnetometer calibration (= v1 0x20=0x03); F3 b5 = 1 meanwhile; ignored if the magnetometer has failed (0B state 3)
 
 <pre class="blocks">IMU Gyro port [1 v] start magnetometer calibration :: sensing</pre>
 
@@ -277,7 +279,7 @@ start magnetometer calibration (= v1 0x20=0x03); F3 b5 = 1 meanwhile
 
 ### end magnetometer calibration <small>magCalEnd</small>
 
-finish magnetometer calibration and save to EEPROM (= v1 0x20=0x04)
+finish magnetometer calibration and save to EEPROM (= v1 0x20=0x04); headings zeroed right away on success; rejected if not calibrating (0B state 3); failed check → 0B state 2
 
 <pre class="blocks">IMU Gyro port [1 v] end magnetometer calibration :: sensing</pre>
 
@@ -294,6 +296,8 @@ reads the whole value table into a cache (FD pack-all); reporter blocks within t
 <pre class="blocks">IMU Gyro port [1 v] update all values :: sensing</pre>
 
 </section>
+
+<p class="ref-missing"><b>Not available here</b>：set heading, north as zero, re-estimate gyro bias, re-capture mount axis, cancel calibration, heading correction, calibration factory reset</p>
 
 ## Examples
 

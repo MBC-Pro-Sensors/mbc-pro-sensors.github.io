@@ -1,13 +1,9 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-# IMU 9-Axis Gyro Sensor (Coming Soon)
+# IMU 9-Axis Gyro Sensor
 
 <!-- product-hero -->
 
 <!-- platform-grid -->
-
-
-> [!NOTE]
-> This product is in development; final specifications may change at launch. [Contact us](/en/contact.md) for early access or launch timing.
 
 ## 🚀 Product Overview
 
@@ -44,7 +40,7 @@ In the official EV3 software, use the standard gyro block; each mode maps to:
 > The magnetometer is affected by motors, steel tables, speakers and other magnetic sources. In magnetically noisy places, use **Gyro3D**.
 
 > [!NOTE]
-> In **EV3 Classroom** the Angle and Rate blocks behave as in the table above ("Rate" returns the fused heading, not degrees per second). In **Pybricks (EV3)**, `GyroSensor.angle()` returns the single-axis gyro heading and `speed()` returns the magnetometer heading (relative, not north-referenced); `reset_angle(0)` works normally.
+> In **EV3 Classroom** the Angle and Rate blocks behave as in the table above ("Rate" returns the fused heading, not degrees per second). In **Pybricks (EV3)**, `GyroSensor.angle()` returns the single-axis gyro heading and `speed()` returns the magnetometer heading (relative, not north-referenced); `reset_angle(0)` works normally; after `calibrate()` it takes about 3.5 s before readings come back (same as the LEGO gyro). For angular rate (degrees per second), read mode 2 with `LUMPDevice` (see example 7). On **ev3dev**, `speed()` returns the fused heading.
 
 > [!TIP]
 > **Tested on the stock EV3 firmware (2026-11-02):** detected as the LEGO gyro sensor, the stock gyro reset block works, all 7 modes read correctly, and 300 mode switches plus continuous reading never dropped the connection. **ev3dev:** supported.
@@ -62,10 +58,10 @@ The same IMU board can also be shipped with a **magnetometer-only "compass" firm
 
 | Platform | How |
 | :--- | :--- |
-| LEGO MINDSTORMS EV3 | EV3 official software (standard gyro blocks, tested on the stock firmware); ev3dev supported |
-| LEGO SPIKE Prime / Robot Inventor | Dedicated edition |
-| Arduino / ESP32 / Raspberry Pi | Universal I2C (address `0x6A`) |
-| MATRIX Mini R4 | I2C |
+| LEGO MINDSTORMS EV3 | Tested on the stock EV3 firmware (2026-11-02): works with EV3 Lab (EV3-G), EV3 Classroom (standard gyro blocks), clev3r, Pybricks v4 and ev3dev |
+| LEGO SPIKE Prime / Robot Inventor | Not available |
+| Arduino / ESP32 / Raspberry Pi | Universal I2C (address `0x6A`); tested on Arduino Nano (2026-11-02) |
+| MATRIX Mini R4 | I2C; tested with the stock library (2026-11-02) |
 
 ## ∿ Universal I2C Registers (address `0x6A`)
 

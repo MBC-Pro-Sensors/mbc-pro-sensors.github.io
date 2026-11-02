@@ -36,6 +36,7 @@ Every value and command the IMU Gyro Sensor reports to each host: what it means,
 | [`10~12`](#v10) | [gyro axis 1~3](#v10) | -32768~32767 0.1 dps | — | ✓ | ✓ | — | ✓ |
 | [`13~15`](#v13) | [accel axis 1~3](#v13) | -32768~32767 mg | — | ✓ | ✓ | — | ✓ |
 | [`16~18`](#v16) | [mag axis 1~3](#v16) | -32768~32767 mG | — | ✓ | ✓ | — | ✓ |
+| [`0B`](#v0b) | [command status](#v0b) | 0~0xEF03 | — | ✓ | — | — | — |
 
 ✓ = available on that host; — = not sent.
 
@@ -1004,6 +1005,56 @@ let mag = [mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.X), mbc.imuAxis(MbcImuSensor.Ma
 
 </section>
 
+<section id="v0b" class="ref-item">
+
+### `0B` command status <small>cmdStatus</small>
+
+| Item | Detail |
+| :--- | :--- |
+| Meaning | (last command code << 8) \| state; state 0 done, 1 busy, 2 failed, 3 rejected (same codes as the SPIKE command reply (mode 8 v3)); reported for E1~EB; undefined codes after EB: ignored on I2C, 0B unchanged (SPIKE replies 3 rejected) |
+| Range | `0~0xEF03` |
+| I2C / mBlock id | `0B` |
+
+**How to read it**
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+Not sent in any EV3 mode (the locked EV3 modes stay as they are). Use Arduino I2C / mBlock if you need it.
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino" open>
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+Returns `MBC_NONE` (−32768) when the module does not answer.
+
+```cpp
+int16_t cmdStatus = mbcRead(0x6A, 0x0B);   // command status：0~0xEF03
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+Not available with the stock MATRIX 0x22 blocks.
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+No dedicated block; in JavaScript read it with `mbc.readValue(address, id)` (−32768 when nothing answers).
+
+```typescript
+let cmdStatus = mbc.readValue(0x6A, 0x0B)   // command status：0~0xEF03
+```
+
+</details>
+
+</section>
+
 ## Write commands
 
 Only Arduino I2C, mBlock and micro:bit can send commands; the SPIKE / EV3 ports are read-only.
@@ -1071,7 +1122,7 @@ mbc.imuZeroHeading()   // zero heading
 
 | Item | Detail |
 | :--- | :--- |
-| Action | start accelerometer calibration (= v1 0x20=0x01); F3 b4 = 1 meanwhile |
+| Action | start accelerometer calibration (= v1 0x20=0x01); F3 b4 = 1 meanwhile; ignored during magnetometer calibration (0B state 3 rejected) |
 | Parameters | none |
 | Busy flag | F3 bit4（1 while running） |
 
@@ -1129,7 +1180,7 @@ mbc.imuCalibrate(MbcImuCalib.AccelStart)   // start accelerometer calibration
 
 | Item | Detail |
 | :--- | :--- |
-| Action | finish accelerometer calibration and save to EEPROM (= v1 0x20=0x02); headings are zeroed once on success |
+| Action | finish accelerometer calibration and save to EEPROM (= v1 0x20=0x02); on success the mount axis is re-captured and headings are zeroed once the sensor is level and still (not immediately); rejected if not calibrating (0B state 3); failed check → 0B state 2 |
 | Parameters | none |
 | Busy flag | none (immediate) |
 
@@ -1186,7 +1237,7 @@ mbc.imuCalibrate(MbcImuCalib.AccelEnd)   // end accelerometer calibration
 
 | Item | Detail |
 | :--- | :--- |
-| Action | start magnetometer calibration (= v1 0x20=0x03); F3 b5 = 1 meanwhile |
+| Action | start magnetometer calibration (= v1 0x20=0x03); F3 b5 = 1 meanwhile; ignored if the magnetometer has failed (0B state 3) |
 | Parameters | none |
 | Busy flag | F3 bit5（1 while running） |
 
@@ -1244,7 +1295,7 @@ mbc.imuCalibrate(MbcImuCalib.MagStart)   // start magnetometer calibration
 
 | Item | Detail |
 | :--- | :--- |
-| Action | finish magnetometer calibration and save to EEPROM (= v1 0x20=0x04) |
+| Action | finish magnetometer calibration and save to EEPROM (= v1 0x20=0x04); headings zeroed right away on success; rejected if not calibrating (0B state 3); failed check → 0B state 2 |
 | Parameters | none |
 | Busy flag | none (immediate) |
 
@@ -1290,6 +1341,314 @@ Not available with the stock MATRIX 0x22 blocks.
 ```typescript
 mbc.imuCalibrate(MbcImuCalib.MagEnd)   // end magnetometer calibration
 ```
+
+</details>
+
+</section>
+
+<section id="ce5" class="ref-item ref-cmd">
+
+### `E5` set heading <small>setHeading</small>
+
+| Item | Detail |
+| :--- | :--- |
+| Action | [angle int16 little-endian]: all four headings set to this angle (RAM); rejected while calibrating (0B state 3) |
+| Parameters | angle `int16 °`（2 byte） |
+| Busy flag | none (immediate) |
+
+**How to send it**
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+The EV3 port carries no write commands: calibrate with the button on the sensor, change settings over Arduino I2C / mBlock.
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino" open>
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+```cpp
+mbcWrite(0x6A, 0xE5, 32);   // set heading（angle int16 °）
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+Not available with the stock MATRIX 0x22 blocks.
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+No dedicated block; in JavaScript use `mbc.writeCmd(0x6A, 0xE5, [params])`.
+
+</details>
+
+</section>
+
+<section id="ce6" class="ref-item ref-cmd">
+
+### `E6` north as zero <small>zeroNorth</small>
+
+| Item | Detail |
+| :--- | :--- |
+| Action | gyro heading set to the current magnetic bearing 0~359, then only whole turns are removed (absolute bearing); fusion re-init within ~3 s, timeout = failed; rejected while calibrating (0B state 3) |
+| Parameters | none |
+| Busy flag | none (immediate) |
+
+**How to send it**
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+The EV3 port carries no write commands: calibrate with the button on the sensor, change settings over Arduino I2C / mBlock.
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino" open>
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+```cpp
+mbcWrite(0x6A, 0xE6);   // north as zero
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+Not available with the stock MATRIX 0x22 blocks.
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+No dedicated block; in JavaScript use `mbc.writeCmd(0x6A, 0xE6, [params])`.
+
+</details>
+
+</section>
+
+<section id="ce7" class="ref-item ref-cmd">
+
+### `E7` re-estimate gyro bias <small>gyroBiasReset</small>
+
+| Item | Detail |
+| :--- | :--- |
+| Action | re-estimates the gyro bias over ~1.5 s of stillness (3 still windows); moved and not done within 4 s = failed; rejected while calibrating (0B state 3) |
+| Parameters | none |
+| Busy flag | none (immediate) |
+
+**How to send it**
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+The EV3 port carries no write commands: calibrate with the button on the sensor, change settings over Arduino I2C / mBlock.
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino" open>
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+```cpp
+mbcWrite(0x6A, 0xE7);   // re-estimate gyro bias
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+Not available with the stock MATRIX 0x22 blocks.
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+No dedicated block; in JavaScript use `mbc.writeCmd(0x6A, 0xE7, [params])`.
+
+</details>
+
+</section>
+
+<section id="ce8" class="ref-item ref-cmd">
+
+### `E8` re-capture mount axis <small>recaptureAxis</small>
+
+| Item | Detail |
+| :--- | :--- |
+| Action | re-detects the mounting orientation (headings zeroed after capture); RAM; rejected while calibrating (0B state 3) |
+| Parameters | none |
+| Busy flag | none (immediate) |
+
+**How to send it**
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+The EV3 port carries no write commands: calibrate with the button on the sensor, change settings over Arduino I2C / mBlock.
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino" open>
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+```cpp
+mbcWrite(0x6A, 0xE8);   // re-capture mount axis
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+Not available with the stock MATRIX 0x22 blocks.
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+No dedicated block; in JavaScript use `mbc.writeCmd(0x6A, 0xE8, [params])`.
+
+</details>
+
+</section>
+
+<section id="ce9" class="ref-item ref-cmd">
+
+### `E9` cancel calibration <small>cancelCalib</small>
+
+| Item | Detail |
+| :--- | :--- |
+| Action | cancels the running accelerometer / magnetometer calibration without saving (old values restored) |
+| Parameters | none |
+| Busy flag | none (immediate) |
+
+**How to send it**
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+The EV3 port carries no write commands: calibrate with the button on the sensor, change settings over Arduino I2C / mBlock.
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino" open>
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+```cpp
+mbcWrite(0x6A, 0xE9);   // cancel calibration
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+Not available with the stock MATRIX 0x22 blocks.
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+No dedicated block; in JavaScript use `mbc.writeCmd(0x6A, 0xE9, [params])`.
+
+</details>
+
+</section>
+
+<section id="cea" class="ref-item ref-cmd">
+
+### `EA` heading correction <small>headingCorrection</small>
+
+| Item | Detail |
+| :--- | :--- |
+| Action | [uint16 little-endian] actual degrees per turn × 10 (0.1°/turn), 3500~3700; 0 = back to 360.0. Saved to EEPROM 0x60 (written after 3 s, skipped if unchanged), headings zeroed afterwards; missing or out of range → 0B state 2 (SPIKE also 2) |
+| Parameters | 0.1°/turn `0, 3500~3700`（2 byte） |
+| Busy flag | none (immediate) |
+
+**How to send it**
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+The EV3 port carries no write commands: calibrate with the button on the sensor, change settings over Arduino I2C / mBlock.
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino" open>
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+```cpp
+mbcWrite(0x6A, 0xEA, 32);   // heading correction（0.1°/turn 0, 3500~3700）
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+Not available with the stock MATRIX 0x22 blocks.
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+No dedicated block; in JavaScript use `mbc.writeCmd(0x6A, 0xEA, [params])`.
+
+</details>
+
+</section>
+
+<section id="ceb" class="ref-item ref-cmd">
+
+### `EB` calibration factory reset <small>calibFactoryReset</small>
+
+| Item | Detail |
+| :--- | :--- |
+| Action | [A5]: accelerometer, magnetometer calibration and heading correction back to factory values, saved immediately; wrong magic → 0B state 2; rejected while calibrating (3) |
+| Parameters | magic `0xA5`（1 byte） |
+| Busy flag | none (immediate) |
+
+**How to send it**
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+The EV3 port carries no write commands: calibrate with the button on the sensor, change settings over Arduino I2C / mBlock.
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino" open>
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+```cpp
+mbcWrite(0x6A, 0xEB, 0xA5);   // calibration factory reset（magic 0xA5）
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+Not available with the stock MATRIX 0x22 blocks.
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+No dedicated block; in JavaScript use `mbc.writeCmd(0x6A, 0xEB, [params])`.
 
 </details>
 
@@ -1399,7 +1758,6 @@ Generated by `_build/gen-reference.mjs` from `_build/protocol/imu.json` (single 
 - hw0 = 1（共識 #6）；EV3 模式 4 = [0x6A | 1<<8, 韌體主×100+次, 0, 0]（格式 B 再補 2 個 0），模式 5 改送俯仰角速度（取代 #65 放的 ID）。
 - EV3 鎖住模式 0／1／3 照盤點程式碼：0 = 陀螺 3D、1 = 融合航向、3 = [陀螺 1D, 磁力航向]（INO:213 註解寫反，以程式為準）。
 - 0x22 照 R4 版（出貨版）鎖住：命令 4~9 = 三個航向 +32768 的「低 byte 在前、高 byte 在後」；盤點檔分析的是主韌體（高在前），主韌體 #67 改成跟 R4 版逐 byte 相同。命令 10~12 = 0；0x01、0x0A、0x0F、F1~F4 都觸發航向歸零（刻意，不動）。
-- SPIKE 不做（hosts.spike = false，使用者先前決定），所有值 spike = []。
 - B-13：E1~E4 加速度計／磁力計校準開始／結束補回（v1 的 0x20 = 01/02/03/04），I2C 定案 §3 只列 E0。busyFlag：E1 → b4、E3 → b5。
 - 俯仰角範圍定案沒寫（韌體尚無現成值，#67 用 atan2 新算），range 先填「°」不給 min/max，韌體做好後再補。
 - 磁力信任度 08 = round(trust×255)，磁場干擾度 09 = round(disturbance×100) 上限 255，朝上的面 0A = 軸號 + 3×負向：公式照盤點 I2C v1 0x34~0x36。

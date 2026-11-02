@@ -433,7 +433,7 @@ while True:
 - **Can't keep up on turns and runs off the line?** → Make "the multiplier" a bit bigger, or lower the speed.
 - **Didn't stop at the crossroads?** → The car is too fast and shot straight through it; lower the speed, or change "11" to 10.
 - **Stopped at a T-junction before reaching the crossroads?** → The line is too wide; change "11" to 12 or 13 (the maximum is 16).
-- **The official App version never stops at the crossroads?** → We have not actually tested on every version of the SPIKE App that the "color" block can read 11 or more. Swap example 1's "reflected light minus 16" for "color", put the sensor on the crossroads and watch the number on the display; if it only goes up to 10, change example 5's "> 10" to "> 9".
+- **The official App version never stops at the crossroads?** → In our 2026-10 hub tests, the Education SPIKE App 3 dashboard showed NaN for the "color" block once the width went above 10, and we are still re-testing the 16-way crossroads stop in blocks (on the same hub, the official App's **Python** reads width 16 and stops). In the home edition (Robot Inventor) "color" tops out at 10, so always use "> 9" there. Swap example 1's "reflected light minus 16" for "color", put the sensor on the crossroads and watch the number on the display; if it only goes up to 10, change example 5's "> 10" to "> 9".
 - **Can't find the "raw red" block in the official App?** → Opening the file should automatically add the "More Sensors" block category; if it is missing, click the "+" at the bottom-left of the block palette and add "More Sensors".
 
 ---

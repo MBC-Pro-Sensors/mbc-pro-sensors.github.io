@@ -743,7 +743,7 @@ EndWhile
 - TOF2 dual-eye laser (EV3 edition)
 - A box or wall as an obstacle
 
-**How to connect:** TOF2 dual-eye laser in port 1, mounted at the front with the lasers facing straight ahead, about 5 cm above the ground.
+**How to connect:** TOF2 dual-eye laser in port 1, mounted at the front with the lasers facing straight ahead, about 5 cm above the ground. Left and right are as seen from behind the sensor, looking the way it faces (left = J5, right = J3).
 
 **Download the program (pick your software):**
 
@@ -939,7 +939,7 @@ EndWhile
 
 **FAQ:**
 
-- **Left and right are swapped?** The sensor may be mounted backwards (lasers facing back or upside down), or swap the numbers in the two tank steps.
+- **Left and right are swapped?** Left and right are as seen from behind the robot, looking the same way as the sensor (left = J5, right = J3); facing the sensor, they are the other way round. If they are still swapped, the sensor may be mounted backwards (lasers facing back or upside down), or swap the numbers in the two tank steps.
 - **The number does not match a ruler?** On EV3, 1 unit = 1.2 cm (for example 25 = 30 cm); 100 means nothing within 120 cm ahead.
 
 ---

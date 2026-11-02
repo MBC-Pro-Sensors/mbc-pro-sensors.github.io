@@ -58,16 +58,24 @@ Each id returns one int16; click an id for the six-host reading and figure.
 | [`10~12`](/en/sensors/imu/reference.md#v10) | gyro axis 1~3 `gyro` | -32768~32767 0.1 dps | 10 X, 11 Y, 12 Z angular rate, 0.1 deg/s (physical axes, sign-corrected) |
 | [`13~15`](/en/sensors/imu/reference.md#v13) | accel axis 1~3 `accel` | -32768~32767 mg | 13 X, 14 Y, 15 Z acceleration, mg (1000 = 1 g) |
 | [`16~18`](/en/sensors/imu/reference.md#v16) | mag axis 1~3 `mag` | -32768~32767 mG | 16 X, 17 Y, 18 Z magnetic field, mG (milligauss) |
+| [`0B`](/en/sensors/imu/reference.md#v0b) | command status `cmdStatus` | 0~0xEF03 | (last command code << 8) \| state; state 0 done, 1 busy, 2 failed, 3 rejected (same codes as the SPIKE command reply (mode 8 v3)); reported for E1~EB; undefined codes after EB: ignored on I2C, 0B unchanged (SPIKE replies 3 rejected) |
 
 ## Write commands
 
 | Id | Command | Parameters | Meaning |
 | :--- | :--- | :--- | :--- |
 | [`E0`](/en/sensors/imu/reference.md#ce0) | zero heading `zeroHeading` | — | zero all four headings (zeroHeadings()); EV3 also accepts the stock gyro-reset WRITE 0x11 |
-| [`E1`](/en/sensors/imu/reference.md#ce1) | start accelerometer calibration `accelCalStart` | — | start accelerometer calibration (= v1 0x20=0x01); F3 b4 = 1 meanwhile（F3 bit4 = 1 while running） |
-| [`E2`](/en/sensors/imu/reference.md#ce2) | end accelerometer calibration `accelCalEnd` | — | finish accelerometer calibration and save to EEPROM (= v1 0x20=0x02); headings are zeroed once on success |
-| [`E3`](/en/sensors/imu/reference.md#ce3) | start magnetometer calibration `magCalStart` | — | start magnetometer calibration (= v1 0x20=0x03); F3 b5 = 1 meanwhile（F3 bit5 = 1 while running） |
-| [`E4`](/en/sensors/imu/reference.md#ce4) | end magnetometer calibration `magCalEnd` | — | finish magnetometer calibration and save to EEPROM (= v1 0x20=0x04) |
+| [`E1`](/en/sensors/imu/reference.md#ce1) | start accelerometer calibration `accelCalStart` | — | start accelerometer calibration (= v1 0x20=0x01); F3 b4 = 1 meanwhile; ignored during magnetometer calibration (0B state 3 rejected)（F3 bit4 = 1 while running） |
+| [`E2`](/en/sensors/imu/reference.md#ce2) | end accelerometer calibration `accelCalEnd` | — | finish accelerometer calibration and save to EEPROM (= v1 0x20=0x02); on success the mount axis is re-captured and headings are zeroed once the sensor is level and still (not immediately); rejected if not calibrating (0B state 3); failed check → 0B state 2 |
+| [`E3`](/en/sensors/imu/reference.md#ce3) | start magnetometer calibration `magCalStart` | — | start magnetometer calibration (= v1 0x20=0x03); F3 b5 = 1 meanwhile; ignored if the magnetometer has failed (0B state 3)（F3 bit5 = 1 while running） |
+| [`E4`](/en/sensors/imu/reference.md#ce4) | end magnetometer calibration `magCalEnd` | — | finish magnetometer calibration and save to EEPROM (= v1 0x20=0x04); headings zeroed right away on success; rejected if not calibrating (0B state 3); failed check → 0B state 2 |
+| [`E5`](/en/sensors/imu/reference.md#ce5) | set heading `setHeading` | angle int16 ° | [angle int16 little-endian]: all four headings set to this angle (RAM); rejected while calibrating (0B state 3) |
+| [`E6`](/en/sensors/imu/reference.md#ce6) | north as zero `zeroNorth` | — | gyro heading set to the current magnetic bearing 0~359, then only whole turns are removed (absolute bearing); fusion re-init within ~3 s, timeout = failed; rejected while calibrating (0B state 3) |
+| [`E7`](/en/sensors/imu/reference.md#ce7) | re-estimate gyro bias `gyroBiasReset` | — | re-estimates the gyro bias over ~1.5 s of stillness (3 still windows); moved and not done within 4 s = failed; rejected while calibrating (0B state 3) |
+| [`E8`](/en/sensors/imu/reference.md#ce8) | re-capture mount axis `recaptureAxis` | — | re-detects the mounting orientation (headings zeroed after capture); RAM; rejected while calibrating (0B state 3) |
+| [`E9`](/en/sensors/imu/reference.md#ce9) | cancel calibration `cancelCalib` | — | cancels the running accelerometer / magnetometer calibration without saving (old values restored) |
+| [`EA`](/en/sensors/imu/reference.md#cea) | heading correction `headingCorrection` | 0.1°/turn 0, 3500~3700 | [uint16 little-endian] actual degrees per turn × 10 (0.1°/turn), 3500~3700; 0 = back to 360.0. Saved to EEPROM 0x60 (written after 3 s, skipped if unchanged), headings zeroed afterwards; missing or out of range → 0B state 2 (SPIKE also 2) |
+| [`EB`](/en/sensors/imu/reference.md#ceb) | calibration factory reset `calibFactoryReset` | magic 0xA5 | [A5]: accelerometer, magnetometer calibration and heading correction back to factory values, saved immediately; wrong magic → 0B state 2; rejected while calibrating (3) |
 
 ## Status flags F3
 
@@ -190,6 +198,7 @@ void loop() {
   { int16_t a[3]; mbcReadMany(ADDR, 0x10, 3, a); Serial.print("gyro: "); for (uint8_t i = 0; i < 3; i++) { Serial.print(a[i]); Serial.print(' '); } Serial.println(); }
   { int16_t a[3]; mbcReadMany(ADDR, 0x13, 3, a); Serial.print("accel: "); for (uint8_t i = 0; i < 3; i++) { Serial.print(a[i]); Serial.print(' '); } Serial.println(); }
   { int16_t a[3]; mbcReadMany(ADDR, 0x16, 3, a); Serial.print("mag: "); for (uint8_t i = 0; i < 3; i++) { Serial.print(a[i]); Serial.print(' '); } Serial.println(); }
+  Serial.print("cmdStatus: "); Serial.println(mbcRead(ADDR, 0x0B));   // command status
   Serial.println();
   delay(200);
 }
@@ -204,7 +213,6 @@ Generated by `_build/gen-reference.mjs` from `_build/protocol/imu.json` (single 
 - hw0 = 1（共識 #6）；EV3 模式 4 = [0x6A | 1<<8, 韌體主×100+次, 0, 0]（格式 B 再補 2 個 0），模式 5 改送俯仰角速度（取代 #65 放的 ID）。
 - EV3 鎖住模式 0／1／3 照盤點程式碼：0 = 陀螺 3D、1 = 融合航向、3 = [陀螺 1D, 磁力航向]（INO:213 註解寫反，以程式為準）。
 - 0x22 照 R4 版（出貨版）鎖住：命令 4~9 = 三個航向 +32768 的「低 byte 在前、高 byte 在後」；盤點檔分析的是主韌體（高在前），主韌體 #67 改成跟 R4 版逐 byte 相同。命令 10~12 = 0；0x01、0x0A、0x0F、F1~F4 都觸發航向歸零（刻意，不動）。
-- SPIKE 不做（hosts.spike = false，使用者先前決定），所有值 spike = []。
 - B-13：E1~E4 加速度計／磁力計校準開始／結束補回（v1 的 0x20 = 01/02/03/04），I2C 定案 §3 只列 E0。busyFlag：E1 → b4、E3 → b5。
 - 俯仰角範圍定案沒寫（韌體尚無現成值，#67 用 atan2 新算），range 先填「°」不給 min/max，韌體做好後再補。
 - 磁力信任度 08 = round(trust×255)，磁場干擾度 09 = round(disturbance×100) 上限 255，朝上的面 0A = 軸號 + 3×負向：公式照盤點 I2C v1 0x34~0x36。

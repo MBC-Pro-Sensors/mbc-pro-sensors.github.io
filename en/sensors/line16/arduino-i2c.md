@@ -59,12 +59,13 @@ Each id returns one int16; click an id for the six-host reading and figure.
 
 | Id | Command | Parameters | Meaning |
 | :--- | :--- | :--- | :--- |
-| [`E0`](/en/sensors/line16/reference.md#ce0) | black line mode `blackLine` | — | follow a black line (default) |
-| [`E1`](/en/sensors/line16/reference.md#ce1) | white line mode `whiteLine` | — | follow a white line (F3 b1 = 1) |
+| [`E0`](/en/sensors/line16/reference.md#ce0) | black line mode `blackLine` | — | follow a black line (default); RAM only, back to the default after reset |
+| [`E1`](/en/sensors/line16/reference.md#ce1) | white line mode `whiteLine` | — | follow a white line (F3 b1 = 1); RAM only, back to the default after reset |
 | [`E2`](/en/sensors/line16/reference.md#ce2) | calibrate black `calibBlack` | — | store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM（F3 bit2 = 1 while running） |
 | [`E3`](/en/sensors/line16/reference.md#ce3) | calibrate white `calibWhite` | — | store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM（F3 bit2 = 1 while running） |
-| [`E4`](/en/sensors/line16/reference.md#ce4) | set threshold `setThreshold` | threshold 1~99 | threshold 1~99 (RAM only, back to 50 after reboot) |
+| [`E4`](/en/sensors/line16/reference.md#ce4) | set threshold `setThreshold` | threshold 1~99 | threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2) |
 | [`E7`](/en/sensors/line16/reference.md#ce7) | 5-second auto calibration `calibAuto` | — | sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile（F3 bit2 = 1 while running） |
+| [`E9`](/en/sensors/line16/reference.md#ce9) | mirror left/right `reverse` | mirrored 0~1 | [0 normal / 1 mirrored]: for a sensor mounted backwards — channel order and line position are mirrored; calibration stays per physical channel; RAM only, 0 after reset (not in legacy mBlock); on SPIKE an out-of-range value returns failed (state 2) |
 
 ## Status flags F3
 
@@ -75,6 +76,7 @@ Each id returns one int16; click an id for the six-host reading and figure.
 | b2 | calibrating (`calibrating`) | E2/E3/E7 in progress; new calibration commands are ignored |
 | b3 | line lost (`lost`) | segment count = 0 |
 | b4 | fork (`fork`) | segment count ≥ 2 |
+| b5 | mirrored (`reversed`) | E9 = 1 (sensor mounted backwards, left/right mirrored) |
 
 ## Shared registers
 

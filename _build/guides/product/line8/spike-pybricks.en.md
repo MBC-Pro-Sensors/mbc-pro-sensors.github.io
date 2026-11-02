@@ -14,14 +14,17 @@ The Pathfinder has to "learn" the black and white of your mat before its numbers
 
 ### Library and example downloads
 
-The hub needs **Pybricks firmware v4.1**. The zip has `MBC_sensors.py`, `MBC_line8_obj_Lib.py` and 4 examples:
+The hub needs **Pybricks firmware v4.1** (tested on Pybricks 4.1.2 from 2026-10-29 to 11-01: the library, built-in ColorSensor, Pybricks Code blocks and the command examples all ran on a hub). The zip has `MBC_sensors.py`, `MBC_line8_obj_Lib.py` and 4 examples:
 
 - [📥 Download pack (Pybricks 4.1)](/examples/line8/line8_pybricks_spike_v4.x.zip)
 
-Library only: [MBC_sensors.py](/examples/line8/pybricks/For%20firmware%204.x/MBC_sensors.py) (use this for new projects: one file for every MBC sensor) · [MBC_line8_obj_Lib.py](/examples/line8/pybricks/For%20firmware%204.x/MBC_line8_obj_Lib.py) (for the examples on this page and older programs)
+Library only: [MBC_sensors.py](/examples/line8/pybricks/For%20firmware%204.x/MBC_sensors.py) (use this for new projects: one file for every MBC sensor) · [MBC_line8.py](/examples/line8/pybricks/For%20firmware%204.x/MBC_line8.py) (when only a Pathfinder 8-Way is connected: smaller file, faster upload: `from MBC_line8 import MBC_LINE8`) · [MBC_line8_obj_Lib.py](/examples/line8/pybricks/For%20firmware%204.x/MBC_line8_obj_Lib.py) (for the examples on this page and older programs)
 
 > [!IMPORTANT]
 > The examples say `from MBC_line8_obj_Lib import MBC_LINE8`, so import `MBC_line8_obj_Lib.py` (no renaming needed). For a new program of your own, write `from MBC_sensors import MBC_LINE8` and import only `MBC_sensors.py`. The library must be in the **same project list** as the main program.
+
+> [!WARNING]
+> MBC libraries downloaded before 2026-10-29 stop with `NameError: name 'property' isn't defined` as soon as they are imported on Pybricks 4.1.2 (the 4.1.2 hub has no `property`). Download the files on this page again (fixed and tested on 4.1.2).
 
 > [!NOTE]
 > Pybricks 3.6.1 is no longer updated; the old files are under "Legacy (no longer updated)" on the [Downloads page](/en/downloads.md). The 3.6.1 built-in examples only fit sensor firmware before 2026-10-30 (with newer firmware the old split reads the width ×10).
@@ -46,9 +49,10 @@ Examples: blocks [line8_block_native.py](/examples/line8/pybricks/For%20firmware
 
 > [!IMPORTANT]
 > **Decoding on Pybricks 4.1** (the examples above already do this)
-> - `reflection()` (mode 5) = coarse position + width. From Pybricks 4.1 it carries one decimal, so **convert to an integer first**: `r = int(line.reflection())`; 8-ch: position = `int(r) // 10 - 8` (−8 to +8), width = `int(r) % 10`. Blocks have no "integer" block: use "floor" for values ≥ 0 and "ceiling" for negative ones, which equals `int()`.
+> - `reflection()` (mode 5) = coarse position + width. **Always convert to an integer before splitting**: `r = int(line.reflection())`; 8-ch: position = `r // 10 - 8` (−8 to +8), width = `r % 10`. Sensor firmware from 2026-11-01 (release v1.0-261101) sends an exact integer; older firmware gives one decimal on Pybricks 4.x (e.g. 81.3), and without the conversion the width splits into values like 2.5. Keep the `int()` and it works on old and new firmware. Blocks have no "integer" block: use "floor" for values ≥ 0 and "ceiling" for negative ones, which equals `int()` (the 8-way tops out at 168 and is never negative).
 > - `ambient()` (mode 7) = "fine position + 100 . width", width in the first decimal: fine position = integer part − 100, width = `round(line.ambient() * 10) % 10`. **Needs sensor firmware from 2026-10-30 or later**; on older firmware the width reads 0 (position still works). With older firmware, take the width from reflection instead, or install the MBC library (mode 9 gives every value on old and new firmware).
 > - Positions are sent with an offset and subtracted after reading; negative numbers are never sent directly.
+> - Direction: line on the left = negative, on the right = positive (seen from behind the robot). With the whole row on white paper (no line) the width is 0 and the position **stays on the side where the line was last seen** (e.g. +8) instead of going back to 0, so check the width to tell whether there is a line.
 > - Advanced (Python only): `line.hsv(surface=False).h` = (fine position + 100) × 100 + width, giving the full width.
 
 ### Method 2: import the library
@@ -78,6 +82,9 @@ These send commands with the shared MBC library (see "Commands" further down thi
 | [line8_cmd_calib_bw.py](/examples/line8/pybricks/For%20firmware%204.x/line8_cmd_calib_bw.py) | Black/white calibration (E2 black, E3 white): put the whole row on black and press left, then on white paper and press left (keep the height fixed) | Black light values all 0; white-paper light values (`ir_calibration()`, 0–100) 80 or more |
 | [line8_cmd_calib_auto.py](/examples/line8/pybricks/For%20firmware%204.x/line8_cmd_calib_auto.py) | E7 5-second auto calibration: sweep the sensor across the black line and white surface for 5 s (fixed height, no tilt) | State goes from busy to done; white-paper light values 70 or more (quality depends on how you sweep) |
 | [line8_cmd_reverse.py](/examples/line8/pybricks/For%20firmware%204.x/line8_cmd_reverse.py) | E9 mirror left/right, and shows that a wrong parameter returns "failed" | Line position changes sign (e.g. −7 → +7, send 0 to switch back); sending 5 returns "failed" |
+
+- Keep the sensor at a **fixed height** while calibrating (mounted on the robot or propped on bricks, about 5–10 mm above the paper). Calibrating hand-held or with the sensor flat on the paper gives low white readings (measured 66–85; 86–100 at a fixed height).
+- Commands tested on a hub (2026-10-29 to 31, Pybricks 4.1.2): E0, E1, E2, E3, E4, E7 and E9 behave as described under "Commands" below; sending E2 during a calibration returns 3 (rejected); the unsupported E5, E6, E8, EA, EE, EF and F8 return 3; resending the same command does not run it again.
 
 ### PD line-following demos (speed 50)
 

@@ -7,15 +7,38 @@
     "ps4",
     "tof2",
     "tof8",
-    "imu",
     "cam_school",
     "cam_wro"
   ],
   "_holdCommands": "2026-10-30 使用者定：命令表等該產品上機通過才上網站。名單上的產品，sync-protocol 照常同步讀值與說明（例如 Pybricks 4.1 的讀法公式），但 commands、flags、assumptions、lego.spikeCmd 與網站還沒有的新讀值保留網站目前的版本（只更新已有讀值的說明）。產品上機通過後從名單拿掉，重跑 sync-protocol 與各產生器。",
   "holdSync": [
     "tof2",
-    "tof8",
-    "imu"
+    "tof8"
   ],
-  "_holdSync": "2026-10-30：整份先不同步（讀值本身還有沒上機的改動：測距者遠距離 200 cm 與新讀值、陀螺儀 SPIKE 模式（IMU SPIKE 版不上架））。上機通過後從名單拿掉。"
+  "_holdSync": "2026-10-30：整份先不同步（讀值本身還有沒上機的改動：測距者遠距離 200 cm 與新讀值、陀螺儀 SPIKE 模式（IMU SPIKE 版不上架））。上機通過後從名單拿掉。",
+  "hideHosts": {
+    "imu": [
+      "spike"
+    ]
+  },
+  "_hideHosts": "2026-11-03 使用者定：IMU 不上架 SPIKE 版（正本 hosts.spike 維持 true，韌體有 SPIKE 模式、SPIKE 積木網站要用）。sync-protocol 複製時把網站副本的 hosts.<主機> 設成 false，拿掉 values／commands 的 <主機> 欄、lego.spikeCmd，以及提到 SPIKE 的 assumptions。2026-11-03 陀螺儀上機確認 IMU 命令 E0～EB（使用者判定視為已測），imu 從 holdCommands／holdSync 拿掉。",
+  "mblockUnreleased": {
+    "imu": [
+      "0B",
+      "E5",
+      "E6",
+      "E7",
+      "E8",
+      "E9",
+      "EA",
+      "EB"
+    ],
+    "line8": [
+      "E9"
+    ],
+    "line16": [
+      "E9"
+    ]
+  },
+  "_mblockUnreleased": "2026-11-03 圖控軟體：mBlock 擴展中心是 1.0.0、網站下載區最新 v2.2.0，這些命令積木只在本機 2.3.0（使用者說「發布」才送審）。sync-protocol 拿掉這幾個值／命令的 mblock 欄；2.3.0 上平台、網站下載區換新 .mext 後，把這裡清空，重跑 sync-protocol、gen-reference、gen-guides。測距者、掌控者、神攝手的新命令本來就在 holdCommands／holdSync，不用列。"
 }

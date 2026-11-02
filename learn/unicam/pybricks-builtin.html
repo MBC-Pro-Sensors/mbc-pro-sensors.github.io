@@ -236,6 +236,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 .chip.other-mode:hover, .chip.other-mode:focus-visible { opacity: 1; }
 .v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
 .v1warn b { white-space: nowrap; }
+.v1ok { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--accent-soft); color: var(--ink); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
+.v1ok b { white-space: nowrap; }
 /* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
 .ucpick { display: grid; gap: 14px; }
 #modes { gap: 8px; }
@@ -253,7 +255,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 <li><b>這頁：</b>不用下載、匯入任何檔案，打開 Pybricks 就能拼；但每個相機模式<b>只拿得到 2 個數字</b>（位置只到 40×30 格），要自己用 // 和 % 拆。</li>
 <li><b>匯入函式庫：</b>要先匯入 <code>MBC_UniCam.py</code>，但一次讀得到很多值（例如 14 色、像素座標、面積、物體形狀），直接一個功能一個積木。</li>
 </ul></div><p class="lead" hidden></p>
-    <p class="v1warn" role="note"><b>v1 尚未上機驗證</b><span>數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。</span></p>
+    <p class="v1ok" role="note"><b>SPIKE 已上機驗證</b><span>2026-11-01 用出貨版韌體 v1.0-261101 在實機跑過（Pybricks 函式庫與積木、Pybricks 內建積木、官方 App 教育版與家用版、MBC 積木網站）。</span></p>
   </header>
 
   <section class="main" aria-label="教學">

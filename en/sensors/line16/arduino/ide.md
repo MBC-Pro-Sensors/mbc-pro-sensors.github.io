@@ -249,7 +249,7 @@ Serial.println();
 
 ### black line mode <small>blackLine</small>
 
-follow a black line (default)
+follow a black line (default); RAM only, back to the default after reset
 
 ```cpp
 mbcWrite(0x16, 0xE0);   // black line mode
@@ -261,7 +261,7 @@ mbcWrite(0x16, 0xE0);   // black line mode
 
 ### white line mode <small>whiteLine</small>
 
-follow a white line (F3 b1 = 1)
+follow a white line (F3 b1 = 1); RAM only, back to the default after reset
 
 ```cpp
 mbcWrite(0x16, 0xE1);   // white line mode
@@ -299,7 +299,7 @@ while (mbcRead(0x16, 0xF3) & (1 << 2)) delay(10);   // wait until F3 bit2 clears
 
 ### set threshold <small>setThreshold</small>
 
-threshold 1~99 (RAM only, back to 50 after reboot)
+threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2)
 
 ```cpp
 mbcWrite(0x16, 0xE4, 50);   // set threshold（threshold 1~99）
@@ -316,6 +316,18 @@ sweep the sensor across black line and white surface for 5 s; min/max become the
 ```cpp
 mbcWrite(0x16, 0xE7);   // 5-second auto calibration
 while (mbcRead(0x16, 0xF3) & (1 << 2)) delay(10);   // wait until F3 bit2 clears = done
+```
+
+</section>
+
+<section id="ce9" class="ref-item ref-cmd">
+
+### mirror left/right <small>reverse</small>
+
+[0 normal / 1 mirrored]: for a sensor mounted backwards — channel order and line position are mirrored; calibration stays per physical channel; RAM only, 0 after reset (not in legacy mBlock); on SPIKE an out-of-range value returns failed (state 2)
+
+```cpp
+mbcWrite(0x16, 0xE9, 1);   // mirror left/right（mirrored 0~1）
 ```
 
 </section>

@@ -47,7 +47,7 @@ line = MBC_LINE16(Port.A)
 linePos = line.pos16()
 ```
 
-<p class="ref-note">模式 0 (edu) byte 1 −16 🔒；模式 0 (toy) byte 0 −16 🔒；模式 1 byte 0 −16；模式 5 v[0] 🔒；模式 9 v[4] lo −16 🔒。備註：Pybricks reflection() 編碼：X = (線位置+16)×100 + 線寬，a = X/25、b = (X−a×25+1)×10−1，3 個 int16 = a×256+b；主機 ×3200/32768 ≈ X（X ≥ 3200 時讀到負數，F16:905）</p>
+<p class="ref-note">模式 0 (edu) byte 1 −16 🔒；模式 0 (toy) byte 0 −16 🔒；模式 1 byte 0 −16；模式 5 v[0] 🔒；模式 9 v[4] lo −16 🔒。備註：Pybricks reflection() 編碼：X = (線位置+16)×100 + 線寬，共用核心 mbcReflFill8 送出：2026-11-01 以後的韌體 reflection() 剛好是整數（3.x、4.x 都是）；舊韌體（R=G=B=a×256+b）在 4.x 帶小數，先 int()；X ≥ 3200 時讀到負數 X−6399（F16:905）</p>
 
 </section>
 

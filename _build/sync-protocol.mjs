@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { HIDE_BIG, FLAGS } from './site-flags.mjs';
 const HOLD = FLAGS.holdCommands || [];
 const HOLD_ALL = FLAGS.holdSync || [];
+const HIDE_HOSTS = FLAGS.hideHosts || {};
 
 const BUILD = path.dirname(fileURLToPath(import.meta.url));
 export const PROTOCOL_SRC = 'D:\\AI_Agent_AI助理\\02_MBC產品開發\\85_共用資源\\MBC_LegoUART\\protocol';
@@ -61,6 +62,58 @@ function render(src) {
   return JSON.stringify(d, null, 2) + '\n';
 }
 
+
+// site-flags.json hideHosts：{ 產品: [主機] } 網站副本把該主機關掉（例：IMU 不上架 SPIKE 版，正本照留）
+function hideHosts(src, id) {
+  const hs = HIDE_HOSTS[id];
+  if (!hs || !hs.length) return src;
+  const d = JSON.parse(src);
+  for (const h of hs) {
+    if (d.hosts && h in d.hosts) d.hosts[h] = false;
+    for (const v of d.values || []) if (h in v) v[h] = [];
+    for (const c of d.commands || []) delete c[h];
+    if (h === 'spike' && d.lego) delete d.lego.spikeCmd;   // spikeType 等留著（網站副本原本就有），只拿掉命令通道
+    const re = new RegExp(h, 'i');
+    if (d.assumptions) d.assumptions = d.assumptions.filter((x) => !(typeof x === 'string' && re.test(x)));
+  }
+  return JSON.stringify(d, null, 2) + '\n';
+}
+
+// micro:bit 擴充還沒發版的積木（只在 master）網站不寫：用已發布版本的 microbit-blocks.json 過濾 values／commands 的 microbit 欄
+// （2026-11-03：IMU E5～EB、0B 的積木在擴充 master，v2.0.5 沒有）。擴充發版後重跑 sync-microbit.mjs 再跑這支就會帶上。
+const MB_FILE = path.join(BUILD, 'microbit-blocks.json');
+const MBJ = fs.existsSync(MB_FILE) ? JSON.parse(fs.readFileSync(MB_FILE, 'utf8')) : null;
+const MB = MBJ && MBJ.blocks;
+// 積木與它用到的選項（MbcXxx.Yyy）都要在已發布版本裡
+const mbHas = (call) => {
+  const m = String(call).match(/^mbc\.(\w+)\((.*)\)$/);
+  if (!m || !MB[m[1]]) return false;
+  return (m[2].match(/\bMbc\w+\.\w+/g) || []).every((e) => !!(MBJ.enums || {})[e]);
+};
+function hideUnreleasedMicrobit(src) {
+  if (!MB) return src;
+  const d = JSON.parse(src);
+  let n = 0;
+  for (const it of [...(d.values || []), ...(d.commands || [])]) {
+    const mb = it.microbit;
+    if (!mb || typeof mb !== 'object' || Array.isArray(mb)) continue;
+    const js = mb.js == null ? [] : [].concat(mb.js);
+    if (js.length ? !js.every(mbHas) : !(mb.see && mbHas(mb.see))) { delete it.microbit; n++; continue; }
+    if (mb.see && !mbHas(mb.see)) delete mb.see;
+    if (mb.also) { mb.also = mb.also.filter(mbHas); if (!mb.also.length) delete mb.also; }
+  }
+  return n ? JSON.stringify(d, null, 2) + '\n' : src;
+}
+
+// site-flags.json mblockUnreleased：{ 產品: [編號] } mBlock 擴展還沒發布這些積木 → 網站副本拿掉那幾個值／命令的 mblock 欄
+function hideUnreleasedMblock(src, id) {
+  const ids = (FLAGS.mblockUnreleased || {})[id];
+  if (!ids || !ids.length) return src;
+  const d = JSON.parse(src);
+  for (const it of [...(d.values || []), ...(d.commands || [])]) if (ids.includes(it.id)) delete it.mblock;
+  return JSON.stringify(d, null, 2) + '\n';
+}
+
 // 有頂層 layout 的產品（神攝手 unicam：0x10 起的值表依相機模式而變）不進 gen-reference 的通用頁，網站頁由 gen-unicam.mjs 產生 → 不複製
 // 頂層 site: false（停產不上網站，例：循行者 5 路 line5）→ 不複製
 const files = fs.readdirSync(SRC).filter((f) => {
@@ -75,6 +128,9 @@ for (const f of files) {
   // 先確認是合法 JSON，壞檔不複製
   try { JSON.parse(src); } catch (e) { console.error(`${f}：不是合法 JSON（${e.message}）`); process.exit(2); }
   src = render(src);
+  src = hideHosts(src, f.replace(/\.json$/, ''));
+  src = hideUnreleasedMicrobit(src);
+  src = hideUnreleasedMblock(src, f.replace(/\.json$/, ''));
   const dst = path.join(PROTOCOL_DST, f);
   const cur = fs.existsSync(dst) ? fs.readFileSync(dst, 'utf8') : null;
   // site-flags.json holdCommands：命令還沒上機的產品，讀值照常同步，命令／旗標／SPIKE 命令通道沿用網站目前的副本

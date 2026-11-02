@@ -2,7 +2,7 @@
 # Sharpshooter Vision Camera Sensor (In Development)
 
 > [!WARNING]
-> **Firmware v1 not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
+> **The SPIKE edition is verified on hardware** (2026-11-01, shipping firmware v1.0-261101, see [Reading it on SPIKE](/en/sensors/unicam/spike/index.md)); **the EV3, MATRIX, Arduino, micro:bit and mBlock editions are not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
 
 > [!TIP]
 > **New to it? Try the interactive tutorial first**: no hub needed. Drag blobs, sample points and lines in your browser and watch the code build up. Six ways to write it: Pybricks (SPIKE), EV3, Arduino, mBlock, MATRIX, micro:bit → [Start the tutorial](/en/learn/index.md#unicam)
@@ -128,7 +128,7 @@ The back of the camera has a 1.8" color screen and 4 buttons; everything is set 
 
 1. **Live view**: left / right cycles target 1 … target N → **MODE** → **SET**. N = the last taught color + 1 empty slot (up to 16).
 2. **OK on a target: teach a color** (AxisX → AxisY → OK to pick; hold OK for 0.8 s to finish at once; then adjust Hue / Sta / Size / Locked · MaxArea). **Side button** on a target: clear it (with its assigned shape). In object detection, teaching target 1~8 is followed by a `Target N shape` prompt.
-3. **OK on MODE**: left / right picks camera mode 1~5 → OK → pick a sub-option → OK. Sub-option names show **what the current host actually gets** (e.g. EV3 "8 XY", Pybricks library "7 XY"); before a SPIKE hub has read the camera they show the level names (Max / Multi / Std / Fine, H / HS / HSV). Modes with one sub-option skip that step. In menus the side button goes back one level.
+3. **OK on MODE**: left / right picks camera mode 1~5 → OK → pick a sub-option → OK. Sub-option names show **what the current host actually gets** (e.g. EV3 "8 XY", Pybricks library "7 XY"); before a SPIKE hub has read the camera they show the level names (Max / Multi / Std / Fine, H / HS / HSV). On SPIKE the numbers are fixed **at the moment you enter the menu**: go back to the live view, let the hub's program start reading the camera, then open the menu; while you stay in the menu they do not change. Modes with one sub-option skip that step. In menus the side button goes back one level.
 4. **OK on SET**: camera menu (brightness, contrast, saturation, white balance, white calibration, self-test, defaults); item 14 ShapeTol 1~5 is the shape tolerance for object detection.
 5. **Screen**: top left is the host name (green = connected, red = disconnected); top right shows "mode-sub-option" (e.g. 1-3) and the target number (from 1, the same color number the host receives); the bottom bar shows, per mode: color tracking = X Y W H count of the current target, color at points = H S V of S1, color order = number of blocks, line following = near / far offset, angle, junction type, object detection = object count + code and position of the largest. Color at points draws the sample crosses and numbers, color order labels the blocks, line following draws the three scan rows and the line it found, object detection outlines each object with its "color shape" label (a ? when it touches the frame edge).
 6. **Kept after power-off**: target colors (16), camera settings, camera mode and each mode's sub-option, sample-point positions changed over I2C, shape tolerance, shapes assigned to targets 1~8. The first time this generation's firmware is flashed everything resets to defaults (Color tracking ③ Standard).
@@ -183,7 +183,7 @@ Sharpshooter Vision units shipped before October 2026 (School and WRO editions) 
 | Main features | Pick point + blob tracking + motion | Color code and vividness of 12 spots | Color tracking (up to 16 colors), color at points, color order, line following |
 | Switch jobs on the camera | — | — | 5 camera modes + sub-options |
 | Hosts | SPIKE, EV3, MATRIX, Arduino and more | SPIKE, EV3, MATRIX | SPIKE, EV3, MATRIX, Arduino, micro:bit, mBlock |
-| Status | No longer supported | No longer supported | **Firmware v1 in development, not yet hardware-verified** |
+| Status | No longer supported | No longer supported | **Firmware v1: SPIKE edition verified on hardware, other hosts still to be tested** |
 | Guide | [Legacy overview](/en/sensors/esp32cam/index.md) | [Legacy overview](/en/sensors/esp32cam/index.md) | This page |
 
 - Programs written for a legacy edition do not run as-is on the current Sharpshooter Vision: the value layout is different, so rewrite them with the host guides on this page.
@@ -204,12 +204,12 @@ Example programs: [SPIKE](/en/sensors/unicam/spike-examples.md) · [EV3](/en/sen
 
 ## ⚠️ Known limits, to be tested on hardware
 
-Firmware v1 has not been run on real hardware yet; these may change after testing:
+The SPIKE edition is verified on hardware (2026-11-01, shipping firmware v1.0-261101); the firmware for the other hosts has not been run on real hardware yet, and these may change after testing:
 
 1. **fps**: the 16-color lookup and blob labelling do more work than 4 colors; real fps still has to be measured (Kito with 4 colors runs about 50 fps).
 2. **I2C pins**: SDA = IO3, SCL = IO1 is provisional; whether the ESP32 can be an I2C target on IO1 / IO3 has to be tested with an Arduino. The **mBlock edition** still has to be tried on an mBot (only the transport layer was tested on a PC).
-3. **Line following** has only been tested on synthetic frames (straight, offset, slanted, cross / T / left / right / dead end, white line, colored line, marker lines, lost side); classroom lighting, shadows and the perspective of looking ahead need thresholds tuned on hardware.
-4. Whether **SPIKE App Python** can read bytes 8~15 of mode 0 is not confirmed yet; the 8 bytes the blocks read are not affected.
+3. **Line following**: tested on the computer with synthetic frames (straight, offset, slanted, cross / T / left / right / dead end, white line, colored line, marker lines, lost side); on a SPIKE hub the line-following examples ran on white paper with a black line (left / right correction, searching when the line is taken away, stopping at a cross / T). Other fields' lighting and shadows still need more testing.
+4. **SPIKE App Python**: on the hub `device.data(port.C)` reads bytes 0~13 of mode 0 (bytes 14~15 cannot be read); the blocks only read the first 8 bytes.
 5. **Sample-point positions**: default layout + I2C E1; the camera menu cannot move sample points yet.
 6. **Color order** takes up to 32 blocks (hosts actually get 2~18); the engine handles 16 colors, LEGO hosts use up to 14.
 7. **Object detection** runs outline analysis on top of 16-color matching, so fps has to be measured again; when a frame cannot be finished in time the camera lowers the frame rate in mode 5 only (down to 25 fps). Shape thresholds come from the hardware-tuned object-detection edition; on the computer shapes are recognised correctly 99% of the time (area above about 310 pixels).

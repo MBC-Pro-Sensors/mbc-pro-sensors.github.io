@@ -26,9 +26,9 @@ Each product has one reference page listing how every value is read on the six h
 
 ## Products with a generated reference
 
-- [IMU Gyro Sensor](/en/sensors/imu/reference.md)：13 values、5 commands
-- [Line Follower 16-ch](/en/sensors/line16/reference.md)：9 values、6 commands
-- [Line Follower 8-ch](/en/sensors/line8/reference.md)：9 values、6 commands
+- [IMU Gyro Sensor](/en/sensors/imu/reference.md)：14 values、12 commands
+- [Line Follower 16-ch](/en/sensors/line16/reference.md)：9 values、7 commands
+- [Line Follower 8-ch](/en/sensors/line8/reference.md)：9 values、7 commands
 - [PS2 Gamepad Receiver](/en/sensors/ps2/reference.md)：12 values、2 commands
 - [Gamepad Receiver PS4/PS5](/en/sensors/ps4/reference.md)：12 values、2 commands
 - [Laser Ranger 2-ch](/en/sensors/tof2/reference.md)：8 values、0 commands

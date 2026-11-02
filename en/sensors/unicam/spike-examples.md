@@ -5,8 +5,8 @@
 
 [🔙 Back to Sharpshooter Vision](/en/sensors/unicam/index.md)　｜　[How SPIKE reads it](/en/sensors/unicam/spike/index.md)　｜　[📋 Value reference](/en/sensors/unicam/reference.md)
 
-> [!WARNING]
-> **v1 not yet hardware-verified**: the value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after bench testing.
+> [!NOTE]
+> **SPIKE hardware-verified (2026-11-01, release v1.0-261101)**: the official App (Education and Robot Inventor), the Pybricks library, Pybricks built-in blocks and the examples on this page all ran on real hubs.
 
 This page has **6 Pybricks examples** (with the MBC library `MBC_UniCam.py`) and **2 LEGO SPIKE App (Education) Python examples**, plus a table for the official App blocks (Education and Robot Inventor). The tasks are the ones students use most: turn to follow a blob, find several colours, read the colour at a spot, colour order (WRO), PD line following with a stop at a junction, object detection (find the biggest red triangle).
 
@@ -17,7 +17,7 @@ This page has **6 Pybricks examples** (with the MBC library `MBC_UniCam.py`) and
 | 🟨 Official App blocks (Education / Robot Inventor) | Blocks only | Use the colour, reflection and raw red/green/blue blocks with the [table at the bottom](#app-table) |
 
 > [!IMPORTANT]
-> - **The Pybricks library switches the camera mode for you**: write `mode=13` in the program (mode number = camera mode × 10 + option; colour order = 30) and the library switches the camera to it when the object is created (shipping firmware; with firmware from before 2026-10-29 set the same mode in the camera menu yourself). The official App cannot send commands, so use the camera menu.
+> - **The Pybricks library switches the camera mode for you**: `UniCam(Port.C, mode=13)` sets the camera to 13 when it is created (mode number = camera mode × 10 + option; colour order = 30), no need to use the menu first (shipping firmware; with firmware from before 2026-10-29 set the same mode in the camera menu yourself). The official App cannot switch it remotely; set it in the camera menu.
 > - Pybricks needs the Pybricks firmware on the hub (install it from code.pybricks.com; the SPIKE App can put LEGO firmware back). The official App needs nothing.
 > - The camera must run the **SPIKE firmware**. It detects by itself whether the hub runs the official App or Pybricks.
 
@@ -26,7 +26,7 @@ This page has **6 Pybricks examples** (with the MBC library `MBC_UniCam.py`) and
 ## Before you start: teach colours and set the mode on the camera
 
 1. **Teach a colour**: on the live view use left/right to stop on "target 1" → **OK** → move the cross onto the colour (AxisX → AxisY) → **OK** (hold OK for 0.8 s to finish at once). Do the same for target 2, 3… The **side key** on a target clears it.
-2. **Set the mode**: left/right to **MODE** → **OK** → camera mode 1~5 → **OK** → option → **OK**. Options show how many values this hub really gets (for example Pybricks "7 XY"). "1-3" at the top right of the screen is the current mode (= mode number 13).
+2. **Set the mode**: left/right to **MODE** → **OK** → camera mode 1~5 → **OK** → option → **OK**. Options show how many values this hub really gets (for example Pybricks "7 XY"). "1-3" at the top right of the screen is the current mode (= mode number 13). The option counts are decided by the hub **when you enter the menu**: go back to the live picture, let the hub start reading, then enter the menu; staying inside the menu does not update the counts.
 3. **Object detection (camera mode 5)**: after teaching targets 1~8 the camera asks `Target N shape`; pick a shape (Any = not set) or skip with the side key. Only target colours 1~8 become objects.
 4. Settings survive power-off (colours, mode, options, target shapes).
 
@@ -147,7 +147,7 @@ while True:
 
 **Common problems**
 - **Turns the wrong way?** → swap the E and F cables, or move `Direction.COUNTERCLOCKWISE` to the right motor.
-- **Always searching?** → the camera screen should show `1-3`; target 1 must be taught; `mode=` must match the menu.
+- **Always searching?** → the camera screen should show `1-3`; target 1 must be taught; with the official App, set mode 13 in the camera menu.
 - **Wobbles left and right?** → make `KP` smaller (for example 2).
 
 ---
@@ -426,7 +426,7 @@ while True:
 **Common problems**
 - **Wobbles a lot?** → smaller `KP`, bigger `KD`, or a slower `SPEED`.
 - **Runs off in curves?** → give the far offset more weight (for example 0.5 / 0.5).
-- **Stops before the junction?** → the junction threshold is inside the camera and was not tuned on hardware yet; add `cam.junction_dist() < 40` to the `if junction in (1, 2)` test (stop only when the junction is close).
+- **Stops before the junction?** → the cross / T stop passed on a real SPIKE hub; only if it stops too early on your mat, add `cam.junction_dist() < 40` to the `if junction in (1, 2)` test (stop only when the junction is close).
 
 ---
 
@@ -434,7 +434,7 @@ while True:
 
 **What it does**: the camera sorts the objects in the picture from largest to smallest; the program looks from the largest down for a "triangle of target 1 (red)", turns to it and drives up until it reaches the bottom of the picture, then stops and beeps. If it sees none it spins slowly to search. The hub display shows how many objects are in view.
 
-**Camera mode**: camera mode 5 Object detection, option 1 Object list = **mode number 51**; teach "target 1" as red first (the shape can stay unset; the camera works it out).
+**Camera mode**: camera mode 5 Object detection, option 1 Object list = **mode number 51**; teach "target 1" with the object itself (the red triangle) and set its shape to **Tri** (pick Tri in the `Target 1 shape` menu after teaching, or call `cam.target_shape(1, 3)` once). On the bench, teaching with a red card split the triangle (a different red) into several pieces; re-teaching with the triangle itself found it.
 
 **You need**: SPIKE hub, driving base (left wheel **E**, right wheel **F**), camera in port **C**, a red triangle (card or bricks), plus a few other shapes for fun.
 
@@ -448,7 +448,8 @@ while True:
 # Sharpshooter Vision × Pybricks (SPIKE) example 6: find the biggest red triangle and drive to it
 # 需要把相機選單切到 相機模式 5 物體偵測 ・子選項 ① 物體清單＝模式編號 51
 # Camera menu: camera mode 5 Object detection, option 1 Object list = mode number 51
-# 準備：在相機上把「目標 1」教成紅色（形狀可以不指定）/ teach "target 1" as red on the camera
+# 準備：用要找的物體本身（紅色三角形）教「目標 1」，並指定形狀 Tri（相機選單 Target 1 shape，或 cam.target_shape(1, 3)）
+# teach "target 1" with the red triangle itself and set its shape to Tri (camera menu, or cam.target_shape(1, 3))
 # 接線 Wiring：相機 → C 孔 / camera → port C；左輪 E、右輪 F / left wheel E, right wheel F
 # 同一個資料夾要有 MBC_UniCam.py / MBC_UniCam.py must be imported too
 #
@@ -526,7 +527,7 @@ while True:
 
 ## LEGO SPIKE App (Education) Python examples
 
-The official App sees the camera as a "colour sensor". Python reads **bytes 0~7** with `color_sensor.color()`, `reflection()` and `rgbi()` (colour, reflection, raw red/green/blue). The reading helper `UniCamApp` at the top of each example splits them by mode (helper alone: [MBC_UniCam_App_helper.py](/examples/unicam/spike_app/MBC_UniCam_App_helper.py)). Bytes 8~15 may only be readable with `device.data()`; **not yet verified on hardware (task #77)**, so the helper does not use them.
+The official App sees the camera as a "colour sensor". Python reads **bytes 0~7** with `color_sensor.color()`, `reflection()` and `rgbi()` (colour, reflection, raw red/green/blue). The reading helper `UniCamApp` at the top of each example splits them by mode (helper alone: [MBC_UniCam_App_helper.py](/examples/unicam/spike_app/MBC_UniCam_App_helper.py)). The helper reads the colour with `device.data(port.C)[0]`, because `color_sensor.color()` turns 5 into 6. `device.data(port.C)` gives 8 values: byte 0, byte 1, then 6 int16; bytes 8~13 are readable, 14~15 are not (tested 2026-11-01).
 
 | Helper method | Returns | Modes |
 |---|---|---|
@@ -559,13 +560,16 @@ The official App sees the camera as a "colour sensor". Python reads **bytes 0~7*
 # 接線 Wiring：相機 → C 孔；左輪 E、右輪 F（驅動底座）/ camera → port C; left wheel E, right wheel F
 # 用法：SPIKE App 新增「Python」專案，整支貼上 / new Python project in the SPIKE App, paste all of this
 # ===== 神攝手 讀值小工具（樂高官方 SPIKE App 3 教育版 Python，照抄就好、不用改）=====
-# ===== UniCam reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
+# ===== Sharpshooter Vision reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
 # 相機在 SPIKE App 裡是「顏色感應器」：顏色、反射光、原始紅／綠／藍 這 5 個數字（byte 0~7）積木與 Python 都讀得到。
-# byte 8~15 只有 App Python 的 device.data() 可能讀得到，還沒上機確認（任務 #77），這個小工具不用它。
+# device.data() 回 8 個值：byte 0、byte 1，之後 6 個 int16（byte 8~13 也讀得到，14~15 讀不到；2026-11-01 上機）。
+# 「顏色」改讀 device.data() 的第 1 個值：color_sensor.color() 會把 5 換成 6（樂高的綠色），5 和 6 就分不出來。
 # The camera shows up as a colour sensor: colour, reflection, raw red/green/blue (bytes 0~7).
-# Bytes 8~15 may only be readable with device.data() (not yet verified, #77); this helper does not use them.
+# device.data() gives 8 values: byte 0, byte 1, then 6 int16 (bytes 8~13 readable, 14~15 not; tested 2026-11-01).
+# The colour byte is read with device.data(): color_sensor.color() turns 5 into 6 (LEGO green).
 # mode = 你在相機選單切的模式編號（相機模式×10＋子選項，例 13）/ mode = camera menu mode number
 import color_sensor
+import device
 
 
 class UniCamApp:
@@ -576,7 +580,7 @@ class UniCamApp:
 
     def update(self):
         """讀一次最新資料 / read once"""
-        c = color_sensor.color(self.port)              # byte 0
+        c = device.data(self.port)[0]                  # byte 0（color() 會把 5 換成 6 / color() turns 5 into 6）
         r = color_sensor.reflection(self.port)         # byte 1
         rgb = color_sensor.rgbi(self.port)             # 原始紅、綠、藍（各 2 byte）
         b = [int(c) & 255, int(r) & 255]
@@ -770,13 +774,16 @@ runloop.run(main())
 # 接線 Wiring：相機 → C 孔；左輪 E、右輪 F / camera → port C; left wheel E, right wheel F
 # 方向：站在車後往前看，線在左＝負 / standing behind the robot: line on the left = negative
 # ===== 神攝手 讀值小工具（樂高官方 SPIKE App 3 教育版 Python，照抄就好、不用改）=====
-# ===== UniCam reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
+# ===== Sharpshooter Vision reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
 # 相機在 SPIKE App 裡是「顏色感應器」：顏色、反射光、原始紅／綠／藍 這 5 個數字（byte 0~7）積木與 Python 都讀得到。
-# byte 8~15 只有 App Python 的 device.data() 可能讀得到，還沒上機確認（任務 #77），這個小工具不用它。
+# device.data() 回 8 個值：byte 0、byte 1，之後 6 個 int16（byte 8~13 也讀得到，14~15 讀不到；2026-11-01 上機）。
+# 「顏色」改讀 device.data() 的第 1 個值：color_sensor.color() 會把 5 換成 6（樂高的綠色），5 和 6 就分不出來。
 # The camera shows up as a colour sensor: colour, reflection, raw red/green/blue (bytes 0~7).
-# Bytes 8~15 may only be readable with device.data() (not yet verified, #77); this helper does not use them.
+# device.data() gives 8 values: byte 0, byte 1, then 6 int16 (bytes 8~13 readable, 14~15 not; tested 2026-11-01).
+# The colour byte is read with device.data(): color_sensor.color() turns 5 into 6 (LEGO green).
 # mode = 你在相機選單切的模式編號（相機模式×10＋子選項，例 13）/ mode = camera menu mode number
 import color_sensor
+import device
 
 
 class UniCamApp:
@@ -787,7 +794,7 @@ class UniCamApp:
 
     def update(self):
         """讀一次最新資料 / read once"""
-        c = color_sensor.color(self.port)              # byte 0
+        c = device.data(self.port)[0]                  # byte 0（color() 會把 5 換成 6 / color() turns 5 into 6）
         r = color_sensor.reflection(self.port)         # byte 1
         rgb = color_sensor.rgbi(self.port)             # 原始紅、綠、藍（各 2 byte）
         b = [int(c) & 255, int(r) & 255]
@@ -979,6 +986,9 @@ runloop.run(main())
 
 Colour and reflection are 1 byte each; raw red/green/blue are 2 bytes each: "A + B ×256" means A = `raw red % 256` (remainder) and B = `raw red ÷ 256` (whole number); "A ×100 + B" means split with `÷100`. Grid Y: top = small. Spot colour 1: two spot hues per value.
 
+> [!WARNING]
+> The official App's "colour" (blocks, `color_sensor.color()`, the dashboard) turns the raw value **5 into 6** (LEGO green); other numbers are unchanged. So 5 and 6 cannot be told apart: colour 1 X cell, colours found, junction type 5 (dead end), object count and total blocks. "Reflection" is not affected. In Python read `device.data(port.C)[0]` instead (the example helper already does); blocks cannot avoid it.
+
 | Mode | colour | reflection | raw red | raw green | raw blue |
 |---|---|---|---|---|---|
 | 1-1 Max colours | colours found | colour 1 X×10+Y (8×6) | colour 2 X×10+Y (8×6) ×100 + colour 3 X×10+Y (8×6) | colour 4 X×10+Y (8×6) ×100 + colour 5 X×10+Y (8×6) | colour 6 X×10+Y (8×6) ×100 + colour 7 X×10+Y (8×6) |
@@ -1012,12 +1022,12 @@ On Robot Inventor the colour is only 0~10, reflection up to 126 and raw red/gree
 | 5-2 Object detail | object count | object 1 code | object 1 X | object 1 Y | object 1 area % |
 
 > [!CAUTION]
-> In the official App **do not use the "colour is [red]?" block**: it compares LEGO's own colour numbers. Always put the number in a variable and compare. The Robot Inventor App's Python reading is not verified yet; this page only lists the block reading.
+> In the official App **do not use the "colour is [red]?" block**: it compares LEGO's own colour numbers. Always put the number in a variable and compare. Robot Inventor App **Python**: while the program runs the hub switches to the Education combination (0x26), so use the **Education** table above and read 6 values with `hub.port.C.device.get()`; the Robot Inventor table above is for blocks only.
 
 ## Please note
 
-- **All run on hardware** (2026-11-01, shipping firmware): KP/KD, area limits and the junction stop are suggestions, print the numbers first and then tune.
-- When you change the camera mode, just change `mode=`: the Pybricks library switches the camera; with the official App use the camera menu.
+- The examples on this page ran on a real SPIKE hub (2026-11-01); KP/KD, area limits and the junction stop are suggestions, print the numbers first and tune on a new mat.
+- Changing the camera mode: in Pybricks just change `mode=` (the library switches the camera); with the official App use the camera menu.
 - If the hub disconnects, the hub name at the top left of the camera screen turns red; just run the program again.
 
 ## Next

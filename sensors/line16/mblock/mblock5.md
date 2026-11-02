@@ -179,7 +179,7 @@
 
 ### 切黑線 <small>blackLine</small>
 
-追黑線（預設）
+追黑線（預設）；存 RAM，重開機回預設
 
 <pre class="blocks">循行者 連接埠 [1 v] 切黑線 :: sensing</pre>
 
@@ -191,7 +191,7 @@
 
 ### 切白線 <small>whiteLine</small>
 
-追白線（F3 b1 = 1）
+追白線（F3 b1 = 1）；存 RAM，重開機回預設
 
 <pre class="blocks">循行者 連接埠 [1 v] 切白線 :: sensing</pre>
 
@@ -227,7 +227,7 @@
 
 ### 設定門檻 <small>setThreshold</small>
 
-二值化門檻 1~99（RAM，重開機回預設 50）
+二值化門檻 1~99（RAM，重開機回預設 50）；SPIKE 參數超出範圍回失敗（狀態 2）
 
 <pre class="blocks">循行者 連接埠 [1 v] 設定門檻 (50) :: sensing</pre>
 
@@ -256,6 +256,8 @@
 <pre class="blocks">循行者 連接埠 [1 v] 更新全部數值 :: sensing</pre>
 
 </section>
+
+<p class="ref-missing"><b>這個軟體送不了</b>：左右反向</p>
 
 ## 範例
 

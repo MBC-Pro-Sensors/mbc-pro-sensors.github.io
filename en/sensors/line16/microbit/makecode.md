@@ -228,7 +228,7 @@ let light = mbc.lineChannel(1)   // channel 1~16 reflect：0~100 (N = 1~16)
 
 ### black line mode <small>blackLine</small>
 
-follow a black line (default)
+follow a black line (default); RAM only, back to the default after reset
 
 <pre class="blocks">line follower follow [black v] line :: #00A4E4</pre>
 
@@ -242,7 +242,7 @@ mbc.lineSetColor(MbcLineColor.Black)   // black line mode
 
 ### white line mode <small>whiteLine</small>
 
-follow a white line (F3 b1 = 1)
+follow a white line (F3 b1 = 1); RAM only, back to the default after reset
 
 <pre class="blocks">line follower follow [white v] line :: #00A4E4</pre>
 
@@ -284,7 +284,7 @@ mbc.lineCalibrate(MbcLineCalib.White)   // calibrate white
 
 ### set threshold <small>setThreshold</small>
 
-threshold 1~99 (RAM only, back to 50 after reboot)
+threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2)
 
 <pre class="blocks">line follower set threshold (50) :: #00A4E4</pre>
 
@@ -305,6 +305,16 @@ sweep the sensor across black line and white surface for 5 s; min/max become the
 ```typescript
 mbc.lineCalibrate(MbcLineCalib.Auto)   // 5-second auto calibration
 ```
+
+</section>
+
+<section id="ce9" class="ref-item ref-cmd">
+
+### mirror left/right <small>reverse</small>
+
+[0 normal / 1 mirrored]: for a sensor mounted backwards — channel order and line position are mirrored; calibration stays per physical channel; RAM only, 0 after reset (not in legacy mBlock); on SPIKE an out-of-range value returns failed (state 2)
+
+No dedicated block; in JavaScript use `mbc.writeCmd(0x16, 0xE9, [params])`.
 
 </section>
 

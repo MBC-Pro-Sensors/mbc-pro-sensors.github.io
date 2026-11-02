@@ -40,7 +40,7 @@
   - [Long-Range Colour Sensor OV3660 (In Development)](/en/sensors/ov3660/index.md)
 
 - **🧭 Motion Sensing**
-  - [IMU 9-Axis Gyro (Coming Soon)](/en/sensors/imu/index.md)
+  - [IMU 9-Axis Gyro](/en/sensors/imu/index.md)
 
 - **🔌 Expansion Modules**
   - [SPIKE 6-Way Expander (EXP6)](/en/sensors/exp6/index.md)

@@ -294,6 +294,22 @@ let mag = [mbc.imuAxis(MbcImuSensor.Mag, MbcAxis.X), mbc.imuAxis(MbcImuSensor.Ma
 
 </section>
 
+<section id="v0b" class="ref-item">
+
+### 命令狀態 <small>cmdStatus</small>
+
+| 範圍 | 意思 |
+| :--- | :--- |
+| `0~0xEF03` | (最後命令碼 << 8) \| 狀態；狀態 0 完成、1 忙碌、2 失敗、3 拒絕（跟 SPIKE 命令回覆（模式 8 v3）同一套碼）；E1~EB 都會回報；EB 以後沒定義的命令：I2C 直接不理、0B 不變（SPIKE 回 3 拒絕） |
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.readValue(位址, 編號)` 讀（讀不到 = −32768）。
+
+```typescript
+let cmdStatus = mbc.readValue(0x6A, 0x0B)   // 命令狀態：0~0xEF03
+```
+
+</section>
+
 ## 命令
 
 <section id="ce0" class="ref-item ref-cmd">
@@ -314,7 +330,7 @@ mbc.imuZeroHeading()   // 航向歸零
 
 ### 加速度計校準開始 <small>accelCalStart</small>
 
-開始加速度計校準（= v1 的 0x20=0x01）；期間 F3 b4 = 1
+開始加速度計校準（= v1 的 0x20=0x01）；期間 F3 b4 = 1；磁力計校準中 → 忽略（0B 狀態 3 拒絕）
 
 <pre class="blocks">陀螺儀 校準 [加速度計 開始 v] :: #00A4E4</pre>
 
@@ -328,7 +344,7 @@ mbc.imuCalibrate(MbcImuCalib.AccelStart)   // 加速度計校準開始
 
 ### 加速度計校準結束 <small>accelCalEnd</small>
 
-結束加速度計校準並存 EEPROM（= v1 的 0x20=0x02）；通過後自動航向歸零一次
+結束加速度計校準並存 EEPROM（= v1 的 0x20=0x02）；通過後重新擷取安裝軸，擺正靜置後才航向歸零（不是馬上歸零）；沒在校準中 → 拒絕（0B 狀態 3）；驗證沒過 → 0B 狀態 2 失敗
 
 <pre class="blocks">陀螺儀 校準 [加速度計 結束 v] :: #00A4E4</pre>
 
@@ -342,7 +358,7 @@ mbc.imuCalibrate(MbcImuCalib.AccelEnd)   // 加速度計校準結束
 
 ### 磁力計校準開始 <small>magCalStart</small>
 
-開始磁力計校準（= v1 的 0x20=0x03）；期間 F3 b5 = 1
+開始磁力計校準（= v1 的 0x20=0x03）；期間 F3 b5 = 1；磁力計故障時 → 忽略（0B 狀態 3）
 
 <pre class="blocks">陀螺儀 校準 [磁力計 開始 v] :: #00A4E4</pre>
 
@@ -356,13 +372,83 @@ mbc.imuCalibrate(MbcImuCalib.MagStart)   // 磁力計校準開始
 
 ### 磁力計校準結束 <small>magCalEnd</small>
 
-結束磁力計校準並存 EEPROM（= v1 的 0x20=0x04）
+結束磁力計校準並存 EEPROM（= v1 的 0x20=0x04）；成功後馬上航向歸零；沒在校準中 → 拒絕（0B 狀態 3）；驗證沒過 → 0B 狀態 2 失敗
 
 <pre class="blocks">陀螺儀 校準 [磁力計 結束 v] :: #00A4E4</pre>
 
 ```typescript
 mbc.imuCalibrate(MbcImuCalib.MagEnd)   // 磁力計校準結束
 ```
+
+</section>
+
+<section id="ce5" class="ref-item ref-cmd">
+
+### 航向設成指定角度 <small>setHeading</small>
+
+[角度 int16 小端]：四個航向都設成這個角度（RAM）；校準中不能做 → 拒絕（0B 狀態 3）
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.writeCmd(0x6A, 0xE5, [參數])`。
+
+</section>
+
+<section id="ce6" class="ref-item ref-cmd">
+
+### 以磁北為 0 <small>zeroNorth</small>
+
+陀螺航向設成目前的磁北方位 0~359，之後只扣整圈（顯示絕對方位）；融合重新初始化約 3 秒內完成，逾時 = 失敗；校準中不能做 → 拒絕（0B 狀態 3）
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.writeCmd(0x6A, 0xE6, [參數])`。
+
+</section>
+
+<section id="ce7" class="ref-item ref-cmd">
+
+### 陀螺零點重估 <small>gyroBiasReset</small>
+
+靜止約 1.5 秒（連續 3 個靜止窗）重新估計陀螺零點；4 秒內被移動湊不滿 = 失敗；校準中不能做 → 拒絕（0B 狀態 3）
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.writeCmd(0x6A, 0xE7, [參數])`。
+
+</section>
+
+<section id="ce8" class="ref-item ref-cmd">
+
+### 重抓安裝軸 <small>recaptureAxis</small>
+
+重新判定安裝方向（擷取後自動歸零）；RAM；校準中不能做 → 拒絕（0B 狀態 3）
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.writeCmd(0x6A, 0xE8, [參數])`。
+
+</section>
+
+<section id="ce9" class="ref-item ref-cmd">
+
+### 取消校準 <small>cancelCalib</small>
+
+取消進行中的加速度計／磁力計校準，不存檔、還原舊值
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.writeCmd(0x6A, 0xE9, [參數])`。
+
+</section>
+
+<section id="cea" class="ref-item ref-cmd">
+
+### 航向修正係數 <small>headingCorrection</small>
+
+[uint16 小端] 轉一圈的實際度數 × 10（0.1 度／圈），3500～3700；0 = 回 360.0。存 EEPROM 0x60（停 3 秒才寫，值沒變不寫），改完航向歸零；少參數或範圍外 → 0B 狀態 2（SPIKE 也回 2）
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.writeCmd(0x6A, 0xEA, [參數])`。
+
+</section>
+
+<section id="ceb" class="ref-item ref-cmd">
+
+### 校準回出廠 <small>calibFactoryReset</small>
+
+[A5]：加速度計、磁力計校準與航向修正係數都回出廠值，馬上存 EEPROM；確認碼不對 → 0B 狀態 2；校準中 → 拒絕（3）
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.writeCmd(0x6A, 0xEB, [參數])`。
 
 </section>
 

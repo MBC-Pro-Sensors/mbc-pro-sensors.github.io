@@ -28,10 +28,10 @@
 | IMU Gyro port [port] accel [axis] | -32768~32767 mg | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | 13 X, 14 Y, 15 Z acceleration, mg (1000 = 1 g) |
 | IMU Gyro port [port] mag [axis] | -32768~32767 mG | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | 16 X, 17 Y, 18 Z magnetic field, mG (milligauss) |
 | IMU Gyro port [port] zero heading | — | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | zero all four headings (zeroHeadings()); EV3 also accepts the stock gyro-reset WRITE 0x11 |
-| IMU Gyro port [port] start accelerometer calibration | — | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | start accelerometer calibration (= v1 0x20=0x01); F3 b4 = 1 meanwhile |
-| IMU Gyro port [port] end accelerometer calibration | — | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | finish accelerometer calibration and save to EEPROM (= v1 0x20=0x02); headings are zeroed once on success |
-| IMU Gyro port [port] start magnetometer calibration | — | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | start magnetometer calibration (= v1 0x20=0x03); F3 b5 = 1 meanwhile |
-| IMU Gyro port [port] end magnetometer calibration | — | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | finish magnetometer calibration and save to EEPROM (= v1 0x20=0x04) |
+| IMU Gyro port [port] start accelerometer calibration | — | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | start accelerometer calibration (= v1 0x20=0x01); F3 b4 = 1 meanwhile; ignored during magnetometer calibration (0B state 3 rejected) |
+| IMU Gyro port [port] end accelerometer calibration | — | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | finish accelerometer calibration and save to EEPROM (= v1 0x20=0x02); on success the mount axis is re-captured and headings are zeroed once the sensor is level and still (not immediately); rejected if not calibrating (0B state 3); failed check → 0B state 2 |
+| IMU Gyro port [port] start magnetometer calibration | — | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | start magnetometer calibration (= v1 0x20=0x03); F3 b5 = 1 meanwhile; ignored if the magnetometer has failed (0B state 3) |
+| IMU Gyro port [port] end magnetometer calibration | — | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | finish magnetometer calibration and save to EEPROM (= v1 0x20=0x04); headings zeroed right away on success; rejected if not calibrating (0B state 3); failed check → 0B state 2 |
 | IMU Gyro port [port] update all values | — | [IMU Gyro Sensor](/en/sensors/imu/mblock.md) | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 | Pathfinder port [port] line position | -16~+16 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | which channel the line is under: −16 (far left) to +16 (far right), 0 = centre; seen from behind the robot, negative = left (normally ±15; ±16 only for 200 ms after the line leaves the outermost channel) |
 | Pathfinder port [port] fine line position | -100~+100 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | sub-channel position: −100 to +100, 0 = centre, negative = left (same sign as line position) |
@@ -43,11 +43,11 @@
 | Pathfinder port [port] calibration count | 0~255 次 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | number of calibrations completed since power-on (button calibrations included) |
 | Pathfinder port [port] channel [1~16] reflect | 0~100 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | calibrated reflect of channel 1~16, 0~100 (channel 1 = left); ids 10~1F |
 | Pathfinder port [port] channel [1~16] on line? | true/false | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | bit N−1 of line bitmap 05 (channel 1 = bit0, leftmost): true when that channel sees the line |
-| Pathfinder port [port] black line mode | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | follow a black line (default) |
-| Pathfinder port [port] white line mode | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | follow a white line (F3 b1 = 1) |
+| Pathfinder port [port] black line mode | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | follow a black line (default); RAM only, back to the default after reset |
+| Pathfinder port [port] white line mode | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | follow a white line (F3 b1 = 1); RAM only, back to the default after reset |
 | Pathfinder port [port] calibrate black | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM |
 | Pathfinder port [port] calibrate white | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM |
-| Pathfinder port [port] set threshold [threshold] | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | threshold 1~99 (RAM only, back to 50 after reboot) |
+| Pathfinder port [port] set threshold [threshold] | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2) |
 | Pathfinder port [port] 5-second auto calibration | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile |
 | Pathfinder port [port] update all values | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 | Pathfinder port [port] line position | -8~+8 | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | which channel the line is under: −8 (far left) to +8 (far right), 0 = centre; seen from behind the robot, negative = left |
@@ -60,11 +60,11 @@
 | Pathfinder port [port] calibration count | 0~255 次 | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | number of calibrations completed since power-on (button calibrations included) |
 | Pathfinder port [port] channel [1~8] reflect | 0~100 | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | calibrated reflect of channel 1~8, 0~100 (channel 1 = left); ids 10~17 |
 | Pathfinder port [port] channel [1~8] on line? | true/false | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | bit N−1 of line bitmap 05 (channel 1 = bit0, leftmost): true when that channel sees the line |
-| Pathfinder port [port] black line mode | — | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | follow a black line (default) |
-| Pathfinder port [port] white line mode | — | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | follow a white line (F3 b1 = 1) |
+| Pathfinder port [port] black line mode | — | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | follow a black line (default); RAM only, back to the default after reset |
+| Pathfinder port [port] white line mode | — | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | follow a white line (F3 b1 = 1); RAM only, back to the default after reset |
 | Pathfinder port [port] calibrate black | — | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM |
 | Pathfinder port [port] calibrate white | — | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM |
-| Pathfinder port [port] set threshold [threshold] | — | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | threshold 1~99 (RAM only, back to 50 after reboot) |
+| Pathfinder port [port] set threshold [threshold] | — | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2) |
 | Pathfinder port [port] 5-second auto calibration | — | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile |
 | Pathfinder port [port] update all values | — | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 | Controller port [port] 16 buttons | 0~65535 bit | [PS2 Gamepad Receiver](/en/sensors/ps2/mblock.md) | all 16 buttons in one word (PSX order, 1 = pressed): bit0 SELECT, 1 L3, 2 R3, 3 START, 4 Up, 5 Right, 6 Down, 7 Left, 8 L2, 9 R2, 10 L1, 11 R1, 12 Triangle, 13 Circle, 14 Cross, 15 Square; 0 when not connected |

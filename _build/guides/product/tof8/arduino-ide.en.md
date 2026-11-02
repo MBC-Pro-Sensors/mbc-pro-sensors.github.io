@@ -7,3 +7,7 @@ The Ranger 8-Way needs no calibration; plug it in and go. **After power-on, wait
 | Facing | left | left-front 60° | left-front 30° | front | front | right-front 30° | right-front 60° | right |
 
 The table assumes the sensor faces forward with the components up. Put your hand on the robot's left: example 1 should show a **negative** direction. If it shows a positive one, the sensor is mounted the other way, and "turn left" / "turn right" in the examples must be swapped too.
+
+### Test results
+
+The universal I2C edition **passed hardware testing on an Arduino Nano (2026-11-02)**: the value table, all 8 distances, 1000 reads in a row and mixed reads and writes all worked with no failed reads.

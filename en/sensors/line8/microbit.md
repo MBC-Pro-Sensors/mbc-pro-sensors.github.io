@@ -52,11 +52,11 @@ The universal I2C edition of the Line Follower 8-ch works with BBC micro:bit V1 
 
 | Block | Id | Meaning |
 | :--- | :--- | :--- |
-| line follower follow [black] line | [`E0`](/en/sensors/line8/reference.md#ce0) | follow a black line (default) |
-| line follower follow [white] line | [`E1`](/en/sensors/line8/reference.md#ce1) | follow a white line (F3 b1 = 1) |
+| line follower follow [black] line | [`E0`](/en/sensors/line8/reference.md#ce0) | follow a black line (default); RAM only, back to the default after reset |
+| line follower follow [white] line | [`E1`](/en/sensors/line8/reference.md#ce1) | follow a white line (F3 b1 = 1); RAM only, back to the default after reset |
 | line follower calibrate [current reading is black] | [`E2`](/en/sensors/line8/reference.md#ce2) | store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM |
 | line follower calibrate [current reading is white] | [`E3`](/en/sensors/line8/reference.md#ce3) | store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM |
-| line follower set threshold 50 | [`E4`](/en/sensors/line8/reference.md#ce4) | threshold 1~99 (RAM only, back to 50 after reboot) |
+| line follower set threshold 50 | [`E4`](/en/sensors/line8/reference.md#ce4) | threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2) |
 | line follower calibrate [auto (sweep for 5 s)] | [`E7`](/en/sensors/line8/reference.md#ce7) | sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile |
 
 ## Status
@@ -68,6 +68,7 @@ The universal I2C edition of the Line Follower 8-ch works with BBC micro:bit V1 
 | b2 | calibrating (`calibrating`) | E2/E3/E7 in progress; new calibration commands are ignored |
 | b3 | line lost (`lost`) | segment count = 0 |
 | b4 | fork (`fork`) | segment count ≥ 2 |
+| b5 | mirrored (`reversed`) | E9 = 1 (sensor mounted backwards, left/right mirrored) |
 
 ## JavaScript
 

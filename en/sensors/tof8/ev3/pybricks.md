@@ -212,7 +212,7 @@ distCm = sensor.read(4)[0:4]   # sensor 1~8 distance (cm)
 ## More questions
 
 - **The EV3 shows an infrared sensor?** Expected: the sensor emulates a LEGO sensor so the stock blocks can read it.
-- **A short freeze when switching modes?** The EV3 needs about 0.5 s per mode change. Stick to one mode during a run.
+- **A short freeze when switching modes?** The EV3 needs about 1 s per mode change. Stick to one mode during a run.
 
 Still stuck? [Contact us](/en/contact.md) with your software and a screenshot of the program.
 

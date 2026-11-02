@@ -55,7 +55,7 @@
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-模式 0 (edu) byte 1 −8 🔒；模式 0 (toy) byte 0 −8 🔒；模式 1 byte 0 −8；模式 5 v[0] 🔒；模式 9 v[4] lo −8 🔒。備註：Pybricks reflection() 編碼：X = (線位置+8)×10 + 線寬（0~168），a = X/25、b = (X−a×25+1)×10−1，3 個 int16 = a×256+b → reflection() ≈ X，主機 ÷10 取整−8 = 線位置、取餘數 = 線寬（INO:947-950）
+模式 0 (edu) byte 1 −8 🔒；模式 0 (toy) byte 0 −8 🔒；模式 1 byte 0 −8；模式 5 v[0] 🔒；模式 9 v[4] lo −8 🔒。備註：Pybricks reflection() 編碼：X = (線位置+8)×10 + 線寬（0~168），共用核心 mbcReflFill8 送出：2026-11-01 以後的韌體 reflection() 剛好 = X（3.x、4.x 都是整數）；舊韌體（R=G=B=a×256+b）在 4.x 帶 0.3~0.9 的小數，先 int()。主機 ÷10 取整−8 = 線位置、取餘數 = 線寬（INO:947-950）
 
 ```python
 from pybricks.iodevices import PUPDevice
@@ -168,7 +168,7 @@ let linePos = mbc.linePosition()   // 線位置：-8~+8
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-模式 0 (edu) byte 2 −100 🔒；模式 3 byte 0 −100；模式 4 v[0] −100；模式 7 v[0] 🔒；模式 9 v[5] lo −100 🔒。備註：Pybricks ambient()：4 個相同 int16 = (細位置+100)×100 + 線寬（0~20008），主機 ÷100 → 位置.線寬（INO:956-961）
+模式 0 (edu) byte 2 −100 🔒；模式 3 byte 0 −100；模式 4 v[0] −100；模式 7 v[0] 🔒；模式 9 v[5] lo −100 🔒。備註：4 個 int16：第 1、2、4 格 = (細位置+100)×100 + 線寬（0~20008；Pybricks hsv(surface=False).h 讀第 1 格，原封不動）；第 3 格 = (細位置+100)×100 + min(線寬,9)×10（Pybricks ambient() 讀這格：4.1.2 先 ÷10 去尾再 ÷10、3.6.1／4.0.0 ÷100，都得到 細位置+100 . 線寬）。2026-10-30 起第 3 格改這個編碼
 
 ```python
 from pybricks.iodevices import PUPDevice
@@ -281,7 +281,7 @@ let linePosFine = mbc.linePositionFine()   // 細位置：-100~+100
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-模式 0 (edu) byte 0 🔒；模式 0 (toy) byte 1 🔒；模式 2 byte 0；模式 5 v[0] 🔒；模式 7 v[0] 🔒；模式 9 v[4] hi 🔒。備註：跟線位置合在 reflection() 的個位數（見線位置）; 跟細位置合在 ambient() 的小數兩位（見細位置）
+模式 0 (edu) byte 0 🔒；模式 0 (toy) byte 1 🔒；模式 2 byte 0；模式 5 v[0] 🔒；模式 7 v[0] 🔒；模式 9 v[4] hi 🔒。備註：跟線位置合在 reflection() 的個位數（見線位置）; 跟細位置合在一起（見細位置）：第 1、2、4 格是個位數（hsv(surface=False).h），第 3 格是十位數、最多 9（ambient() 的小數第 1 位）
 
 ```python
 from pybricks.iodevices import PUPDevice
@@ -939,16 +939,25 @@ let light = mbc.lineChannel(1)   // 第 1~8 路光值：0~100（N = 1~8）
 
 | 項目 | 內容 |
 | :--- | :--- |
-| 作用 | 追黑線（預設） |
+| 作用 | 追黑線（預設）；存 RAM，重開機回預設 |
 | 參數 | 無 |
 | 忙碌旗標 | 無（立即生效） |
 
 **怎麼送**
 
-<details class="plat plat-spike" data-host="spike">
+<details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-SPIKE 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduino I2C／mBlock。
+Pybricks＋MBC 函式庫才送得了（官方 App、內建 ColorSensor 積木不行）；要 2026-10 以後的感應器韌體。
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE8
+
+line = MBC_LINE8(Port.A)
+line.cmd(0xE0)   # 切黑線
+ok = line.wait_done()   # True＝做完；False＝失敗／拒絕／逾時
+```
 
 </details>
 
@@ -959,7 +968,7 @@ EV3 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduin
 
 </details>
 
-<details class="plat plat-arduino" data-host="arduino" open>
+<details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
 ```cpp
@@ -1003,16 +1012,25 @@ mbc.lineSetColor(MbcLineColor.Black)   // 切黑線
 
 | 項目 | 內容 |
 | :--- | :--- |
-| 作用 | 追白線（F3 b1 = 1） |
+| 作用 | 追白線（F3 b1 = 1）；存 RAM，重開機回預設 |
 | 參數 | 無 |
 | 忙碌旗標 | 無（立即生效） |
 
 **怎麼送**
 
-<details class="plat plat-spike" data-host="spike">
+<details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-SPIKE 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduino I2C／mBlock。
+Pybricks＋MBC 函式庫才送得了（官方 App、內建 ColorSensor 積木不行）；要 2026-10 以後的感應器韌體。
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE8
+
+line = MBC_LINE8(Port.A)
+line.cmd(0xE1)   # 切白線
+ok = line.wait_done()   # True＝做完；False＝失敗／拒絕／逾時
+```
 
 </details>
 
@@ -1023,7 +1041,7 @@ EV3 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduin
 
 </details>
 
-<details class="plat plat-arduino" data-host="arduino" open>
+<details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
 ```cpp
@@ -1073,10 +1091,19 @@ mbc.lineSetColor(MbcLineColor.White)   // 切白線
 
 **怎麼送**
 
-<details class="plat plat-spike" data-host="spike">
+<details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-SPIKE 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduino I2C／mBlock。
+Pybricks＋MBC 函式庫才送得了（官方 App、內建 ColorSensor 積木不行）；要 2026-10 以後的感應器韌體。
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE8
+
+line = MBC_LINE8(Port.A)
+line.cmd(0xE2)   # 黑色校準
+ok = line.wait_done()   # True＝做完；False＝失敗／拒絕／逾時
+```
 
 </details>
 
@@ -1087,7 +1114,7 @@ EV3 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduin
 
 </details>
 
-<details class="plat plat-arduino" data-host="arduino" open>
+<details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
 ```cpp
@@ -1138,10 +1165,19 @@ mbc.lineCalibrate(MbcLineCalib.Black)   // 黑色校準
 
 **怎麼送**
 
-<details class="plat plat-spike" data-host="spike">
+<details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-SPIKE 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduino I2C／mBlock。
+Pybricks＋MBC 函式庫才送得了（官方 App、內建 ColorSensor 積木不行）；要 2026-10 以後的感應器韌體。
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE8
+
+line = MBC_LINE8(Port.A)
+line.cmd(0xE3)   # 白色校準
+ok = line.wait_done()   # True＝做完；False＝失敗／拒絕／逾時
+```
 
 </details>
 
@@ -1152,7 +1188,7 @@ EV3 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduin
 
 </details>
 
-<details class="plat plat-arduino" data-host="arduino" open>
+<details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
 ```cpp
@@ -1197,16 +1233,25 @@ mbc.lineCalibrate(MbcLineCalib.White)   // 白色校準
 
 | 項目 | 內容 |
 | :--- | :--- |
-| 作用 | 二值化門檻 1~99（RAM，重開機回預設 50） |
+| 作用 | 二值化門檻 1~99（RAM，重開機回預設 50）；SPIKE 參數超出範圍回失敗（狀態 2） |
 | 參數 | 門檻 `1~99`（1 byte） |
 | 忙碌旗標 | 無（立即生效） |
 
 **怎麼送**
 
-<details class="plat plat-spike" data-host="spike">
+<details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-SPIKE 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduino I2C／mBlock。
+Pybricks＋MBC 函式庫才送得了（官方 App、內建 ColorSensor 積木不行）；要 2026-10 以後的感應器韌體。
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE8
+
+line = MBC_LINE8(Port.A)
+line.cmd(0xE4, 50)   # 設定門檻（門檻 1~99）
+ok = line.wait_done()   # True＝做完；False＝失敗／拒絕／逾時
+```
 
 </details>
 
@@ -1217,7 +1262,7 @@ EV3 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduin
 
 </details>
 
-<details class="plat plat-arduino" data-host="arduino" open>
+<details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
 ```cpp
@@ -1267,10 +1312,19 @@ mbc.lineSetThreshold(50)   // 設定門檻
 
 **怎麼送**
 
-<details class="plat plat-spike" data-host="spike">
+<details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-SPIKE 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduino I2C／mBlock。
+Pybricks＋MBC 函式庫才送得了（官方 App、內建 ColorSensor 積木不行）；要 2026-10 以後的感應器韌體。
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE8
+
+line = MBC_LINE8(Port.A)
+line.cmd(0xE7)   # 5 秒動態校準
+ok = line.wait_done(8000)   # True＝做完；False＝失敗／拒絕／逾時
+```
 
 </details>
 
@@ -1281,7 +1335,7 @@ EV3 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduin
 
 </details>
 
-<details class="plat plat-arduino" data-host="arduino" open>
+<details class="plat plat-arduino" data-host="arduino">
 <summary><span class="plat-dot"></span>Arduino I2C</summary>
 
 ```cpp
@@ -1320,6 +1374,66 @@ mbc.lineCalibrate(MbcLineCalib.Auto)   // 5 秒動態校準
 
 </section>
 
+<section id="ce9" class="ref-item ref-cmd">
+
+### `E9` 左右反向 <small>reverse</small>
+
+| 項目 | 內容 |
+| :--- | :--- |
+| 作用 | [0 正常／1 左右反向]：感應器反裝時用，通道順序與線位置左右對調；校準值照實體通道存，切換不用重校；存 RAM，重開機回 0（舊 mBlock 沒有）；SPIKE 參數超出範圍回失敗（狀態 2） |
+| 參數 | 反向 `0~1`（1 byte） |
+| 忙碌旗標 | 無（立即生效） |
+
+**怎麼送**
+
+<details class="plat plat-spike" data-host="spike" open>
+<summary><span class="plat-dot"></span>SPIKE</summary>
+
+Pybricks＋MBC 函式庫才送得了（官方 App、內建 ColorSensor 積木不行）；要 2026-10 以後的感應器韌體。
+
+```python
+from pybricks.parameters import Port
+from MBC_sensors import MBC_LINE8
+
+line = MBC_LINE8(Port.A)
+line.cmd(0xE9, 1)   # 左右反向（反向 0~1）
+ok = line.wait_done()   # True＝做完；False＝失敗／拒絕／逾時
+```
+
+</details>
+
+<details class="plat plat-ev3" data-host="ev3">
+<summary><span class="plat-dot"></span>EV3</summary>
+
+EV3 接頭沒有寫入命令；校準用感應器上的按鈕，設定用 Arduino I2C／mBlock。
+
+</details>
+
+<details class="plat plat-arduino" data-host="arduino">
+<summary><span class="plat-dot"></span>Arduino I2C</summary>
+
+```cpp
+mbcWrite(0x16, 0xE9, 1);   // 左右反向（反向 0~1）
+```
+
+</details>
+
+<details class="plat plat-matrix" data-host="matrix">
+<summary><span class="plat-dot"></span>MATRIX</summary>
+
+MATRIX 原廠 0x22 積木沒有這個命令。
+
+</details>
+
+<details class="plat plat-microbit" data-host="microbit">
+<summary><span class="plat-dot"></span>micro:bit</summary>
+
+擴充沒有這顆積木；在 JavaScript 用 `mbc.writeCmd(0x16, 0xE9, [參數])`。
+
+</details>
+
+</section>
+
 <section id="flags" class="ref-item">
 
 ## 狀態旗標 F3
@@ -1333,6 +1447,7 @@ mbc.lineCalibrate(MbcLineCalib.Auto)   // 5 秒動態校準
 | b2 | 校準中 (`calibrating`) | E2／E3／E7 執行中；此時拒收新的校準命令 |
 | b3 | 丟線 (`lost`) | 線段數 = 0 |
 | b4 | 分岔 (`fork`) | 線段數 ≥ 2 |
+| b5 | 左右反向 (`reversed`) | E9 = 1（感應器反裝，左右對調） |
 
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
@@ -1380,6 +1495,7 @@ bool whiteMode = st & (1 << 1);   // 白線模式
 bool calibrating = st & (1 << 2);   // 校準中
 bool lost = st & (1 << 3);   // 丟線
 bool fork = st & (1 << 4);   // 分岔
+bool reversed = st & (1 << 5);   // 左右反向
 ```
 
 </details>

@@ -8,11 +8,14 @@
 # ===== 神攝手 讀值小工具（樂高官方 SPIKE App 3 教育版 Python，照抄就好、不用改）=====
 # ===== Sharpshooter Vision reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
 # 相機在 SPIKE App 裡是「顏色感應器」：顏色、反射光、原始紅／綠／藍 這 5 個數字（byte 0~7）積木與 Python 都讀得到。
-# byte 8~15 只有 App Python 的 device.data() 可能讀得到，還沒上機確認（任務 #77），這個小工具不用它。
+# device.data() 回 8 個值：byte 0、byte 1，之後 6 個 int16（byte 8~13 也讀得到，14~15 讀不到；2026-11-01 上機）。
+# 「顏色」改讀 device.data() 的第 1 個值：color_sensor.color() 會把 5 換成 6（樂高的綠色），5 和 6 就分不出來。
 # The camera shows up as a colour sensor: colour, reflection, raw red/green/blue (bytes 0~7).
-# Bytes 8~15 may only be readable with device.data() (not yet verified, #77); this helper does not use them.
+# device.data() gives 8 values: byte 0, byte 1, then 6 int16 (bytes 8~13 readable, 14~15 not; tested 2026-11-01).
+# The colour byte is read with device.data(): color_sensor.color() turns 5 into 6 (LEGO green).
 # mode = 你在相機選單切的模式編號（相機模式×10＋子選項，例 13）/ mode = camera menu mode number
 import color_sensor
+import device
 
 
 class UniCamApp:
@@ -23,7 +26,7 @@ class UniCamApp:
 
     def update(self):
         """讀一次最新資料 / read once"""
-        c = color_sensor.color(self.port)              # byte 0
+        c = device.data(self.port)[0]                  # byte 0（color() 會把 5 換成 6 / color() turns 5 into 6）
         r = color_sensor.reflection(self.port)         # byte 1
         rgb = color_sensor.rgbi(self.port)             # 原始紅、綠、藍（各 2 byte）
         b = [int(c) & 255, int(r) & 255]

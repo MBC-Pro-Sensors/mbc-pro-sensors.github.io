@@ -32,7 +32,7 @@ Figure: `/images/figures/tof2/wiring-uno.svg`
 > [!IMPORTANT]
 > - Use the **universal I2C edition** of the Ranger 2-Way. The SPIKE and EV3 editions have different firmware and cannot connect to Arduino directly.
 > - The two lasers take 1 ~ 3 seconds to boot. Every example waits for `F3` "ready" at the start.
-> - "Left" and "right" always mean: **the sensor is mounted at the front of the robot (lasers pointing forward), and you stand behind the robot looking forward**.
+> - "Left" and "right" always mean: **the sensor is mounted at the front of the robot (lasers pointing forward), and you stand behind the robot looking forward** (left = J5, right = J3); facing the sensor, they are the other way round.
 > - Unplug the USB cable before you connect the wires.
 
 ---
@@ -414,7 +414,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 
 <h2 id="ex3">3️⃣ Is it nearer on the left or the right?</h2>
 
-**What it does:** Reads three boxes, `01` left cm, `02` right cm and `03` nearest cm, draws the two lasers' distances as two bars, and tells you on which side the object is nearer.
+**What it does:** Reads three boxes, `01` left cm, `02` right cm and `03` nearest cm, draws the two lasers' distances as two bars, and tells you on which side the object is nearer. Left and right are as seen from behind the sensor, looking the way it faces (left = J5, right = J3).
 
 **You need:** A box or your hand.
 
