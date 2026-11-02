@@ -25,14 +25,15 @@
 | **EV3 MicroPython v2.0** | 已經在用樂高官方 EV3 MicroPython 的人 | 用樂高官方「EV3 MicroPython」microSD 開機卡＋VS Code 擴充套件，把程式內容貼到 `main.py`，按 F5 下載執行。 |
 | **clev3r** | 已經在用 clev3r（EV3 Basic）的人 | 在 clev3r 開啟 `.bp` 檔，按「編譯並下載」，在 EV3 的檔案選單找到 `MBC_` 開頭的資料夾執行。 |
 
-## 這頁會用到的 4 個數值
+## 這頁會用到的 5 個數值
 
 | 名稱 | 範圍 | 從哪裡讀 |
 |---|---|---|
 | **左右兩眼的平均距離** | 0 ~ 100（1 格＝1.2 公分，100＝前面沒東西） | 模式 0 |
 | **左眼距離** | 0 ~ 100（1 格＝1.2 公分） | 模式 1 第 1 個值 |
 | **右眼距離** | 0 ~ 100（1 格＝1.2 公分） | 模式 1 第 2 個值 |
-| **左右兩眼的平均距離（公釐）** | 0 ~ 1200 mm，1200＝前面沒東西 | 模式 3 第 1 個值（只有 Pybricks／EV3 MicroPython／clev3r 讀得到） |
+| **左眼距離（公釐）** | 0 ~ 1200 mm | 模式 5 第 1 個值（只有 Pybricks／EV3 MicroPython／clev3r 讀得到） |
+| **右眼距離（公釐）** | 0 ~ 1200 mm | 模式 5 第 2 個值（只有 Pybricks／EV3 MicroPython／clev3r 讀得到） |
 
 **範例列表：**
 
@@ -948,7 +949,7 @@ EndWhile
 
 > **僅 Pybricks v4／EV3 MicroPython v2.0／clev3r**（EV3-G、Classroom 的積木讀不到這個模式）
 
-**這個範例會做什麼：** 模式 0 的距離 1 格＝1.2 公分，比賽要停在「剛好 20 公分」不夠準。模式 3 直接給公釐（1 格＝1 公釐），這個範例一邊往前開一邊顯示公釐，小於 200 公釐就停。
+**這個範例會做什麼：** 模式 0 的距離 1 格＝1.2 公分，比賽要停在「剛好 20 公分」不夠準。模式 5 直接給左右兩眼的公釐（1 格＝1 公釐），這個範例把兩眼平均（跟模式 3 一樣），一邊往前開一邊顯示公釐，小於 200 公釐就停。用模式 5 是因為 EV3 原廠韌體切到模式 3 偶爾切不過去，模式 5 每次都切得過去。
 
 **要準備什麼：**
 
@@ -971,7 +972,7 @@ EndWhile
 # TOF2 雙眼雷射測距感應器 EV3 新手範例 06：用公釐精準停車：20 公分前停
 # 軟體：Pybricks v4（用 Chrome 打開 https://code.pybricks.com ，EV3 版目前是 Beta）
 # 接法：TOF2 雙眼雷射插 1 號孔；左輪馬達接 B、右輪馬達接 C
-# 這個範例會做什麼：模式 0 的距離 1 格＝1.2 公分，比賽要停在「剛好 20 公分」不夠準。模式 3 直接給公釐（1 格＝1 公釐），這個範例一邊往前開一邊顯示公釐，小於 200 公釐就停。
+# 這個範例會做什麼：模式 0 的距離 1 格＝1.2 公分，比賽要停在「剛好 20 公分」不夠準。模式 5 直接給左右兩眼的公釐（1 格＝1 公釐），這個範例把兩眼平均（跟模式 3 一樣），一邊往前開一邊顯示公釐，小於 200 公釐就停。用模式 5 是因為 EV3 原廠韌體切到模式 3 偶爾切不過去，模式 5 每次都切得過去。
 # ============================================================
 
 from pybricks.hubs import EV3Brick
@@ -986,9 +987,14 @@ left_motor = Motor(Port.B)        # 左輪
 right_motor = Motor(Port.C)       # 右輪
 
 
-def read_avgMm():
-    # 左右兩眼的平均距離（公釐）：0 ~ 1200 mm，1200＝前面沒東西
-    return sensor.read(3)[0]
+def read_leftMm():
+    # 左眼距離（公釐）：0 ~ 1200 mm
+    return sensor.read(5)[0]
+
+
+def read_rightMm():
+    # 右眼距離（公釐）：0 ~ 1200 mm
+    return sensor.read(5)[1]
 
 
 # ---------- 程式從這裡開始 ----------
@@ -997,17 +1003,23 @@ ev3.screen.clear()
 # 兩輪用 30 的力量往前開
 left_motor.dc(30)
 right_motor.dc(30)
+# mm ＝ 左右兩眼公釐的平均（跟模式 3 一樣）
+mm = (read_leftMm() + read_rightMm()) / 2
 # 一直往前，直到距離小於 200 公釐（20 公分）
-while not (read_avgMm() < 200):
+while not (mm < 200):
     # 第 1 行顯示目前距離（公釐）
-    ev3.screen.draw_text(0, 0, "MM " + str(read_avgMm()) + "      ", Color.BLACK, Color.WHITE)
+    ev3.screen.draw_text(0, 0, "MM " + str(mm) + "      ", Color.BLACK, Color.WHITE)
+    # 再讀一次左右兩眼，重新算平均
+    mm = (read_leftMm() + read_rightMm()) / 2
 # 停車
 left_motor.brake()
 right_motor.brake()
 # 嗶一聲
 ev3.speaker.beep()
+# 停下來後再讀一次
+mm = (read_leftMm() + read_rightMm()) / 2
 # 停下來後再顯示一次距離，看停得準不準
-ev3.screen.draw_text(0, 0, "MM " + str(read_avgMm()) + "      ", Color.BLACK, Color.WHITE)
+ev3.screen.draw_text(0, 0, "MM " + str(mm) + "      ", Color.BLACK, Color.WHITE)
 ```
 
 </details>
@@ -1020,7 +1032,7 @@ ev3.screen.draw_text(0, 0, "MM " + str(read_avgMm()) + "      ", Color.BLACK, Co
 # TOF2 雙眼雷射測距感應器 EV3 新手範例 06：用公釐精準停車：20 公分前停
 # 軟體：樂高官方 EV3 MicroPython v2.0（microSD 開機卡＋VS Code「LEGO MINDSTORMS EV3 MicroPython」擴充套件）
 # 接法：TOF2 雙眼雷射插 1 號孔；左輪馬達接 B、右輪馬達接 C
-# 這個範例會做什麼：模式 0 的距離 1 格＝1.2 公分，比賽要停在「剛好 20 公分」不夠準。模式 3 直接給公釐（1 格＝1 公釐），這個範例一邊往前開一邊顯示公釐，小於 200 公釐就停。
+# 這個範例會做什麼：模式 0 的距離 1 格＝1.2 公分，比賽要停在「剛好 20 公分」不夠準。模式 5 直接給左右兩眼的公釐（1 格＝1 公釐），這個範例把兩眼平均（跟模式 3 一樣），一邊往前開一邊顯示公釐，小於 200 公釐就停。用模式 5 是因為 EV3 原廠韌體切到模式 3 偶爾切不過去，模式 5 每次都切得過去。
 # ============================================================
 
 from pybricks.hubs import EV3Brick
@@ -1035,9 +1047,14 @@ left_motor = Motor(Port.B)        # 左輪
 right_motor = Motor(Port.C)       # 右輪
 
 
-def read_avgMm():
-    # 左右兩眼的平均距離（公釐）：0 ~ 1200 mm，1200＝前面沒東西
-    return sensor.read('IR-REM-A')[0]
+def read_leftMm():
+    # 左眼距離（公釐）：0 ~ 1200 mm
+    return sensor.read('IR-CAL')[0]
+
+
+def read_rightMm():
+    # 右眼距離（公釐）：0 ~ 1200 mm
+    return sensor.read('IR-CAL')[1]
 
 
 # ---------- 程式從這裡開始 ----------
@@ -1046,17 +1063,23 @@ ev3.screen.clear()
 # 兩輪用 30 的力量往前開
 left_motor.dc(30)
 right_motor.dc(30)
+# mm ＝ 左右兩眼公釐的平均（跟模式 3 一樣）
+mm = (read_leftMm() + read_rightMm()) / 2
 # 一直往前，直到距離小於 200 公釐（20 公分）
-while not (read_avgMm() < 200):
+while not (mm < 200):
     # 第 1 行顯示目前距離（公釐）
-    ev3.screen.draw_text(0, 0, "MM " + str(read_avgMm()) + "      ", Color.BLACK, Color.WHITE)
+    ev3.screen.draw_text(0, 0, "MM " + str(mm) + "      ", Color.BLACK, Color.WHITE)
+    # 再讀一次左右兩眼，重新算平均
+    mm = (read_leftMm() + read_rightMm()) / 2
 # 停車
 left_motor.brake()
 right_motor.brake()
 # 嗶一聲
 ev3.speaker.beep()
+# 停下來後再讀一次
+mm = (read_leftMm() + read_rightMm()) / 2
 # 停下來後再顯示一次距離，看停得準不準
-ev3.screen.draw_text(0, 0, "MM " + str(read_avgMm()) + "      ", Color.BLACK, Color.WHITE)
+ev3.screen.draw_text(0, 0, "MM " + str(mm) + "      ", Color.BLACK, Color.WHITE)
 ```
 
 </details>
@@ -1068,13 +1091,13 @@ ev3.screen.draw_text(0, 0, "MM " + str(read_avgMm()) + "      ", Color.BLACK, Co
 ' TOF2 雙眼雷射測距感應器 EV3 新手範例 06：用公釐精準停車：20 公分前停
 ' 軟體：clev3r
 ' 接法：TOF2 雙眼雷射插 1 號孔；左輪馬達接 B、右輪馬達接 C
-' 這個範例會做什麼：模式 0 的距離 1 格＝1.2 公分，比賽要停在「剛好 20 公分」不夠準。模式 3 直接給公釐（1 格＝1 公釐），這個範例一邊往前開一邊顯示公釐，小於 200 公釐就停。
-' 讀值：avgMm＝左右兩眼的平均距離（公釐）（0 ~ 1200 mm，1200＝前面沒東西）
+' 這個範例會做什麼：模式 0 的距離 1 格＝1.2 公分，比賽要停在「剛好 20 公分」不夠準。模式 5 直接給左右兩眼的公釐（1 格＝1 公釐），這個範例把兩眼平均（跟模式 3 一樣），一邊往前開一邊顯示公釐，小於 200 公釐就停。用模式 5 是因為 EV3 原廠韌體切到模式 3 偶爾切不過去，模式 5 每次都切得過去。
+' 讀值：leftMm＝左眼距離（公釐）（0 ~ 1200 mm）；rightMm＝右眼距離（公釐）（0 ~ 1200 mm）
 ' ============================================================
 folder "prjs" "MBC_tof2_ex06"
 
-' TOF2 雙眼雷射插 1 號孔，使用模式 3
-Sensor.SetMode(1, 3)
+' TOF2 雙眼雷射插 1 號孔，使用模式 5
+Sensor.SetMode(1, 5)
 LCD.Clear()
 
 ' 清除螢幕
@@ -1082,18 +1105,24 @@ LCD.Clear()
 ' 兩輪用 30 的力量往前開
 Motor.StartPower("B", 30)
 Motor.StartPower("C", 30)
+' mm ＝ 左右兩眼公釐的平均（跟模式 3 一樣）
+mm = (Sensor.ReadRawValue(1, 0) + Sensor.ReadRawValue(1, 1)) / 2
 ' 一直往前，直到距離小於 200 公釐（20 公分）
-While Sensor.ReadRawValue(1, 0) >= 200
+While mm >= 200
   ' 第 1 行顯示目前距離（公釐）
-  LCD.Text(1, 0, 0, 1, "MM " + Sensor.ReadRawValue(1, 0) + "      ")
+  LCD.Text(1, 0, 0, 1, "MM " + mm + "      ")
+  ' 再讀一次左右兩眼，重新算平均
+  mm = (Sensor.ReadRawValue(1, 0) + Sensor.ReadRawValue(1, 1)) / 2
 EndWhile
 ' 停車
 Motor.Stop("BC", "True")
 ' 嗶一聲
 Speaker.Tone(50, 1000, 100)
 Speaker.Wait()
+' 停下來後再讀一次
+mm = (Sensor.ReadRawValue(1, 0) + Sensor.ReadRawValue(1, 1)) / 2
 ' 停下來後再顯示一次距離，看停得準不準
-LCD.Text(1, 0, 0, 1, "MM " + Sensor.ReadRawValue(1, 0) + "      ")
+LCD.Text(1, 0, 0, 1, "MM " + mm + "      ")
 ```
 
 </details>
@@ -1102,10 +1131,13 @@ LCD.Text(1, 0, 0, 1, "MM " + Sensor.ReadRawValue(1, 0) + "      ")
 
 1. 清除螢幕
 1. 兩輪用 30 的力量往前開
+1. mm ＝ 左右兩眼公釐的平均（跟模式 3 一樣）
 1. 一直往前，直到距離小於 200 公釐（20 公分）
    - 第 1 行顯示目前距離（公釐）
+   - 再讀一次左右兩眼，重新算平均
 1. 停車
 1. 嗶一聲
+1. 停下來後再讀一次
 1. 停下來後再顯示一次距離，看停得準不準
 
 **跑起來應該看到：** 車子往前開，螢幕的公釐數一直變小，在障礙物前約 20 公分停下來並嗶一聲；停下來後螢幕顯示的數字應該在 200 附近。
