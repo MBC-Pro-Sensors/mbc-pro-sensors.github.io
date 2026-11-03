@@ -256,7 +256,7 @@
     <div class="channel-icon-wrap">✉️</div>
     <div class="channel-info">
       <h3>Technical Support Email</h3>
-      <p>Best for: Detailed problem reports with screenshots or videos attached, purchase inquiries, and partnership proposals. We promise to reply within 24 business hours.</p>
+      <p>Best for: Detailed problem reports with screenshots or videos attached, purchase inquiries, and partnership proposals. We promise to reply within 2 business days.</p>
       <a href="mailto:contactmbcrobot@gmail.com" style="text-decoration:none;"><code>contactmbcrobot@gmail.com</code></a>
     </div>
   </div>
@@ -273,6 +273,9 @@
 ---
 
 <div class="section-title">🆘 Remote Technical Support</div>
+
+> [!NOTE]
+> Want to send everything we need in one go? Use the [technical support form](/en/support.md): pick a category, fill in the fields, and one click opens a ready-to-send email.
 
 <div class="support-info-box">
   <h3>⚡ How to Help Our Engineers Solve Your Problem as Fast as Possible?</h3>

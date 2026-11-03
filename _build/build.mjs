@@ -40,7 +40,7 @@ const git = (args) => execSync(`git ${args}`, { cwd: ROOT, encoding: 'utf8' });
 const tracked = git('-c core.quotepath=off ls-files --cached --others --exclude-standard').split('\n').filter(Boolean);
 
 // ---------------------------------------------------------------- URL mapping
-const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol|makeblock|guide|privacy|wro-rules|competitions|faq|where-to-buy|distributors|reference|matrix|microbit|downloads)\.md$/.test(f) || /^(en\/)?(sensors|articles)\//.test(f) || /^(en\/)?learn\/index\.md$/.test(f));
+const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol|makeblock|guide|privacy|wro-rules|competitions|faq|support|where-to-buy|distributors|reference|matrix|microbit|downloads)\.md$/.test(f) || /^(en\/)?(sensors|articles)\//.test(f) || /^(en\/)?learn\/index\.md$/.test(f));
 const pages = tracked.filter(isPage);
 
 function urlFor(mdPath) {
@@ -313,9 +313,9 @@ const quoteLink = (lang, cls, label) => lang === 'en'
   : `<a class="${cls}" href="${LINE_URL}" target="_blank" rel="noopener">💬 ${label}</a>`;
 const UI = {
   zh: { search: '搜尋文件', toc: '目錄', lang: 'EN', home: '首頁', line: 'LINE 詢價', guide: '選購指南', guideHref: '/guide.html', choose: '選擇版本：', guides: '各版本教學：',
-    nav: [['產品', '/#products'], ['互動教學', '/learn/'], ['比賽對照', '/competitions.html'], ['教學文章', '/articles/'], ['選購指南', '/guide.html'], ['購買管道', '/where-to-buy.html'], ['聯絡我們', '/contact.html']], cta: { h: '想購買或詢價？', p: '個人購買、學校 / 社團大量採購、代理洽談都歡迎，工程師工作日 24 小時內回覆。', line: 'LINE 立即詢價', mail: 'Email 詢價', more: '更多聯絡方式', contact: '/contact.html' } },
+    nav: [['產品', '/#products'], ['互動教學', '/learn/'], ['比賽對照', '/competitions.html'], ['教學文章', '/articles/'], ['選購指南', '/guide.html'], ['購買管道', '/where-to-buy.html'], ['技術支援', '/support.html'], ['聯絡我們', '/contact.html']], cta: { h: '想購買或詢價？', p: '個人購買、學校 / 社團大量採購、代理洽談都歡迎，工程師 2 個工作天內回覆。', line: 'LINE 立即詢價', mail: 'Email 詢價', more: '更多聯絡方式', contact: '/contact.html' } },
   en: { search: 'Search docs', toc: 'Contents', lang: '中文', home: 'Home', line: 'Email for a quote', guide: 'Buying Guide', guideHref: '/en/guide.html', choose: 'Choose edition:', guides: 'Setup guides:',
-    nav: [['Products', '/en/#products'], ['Tutorials', '/en/learn/'], ['Competitions', '/en/competitions.html'], ['Videos', '/en/#videos'], ['Buying Guide', '/en/guide.html'], ['Where to Buy', '/en/where-to-buy.html'], ['Contact', '/en/contact.html']], cta: { h: 'Interested in this sensor?', p: 'Ask us for pricing, bulk / school orders or distributor info. Our engineers reply within 24 hours on weekdays.', line: 'Chat on LINE', mail: 'Email us', more: 'All contact options', contact: '/en/contact.html' } },
+    nav: [['Products', '/en/#products'], ['Tutorials', '/en/learn/'], ['Competitions', '/en/competitions.html'], ['Videos', '/en/#videos'], ['Buying Guide', '/en/guide.html'], ['Where to Buy', '/en/where-to-buy.html'], ['Contact', '/en/contact.html']], cta: { h: 'Interested in this sensor?', p: 'Ask us for pricing, bulk / school orders or distributor info. Our engineers reply within 2 business days.', line: 'Chat on LINE', mail: 'Email us', more: 'All contact options', contact: '/en/contact.html' } },
 };
 
 // Site-wide footer: company name + trademark disclaimer (LEGO Fair Play guidelines)
@@ -331,7 +331,10 @@ const SOCIAL = [
   ['LINE', LINE_URL],
 ];
 const socialHtml = `<p class="sf-social">${SOCIAL.map(([n, u]) => `<a href="${u}" target="_blank" rel="noopener me">${n}</a>`).join(' · ')}</p>`;
-const footerHtml = (lang) => `<footer class="site-footer">${socialHtml}<p>${FOOTER[lang]}</p><p>© ${new Date().getFullYear()} ${lang === 'en' ? 'Shaobo Creative Robotics Company Limited (MBC Robot)' : '少伯創意機器人有限公司（MBC Robot）'}</p></footer>`;
+// 頁尾：技術支援／常見問題／聯絡我們入口（2026-11-04 加技術支援頁）
+const FOOTER_LINKS = { zh: [['技術支援', '/support.html'], ['常見問題', '/faq.html'], ['聯絡我們', '/contact.html']], en: [['Support', '/en/support.html'], ['FAQ', '/en/faq.html'], ['Contact', '/en/contact.html']] };
+const footerLinks = (lang) => `<p class="sf-social">${FOOTER_LINKS[lang].map(([n, u]) => `<a href="${u}">${n}</a>`).join(' · ')}</p>`;
+const footerHtml = (lang) => `<footer class="site-footer">${footerLinks(lang)}${socialHtml}<p>${FOOTER[lang]}</p><p>© ${new Date().getFullYear()} ${lang === 'en' ? 'Shaobo Creative Robotics Company Limited (MBC Robot)' : '少伯創意機器人有限公司（MBC Robot）'}</p></footer>`;
 
 function ctaHtml(lang) {
   const t = UI[lang].cta;

@@ -21,7 +21,7 @@
 <h2 id="finder">已經有產品了？選產品、選主機、選軟體，直接找程式</h2>
 <!-- finder -->
 
-<div class="lp-promo"><p><b>準備下一個賽季？</b>學校、社團整班採購可提供報價單與採購資料，工作日 24 小時內回覆。</p><a class="lp-btn line" href="https://line.me/R/oaMessage/%40692vcvuk/?%E6%82%A8%E5%A5%BD%EF%BC%8C%E6%88%91%E6%83%B3%E7%B4%A2%E5%8F%96%E5%AD%B8%E6%A0%A1%EF%BC%8F%E7%A4%BE%E5%9C%98%E6%8E%A1%E8%B3%BC%E5%A0%B1%E5%83%B9%EF%BC%9A" target="_blank" rel="noopener">💬 索取採購報價</a></div>
+<div class="lp-promo"><p><b>準備下一個賽季？</b>學校、社團整班採購可提供報價單與採購資料，2 個工作天內回覆。</p><a class="lp-btn line" href="https://line.me/R/oaMessage/%40692vcvuk/?%E6%82%A8%E5%A5%BD%EF%BC%8C%E6%88%91%E6%83%B3%E7%B4%A2%E5%8F%96%E5%AD%B8%E6%A0%A1%EF%BC%8F%E7%A4%BE%E5%9C%98%E6%8E%A1%E8%B3%BC%E5%A0%B1%E5%83%B9%EF%BC%9A" target="_blank" rel="noopener">💬 索取採購報價</a></div>
 
 <p class="lp-proof">🏆 <b>AERC 亞洲智慧型機器人大賽</b>官方競賽辦法點名可使用 MBC 循行者-LEGO 版；WRO、GRG、MRC、JBC、Robofest 也都能用。<a href="/competitions.md">看比賽對照 →</a></p>
 
@@ -120,7 +120,7 @@
 <div class="lp-grid lp-steps">
 <div class="lp-card"><h3>選擇你的主機</h3><p>SPIKE、EV3、Arduino、MATRIX 還是 mBot？每個主機有對應版本，看 <a href="/guide.md">選購指南</a> 一分鐘就知道。</p></div>
 <div class="lp-card"><h3>挑選需要的產品</h3><p>循線、測距、擴充、遙控、視覺，依比賽項目與預算挑選。不確定也可以直接問我們。</p></div>
-<div class="lp-card"><h3>LINE 詢價下單</h3><p>個人購買、學校／社團大量採購、代理洽談都歡迎，工程師工作日 24 小時內回覆。</p></div>
+<div class="lp-card"><h3>LINE 詢價下單</h3><p>個人購買、學校／社團大量採購、代理洽談都歡迎，工程師 2 個工作天內回覆。</p></div>
 </div>
 
 <h2 id="downloads">免費下載</h2>

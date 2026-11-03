@@ -1,7 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # ❓ Frequently Asked Questions
 
-Quick answers about MBC-Pro Sensors for students, coaches and teachers. Can't find your question? Email [contactmbcrobot@gmail.com](mailto:contactmbcrobot@gmail.com).
+Quick answers about MBC-Pro Sensors for students, coaches and teachers. Can't find your question? Use the [technical support form](/en/support.md) (it lays out the email for you), or email [contactmbcrobot@gmail.com](mailto:contactmbcrobot@gmail.com).
 
 ## Compatibility
 
@@ -93,4 +93,4 @@ Controller 2.4G (PS2) is sold in Taiwan only.
 
 ### How do I order, and do you work with distributors?
 
-Email [contactmbcrobot@gmail.com](mailto:contactmbcrobot@gmail.com) or message us on [LINE](https://line.me/R/ti/p/@692vcvuk) with your controller, the products you need and your country. We reply within 24 hours on weekdays. School orders and distributor enquiries are welcome.
+Email [contactmbcrobot@gmail.com](mailto:contactmbcrobot@gmail.com) or message us on [LINE](https://line.me/R/ti/p/@692vcvuk) with your controller, the products you need and your country. We reply within 2 business days. School orders and distributor enquiries are welcome.

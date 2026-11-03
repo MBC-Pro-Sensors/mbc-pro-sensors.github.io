@@ -1053,3 +1053,50 @@ body.docs .doc-wrap.wide { max-width: 1240px; margin: 0; padding: 0 32px; }
 body.docs .doc-wrap.wide > .markdown-section > p, body.docs .doc-wrap.wide > .markdown-section > blockquote { max-width: var(--measure); }
 @media (min-width: 1200px) { body.docs .doc-wrap.wide .lh-bar { width: max-content; max-width: 100%; } }
 @media (max-width: 768px) { body.docs .doc-wrap.wide { padding: 0; } }
+
+/* 技術支援頁（support.md）：先看這裡的連結卡＋寄信表單（_build/assets/support.js） */
+.sp-links { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin: 14px 0 18px; }
+.markdown-section a.sp-link { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border: 1.5px solid var(--rule); border-radius: 12px; background: #fff; color: var(--ink); text-decoration: none; min-height: 44px; }
+.markdown-section a.sp-link:hover { border-color: var(--brand); background: color-mix(in srgb, var(--brand) 6%, #fff); }
+.markdown-section a.sp-link b { color: var(--brand-ink); font-size: 0.98rem; }
+.markdown-section a.sp-link span { color: var(--ink-mute); font-size: 0.86rem; line-height: 1.5; }
+.sp-form { border: 1.5px solid var(--rule); border-radius: 16px; background: var(--paper-2); padding: 20px; margin: 16px 0 28px; }
+.sp-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; }
+.sp-f { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.sp-f.sp-wide { grid-column: 1 / -1; }
+.sp-hide { display: none !important; }
+.markdown-section .sp-l { font-weight: 700; font-size: 0.92rem; color: var(--ink-2); }
+.markdown-section .sp-l b, .markdown-section .sp-form p b { color: #c0392b; }
+.sp-form select, .sp-form input[type="text"], .sp-form textarea { width: 100%; box-sizing: border-box; min-height: 44px; padding: 10px 12px; border: 1.5px solid #cfd8de; border-radius: 10px; background: #fff; color: var(--ink); font: inherit; font-size: 0.95rem; }
+.sp-form textarea { resize: vertical; line-height: 1.55; }
+.sp-form select:focus, .sp-form input:focus, .sp-form textarea:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 25%, transparent); }
+.sp-form [aria-invalid="true"] { border-color: #c0392b; box-shadow: 0 0 0 3px rgba(192,57,43,0.15); }
+.sp-form ::placeholder { color: #8a97a3; }
+.markdown-section .sp-check { display: flex; align-items: flex-start; gap: 10px; font-weight: 700; color: var(--ink-2); cursor: pointer; line-height: 1.5; }
+.sp-check input { width: 20px; height: 20px; margin-top: 2px; flex-shrink: 0; accent-color: var(--brand); }
+.sp-media-on { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+.markdown-section .sp-note { margin: 0 0 6px; padding: 12px 14px; border-radius: 10px; background: color-mix(in srgb, var(--spike) 14%, #fff); border-left: 4px solid var(--spike); font-size: 0.88rem; line-height: 1.65; color: var(--ink); }
+.markdown-section .sp-note b { color: var(--ink); }
+.markdown-section details.sp-help { font-size: 0.86rem; color: var(--ink-mute); }
+.markdown-section details.sp-help summary { cursor: pointer; color: var(--brand-ink); font-weight: 700; min-height: 32px; display: flex; align-items: center; }
+.markdown-section details.sp-help ul { margin: 6px 0 0; padding-left: 18px; }
+.markdown-section details.sp-help li { margin: 4px 0; }
+.sp-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.markdown-section .sp-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 46px; padding: 10px 18px; border-radius: 10px; border: 1.5px solid #0a7c78; background: #fff; color: #0a7c78; font: inherit; font-weight: 700; font-size: 0.95rem; text-decoration: none; cursor: pointer; }
+.markdown-section .sp-btn.sp-primary { background: #0a7c78; color: #fff; }
+.markdown-section .sp-btn.sp-ghost { border-color: #cfd8de; color: var(--ink-mute); }
+.markdown-section .sp-btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.markdown-section .sp-btn svg.i { width: 18px; height: 18px; margin: 0; }
+.markdown-section .sp-status { margin: 12px 0 0; min-height: 1.4em; font-size: 0.9rem; font-weight: 700; }
+.markdown-section .sp-status.sp-ok { color: #1f7a3d; }
+.markdown-section .sp-status.sp-warn { color: #8a5a00; }
+.markdown-section .sp-status.sp-err { color: #c0392b; }
+.markdown-section details.sp-preview-box { margin-top: 14px; }
+.markdown-section details.sp-preview-box summary { cursor: pointer; font-weight: 700; color: var(--ink-2); min-height: 32px; }
+.markdown-section pre.sp-preview { white-space: pre-wrap; word-break: break-word; max-height: 360px; overflow: auto; background: #fff; border: 1px solid var(--rule); border-radius: 10px; padding: 12px 14px; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.6; color: var(--ink); }
+.sp-form:not(.sp-ready) .sp-btns, .sp-form:not(.sp-ready) .sp-preview-box { opacity: 0.5; pointer-events: none; }
+@media (max-width: 640px) {
+  .sp-form { padding: 14px; border-radius: 12px; }
+  .sp-grid { grid-template-columns: minmax(0, 1fr); }
+  .sp-btns .sp-btn { flex: 1 1 100%; }
+}

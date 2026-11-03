@@ -1,7 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # ❓ 常見問題
 
-學生、教練與老師最常問的 MBC-Pro Sensors 問題。找不到答案？加 [LINE @692vcvuk](https://line.me/R/ti/p/@692vcvuk) 問我們。
+學生、教練與老師最常問的 MBC-Pro Sensors 問題。找不到答案？用 [技術支援表單](/support.md) 寄信（欄位都幫你排好），或加 [LINE @692vcvuk](https://line.me/R/ti/p/@692vcvuk) 問我們。
 
 ## 相容性
 
@@ -94,4 +94,4 @@ FIRST® LEGO® League Challenge 正式比賽只允許 LEGO 原廠零件，所以
 
 ### 怎麼購買？有經銷合作嗎？
 
-加 [LINE @692vcvuk](https://line.me/R/ti/p/@692vcvuk) 或寄信到 [contactmbcrobot@gmail.com](mailto:contactmbcrobot@gmail.com)，告訴我們主機型號、產品與數量，工程師工作日 24 小時內回覆。學校、社團大量採購與海外經銷合作都歡迎，請看[購買管道](/where-to-buy.md)與[經銷合作](/distributors.md)。
+加 [LINE @692vcvuk](https://line.me/R/ti/p/@692vcvuk) 或寄信到 [contactmbcrobot@gmail.com](mailto:contactmbcrobot@gmail.com)，告訴我們主機型號、產品與數量，工程師 2 個工作天內回覆。學校、社團大量採購與海外經銷合作都歡迎，請看[購買管道](/where-to-buy.md)與[經銷合作](/distributors.md)。
