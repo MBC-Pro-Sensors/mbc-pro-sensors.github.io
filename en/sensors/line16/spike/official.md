@@ -87,7 +87,7 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 | SPIKE Prime | channel 1~16 reflect | 「raw green」 | the number it returns |
 | Robot Inventor | channel 1~16 reflect | 「raw green」 | the number mod 256 (Robot Inventor look-up encoding, see setup above) |
 
-<p class="ref-note">Firmware note: 每路 2 bit（(v×10)>>8：0~25→0、26~51→1、52~76→2、77~100→3）；byte4 = 第 5~8 路（第 5 路在 bit7-6）、byte5 = 第 1~4 路、byte6 = 第 13~16 路、byte7 = 第 9~12 路 → App 原始綠 = 第 1~8 路（bit15-14 = 第 1 路）、原始藍 = 第 9~16 路；byte 8~15 = 0; 每路 1 bit（光值 > 50 = 1 亮）：第 1~8 路合成 1 byte（第 1 路在 bit7）經玩具版查表編碼成 byte4~5；第 9~16 路 → byte6~7</p>
+<p class="ref-note">Firmware note: 每路 2 bit（(v×10)>>8：0~25→0、26~51→1、52~76→2、77~100→3）；byte4 = 第 5~8 路（第 5 路在 bit7-6）、byte5 = 第 1~4 路、byte6 = 第 13~16 路、byte7 = 第 9~12 路 → App 原始綠 = 第 1~8 路（bit15-14 = 第 1 路）、原始藍 = 第 9~16 路；byte 8~15 = 0; 每路 1 bit（光值 ≥ 門檻（值 07，預設 40）= 1 亮，跟二值化判白同一個判斷；2026-11-03 以前的韌體是光值 > 50）：第 1~8 路合成 1 byte（第 1 路在 bit7）經玩具版查表編碼成 byte4~5；第 9~16 路 → byte6~7</p>
 
 </section>
 

@@ -50,14 +50,14 @@ Think of the sensor as a row of numbered "boxes". Each box holds one 16-bit numb
 | `04` | Segment count | 0 ~ 8 | 0 line lost, 1 one line, 2 or more = branch / crossroad | [Example 5](#ex5), [6](#ex6) |
 | `05` | Line bitmap | 0 ~ 65535 (bits) | bit0 = channel 1 (far left) ... bit15 = channel 16, 1 = on the line | [Example 5](#ex5), [7](#ex7) |
 | `06` | Last lost direction | −16 ~ +16 | Which side the line was on before it was lost, negative = left | [Example 6](#ex6) |
-| `07` | Threshold | 1 ~ 99 | Light-value cut-off for "on the line", default 50 | [Example 7](#ex7) |
+| `07` | Threshold | 1 ~ 99 | Light-value cut-off for "on the line", default 40 (sensors shipped before 2026-11-03: 50) | [Example 7](#ex7) |
 | `08` | Calibration count | 0 ~ 255 | How many calibrations finished since boot | [Example 4](#ex4) |
 | `10` ~ `1F` | Light value of channels 1 ~ 16 | 0 ~ 100 | Calibrated light value, 0 = black, 100 = white; `10` = channel 1 (far left) | [Example 2](#ex2), [4](#ex4), [7](#ex7) |
 | `E0` | Black-line mode (command) | no parameter | Follow a black line (default) | [Example 3](#ex3), [6](#ex6) |
 | `E1` | White-line mode (command) | no parameter | Follow a white line, F3 bit1 = 1 | [Example 3](#ex3) |
 | `E2` | Black calibration (command) | no parameter | Remember the current reading as black, about 50 ms, saved to EEPROM | [Example 4](#ex4) |
 | `E3` | White calibration (command) | no parameter | Remember the current reading as white, about 50 ms, saved to EEPROM | [Example 4](#ex4) |
-| `E4` | Set threshold (command) | 1 parameter, 1 ~ 99 | Threshold is kept in RAM, back to 50 after reboot | [Example 7](#ex7) |
+| `E4` | Set threshold (command) | 1 parameter, 1 ~ 99 | Threshold is kept in RAM, back to 40 after reboot (sensors shipped before 2026-11-03: 50) | [Example 7](#ex7) |
 | `E7` | 5-second dynamic calibration (command) | no parameter | Sweep over black and white for 5 s, the extremes become the references; F3 bit2 = 1 meanwhile | [Example 4](#ex4), [7](#ex7) |
 | `F0` | Device ID | — | Low byte = factory address 0x16, high byte = 16 (channel count) | [Example 1](#ex1), [Shared 2](#exi2), [Shared 3](#exi3) |
 | `F1` | Protocol version | 2 | These examples are written for version 2 | [Example 1](#ex1) |
@@ -345,7 +345,7 @@ void loop() {
   for (uint8_t i = 0; i < 16; i++) Serial.print(((uint16_t)a[4] >> i) & 1);   // Print bit0 (channel 1) on the left ... bit15 (channel 16) on the right
   Serial.println(F("   (left→right = channels 1~16, 1 = that channel is on the line)"));
   Serial.print(F("06 last lost dir    ")); Serial.print(a[5]); Serial.println(F("   (which side the line was on before it was lost, negative = left)"));
-  Serial.print(F("07 threshold        ")); Serial.print(a[6]); Serial.println(F("   (1~99, default 50)"));
+  Serial.print(F("07 threshold        ")); Serial.print(a[6]); Serial.println(F("   (1~99, default 40, older firmware 50)"));
   Serial.print(F("08 calibration count ")); Serial.print(a[7]); Serial.println(F("   (how many calibrations since boot)"));
 
   Serial.print(F("10~1F light  L "));
@@ -431,7 +431,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 04 segment count    1   (0 line lost, 1 one line, 2 or more = branch / crossroad)
 05 line bitmap      0000111000000000   (left→right = channels 1~16, 1 = that channel is on the line)
 06 last lost dir    -3   (which side the line was on before it was lost, negative = left)
-07 threshold        50   (1~99, default 50)
+07 threshold        40   (1~99, default 40, older firmware 50)
 08 calibration count 1   (how many calibrations since boot)
 10~1F light  L 100  98 100  99  12   8  15  95 100 100 100  99 100 100  98 100 R   (0 = black, 100 = white)
 ```
@@ -1155,7 +1155,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 
 <h2 id="ex7">7️⃣ Adjust the threshold</h2>
 
-**What it does:** The "threshold" is the cut-off score the sensor uses to decide "is this channel on the line" (a light value below the threshold counts as on the line, default 50). Type 1 ~ 99 in the Serial Monitor to set it with `E4`; the program reads `07` back to confirm. Type `a` for an `E7` 5-second dynamic calibration. It also prints the 16 light values and the `05` line bitmap once per second, so you can see which channels count as "on the line" after the change.
+**What it does:** The "threshold" is the cut-off score the sensor uses to decide "is this channel on the line" (a light value below the threshold counts as on the line, default 40; sensors shipped before 2026-11-03: 50). Type 1 ~ 99 in the Serial Monitor to set it with `E4`; the program reads `07` back to confirm. Type `a` for an `E7` 5-second dynamic calibration. It also prints the 16 light values and the `05` line bitmap once per second, so you can see which channels count as "on the line" after the change.
 
 <a href="/examples/line16/arduino-en/line16_07_threshold/line16_07_threshold.ino" download data-ignore="true">📄 Download line16_07_threshold.ino</a>
 
@@ -1166,7 +1166,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
  * ------------------------------------------------------------
  * What does this example do?
  *   The "threshold" is the cut-off score the sensor uses to decide "is this channel on the line":
- *   a light value (0 black ~ 100 white) below the threshold counts as on the line. Default 50.
+ *   a light value (0 black ~ 100 white) below the threshold counts as on the line. Default 40 (sensors shipped before 2026-11-03: 50).
  *   Adjust it when the line is faint or the field is shiny.
  *   Type in the Serial Monitor:
  *     a number 1~99 then Enter → set the threshold with E4, then read 07 to confirm
@@ -1181,7 +1181,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
  *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *
  * Tip:
- *   The threshold set with E4 is kept in RAM. After the sensor reboots it goes back to the default 50.
+ *   The threshold set with E4 is kept in RAM. After the sensor reboots it goes back to the default 40 (sensors shipped before 2026-11-03: 50).
  */
 
 #include <Wire.h>
@@ -1316,7 +1316,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 
 ```text
 === Pathfinder 16-Way: Adjust the threshold ===
-Current threshold (07): 50
+Current threshold (07): 40
 Type 1~99 to set the threshold, or a for 5 s dynamic calibration, then press Enter
 Light L 100 98 100 99 12 8 35 100 100 100 99 100 100 98 100 99 R  on line (L→R) ....###.........
 Threshold set to 30, read back 07 = 30
@@ -1324,7 +1324,7 @@ Light L 100 98 100 99 12 8 35 100 100 100 99 100 100 98 100 99 R  on line (L→R
 ```
 
 > [!TIP]
-> Raise the threshold when the line is faint (grey); lower it when the field is shiny. The threshold set with `E4` is kept in RAM, so the sensor goes back to 50 after a reboot. To make it stick, send `E4` once at the start of your program every time.
+> Raise the threshold when the line is faint (grey); lower it when the field is shiny. The threshold set with `E4` is kept in RAM, so the sensor goes back to 40 after a reboot (sensors shipped before 2026-11-03: 50). To make it stick, send `E4` once at the start of your program every time.
 
 ---
 

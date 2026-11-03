@@ -86,12 +86,12 @@ One line per block: block text (English ｜ Traditional Chinese), function, rang
 | channel … is on the line ｜ 循行者 第 … 路在線上？ | one bit of the bitmap | channel 1 ~ 16 |
 | channel … reflect ｜ 循行者 第 … 路光值 | calibrated reflect, 0 black ~ 100 white | 0 ~ 100 |
 | last exit direction ｜ 循行者 最後離線方向 | where the line was before it was lost, negative = left | −8 ~ +8 / −16 ~ +16 |
-| line threshold ｜ 循行者 門檻 | current "on line" reflect threshold | 1 ~ 99, default 50 |
+| line threshold ｜ 循行者 門檻 | current "on line" reflect threshold | 1 ~ 99, default 50 (8-ch) / 40 (16-ch; 16-ch sensors shipped before 2026-11-03: 50) |
 | line calibration count ｜ 循行者 校準次數 (advanced) | calibrations completed since power-on | 0 ~ 255 |
 | line follower is calibrating ｜ 循行者 校準中？ (advanced) | F3 bit2 | true / false |
 | line follower follow … line ｜ 循行者 循 … 線 | black (E0, default) / white (E1) | black / white |
 | line follower calibrate … ｜ 循行者 校準 … | current reading is black (E2) / is white (E3) / auto sweep 5 s (E7), saved to EEPROM | 3 modes |
-| line follower set threshold … ｜ 循行者 門檻設為 … | E4, RAM only, back to 50 after reboot | 1 ~ 99 |
+| line follower set threshold … ｜ 循行者 門檻設為 … | E4, RAM only, back to the default after reboot (8-ch 50, 16-ch 40) | 1 ~ 99 |
 | on line … ｜ 當循行者 … | event: lost / found / fork | 3 events |
 | line follower use address … ｜ 循行者 改用位址 … (advanced) | tell the extension a changed address | 0x08 ~ 0x77 |
 

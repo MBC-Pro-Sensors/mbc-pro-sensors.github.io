@@ -51,7 +51,7 @@ Each id returns one int16; click an id for the six-host reading and figure.
 | [`04`](/en/sensors/line16/reference.md#v04) | line segments `groupCount` | 0~8 | number of separate line segments: 0 = lost, 1 = one line, ≥2 = fork / crossing |
 | [`05`](/en/sensors/line16/reference.md#v05) | line bitmap `bitmap` | 0~65535 bit | bit0 = channel 1 (left) … bit15 = channel 16; 1 = that channel sees the line |
 | [`06`](/en/sensors/line16/reference.md#v06) | last exit direction `lastDir` | -16~+16 | where the line was before it was lost: −16 to +16 (negative = left); keeps the last value |
-| [`07`](/en/sensors/line16/reference.md#v07) | threshold `threshold` | 1~99 | reflect threshold for 'on line', 1~99, default 50; set with E4 |
+| [`07`](/en/sensors/line16/reference.md#v07) | threshold `threshold` | 1~99 | reflect threshold for 'on line', 1~99, default 40 (firmware shipped before 2026-11-03: 50); set with E4 |
 | [`08`](/en/sensors/line16/reference.md#v08) | calibrations done `calibCount` | 0~255 次 | number of calibrations completed since power-on (button calibrations included) |
 | [`10~1F`](/en/sensors/line16/reference.md#v10) | channel 1~16 reflect `light` | 0~100 | calibrated reflect of channel 1~16, 0~100 (channel 1 = left); ids 10~1F |
 
@@ -63,7 +63,7 @@ Each id returns one int16; click an id for the six-host reading and figure.
 | [`E1`](/en/sensors/line16/reference.md#ce1) | white line mode `whiteLine` | — | follow a white line (F3 b1 = 1); RAM only, back to the default after reset |
 | [`E2`](/en/sensors/line16/reference.md#ce2) | calibrate black `calibBlack` | — | store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM（F3 bit2 = 1 while running） |
 | [`E3`](/en/sensors/line16/reference.md#ce3) | calibrate white `calibWhite` | — | store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM（F3 bit2 = 1 while running） |
-| [`E4`](/en/sensors/line16/reference.md#ce4) | set threshold `setThreshold` | threshold 1~99 | threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2) |
+| [`E4`](/en/sensors/line16/reference.md#ce4) | set threshold `setThreshold` | threshold 1~99 | threshold 1~99 (RAM only, back to 40 after reboot); on SPIKE an out-of-range value returns failed (state 2) |
 | [`E7`](/en/sensors/line16/reference.md#ce7) | 5-second auto calibration `calibAuto` | — | sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile（F3 bit2 = 1 while running） |
 | [`E9`](/en/sensors/line16/reference.md#ce9) | mirror left/right `reverse` | mirrored 0~1 | [0 normal / 1 mirrored]: for a sensor mounted backwards — channel order and line position are mirrored; calibration stays per physical channel; RAM only, 0 after reset (not in legacy mBlock); on SPIKE an out-of-range value returns failed (state 2) |
 

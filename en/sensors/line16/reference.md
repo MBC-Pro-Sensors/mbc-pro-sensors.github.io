@@ -663,7 +663,7 @@ let lastDir = mbc.lineLastDirection()   // last exit direction：-16~+16
 
 | Item | Detail |
 | :--- | :--- |
-| Meaning | reflect threshold for 'on line', 1~99, default 50; set with E4 |
+| Meaning | reflect threshold for 'on line', 1~99, default 40 (firmware shipped before 2026-11-03: 50); set with E4 |
 | Range | `1~99` |
 | I2C / mBlock id | `07` |
 
@@ -817,7 +817,7 @@ let lineCalibrating = mbc.lineCalibrating()
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-mode 0 (edu) byte 4 🔒; mode 0 (toy) byte 4 🔒; mode 3 byte 2; mode 6 v[0]; mode 8 v[0]; mode 9 v[0] 🔒. Note: 每路 2 bit（(v×10)>>8：0~25→0、26~51→1、52~76→2、77~100→3）；byte4 = 第 5~8 路（第 5 路在 bit7-6）、byte5 = 第 1~4 路、byte6 = 第 13~16 路、byte7 = 第 9~12 路 → App 原始綠 = 第 1~8 路（bit15-14 = 第 1 路）、原始藍 = 第 9~16 路；byte 8~15 = 0; 每路 1 bit（光值 > 50 = 1 亮）：第 1~8 路合成 1 byte（第 1 路在 bit7）經玩具版查表編碼成 byte4~5；第 9~16 路 → byte6~7; byte2 = 第 1 路、byte3 = 第 16 路（描述表只宣告 3×int8，第 4 byte 主機可能砍掉）; byte0~5 = 第 6~11 路光值 → 3×int16，每個 lo = 前一路、hi = 後一路; byte0~3 = 第 7~10 路（只送 4 B）; 每 int16 四路 4-bit（(v×5)>>5，0~15）：bit0-3 = 第 1 路、bit4-7 = 第 2 路、bit8-11 = 第 3 路、bit12-15 = 第 4 路；v0~v3 = 第 1~16 路
+mode 0 (edu) byte 4 🔒; mode 0 (toy) byte 4 🔒; mode 3 byte 2; mode 6 v[0]; mode 8 v[0]; mode 9 v[0] 🔒. Note: 每路 2 bit（(v×10)>>8：0~25→0、26~51→1、52~76→2、77~100→3）；byte4 = 第 5~8 路（第 5 路在 bit7-6）、byte5 = 第 1~4 路、byte6 = 第 13~16 路、byte7 = 第 9~12 路 → App 原始綠 = 第 1~8 路（bit15-14 = 第 1 路）、原始藍 = 第 9~16 路；byte 8~15 = 0; 每路 1 bit（光值 ≥ 門檻（值 07，預設 40）= 1 亮，跟二值化判白同一個判斷；2026-11-03 以前的韌體是光值 > 50）：第 1~8 路合成 1 byte（第 1 路在 bit7）經玩具版查表編碼成 byte4~5；第 9~16 路 → byte6~7; byte2 = 第 1 路、byte3 = 第 16 路（描述表只宣告 3×int8，第 4 byte 主機可能砍掉）; byte0~5 = 第 6~11 路光值 → 3×int16，每個 lo = 前一路、hi = 後一路; byte0~3 = 第 7~10 路（只送 4 B）; 每 int16 四路 4-bit（(v×5)>>5，0~15）：bit0-3 = 第 1 路、bit4-7 = 第 2 路、bit8-11 = 第 3 路、bit12-15 = 第 4 路；v0~v3 = 第 1~16 路
 
 ```python
 from pybricks.iodevices import PUPDevice
@@ -828,8 +828,8 @@ dev = PUPDevice(Port.A)   # sensor on port A
 words = dev.read(9)[0:4]
 light = []
 for w in words:
-    light.append(w & 0xFF)          # odd channel
-    light.append((w >> 8) & 0xFF)   # even channel
+    for k in range(4):
+        light.append((w >> (4 * k)) & 0x0F)   # low bits first
 ```
 
 **MBC library**
@@ -1226,7 +1226,7 @@ mbc.lineCalibrate(MbcLineCalib.White)   // calibrate white
 
 | Item | Detail |
 | :--- | :--- |
-| Action | threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2) |
+| Action | threshold 1~99 (RAM only, back to 40 after reboot); on SPIKE an out-of-range value returns failed (state 2) |
 | Parameters | threshold `1~99`（1 byte） |
 | Busy flag | none (immediate) |
 

@@ -58,7 +58,7 @@ void loop() {
   for (uint8_t i = 0; i < 16; i++) Serial.print(((uint16_t)a[4] >> i) & 1);   // Print bit0 (channel 1) on the left ... bit15 (channel 16) on the right
   Serial.println(F("   (left→right = channels 1~16, 1 = that channel is on the line)"));
   Serial.print(F("06 last lost dir    ")); Serial.print(a[5]); Serial.println(F("   (which side the line was on before it was lost, negative = left)"));
-  Serial.print(F("07 threshold        ")); Serial.print(a[6]); Serial.println(F("   (1~99, default 50)"));
+  Serial.print(F("07 threshold        ")); Serial.print(a[6]); Serial.println(F("   (1~99, default 40, older firmware 50)"));
   Serial.print(F("08 calibration count ")); Serial.print(a[7]); Serial.println(F("   (how many calibrations since boot)"));
 
   Serial.print(F("10~1F light  L "));

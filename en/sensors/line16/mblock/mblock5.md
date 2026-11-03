@@ -123,7 +123,7 @@ After adding the MBC Pro Sensors extension, find the blocks in the "Pathfinder" 
 
 | Range | Meaning |
 | :--- | :--- |
-| `1~99` | reflect threshold for 'on line', 1~99, default 50; set with E4 |
+| `1~99` | reflect threshold for 'on line', 1~99, default 40 (firmware shipped before 2026-11-03: 50); set with E4 |
 
 <pre class="blocks">(Pathfinder port [1 v] threshold :: sensing)</pre>
 
@@ -227,7 +227,7 @@ store the current reading as white (sensor over the white surface), ~50 ms; save
 
 ### set threshold <small>setThreshold</small>
 
-threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2)
+threshold 1~99 (RAM only, back to 40 after reboot); on SPIKE an out-of-range value returns failed (state 2)
 
 <pre class="blocks">Pathfinder port [1 v] set threshold (50) :: sensing</pre>
 

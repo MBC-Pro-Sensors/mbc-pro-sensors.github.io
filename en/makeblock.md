@@ -135,7 +135,7 @@ One block per value, returning the number you want (int16); command blocks get a
 | Pathfinder port [port] line segments | 0~8 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | number of separate line segments: 0 = lost, 1 = one line, ≥2 = fork / crossing |
 | Pathfinder port [port] line bitmap | 0~65535 bit | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | bit0 = channel 1 (left) … bit15 = channel 16; 1 = that channel sees the line |
 | Pathfinder port [port] last exit direction | -16~+16 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | where the line was before it was lost: −16 to +16 (negative = left); keeps the last value |
-| Pathfinder port [port] threshold | 1~99 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | reflect threshold for 'on line', 1~99, default 50; set with E4 |
+| Pathfinder port [port] threshold | 1~99 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | reflect threshold for 'on line', 1~99, default 40 (firmware shipped before 2026-11-03: 50); set with E4 |
 | Pathfinder port [port] calibration count | 0~255 次 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | number of calibrations completed since power-on (button calibrations included) |
 | Pathfinder port [port] channel [1~16] reflect | 0~100 | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | calibrated reflect of channel 1~16, 0~100 (channel 1 = left); ids 10~1F |
 | Pathfinder port [port] channel [1~16] on line? | true/false | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | bit N−1 of line bitmap 05 (channel 1 = bit0, leftmost): true when that channel sees the line |
@@ -143,7 +143,7 @@ One block per value, returning the number you want (int16); command blocks get a
 | Pathfinder port [port] white line mode | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | follow a white line (F3 b1 = 1); RAM only, back to the default after reset |
 | Pathfinder port [port] calibrate black | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM |
 | Pathfinder port [port] calibrate white | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM |
-| Pathfinder port [port] set threshold [threshold] | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2) |
+| Pathfinder port [port] set threshold [threshold] | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | threshold 1~99 (RAM only, back to 40 after reboot); on SPIKE an out-of-range value returns failed (state 2) |
 | Pathfinder port [port] 5-second auto calibration | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile |
 | Pathfinder port [port] update all values | — | [Line Follower 16-ch](/en/sensors/line16/mblock.md) | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 | Pathfinder port [port] line position | -8~+8 | [Line Follower 8-ch](/en/sensors/line8/mblock.md) | which channel the line is under: −8 (far left) to +8 (far right), 0 = centre; seen from behind the robot, negative = left |

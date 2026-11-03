@@ -86,12 +86,12 @@ micro:bit 的 I2C 腳位是固定的：**P19 = SCL、P20 = SDA**（金手指邊�
 | 循行者 第 … 路在線上？ ｜ channel … is on the line | 位元圖的某一路 | 路 1 ~ 16 |
 | 循行者 第 … 路光值 ｜ channel … reflect | 校準後光值，0 黑 ~ 100 白 | 0 ~ 100 |
 | 循行者 最後離線方向 ｜ last exit direction | 丟線前線在哪一側，負＝左 | −8 ~ +8／−16 ~ +16 |
-| 循行者 門檻 ｜ line threshold | 目前「在線上」的光值門檻 | 1 ~ 99，預設 50 |
+| 循行者 門檻 ｜ line threshold | 目前「在線上」的光值門檻 | 1 ~ 99，預設 8 路 50、16 路 40（16 路 2026-11-03 以前出貨的是 50） |
 | 循行者 校準次數 ｜ line calibration count（進階） | 開機後完成的校準次數 | 0 ~ 255 |
 | 循行者 校準中？ ｜ line follower is calibrating（進階） | F3 bit2 | 是／否 |
 | 循行者 循 … 線 ｜ line follower follow … line | 黑線（E0，預設）／白線（E1） | 黑／白 |
 | 循行者 校準 … ｜ line follower calibrate … | 目前讀值記為黑（E2）／記為白（E3）／5 秒動態掃描（E7），存進 EEPROM | 3 種 |
-| 循行者 門檻設為 … ｜ line follower set threshold … | E4，只存 RAM，重開機回 50 | 1 ~ 99 |
+| 循行者 門檻設為 … ｜ line follower set threshold … | E4，只存 RAM，重開機回預設（8 路 50、16 路 40） | 1 ~ 99 |
 | 當循行者 … ｜ on line … | 事件：丟線／找回線／分岔 | 3 種 |
 | 循行者 改用位址 … ｜ line follower use address …（進階） | 位址改過時告訴擴充 | 0x08 ~ 0x77 |
 

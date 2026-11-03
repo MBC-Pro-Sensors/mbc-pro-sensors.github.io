@@ -113,7 +113,7 @@ values:
   04 groupCount: 線段數 / line segments; range 0~8; 看到幾段線：0 丟線、1 一條線、2 以上 = 分岔／十字 / number of separate line segments: 0 = lost, 1 = one line, ≥2 = fork / crossing; SPIKE mode9 v5hi
   05 bitmap: 壓線位元圖 / line bitmap; range 0~65535 bit; bit0 = 第 1 路（最左）… bit15 = 第 16 路，1 = 那一路在線上 / bit0 = channel 1 (left) … bit15 = channel 16; 1 = that channel sees the line; EV3 mode3[0]; SPIKE mode4 v1,mode9 v6
   06 lastDir: 最後離線方向 / last exit direction; range -16~+16; 丟線前線最後在哪一側：−16 ~ +16（負 = 左），找回線後維持最後一次 / where the line was before it was lost: −16 to +16 (negative = left); keeps the last value
-  07 threshold: 二值化門檻 / threshold; range 1~99; 判斷「在線上」的光值門檻 1~99，預設 50；用 E4 改 / reflect threshold for 'on line', 1~99, default 50; set with E4
+  07 threshold: 二值化門檻 / threshold; range 1~99; 判斷「在線上」的光值門檻 1~99，預設 40（2026-11-03 以前出貨的韌體是 50）；用 E4 改 / reflect threshold for 'on line', 1~99, default 40 (firmware shipped before 2026-11-03: 50); set with E4
   08 calibCount: 校準完成次數 / calibrations done; range 0~255 次; 開機後完成校準的次數（按鈕校準也算） / number of calibrations completed since power-on (button calibrations included)
   10~1F light: 第 1~16 路光值 / channel 1~16 reflect; range 0~100; 第 1~16 路校準後光值 0~100（第 1 路最左）；編號 10~1F / calibrated reflect of channel 1~16, 0~100 (channel 1 = left); ids 10~1F; EV3 mode1[0],mode2[2],mode4[2]; SPIKE mode0 b4,mode0 b4,mode3 b2,mode6 v0,mode8 v0,mode9 v0; MATRIX 0x22 cmd7
 commands:
@@ -121,7 +121,7 @@ commands:
   E1 whiteLine: 追白線（F3 b1 = 1）；存 RAM，重開機回預設 / follow a white line (F3 b1 = 1); RAM only, back to the default after reset
   E2 calibBlack: 把目前讀值記為黑（感應器壓在黑線上），約 50 ms；寫入 EEPROM / store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM; busy F3 bit2
   E3 calibWhite: 把目前讀值記為白（感應器壓在白底上），約 50 ms；寫入 EEPROM / store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM; busy F3 bit2
-  E4 setThreshold: 二值化門檻 1~99（RAM，重開機回預設 50）；SPIKE 參數超出範圍回失敗（狀態 2） / threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2); params threshold 1~99
+  E4 setThreshold: 二值化門檻 1~99（RAM，重開機回預設 40）；SPIKE 參數超出範圍回失敗（狀態 2） / threshold 1~99 (RAM only, back to 40 after reboot); on SPIKE an out-of-range value returns failed (state 2); params threshold 1~99
   E7 calibAuto: 5 秒內把感應器在黑線與白底上來回掃，取極值當黑白參考（共識 B-12，= v1 的 0x20=0x01）；期間 F3 b2 = 1 / sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile; busy F3 bit2
   E9 reverse: [0 正常／1 左右反向]：感應器反裝時用，通道順序與線位置左右對調；校準值照實體通道存，切換不用重校；存 RAM，重開機回 0（舊 mBlock 沒有）；SPIKE 參數超出範圍回失敗（狀態 2） / [0 normal / 1 mirrored]: for a sensor mounted backwards — channel order and line position are mirrored; calibration stays per physical channel; RAM only, 0 after reset (not in legacy mBlock); on SPIKE an out-of-range value returns failed (state 2); params mirrored 0~1
 status F3:

@@ -35,7 +35,7 @@ The universal I2C edition of the Line Follower 16-ch works with BBC micro:bit V1
 | line segments | 0~8 | [`04`](/en/sensors/line16/reference.md#v04) | number of separate line segments: 0 = lost, 1 = one line, ≥2 = fork / crossing |
 | line bitmap | 0~65535 bit | [`05`](/en/sensors/line16/reference.md#v05) | bit0 = channel 1 (left) … bit15 = channel 16; 1 = that channel sees the line |
 | last exit direction | -16~+16 | [`06`](/en/sensors/line16/reference.md#v06) | where the line was before it was lost: −16 to +16 (negative = left); keeps the last value |
-| line threshold | 1~99 | [`07`](/en/sensors/line16/reference.md#v07) | reflect threshold for 'on line', 1~99, default 50; set with E4 |
+| line threshold | 1~99 | [`07`](/en/sensors/line16/reference.md#v07) | reflect threshold for 'on line', 1~99, default 40 (firmware shipped before 2026-11-03: 50); set with E4 |
 | line calibration count | 0~255 次 | [`08`](/en/sensors/line16/reference.md#v08) | number of calibrations completed since power-on (button calibrations included) |
 | channel [1~16] reflect | 0~100 | [`10~1F`](/en/sensors/line16/reference.md#v10) | calibrated reflect of channel 1~16, 0~100 (channel 1 = left); ids 10~1F |
 
@@ -56,7 +56,7 @@ The universal I2C edition of the Line Follower 16-ch works with BBC micro:bit V1
 | line follower follow [white] line | [`E1`](/en/sensors/line16/reference.md#ce1) | follow a white line (F3 b1 = 1); RAM only, back to the default after reset |
 | line follower calibrate [current reading is black] | [`E2`](/en/sensors/line16/reference.md#ce2) | store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM |
 | line follower calibrate [current reading is white] | [`E3`](/en/sensors/line16/reference.md#ce3) | store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM |
-| line follower set threshold 50 | [`E4`](/en/sensors/line16/reference.md#ce4) | threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2) |
+| line follower set threshold 50 | [`E4`](/en/sensors/line16/reference.md#ce4) | threshold 1~99 (RAM only, back to 40 after reboot); on SPIKE an out-of-range value returns failed (state 2) |
 | line follower calibrate [auto (sweep for 5 s)] | [`E7`](/en/sensors/line16/reference.md#ce7) | sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile |
 
 ## Status

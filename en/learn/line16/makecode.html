@@ -602,7 +602,7 @@ var $ = function(id) {
     id: "ver",
     label: 'Which micro:bit do you have? (V2 has "V2" printed on the back)',
     opts: [{ v: "v2", b: "micro:bit V2", small: "The newer one with a speaker and microphone" }, { v: "v1", b: "micro:bit V1", small: "The older one (no speaker)" }]
-  }], M = { thr: 50, white: !1, calib: 0, calUntil: 0, lastSide: 0, lastDir: 0, prevPos: 0 };
+  }], M = { thr: N === 16 ? 40 : 50, white: !1, calib: 0, calUntil: 0, lastSide: 0, lastDir: 0, prevPos: 0 };
   function rawState() {
     var cross = $("cross").checked, noline = $("noline").checked, half = N / 2, c = Number($("pos").value) / 100 * (half + 0.5), w = Number(document.querySelector('input[name="thick"]:checked').value) * (N === 16 ? 1.7 : 1), lines = noline ? [] : [c];
     $("fork").checked && !noline && !cross && lines.push(c <= 0 ? c + half * 0.7 : c - half * 0.7);
@@ -771,8 +771,8 @@ var $ = function(id) {
       G.light,
       "line threshold",
       "mbc.lineThreshold()",
-      "1 ~ 99 (default 50)",
-      'A channel counts as "on the line" when its light value is below the threshold (black line). Default 50; change it with "set threshold".',
+      "1 ~ 99 (default " + (N === 16 ? "40; sensors shipped before 2026-11-03: 50" : "50") + ")",
+      'A channel counts as "on the line" when its light value is below the threshold (black line). Default ' + (N === 16 ? 40 : 50) + '; change it with "set threshold".',
       function(s) {
         return { ser: ["threshold:" + s.thr] };
       }
@@ -832,7 +832,7 @@ var $ = function(id) {
       "line follower set threshold …",
       "mbc.lineSetThreshold(30)",
       "(command) 1 ~ 99",
-      'Changes the "on the line" threshold (back to 50 after a restart). Raise it for a light-coloured line, lower it for a dark mat. The example: A sets 30, B sets 70, then it prints the threshold.',
+      'Changes the "on the line" threshold (back to ' + (N === 16 ? 40 : 50) + " after a restart). Raise it for a light-coloured line, lower it for a dark mat. The example: A sets 30, B sets 70, then it prints the threshold.",
       function(s, S, b, pv) {
         var t = b === "B" ? 70 : 30;
         return s.plugged && !pv && (M.thr = t), { ser: ["threshold:" + (s.plugged ? t : 0)] };

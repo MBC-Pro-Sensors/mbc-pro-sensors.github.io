@@ -30,7 +30,7 @@ Sensor → mBot adapter → RJ25 port on the board (S1 = host TX, S2 = host RX).
 | Pathfinder port [port] line segments | 0~8 | [`04`](/en/sensors/line16/reference.md#v04) | number of separate line segments: 0 = lost, 1 = one line, ≥2 = fork / crossing |
 | Pathfinder port [port] line bitmap | 0~65535 bit | [`05`](/en/sensors/line16/reference.md#v05) | bit0 = channel 1 (left) … bit15 = channel 16; 1 = that channel sees the line |
 | Pathfinder port [port] last exit direction | -16~+16 | [`06`](/en/sensors/line16/reference.md#v06) | where the line was before it was lost: −16 to +16 (negative = left); keeps the last value |
-| Pathfinder port [port] threshold | 1~99 | [`07`](/en/sensors/line16/reference.md#v07) | reflect threshold for 'on line', 1~99, default 50; set with E4 |
+| Pathfinder port [port] threshold | 1~99 | [`07`](/en/sensors/line16/reference.md#v07) | reflect threshold for 'on line', 1~99, default 40 (firmware shipped before 2026-11-03: 50); set with E4 |
 | Pathfinder port [port] calibration count | 0~255 次 | [`08`](/en/sensors/line16/reference.md#v08) | number of calibrations completed since power-on (button calibrations included) |
 | Pathfinder port [port] channel [1~16] reflect | 0~100 | [`10~1F`](/en/sensors/line16/reference.md#v10) | calibrated reflect of channel 1~16, 0~100 (channel 1 = left); ids 10~1F |
 | Pathfinder port [port] channel [1~16] on line? | true/false | [`05`](/en/sensors/line16/reference.md#v05) | bit N−1 of line bitmap 05 (channel 1 = bit0, leftmost): true when that channel sees the line |
@@ -43,7 +43,7 @@ Sensor → mBot adapter → RJ25 port on the board (S1 = host TX, S2 = host RX).
 | Pathfinder port [port] white line mode | [`E1`](/en/sensors/line16/reference.md#ce1) | follow a white line (F3 b1 = 1); RAM only, back to the default after reset |
 | Pathfinder port [port] calibrate black | [`E2`](/en/sensors/line16/reference.md#ce2) | store the current reading as black (sensor over the black line), ~50 ms; saved to EEPROM（F3 bit2 = 1 while running） |
 | Pathfinder port [port] calibrate white | [`E3`](/en/sensors/line16/reference.md#ce3) | store the current reading as white (sensor over the white surface), ~50 ms; saved to EEPROM（F3 bit2 = 1 while running） |
-| Pathfinder port [port] set threshold [threshold] | [`E4`](/en/sensors/line16/reference.md#ce4) | threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2) |
+| Pathfinder port [port] set threshold [threshold] | [`E4`](/en/sensors/line16/reference.md#ce4) | threshold 1~99 (RAM only, back to 40 after reboot); on SPIKE an out-of-range value returns failed (state 2) |
 | Pathfinder port [port] 5-second auto calibration | [`E7`](/en/sensors/line16/reference.md#ce7) | sweep the sensor across black line and white surface for 5 s; min/max become the references; F3 b2 = 1 meanwhile（F3 bit2 = 1 while running） |
 | Pathfinder port [port] update all values | `FD` | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 

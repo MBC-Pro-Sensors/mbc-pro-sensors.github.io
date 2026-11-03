@@ -602,7 +602,7 @@ var $ = function(id) {
     id: "ver",
     label: "你的 micro:bit 是哪一版？（背面有寫 V2 的就是 V2）",
     opts: [{ v: "v2", b: "micro:bit V2", small: "有喇叭和麥克風的新版" }, { v: "v1", b: "micro:bit V1", small: "舊版（沒有喇叭）" }]
-  }], M = { thr: 50, white: !1, calib: 0, calUntil: 0, lastSide: 0, lastDir: 0, prevPos: 0 };
+  }], M = { thr: N === 16 ? 40 : 50, white: !1, calib: 0, calUntil: 0, lastSide: 0, lastDir: 0, prevPos: 0 };
   function rawState() {
     var cross = $("cross").checked, noline = $("noline").checked, half = N / 2, c = Number($("pos").value) / 100 * (half + 0.5), w = Number(document.querySelector('input[name="thick"]:checked').value) * (N === 16 ? 1.7 : 1), lines = noline ? [] : [c];
     $("fork").checked && !noline && !cross && lines.push(c <= 0 ? c + half * 0.7 : c - half * 0.7);
@@ -771,8 +771,8 @@ var $ = function(id) {
       G.light,
       "循行者 門檻",
       "mbc.lineThreshold()",
-      "1 ~ 99（預設 50）",
-      "光值比門檻小（追黑線時）就算踩在線上。預設 50，可以用「門檻設為」改。",
+      "1 ~ 99（預設 " + (N === 16 ? "40，2026-11-03 以前出貨的是 50" : "50") + "）",
+      "光值比門檻小（追黑線時）就算踩在線上。預設 " + (N === 16 ? 40 : 50) + "，可以用「門檻設為」改。",
       function(s) {
         return { ser: ["threshold:" + s.thr] };
       }
@@ -832,7 +832,7 @@ var $ = function(id) {
       "循行者 門檻設為 …",
       "mbc.lineSetThreshold(30)",
       "（命令）1 ~ 99",
-      "改「在線上」的門檻（重開機回到 50）。線顏色比較淺時調高、場地比較暗時調低。範例按 A 設 30、按 B 設 70，再印出目前的門檻。",
+      "改「在線上」的門檻（重開機回到 " + (N === 16 ? 40 : 50) + "）。線顏色比較淺時調高、場地比較暗時調低。範例按 A 設 30、按 B 設 70，再印出目前的門檻。",
       function(s, S, b, pv) {
         var t = b === "B" ? 70 : 30;
         return s.plugged && !pv && (M.thr = t), { ser: ["threshold:" + (s.plugged ? t : 0)] };

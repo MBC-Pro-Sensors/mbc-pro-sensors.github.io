@@ -3,7 +3,7 @@
  * ------------------------------------------------------------
  * What does this example do?
  *   The "threshold" is the cut-off score the sensor uses to decide "is this channel on the line":
- *   a light value (0 black ~ 100 white) below the threshold counts as on the line. Default 50.
+ *   a light value (0 black ~ 100 white) below the threshold counts as on the line. Default 40 (sensors shipped before 2026-11-03: 50).
  *   Adjust it when the line is faint or the field is shiny.
  *   Type in the Serial Monitor:
  *     a number 1~99 then Enter → set the threshold with E4, then read 07 to confirm
@@ -18,7 +18,7 @@
  *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *
  * Tip:
- *   The threshold set with E4 is kept in RAM. After the sensor reboots it goes back to the default 50.
+ *   The threshold set with E4 is kept in RAM. After the sensor reboots it goes back to the default 40 (sensors shipped before 2026-11-03: 50).
  */
 
 #include <Wire.h>

@@ -469,8 +469,8 @@
         "en": "threshold"
       },
       "desc": {
-        "zh": "判斷「在線上」的光值門檻 1~99，預設 50；用 E4 改",
-        "en": "reflect threshold for 'on line', 1~99, default 50; set with E4"
+        "zh": "判斷「在線上」的光值門檻 1~99，預設 40（2026-11-03 以前出貨的韌體是 50）；用 E4 改",
+        "en": "reflect threshold for 'on line', 1~99, default 40 (firmware shipped before 2026-11-03: 50); set with E4"
       },
       "unit": "",
       "range": "1~99",
@@ -593,7 +593,7 @@
           "hub": "toy",
           "byte": 4,
           "format": "1bit×16 查表",
-          "note": "每路 1 bit（光值 > 50 = 1 亮）：第 1~8 路合成 1 byte（第 1 路在 bit7）經玩具版查表編碼成 byte4~5；第 9~16 路 → byte6~7"
+          "note": "每路 1 bit（光值 ≥ 門檻（值 07，預設 40）= 1 亮，跟二值化判白同一個判斷；2026-11-03 以前的韌體是光值 > 50）：第 1~8 路合成 1 byte（第 1 路在 bit7）經玩具版查表編碼成 byte4~5；第 9~16 路 → byte6~7"
         },
         {
           "mode": 3,
@@ -727,8 +727,8 @@
         "en": "set threshold"
       },
       "desc": {
-        "zh": "二值化門檻 1~99（RAM，重開機回預設 50）；SPIKE 參數超出範圍回失敗（狀態 2）",
-        "en": "threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2)"
+        "zh": "二值化門檻 1~99（RAM，重開機回預設 40）；SPIKE 參數超出範圍回失敗（狀態 2）",
+        "en": "threshold 1~99 (RAM only, back to 40 after reboot); on SPIKE an out-of-range value returns failed (state 2)"
       },
       "params": [
         {

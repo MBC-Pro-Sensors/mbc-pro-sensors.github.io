@@ -58,7 +58,7 @@ void loop() {
   for (uint8_t i = 0; i < 16; i++) Serial.print(((uint16_t)a[4] >> i) & 1);   // 左邊印 bit0（第 1 路）…右邊印 bit15（第 16 路）
   Serial.println(F("   （左→右 = 第 1~16 路，1 = 那一路在線上）"));
   Serial.print(F("06 最後離線方向 ")); Serial.print(a[5]); Serial.println(F("   （丟線前線在哪一側，負 = 左）"));
-  Serial.print(F("07 門檻         ")); Serial.print(a[6]); Serial.println(F("   （1~99，預設 50）"));
+  Serial.print(F("07 門檻         ")); Serial.print(a[6]); Serial.println(F("   （1~99，預設 40，舊韌體 50）"));
   Serial.print(F("08 校準次數     ")); Serial.print(a[7]); Serial.println(F("   （開機後完成校準幾次）"));
 
   Serial.print(F("10~1F 光值 左 "));

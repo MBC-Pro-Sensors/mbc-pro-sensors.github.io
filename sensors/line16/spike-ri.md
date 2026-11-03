@@ -71,7 +71,7 @@
         <td style="padding: 18px 20px; font-weight: bold; color: #333; vertical-align: middle;">前 8 顆光電數值</td>
         <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">
           <span style="display: inline-block; background: rgba(0,180,216,0.15); color: #0077b6; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; margin-bottom: 6px; border: 1px solid rgba(0,180,216,0.2);">0 ~ 255</span><br>
-          👉 <strong>前 8 顆光電數值</strong>：為每 1-bit 代表一個光電數值，數值範圍 <code>0 ~ 1</code>。
+          👉 <strong>前 8 顆光電數值</strong>：為每 1-bit 代表一個光電數值，數值範圍 <code>0 ~ 1</code>（光值 ≥ 門檻＝1，門檻預設 40；2026-11-03 以前出貨的韌體是光值 &gt; 50＝1）。
         </td>
       </tr>
       <tr class="table-hover-row" style="border: none; background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
@@ -79,7 +79,7 @@
         <td style="padding: 18px 20px; font-weight: bold; color: #333; vertical-align: middle;">後 8 顆光電數值</td>
         <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">
           <span style="display: inline-block; background: rgba(0,180,216,0.15); color: #0077b6; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; margin-bottom: 6px; border: 1px solid rgba(0,180,216,0.2);">0 ~ 255</span><br>
-          👉 <strong>後 8 顆光電數值</strong>：為每 1-bit 代表一個光電數值，數值範圍 <code>0 ~ 1</code>。
+          👉 <strong>後 8 顆光電數值</strong>：為每 1-bit 代表一個光電數值，數值範圍 <code>0 ~ 1</code>（光值 ≥ 門檻＝1，門檻預設 40；2026-11-03 以前出貨的韌體是光值 &gt; 50＝1）。
         </td>
       </tr>
     </tbody>

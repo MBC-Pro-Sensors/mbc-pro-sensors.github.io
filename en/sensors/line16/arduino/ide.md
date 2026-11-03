@@ -196,7 +196,7 @@ int16_t lastDir = mbcRead(0x16, 0x06);   // last exit direction：-16~+16
 
 | Range | Meaning |
 | :--- | :--- |
-| `1~99` | reflect threshold for 'on line', 1~99, default 50; set with E4 |
+| `1~99` | reflect threshold for 'on line', 1~99, default 40 (firmware shipped before 2026-11-03: 50); set with E4 |
 
 ```cpp
 int16_t threshold = mbcRead(0x16, 0x07);   // threshold：1~99
@@ -299,7 +299,7 @@ while (mbcRead(0x16, 0xF3) & (1 << 2)) delay(10);   // wait until F3 bit2 clears
 
 ### set threshold <small>setThreshold</small>
 
-threshold 1~99 (RAM only, back to 50 after reboot); on SPIKE an out-of-range value returns failed (state 2)
+threshold 1~99 (RAM only, back to 40 after reboot); on SPIKE an out-of-range value returns failed (state 2)
 
 ```cpp
 mbcWrite(0x16, 0xE4, 50);   // set threshold（threshold 1~99）

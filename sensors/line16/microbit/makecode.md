@@ -166,7 +166,7 @@ let lastDir = mbc.lineLastDirection()   // 最後離線方向：-16~+16
 
 | 範圍 | 意思 |
 | :--- | :--- |
-| `1~99` | 判斷「在線上」的光值門檻 1~99，預設 50；用 E4 改 |
+| `1~99` | 判斷「在線上」的光值門檻 1~99，預設 40（2026-11-03 以前出貨的韌體是 50）；用 E4 改 |
 
 <pre class="blocks">(循行者 門檻 :: #00A4E4)</pre>
 
@@ -284,7 +284,7 @@ mbc.lineCalibrate(MbcLineCalib.White)   // 白色校準
 
 ### 設定門檻 <small>setThreshold</small>
 
-二值化門檻 1~99（RAM，重開機回預設 50）；SPIKE 參數超出範圍回失敗（狀態 2）
+二值化門檻 1~99（RAM，重開機回預設 40）；SPIKE 參數超出範圍回失敗（狀態 2）
 
 <pre class="blocks">循行者 門檻設為 (50) :: #00A4E4</pre>
 

@@ -71,7 +71,7 @@ You can directly pull the official **"Reflected Light"** or **"RGB Value"** bloc
         <td style="padding: 18px 20px; font-weight: bold; color: #333; vertical-align: middle;">First 8 Photoelectric Values</td>
         <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">
           <span style="display: inline-block; background: rgba(0,180,216,0.15); color: #0077b6; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; margin-bottom: 6px; border: 1px solid rgba(0,180,216,0.2);">0 ~ 255</span><br>
-          👉 <strong>First 8 photoelectric values</strong>: Encoded.
+          👉 <strong>First 8 photoelectric values</strong>: Encoded, 1 bit per channel (1 = light value ≥ the threshold, default 40; firmware shipped before 2026-11-03: light value &gt; 50).
         </td>
       </tr>
       <tr class="table-hover-row" style="border: none; background: rgba(0,0,0,0.01); transition: background 0.2s ease;">
@@ -79,7 +79,7 @@ You can directly pull the official **"Reflected Light"** or **"RGB Value"** bloc
         <td style="padding: 18px 20px; font-weight: bold; color: #333; vertical-align: middle;">Last 8 Photoelectric Values</td>
         <td style="padding: 18px 20px; color: #444; line-height: 1.6; vertical-align: middle;">
           <span style="display: inline-block; background: rgba(0,180,216,0.15); color: #0077b6; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; margin-bottom: 6px; border: 1px solid rgba(0,180,216,0.2);">0 ~ 255</span><br>
-          👉 <strong>Last 8 photoelectric values</strong>: Encoded.
+          👉 <strong>Last 8 photoelectric values</strong>: Encoded, 1 bit per channel (1 = light value ≥ the threshold, default 40; firmware shipped before 2026-11-03: light value &gt; 50).
         </td>
       </tr>
     </tbody>

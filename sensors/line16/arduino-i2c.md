@@ -51,7 +51,7 @@
 | [`04`](/sensors/line16/reference.md#v04) | 線段數 `groupCount` | 0~8 | 看到幾段線：0 丟線、1 一條線、2 以上 = 分岔／十字 |
 | [`05`](/sensors/line16/reference.md#v05) | 壓線位元圖 `bitmap` | 0~65535 bit | bit0 = 第 1 路（最左）… bit15 = 第 16 路，1 = 那一路在線上 |
 | [`06`](/sensors/line16/reference.md#v06) | 最後離線方向 `lastDir` | -16~+16 | 丟線前線最後在哪一側：−16 ~ +16（負 = 左），找回線後維持最後一次 |
-| [`07`](/sensors/line16/reference.md#v07) | 二值化門檻 `threshold` | 1~99 | 判斷「在線上」的光值門檻 1~99，預設 50；用 E4 改 |
+| [`07`](/sensors/line16/reference.md#v07) | 二值化門檻 `threshold` | 1~99 | 判斷「在線上」的光值門檻 1~99，預設 40（2026-11-03 以前出貨的韌體是 50）；用 E4 改 |
 | [`08`](/sensors/line16/reference.md#v08) | 校準完成次數 `calibCount` | 0~255 次 | 開機後完成校準的次數（按鈕校準也算） |
 | [`10~1F`](/sensors/line16/reference.md#v10) | 第 1~16 路光值 `light` | 0~100 | 第 1~16 路校準後光值 0~100（第 1 路最左）；編號 10~1F |
 
@@ -63,7 +63,7 @@
 | [`E1`](/sensors/line16/reference.md#ce1) | 切白線 `whiteLine` | — | 追白線（F3 b1 = 1）；存 RAM，重開機回預設 |
 | [`E2`](/sensors/line16/reference.md#ce2) | 黑色校準 `calibBlack` | — | 把目前讀值記為黑（感應器壓在黑線上），約 50 ms；寫入 EEPROM（執行中 F3 bit2 = 1） |
 | [`E3`](/sensors/line16/reference.md#ce3) | 白色校準 `calibWhite` | — | 把目前讀值記為白（感應器壓在白底上），約 50 ms；寫入 EEPROM（執行中 F3 bit2 = 1） |
-| [`E4`](/sensors/line16/reference.md#ce4) | 設定門檻 `setThreshold` | 門檻 1~99 | 二值化門檻 1~99（RAM，重開機回預設 50）；SPIKE 參數超出範圍回失敗（狀態 2） |
+| [`E4`](/sensors/line16/reference.md#ce4) | 設定門檻 `setThreshold` | 門檻 1~99 | 二值化門檻 1~99（RAM，重開機回預設 40）；SPIKE 參數超出範圍回失敗（狀態 2） |
 | [`E7`](/sensors/line16/reference.md#ce7) | 5 秒動態校準 `calibAuto` | — | 5 秒內把感應器在黑線與白底上來回掃，取極值當黑白參考（共識 B-12，= v1 的 0x20=0x01）；期間 F3 b2 = 1（執行中 F3 bit2 = 1） |
 | [`E9`](/sensors/line16/reference.md#ce9) | 左右反向 `reverse` | 反向 0~1 | [0 正常／1 左右反向]：感應器反裝時用，通道順序與線位置左右對調；校準值照實體通道存，切換不用重校；存 RAM，重開機回 0（舊 mBlock 沒有）；SPIKE 參數超出範圍回失敗（狀態 2） |
 
