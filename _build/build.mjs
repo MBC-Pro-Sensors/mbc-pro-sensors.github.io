@@ -868,6 +868,12 @@ function productLd(key, lang, url, name, description) {
           '@type': 'OfferShippingDetails',
           shippingRate: { '@type': 'MonetaryAmount', value: '150', currency: 'TWD' },
           shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'TW' },
+          // 使用者 2026-11-04 定：3～5 個工作天出貨、寄出後 1～3 天送達（GSC 11-03 通知缺 deliveryTime）
+          deliveryTime: {
+            '@type': 'ShippingDeliveryTime',
+            handlingTime: { '@type': 'QuantitativeValue', minValue: 3, maxValue: 5, unitCode: 'DAY' },
+            transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 3, unitCode: 'DAY' },
+          },
         },
         hasMerchantReturnPolicy: {
           '@type': 'MerchantReturnPolicy',
