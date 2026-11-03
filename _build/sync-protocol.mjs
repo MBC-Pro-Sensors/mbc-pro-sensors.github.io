@@ -115,7 +115,7 @@ function hideUnreleasedMblock(src, id) {
 }
 
 // 有頂層 layout 的產品（神攝手 unicam：0x10 起的值表依相機模式而變）不進 gen-reference 的通用頁，網站頁由 gen-unicam.mjs 產生 → 不複製
-// 頂層 site: false（停產不上網站，例：循行者 5 路 line5）→ 不複製
+// 頂層 site: false（discontinued／site:false 的產品不上網站）→ 不複製
 const files = fs.readdirSync(SRC).filter((f) => {
   if (!f.endsWith('.json')) return false;
   const d = JSON.parse(fs.readFileSync(path.join(SRC, f), 'utf8'));
