@@ -6,7 +6,7 @@
 
 [🔙 Back to Ranger 8-Way Home](/en/sensors/tof8/index.md)　|　[📡 MBC Universal I2C Protocol (advanced)](/en/i2c-protocol.md)
 
-This page has **6 product examples + 3 shared examples**, from "is it connected?" all the way to an "obstacle-avoiding car". You can copy and upload each example as it is, and every line of the code has an English comment. **Never written code before? No problem.** Just do them one by one, in order.
+This page has **11 product examples (5 of them use commands) + 3 shared examples**, from "is it connected?" all the way to an "obstacle-avoiding car". You can copy and upload each example as it is, and every line of the code has an English comment. **Never written code before? No problem.** Just do them one by one, in order.
 
 > [!TIP]
 > First time using Arduino? Read [🔰 First Time with Arduino: Start from Zero](/en/sensors/arduino-start.md) first. In 15 minutes you learn how to install the software, upload a program and see the result.
@@ -51,17 +51,26 @@ Think of the sensor as a row of numbered "boxes". Each box holds one 16-bit numb
 <!-- gen:cmd-table -->
 | No. | Name | Range / Unit | Description | Used in |
 | :---: | :--- | :--- | :--- | :--- |
-| `01` | Nearest distance | 0 ~ 120 cm | Smallest of the 8; 120 = nothing around | [Example 2](#ex2), [3](#ex3), [4](#ex4), [6](#ex6) |
+| `01` | Nearest distance | 0 ~ 120 cm (0 ~ 200 in long-range mode) | Smallest of the 8; reading the limit (normal 120, long range 200) = nothing around | [Example 2](#ex2), [3](#ex3), [4](#ex4), [6](#ex6) |
 | `02` | Nearest direction | −7 ~ +7 (±8 = nothing) | Where the nearest object is: 0 straight ahead, negative = left, −7 far left, +7 far right; ±8 when there is nothing | [Example 3](#ex3), [4](#ex4), [6](#ex6) |
-| `03` | Most open distance | 0 ~ 120 cm | Largest of the 8 (a failed laser always reads 120, so it looks like the most open one) | [Example 4](#ex4) |
+| `03` | Most open distance | 0 ~ 120 cm (0 ~ 200 in long-range mode) | Largest of the 8 (a failed laser always reads 120, so it looks like the most open one) | [Example 4](#ex4) |
 | `04` | Most open direction | −7 ~ +7 | Which direction is farthest; 0 when all 8 read 120 | [Example 4](#ex4) |
-| `05` | Front distance | 0 ~ 120 cm | Average of lasers 4 and 5 | [Example 2](#ex2), [6](#ex6) |
+| `05` | Front distance | 0 ~ 120 cm (0 ~ 200 in long-range mode) | Average of lasers 4 and 5 | [Example 2](#ex2), [6](#ex6) |
 | `06` | Nearest distance | 0 ~ 1200 mm | Smallest of the 8 in mm | [Example 3](#ex3) |
 | `07` | Init bitmap | 0 ~ 255 (bits) | bit0 = laser 1 (far left) ... bit7 = laser 8, 1 = booted OK; 255 = all OK | [Example 1](#ex1), [2](#ex2) |
 | `08` | Fault bitmap | 0 ~ 255 (bits) | bit0 = laser 1 ... bit7 = laser 8, 1 = that laser has failed; a failed laser reads 120 / 1200 | [Example 2](#ex2), [5](#ex5) |
 | `09` | Front distance | 0 ~ 1200 mm | Average of lasers 4 and 5, in mm | [Example 2](#ex2), [6](#ex6) |
-| `10` ~ `17` | Distance of lasers 1 ~ 8 | 0 ~ 120 cm | Each laser's distance; `10` = laser 1 (far left), `13` / `14` = straight ahead, `17` = laser 8 (far right) | [Example 2](#ex2), [5](#ex5) |
+| `10` ~ `17` | Distance of lasers 1 ~ 8 | 0 ~ 120 cm (0 ~ 200 in long-range mode) | Each laser's distance; `10` = laser 1 (far left), `13` / `14` = straight ahead, `17` = laser 8 (far right) | [Example 2](#ex2), [5](#ex5) |
 | `18` ~ `1F` | Distance of lasers 1 ~ 8 | 0 ~ 1200 mm | Each laser's distance in mm | [Example 2](#ex2) |
+| `20` | Ranging mode (read back) | 0 ~ 3 | 0 normal, 1 long range, 2 accurate, 3 fast (set by E0) | [Examples 7 ~ 11](#cmd) |
+| `21` | Filter (read back) | 0 ~ 2 | 0 off, 1 median of 3, 2 median of 5 (set by E1) | [Examples 7 ~ 11](#cmd) |
+| `22` | Timing budget (read back) | 20 ~ 200 ms | The value the laser chips really use; in long-range mode it can be 1 ms off (set 200, reads 199) | [Examples 7 ~ 11](#cmd) |
+| `23` | Max distance (read back) | 10 ~ 200 cm | Farther than this = nothing (set by E4) | [Examples 7 ~ 11](#cmd) |
+| `E0` | Ranging mode (command) | `[0 ~ 3]` | 0 normal (33 ms, 120 cm) / 1 long range (33 ms, 200 cm) / 2 accurate (100 ms) / 3 fast (20 ms); also resets the timing budget and max distance to the mode defaults | [Example 7](#ex7) |
+| `E1` | Filter (command) | `[0 ~ 2]` | 0 off / 1 median of the last 3 (factory) / 2 median of the last 5 | [Example 8](#ex8) |
+| `E2` | Timing budget (command) | `[20 ~ 200]` ms | How long each reading takes; clamped if out of range; 0 = current mode default | [Example 9](#ex9) |
+| `E3` | Factory reset (command) | `[A5]` | Mode, filter, timing budget and max distance back to factory (a changed I2C address is kept) | [Example 10](#ex10) |
+| `E4` | Max distance (command) | `[10 ~ mode limit]` cm | Beyond the limit = nothing; 0 = mode limit; also used for the nearest / most open direction | [Example 11](#ex11) |
 | `F0` | Device ID | — | Low byte = factory address 0x29, high byte = 8 (laser count) | [Example 1](#ex1), [Shared 2](#exi2), [Shared 3](#exi3) |
 | `F1` | Protocol version | 2 | These examples are written for version 2 | [Example 1](#ex1) |
 | `F2` | Firmware version | major×100 + minor | e.g. 102 = 1.2 | [Example 1](#ex1) |
@@ -72,7 +81,27 @@ Think of the sensor as a row of numbered "boxes". Each box holds one 16-bit numb
 | `EF` | Reboot (command) | `[A5]` | Send `[EF][A5]` | [Shared 1](#exi1), [Shared 2](#exi2) |
 <!-- /gen -->
 
-The Ranger 8-Way has no product-specific write commands (E0 ~ EE).
+<h2 id="cmd">⚙️ Change the settings with commands (E0 ~ E4)</h2>
+
+> [!TIP]
+> **Tested on an Arduino Nano (2026-11-02)**: every command E0 ~ E4 changed the setting as expected on the universal I2C edition and read back correctly; out-of-range parameters were clamped or ignored as described below.
+
+**How to send one:** write two bytes `[command][parameter]` (`mbcCommand(0xE0, 1)` in the examples). E0, E2 and E3 re-configure the laser chips, which takes about 0.1 ~ 0.5 s; during that time bit2 (busy) of the status flags `F3` is 1, so wait until it is 0 before reading. E1 and E4 take effect at once. To see the current settings, read `20` ~ `23`.
+
+| Command | Parameter | What it does | When to use it | Example |
+| :---: | :--- | :--- | :--- | :---: |
+| `E0` ranging mode | 0 normal (factory, up to 120 cm) / 1 long range (up to 200 cm) / 2 accurate (every 100 ms) / 3 fast (every 20 ms) | Changes the mode and resets the timing budget and max distance to that mode's defaults | Long range to measure beyond 120 cm; accurate for steady numbers; fast for quick reactions | [7](#ex7) |
+| `E1` filter | 0 off / 1 median of the last 3 (factory) / 2 median of the last 5 | Removes an odd reading now and then | Numbers jumping around → 2; fastest reaction in a match → 0 | [8](#ex8) |
+| `E2` timing budget | 20 ~ 200 ms (0 = mode default) | How long each reading takes: shorter is faster, longer is steadier | Fast obstacle avoiding → 20; far and steady → 200 | [9](#ex9) |
+| `E3` factory reset | must be `A5` | Mode 0, filter 1, 33 ms, limit 120 cm (a changed I2C address is kept) | Send it at the start of a program to begin from a clean state | [10](#ex10) |
+| `E4` max distance | 10 ~ mode limit in cm (normal 120, long range 200; 0 = mode limit) | Anything beyond the limit counts as nothing, and the reading is the limit | React only to near things, not to people walking around far away | [11](#ex11) |
+
+- **Out-of-range parameters are clamped**: for example `E2 5` becomes 20, `E2 250` becomes 200, `E4 250` becomes 120 in normal mode (200 in long range). **Unknown parameters are ignored**: `E0 9`, `E1 3`, `E3` without `A5` do nothing and cause no error.
+- **Changing the mode (E0) resets the timing budget and the max distance**: to use E2 / E4 as well, send E0 first.
+- **Settings are kept only in the sensor's memory**: after a power cut or a reboot they are back to factory (normal mode, limit 120 cm), so send them again every time the program starts.
+- **"Nothing" reads as the limit**: 120 in normal mode, 200 in long-range mode, or the limit you set with E4.
+- **The EV3 and MATRIX editions have no commands** (read only).
+
 
 ---
 
@@ -86,12 +115,17 @@ The Ranger 8-Way has no product-specific write commands (E0 ~ EE).
 | 4 | [Which side is most open?](#ex4) | 03 / 04 most open distance and direction | A few books |
 | 5 | [Radar bar chart](#ex5) | Draw bars from 10 ~ 17 (8 lasers in cm), mark faults with 08 | A few books |
 | 6 | [Obstacle-avoiding car (advanced)](#ex6) | Avoid obstacles with 05 / 09 front distance + 02 nearest direction | Two-wheel car, L298N motor driver board |
+| 7 | [Ranging mode (E0)](#ex7) | Normal / long range 200 cm / accurate / fast | A white wall or big whiteboard (about 150 cm) |
+| 8 | [Filter (E1)](#ex8) | Steadier numbers | A box |
+| 9 | [Timing budget (E2)](#ex9) | 20 ~ 200 ms: fast vs accurate | A box |
+| 10 | [Factory reset (E3)](#ex10) | The parameter must be A5 | Nothing |
+| 11 | [Max distance (E4)](#ex11) | React only to near things | Your hand |
 | Shared 1 | [Change the I2C address](#exi1) | F8 change address / back to factory, EF reboot | Nothing |
 | Shared 2 | [ID card + reboot](#exi2) | The 6 shared boxes F0 ~ F5 | Nothing |
 | Shared 3 | [Scan the devices on the bus](#exi3) | Scan 0x08 ~ 0x77, tell the product from F0 | Nothing |
 
 > [!TIP]
-> **Suggested order: 1 → 2 → 3 → 4 → 5 → 6.** First check the wiring (1) and get to know every box (2). Then learn the directions (3, 4) and the applications.
+> **Suggested order: 1 → 2 → 3 → 4 → 5 → 6; to change the settings, go on with 7 ~ 11.** First check the wiring (1) and get to know every box (2). Then learn the directions (3, 4) and the applications.
 
 ---
 
@@ -1126,6 +1160,942 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 | Turns too early, cannot get through narrow gaps | Decrease `TURN_CM` |
 | Still faces the obstacle after turning | Make the turning `delay(200)` longer |
 | Spins in place right at the start | One wheel is reversed. Change `LEFT_REVERSE` or `RIGHT_REVERSE` |
+
+---
+
+<h2 id="ex7">7️⃣ Ranging mode: normal / long range / accurate / fast (E0)</h2>
+
+**What it does:** Uses command `E0` to switch between the 4 ranging modes, to see how far it measures and how steady the numbers are. Type `0` ~ `3` in the box at the bottom of the Serial Monitor and press Enter; after each change it reads back `20` ~ `23` and prints the current settings.
+
+**You also need:** A white wall or a big whiteboard straight ahead (the direction of lasers 4 and 5), about 150 cm away.
+
+**Steps:**
+1. Connect the 4 wires as in the table above, then plug the USB cable into the computer.
+2. Copy the code below, paste it into the Arduino IDE and click **→ Upload**.
+3. Open the Serial Monitor and choose **115200** baud; the line ending setting ("Newline" or "Both NL & CR") does not matter.
+
+<a href="/examples/tof8/arduino-en/tof8_07_range_mode/tof8_07_range_mode.ino" download data-ignore="true">📄 Download tof8_07_range_mode.ino</a>
+
+<!-- ino: examples/tof8/arduino-en/tof8_07_range_mode/tof8_07_range_mode.ino -->
+```cpp
+/*
+ * Ranger 8-Way (command example 01) × Arduino: ranging mode: normal / long range / accurate / fast
+ * ------------------------------------------------------------
+ * What does this example do?
+ *   Uses command E0 to switch between 4 ranging modes, to see how far it can measure and how steady the numbers are:
+ *     0 normal (factory default, up to 120 cm, one reading every 33 ms)
+ *     1 long range (up to 200 cm, more easily affected by sunlight and black objects)
+ *     2 accurate (one reading every 100 ms, steadiest numbers, up to 120 cm)
+ *     3 fast (one reading every 20 ms, fastest response, numbers jump more)
+ *
+ * You need: Ranger 8-Way (universal I2C edition) + a white wall or a big whiteboard straight ahead (the direction of lasers 4 and 5), about 150 cm away.
+ *
+ * Wiring:
+ *   Sensor VCC → 5V      Sensor GND → GND
+ *   Sensor SDA → A4      Sensor SCL → A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
+ *
+ * How to see the result:
+ *   Serial Monitor at 115200. Type 0~3 in the box at the bottom and press Enter to change the mode.
+ *   In normal mode a wall 150 cm away reads 120 (= beyond the limit, treated as nothing); in mode 1 long range it reads about 150.
+ *
+ * Note:
+ *   Changing the mode also resets the timing budget and the max distance to that mode's defaults (to use E2 / E4 as well, send E0 first).
+ *   Settings are kept only in the sensor's memory; after a power cut it is back to normal mode.
+ *   Commands: E0 ranging mode, E1 filter, E2 timing budget, E3 factory reset, E4 max distance (each takes 1 parameter byte).
+ *   Read the current settings back: 20 ranging mode, 21 filter, 22 timing budget ms, 23 max distance cm.
+ */
+
+#include <Wire.h>
+
+const uint8_t ADDR = 0x29;               // The sensor's house number (I2C address)
+const int16_t MBC_NONE = -32768;         // Code for "no such value / cannot read"
+
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+bool mbcCommand(uint8_t cmd, uint8_t arg);
+void printSettings();
+
+void setup() {
+  Serial.begin(115200);
+  Serial.setTimeout(50);
+  mbcBegin();
+  delay(500);
+  if (!mbcWaitReady(ADDR, 4000)) {
+    Serial.println(F("Sensor not found. Run Example 1 first to check the wiring."));
+    while (true) {}
+  }
+  mbcCommand(0xE3, 0xA5);                // Factory reset first, so we start from a clean state
+  Serial.println(F("Type 0~3 to change the ranging mode (0 normal, 1 long range, 2 accurate, 3 fast)"));
+  printSettings();
+}
+
+void loop() {
+  if (Serial.available()) {
+    int m = Serial.parseInt();
+    while (Serial.available()) Serial.read();
+    if (m >= 0 && m <= 3) {
+      Serial.print(F(">>> send E0 ")); Serial.println(m);
+      if (!mbcCommand(0xE0, m)) Serial.println(F("Command did not finish (timeout)"));
+      printSettings();
+    }
+  }
+  int16_t d[9];  // 01 nearest cm, 02 nearest direction, 03 most open cm, 04 most open direction, 05 front cm, 06 nearest mm, 07 init, 08 fault, 09 front mm
+  if (mbcReadMany(ADDR, 0x01, 9, d)) {
+    Serial.print(F("Front ")); Serial.print(d[4]); Serial.print(F(" cm (")); Serial.print(d[8]);
+    Serial.print(F(" mm), nearest ")); Serial.print(d[0]); Serial.print(F(" cm at direction ")); Serial.print(d[1]);
+    Serial.println();
+  }
+  delay(300);
+}
+
+// Send one command [code][parameter], then wait until the sensor has finished (bit2 "busy" of status flags F3 turns 0), at most 3 s
+// Ranging mode, timing budget and factory reset re-configure the laser chips, about 0.1~0.5 s; filter and max distance take effect at once
+bool mbcCommand(uint8_t cmd, uint8_t arg) {
+  if (!mbcWrite(ADDR, cmd, &arg, 1)) return false;
+  delay(20);                             // Give the sensor time to queue the command
+  unsigned long start = millis();
+  while (millis() - start < 3000) {
+    int16_t f = mbcRead(ADDR, 0xF3);
+    if (f != MBC_NONE && !(f & 4)) return true;   // bit2 = 0: done
+    delay(10);
+  }
+  return false;
+}
+
+// Read the 4 current settings back from the sensor and print them (20 ranging mode, 21 filter, 22 timing budget ms, 23 max distance cm)
+void printSettings() {
+  int16_t s[4];
+  if (!mbcReadMany(ADDR, 0x20, 4, s)) { Serial.println(F("Cannot read the settings")); return; }
+  const char *modeName[] = {"normal", "long range", "accurate", "fast"};
+  Serial.print(F("[Current settings] ranging mode ")); Serial.print(s[0]); Serial.print(F(" "));
+  Serial.print((s[0] >= 0 && s[0] <= 3) ? modeName[s[0]] : "?");
+  Serial.print(F(" | filter ")); Serial.print(s[1]);
+  Serial.print(F(" | timing budget ")); Serial.print(s[2]); Serial.print(F(" ms"));
+  Serial.print(F(" | max distance ")); Serial.print(s[3]); Serial.println(F(" cm"));
+}
+
+// ============================================================
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
+// They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] → wait 2 ms → read 2×k bytes = k int16 values in a row (little-endian) from that number
+//   If a number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
+// ============================================================
+
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // If a wire is loose, Arduino will not freeze
+#endif
+}
+
+// From the sensor at addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting from number id
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // Wait 2 ms before reading (a must for ESP32-based products)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave them out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), at most ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+```
+
+**You will see:**
+
+```
+[Current settings] ranging mode 0 normal | filter 1 | timing budget 33 ms | max distance 120 cm
+Front 120 cm (1200 mm), nearest 120 cm at direction 8
+>>> send E0 1
+[Current settings] ranging mode 1 long range | filter 1 | timing budget 33 ms | max distance 200 cm
+Front 150 cm (1503 mm), nearest 150 cm at direction 0
+```
+
+> **Try it:** In normal mode a wall 150 cm away reads 120 (beyond the limit = nothing); in `1` long range it is measured. Then try `2` accurate and `3` fast and compare how much the numbers jump. Long-range mode is more easily affected by sunlight and black objects.
+
+---
+
+<h2 id="ex8">8️⃣ Filter: steadier numbers (E1)</h2>
+
+**What it does:** Uses command `E1` to change the filter, and shows how much the number jumps while the same object stays still. Type `0` ~ `2` and press Enter; every second it prints "max - min within 1 s" = how many mm it jumps.
+
+**You also need:** A box or a whiteboard straight ahead, about 50 cm away. Keep it still.
+
+**Steps:**
+1. Connect the 4 wires as in the table above, then plug the USB cable into the computer.
+2. Copy the code below, paste it into the Arduino IDE and click **→ Upload**.
+3. Open the Serial Monitor and choose **115200** baud; the line ending setting ("Newline" or "Both NL & CR") does not matter.
+
+<a href="/examples/tof8/arduino-en/tof8_08_filter/tof8_08_filter.ino" download data-ignore="true">📄 Download tof8_08_filter.ino</a>
+
+<!-- ino: examples/tof8/arduino-en/tof8_08_filter/tof8_08_filter.ino -->
+```cpp
+/*
+ * Ranger 8-Way (command example 02) × Arduino: filter: steadier numbers
+ * ------------------------------------------------------------
+ * What does this example do?
+ *   Uses command E1 to change the filter, and shows how much the number jumps while the same object stays still:
+ *     0 off (every reading as it is: fastest response, jumps the most)
+ *     1 median of the last 3 readings (factory default)
+ *     2 median of the last 5 readings (steadiest, a little slower to react)
+ *
+ * You need: Ranger 8-Way (universal I2C edition) + a box or a whiteboard straight ahead (the direction of lasers 4 and 5), about 50 cm away. Keep it still.
+ *
+ * Wiring:
+ *   Sensor VCC → 5V      Sensor GND → GND
+ *   Sensor SDA → A4      Sensor SCL → A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
+ *
+ * How to see the result:
+ *   Serial Monitor at 115200. Type 0~2 and press Enter to change the filter. Every second it prints "max - min within 1 s" = how many mm it jumps.
+ *
+ * Note:
+ *   The median removes an odd reading now and then, but when the object moves the number catches up 1~2 readings later. Use 0 when speed matters, 2 when you want steady numbers.
+ *   Commands: E0 ranging mode, E1 filter, E2 timing budget, E3 factory reset, E4 max distance (each takes 1 parameter byte).
+ *   Read the current settings back: 20 ranging mode, 21 filter, 22 timing budget ms, 23 max distance cm.
+ */
+
+#include <Wire.h>
+
+const uint8_t ADDR = 0x29;               // The sensor's house number (I2C address)
+const int16_t MBC_NONE = -32768;         // Code for "no such value / cannot read"
+
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+bool mbcCommand(uint8_t cmd, uint8_t arg);
+void printSettings();
+
+void setup() {
+  Serial.begin(115200);
+  Serial.setTimeout(50);
+  mbcBegin();
+  delay(500);
+  if (!mbcWaitReady(ADDR, 4000)) {
+    Serial.println(F("Sensor not found. Run Example 1 first to check the wiring."));
+    while (true) {}
+  }
+  mbcCommand(0xE3, 0xA5);                // Factory reset first, so we start from a clean state
+  Serial.println(F("Type 0~2 to change the filter (0 off, 1 median of 3, 2 median of 5)"));
+  printSettings();
+}
+
+void loop() {
+  if (Serial.available()) {
+    int f = Serial.parseInt();
+    while (Serial.available()) Serial.read();
+    if (f >= 0 && f <= 2) {
+      Serial.print(F(">>> send E1 ")); Serial.println(f);
+      mbcCommand(0xE1, f);
+      printSettings();
+    }
+  }
+  // Keep reading the front mm for 1 s and remember the max and min
+  int16_t lo = 32767, hi = -32768;
+  unsigned long start = millis();
+  while (millis() - start < 1000) {
+    int16_t d[9];  // 01 nearest cm, 02 nearest direction, 03 most open cm, 04 most open direction, 05 front cm, 06 nearest mm, 07 init, 08 fault, 09 front mm
+    if (mbcReadMany(ADDR, 0x01, 9, d)) {
+      if (d[8] < lo) lo = d[8];
+      if (d[8] > hi) hi = d[8];
+    }
+    delay(20);
+  }
+  Serial.print(F("Front mm ")); Serial.print(lo); Serial.print(F("~")); Serial.print(hi);
+  Serial.print(F(", jumps ")); Serial.print(hi - lo); Serial.println(F(" mm"));
+}
+
+// Send one command [code][parameter], then wait until the sensor has finished (bit2 "busy" of status flags F3 turns 0), at most 3 s
+// Ranging mode, timing budget and factory reset re-configure the laser chips, about 0.1~0.5 s; filter and max distance take effect at once
+bool mbcCommand(uint8_t cmd, uint8_t arg) {
+  if (!mbcWrite(ADDR, cmd, &arg, 1)) return false;
+  delay(20);                             // Give the sensor time to queue the command
+  unsigned long start = millis();
+  while (millis() - start < 3000) {
+    int16_t f = mbcRead(ADDR, 0xF3);
+    if (f != MBC_NONE && !(f & 4)) return true;   // bit2 = 0: done
+    delay(10);
+  }
+  return false;
+}
+
+// Read the 4 current settings back from the sensor and print them (20 ranging mode, 21 filter, 22 timing budget ms, 23 max distance cm)
+void printSettings() {
+  int16_t s[4];
+  if (!mbcReadMany(ADDR, 0x20, 4, s)) { Serial.println(F("Cannot read the settings")); return; }
+  const char *modeName[] = {"normal", "long range", "accurate", "fast"};
+  Serial.print(F("[Current settings] ranging mode ")); Serial.print(s[0]); Serial.print(F(" "));
+  Serial.print((s[0] >= 0 && s[0] <= 3) ? modeName[s[0]] : "?");
+  Serial.print(F(" | filter ")); Serial.print(s[1]);
+  Serial.print(F(" | timing budget ")); Serial.print(s[2]); Serial.print(F(" ms"));
+  Serial.print(F(" | max distance ")); Serial.print(s[3]); Serial.println(F(" cm"));
+}
+
+// ============================================================
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
+// They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] → wait 2 ms → read 2×k bytes = k int16 values in a row (little-endian) from that number
+//   If a number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
+// ============================================================
+
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // If a wire is loose, Arduino will not freeze
+#endif
+}
+
+// From the sensor at addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting from number id
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // Wait 2 ms before reading (a must for ESP32-based products)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave them out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), at most ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+```
+
+**You will see:**
+
+```
+[Current settings] ranging mode 0 normal | filter 1 | timing budget 33 ms | max distance 120 cm
+Front mm 498~506, jumps 8 mm
+>>> send E1 0
+Front mm 492~511, jumps 19 mm
+```
+
+> **Try it:** The median removes an odd reading now and then, but when the object moves the number catches up 1 ~ 2 readings later. Use `0` when speed matters, `2` when you want steady numbers.
+
+---
+
+<h2 id="ex9">9️⃣ Timing budget: faster or more accurate (E2)</h2>
+
+**What it does:** Uses command `E2` to change "how long each reading takes" (20 ~ 200 ms), and shows how many updates per second and how much the number jumps. The program turns the filter off first (`E1 0`) so the difference is easier to see. Type `20` ~ `200` and press Enter; `0` = back to the mode default.
+
+**You also need:** A box or a whiteboard straight ahead, about 50 cm away. Keep it still.
+
+**Steps:**
+1. Connect the 4 wires as in the table above, then plug the USB cable into the computer.
+2. Copy the code below, paste it into the Arduino IDE and click **→ Upload**.
+3. Open the Serial Monitor and choose **115200** baud; the line ending setting ("Newline" or "Both NL & CR") does not matter.
+
+<a href="/examples/tof8/arduino-en/tof8_09_timing_budget/tof8_09_timing_budget.ino" download data-ignore="true">📄 Download tof8_09_timing_budget.ino</a>
+
+<!-- ino: examples/tof8/arduino-en/tof8_09_timing_budget/tof8_09_timing_budget.ino -->
+```cpp
+/*
+ * Ranger 8-Way (command example 03) × Arduino: timing budget: faster or more accurate
+ * ------------------------------------------------------------
+ * What does this example do?
+ *   Uses command E2 to change "how long each reading takes" (20~200 ms), and shows how many updates per second and how much the number jumps:
+ *     20 ms: about 50 updates a second, fastest response, numbers jump more
+ *     33 ms: factory default
+ *     200 ms: 5 updates a second, steadiest, measures a little farther
+ *
+ * You need: Ranger 8-Way (universal I2C edition) + a box or a whiteboard straight ahead (the direction of lasers 4 and 5), about 50 cm away. Keep it still.
+ *
+ * Wiring:
+ *   Sensor VCC → 5V      Sensor GND → GND
+ *   Sensor SDA → A4      Sensor SCL → A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
+ *
+ * How to see the result:
+ *   Serial Monitor at 115200. Type 20~200 and press Enter. Every second it prints "how many times the value changed" and "how many mm it jumps".
+ *
+ * Note:
+ *   Values outside 20~200 are clamped (e.g. 5 becomes 20, 300 becomes 200); 0 = back to the current mode's default.
+ *   The filter (example 2) makes "how many times it changed" a little smaller; to see the raw speed, set the filter to 0 first.
+ *   Commands: E0 ranging mode, E1 filter, E2 timing budget, E3 factory reset, E4 max distance (each takes 1 parameter byte).
+ *   Read the current settings back: 20 ranging mode, 21 filter, 22 timing budget ms, 23 max distance cm.
+ */
+
+#include <Wire.h>
+
+const uint8_t ADDR = 0x29;               // The sensor's house number (I2C address)
+const int16_t MBC_NONE = -32768;         // Code for "no such value / cannot read"
+
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+bool mbcCommand(uint8_t cmd, uint8_t arg);
+void printSettings();
+
+void setup() {
+  Serial.begin(115200);
+  Serial.setTimeout(50);
+  mbcBegin();
+  delay(500);
+  if (!mbcWaitReady(ADDR, 4000)) {
+    Serial.println(F("Sensor not found. Run Example 1 first to check the wiring."));
+    while (true) {}
+  }
+  mbcCommand(0xE3, 0xA5);                // Factory reset first, so we start from a clean state
+  mbcCommand(0xE1, 0);                   // Turn the filter off first, so the difference is easier to see
+  Serial.println(F("Type 20~200 to change the timing budget (ms), 0 = back to default"));
+  printSettings();
+}
+
+void loop() {
+  if (Serial.available()) {
+    long b = Serial.parseInt();
+    while (Serial.available()) Serial.read();
+    if (b >= 0 && b <= 255) {
+      Serial.print(F(">>> send E2 ")); Serial.println(b);
+      if (!mbcCommand(0xE2, (uint8_t)b)) Serial.println(F("Command did not finish (timeout)"));
+      printSettings();
+    }
+  }
+  int16_t last = -1, lo = 32767, hi = -32768;
+  int changes = 0;
+  unsigned long start = millis();
+  while (millis() - start < 1000) {      // Keep reading for 1 s: how many times the value changed = about how many updates
+    int16_t d[9];  // 01 nearest cm, 02 nearest direction, 03 most open cm, 04 most open direction, 05 front cm, 06 nearest mm, 07 init, 08 fault, 09 front mm
+    if (mbcReadMany(ADDR, 0x01, 9, d)) {
+      if (d[8] != last) { changes++; last = d[8]; }
+      if (d[8] < lo) lo = d[8];
+      if (d[8] > hi) hi = d[8];
+    }
+    delay(5);
+  }
+  Serial.print(F("Changed ")); Serial.print(changes); Serial.print(F(" times in 1 s, front mm jumps "));
+  Serial.print(hi - lo); Serial.println(F(" mm"));
+}
+
+// Send one command [code][parameter], then wait until the sensor has finished (bit2 "busy" of status flags F3 turns 0), at most 3 s
+// Ranging mode, timing budget and factory reset re-configure the laser chips, about 0.1~0.5 s; filter and max distance take effect at once
+bool mbcCommand(uint8_t cmd, uint8_t arg) {
+  if (!mbcWrite(ADDR, cmd, &arg, 1)) return false;
+  delay(20);                             // Give the sensor time to queue the command
+  unsigned long start = millis();
+  while (millis() - start < 3000) {
+    int16_t f = mbcRead(ADDR, 0xF3);
+    if (f != MBC_NONE && !(f & 4)) return true;   // bit2 = 0: done
+    delay(10);
+  }
+  return false;
+}
+
+// Read the 4 current settings back from the sensor and print them (20 ranging mode, 21 filter, 22 timing budget ms, 23 max distance cm)
+void printSettings() {
+  int16_t s[4];
+  if (!mbcReadMany(ADDR, 0x20, 4, s)) { Serial.println(F("Cannot read the settings")); return; }
+  const char *modeName[] = {"normal", "long range", "accurate", "fast"};
+  Serial.print(F("[Current settings] ranging mode ")); Serial.print(s[0]); Serial.print(F(" "));
+  Serial.print((s[0] >= 0 && s[0] <= 3) ? modeName[s[0]] : "?");
+  Serial.print(F(" | filter ")); Serial.print(s[1]);
+  Serial.print(F(" | timing budget ")); Serial.print(s[2]); Serial.print(F(" ms"));
+  Serial.print(F(" | max distance ")); Serial.print(s[3]); Serial.println(F(" cm"));
+}
+
+// ============================================================
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
+// They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] → wait 2 ms → read 2×k bytes = k int16 values in a row (little-endian) from that number
+//   If a number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
+// ============================================================
+
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // If a wire is loose, Arduino will not freeze
+#endif
+}
+
+// From the sensor at addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting from number id
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // Wait 2 ms before reading (a must for ESP32-based products)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave them out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), at most ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+```
+
+**You will see:**
+
+```
+>>> send E2 20
+[Current settings] ranging mode 0 normal | filter 0 | timing budget 20 ms | max distance 120 cm
+Changed 41 times in 1 s, front mm jumps 22 mm
+>>> send E2 200
+Changed 5 times in 1 s, front mm jumps 4 mm
+```
+
+> **Try it:** Typing `5` is clamped to 20, `300` to 200. In long-range mode, setting 200 may read back 199 (the value the laser chips really use); that is normal.
+
+---
+
+<h2 id="ex10">🔟 Factory reset (E3)</h2>
+
+**What it does:** First messes up the settings with `E0`, `E1`, `E2` and `E4`, then uses command `E3` (the parameter must be `A5`) to put everything back to factory at once: mode 0 normal, filter 1, timing budget 33 ms, max distance 120 cm. It prints the settings "at the start", "after messing up" and "after the factory reset"; then type anything to do it again.
+
+**You also need:** Nothing has to be placed in front of it.
+
+**Steps:**
+1. Connect the 4 wires as in the table above, then plug the USB cable into the computer.
+2. Copy the code below, paste it into the Arduino IDE and click **→ Upload**.
+3. Open the Serial Monitor and choose **115200** baud; the line ending setting ("Newline" or "Both NL & CR") does not matter.
+
+<a href="/examples/tof8/arduino-en/tof8_10_factory_reset/tof8_10_factory_reset.ino" download data-ignore="true">📄 Download tof8_10_factory_reset.ino</a>
+
+<!-- ino: examples/tof8/arduino-en/tof8_10_factory_reset/tof8_10_factory_reset.ino -->
+```cpp
+/*
+ * Ranger 8-Way (command example 04) × Arduino: factory reset
+ * ------------------------------------------------------------
+ * What does this example do?
+ *   First messes up the settings with E0, E1, E2 and E4, then uses command E3 (the parameter must be A5) to put everything back to the factory values at once:
+ *     ranging mode 0 normal, filter 1, timing budget 33 ms, max distance 120 cm
+ *
+ * You need: Ranger 8-Way (universal I2C edition); nothing has to be placed in front of it.
+ *
+ * Wiring:
+ *   Sensor VCC → 5V      Sensor GND → GND
+ *   Sensor SDA → A4      Sensor SCL → A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
+ *
+ * How to see the result:
+ *   Serial Monitor at 115200. It prints the settings three times: "at the start", "after messing up" and "after the factory reset". Then type anything to do it again.
+ *
+ * Note:
+ *   If the parameter is not A5 the sensor does nothing (so it cannot happen by accident). A factory reset does not change an I2C address you have changed.
+ *   Unplugging the power and plugging it back in also brings the factory settings back (settings are kept only in memory).
+ *   Commands: E0 ranging mode, E1 filter, E2 timing budget, E3 factory reset, E4 max distance (each takes 1 parameter byte).
+ *   Read the current settings back: 20 ranging mode, 21 filter, 22 timing budget ms, 23 max distance cm.
+ */
+
+#include <Wire.h>
+
+const uint8_t ADDR = 0x29;               // The sensor's house number (I2C address)
+const int16_t MBC_NONE = -32768;         // Code for "no such value / cannot read"
+
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+bool mbcCommand(uint8_t cmd, uint8_t arg);
+void printSettings();
+void run();
+
+void setup() {
+  Serial.begin(115200);
+  Serial.setTimeout(50);
+  mbcBegin();
+  delay(500);
+  if (!mbcWaitReady(ADDR, 4000)) {
+    Serial.println(F("Sensor not found. Run Example 1 first to check the wiring."));
+    while (true) {}
+  }
+  mbcCommand(0xE3, 0xA5);                // Factory reset first, so we start from a clean state
+  run();
+}
+
+void run() {
+  Serial.println(F("---- 1. At the start ----"));
+  printSettings();
+  Serial.println(F("---- 2. Mess up: E0 1 long range, E1 0 filter off, E2 100 ms, E4 80 cm ----"));
+  mbcCommand(0xE0, 1);
+  mbcCommand(0xE1, 0);
+  mbcCommand(0xE2, 100);
+  mbcCommand(0xE4, 80);
+  printSettings();
+  Serial.println(F("---- 3. Send E3 A5 factory reset ----"));
+  mbcCommand(0xE3, 0xA5);
+  printSettings();
+  Serial.println(F("(Type anything to do it again)"));
+}
+
+void loop() {
+  if (Serial.available()) {
+    while (Serial.available()) Serial.read();
+    run();
+  }
+}
+
+// Send one command [code][parameter], then wait until the sensor has finished (bit2 "busy" of status flags F3 turns 0), at most 3 s
+// Ranging mode, timing budget and factory reset re-configure the laser chips, about 0.1~0.5 s; filter and max distance take effect at once
+bool mbcCommand(uint8_t cmd, uint8_t arg) {
+  if (!mbcWrite(ADDR, cmd, &arg, 1)) return false;
+  delay(20);                             // Give the sensor time to queue the command
+  unsigned long start = millis();
+  while (millis() - start < 3000) {
+    int16_t f = mbcRead(ADDR, 0xF3);
+    if (f != MBC_NONE && !(f & 4)) return true;   // bit2 = 0: done
+    delay(10);
+  }
+  return false;
+}
+
+// Read the 4 current settings back from the sensor and print them (20 ranging mode, 21 filter, 22 timing budget ms, 23 max distance cm)
+void printSettings() {
+  int16_t s[4];
+  if (!mbcReadMany(ADDR, 0x20, 4, s)) { Serial.println(F("Cannot read the settings")); return; }
+  const char *modeName[] = {"normal", "long range", "accurate", "fast"};
+  Serial.print(F("[Current settings] ranging mode ")); Serial.print(s[0]); Serial.print(F(" "));
+  Serial.print((s[0] >= 0 && s[0] <= 3) ? modeName[s[0]] : "?");
+  Serial.print(F(" | filter ")); Serial.print(s[1]);
+  Serial.print(F(" | timing budget ")); Serial.print(s[2]); Serial.print(F(" ms"));
+  Serial.print(F(" | max distance ")); Serial.print(s[3]); Serial.println(F(" cm"));
+}
+
+// ============================================================
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
+// They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] → wait 2 ms → read 2×k bytes = k int16 values in a row (little-endian) from that number
+//   If a number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
+// ============================================================
+
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // If a wire is loose, Arduino will not freeze
+#endif
+}
+
+// From the sensor at addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting from number id
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // Wait 2 ms before reading (a must for ESP32-based products)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave them out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), at most ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+```
+
+**You will see:**
+
+```
+---- 1. At the start ----
+[Current settings] ranging mode 0 normal | filter 1 | timing budget 33 ms | max distance 120 cm
+---- 2. Mess up: E0 1 long range, E1 0 filter off, E2 100 ms, E4 80 cm ----
+[Current settings] ranging mode 1 long range | filter 0 | timing budget 100 ms | max distance 80 cm
+---- 3. Send E3 A5 factory reset ----
+[Current settings] ranging mode 0 normal | filter 1 | timing budget 33 ms | max distance 120 cm
+```
+
+> **Try it:** If the parameter is not `A5` the sensor does nothing (so it cannot happen by accident). A factory reset does not change an I2C address you have changed. Unplugging the power and plugging it back in also brings the factory settings back.
+
+---
+
+<h2 id="ex11">1️⃣1️⃣ Max distance: only near things count (E4)</h2>
+
+**What it does:** Uses command `E4` to set the "max distance": anything beyond the limit counts as nothing, and the reading is the limit. The program sets the limit to 30 cm first and turns on the LED on the board (D13) when the front distance is closer than the limit. Type `10` ~ `120` and press Enter to change the limit (up to 200 in long-range mode).
+
+**You also need:** Your hand.
+
+> [!NOTE]
+> **ESP32 boards have no built-in `LED_BUILTIN`**: on an ESP32, add `#define LED_BUILTIN 2` at the top of the program (on the line after `#include <Wire.h>`) before uploading. UNO / Nano / UNO R4 need no change.
+
+**Steps:**
+1. Connect the 4 wires as in the table above, then plug the USB cable into the computer.
+2. Copy the code below, paste it into the Arduino IDE and click **→ Upload**.
+3. Open the Serial Monitor and choose **115200** baud; the line ending setting ("Newline" or "Both NL & CR") does not matter.
+
+<a href="/examples/tof8/arduino-en/tof8_11_max_distance/tof8_11_max_distance.ino" download data-ignore="true">📄 Download tof8_11_max_distance.ino</a>
+
+<!-- ino: examples/tof8/arduino-en/tof8_11_max_distance/tof8_11_max_distance.ino -->
+```cpp
+/*
+ * Ranger 8-Way (command example 05) × Arduino: max distance: only near things count
+ * ------------------------------------------------------------
+ * What does this example do?
+ *   Uses command E4 to set the "max distance" (cm): anything farther than the limit counts as "nothing", and the reading is the limit itself.
+ *   Example: with a limit of 30 cm, people walking around far away do not trigger it; only things within 30 cm count.
+ *   This example: when the front distance < the limit, the LED on the board (D13) turns on.
+ *
+ * You need: Ranger 8-Way (universal I2C edition) + your hand.
+ *
+ * Wiring:
+ *   Sensor VCC → 5V      Sensor GND → GND
+ *   Sensor SDA → A4      Sensor SCL → A5         (UNO / Nano)
+ *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
+ *
+ * How to see the result:
+ *   Serial Monitor at 115200. Type 10~120 and press Enter to change the limit (up to 200 in long-range mode). Move your hand closer slowly and see when the LED turns on.
+ *
+ * Note:
+ *   Values out of range are clamped (normal mode max 120, long range 200, min 10); 0 = back to the mode limit.
+ *   Changing the ranging mode (E0) resets the limit to that mode's default, so send E0 first, then E4.
+ *   Commands: E0 ranging mode, E1 filter, E2 timing budget, E3 factory reset, E4 max distance (each takes 1 parameter byte).
+ *   Read the current settings back: 20 ranging mode, 21 filter, 22 timing budget ms, 23 max distance cm.
+ */
+
+#include <Wire.h>
+
+const uint8_t ADDR = 0x29;               // The sensor's house number (I2C address)
+const int16_t MBC_NONE = -32768;         // Code for "no such value / cannot read"
+
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+bool mbcCommand(uint8_t cmd, uint8_t arg);
+void printSettings();
+
+void setup() {
+  Serial.begin(115200);
+  Serial.setTimeout(50);
+  mbcBegin();
+  delay(500);
+  if (!mbcWaitReady(ADDR, 4000)) {
+    Serial.println(F("Sensor not found. Run Example 1 first to check the wiring."));
+    while (true) {}
+  }
+  mbcCommand(0xE3, 0xA5);                // Factory reset first, so we start from a clean state
+  pinMode(LED_BUILTIN, OUTPUT);
+  mbcCommand(0xE4, 30);
+  Serial.println(F("Limit set to 30 cm first; type 10~120 to change it"));
+  printSettings();
+}
+
+void loop() {
+  if (Serial.available()) {
+    long c = Serial.parseInt();
+    while (Serial.available()) Serial.read();
+    if (c >= 0 && c <= 255) {
+      Serial.print(F(">>> send E4 ")); Serial.println(c);
+      mbcCommand(0xE4, (uint8_t)c);
+      printSettings();
+    }
+  }
+  int16_t s[4];
+  int16_t d[9];  // 01 nearest cm, 02 nearest direction, 03 most open cm, 04 most open direction, 05 front cm, 06 nearest mm, 07 init, 08 fault, 09 front mm
+  if (mbcReadMany(ADDR, 0x20, 4, s) && mbcReadMany(ADDR, 0x01, 9, d)) {
+    bool near = d[4] < s[3];            // Closer than the limit = something is really there
+    digitalWrite(LED_BUILTIN, near ? HIGH : LOW);
+    Serial.print(F("Limit ")); Serial.print(s[3]); Serial.print(F(" cm | "));
+    Serial.print(F("Front ")); Serial.print(d[4]); Serial.print(F(" cm (")); Serial.print(d[8]);
+    Serial.print(F(" mm), nearest ")); Serial.print(d[0]); Serial.print(F(" cm at direction ")); Serial.print(d[1]);
+    Serial.println(near ? F("  <- something") : F("  (nothing)"));
+  }
+  delay(200);
+}
+
+// Send one command [code][parameter], then wait until the sensor has finished (bit2 "busy" of status flags F3 turns 0), at most 3 s
+// Ranging mode, timing budget and factory reset re-configure the laser chips, about 0.1~0.5 s; filter and max distance take effect at once
+bool mbcCommand(uint8_t cmd, uint8_t arg) {
+  if (!mbcWrite(ADDR, cmd, &arg, 1)) return false;
+  delay(20);                             // Give the sensor time to queue the command
+  unsigned long start = millis();
+  while (millis() - start < 3000) {
+    int16_t f = mbcRead(ADDR, 0xF3);
+    if (f != MBC_NONE && !(f & 4)) return true;   // bit2 = 0: done
+    delay(10);
+  }
+  return false;
+}
+
+// Read the 4 current settings back from the sensor and print them (20 ranging mode, 21 filter, 22 timing budget ms, 23 max distance cm)
+void printSettings() {
+  int16_t s[4];
+  if (!mbcReadMany(ADDR, 0x20, 4, s)) { Serial.println(F("Cannot read the settings")); return; }
+  const char *modeName[] = {"normal", "long range", "accurate", "fast"};
+  Serial.print(F("[Current settings] ranging mode ")); Serial.print(s[0]); Serial.print(F(" "));
+  Serial.print((s[0] >= 0 && s[0] <= 3) ? modeName[s[0]] : "?");
+  Serial.print(F(" | filter ")); Serial.print(s[1]);
+  Serial.print(F(" | timing budget ")); Serial.print(s[2]); Serial.print(F(" ms"));
+  Serial.print(F(" | max distance ")); Serial.print(s[3]); Serial.println(F(" cm"));
+}
+
+// ============================================================
+// Below are the "Communication helpers" (MBC I2C protocol v2): they talk to the sensor.
+// They are the same in every MBC example. No need to change or understand them.
+//   How to read: write [number] → wait 2 ms → read 2×k bytes = k int16 values in a row (little-endian) from that number
+//   If a number does not exist (empty slot), the sensor returns -32768 (MBC_NONE)
+// ============================================================
+
+// Start I2C (call once in setup)
+// UNO/Nano: SDA=A4, SCL=A5; UNO R4: SDA/SCL pins; ESP32: default GPIO21(SDA)/22(SCL)
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // If a wire is loose, Arduino will not freeze
+#endif
+}
+
+// From the sensor at addr, read k values (1~16) in a row starting at number id, into out. Returns true if all were read
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // At most 16 values at a time (32 bytes, the Wire buffer limit)
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // Tell the sensor: I want to read starting from number id
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // Wait 2 ms before reading (a must for ESP32-based products)
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // The low byte comes first
+    uint16_t hi = Wire.read();           // Then the high byte (little-endian)
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// Read one value. Returns MBC_NONE if it cannot be read (not connected)
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// Send a command: write [id][parameters...]. p points to the parameters, n = how many bytes (leave them out if none). Returns true on success
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// Wait until the sensor is ready (bit0 of status flags F3 = 1), at most ms milliseconds. Returns true when ready
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+```
+
+**You will see:**
+
+```
+Limit 30 cm | Front 30 cm (300 mm), nearest 30 cm at direction 8  (nothing)
+Limit 30 cm | Front 18 cm (183 mm), nearest 17 cm at direction 0  <- something
+```
+
+> **Try it:** Move your hand closer slowly and see when the LED turns on. Values out of range are clamped (normal mode max 120, long range 200, min 10); `0` = back to the mode limit. Changing the ranging mode (E0) resets the limit, so send E0 first, then E4.
 
 ---
 

@@ -22,3 +22,7 @@
 
 > [!NOTE]
 > LEGO 已在 2026-10-01 停止支援 Robot Inventor App；新專案建議用 SPIKE Prime 或 Pybricks。
+
+### 下命令
+
+官方 App 送不了命令。要改測距模式（遠距離 200 cm 等）、濾波、更新時間、距離上限，請用 [Pybricks＋MBC 函式庫](/sensors/tof2/spike/pybricks.md)（SPIKE Pybricks 實測通過）。

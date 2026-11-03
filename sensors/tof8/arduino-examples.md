@@ -6,7 +6,7 @@
 
 [🔙 回到 8 路雷射測距首頁](/sensors/tof8/index.md)　｜　[📡 MBC 通用 I2C 協議（進階）](/i2c-protocol.md)
 
-這一頁有 **6 個產品範例＋3 個共用範例**，從「確認接好了沒」一路做到「避障小車」。每個範例都可以直接複製、上傳，程式裡每一行都有中文說明。**完全沒寫過程式也沒關係**，照順序一個一個做就好。
+這一頁有 **11 個產品範例（其中 5 個下命令改設定）＋3 個共用範例**，從「確認接好了沒」一路做到「避障小車」。每個範例都可以直接複製、上傳，程式裡每一行都有中文說明。**完全沒寫過程式也沒關係**，照順序一個一個做就好。
 
 > [!TIP]
 > 第一次用 Arduino？先看 [🔰 第一次用 Arduino：從零開始](/sensors/arduino-start.md)，15 分鐘學會安裝軟體、上傳程式、看結果。
@@ -51,17 +51,26 @@
 <!-- gen:cmd-table -->
 | 編號 | 名稱 | 範圍 / 單位 | 說明 | 出現在 |
 | :---: | :--- | :--- | :--- | :--- |
-| `01` | 最近距離 | 0～120 cm | 8 顆裡最小的；120 = 四周沒東西 | [範例 2](#ex2)、[3](#ex3)、[4](#ex4)、[6](#ex6) |
+| `01` | 最近距離 | 0～120 cm（遠距離模式 0～200） | 8 顆裡最小的；讀到上限（一般 120、遠距離 200）= 四周沒東西 | [範例 2](#ex2)、[3](#ex3)、[4](#ex4)、[6](#ex6) |
 | `02` | 最近方向 | −7～+7（±8 = 沒東西） | 最近的東西在哪：0 正前方、負 = 左、−7 正左、+7 正右；沒東西時 ±8 | [範例 3](#ex3)、[4](#ex4)、[6](#ex6) |
-| `03` | 最空曠距離 | 0～120 cm | 8 顆裡最大的（壞掉那顆永遠 120，會被當最空曠） | [範例 4](#ex4) |
+| `03` | 最空曠距離 | 0～120 cm（遠距離模式 0～200） | 8 顆裡最大的（壞掉那顆永遠 120，會被當最空曠） | [範例 4](#ex4) |
 | `04` | 最空曠方向 | −7～+7 | 最遠在哪個方向；8 顆全 120 時 = 0 | [範例 4](#ex4) |
-| `05` | 正前方距離 | 0～120 cm | 第 4、5 顆平均 | [範例 2](#ex2)、[6](#ex6) |
+| `05` | 正前方距離 | 0～120 cm（遠距離模式 0～200） | 第 4、5 顆平均 | [範例 2](#ex2)、[6](#ex6) |
 | `06` | 最近距離 | 0～1200 mm | 8 顆 mm 的最小值 | [範例 3](#ex3) |
 | `07` | 初始化位元圖 | 0～255（bit） | bit0 = 第 1 顆（最左）… bit7 = 第 8 顆，1 = 開機成功；255 = 全部好 | [範例 1](#ex1)、[2](#ex2) |
 | `08` | 故障位元圖 | 0～255（bit） | bit0 = 第 1 顆 … bit7 = 第 8 顆，1 = 那顆目前失效；失效那顆距離回 120／1200 | [範例 2](#ex2)、[5](#ex5) |
 | `09` | 正前方距離 | 0～1200 mm | 第 4、5 顆平均的 mm 版 | [範例 2](#ex2)、[6](#ex6) |
-| `10`～`17` | 第 1～8 顆距離 | 0～120 cm | 各顆距離；`10` = 第 1 顆（正左）、`13`／`14` = 正前方、`17` = 第 8 顆（正右） | [範例 2](#ex2)、[5](#ex5) |
+| `10`～`17` | 第 1～8 顆距離 | 0～120 cm（遠距離模式 0～200） | 各顆距離；`10` = 第 1 顆（正左）、`13`／`14` = 正前方、`17` = 第 8 顆（正右） | [範例 2](#ex2)、[5](#ex5) |
 | `18`～`1F` | 第 1～8 顆距離 | 0～1200 mm | 各顆距離 mm 版 | [範例 2](#ex2) |
+| `20` | 測距模式（讀回） | 0～3 | 0 一般、1 遠距離、2 精準、3 高速（E0 設的） | [範例 7～11](#cmd) |
+| `21` | 濾波（讀回） | 0～2 | 0 關、1 三筆中位數、2 五筆中位數（E1 設的） | [範例 7～11](#cmd) |
+| `22` | 更新時間（讀回） | 20～200 ms | 雷射晶片實際採用的值；遠距離模式可能差 1 ms（設 200 讀回 199） | [範例 7～11](#cmd) |
+| `23` | 距離上限（讀回） | 10～200 cm | 超過這個距離＝沒東西（E4 設的） | [範例 7～11](#cmd) |
+| `E0` | 測距模式（命令） | `[0～3]` | 0 一般（33 ms、120 cm）／1 遠距離（33 ms、200 cm）／2 精準（100 ms）／3 高速（20 ms）；同時把更新時間、距離上限重設成這個模式的預設值 | [範例 7](#ex7) |
+| `E1` | 濾波（命令） | `[0～2]` | 0 關／1 最近 3 筆中位數（出廠）／2 最近 5 筆中位數 | [範例 8](#ex8) |
+| `E2` | 更新時間（命令） | `[20～200]` ms | 每次量測花多久；超出就夾住；0＝目前模式的預設值 | [範例 9](#ex9) |
+| `E3` | 回出廠設定（命令） | `[A5]` | 模式、濾波、更新時間、距離上限全部回出廠（不改換過的 I2C 位址） | [範例 10](#ex10) |
+| `E4` | 距離上限（命令） | `[10～模式上限]` cm | 超過上限＝沒東西；0＝模式上限；最近／最空曠方向也用這個上限 | [範例 11](#ex11) |
 | `F0` | 裝置 ID | — | 低 byte = 出廠位址 0x29、高 byte = 8（雷射顆數） | [範例 1](#ex1)、[共用 2](#exi2)、[共用 3](#exi3) |
 | `F1` | 協議版本 | 2 | 這份範例照版本 2 寫 | [範例 1](#ex1) |
 | `F2` | 韌體版本 | 主×100＋次 | 例 102 = 1.2 | [範例 1](#ex1) |
@@ -72,7 +81,27 @@
 | `EF` | 重新開機（命令） | `[A5]` | 送 `[EF][A5]` | [共用 1](#exi1)、[共用 2](#exi2) |
 <!-- /gen -->
 
-測距者 8 路沒有產品專用的寫入命令（E0～EE）。
+<h2 id="cmd">⚙️ 下命令改設定（E0～E4）</h2>
+
+> [!TIP]
+> **Arduino Nano 實測通過（2026-11-02）**：E0～E4 每個命令在通用 I2C 版上機都照預期改變、讀回正確，超出範圍的參數也照規則夾住或不做。
+
+**怎麼送：** 寫兩個 byte `[命令碼][參數]`（範例裡的 `mbcCommand(0xE0, 1)`）。E0、E2、E3 要重新設定雷射晶片，約 0.1～0.5 秒，這段時間狀態旗標 `F3` 的 bit2（忙碌）是 1，等它變 0 再讀；E1、E4 馬上生效。想知道現在的設定，讀 `20`～`23`。
+
+| 命令 | 參數 | 會做什麼 | 什麼時候用 | 範例 |
+| :---: | :--- | :--- | :--- | :---: |
+| `E0` 測距模式 | 0 一般（出廠，最遠 120 cm）／1 遠距離（最遠 200 cm）／2 精準（每 100 ms）／3 高速（每 20 ms） | 換模式，同時把更新時間、距離上限重設成這個模式的預設值 | 要量超過 120 cm 用遠距離；數字要穩用精準；要反應快用高速 | [7](#ex7) |
+| `E1` 濾波 | 0 關／1 最近 3 筆中位數（出廠）／2 最近 5 筆中位數 | 把偶爾一次的怪值濾掉 | 數字跳來跳去 → 2；比賽要最快反應 → 0 | [8](#ex8) |
+| `E2` 更新時間 | 20～200 ms（0＝模式預設） | 每量一次花多久：越短越快、越長越穩 | 快速避障 → 20；量遠、要穩 → 200 | [9](#ex9) |
+| `E3` 回出廠 | 一定要 `A5` | 模式 0、濾波 1、33 ms、上限 120 cm（不改換過的 I2C 位址） | 程式一開始先送，從乾淨的狀態開始 | [10](#ex10) |
+| `E4` 距離上限 | 10～模式上限 cm（一般 120、遠距離 200；0＝模式上限） | 超過上限的東西一律當成沒東西，讀到的值就是上限 | 只想對近的東西反應，不被遠處走動的人干擾 | [11](#ex11) |
+
+- **參數超出範圍會被夾住**：例如 `E2 5` 變 20、`E2 250` 變 200、一般模式 `E4 250` 變 120（遠距離 200）。**不認得的參數不做**：`E0 9`、`E1 3`、`E3` 不是 `A5`，感應器都不理，也不會出錯。
+- **換模式（E0）會把更新時間和距離上限重設**：要搭配 E2、E4，先送 E0 再送它們。
+- **設定只存在感應器記憶體**：斷電或重開機就回出廠（一般模式、上限 120 cm），程式每次開機要重新送。
+- **「沒東西」讀到的是上限**：一般模式 120、遠距離模式 200，用 E4 改過就是你設的上限。
+- **EV3、MATRIX 版沒有命令**（只能讀）。
+
 
 ---
 
@@ -86,12 +115,17 @@
 | 4 | [哪邊最空曠？](#ex4) | 03／04 最空曠距離與方向 | 幾本書 |
 | 5 | [雷達長條圖](#ex5) | 10～17 八顆 cm 畫長條、08 標故障 | 幾本書 |
 | 6 | [避障小車（進階）](#ex6) | 05／09 正前方＋02 最近方向避障 | 兩輪小車、L298N 馬達驅動板 |
+| 7 | [測距模式（E0）](#ex7) | 一般／遠距離 200 cm／精準／高速 | 白牆或大白板（約 150 公分） |
+| 8 | [濾波（E1）](#ex8) | 讓數字比較穩 | 一個盒子 |
+| 9 | [更新時間（E2）](#ex9) | 20～200 ms：快 vs 準 | 一個盒子 |
+| 10 | [回出廠設定（E3）](#ex10) | 參數一定要 A5 | 無 |
+| 11 | [距離上限（E4）](#ex11) | 只對近的東西反應 | 你的手 |
 | 共 1 | [換 I2C 位址](#exi1) | F8 換位址／回出廠、EF 重開機 | 無 |
 | 共 2 | [身分證＋重新開機](#exi2) | F0～F5 六格共用暫存器 | 無 |
 | 共 3 | [掃描線上裝置](#exi3) | 掃 0x08～0x77、用 F0 認產品 | 無 |
 
 > [!TIP]
-> **建議順序：1 → 2 → 3 → 4 → 5 → 6。** 先確認接好（1），看懂每一格（2），再學方向（3、4）和應用。
+> **建議順序：1 → 2 → 3 → 4 → 5 → 6，想改設定再看 7～11。** 先確認接好（1），看懂每一格（2），再學方向（3、4）和應用。
 
 ---
 
@@ -1125,6 +1159,942 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 | 太早轉、走不進窄路 | `TURN_CM` 調小 |
 | 轉完還是對著障礙物 | 轉彎 `delay(200)` 加長 |
 | 一出發就原地打轉 | 有一個輪子轉反了，改 `LEFT_REVERSE` 或 `RIGHT_REVERSE` |
+
+---
+
+<h2 id="ex7">7️⃣ 測距模式：一般／遠距離／精準／高速（E0）</h2>
+
+**做什麼：** 用命令 `E0` 切換 4 種測距模式，看最遠能量多遠、數字多穩。序列埠監控窗下方輸入 `0`～`3` 按 Enter 換模式，每次換完都讀回 `20`～`23` 印出目前設定。
+
+**另外要準備：** 一面白牆或大白板，放在正前方（第 4、5 顆雷射的方向）約 150 公分。
+
+**步驟：**
+1. 照上面的表格接好 4 條線，USB 插上電腦。
+2. 複製下面的程式，貼到 Arduino IDE，按 **→ 上傳**。
+3. 打開序列埠監控窗，速度選 **115200**，下方輸入框的換行選「NL」或「Both NL & CR」都可以。
+
+<a href="/examples/tof8/arduino/tof8_07_range_mode/tof8_07_range_mode.ino" download data-ignore="true">📄 下載 tof8_07_range_mode.ino</a>
+
+<!-- ino: examples/tof8/arduino/tof8_07_range_mode/tof8_07_range_mode.ino -->
+```cpp
+/*
+ * 測距者 8 路（命令範例 01）× Arduino：測距模式：一般／遠距離／精準／高速
+ * ------------------------------------------------------------
+ * 這個範例會做什麼？
+ *   用命令 E0 切換 4 種測距模式，看最遠能量多遠、數字多穩：
+ *     0 一般（出廠，最遠 120 cm、每 33 ms 量一次）
+ *     1 遠距離（最遠 200 cm，比較容易被陽光、黑色東西影響）
+ *     2 精準（每 100 ms 量一次，數字最穩，最遠 120 cm）
+ *     3 高速（每 20 ms 量一次，反應最快，數字會跳比較多）
+ *
+ * 你需要：測距者 8 路 通用 I2C 版 ＋ 一面白牆或大白板，放在正前方（第 4、5 顆雷射的方向）約 150 公分。
+ *
+ * 接線：
+ *   感應器 VCC → 5V      感應器 GND → GND
+ *   感應器 SDA → A4      感應器 SCL → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
+ *
+ * 怎麼看結果：
+ *   序列埠監控窗 115200，下方輸入框打 0～3 再按 Enter 換模式。
+ *   一般模式量 150 cm 的牆會讀到 120（＝超過上限、當成沒東西）；換成 1 遠距離就讀得到約 150。
+ *
+ * 小提醒：
+ *   換模式時，更新時間和距離上限會一起回到那個模式的預設值（要搭配 E2、E4 就先送 E0）。
+ *   設定只存在感應器的記憶體，斷電就回到一般模式。
+ *   命令表：E0 測距模式、E1 濾波、E2 更新時間、E3 回出廠、E4 距離上限（每個都帶 1 個 byte 參數）。
+ *   讀回目前設定：20 測距模式、21 濾波、22 更新時間 ms、23 距離上限 cm。
+ */
+
+#include <Wire.h>
+
+const uint8_t ADDR = 0x29;               // 測距者的門牌號碼（I2C 位址）
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
+
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+bool mbcCommand(uint8_t cmd, uint8_t arg);
+void printSettings();
+
+void setup() {
+  Serial.begin(115200);
+  Serial.setTimeout(50);
+  mbcBegin();
+  delay(500);
+  if (!mbcWaitReady(ADDR, 4000)) {
+    Serial.println(F("找不到感應器，請先跑範例 1 檢查接線。"));
+    while (true) {}
+  }
+  mbcCommand(0xE3, 0xA5);                // 先回出廠設定，從乾淨的狀態開始
+  Serial.println(F("輸入 0～3 換測距模式（0 一般、1 遠距離、2 精準、3 高速）"));
+  printSettings();
+}
+
+void loop() {
+  if (Serial.available()) {
+    int m = Serial.parseInt();
+    while (Serial.available()) Serial.read();
+    if (m >= 0 && m <= 3) {
+      Serial.print(F(">>> 送 E0 ")); Serial.println(m);
+      if (!mbcCommand(0xE0, m)) Serial.println(F("命令沒做完（逾時）"));
+      printSettings();
+    }
+  }
+  int16_t d[9];  // 01 最近 cm、02 最近方向、03 最空曠 cm、04 最空曠方向、05 正前方 cm、06 最近 mm、07 初始化、08 故障、09 正前方 mm
+  if (mbcReadMany(ADDR, 0x01, 9, d)) {
+    Serial.print(F("正前方 ")); Serial.print(d[4]); Serial.print(F(" cm（")); Serial.print(d[8]);
+    Serial.print(F(" mm）、最近 ")); Serial.print(d[0]); Serial.print(F(" cm 在方向 ")); Serial.print(d[1]);
+    Serial.println();
+  }
+  delay(300);
+}
+
+// 送一個命令 [命令碼][參數]，然後等感應器做完（狀態旗標 F3 的 bit2「忙碌」變 0），最多等 3 秒
+// 測距模式、更新時間、回出廠要重新設定雷射晶片，約 0.1～0.5 秒；濾波、距離上限馬上生效
+bool mbcCommand(uint8_t cmd, uint8_t arg) {
+  if (!mbcWrite(ADDR, cmd, &arg, 1)) return false;
+  delay(20);                             // 讓感應器把命令排進去
+  unsigned long start = millis();
+  while (millis() - start < 3000) {
+    int16_t f = mbcRead(ADDR, 0xF3);
+    if (f != MBC_NONE && !(f & 4)) return true;   // bit2 = 0：做完了
+    delay(10);
+  }
+  return false;
+}
+
+// 從感應器讀回目前的 4 個設定並印出來（20 測距模式、21 濾波、22 更新時間 ms、23 距離上限 cm）
+void printSettings() {
+  int16_t s[4];
+  if (!mbcReadMany(ADDR, 0x20, 4, s)) { Serial.println(F("讀不到設定")); return; }
+  const char *modeName[] = {"一般", "遠距離", "精準", "高速"};
+  Serial.print(F("【目前設定】測距模式 ")); Serial.print(s[0]); Serial.print(F(" "));
+  Serial.print((s[0] >= 0 && s[0] <= 3) ? modeName[s[0]] : "?");
+  Serial.print(F("｜濾波 ")); Serial.print(s[1]);
+  Serial.print(F("｜更新時間 ")); Serial.print(s[2]); Serial.print(F(" ms"));
+  Serial.print(F("｜距離上限 ")); Serial.print(s[3]); Serial.println(F(" cm"));
+}
+
+// ============================================================
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
+// 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
+// ============================================================
+
+// 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // 線沒接好時，不會讓 Arduino 當機卡住
+#endif
+}
+
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+```
+
+**你會看到：**
+
+```
+【目前設定】測距模式 0 一般｜濾波 1｜更新時間 33 ms｜距離上限 120 cm
+正前方 120 cm（1200 mm）、最近 120 cm 在方向 8
+>>> 送 E0 1
+【目前設定】測距模式 1 遠距離｜濾波 1｜更新時間 33 ms｜距離上限 200 cm
+正前方 150 cm（1503 mm）、最近 150 cm 在方向 0
+```
+
+> **試試看：** 一般模式量 150 公分的牆讀到 120（超過上限＝當成沒東西）；換成 `1` 遠距離就讀得到。再試 `2` 精準、`3` 高速，看數字跳動有什麼不同。遠距離模式比較容易被陽光、黑色的東西影響。
+
+---
+
+<h2 id="ex8">8️⃣ 濾波：讓數字比較穩（E1）</h2>
+
+**做什麼：** 用命令 `E1` 改濾波，看同一個東西擺著不動時數字跳多少。輸入 `0`～`2` 按 Enter 換濾波；每秒印「1 秒內最大－最小」＝跳動幾 mm。
+
+**另外要準備：** 一個盒子或白板，放在正前方約 50 公分，擺好不要動。
+
+**步驟：**
+1. 照上面的表格接好 4 條線，USB 插上電腦。
+2. 複製下面的程式，貼到 Arduino IDE，按 **→ 上傳**。
+3. 打開序列埠監控窗，速度選 **115200**，下方輸入框的換行選「NL」或「Both NL & CR」都可以。
+
+<a href="/examples/tof8/arduino/tof8_08_filter/tof8_08_filter.ino" download data-ignore="true">📄 下載 tof8_08_filter.ino</a>
+
+<!-- ino: examples/tof8/arduino/tof8_08_filter/tof8_08_filter.ino -->
+```cpp
+/*
+ * 測距者 8 路（命令範例 02）× Arduino：濾波：讓數字比較穩
+ * ------------------------------------------------------------
+ * 這個範例會做什麼？
+ *   用命令 E1 改濾波，看同一個東西擺著不動時，數字跳動多少：
+ *     0 關（每次量到多少就是多少，反應最快、跳最多）
+ *     1 最近 3 筆取中位數（出廠）
+ *     2 最近 5 筆取中位數（最穩，反應慢一點）
+ *
+ * 你需要：測距者 8 路 通用 I2C 版 ＋ 一個盒子或白板，放在正前方（第 4、5 顆雷射的方向）約 50 公分，擺好不要動。
+ *
+ * 接線：
+ *   感應器 VCC → 5V      感應器 GND → GND
+ *   感應器 SDA → A4      感應器 SCL → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
+ *
+ * 怎麼看結果：
+ *   序列埠監控窗 115200，輸入 0～2 按 Enter 換濾波。每秒印一次「1 秒內最大−最小」＝跳動幾 mm。
+ *
+ * 小提醒：
+ *   中位數會把偶爾一次的怪值濾掉，但東西移動時數字會慢 1～2 次才跟上。比賽要快就用 0，要穩就用 2。
+ *   命令表：E0 測距模式、E1 濾波、E2 更新時間、E3 回出廠、E4 距離上限（每個都帶 1 個 byte 參數）。
+ *   讀回目前設定：20 測距模式、21 濾波、22 更新時間 ms、23 距離上限 cm。
+ */
+
+#include <Wire.h>
+
+const uint8_t ADDR = 0x29;               // 測距者的門牌號碼（I2C 位址）
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
+
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+bool mbcCommand(uint8_t cmd, uint8_t arg);
+void printSettings();
+
+void setup() {
+  Serial.begin(115200);
+  Serial.setTimeout(50);
+  mbcBegin();
+  delay(500);
+  if (!mbcWaitReady(ADDR, 4000)) {
+    Serial.println(F("找不到感應器，請先跑範例 1 檢查接線。"));
+    while (true) {}
+  }
+  mbcCommand(0xE3, 0xA5);                // 先回出廠設定，從乾淨的狀態開始
+  Serial.println(F("輸入 0～2 換濾波（0 關、1 三筆中位數、2 五筆中位數）"));
+  printSettings();
+}
+
+void loop() {
+  if (Serial.available()) {
+    int f = Serial.parseInt();
+    while (Serial.available()) Serial.read();
+    if (f >= 0 && f <= 2) {
+      Serial.print(F(">>> 送 E1 ")); Serial.println(f);
+      mbcCommand(0xE1, f);
+      printSettings();
+    }
+  }
+  // 1 秒內一直讀 正前方 mm，記下最大、最小
+  int16_t lo = 32767, hi = -32768;
+  unsigned long start = millis();
+  while (millis() - start < 1000) {
+    int16_t d[9];  // 01 最近 cm、02 最近方向、03 最空曠 cm、04 最空曠方向、05 正前方 cm、06 最近 mm、07 初始化、08 故障、09 正前方 mm
+    if (mbcReadMany(ADDR, 0x01, 9, d)) {
+      if (d[8] < lo) lo = d[8];
+      if (d[8] > hi) hi = d[8];
+    }
+    delay(20);
+  }
+  Serial.print(F("正前方 mm ")); Serial.print(lo); Serial.print(F("～")); Serial.print(hi);
+  Serial.print(F("，跳動 ")); Serial.print(hi - lo); Serial.println(F(" mm"));
+}
+
+// 送一個命令 [命令碼][參數]，然後等感應器做完（狀態旗標 F3 的 bit2「忙碌」變 0），最多等 3 秒
+// 測距模式、更新時間、回出廠要重新設定雷射晶片，約 0.1～0.5 秒；濾波、距離上限馬上生效
+bool mbcCommand(uint8_t cmd, uint8_t arg) {
+  if (!mbcWrite(ADDR, cmd, &arg, 1)) return false;
+  delay(20);                             // 讓感應器把命令排進去
+  unsigned long start = millis();
+  while (millis() - start < 3000) {
+    int16_t f = mbcRead(ADDR, 0xF3);
+    if (f != MBC_NONE && !(f & 4)) return true;   // bit2 = 0：做完了
+    delay(10);
+  }
+  return false;
+}
+
+// 從感應器讀回目前的 4 個設定並印出來（20 測距模式、21 濾波、22 更新時間 ms、23 距離上限 cm）
+void printSettings() {
+  int16_t s[4];
+  if (!mbcReadMany(ADDR, 0x20, 4, s)) { Serial.println(F("讀不到設定")); return; }
+  const char *modeName[] = {"一般", "遠距離", "精準", "高速"};
+  Serial.print(F("【目前設定】測距模式 ")); Serial.print(s[0]); Serial.print(F(" "));
+  Serial.print((s[0] >= 0 && s[0] <= 3) ? modeName[s[0]] : "?");
+  Serial.print(F("｜濾波 ")); Serial.print(s[1]);
+  Serial.print(F("｜更新時間 ")); Serial.print(s[2]); Serial.print(F(" ms"));
+  Serial.print(F("｜距離上限 ")); Serial.print(s[3]); Serial.println(F(" cm"));
+}
+
+// ============================================================
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
+// 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
+// ============================================================
+
+// 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // 線沒接好時，不會讓 Arduino 當機卡住
+#endif
+}
+
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+```
+
+**你會看到：**
+
+```
+【目前設定】測距模式 0 一般｜濾波 1｜更新時間 33 ms｜距離上限 120 cm
+正前方 mm 498～506，跳動 8 mm
+>>> 送 E1 0
+正前方 mm 492～511，跳動 19 mm
+```
+
+> **試試看：** 中位數會把偶爾一次的怪值濾掉，但東西移動時數字會慢 1～2 次才跟上。比賽要快就用 `0`，要穩就用 `2`。
+
+---
+
+<h2 id="ex9">9️⃣ 更新時間：快一點還是準一點（E2）</h2>
+
+**做什麼：** 用命令 `E2` 改「每量一次花多少時間」（20～200 ms），看每秒更新幾次、數字跳多少。程式一開始先把濾波關掉（`E1 0`），比較看得出差別。輸入 `20`～`200` 按 Enter；`0`＝回到模式預設。
+
+**另外要準備：** 一個盒子或白板，放在正前方約 50 公分，擺好不要動。
+
+**步驟：**
+1. 照上面的表格接好 4 條線，USB 插上電腦。
+2. 複製下面的程式，貼到 Arduino IDE，按 **→ 上傳**。
+3. 打開序列埠監控窗，速度選 **115200**，下方輸入框的換行選「NL」或「Both NL & CR」都可以。
+
+<a href="/examples/tof8/arduino/tof8_09_timing_budget/tof8_09_timing_budget.ino" download data-ignore="true">📄 下載 tof8_09_timing_budget.ino</a>
+
+<!-- ino: examples/tof8/arduino/tof8_09_timing_budget/tof8_09_timing_budget.ino -->
+```cpp
+/*
+ * 測距者 8 路（命令範例 03）× Arduino：更新時間：快一點還是準一點
+ * ------------------------------------------------------------
+ * 這個範例會做什麼？
+ *   用命令 E2 改「每量一次花多少時間」（20～200 ms），看每秒更新幾次、數字跳多少：
+ *     20 ms：一秒更新約 50 次，反應最快，數字跳比較多
+ *     33 ms：出廠值
+ *     200 ms：一秒更新 5 次，最穩、量得比較遠
+ *
+ * 你需要：測距者 8 路 通用 I2C 版 ＋ 一個盒子或白板，放在正前方（第 4、5 顆雷射的方向）約 50 公分，擺好不要動。
+ *
+ * 接線：
+ *   感應器 VCC → 5V      感應器 GND → GND
+ *   感應器 SDA → A4      感應器 SCL → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
+ *
+ * 怎麼看結果：
+ *   序列埠監控窗 115200，輸入 20～200 按 Enter。每秒印「讀到的值換了幾次」和「跳動幾 mm」。
+ *
+ * 小提醒：
+ *   超出 20～200 會被夾住（例：輸入 5 變 20、300 變 200）；輸入 0 = 回到目前模式的預設值。
+ *   濾波（範例 2）會讓「換了幾次」變少一點，想看最原始的速度可以先把濾波設 0。
+ *   命令表：E0 測距模式、E1 濾波、E2 更新時間、E3 回出廠、E4 距離上限（每個都帶 1 個 byte 參數）。
+ *   讀回目前設定：20 測距模式、21 濾波、22 更新時間 ms、23 距離上限 cm。
+ */
+
+#include <Wire.h>
+
+const uint8_t ADDR = 0x29;               // 測距者的門牌號碼（I2C 位址）
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
+
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+bool mbcCommand(uint8_t cmd, uint8_t arg);
+void printSettings();
+
+void setup() {
+  Serial.begin(115200);
+  Serial.setTimeout(50);
+  mbcBegin();
+  delay(500);
+  if (!mbcWaitReady(ADDR, 4000)) {
+    Serial.println(F("找不到感應器，請先跑範例 1 檢查接線。"));
+    while (true) {}
+  }
+  mbcCommand(0xE3, 0xA5);                // 先回出廠設定，從乾淨的狀態開始
+  mbcCommand(0xE1, 0);                   // 先關濾波，比較看得出差別
+  Serial.println(F("輸入 20～200 換更新時間（ms），0 = 回預設"));
+  printSettings();
+}
+
+void loop() {
+  if (Serial.available()) {
+    long b = Serial.parseInt();
+    while (Serial.available()) Serial.read();
+    if (b >= 0 && b <= 255) {
+      Serial.print(F(">>> 送 E2 ")); Serial.println(b);
+      if (!mbcCommand(0xE2, (uint8_t)b)) Serial.println(F("命令沒做完（逾時）"));
+      printSettings();
+    }
+  }
+  int16_t last = -1, lo = 32767, hi = -32768;
+  int changes = 0;
+  unsigned long start = millis();
+  while (millis() - start < 1000) {      // 1 秒內一直讀：值換了幾次＝大約更新幾次
+    int16_t d[9];  // 01 最近 cm、02 最近方向、03 最空曠 cm、04 最空曠方向、05 正前方 cm、06 最近 mm、07 初始化、08 故障、09 正前方 mm
+    if (mbcReadMany(ADDR, 0x01, 9, d)) {
+      if (d[8] != last) { changes++; last = d[8]; }
+      if (d[8] < lo) lo = d[8];
+      if (d[8] > hi) hi = d[8];
+    }
+    delay(5);
+  }
+  Serial.print(F("1 秒內換了 ")); Serial.print(changes); Serial.print(F(" 次，正前方 mm 跳動 "));
+  Serial.print(hi - lo); Serial.println(F(" mm"));
+}
+
+// 送一個命令 [命令碼][參數]，然後等感應器做完（狀態旗標 F3 的 bit2「忙碌」變 0），最多等 3 秒
+// 測距模式、更新時間、回出廠要重新設定雷射晶片，約 0.1～0.5 秒；濾波、距離上限馬上生效
+bool mbcCommand(uint8_t cmd, uint8_t arg) {
+  if (!mbcWrite(ADDR, cmd, &arg, 1)) return false;
+  delay(20);                             // 讓感應器把命令排進去
+  unsigned long start = millis();
+  while (millis() - start < 3000) {
+    int16_t f = mbcRead(ADDR, 0xF3);
+    if (f != MBC_NONE && !(f & 4)) return true;   // bit2 = 0：做完了
+    delay(10);
+  }
+  return false;
+}
+
+// 從感應器讀回目前的 4 個設定並印出來（20 測距模式、21 濾波、22 更新時間 ms、23 距離上限 cm）
+void printSettings() {
+  int16_t s[4];
+  if (!mbcReadMany(ADDR, 0x20, 4, s)) { Serial.println(F("讀不到設定")); return; }
+  const char *modeName[] = {"一般", "遠距離", "精準", "高速"};
+  Serial.print(F("【目前設定】測距模式 ")); Serial.print(s[0]); Serial.print(F(" "));
+  Serial.print((s[0] >= 0 && s[0] <= 3) ? modeName[s[0]] : "?");
+  Serial.print(F("｜濾波 ")); Serial.print(s[1]);
+  Serial.print(F("｜更新時間 ")); Serial.print(s[2]); Serial.print(F(" ms"));
+  Serial.print(F("｜距離上限 ")); Serial.print(s[3]); Serial.println(F(" cm"));
+}
+
+// ============================================================
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
+// 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
+// ============================================================
+
+// 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // 線沒接好時，不會讓 Arduino 當機卡住
+#endif
+}
+
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+```
+
+**你會看到：**
+
+```
+>>> 送 E2 20
+【目前設定】測距模式 0 一般｜濾波 0｜更新時間 20 ms｜距離上限 120 cm
+1 秒內換了 41 次，正前方 mm 跳動 22 mm
+>>> 送 E2 200
+1 秒內換了 5 次，正前方 mm 跳動 4 mm
+```
+
+> **試試看：** 輸入 `5` 會被夾成 20、`300` 會被夾成 200。遠距離模式設 200 時讀回可能是 199（雷射晶片實際採用的值），是正常的。
+
+---
+
+<h2 id="ex10">🔟 回出廠設定（E3）</h2>
+
+**做什麼：** 先用 `E0`、`E1`、`E2`、`E4` 把設定改亂，再用命令 `E3`（參數一定要是 `A5`）一次全部回到出廠值：模式 0 一般、濾波 1、更新時間 33 ms、距離上限 120 cm。印「一開始」「改亂之後」「回出廠之後」三次設定；之後輸入任何字再做一次。
+
+**另外要準備：** 不用擺東西。
+
+**步驟：**
+1. 照上面的表格接好 4 條線，USB 插上電腦。
+2. 複製下面的程式，貼到 Arduino IDE，按 **→ 上傳**。
+3. 打開序列埠監控窗，速度選 **115200**，下方輸入框的換行選「NL」或「Both NL & CR」都可以。
+
+<a href="/examples/tof8/arduino/tof8_10_factory_reset/tof8_10_factory_reset.ino" download data-ignore="true">📄 下載 tof8_10_factory_reset.ino</a>
+
+<!-- ino: examples/tof8/arduino/tof8_10_factory_reset/tof8_10_factory_reset.ino -->
+```cpp
+/*
+ * 測距者 8 路（命令範例 04）× Arduino：回出廠設定
+ * ------------------------------------------------------------
+ * 這個範例會做什麼？
+ *   先用 E0、E1、E2、E4 把設定改得亂七八糟，再用命令 E3（參數一定要是 A5）一次全部回到出廠值：
+ *     測距模式 0 一般、濾波 1、更新時間 33 ms、距離上限 120 cm
+ *
+ * 你需要：測距者 8 路 通用 I2C 版 ＋ 不用擺東西。
+ *
+ * 接線：
+ *   感應器 VCC → 5V      感應器 GND → GND
+ *   感應器 SDA → A4      感應器 SCL → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
+ *
+ * 怎麼看結果：
+ *   序列埠監控窗 115200。會依序印「改之前」「改亂之後」「回出廠之後」三次設定。之後輸入任何字再做一次。
+ *
+ * 小提醒：
+ *   參數不是 A5 的話感應器不會做（防止不小心送錯）。回出廠不會改換過的 I2C 位址。
+ *   其實拔掉電源再插上，設定也會回出廠（設定只存在記憶體）。
+ *   命令表：E0 測距模式、E1 濾波、E2 更新時間、E3 回出廠、E4 距離上限（每個都帶 1 個 byte 參數）。
+ *   讀回目前設定：20 測距模式、21 濾波、22 更新時間 ms、23 距離上限 cm。
+ */
+
+#include <Wire.h>
+
+const uint8_t ADDR = 0x29;               // 測距者的門牌號碼（I2C 位址）
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
+
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+bool mbcCommand(uint8_t cmd, uint8_t arg);
+void printSettings();
+void run();
+
+void setup() {
+  Serial.begin(115200);
+  Serial.setTimeout(50);
+  mbcBegin();
+  delay(500);
+  if (!mbcWaitReady(ADDR, 4000)) {
+    Serial.println(F("找不到感應器，請先跑範例 1 檢查接線。"));
+    while (true) {}
+  }
+  mbcCommand(0xE3, 0xA5);                // 先回出廠設定，從乾淨的狀態開始
+  run();
+}
+
+void run() {
+  Serial.println(F("---- 1. 一開始 ----"));
+  printSettings();
+  Serial.println(F("---- 2. 改亂：E0 1 遠距離、E1 0 關濾波、E2 100 ms、E4 80 cm ----"));
+  mbcCommand(0xE0, 1);
+  mbcCommand(0xE1, 0);
+  mbcCommand(0xE2, 100);
+  mbcCommand(0xE4, 80);
+  printSettings();
+  Serial.println(F("---- 3. 送 E3 A5 回出廠 ----"));
+  mbcCommand(0xE3, 0xA5);
+  printSettings();
+  Serial.println(F("（輸入任何字再做一次）"));
+}
+
+void loop() {
+  if (Serial.available()) {
+    while (Serial.available()) Serial.read();
+    run();
+  }
+}
+
+// 送一個命令 [命令碼][參數]，然後等感應器做完（狀態旗標 F3 的 bit2「忙碌」變 0），最多等 3 秒
+// 測距模式、更新時間、回出廠要重新設定雷射晶片，約 0.1～0.5 秒；濾波、距離上限馬上生效
+bool mbcCommand(uint8_t cmd, uint8_t arg) {
+  if (!mbcWrite(ADDR, cmd, &arg, 1)) return false;
+  delay(20);                             // 讓感應器把命令排進去
+  unsigned long start = millis();
+  while (millis() - start < 3000) {
+    int16_t f = mbcRead(ADDR, 0xF3);
+    if (f != MBC_NONE && !(f & 4)) return true;   // bit2 = 0：做完了
+    delay(10);
+  }
+  return false;
+}
+
+// 從感應器讀回目前的 4 個設定並印出來（20 測距模式、21 濾波、22 更新時間 ms、23 距離上限 cm）
+void printSettings() {
+  int16_t s[4];
+  if (!mbcReadMany(ADDR, 0x20, 4, s)) { Serial.println(F("讀不到設定")); return; }
+  const char *modeName[] = {"一般", "遠距離", "精準", "高速"};
+  Serial.print(F("【目前設定】測距模式 ")); Serial.print(s[0]); Serial.print(F(" "));
+  Serial.print((s[0] >= 0 && s[0] <= 3) ? modeName[s[0]] : "?");
+  Serial.print(F("｜濾波 ")); Serial.print(s[1]);
+  Serial.print(F("｜更新時間 ")); Serial.print(s[2]); Serial.print(F(" ms"));
+  Serial.print(F("｜距離上限 ")); Serial.print(s[3]); Serial.println(F(" cm"));
+}
+
+// ============================================================
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
+// 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
+// ============================================================
+
+// 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // 線沒接好時，不會讓 Arduino 當機卡住
+#endif
+}
+
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+```
+
+**你會看到：**
+
+```
+---- 1. 一開始 ----
+【目前設定】測距模式 0 一般｜濾波 1｜更新時間 33 ms｜距離上限 120 cm
+---- 2. 改亂：E0 1 遠距離、E1 0 關濾波、E2 100 ms、E4 80 cm ----
+【目前設定】測距模式 1 遠距離｜濾波 0｜更新時間 100 ms｜距離上限 80 cm
+---- 3. 送 E3 A5 回出廠 ----
+【目前設定】測距模式 0 一般｜濾波 1｜更新時間 33 ms｜距離上限 120 cm
+```
+
+> **試試看：** 參數不是 `A5` 感應器不會做（防止不小心送錯）。回出廠不會改換過的 I2C 位址。其實拔掉電源再插上，設定也會回出廠。
+
+---
+
+<h2 id="ex11">1️⃣1️⃣ 距離上限：只看近的東西（E4）</h2>
+
+**做什麼：** 用命令 `E4` 設「距離上限」：超過上限的東西一律當成沒東西，讀到的值就是上限。程式先把上限設 30 cm，正前方比上限近就亮板子上的 LED（D13）。輸入 `10`～`120` 按 Enter 改上限（遠距離模式可到 200）。
+
+**另外要準備：** 你的手。
+
+> [!NOTE]
+> **ESP32 板子沒有內建 `LED_BUILTIN`**：用 ESP32 時，在程式最上面（`#include <Wire.h>` 下一行）加 `#define LED_BUILTIN 2` 再上傳。UNO／Nano／UNO R4 不用改。
+
+**步驟：**
+1. 照上面的表格接好 4 條線，USB 插上電腦。
+2. 複製下面的程式，貼到 Arduino IDE，按 **→ 上傳**。
+3. 打開序列埠監控窗，速度選 **115200**，下方輸入框的換行選「NL」或「Both NL & CR」都可以。
+
+<a href="/examples/tof8/arduino/tof8_11_max_distance/tof8_11_max_distance.ino" download data-ignore="true">📄 下載 tof8_11_max_distance.ino</a>
+
+<!-- ino: examples/tof8/arduino/tof8_11_max_distance/tof8_11_max_distance.ino -->
+```cpp
+/*
+ * 測距者 8 路（命令範例 05）× Arduino：距離上限：只看近的東西
+ * ------------------------------------------------------------
+ * 這個範例會做什麼？
+ *   用命令 E4 設「距離上限」（cm）：超過上限的東西一律當成「沒東西」，讀到的值就是上限。
+ *   例：上限 30 cm → 遠處有人走來走去也不會誤觸，只有 30 公分內的東西才算數。
+ *   這個範例：正前方距離 < 上限就亮板子上的 LED（D13）。
+ *
+ * 你需要：測距者 8 路 通用 I2C 版 ＋ 你的手。
+ *
+ * 接線：
+ *   感應器 VCC → 5V      感應器 GND → GND
+ *   感應器 SDA → A4      感應器 SCL → A5         （UNO / Nano）
+ *   UNO R4 接 SDA / SCL 腳；ESP32 接 GPIO 21 (SDA) / GPIO 22 (SCL)
+ *
+ * 怎麼看結果：
+ *   序列埠監控窗 115200，輸入 10～120 按 Enter 改上限（遠距離模式可到 200）。手慢慢靠近，看什麼時候 LED 亮。
+ *
+ * 小提醒：
+ *   超出範圍會被夾住（一般模式最大 120、遠距離 200、最小 10）；輸入 0 = 回到模式上限。
+ *   換測距模式（E0）會把上限重設成那個模式的預設值，所以要先 E0 再 E4。
+ *   命令表：E0 測距模式、E1 濾波、E2 更新時間、E3 回出廠、E4 距離上限（每個都帶 1 個 byte 參數）。
+ *   讀回目前設定：20 測距模式、21 濾波、22 更新時間 ms、23 距離上限 cm。
+ */
+
+#include <Wire.h>
+
+const uint8_t ADDR = 0x29;               // 測距者的門牌號碼（I2C 位址）
+const int16_t MBC_NONE = -32768;         // 「沒有這個值／讀不到」的代號
+
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
+bool mbcCommand(uint8_t cmd, uint8_t arg);
+void printSettings();
+
+void setup() {
+  Serial.begin(115200);
+  Serial.setTimeout(50);
+  mbcBegin();
+  delay(500);
+  if (!mbcWaitReady(ADDR, 4000)) {
+    Serial.println(F("找不到感應器，請先跑範例 1 檢查接線。"));
+    while (true) {}
+  }
+  mbcCommand(0xE3, 0xA5);                // 先回出廠設定，從乾淨的狀態開始
+  pinMode(LED_BUILTIN, OUTPUT);
+  mbcCommand(0xE4, 30);
+  Serial.println(F("上限先設 30 cm；輸入 10～120 改上限"));
+  printSettings();
+}
+
+void loop() {
+  if (Serial.available()) {
+    long c = Serial.parseInt();
+    while (Serial.available()) Serial.read();
+    if (c >= 0 && c <= 255) {
+      Serial.print(F(">>> 送 E4 ")); Serial.println(c);
+      mbcCommand(0xE4, (uint8_t)c);
+      printSettings();
+    }
+  }
+  int16_t s[4];
+  int16_t d[9];  // 01 最近 cm、02 最近方向、03 最空曠 cm、04 最空曠方向、05 正前方 cm、06 最近 mm、07 初始化、08 故障、09 正前方 mm
+  if (mbcReadMany(ADDR, 0x20, 4, s) && mbcReadMany(ADDR, 0x01, 9, d)) {
+    bool near = d[4] < s[3];            // 比上限近 = 真的有東西
+    digitalWrite(LED_BUILTIN, near ? HIGH : LOW);
+    Serial.print(F("上限 ")); Serial.print(s[3]); Serial.print(F(" cm｜"));
+    Serial.print(F("正前方 ")); Serial.print(d[4]); Serial.print(F(" cm（")); Serial.print(d[8]);
+    Serial.print(F(" mm）、最近 ")); Serial.print(d[0]); Serial.print(F(" cm 在方向 ")); Serial.print(d[1]);
+    Serial.println(near ? F("  ← 有東西") : F("  （沒東西）"));
+  }
+  delay(200);
+}
+
+// 送一個命令 [命令碼][參數]，然後等感應器做完（狀態旗標 F3 的 bit2「忙碌」變 0），最多等 3 秒
+// 測距模式、更新時間、回出廠要重新設定雷射晶片，約 0.1～0.5 秒；濾波、距離上限馬上生效
+bool mbcCommand(uint8_t cmd, uint8_t arg) {
+  if (!mbcWrite(ADDR, cmd, &arg, 1)) return false;
+  delay(20);                             // 讓感應器把命令排進去
+  unsigned long start = millis();
+  while (millis() - start < 3000) {
+    int16_t f = mbcRead(ADDR, 0xF3);
+    if (f != MBC_NONE && !(f & 4)) return true;   // bit2 = 0：做完了
+    delay(10);
+  }
+  return false;
+}
+
+// 從感應器讀回目前的 4 個設定並印出來（20 測距模式、21 濾波、22 更新時間 ms、23 距離上限 cm）
+void printSettings() {
+  int16_t s[4];
+  if (!mbcReadMany(ADDR, 0x20, 4, s)) { Serial.println(F("讀不到設定")); return; }
+  const char *modeName[] = {"一般", "遠距離", "精準", "高速"};
+  Serial.print(F("【目前設定】測距模式 ")); Serial.print(s[0]); Serial.print(F(" "));
+  Serial.print((s[0] >= 0 && s[0] <= 3) ? modeName[s[0]] : "?");
+  Serial.print(F("｜濾波 ")); Serial.print(s[1]);
+  Serial.print(F("｜更新時間 ")); Serial.print(s[2]); Serial.print(F(" ms"));
+  Serial.print(F("｜距離上限 ")); Serial.print(s[3]); Serial.println(F(" cm"));
+}
+
+// ============================================================
+// 以下是「通訊小幫手」（MBC I2C 協議 v2）：負責跟感應器講話。
+// 所有 MBC 範例都一樣，不用改，也不用看懂。
+//   讀法：寫 [編號] → 等 2 ms → 讀 2×k 個 byte = 從該編號起連續 k 個 int16（小端）
+//   沒有這個編號（空號）時感應器回 -32768（MBC_NONE）
+// ============================================================
+
+// 開始 I2C 通訊（setup 裡呼叫一次）
+// UNO/Nano：SDA=A4、SCL=A5；UNO R4：SDA/SCL 腳；ESP32：預設 GPIO21(SDA)/22(SCL)
+void mbcBegin() {
+  Wire.begin();
+#if defined(WIRE_HAS_TIMEOUT)
+  Wire.setWireTimeout(25000, true);      // 線沒接好時，不會讓 Arduino 當機卡住
+#endif
+}
+
+// 從位址 addr 的感應器，由編號 id 起連續讀 k 個值（1~16）放進 out。全部讀到回傳 true
+bool mbcReadMany(uint8_t addr, uint8_t id, uint8_t k, int16_t *out) {
+  if (k < 1) k = 1;
+  if (k > 16) k = 16;                    // 一次最多 16 個值（32 byte，Wire 緩衝區上限）
+  Wire.beginTransmission(addr);
+  Wire.write(id);                        // 告訴感應器：我要從第 id 號開始讀
+  if (Wire.endTransmission() != 0) return false;
+  delay(2);                              // 等 2 ms 再讀（ESP32 型的產品一定要等）
+  uint8_t n = (uint8_t)(2 * k);
+  if (Wire.requestFrom(addr, n) != n) return false;
+  for (uint8_t i = 0; i < k; i++) {
+    uint16_t lo = Wire.read();           // 先來的是低位元組
+    uint16_t hi = Wire.read();           // 再來高位元組（小端）
+    out[i] = (int16_t)(uint16_t)(lo | (hi << 8));
+  }
+  return true;
+}
+
+// 讀一個值。讀不到（沒接好）回傳 MBC_NONE
+int16_t mbcRead(uint8_t addr, uint8_t id) {
+  int16_t v;
+  return mbcReadMany(addr, id, 1, &v) ? v : MBC_NONE;
+}
+
+// 送命令：寫 [id][參數…]。p 指向參數、n = 參數幾個 byte（沒參數就不填）。成功回傳 true
+bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p, uint8_t n) {
+  Wire.beginTransmission(addr);
+  Wire.write(id);
+  for (uint8_t i = 0; i < n; i++) Wire.write(p[i]);
+  return Wire.endTransmission() == 0;
+}
+
+// 等感應器準備好（狀態旗標 F3 的 bit0 = 1），最多等 ms 毫秒。準備好了回傳 true
+bool mbcWaitReady(uint8_t addr, uint16_t ms) {
+  unsigned long start = millis();
+  while (millis() - start < ms) {
+    int16_t f = mbcRead(addr, 0xF3);
+    if (f != MBC_NONE && (f & 1)) return true;
+    delay(50);
+  }
+  return false;
+}
+```
+
+**你會看到：**
+
+```
+上限 30 cm｜正前方 30 cm（300 mm）、最近 30 cm 在方向 8  （沒東西）
+上限 30 cm｜正前方 18 cm（183 mm）、最近 17 cm 在方向 0  ← 有東西
+```
+
+> **試試看：** 手慢慢靠近，看什麼時候 LED 亮。超出範圍會被夾住（一般模式最大 120、遠距離 200、最小 10）；輸入 `0`＝回到模式上限。換測距模式（E0）會把上限重設，所以要先 E0 再 E4。
 
 ---
 

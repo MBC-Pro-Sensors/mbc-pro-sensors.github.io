@@ -22,3 +22,7 @@
 
 > [!NOTE]
 > LEGO ended support for the Robot Inventor App on 2026-10-01; for new projects use SPIKE Prime or Pybricks.
+
+### Commands
+
+The official App cannot send commands. To change the ranging mode (long range 200 cm, etc.), filter, timing budget or max distance, use [Pybricks + the MBC library](/en/sensors/tof2/spike/pybricks.md) (tested with SPIKE Pybricks).

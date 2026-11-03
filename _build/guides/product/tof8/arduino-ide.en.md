@@ -11,3 +11,7 @@ The table assumes the sensor faces forward with the components up. Put your hand
 ### Test results
 
 The universal I2C edition **passed hardware testing on an Arduino Nano (2026-11-02)**: the value table, all 8 distances, 1000 reads in a row and mixed reads and writes all worked with no failed reads.
+
+### Change the settings with commands (E0 ~ E4)
+
+On the universal I2C edition, commands change the ranging mode (normal / long range 200 cm / accurate / fast), filter, timing budget and max distance, or do a factory reset; **tested on an Arduino Nano (2026-11-02)**. Settings stay in the sensor memory and go back to factory after a power cut; "nothing" reads as the limit (normal 120, long range 200). For each command's parameters, when to use it and Examples 7 ~ 11, see [Arduino examples: change the settings with commands](/en/sensors/tof8/arduino-examples.md#cmd).
