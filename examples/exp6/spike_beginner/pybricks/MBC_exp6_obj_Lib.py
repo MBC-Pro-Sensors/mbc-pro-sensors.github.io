@@ -142,6 +142,8 @@ MODE_FORCE     = 30
 # Shared clock + cache threshold across boards (stateless, safe to share)
 _cache_time = 0
 _CACHE_MS   = 10
+_STALE_MS   = 25    # 超過這麼久沒讀，緩衝區裡就可能是舊資料（見 _fresh_sync）
+_FRESH_MS   = 40    # 清掉之後最多等這麼久拿新的一包（板子每 10 ms 送一包）
 _watch      = _StopWatch()
 
 def _clip(v):
@@ -804,6 +806,7 @@ class MBC_EXP6:
         self._async_mode     = False
         self._cache          = None
         self._cache_time     = 0
+        self._last_drain_ms  = -_STALE_MS - 1
         self._port_mode_cache = {}
         self._inverted        = {i: False for i in range(1, 7)}   # 各孔正/反裝，預設全部正裝；斷線重連時據此重送給韌體
         self._uart_busy      = False
@@ -1078,12 +1081,41 @@ class MBC_EXP6:
         if _watch.time() - self._last_tx_ms > _HEARTBEAT_MS:
             await self._uart_write_async(_heartbeat_packet())
 
+    # 主機的 UART 接收緩衝區只有約 63 bytes（不到兩包），滿了之後丟掉的是「新」資料
+    # （2026-11-02 Pybricks 4.x 實機量到）。隔一陣子沒讀，緩衝區裡就是上次讀完那一刻的舊值
+    # → 超過 _STALE_MS 沒讀，就先清掉緩衝區、等下一包新的進來（最多 _FRESH_MS）。
+    def _fresh_sync(self):
+        self._uart.clear()
+        self._rx = bytearray()
+        prev = self._cache
+        t0 = _watch.time()
+        while _watch.time() - t0 < _FRESH_MS:
+            wait(2)
+            self._drain_and_parse()
+            if self._cache is not prev:
+                return
+
+    async def _fresh_async(self):
+        self._uart.clear()
+        self._rx = bytearray()
+        prev = self._cache
+        t0 = _watch.time()
+        while _watch.time() - t0 < _FRESH_MS:
+            await wait(2)
+            self._drain_and_parse()
+            if self._cache is not prev:
+                return
+
     async def _read_async(self):
         now = _watch.time()
         if self._cache is not None and (now - self._cache_time) < _CACHE_MS:
             await self._maybe_heartbeat_async()
             return self._cache
-        self._drain_and_parse()
+        if now - self._last_drain_ms > _STALE_MS:
+            await self._fresh_async()
+        else:
+            self._drain_and_parse()
+        self._last_drain_ms = _watch.time()
         self._check_disconnect()   # 剛 drain 過，可靠判斷板子是否還在串流
         await self._maybe_heartbeat_async()
         return self._cache
@@ -1093,7 +1125,11 @@ class MBC_EXP6:
         if self._cache is not None and (now - self._cache_time) < _CACHE_MS:
             self._maybe_heartbeat_sync()
             return self._cache
-        self._drain_and_parse()
+        if now - self._last_drain_ms > _STALE_MS:
+            self._fresh_sync()
+        else:
+            self._drain_and_parse()
+        self._last_drain_ms = _watch.time()
         self._check_disconnect()   # 剛 drain 過，可靠判斷板子是否還在串流
         self._maybe_heartbeat_sync()
         return self._cache
@@ -1231,14 +1267,20 @@ class MBC_EXP6:
         if self._uart is None:
             wait(ms)
             return
-        self.keep_alive()
-        end = _watch.time() + ms
-        while True:
-            remain = end - _watch.time()
-            if remain <= 0:
-                return
-            wait(remain if remain < _FEED_MS else _FEED_MS)
+        # 同步程式按停止鍵時 SystemExit 多半落在這裡：先送全停再往外丟（2026-11-02 上機：沒攔就要等看門狗 0.5 秒）。
+        # 只用在同步路徑；async 的收尾在 run_task 外層（見《工作日誌_看門狗與連線維持》E8、E9）
+        try:
             self.keep_alive()
+            end = _watch.time() + ms
+            while True:
+                remain = end - _watch.time()
+                if remain <= 0:
+                    return
+                wait(remain if remain < _FEED_MS else _FEED_MS)
+                self.keep_alive()
+        except BaseException:
+            self._emergency_stop()
+            raise
 
     async def _keep_alive_wait_async(self, ms):
         if self._uart is None:

@@ -2,7 +2,7 @@
 # SPIKE 讀值教學
 
 > [!NOTE]
-> **SPIKE 已上機驗證**（2026-11-01，出貨版韌體 v1.0-261101）：Pybricks 函式庫（讀值＋命令，文字與 Pybricks 積木）、Pybricks 內建積木、官方 App 教育版、家用版（積木＋Python）、MBC 積木網站（讀值＋命令積木）都在實機跑過。插在 EXP6 擴充器上的寫法還沒上機。
+> **SPIKE 已上機驗證**（2026-11-01，出貨版韌體 v1.0-261101）：Pybricks 函式庫（讀值＋命令，文字與 Pybricks 積木）、Pybricks 內建積木、官方 App 教育版、家用版（積木＋Python）、MBC 積木網站（讀值＋命令積木）都在實機跑過。插在 EXP6 擴充器上的寫法 2026-11-03 實機驗證過（EXP6 韌體要 2026-11-03 以後）。
 
 神攝手用在 SPIKE Prime（黃色主機）與 Robot Inventor（藍綠色主機）。SPIKE 版韌體會自己認出主機跑的是官方 App 還是 Pybricks，不用換韌體。這一頁講四種讀法怎麼選、最小的讀值程式；每一格的完整對照在 [讀值參考](/sensors/unicam/reference.md)，整支範例在 [SPIKE 範例](/sensors/unicam/spike-examples.md)。
 
@@ -101,23 +101,31 @@ junction = b[6]                  # 路口類型：0 無 1 十字 2 T 3 左 4 右
 
 ### 插在 EXP6 擴充器上
 
-孔不夠用時，神攝手可以插在 [EXP6 六路擴充器](/sensors/exp6/index.md) 的 1～6 號孔。改用 EXP6 v2 函式庫 `MBC_exp6_obj_Lib_v2.py`（[下載區](/downloads.md)），功能名稱跟上面的 `UniCam` 一樣；讀不到時回傳 `None`。EXP6 韌體要是 v2。官方 SPIKE App 也有同名寫法（`MBC_exp6_SPIKE_App_Lib_v2.py`）。
+孔不夠用時，神攝手可以插在 [EXP6 六路擴充器](/sensors/exp6/index.md) 的 1～6 號孔。功能名稱跟上面的 `UniCam` 一樣，讀不到時回傳 `None`。EXP6 韌體要是 **2026-11-03 以後的版本**。官方 SPIKE App 也有同名寫法（`MBC_exp6_SPIKE_App_Lib_v2.py`）。
+
+1. 下載 [EXP6 Pybricks 函式庫 v2](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip)。
+2. 把 `MBC_exp6_obj_Lib_v2.py`、`MBC_exp6_mbc_common.py`、`MBC_exp6_unicam.py` 三個檔放進同一個 Pybricks 專案。
+3. 程式裡一定要寫 `from MBC_exp6_unicam import *`，2026-11-03 以前的寫法少這一行會出錯。
 
 ```python
+from pybricks.tools import wait
 from MBC_exp6_obj_Lib_v2 import MBC_EXP6, run_task
+from MBC_exp6_unicam import *     # 神攝手的 EXP6 檔
 
-exp6 = MBC_EXP6(1, True)      # EXP6 插在主機 A 孔
-cam = exp6.unicam(5, 13)      # 神攝手插在 EXP6 的 5 號孔，mode 要跟相機選單一樣
+exp6 = MBC_EXP6(1, True, p5=(UNICAM, 13))   # EXP6 插主機 A 孔（1），神攝手插 EXP6 的 5 號孔
+cam = exp6.sensor(5)
 
 async def main():
+    await cam.set_mode(13)        # 多工寫法要自己切一次相機模式（一般模式宣告時就切好）
     while True:
         print(await cam.xy(1))
+        await wait(100)
 
 run_task(main())
 ```
 
-> [!NOTE]
-> 函式庫已用電腦跟直插版 `UniCam` 逐項比對過，**尚未上機驗證**。
+- 寫法說明（宣告每一孔、一般模式自動核對插對沒、舊寫法 `exp6.unicam(5, 13)`）見 [EXP6 × Pybricks](/sensors/exp6/spike/pybricks.md)。
+- 2026-11-03 實機驗證過（EXP6 範例 11）。
 
 ## Pybricks 內建積木（模式 5／7）
 

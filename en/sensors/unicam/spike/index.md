@@ -2,7 +2,7 @@
 # Reading it on SPIKE
 
 > [!NOTE]
-> **SPIKE verified on hardware** (2026-11-01, shipping firmware v1.0-261101): the Pybricks library (readings and commands, in text and Pybricks blocks), Pybricks built-in blocks, the official app (Education, and home edition blocks + Python) and the MBC Blocks website (reading and command blocks) have all been run on real hubs. Using the camera through the EXP6 expander is not yet tested on hardware.
+> **SPIKE verified on hardware** (2026-11-01, shipping firmware v1.0-261101): the Pybricks library (readings and commands, in text and Pybricks blocks), Pybricks built-in blocks, the official app (Education, and home edition blocks + Python) and the MBC Blocks website (reading and command blocks) have all been run on real hubs. Using the camera through the EXP6 expander was tested on hardware on 2026-11-03 (needs EXP6 firmware from 2026-11-03 or later).
 
 The Sharpshooter Vision works with SPIKE Prime (yellow hub) and Robot Inventor (teal hub). The SPIKE edition firmware detects by itself whether the hub runs the official app or Pybricks, so there is nothing to reflash. This page helps you pick one of the four ways to read it and shows the smallest working code; every slot is listed in the [value reference](/en/sensors/unicam/reference.md), full programs are in the [SPIKE examples](/en/sensors/unicam/spike-examples.md).
 
@@ -101,23 +101,31 @@ With the MBC library your program can change the camera's settings. Each command
 
 ### Plugged into the EXP6 expander
 
-When you run out of ports, plug the Sharpshooter Vision into port 1–6 of the [EXP6 six-port expander](/en/sensors/exp6/index.md). Use the EXP6 v2 library `MBC_exp6_obj_Lib_v2.py` ([downloads](/en/downloads.md)); the function names are the same as `UniCam` above, and a reading that cannot be made returns `None`. The EXP6 needs firmware v2. The official SPIKE App library has the same calls (`MBC_exp6_SPIKE_App_Lib_v2.py`).
+When you run out of ports, plug the Sharpshooter Vision into port 1–6 of the [EXP6 six-port expander](/en/sensors/exp6/index.md). The function names are the same as `UniCam` above, and a reading that cannot be made returns `None`. The EXP6 needs firmware from **2026-11-03 or later**. The official SPIKE App library has the same calls (`MBC_exp6_SPIKE_App_Lib_v2.py`).
+
+1. Download the [EXP6 Pybricks library v2](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip).
+2. Put `MBC_exp6_obj_Lib_v2.py`, `MBC_exp6_mbc_common.py` and `MBC_exp6_unicam.py` in the same Pybricks project.
+3. Your program must include `from MBC_exp6_unicam import *`. Code written before 2026-11-03 fails without this line.
 
 ```python
+from pybricks.tools import wait
 from MBC_exp6_obj_Lib_v2 import MBC_EXP6, run_task
+from MBC_exp6_unicam import *     # the camera's EXP6 file
 
-exp6 = MBC_EXP6(1, True)      # EXP6 on hub port A
-cam = exp6.unicam(5, 13)      # camera on EXP6 port 5; mode must match the camera menu
+exp6 = MBC_EXP6(1, True, p5=(UNICAM, 13))   # EXP6 on hub port A (1), camera on EXP6 port 5
+cam = exp6.sensor(5)
 
 async def main():
+    await cam.set_mode(13)        # multitask: switch the camera mode yourself once (normal mode does it when declared)
     while True:
         print(await cam.xy(1))
+        await wait(100)
 
 run_task(main())
 ```
 
-> [!NOTE]
-> The library was compared item by item with the direct `UniCam` library on a computer; **not yet verified on hardware**.
+- [EXP6 × Pybricks](/en/sensors/exp6/spike/pybricks.md) explains the details: declaring each port, the automatic sensor check in normal mode, and the old style `exp6.unicam(5, 13)`.
+- Hardware-tested on 2026-11-03 (EXP6 example 11).
 
 ## Pybricks built-in blocks (modes 5 / 7)
 

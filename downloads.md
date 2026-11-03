@@ -13,7 +13,7 @@ MBC 全系列的函式庫、積木擴充、範例程式與型錄，集中在這�
 <!-- gen:downloads-table -->
 | 檔案 | 內容 | 版本 | 搭配韌體 | 大小 | 日期 |
 | :--- | :--- | :---: | :--- | :---: | :---: |
-| [MBC_EXP6_Pybricks_Lib_v2.zip](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip) | SPIKE 6 路擴充器 EXP6：Pybricks 函式庫 v2＋範例（`MBC_exp6_obj_Lib_v2.py`、`Exp6_objMode_Demo.py`、指令說明書 PDF、`examples/` 11 支） | 2.0 | EXP6 v2 | 1.5 MB | 2026-10-25 |
+| [MBC_EXP6_Pybricks_Lib_v2.zip](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip) | SPIKE 6 路擴充器 EXP6：Pybricks 函式庫 v2＋範例（`MBC_exp6_obj_Lib_v2.py`；插 MBC 感應器時加 `MBC_exp6_mbc_common.py` 和用到的 `MBC_exp6_line／laser／pad／unicam.py`；`Exp6_objMode_Demo.py`、指令說明書 PDF、`examples/` 11 支）。EXP6 韌體要 2026-11-03 以後 | 2.0 | EXP6 v2 | 1.5 MB | 2026-11-03 |
 | [MBC_EXP6_Official_App_Lib_v2.zip](/downloads/MBC_EXP6_Official_App_Lib_v2.zip) | SPIKE 6 路擴充器 EXP6：官方 SPIKE App 函式庫 v2＋範例（`MBC_exp6_SPIKE_App_Lib.py`、`SPIKE_Education/`、`Robot_Inventor/` 安裝／解除安裝腳本、`examples/` 9 支） | 2.0 | EXP6 v2 | 1.2 MB | 2026-10-21 |
 | [MBC_EXP6_Pybricks_Lib.zip](/downloads/MBC_EXP6_Pybricks_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | EXP6 Pybricks 函式庫（舊版，v1 韌體）— 搭配 2026-10 以前韌體 | 1.x | EXP6 v1 | 1.5 MB | 2026-10-07 |
 | [MBC_EXP6_Official_App_Lib.zip](/downloads/MBC_EXP6_Official_App_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | EXP6 官方 SPIKE App 函式庫（舊版，v1 韌體）— 搭配 2026-10 以前韌體 | 1.x | EXP6 v1 | 1.1 MB | 2026-10-21 |

@@ -13,7 +13,12 @@
       "files": [
         "EXP6_Pybricks_Manual.pdf",
         "Exp6_objMode_Demo.py",
+        "MBC_exp6_laser.py",
+        "MBC_exp6_line.py",
+        "MBC_exp6_mbc_common.py",
         "MBC_exp6_obj_Lib_v2.py",
+        "MBC_exp6_pad.py",
+        "MBC_exp6_unicam.py",
         "examples/01_Motor_Basic.py",
         "examples/02_Motor_Run_Degrees.py",
         "examples/03_Motor_Track_Target.py",
@@ -26,7 +31,7 @@
         "examples/10_Multitask_KeepAlive.py",
         "examples/11_MBC_Sensors_v2.py"
       ],
-      "size": 1594507
+      "size": 1609210
     },
     {
       "out": "/downloads/MBC_EXP6_Official_App_Lib_v2.zip",
