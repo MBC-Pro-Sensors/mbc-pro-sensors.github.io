@@ -6,7 +6,7 @@
 
 [🔙 回到 IMU 陀螺儀產品頁](/sensors/imu/index.md)
 
-這一頁有 7 個範例，給**完全沒寫過程式**的人：每個範例都有現成的程式檔可以下載，打開就能用，下面也有一步一步的白話說明。建議從範例 1 開始照順序做。
+這一頁有 9 個範例，給**完全沒寫過程式**的人：每個範例都有現成的程式檔可以下載，打開就能用，下面也有一步一步的白話說明。建議從範例 1 開始照順序做。
 
 ## 開始之前
 
@@ -42,6 +42,8 @@
 5. [不倒的指南針：自己轉回原來的方向](#%E7%AF%84%E4%BE%8B-5%EF%BC%9A%E4%B8%8D%E5%80%92%E7%9A%84%E6%8C%87%E5%8D%97%E9%87%9D%EF%BC%9A%E8%87%AA%E5%B7%B1%E8%BD%89%E5%9B%9E%E5%8E%9F%E4%BE%86%E7%9A%84%E6%96%B9%E5%90%91)
 6. [俯仰角：上坡就減速](#%E7%AF%84%E4%BE%8B-6%EF%BC%9A%E4%BF%AF%E4%BB%B0%E8%A7%92%EF%BC%9A%E4%B8%8A%E5%9D%A1%E5%B0%B1%E6%B8%9B%E9%80%9F)（僅 Pybricks／EV3 MicroPython／clev3r）
 7. [轉太快就警告](#%E7%AF%84%E4%BE%8B-7%EF%BC%9A%E8%BD%89%E5%A4%AA%E5%BF%AB%E5%B0%B1%E8%AD%A6%E5%91%8A)（僅 Pybricks／EV3 MicroPython／clev3r）
+8. [轉到指定方向（絕對角度）](#%E7%AF%84%E4%BE%8B-8%EF%BC%9A%E8%BD%89%E5%88%B0%E6%8C%87%E5%AE%9A%E6%96%B9%E5%90%91%EF%BC%88%E7%B5%95%E5%B0%8D%E8%A7%92%E5%BA%A6%EF%BC%89)
+9. [從現在的方向再轉 90 度（相對角度）](#%E7%AF%84%E4%BE%8B-9%EF%BC%9A%E5%BE%9E%E7%8F%BE%E5%9C%A8%E7%9A%84%E6%96%B9%E5%90%91%E5%86%8D%E8%BD%89-90-%E5%BA%A6%EF%BC%88%E7%9B%B8%E5%B0%8D%E8%A7%92%E5%BA%A6%EF%BC%89)
 
 ---
 
@@ -1098,7 +1100,7 @@ EndWhile
 - **上坡角度是負的？** 正常，正負跟安裝方向有關；這個範例用絕對值，所以上坡下坡都會減速。
 - **車子沒動，角度卻一直慢慢變？** 開機或歸零的那一下車子要完全靜止。把車子放好，拔掉感應器重插一次再試。
 - **數字一直是 0 或不會動？** 感應器韌體要 v4.0（2026-10）以上才有這個模式，舊韌體請先更新。
-- **EV3-G／Classroom 怎麼沒有這個範例？** 這個範例用的是新模式（2026-10 韌體 v4 起），EV3-G 和 Classroom 的紅外線積木讀不到，只有 Pybricks、EV3 MicroPython、clev3r 能用。
+- **EV3-G／Classroom 怎麼沒有這個範例？** 這個範例用的是新模式（2026-10 韌體 v4 起），EV3-G 和 Classroom 的陀螺儀積木讀不到，只有 Pybricks、EV3 MicroPython、clev3r 能用。
 
 ---
 
@@ -1254,7 +1256,529 @@ EndWhile
 
 - **不動也一直嗶？** 把 900 改大，或確認感應器有固定好、沒有在晃。
 - **數字一直是 0 或不會動？** 感應器韌體要 v4.0（2026-10）以上才有這個模式，舊韌體請先更新。
-- **EV3-G／Classroom 怎麼沒有這個範例？** 這個範例用的是新模式（2026-10 韌體 v4 起），EV3-G 和 Classroom 的紅外線積木讀不到，只有 Pybricks、EV3 MicroPython、clev3r 能用。
+- **EV3-G／Classroom 怎麼沒有這個範例？** 這個範例用的是新模式（2026-10 韌體 v4 起），EV3-G 和 Classroom 的陀螺儀積木讀不到，只有 Pybricks、EV3 MicroPython、clev3r 能用。
+
+---
+
+## 範例 8：轉到指定方向（絕對角度）
+
+**這個範例會做什麼：** 程式開始時歸零一次，記住「正前方」是 0 度，之後中間都不再歸零，依序轉到 90 度、180 度、再轉回 0 度。所有方向都以「開始時的正前方」為準，每次轉過頭的一點點誤差不會一次一次累加，比賽最常用這種寫法。
+
+**要準備什麼：**
+
+- EV3 主機＋教育版基本車（左輪接 B、右輪接 C）
+- IMU 陀螺儀（EV3 版）
+
+**怎麼接：** IMU 陀螺儀插 1 號孔，平放固定在車身上（不要晃動）。程式開始時車子要靜止不動。
+
+**下載程式（選你用的軟體）：**
+
+[⬇ EV3-G 官方軟體](/examples/imu/ev3_beginner/ex08_turn_to_heading.ev3) ｜ [⬇ EV3 Classroom](/examples/imu/ev3_beginner/ex08_turn_to_heading.lmsp) ｜ [⬇ Pybricks v4](/examples/imu/ev3_beginner/ex08_turn_to_heading_pybricks_v4.py) ｜ [⬇ EV3 MicroPython v2.0](/examples/imu/ev3_beginner/ex08_turn_to_heading_ev3micropython_v2.py) ｜ [⬇ clev3r](/examples/imu/ev3_beginner/ex08_turn_to_heading.bp)
+
+<details><summary>Pybricks v4 程式碼</summary>
+
+```python
+# ============================================================
+# IMU 陀螺儀感應器 EV3 新手範例 08：轉到指定方向（絕對角度）
+# 軟體：Pybricks v4（用 Chrome 打開 https://code.pybricks.com ，EV3 版目前是 Beta）
+# 接法：IMU 陀螺儀插 1 號孔；左輪馬達接 B、右輪馬達接 C
+# 這個範例會做什麼：程式開始時歸零一次，記住「正前方」是 0 度，之後中間都不再歸零，依序轉到 90 度、180 度、再轉回 0 度。所有方向都以「開始時的正前方」為準，每次轉過頭的一點點誤差不會一次一次累加，比賽最常用這種寫法。
+# ============================================================
+
+from pybricks.hubs import EV3Brick
+from pybricks.ev3devices import Motor, GyroSensor
+from pybricks.parameters import Port
+from pybricks.tools import wait
+
+ev3 = EV3Brick()
+gyro = GyroSensor(Port.S1)        # IMU 陀螺儀插 1 號孔
+left_motor = Motor(Port.B)        # 左輪
+right_motor = Motor(Port.C)       # 右輪
+
+
+def read_angle():
+    # 機器人轉了幾度：連續累加（轉一圈＝360，可超過 360）
+    return gyro.angle()
+
+
+# ---------- 程式從這裡開始 ----------
+# 角度歸零：記住現在的方向是「正前方」0 度（只歸零這一次）
+gyro.reset_angle(0)
+# 如果現在的角度小於 90
+if read_angle() < 90:
+    # 還沒到 90 度：原地向右轉（左輪往前、右輪往後）
+    left_motor.dc(20)
+    right_motor.dc(-20)
+    # 等到角度大於等於 90
+    while not (read_angle() >= 90):
+        wait(10)
+else:
+    # 超過 90 度：原地向左轉（左輪往後、右輪往前）
+    left_motor.dc(-20)
+    right_motor.dc(20)
+    # 等到角度小於等於 90
+    while not (read_angle() <= 90):
+        wait(10)
+# 到 90 度：停車
+left_motor.brake()
+right_motor.brake()
+# 停 1 秒
+wait(1000)
+# 如果現在的角度小於 180
+if read_angle() < 180:
+    # 還沒到 180 度：原地向右轉（左輪往前、右輪往後）
+    left_motor.dc(20)
+    right_motor.dc(-20)
+    # 等到角度大於等於 180
+    while not (read_angle() >= 180):
+        wait(10)
+else:
+    # 超過 180 度：原地向左轉（左輪往後、右輪往前）
+    left_motor.dc(-20)
+    right_motor.dc(20)
+    # 等到角度小於等於 180
+    while not (read_angle() <= 180):
+        wait(10)
+# 到 180 度：停車
+left_motor.brake()
+right_motor.brake()
+# 停 1 秒
+wait(1000)
+# 如果現在的角度小於 0
+if read_angle() < 0:
+    # 還沒到 0 度：原地向右轉（左輪往前、右輪往後）
+    left_motor.dc(20)
+    right_motor.dc(-20)
+    # 等到角度大於等於 0
+    while not (read_angle() >= 0):
+        wait(10)
+else:
+    # 超過 0 度：原地向左轉（左輪往後、右輪往前）
+    left_motor.dc(-20)
+    right_motor.dc(20)
+    # 等到角度小於等於 0
+    while not (read_angle() <= 0):
+        wait(10)
+# 到 0 度：停車
+left_motor.brake()
+right_motor.brake()
+# 停 1 秒
+wait(1000)
+# 轉完嗶一聲
+ev3.speaker.beep()
+```
+
+</details>
+
+<details><summary>EV3 MicroPython v2.0 程式碼</summary>
+
+```python
+#!/usr/bin/env pybricks-micropython
+# ============================================================
+# IMU 陀螺儀感應器 EV3 新手範例 08：轉到指定方向（絕對角度）
+# 軟體：樂高官方 EV3 MicroPython v2.0（microSD 開機卡＋VS Code「LEGO MINDSTORMS EV3 MicroPython」擴充套件）
+# 接法：IMU 陀螺儀插 1 號孔；左輪馬達接 B、右輪馬達接 C
+# 這個範例會做什麼：程式開始時歸零一次，記住「正前方」是 0 度，之後中間都不再歸零，依序轉到 90 度、180 度、再轉回 0 度。所有方向都以「開始時的正前方」為準，每次轉過頭的一點點誤差不會一次一次累加，比賽最常用這種寫法。
+# ============================================================
+
+from pybricks.hubs import EV3Brick
+from pybricks.ev3devices import Motor, GyroSensor
+from pybricks.parameters import Port
+from pybricks.tools import wait
+
+ev3 = EV3Brick()
+gyro = GyroSensor(Port.S1)        # IMU 陀螺儀插 1 號孔
+left_motor = Motor(Port.B)        # 左輪
+right_motor = Motor(Port.C)       # 右輪
+
+
+def read_angle():
+    # 機器人轉了幾度：連續累加（轉一圈＝360，可超過 360）
+    return gyro.angle()
+
+
+# ---------- 程式從這裡開始 ----------
+# 角度歸零：記住現在的方向是「正前方」0 度（只歸零這一次）
+gyro.reset_angle(0)
+# 如果現在的角度小於 90
+if read_angle() < 90:
+    # 還沒到 90 度：原地向右轉（左輪往前、右輪往後）
+    left_motor.dc(20)
+    right_motor.dc(-20)
+    # 等到角度大於等於 90
+    while not (read_angle() >= 90):
+        wait(10)
+else:
+    # 超過 90 度：原地向左轉（左輪往後、右輪往前）
+    left_motor.dc(-20)
+    right_motor.dc(20)
+    # 等到角度小於等於 90
+    while not (read_angle() <= 90):
+        wait(10)
+# 到 90 度：停車
+left_motor.brake()
+right_motor.brake()
+# 停 1 秒
+wait(1000)
+# 如果現在的角度小於 180
+if read_angle() < 180:
+    # 還沒到 180 度：原地向右轉（左輪往前、右輪往後）
+    left_motor.dc(20)
+    right_motor.dc(-20)
+    # 等到角度大於等於 180
+    while not (read_angle() >= 180):
+        wait(10)
+else:
+    # 超過 180 度：原地向左轉（左輪往後、右輪往前）
+    left_motor.dc(-20)
+    right_motor.dc(20)
+    # 等到角度小於等於 180
+    while not (read_angle() <= 180):
+        wait(10)
+# 到 180 度：停車
+left_motor.brake()
+right_motor.brake()
+# 停 1 秒
+wait(1000)
+# 如果現在的角度小於 0
+if read_angle() < 0:
+    # 還沒到 0 度：原地向右轉（左輪往前、右輪往後）
+    left_motor.dc(20)
+    right_motor.dc(-20)
+    # 等到角度大於等於 0
+    while not (read_angle() >= 0):
+        wait(10)
+else:
+    # 超過 0 度：原地向左轉（左輪往後、右輪往前）
+    left_motor.dc(-20)
+    right_motor.dc(20)
+    # 等到角度小於等於 0
+    while not (read_angle() <= 0):
+        wait(10)
+# 到 0 度：停車
+left_motor.brake()
+right_motor.brake()
+# 停 1 秒
+wait(1000)
+# 轉完嗶一聲
+ev3.speaker.beep()
+```
+
+</details>
+
+<details><summary>clev3r 程式碼</summary>
+
+```vb
+' ============================================================
+' IMU 陀螺儀感應器 EV3 新手範例 08：轉到指定方向（絕對角度）
+' 軟體：clev3r
+' 接法：IMU 陀螺儀插 1 號孔；左輪馬達接 B、右輪馬達接 C
+' 這個範例會做什麼：程式開始時歸零一次，記住「正前方」是 0 度，之後中間都不再歸零，依序轉到 90 度、180 度、再轉回 0 度。所有方向都以「開始時的正前方」為準，每次轉過頭的一點點誤差不會一次一次累加，比賽最常用這種寫法。
+' 讀值：angle＝機器人轉了幾度（連續累加（轉一圈＝360，可超過 360））
+' ============================================================
+folder "prjs" "MBC_imu_ex08"
+
+' IMU 陀螺儀插 1 號孔，使用模式 0
+Sensor.SetMode(1, 0)
+' 陀螺儀歸零的指令（送 0x11 給感應器）
+gyroReset[0] = 17
+LCD.Clear()
+
+' 角度歸零：記住現在的方向是「正前方」0 度（只歸零這一次）
+Sensor.SendUARTData(1, 1, gyroReset)
+Program.Delay(100)
+' 如果現在的角度小於 90
+If Sensor.ReadRawValue(1, 0) < 90 Then
+  ' 還沒到 90 度：原地向右轉（左輪往前、右輪往後）
+  Motor.StartPower("B", 20)
+  Motor.StartPower("C", -20)
+  ' 等到角度大於等於 90
+  While Sensor.ReadRawValue(1, 0) < 90
+    Program.Delay(10)
+  EndWhile
+Else
+  ' 超過 90 度：原地向左轉（左輪往後、右輪往前）
+  Motor.StartPower("B", -20)
+  Motor.StartPower("C", 20)
+  ' 等到角度小於等於 90
+  While Sensor.ReadRawValue(1, 0) > 90
+    Program.Delay(10)
+  EndWhile
+EndIf
+' 到 90 度：停車
+Motor.Stop("BC", "True")
+' 停 1 秒
+Program.Delay(1000)
+' 如果現在的角度小於 180
+If Sensor.ReadRawValue(1, 0) < 180 Then
+  ' 還沒到 180 度：原地向右轉（左輪往前、右輪往後）
+  Motor.StartPower("B", 20)
+  Motor.StartPower("C", -20)
+  ' 等到角度大於等於 180
+  While Sensor.ReadRawValue(1, 0) < 180
+    Program.Delay(10)
+  EndWhile
+Else
+  ' 超過 180 度：原地向左轉（左輪往後、右輪往前）
+  Motor.StartPower("B", -20)
+  Motor.StartPower("C", 20)
+  ' 等到角度小於等於 180
+  While Sensor.ReadRawValue(1, 0) > 180
+    Program.Delay(10)
+  EndWhile
+EndIf
+' 到 180 度：停車
+Motor.Stop("BC", "True")
+' 停 1 秒
+Program.Delay(1000)
+' 如果現在的角度小於 0
+If Sensor.ReadRawValue(1, 0) < 0 Then
+  ' 還沒到 0 度：原地向右轉（左輪往前、右輪往後）
+  Motor.StartPower("B", 20)
+  Motor.StartPower("C", -20)
+  ' 等到角度大於等於 0
+  While Sensor.ReadRawValue(1, 0) < 0
+    Program.Delay(10)
+  EndWhile
+Else
+  ' 超過 0 度：原地向左轉（左輪往後、右輪往前）
+  Motor.StartPower("B", -20)
+  Motor.StartPower("C", 20)
+  ' 等到角度小於等於 0
+  While Sensor.ReadRawValue(1, 0) > 0
+    Program.Delay(10)
+  EndWhile
+EndIf
+' 到 0 度：停車
+Motor.Stop("BC", "True")
+' 停 1 秒
+Program.Delay(1000)
+' 轉完嗶一聲
+Speaker.Tone(50, 1000, 100)
+Speaker.Wait()
+```
+
+</details>
+
+**一步一步看懂程式：**
+
+1. 角度歸零：記住現在的方向是「正前方」0 度（只歸零這一次）
+1. 如果現在的角度小於 90
+   - 還沒到 90 度：原地向右轉（左輪往前、右輪往後）
+   - 等到角度大於等於 90
+   - 否則：
+      - 超過 90 度：原地向左轉（左輪往後、右輪往前）
+      - 等到角度小於等於 90
+1. 到 90 度：停車
+1. 停 1 秒
+1. 如果現在的角度小於 180
+   - 還沒到 180 度：原地向右轉（左輪往前、右輪往後）
+   - 等到角度大於等於 180
+   - 否則：
+      - 超過 180 度：原地向左轉（左輪往後、右輪往前）
+      - 等到角度小於等於 180
+1. 到 180 度：停車
+1. 停 1 秒
+1. 如果現在的角度小於 0
+   - 還沒到 0 度：原地向右轉（左輪往前、右輪往後）
+   - 等到角度大於等於 0
+   - 否則：
+      - 超過 0 度：原地向左轉（左輪往後、右輪往前）
+      - 等到角度小於等於 0
+1. 到 0 度：停車
+1. 停 1 秒
+1. 轉完嗶一聲
+
+**跑起來應該看到：** 車子先右轉到 90 度（面向右邊）停 1 秒，再右轉到 180 度（面向後面）停 1 秒，最後左轉回 0 度，回到一開始的方向並嗶一聲。實測轉回原位的誤差大約 ±3 度。
+
+**常見問題：**
+
+- **每次都轉過頭幾度？** 車子停下來需要一點時間。把轉速 20 調慢（例如 15），或把右轉的目標減幾度（例如 90 改 87、180 改 177）。
+- **一直轉停不下來，或轉的方向相反？** 感應器可能上下裝反了。IMU 要正面朝上平放，這樣從上往下看順時針轉（右轉）角度才會變大。
+- **為什麼不是每轉一次就歸零一次？** 每次歸零，上一次轉過頭的幾度就會被當成新的「正前方」，誤差一次一次累加。只在開始時歸零一次，每個方向都以開始時的正前方為準，誤差不會累積。
+- **車子沒動，角度卻一直慢慢變？** 開機或歸零的那一下車子要完全靜止。把車子放好，拔掉感應器重插一次再試。
+
+---
+
+## 範例 9：從現在的方向再轉 90 度（相對角度）
+
+**這個範例會做什麼：** 程式開始時歸零一次，然後重複 4 次：先看「現在」的角度，目標就是現在再加 90 度，右轉到目標就停。每次都以「現在的方向」為準，寫法很直覺；但每次轉過頭的幾度會留到下一次，跟範例 8 的「絕對角度」比一比就知道差在哪。
+
+**要準備什麼：**
+
+- EV3 主機＋教育版基本車（左輪接 B、右輪接 C）
+- IMU 陀螺儀（EV3 版）
+
+**怎麼接：** IMU 陀螺儀插 1 號孔，平放固定在車身上（不要晃動）。程式開始時車子要靜止不動。
+
+**下載程式（選你用的軟體）：**
+
+[⬇ EV3-G 官方軟體](/examples/imu/ev3_beginner/ex09_turn_relative.ev3) ｜ [⬇ EV3 Classroom](/examples/imu/ev3_beginner/ex09_turn_relative.lmsp) ｜ [⬇ Pybricks v4](/examples/imu/ev3_beginner/ex09_turn_relative_pybricks_v4.py) ｜ [⬇ EV3 MicroPython v2.0](/examples/imu/ev3_beginner/ex09_turn_relative_ev3micropython_v2.py) ｜ [⬇ clev3r](/examples/imu/ev3_beginner/ex09_turn_relative.bp)
+
+<details><summary>Pybricks v4 程式碼</summary>
+
+```python
+# ============================================================
+# IMU 陀螺儀感應器 EV3 新手範例 09：從現在的方向再轉 90 度（相對角度）
+# 軟體：Pybricks v4（用 Chrome 打開 https://code.pybricks.com ，EV3 版目前是 Beta）
+# 接法：IMU 陀螺儀插 1 號孔；左輪馬達接 B、右輪馬達接 C
+# 這個範例會做什麼：程式開始時歸零一次，然後重複 4 次：先看「現在」的角度，目標就是現在再加 90 度，右轉到目標就停。每次都以「現在的方向」為準，寫法很直覺；但每次轉過頭的幾度會留到下一次，跟範例 8 的「絕對角度」比一比就知道差在哪。
+# ============================================================
+
+from pybricks.hubs import EV3Brick
+from pybricks.ev3devices import Motor, GyroSensor
+from pybricks.parameters import Port
+from pybricks.tools import wait
+
+ev3 = EV3Brick()
+gyro = GyroSensor(Port.S1)        # IMU 陀螺儀插 1 號孔
+left_motor = Motor(Port.B)        # 左輪
+right_motor = Motor(Port.C)       # 右輪
+
+
+def read_angle():
+    # 機器人轉了幾度：連續累加（轉一圈＝360，可超過 360）
+    return gyro.angle()
+
+
+# ---------- 程式從這裡開始 ----------
+# 角度歸零（這時候不要動機器人）
+gyro.reset_angle(0)
+# 下面的動作重複 4 次
+for i in range(4):
+    # 目標 target ＝ 現在的角度 ＋ 90：以「現在」為準再轉 90 度
+    target = read_angle() + 90
+    # 左輪往前、右輪往後：原地向右轉
+    left_motor.dc(20)
+    right_motor.dc(-20)
+    # 等到角度大於等於 target
+    while not (read_angle() >= target):
+        wait(10)
+    # 轉到了：停車
+    left_motor.brake()
+    right_motor.brake()
+    # 停 0.5 秒
+    wait(500)
+# 轉完 4 次嗶一聲
+ev3.speaker.beep()
+```
+
+</details>
+
+<details><summary>EV3 MicroPython v2.0 程式碼</summary>
+
+```python
+#!/usr/bin/env pybricks-micropython
+# ============================================================
+# IMU 陀螺儀感應器 EV3 新手範例 09：從現在的方向再轉 90 度（相對角度）
+# 軟體：樂高官方 EV3 MicroPython v2.0（microSD 開機卡＋VS Code「LEGO MINDSTORMS EV3 MicroPython」擴充套件）
+# 接法：IMU 陀螺儀插 1 號孔；左輪馬達接 B、右輪馬達接 C
+# 這個範例會做什麼：程式開始時歸零一次，然後重複 4 次：先看「現在」的角度，目標就是現在再加 90 度，右轉到目標就停。每次都以「現在的方向」為準，寫法很直覺；但每次轉過頭的幾度會留到下一次，跟範例 8 的「絕對角度」比一比就知道差在哪。
+# ============================================================
+
+from pybricks.hubs import EV3Brick
+from pybricks.ev3devices import Motor, GyroSensor
+from pybricks.parameters import Port
+from pybricks.tools import wait
+
+ev3 = EV3Brick()
+gyro = GyroSensor(Port.S1)        # IMU 陀螺儀插 1 號孔
+left_motor = Motor(Port.B)        # 左輪
+right_motor = Motor(Port.C)       # 右輪
+
+
+def read_angle():
+    # 機器人轉了幾度：連續累加（轉一圈＝360，可超過 360）
+    return gyro.angle()
+
+
+# ---------- 程式從這裡開始 ----------
+# 角度歸零（這時候不要動機器人）
+gyro.reset_angle(0)
+# 下面的動作重複 4 次
+for i in range(4):
+    # 目標 target ＝ 現在的角度 ＋ 90：以「現在」為準再轉 90 度
+    target = read_angle() + 90
+    # 左輪往前、右輪往後：原地向右轉
+    left_motor.dc(20)
+    right_motor.dc(-20)
+    # 等到角度大於等於 target
+    while not (read_angle() >= target):
+        wait(10)
+    # 轉到了：停車
+    left_motor.brake()
+    right_motor.brake()
+    # 停 0.5 秒
+    wait(500)
+# 轉完 4 次嗶一聲
+ev3.speaker.beep()
+```
+
+</details>
+
+<details><summary>clev3r 程式碼</summary>
+
+```vb
+' ============================================================
+' IMU 陀螺儀感應器 EV3 新手範例 09：從現在的方向再轉 90 度（相對角度）
+' 軟體：clev3r
+' 接法：IMU 陀螺儀插 1 號孔；左輪馬達接 B、右輪馬達接 C
+' 這個範例會做什麼：程式開始時歸零一次，然後重複 4 次：先看「現在」的角度，目標就是現在再加 90 度，右轉到目標就停。每次都以「現在的方向」為準，寫法很直覺；但每次轉過頭的幾度會留到下一次，跟範例 8 的「絕對角度」比一比就知道差在哪。
+' 讀值：angle＝機器人轉了幾度（連續累加（轉一圈＝360，可超過 360））
+' ============================================================
+folder "prjs" "MBC_imu_ex09"
+
+' IMU 陀螺儀插 1 號孔，使用模式 0
+Sensor.SetMode(1, 0)
+' 陀螺儀歸零的指令（送 0x11 給感應器）
+gyroReset[0] = 17
+LCD.Clear()
+
+' 角度歸零（這時候不要動機器人）
+Sensor.SendUARTData(1, 1, gyroReset)
+Program.Delay(100)
+' 下面的動作重複 4 次
+For i = 1 To 4
+  ' 目標 target ＝ 現在的角度 ＋ 90：以「現在」為準再轉 90 度
+  target = Sensor.ReadRawValue(1, 0) + 90
+  ' 左輪往前、右輪往後：原地向右轉
+  Motor.StartPower("B", 20)
+  Motor.StartPower("C", -20)
+  ' 等到角度大於等於 target
+  While Sensor.ReadRawValue(1, 0) < target
+    Program.Delay(10)
+  EndWhile
+  ' 轉到了：停車
+  Motor.Stop("BC", "True")
+  ' 停 0.5 秒
+  Program.Delay(500)
+EndFor
+' 轉完 4 次嗶一聲
+Speaker.Tone(50, 1000, 100)
+Speaker.Wait()
+```
+
+</details>
+
+**一步一步看懂程式：**
+
+1. 角度歸零（這時候不要動機器人）
+1. 下面的動作重複 4 次
+   - 目標 target ＝ 現在的角度 ＋ 90：以「現在」為準再轉 90 度
+   - 左輪往前、右輪往後：原地向右轉
+   - 等到角度大於等於 target
+   - 轉到了：停車
+   - 停 0.5 秒
+1. 轉完 4 次嗶一聲
+
+**跑起來應該看到：** 車子原地右轉 4 次、每次約 90 度，轉滿一圈後嗶一聲。仔細看最後的方向，可能跟一開始差幾度。
+
+**常見問題：**
+
+- **轉完 4 次，沒有剛好回到原來的方向？** 正常。每次轉過頭的幾度會留到下一次（下一次是從轉過頭的方向再加 90），4 次後可能偏離原方向幾度。要不累積，就用範例 8「絕對角度」的做法：只在開始時歸零，目標固定用 90、180、270、360。
+- **每次都轉過頭幾度？** 車子停下來需要一點時間。把轉速 20 調慢，或把 ＋ 90 改成 ＋ 87 試試看。
+- **一直轉停不下來？** 感應器可能上下裝反了（右轉時角度變小）。IMU 要正面朝上平放。
+- **車子沒動，角度卻一直慢慢變？** 開機或歸零的那一下車子要完全靜止。把車子放好，拔掉感應器重插一次再試。
 
 ---
 

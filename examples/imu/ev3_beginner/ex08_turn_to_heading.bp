@@ -1,0 +1,87 @@
+' ============================================================
+' IMU 陀螺儀感應器 EV3 新手範例 08：轉到指定方向（絕對角度）
+' 軟體：clev3r
+' 接法：IMU 陀螺儀插 1 號孔；左輪馬達接 B、右輪馬達接 C
+' 這個範例會做什麼：程式開始時歸零一次，記住「正前方」是 0 度，之後中間都不再歸零，依序轉到 90 度、180 度、再轉回 0 度。所有方向都以「開始時的正前方」為準，每次轉過頭的一點點誤差不會一次一次累加，比賽最常用這種寫法。
+' 讀值：angle＝機器人轉了幾度（連續累加（轉一圈＝360，可超過 360））
+' ============================================================
+folder "prjs" "MBC_imu_ex08"
+
+' IMU 陀螺儀插 1 號孔，使用模式 0
+Sensor.SetMode(1, 0)
+' 陀螺儀歸零的指令（送 0x11 給感應器）
+gyroReset[0] = 17
+LCD.Clear()
+
+' 角度歸零：記住現在的方向是「正前方」0 度（只歸零這一次）
+Sensor.SendUARTData(1, 1, gyroReset)
+Program.Delay(100)
+' 如果現在的角度小於 90
+If Sensor.ReadRawValue(1, 0) < 90 Then
+  ' 還沒到 90 度：原地向右轉（左輪往前、右輪往後）
+  Motor.StartPower("B", 20)
+  Motor.StartPower("C", -20)
+  ' 等到角度大於等於 90
+  While Sensor.ReadRawValue(1, 0) < 90
+    Program.Delay(10)
+  EndWhile
+Else
+  ' 超過 90 度：原地向左轉（左輪往後、右輪往前）
+  Motor.StartPower("B", -20)
+  Motor.StartPower("C", 20)
+  ' 等到角度小於等於 90
+  While Sensor.ReadRawValue(1, 0) > 90
+    Program.Delay(10)
+  EndWhile
+EndIf
+' 到 90 度：停車
+Motor.Stop("BC", "True")
+' 停 1 秒
+Program.Delay(1000)
+' 如果現在的角度小於 180
+If Sensor.ReadRawValue(1, 0) < 180 Then
+  ' 還沒到 180 度：原地向右轉（左輪往前、右輪往後）
+  Motor.StartPower("B", 20)
+  Motor.StartPower("C", -20)
+  ' 等到角度大於等於 180
+  While Sensor.ReadRawValue(1, 0) < 180
+    Program.Delay(10)
+  EndWhile
+Else
+  ' 超過 180 度：原地向左轉（左輪往後、右輪往前）
+  Motor.StartPower("B", -20)
+  Motor.StartPower("C", 20)
+  ' 等到角度小於等於 180
+  While Sensor.ReadRawValue(1, 0) > 180
+    Program.Delay(10)
+  EndWhile
+EndIf
+' 到 180 度：停車
+Motor.Stop("BC", "True")
+' 停 1 秒
+Program.Delay(1000)
+' 如果現在的角度小於 0
+If Sensor.ReadRawValue(1, 0) < 0 Then
+  ' 還沒到 0 度：原地向右轉（左輪往前、右輪往後）
+  Motor.StartPower("B", 20)
+  Motor.StartPower("C", -20)
+  ' 等到角度大於等於 0
+  While Sensor.ReadRawValue(1, 0) < 0
+    Program.Delay(10)
+  EndWhile
+Else
+  ' 超過 0 度：原地向左轉（左輪往後、右輪往前）
+  Motor.StartPower("B", -20)
+  Motor.StartPower("C", 20)
+  ' 等到角度小於等於 0
+  While Sensor.ReadRawValue(1, 0) > 0
+    Program.Delay(10)
+  EndWhile
+EndIf
+' 到 0 度：停車
+Motor.Stop("BC", "True")
+' 停 1 秒
+Program.Delay(1000)
+' 轉完嗶一聲
+Speaker.Tone(50, 1000, 100)
+Speaker.Wait()
