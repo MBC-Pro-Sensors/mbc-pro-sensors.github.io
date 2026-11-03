@@ -20,7 +20,7 @@
 - Library only: [MBC_sensors.py](/examples/ps4/pybricks/MBC_sensors.py) (use this for new projects: one file for every MBC sensor, `from MBC_sensors import MBC_GAMEPAD`) · [MBC_gamepad_Lib.py](/examples/ps4/pybricks/MBC_gamepad_Lib.py) (for the examples on this page and older programs)
 
 > [!NOTE]
-> The Pybricks 3.6.1 examples are no longer updated; the old files are under "Legacy (no longer updated)" on the [Downloads page](/en/downloads.md).
+> The Pybricks 3.6.1 examples are no longer updated; the old files are under "Legacy (no longer updated)" on the [Downloads page](/en/downloads.md). In those old examples a key comes out as a decimal (for example `1.0`); it still works for checking whether the key is pressed, and you can wrap it in `int()` to print a whole number. For Pybricks 4.x use the [SPIKE beginner examples](/en/sensors/ps4/spike-examples.md) or the MBC library.
 
 ### All buttons as one number: buttons() and buttons_psx()
 

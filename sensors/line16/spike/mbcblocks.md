@@ -157,8 +157,8 @@ dev = PUPDevice(Port.A)   # 感應器插 A 孔
 words = dev.read(9)[0:4]
 light = []
 for w in words:
-    light.append(w & 0xFF)          # 奇數路
-    light.append((w >> 8) & 0xFF)   # 偶數路
+    for k in range(4):
+        light.append((w >> (4 * k)) & 0x0F)   # 低位元在前
 ```
 
 </section>

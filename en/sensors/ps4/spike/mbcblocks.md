@@ -59,7 +59,7 @@ from pybricks.parameters import Port
 dev = PUPDevice(Port.A)   # sensor on port A
 
 w = dev.read(9)[0]
-dpad = (w & 0xFF)   # D-pad（lo byte）
+dpad = (w & 0x0F)   # D-pad（low 4 bits of the lo byte）
 ```
 
 </section>
@@ -83,7 +83,7 @@ from pybricks.parameters import Port
 dev = PUPDevice(Port.A)   # sensor on port A
 
 w = dev.read(9)[0]
-shapeKeys = (w & 0xFF)   # shape buttons（lo byte）
+shapeKeys = ((w >> 4) & 0x0F)   # shape buttons（high 4 bits of the lo byte）
 ```
 
 </section>
@@ -107,7 +107,7 @@ from pybricks.parameters import Port
 dev = PUPDevice(Port.A)   # sensor on port A
 
 w = dev.read(9)[1]
-shoulderKeys = (w & 0xFF)   # shoulder buttons（lo byte）
+shoulderKeys = (w & 0x0F)   # shoulder buttons（low 4 bits of the lo byte）
 ```
 
 </section>
@@ -131,7 +131,7 @@ from pybricks.parameters import Port
 dev = PUPDevice(Port.A)   # sensor on port A
 
 w = dev.read(9)[1]
-funcKeys = (w & 0xFF)   # function buttons（lo byte）
+funcKeys = ((w >> 4) & 0x0F)   # function buttons（high 4 bits of the lo byte）
 ```
 
 </section>
@@ -144,7 +144,7 @@ funcKeys = (w & 0xFF)   # function buttons（lo byte）
 
 | Range | Meaning |
 | :--- | :--- |
-| `-100~+100` | 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right/up positive; 0 when not connected |
+| `1~9` (5 = centre) | SPIKE gives a scaled value, 1~9 (5 = centre). I2C registers: 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right/up positive; 0 when not connected |
 
 Add this sensor's blocks on the MBC Blocks website and use the "stick axis 1~4" block; on the hub it runs this Pybricks code (mode 9):
 
@@ -154,11 +154,7 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # sensor on port A
 
-words = dev.read(9)[2:6]
-stick = []
-for w in words:
-    stick.append(w & 0xFF)          # odd channel
-    stick.append((w >> 8) & 0xFF)   # even channel
+stick = list(dev.read(9)[2:6])   # [LX, LY, RX, RY]
 ```
 
 </section>

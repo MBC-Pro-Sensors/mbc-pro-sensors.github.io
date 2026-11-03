@@ -13,7 +13,7 @@ For other competitions (Robofest, RoboCupJunior, AERC, GRG and more), see the [C
 | Product | Elementary | Junior | Senior | Notes |
 | :--- | :---: | :---: | :---: | :--- |
 | [Pathfinder 8-Way](/en/sensors/line8/index.md) / [16-Way](/en/sensors/line16/index.md) | ✅ | ✅ | ✅ | No limit on sensor type or number |
-| [IMU 9-Axis Gyro](/en/sensors/imu/index.md) | ✅ | ✅ | ✅ | Coming soon |
+| [IMU 9-Axis Gyro](/en/sensors/imu/index.md) | ✅ | ✅ | ✅ | No limit on sensor type or number |
 | [Ranger 2-Way (TOF2)](/en/sensors/tof2/index.md) | ✅ | ✅ | ✅ | Laser eye-safety proof required (see point 3) |
 | [Ranger 8-Way (TOF8)](/en/sensors/tof8/index.md) | ✅* | ✅* | ✅ | *Eight fixed single-point ToF sensors, not a rotating LIDAR scanner. Confirm with your National Organizer before the event (see point 2) |
 | [Sharpshooter Vision](/en/sensors/unicam/index.md) | ❌ | ✅ | ✅ | Cameras are limited to Junior and Senior (the [legacy editions](/en/sensors/esp32cam/index.md) too) |

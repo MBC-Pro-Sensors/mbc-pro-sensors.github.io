@@ -140,7 +140,7 @@ func = dev.read(9)[1]   # function buttons
 
 | Range | Meaning |
 | :--- | :--- |
-| `-100~+100` | 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right / up positive (raw 0~255 with ±7 dead zone); 0 when not connected. EV3 / SPIKE / MATRIX carry 0~99 (50 = centre) or 1~9 (5 = centre), see each platform |
+| `1~9` (5 = centre) | SPIKE gives a scaled value, 1~9 (5 = centre). I2C registers: 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right / up positive (raw 0~255 with ±7 dead zone); 0 when not connected. EV3 / SPIKE / MATRIX carry 0~99 (50 = centre) or 1~9 (5 = centre), see each platform |
 
 Add this sensor's blocks on the MBC Blocks website and use the "stick LX / LY / RX / RY" block; on the hub it runs this Pybricks code (mode 9):
 
@@ -150,11 +150,7 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # sensor on port A
 
-words = dev.read(9)[2:6]
-stick = []
-for w in words:
-    stick.append(w & 0xFF)          # odd channel
-    stick.append((w >> 8) & 0xFF)   # even channel
+stick = list(dev.read(9)[2:6])   # [LX, LY, RX, RY]
 ```
 
 </section>

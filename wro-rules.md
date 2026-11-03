@@ -13,7 +13,7 @@ WRO 從 2025 年起開放 RoboMission 使用**任何品牌**的控制器、馬�
 | 產品 | 國小組<br>Elementary | 國中組<br>Junior | 高中組<br>Senior | 注意事項 |
 | :--- | :---: | :---: | :---: | :--- |
 | [循行者 8 路](/sensors/line8/index.md)／[16 路](/sensors/line16/index.md) | ✅ | ✅ | ✅ | 感應器種類與數量不限 |
-| [陀螺儀 IMU 九軸](/sensors/imu/index.md) | ✅ | ✅ | ✅ | 即將推出 |
+| [陀螺儀 IMU 九軸](/sensors/imu/index.md) | ✅ | ✅ | ✅ | 感應器種類與數量不限 |
 | [測距者 2 路 (TOF2)](/sensors/tof2/index.md) | ✅ | ✅ | ✅ | 雷射需附護眼安全證明（見第 3 點） |
 | [測距者 8 路 (TOF8)](/sensors/tof8/index.md) | ✅＊ | ✅＊ | ✅ | ＊8 顆固定方向的單點 ToF 測距，不是旋轉掃描式光達；建議賽前向主辦單位確認歸類（見第 2 點） |
 | [神攝手](/sensors/unicam/index.md) | ❌ | ✅ | ✅ | 相機只限國中組、高中組（[舊版](/sensors/esp32cam/index.md)也一樣） |

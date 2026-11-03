@@ -235,7 +235,12 @@ function readingsBlock(key, host, sw, p, lang, sp, avail, heading, idPre) {
     // EV3 有些模式送的是換算值（protocol scale），範圍欄要講清楚，不然會照值本身的範圍去用
     const sc = host === 'ev3' ? (v.ev3 || []).filter((e) => e.scale) : [];
     const scNote = sc.length ? T(lang, `（EV3 ${sc.map((e) => `模式 ${e.mode}`).join('、')} 讀到的是換算值：${sc[0].scale}）`, ` (EV3 ${sc.map((e) => `mode ${e.mode}`).join(', ')} ${sc.length > 1 ? 'give' : 'gives'} a scaled value: ${ev3.scaleText(sc[0].scale, 'en')})`) : '';
-    out.push(table([T(lang, '範圍', 'Range'), T(lang, '意思', 'Meaning')], [[`\`${v.range}\`${v.unit ? ` ${v.unit}` : ''}${scNote}`, L(v.desc, lang)]]), '');
+    // SPIKE 也有換算值（掌控者搖桿：I2C −100~+100，SPIKE 送 1~9）：範圍欄改寫 SPIKE 讀到的
+    const sp = host === 'spike' ? ((v.spike || []).find((e) => e.mode === 9) || (v.spike || [])[0]) : null;
+    const spScale = sp && ((/^\d+~\d+（\d+ = 中間）$/.test(sp.scale || "") && sp.scale) || (/1~9，5 = 中間/.test(sp.note || '') ? '1~9（5 = 中間）' : null));
+    const rng = spScale ? `\`${spScale.replace(/（.*$/, '')}\`${T(lang, `（${spScale.replace(/^[^（]*（|）$/g, '')}）`, ` (${ev3.scaleText(spScale, 'en').replace(/中間/g, 'centre').replace(/^[^(]*\(|\)$/g, '')})`)}` : `\`${v.range}\`${v.unit ? ` ${v.unit}` : ''}${scNote}`;
+    const mean = spScale ? T(lang, `SPIKE 讀到的是換算值 ${spScale}。I2C 暫存器：${L(v.desc, lang)}`, `SPIKE gives a scaled value, ${ev3.scaleText(spScale, 'en').replace(/中間/g, 'centre')}. I2C registers: ${L(v.desc, lang)}`) : L(v.desc, lang);
+    out.push(table([T(lang, '範圍', 'Range'), T(lang, '意思', 'Meaning')], [[rng, mean]]), '');
     out.push(renderResult(r), '', '</section>', '');
   }
   // mBlock 擴展另外做的布林積木（循行者第 N 路在線上？、掌控者按鈕被按下？），不在值表裡

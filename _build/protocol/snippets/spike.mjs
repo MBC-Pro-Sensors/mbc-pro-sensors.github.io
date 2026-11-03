@@ -27,11 +27,22 @@ function nativeLine(v, e, lang) {
   const name = valueName(v, lang);
   if (e.v != null && e.part) {
     const w = `w = dev.read(${e.mode})[${e.v}]`;
-    const pick = e.part === 'lo' ? '(w & 0xFF)' : '((w >> 8) & 0xFF)';
-    return `${w}\n${v.key} = ${pick}${off}   # ${name}（${T(lang, e.part === 'lo' ? '低 byte' : '高 byte', e.part + ' byte')}）`;
+    // 同一個 byte 放兩組 4-bit（例：掌控者方向鍵＝低 nibble、形狀鍵＝高 nibble）要再遮掉另一半
+    const nib = /^低 nibble/.test(e.note || '') ? 'lo' : /^高 nibble/.test(e.note || '') ? 'hi' : null;
+    const sh = (e.part === 'lo' ? 0 : 8) + (nib === 'hi' ? 4 : 0);
+    const pick = nib ? (sh ? `((w >> ${sh}) & 0x0F)` : '(w & 0x0F)') : e.part === 'lo' ? '(w & 0xFF)' : '((w >> 8) & 0xFF)';
+    const part = nib ? T(lang, `${e.part === 'lo' ? '低' : '高'} byte 的${nib === 'lo' ? '低' : '高'} 4 位元`, `${nib === 'lo' ? 'low' : 'high'} 4 bits of the ${e.part} byte`) : T(lang, e.part === 'lo' ? '低 byte' : '高 byte', e.part + ' byte');
+    return `${w}\n${v.key} = ${pick}${off}   # ${name}（${part}）`;
   }
   if (e.v != null && e.count) {
-    return `words = dev.read(${e.mode})[${e.v}:${e.v + e.count}]\n${v.key} = []\nfor w in words:\n    ${v.key}.append(w & 0xFF)          # ${T(lang, '奇數路', 'odd channel')}\n    ${v.key}.append((w >> 8) & 0xFF)   # ${T(lang, '偶數路', 'even channel')}`;
+    const rd = `words = dev.read(${e.mode})[${e.v}:${e.v + e.count}]`;
+    // 每個 int16 四路 4-bit（循行者 16 路光值）
+    if (/四路 4-bit/.test(e.note || '')) return `${rd}\n${v.key} = []\nfor w in words:\n    for k in range(4):\n        ${v.key}.append((w >> (4 * k)) & 0x0F)   # ${T(lang, '低位元在前', 'low bits first')}`;
+    // 每個 int16 兩路（lo／hi byte）
+    if (/兩路|兩顆/.test(e.note || '')) return `${rd}\n${v.key} = []\nfor w in words:\n    ${v.key}.append(w & 0xFF)          # ${T(lang, '奇數路', 'odd channel')}\n    ${v.key}.append((w >> 8) & 0xFF)   # ${T(lang, '偶數路', 'even channel')}`;
+    // 每個 int16 一個值（掌控者搖桿 LX LY RX RY）
+    const order = /LX.*LY.*RX.*RY/.test(e.note || '') ? '[LX, LY, RX, RY]' : T(lang, '每個 int16 一個值', 'one int16 per value');
+    return `${v.key} = list(dev.read(${e.mode})[${e.v}:${e.v + e.count}])   # ${order}`;
   }
   if (e.v != null) return `${v.key} = dev.read(${e.mode})[${e.v}]${off}   # ${name}`;
   if (e.byte != null && /nibble/.test(e.format || '')) return `raw = dev.read(${e.mode})[${e.byte}:${e.byte + 4}]   # ${name}：${T(lang, '每 byte 兩路 4-bit', 'two 4-bit channels per byte')}`;
@@ -50,7 +61,7 @@ export function value(product, v, lang) {
   const code = `${head(lang)}\n\n${nativeLine(v, pref, lang)}`;
   const extra = [];
   if (m) {
-    extra.push({ title: T(lang, 'MBC 函式庫', 'MBC library'), code: `from pybricks.parameters import Port\nfrom ${lib.module} import ${lib.cls}\n\n${lib.obj} = ${lib.cls}(Port.A)\n${lib.pre ? lib.pre + '   # ' + T(lang, '每圈先更新一次', 'refresh once per loop') + '\n' : ''}${v.key} = ${lib.obj}.${m}${v.count ? '   # ' + T(lang, `list，第 1 路 = [0]`, 'list, channel 1 = [0]') : ''}`, codeLang: PY });
+    extra.push({ title: T(lang, 'MBC 函式庫', 'MBC library'), code: `from pybricks.parameters import Port\nfrom ${lib.module} import ${lib.cls}\n\n${lib.obj} = ${lib.cls}(Port.A)\n${lib.pre ? lib.pre + '   # ' + T(lang, '每圈先更新一次', 'refresh once per loop') + '\n' : ''}${v.key} = ${lib.obj}.${m}${v.count && !/\('/.test(m) ? '   # ' + T(lang, `list，第 1 路 = [0]`, 'list, channel 1 = [0]') : ''}`, codeLang: PY });
   }
   const locked = (product.lego && product.lego.spikeLocked) || [];
   const where = v.spike.map((e) => `${T(lang, '模式', 'mode')} ${e.mode}${e.hub ? ` (${e.hub})` : ''}${e.v != null ? ` v[${e.v}]${e.part ? ' ' + e.part : ''}` : e.byte != null ? ` byte ${e.byte}` : ''}${e.offset ? ` −${e.offset}` : ''}${locked.includes(e.mode) ? ' 🔒' : ''}`).join(T(lang, '；', '; '));

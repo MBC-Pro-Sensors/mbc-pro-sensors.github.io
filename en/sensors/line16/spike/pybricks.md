@@ -205,8 +205,8 @@ dev = PUPDevice(Port.A)   # sensor on port A
 words = dev.read(9)[0:4]
 light = []
 for w in words:
-    light.append(w & 0xFF)          # odd channel
-    light.append((w >> 8) & 0xFF)   # even channel
+    for k in range(4):
+        light.append((w >> (4 * k)) & 0x0F)   # low bits first
 ```
 
 **MBC library**

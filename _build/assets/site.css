@@ -786,6 +786,11 @@ body.docs .toc li a.active { color: var(--brand-ink); border-left-color: var(--b
 .markdown-section section.ref-item h3 code { font-size: 0.85em; }
 .markdown-section figure.ref-fig { margin: 12px 0 16px; text-align: center; }
 .markdown-section figure.ref-fig img { max-width: 480px; width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 12px; background: #fff; }
+/* 相機螢幕示意圖（神攝手）：小圖格狀排列、點開看原圖；像素圖不模糊 */
+.markdown-section .ui-shots { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px 12px; margin: 12px 0 18px; }
+.markdown-section .ui-shots figure { margin: 0; }
+.markdown-section .ui-shots img { display: block; width: 100%; height: auto; image-rendering: pixelated; border-radius: 6px; border: 1px solid var(--rule); background: #000; }
+.markdown-section .ui-shots figcaption { margin-top: 4px; font-size: 0.85rem; line-height: 1.4; color: var(--ink-2); }
 
 /* 六平台 <details>：左邊框平台色 */
 .markdown-section details.plat { margin: 0 0 8px; border: 1px solid var(--rule); border-left: 5px solid var(--pc, var(--brand)); border-radius: 10px; background: #fff; }

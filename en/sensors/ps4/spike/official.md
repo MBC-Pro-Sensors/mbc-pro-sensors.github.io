@@ -118,7 +118,7 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 
 | Range | Meaning |
 | :--- | :--- |
-| `-100~+100` | 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right/up positive; 0 when not connected |
+| `1~9` (5 = centre) | SPIKE gives a scaled value, 1~9 (5 = centre). I2C registers: 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right/up positive; 0 when not connected |
 
 | Hub | Value | Block (More Sensors → Color Sensor) | Decode |
 | :--- | :--- | :--- | :--- |

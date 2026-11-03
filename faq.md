@@ -88,7 +88,7 @@ FIRST® LEGO® League Challenge 正式比賽只允許 LEGO 原廠零件，所以
 | SPIKE 6 路擴充器（EXP6） | NT$3,600 |
 | 掌控者 PS2 | NT$2,000 |
 | 掌控者 PS4/PS5 | NT$2,500 |
-| 陀螺儀 IMU 九軸（即將推出） | NT$2,500 |
+| 陀螺儀 IMU 九軸 | NT$2,500 |
 
 海外售價以美金計、不含運費，請看[英文 FAQ](/en/faq.md)。
 

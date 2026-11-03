@@ -140,7 +140,7 @@ func = dev.read(9)[1]   # 功能鍵
 
 | 範圍 | 意思 |
 | :--- | :--- |
-| `-100~+100` | 10 LX、11 LY、12 RX、13 RY：−100 ~ +100，0 = 中間，右／上為正（原始 0~255 死區 ±7 吸成中心）；未連線 = 0。EV3／SPIKE／MATRIX 送的是 0~99（50 = 中間）或 1~9（5 = 中間），見各平台欄 |
+| `1~9`（5 = 中間） | SPIKE 讀到的是換算值 1~9（5 = 中間）。I2C 暫存器：10 LX、11 LY、12 RX、13 RY：−100 ~ +100，0 = 中間，右／上為正（原始 0~255 死區 ±7 吸成中心）；未連線 = 0。EV3／SPIKE／MATRIX 送的是 0~99（50 = 中間）或 1~9（5 = 中間），見各平台欄 |
 
 在 MBC 積木網站加入這款感應器的積木，用「搖桿 LX／LY／RX／RY」積木讀；積木在主機上執行的是下面這段 Pybricks 程式（模式 9）：
 
@@ -150,11 +150,7 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-words = dev.read(9)[2:6]
-stick = []
-for w in words:
-    stick.append(w & 0xFF)          # 奇數路
-    stick.append((w >> 8) & 0xFF)   # 偶數路
+stick = list(dev.read(9)[2:6])   # [LX, LY, RX, RY]
 ```
 
 </section>

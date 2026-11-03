@@ -87,7 +87,7 @@ Manufacturer's suggested retail prices (MSRP) in US dollars, shipping not includ
 | Sharpshooter Vision (in development) | Ask for a quote |
 | SPIKE 6-Way Expander (EXP6) | 145 |
 | Controller PS4/PS5 | 100 |
-| IMU 9-Axis Gyro (coming soon) | 100 |
+| IMU 9-Axis Gyro | 100 |
 
 Controller 2.4G (PS2) is sold in Taiwan only.
 

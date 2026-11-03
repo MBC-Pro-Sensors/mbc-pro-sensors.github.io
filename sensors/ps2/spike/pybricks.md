@@ -259,7 +259,7 @@ battery = pad.battery()
 
 | 範圍 | 意思 |
 | :--- | :--- |
-| `-100~+100` | 10 LX、11 LY、12 RX、13 RY：−100 ~ +100，0 = 中間，右／上為正（原始 0~255 死區 ±7 吸成中心）；未連線 = 0。EV3／SPIKE／MATRIX 送的是 0~99（50 = 中間）或 1~9（5 = 中間），見各平台欄 |
+| `1~9`（5 = 中間） | SPIKE 讀到的是換算值 1~9（5 = 中間）。I2C 暫存器：10 LX、11 LY、12 RX、13 RY：−100 ~ +100，0 = 中間，右／上為正（原始 0~255 死區 ±7 吸成中心）；未連線 = 0。EV3／SPIKE／MATRIX 送的是 0~99（50 = 中間）或 1~9（5 = 中間），見各平台欄 |
 
 ```python
 from pybricks.iodevices import PUPDevice
@@ -267,11 +267,7 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-words = dev.read(9)[2:6]
-stick = []
-for w in words:
-    stick.append(w & 0xFF)          # 奇數路
-    stick.append((w >> 8) & 0xFF)   # 偶數路
+stick = list(dev.read(9)[2:6])   # [LX, LY, RX, RY]
 ```
 
 **MBC 函式庫**
@@ -282,7 +278,7 @@ from MBC_gamepad_Lib import MBC_GAMEPAD
 
 pad = MBC_GAMEPAD(Port.A)
 pad.update()   # 每圈先更新一次
-stick = pad.stick('LX')   # list，第 1 路 = [0]
+stick = pad.stick('LX')
 ```
 
 <p class="ref-note">模式 0 (edu) byte 2 🔒；模式 0 (toy) byte 2 🔒；模式 4 v[0]；模式 7 v[2] 🔒；模式 8 v[0]；模式 9 v[2] 🔒。備註：byte2~3 = LX×10+LY、byte4~5 = RX×10+RY（11~99，中心 55；App 原始紅／綠）; LX×10+LY、RX×10+RY 經玩具版查表編碼成 byte2~3、byte4~5; v0 = LX | LY<<8、v1 = RX | RY<<8; Pybricks ambient() 用：v2 = LX×1000 + LY×100 + RX×10 + RY（1111~9999，中心 5555）；v0、v1 同模式 6；個位數 RY 在 4.1.x 的 ambient() 讀不到，4.1.x 改從模式 5 reflection() 的小數位讀（見按鍵 buttons16）; 只送 4 B：v0 = LX | LY<<8、v1 = RX | RY<<8; v2~v5 = LX、LY、RX、RY（0~99 ÷10，0 補 1）</p>

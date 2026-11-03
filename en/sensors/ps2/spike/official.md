@@ -118,7 +118,7 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 
 | Range | Meaning |
 | :--- | :--- |
-| `-100~+100` | 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right / up positive (raw 0~255 with ±7 dead zone); 0 when not connected. EV3 / SPIKE / MATRIX carry 0~99 (50 = centre) or 1~9 (5 = centre), see each platform |
+| `1~9` (5 = centre) | SPIKE gives a scaled value, 1~9 (5 = centre). I2C registers: 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right / up positive (raw 0~255 with ±7 dead zone); 0 when not connected. EV3 / SPIKE / MATRIX carry 0~99 (50 = centre) or 1~9 (5 = centre), see each platform |
 
 | Hub | Value | Block (More Sensors → Color Sensor) | Decode |
 | :--- | :--- | :--- | :--- |

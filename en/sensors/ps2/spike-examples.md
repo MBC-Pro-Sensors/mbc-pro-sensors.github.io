@@ -72,7 +72,7 @@ In the official LEGO App, the receiver shows up as a "Color Sensor", so you read
 > [!TIP]
 > **How does the official App tell whether one particular button is pressed?** Use "take the whole part of (the number read ÷ that button's number), then check whether the remainder of dividing by 2 is 1". For example, ✕ is 64: with only ✕ pressed, reflected light is 64, 64 ÷ 64 = 1, 1 divided by 2 leaves remainder 1 → pressed. With Up (1) and ✕ pressed together it is 65 ÷ 64 → whole part 1 → remainder 1 → pressed too.
 > - Do not use comparison blocks like "is color red?" in the official App. Always use the **number** from "color".
-> - "raw blue" is not used on this page (PS2 and PS4 lay it out differently).
+> - "raw blue" is all 16 keys combined into one number (PSX layout, the same on PS2 and PS4); the examples on this page only need reflected light and color.
 
 ---
 

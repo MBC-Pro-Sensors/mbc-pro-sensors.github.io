@@ -20,7 +20,7 @@
 - 單獨下載函式庫：[MBC_sensors.py](/examples/ps4/pybricks/MBC_sensors.py)（新專案用這個，一個檔適用全部 MBC 感應器，寫 `from MBC_sensors import MBC_GAMEPAD`）・[MBC_gamepad_Lib.py](/examples/ps4/pybricks/MBC_gamepad_Lib.py)（本頁範例與舊程式用）
 
 > [!NOTE]
-> Pybricks 3.6.1 版範例已不再更新，舊檔放在[下載專區](/downloads.md)的「舊版（不再更新）」。
+> Pybricks 3.6.1 版範例已不再更新，舊檔放在[下載專區](/downloads.md)的「舊版（不再更新）」。舊範例裡按鍵算出來是小數（例：印出 `1.0`），拿來判斷有沒有按還是對的；要印整數就外面包 `int()`。Pybricks 4.x 請用 [SPIKE 新手範例](/sensors/ps4/spike-examples.md) 或 MBC 函式庫。
 
 ### 全部按鍵合成一個數字：buttons() 和 buttons_psx()
 

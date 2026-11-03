@@ -126,15 +126,40 @@
 
 相機背面有 1.8 吋彩色螢幕和 4 顆按鍵，設定都在相機上做，不用電腦。
 
-1. **即時畫面**用左右鍵循環：目標 1 … 目標 N → **MODE** → **SET**。N＝已教到的最後一色＋1 個空位（最多 16）。
+1. **即時畫面**用左右鍵循環：目標 1 … 目標 N → **MENU**。N＝已教到的最後一色＋1 個空位（最多 16）。相機模式 2（座標取色）時改成取樣點 S1 … Sn → MENU（n＝已設定的最後一點＋1 個空位）。
 2. **停在目標按 OK：教色**（AxisX → AxisY → OK 取色；按住 OK 0.8 秒直接完成；之後可調 Hue／Sta／Size／Locked・MaxArea）。停在目標按**側鍵**：清除這個目標（指定的形狀一起清）。物體偵測模式教完目標 1～8 會跳出 `Target N shape` 選形狀。
-3. **停在 MODE 按 OK**：左右鍵選相機模式 1～5 → OK → 選子選項 → OK。子選項名稱顯示**目前上位機實際給的數量**（例：EV3「8 XY」、Pybricks 函式庫「7 XY」）；SPIKE 還沒被主機讀過時顯示層級名稱（Max／Multi／Std／Fine、H／HS／HSV）。SPIKE 的數量是**進選單那一刻**決定的：先退回即時畫面、等主機的程式開始讀相機之後再進選單，停在選單裡不會跟著變。只有一個子選項的模式自動跳過。選單裡按側鍵＝回上一層。
-4. **停在 SET 按 OK**：鏡頭選單（亮度、對比、飽和度、白平衡、白色校正、自測、回預設）；第 14 項 ShapeTol 1～5 是物體偵測的形狀寬鬆度。
-5. **畫面**：左上角是主機名稱（綠＝連線中、紅＝斷線）；右上角是「模式-子選項」（例 1-3）和目標編號（1 起算，跟送給上位機的色號一樣）；底部資訊列依模式顯示：顏色追蹤＝目前目標的 X Y W H 數量、座標取色＝S1 的 H S V、照順序給色號＝塊數、循線＝近／遠偏移、角度、路口類型、物體偵測＝物體數＋最大那個的代碼與位置。座標取色會畫取樣點十字和編號，照順序給色號在色塊上標順序，循線畫三條掃描列和找到的線，物體偵測畫每個物體的外輪廓和「色號 形狀」（碰到畫面邊加 ?）。
-6. **斷電記住**：目標色（16 個）、鏡頭設定、相機模式與各模式的子選項、I2C 改過的取樣點位置、形狀寬鬆度、目標 1～8 指定的形狀。第一次燒這一代神攝手的韌體時會全部回預設（顏色追蹤 ③ 標準）。
+   相機模式 2：停在取樣點按 OK＝**設定這一點的位置**（跟教色一樣：AxisX → OK → AxisY → OK 存；側鍵＝不存）；停在取樣點按側鍵＝清掉這一點。**沒設定的點不畫、送給主機的 H S V 都是 0**（跟沒教的目標一樣）；位置跟主機命令 E1 改的是同一份。
+3. **停在 MENU 按 OK**：3×2 卡片（Track 顏色追蹤、Spot 座標取色、Order 照順序給色號、Line 循線、Object 物體偵測、Setup 鏡頭設定；綠字＋綠點＝使用中的模式）。左右鍵選卡片 → OK → 選子選項 → OK。選到的子選項會展開說明：右邊 `max N`＝**目前上位機一次收得到幾個**（例：SPIKE 官方 App 教育版的顏色追蹤 1-3 是「max 4」），黃字＝給哪些值，下面是用途。SPIKE 會依主機最近讀的模式判斷是官方 App 教育版／家用版、Pybricks 積木還是 Pybricks 函式庫；還沒被主機讀過時不顯示數量。SPIKE 的數量是**進選單那一刻**決定的：先退回即時畫面、等主機的程式開始讀相機之後再進選單，停在選單裡不會跟著變。只有一個子選項的模式自動跳過。選單裡按側鍵＝回上一層。
+4. **Setup 卡片**：鏡頭選單（亮度、對比、飽和度、白平衡、白色校正、自測、回預設）；側鍵＝存設定、回卡片，EXIT＝回即時畫面。第 14 項 ShapeTol 1～5 是物體偵測的形狀寬鬆度。
+5. **畫面**：左上角是主機名稱（綠＝連線中、紅＝斷線）；上方是「Mode 模式-子選項」（例 Mode 1-3），右上角是目標編號（1 起算，跟送給上位機的色號一樣）；底部資訊列依模式顯示：顏色追蹤＝目前目標的 X Y W H 數量、座標取色＝選到的那一點的 H S V（沒設定顯示 `--`）、照順序給色號＝塊數、循線＝近／遠偏移、角度、路口類型、物體偵測＝物體數＋最大那個的代碼與位置。座標取色畫設定過的取樣點十字和編號（選到的那點青色），照順序給色號在色塊上標順序，循線畫三條掃描列和找到的線，物體偵測畫每個物體的外輪廓和「色號 形狀」（碰到畫面邊加 ?）。
+6. **斷電記住**：目標色（16 個）、鏡頭設定、相機模式與各模式的子選項、設定過的取樣點位置（相機上設的或主機 E1 改的）、形狀寬鬆度、目標 1～8 指定的形狀。第一次燒這一代神攝手的韌體時會全部回預設（顏色追蹤 ③ 標準）。
+
+**螢幕畫面示意圖**（照韌體重畫，跟實機螢幕一致；相機影像是示意。介面是英文；子選項的 max N 是接 SPIKE 官方 App 教育版時的數量，接別的主機數字會不同）：
+
+<div class="ui-shots">
+<figure><a href="/images/sensors/unicam/ui/01-boot.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/01-boot.webp" alt="開機畫面" width="640" height="512" loading="lazy"></a><figcaption>開機畫面：上位機版本、鏡頭型號；SPIKE／EV3 版先連上主機才開鏡頭</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/02-live-track.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/02-live-track.webp" alt="即時畫面（模式 1 顏色追蹤）" width="640" height="512" loading="lazy"></a><figcaption>即時畫面（模式 1 顏色追蹤）：左上主機、上方 Mode 1-3、右上目標編號；底下 X Y W H 數量</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/03-live-menu.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/03-live-menu.webp" alt="停在 MENU" width="640" height="512" loading="lazy"></a><figcaption>停在 MENU：右上黃字 MENU，按 OK 進選單</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/04-menu-cards.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/04-menu-cards.webp" alt="MENU 卡片" width="640" height="512" loading="lazy"></a><figcaption>MENU 卡片：5 個相機模式＋Setup；綠字綠點＝使用中</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/05-sub-track.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/05-sub-track.webp" alt="子模式（顏色追蹤）" width="640" height="512" loading="lazy"></a><figcaption>子模式（顏色追蹤）：max N＝這台主機一次收得到幾個；黃字＝給哪些值</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/06-sub-spot.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/06-sub-spot.webp" alt="子模式（座標取色）" width="640" height="512" loading="lazy"></a><figcaption>子模式（座標取色）：色相／色相＋飽和／色相＋飽和＋明度</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/07-sub-line.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/07-sub-line.webp" alt="子模式（循線）" width="640" height="512" loading="lazy"></a><figcaption>子模式（循線）：黑線、白線、色線（色線＝目標色 1）</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/08-sub-object.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/08-sub-object.webp" alt="子模式（物體偵測）" width="640" height="512" loading="lazy"></a><figcaption>子模式（物體偵測）：物體清單或物體詳細</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/09-setup.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/09-setup.webp" alt="Setup 鏡頭設定" width="640" height="512" loading="lazy"></a><figcaption>Setup 鏡頭設定：OK 調整、側鍵存設定回卡片、EXIT 回即時畫面</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/10-adjust.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/10-adjust.webp" alt="調整數值" width="640" height="512" loading="lazy"></a><figcaption>調整數值：畫面即時套用；左減右加、OK 存、側鍵還原</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/11-teach-x.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/11-teach-x.webp" alt="教顏色 ①" width="640" height="512" loading="lazy"></a><figcaption>教顏色 ①：畫面凍結，左右鍵移黃線選 X → OK</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/12-teach-y.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/12-teach-y.webp" alt="教顏色 ②" width="640" height="512" loading="lazy"></a><figcaption>教顏色 ②：移藍線選 Y → OK 取色</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/13-teach-shape.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/13-teach-shape.webp" alt="物體偵測" width="640" height="512" loading="lazy"></a><figcaption>物體偵測：教完目標 1～8 指定形狀（Any＝不指定）</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/14-live-spot.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/14-live-spot.webp" alt="即時畫面（模式 2 座標取色）" width="640" height="512" loading="lazy"></a><figcaption>即時畫面（模式 2 座標取色）：選到的點是青色大十字，底下是它的 H S V</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/15-spot-unset.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/15-spot-unset.webp" alt="取樣點還沒設定" width="640" height="512" loading="lazy"></a><figcaption>取樣點還沒設定：不畫、送給主機都是 0；按 OK 開始設定</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/16-spot-x.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/16-spot-x.webp" alt="設定取樣點 ①" width="640" height="512" loading="lazy"></a><figcaption>設定取樣點 ①：左右鍵移黃線 → OK</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/17-spot-y.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/17-spot-y.webp" alt="設定取樣點 ②" width="640" height="512" loading="lazy"></a><figcaption>設定取樣點 ②：移藍線 → OK 存；側鍵＝不存</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/18-live-line.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/18-live-line.webp" alt="即時畫面（模式 4 循線）" width="640" height="512" loading="lazy"></a><figcaption>即時畫面（模式 4 循線）：三條掃描列；底下近處偏移 N、遠處 F、角度 A、路口 J</figcaption></figure>
+<figure><a href="/images/sensors/unicam/ui/19-live-object.webp" target="_blank" rel="noopener"><img src="/images/sensors/unicam/ui/19-live-object.webp" alt="即時畫面（模式 5 物體偵測）" width="640" height="512" loading="lazy"></a><figcaption>即時畫面（模式 5 物體偵測）：外輪廓＋「色號 形狀」；底下物體數、最大那個的代碼與位置</figcaption></figure>
+</div>
 
 > [!NOTE]
-> SPIKE 主機讀不到相機目前在哪個模式，程式要跟相機設定一致（Pybricks 函式庫建構時傳模式編號，例 `mode=13`）。EV3 讀模式 0 就知道；I2C 讀 `0x01`，也可以用命令 `E0` 從程式切換。
+> SPIKE 主機讀不到相機目前在哪個模式，程式要跟相機設定一致：Pybricks 函式庫建構時傳模式編號（例 `mode=13`），函式庫會自動把相機切到這個模式；官方 App 送不了命令，要先在相機的 MENU 切好。EV3 讀模式 0 就知道；I2C 讀 `0x01`，也可以用命令 `E0` 從程式切換。
 
 ## 📐 數值的共同規則
 
@@ -210,6 +235,6 @@ SPIKE 版已上機驗證（2026-11-01，出貨版韌體 v1.0-261101）；其他�
 2. **I2C 腳位**：SDA＝IO3、SCL＝IO1 是暫定，ESP32 從機能不能用 IO1／IO3 要接 Arduino 實測。**mBlock 版**要接 mBot 實測（電腦端只測過傳輸層）。
 3. **循線**：電腦端用合成畫面測過（直線、偏移、斜線、十字／T／左右轉／盡頭、白線、色線、彩色標記線、離線方向）；SPIKE 上機在白紙黑線跑過循線範例（左右修正、拿開線原地找線、十字／T 停車）。其他場地的燈光、陰影還要多測。
 4. **SPIKE App Python**：`device.data(port.C)` 上機讀得到模式 0 的 byte 0～13（byte 14～15 讀不到）；積木只讀得到前 8 byte。
-5. **取樣點位置**：預設排法＋I2C E1 修改；相機選單還不能移動取樣點。
+5. **取樣點位置**：在相機上設（模式 2 停在取樣點按 OK），或用主機命令 E1 改；兩邊改的是同一份。
 6. **照順序給色號**最多收 32 塊（各平台實際給 2～18 塊）；引擎上限 16 色，LEGO 平台最多用到 14 色。
 7. **物體偵測**是 16 色判色再加輪廓分析，fps 要重新量；畫面處理不完時只在模式 5 自動降幀率（最低 25 fps）。形狀門檻沿用物體偵測專用版上機調過的值，電腦端測試形狀判對 99%（面積約 310 像素以上）。
