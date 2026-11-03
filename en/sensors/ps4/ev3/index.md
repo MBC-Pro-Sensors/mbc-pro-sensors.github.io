@@ -9,7 +9,10 @@ Using the Controller PS4/PS5 with MINDSTORMS EV3: check the edition and the wiri
 
 ## Which edition
 
-Get the **EV3 edition** (RJ12 plug) and plug it into sensor port 1~4. **Power the EV3 on first, then plug the sensor in**; replug if the numbers freeze.
+Get the **EV3 edition** (RJ12 plug) and plug it into sensor port 1~4. **Power the EV3 on first, then plug the sensor in**, **pushing the plug all the way in, in one go**; replug if the numbers freeze or the EV3 detects the wrong device.
+
+> [!NOTE]
+> **The EV3 edition cannot take commands from the hub**: it uses exactly the same format as the LEGO infrared sensor, so the EV3 (stock firmware, Pybricks, ev3dev) cannot send MBC commands. To send commands, use SPIKE, Arduino, etc.
 
 ## Wiring
 

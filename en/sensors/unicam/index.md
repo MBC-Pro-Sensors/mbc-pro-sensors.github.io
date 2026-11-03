@@ -2,7 +2,7 @@
 # Sharpshooter Vision Camera Sensor (In Development)
 
 > [!WARNING]
-> **The SPIKE edition is verified on hardware** (2026-11-01, shipping firmware v1.0-261101, see [Reading it on SPIKE](/en/sensors/unicam/spike/index.md)); **the EV3, MATRIX, Arduino, micro:bit and mBlock editions are not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
+> **The SPIKE edition is verified on hardware** (2026-11-01, shipping firmware v1.0-261101, see [Reading it on SPIKE](/en/sensors/unicam/spike/index.md)); **the EV3 edition is verified on hardware** (2026-11-03, stock firmware / EV3-G and Pybricks v4; ev3dev supported, see [Reading it on EV3](/en/sensors/unicam/ev3/index.md)); **the MATRIX, Arduino, micro:bit and mBlock editions are not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
 
 > [!TIP]
 > **New to it? Try the interactive tutorial first**: no hub needed. Drag blobs, sample points and lines in your browser and watch the code build up. Six ways to write it: Pybricks (SPIKE), EV3, Arduino, mBlock, MATRIX, micro:bit → [Start the tutorial](/en/learn/index.md#unicam)
@@ -220,7 +220,7 @@ Sharpshooter Vision units shipped before October 2026 (School and WRO editions) 
 | :--- | :--- | :--- |
 | SPIKE Prime / Robot Inventor | Pybricks library (modes 9 / 6), Pybricks built-in blocks (modes 5 / 7), official app Education / home edition (mode 0) | [Reading it on SPIKE](/en/sensors/unicam/spike/index.md) |
 | SPIKE Essential | Not supported | — |
-| EV3 | EV3-G, EV3 Classroom, EV3 MicroPython: Infrared Sensor modes 0 / 1 / 2 | [Reading it on EV3](/en/sensors/unicam/ev3/index.md) |
+| EV3 | EV3-G, EV3 Classroom, EV3 MicroPython: Infrared Sensor modes 0 / 1 / 2. EV3-G / EV3 Classroom / clev3r: tested on the stock firmware (2026-11-03); Pybricks v4: tested (2026-11-03); ev3dev / EV3 MicroPython v2: supported (same mode table as the LEGO sensor); no commands | [Reading it on EV3](/en/sensors/unicam/ev3/index.md) |
 | MATRIX Mini R4 | MATRIXblock mVision blocks (10 slots) | [Reading it on MATRIX](/en/sensors/unicam/matrix/mvision.md) |
 | Arduino / ESP32 / UNO R4 | I2C 0x4C | [Reading it on Arduino](/en/sensors/unicam/arduino/index.md) |
 | micro:bit | I2C 0x4C (MakeCode) | [Reading it on micro:bit](/en/sensors/unicam/microbit/index.md) |

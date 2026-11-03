@@ -6,7 +6,7 @@
 [🔙 回到神攝手](/sensors/unicam/index.md)　｜　[EV3 讀法說明](/sensors/unicam/ev3/index.md)　｜　[📋 讀值參考：EV3](/sensors/unicam/reference.md#host-ev3)
 
 > [!WARNING]
-> **v1 尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
+> **EV3 已上機驗證（2026-11-03，出貨版 v1.0-261101）**：原廠韌體（EV3-G 積木、Direct Command 讀 13 個模式）與 Pybricks v4 範例 1～4 都在實機通過。
 
 這一頁是 **EV3 的 Python 範例 4 個**：跟著色塊轉、座標取色判斷顏色、PD 循線＋路口停車、物體偵測（跟著正方形走）。同一支程式在 **Pybricks v4** 和 **樂高官方 EV3 MicroPython v2** 都能跑，函式庫 `MBC_UniCam_EV3.py` 會自己判斷。EV3-G、EV3 Classroom 用紅外線感應器積木讀，做法在 [EV3 讀法說明](/sensors/unicam/ev3/index.md)。
 
@@ -397,7 +397,7 @@ while True:
 
 ## 要注意的事
 
-- **以下都還沒上機**：數值排法已經在電腦上跟規格的獨立參考實作逐格比對過（Pybricks v4 與 EV3 MicroPython v2 兩種讀法都測）；EV3 MicroPython v2 的 `Ev3devSensor` 模式名稱（IR-PROX、IR-SEEK、IR-REMOTE、IR-CAL）照樂高紅外線感應器，要上機確認。
+- **上機驗證範圍（2026-11-03）**：原廠 EV3 韌體上 13 個相機模式逐格讀過、負數原樣送出、插拔 5 次都 3 秒多認成紅外線；EV3-G 的紅外線「近距／信標／遙控」積木讀得到，**信標方向不會被限制在 ±25**（例 54、−36 原樣給）；Pybricks v4 範例 1～4 實機通過。ev3dev／EV3 MicroPython v2 只核對模式表、不上機：相機的模式表（名稱、值數、格式、範圍、單位）跟實機抓的樂高紅外線感應器逐項相同，驅動就照紅外線感應器處理。
 - KP／KD、面積門檻是建議值，先印出數字再調。
 
 ## 下一步

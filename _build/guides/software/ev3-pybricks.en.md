@@ -25,7 +25,7 @@
 The beginner examples **need no library**; they read the sensor data directly:
 
 - Pybricks v4 uses `LUMPDevice(Port.S1)`; `sensor.read(mode)` returns that mode's values.
-- EV3 MicroPython v2.0 uses `Ev3devSensor`.
+- EV3 MicroPython v2.0: **always read with `Ev3devSensor`**. For products that show up as an infrared sensor, do not use `InfraredSensor`: every mode change waits about 1.1 s, and `buttons()` / `beacon()` / `keypad()` raise errors or change the values.
 - Both can read modes that EV3-G and Classroom cannot, so examples marked "Pybricks / EV3 MicroPython / clev3r only" run here too.
 
 > [!IMPORTANT]

@@ -25,7 +25,7 @@
 新手範例**不用裝函式庫**，直接讀感應器的資料：
 
 - Pybricks v4 用 `LUMPDevice(Port.S1)`，`sensor.read(模式)` 拿到該模式的數值。
-- EV3 MicroPython v2.0 用 `Ev3devSensor`。
+- EV3 MicroPython v2.0 **一律用 `Ev3devSensor` 讀**。EV3 顯示成紅外線感應器的產品不要用 `InfraredSensor`：換模式固定等約 1.1 秒，`buttons()`／`beacon()`／`keypad()` 會丟錯或改掉數值。
 - 可以直接讀 EV3-G、Classroom 讀不到的模式，所以標「僅 Pybricks／EV3 MicroPython／clev3r」的範例也能跑。
 
 > [!IMPORTANT]

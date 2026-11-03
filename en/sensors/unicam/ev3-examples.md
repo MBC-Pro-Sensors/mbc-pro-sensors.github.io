@@ -6,7 +6,7 @@
 [🔙 Back to Sharpshooter Vision](/en/sensors/unicam/index.md)　｜　[How EV3 reads it](/en/sensors/unicam/ev3/index.md)　｜　[📋 Value reference: EV3](/en/sensors/unicam/reference.md#host-ev3)
 
 > [!WARNING]
-> **v1 not yet hardware-verified**: the value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after bench testing.
+> **EV3 hardware-verified (2026-11-03, release v1.0-261101)**: the official firmware (EV3-G blocks, all 13 modes read with Direct Commands) and Pybricks v4 examples 1–4 passed on real hardware.
 
 This page has **4 EV3 Python examples**: turn to follow a blob, colour at a spot, PD line following with a stop at a junction, object detection (drive to a square). The same program runs on **Pybricks v4** and on **LEGO EV3 MicroPython v2**; the library `MBC_UniCam_EV3.py` detects which one. EV3-G and EV3 Classroom read it with infrared sensor blocks, see [How EV3 reads it](/en/sensors/unicam/ev3/index.md).
 
@@ -397,7 +397,7 @@ while True:
 
 ## Please note
 
-- **Nothing here has run on hardware yet**: the value layout was checked value by value on a computer against the independent reference implementation of the spec (both the Pybricks v4 and the EV3 MicroPython v2 reading); the EV3 MicroPython v2 `Ev3devSensor` mode names (IR-PROX, IR-SEEK, IR-REMOTE, IR-CAL) follow the LEGO infrared sensor and need a hardware check.
+- **What was verified on hardware (2026-11-03)**: on the official EV3 firmware all 13 camera modes were read value by value, negative values arrive as-is, and 5 re-plugs were each recognised as an infrared sensor in about 3 s; the EV3-G infrared Proximity / Beacon / Remote blocks read the camera, and **the beacon heading is not clamped to ±25** (e.g. 54 and −36 come through unchanged); Pybricks v4 examples 1–4 passed. For ev3dev / EV3 MicroPython v2 we only check the mode table, with no hardware run: the camera's mode table (names, value counts, format, range, units) matches a real LEGO infrared sensor item by item, so the driver handles it as an infrared sensor.
 - KP/KD and area limits are suggestions; print the numbers first, then tune.
 
 ## Next

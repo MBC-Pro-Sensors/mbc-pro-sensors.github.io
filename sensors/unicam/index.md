@@ -2,7 +2,7 @@
 # 神攝手 攝影機感應器（開發中）
 
 > [!WARNING]
-> **SPIKE 版已上機驗證**（2026-11-01，出貨版韌體 v1.0-261101，見 [SPIKE 讀值教學](/sensors/unicam/spike/index.md)）；**EV3、MATRIX、Arduino、micro:bit、mBlock 版尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
+> **SPIKE 版已上機驗證**（2026-11-01，出貨版韌體 v1.0-261101，見 [SPIKE 讀值教學](/sensors/unicam/spike/index.md)）；**EV3 版已上機驗證**（2026-11-03，原廠韌體／EV3-G、Pybricks v4；ev3dev 支援，見 [EV3 讀值教學](/sensors/unicam/ev3/index.md)）；**MATRIX、Arduino、micro:bit、mBlock 版尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
 
 > [!TIP]
 > **第一次用？先玩互動教學**：不用接主機，在網頁上拖色塊、取樣點、線，程式跟著長出來。有 Pybricks（SPIKE）、EV3、Arduino、mBlock、MATRIX、micro:bit 六種寫法 → [開始互動教學](/learn/index.md#unicam)
@@ -220,7 +220,7 @@ EV3 的 Y 是**下＝小**：(119−Y)÷20＋1；SPIKE 系列照 Kito「上＝�
 | :--- | :--- | :--- |
 | SPIKE Prime／Robot Inventor | Pybricks 函式庫（模式 9／6）、Pybricks 內建積木（模式 5／7）、官方 App 教育版／家用版（模式 0） | [SPIKE 讀值教學](/sensors/unicam/spike/index.md) |
 | SPIKE Essential | 不支援 | — |
-| EV3 | EV3-G、EV3 Classroom、EV3 MicroPython：紅外線感應器模式 0／1／2 | [EV3 讀值教學](/sensors/unicam/ev3/index.md) |
+| EV3 | EV3-G、EV3 Classroom、EV3 MicroPython：紅外線感應器模式 0／1／2。EV3-G／EV3 Classroom／clev3r：原廠韌體實測通過（2026-11-03）；Pybricks v4：實測通過（2026-11-03）；ev3dev／EV3 MicroPython v2：支援（模式表與原廠相同）；不能下命令 | [EV3 讀值教學](/sensors/unicam/ev3/index.md) |
 | MATRIX Mini R4 | MATRIXblock mVision 積木（10 格） | [MATRIX 讀值教學](/sensors/unicam/matrix/mvision.md) |
 | Arduino／ESP32／UNO R4 | I2C 0x4C | [Arduino 讀值教學](/sensors/unicam/arduino/index.md) |
 | micro:bit | I2C 0x4C（MakeCode） | [micro:bit 讀值教學](/sensors/unicam/microbit/index.md) |

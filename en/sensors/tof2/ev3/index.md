@@ -9,7 +9,15 @@ Using the Ranger 2-Way (TOF2) with MINDSTORMS EV3: check the edition and the wir
 
 ## Which edition
 
-Get the **EV3 edition** (RJ12 plug) and plug it into sensor port 1~4. **Power the EV3 on first, then plug the sensor in**; replug if the numbers freeze.
+Get the **EV3 edition** (RJ12 plug) and plug it into sensor port 1~4. **Power the EV3 on first, then plug the sensor in**, **pushing the plug all the way in, in one go**; replug if the numbers freeze or the EV3 detects the wrong device.
+
+> [!TIP]
+> **Tested on the EV3 (2026-11-02)**: the stock EV3 firmware (EV3-G / EV3 Classroom / clev3r) and Pybricks v4 pass; ev3dev / EV3 MicroPython v2 are supported (same mode table as the LEGO infrared sensor). The EV3 detects it as an **infrared sensor** (type 33).
+
+- **Switching sensor modes on the EV3 takes about 1.1 s** (the same for the LEGO infrared sensor): read one mode only and do not switch modes inside a loop.
+
+> [!NOTE]
+> **The EV3 edition cannot take commands from the hub**: it uses exactly the same format as the LEGO infrared sensor, so the EV3 (stock firmware, Pybricks, ev3dev) cannot send MBC commands. To send commands, use SPIKE, Arduino, etc.
 
 ## Wiring
 

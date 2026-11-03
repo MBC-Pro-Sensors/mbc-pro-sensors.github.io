@@ -2,7 +2,9 @@
 # Reading it on EV3
 
 > [!WARNING]
-> **v1 not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
+> **EV3 verified on hardware (2026-11-03, shipping firmware v1.0-261101)**: on the stock EV3 firmware (EV3-G / EV3 Classroom / clev3r) all 13 camera modes were read slot by slot and the EV3-G infrared blocks read the camera; Pybricks v4 examples 1~4 pass on the real EV3; ev3dev / EV3 MicroPython v2 are supported (the mode table matches the LEGO infrared sensor item by item).
+>
+> **The EV3 edition cannot take commands from the hub**: its format is exactly the same as the LEGO infrared sensor, so the EV3 (stock firmware, Pybricks, ev3dev) cannot send MBC commands; switch camera modes in the camera MENU. To send commands from a program, use SPIKE, Arduino, etc.
 
 On the EV3 the Sharpshooter Vision (EV3 edition) shows up as a **stock LEGO Infrared Sensor**, so EV3-G, EV3 Classroom and EV3 MicroPython (Pybricks) read it with the infrared sensor blocks or modes; no extension needed. Every slot is in the [value reference: EV3](/en/sensors/unicam/reference.md#host-ev3), full programs in the [EV3 examples](/en/sensors/unicam/ev3-examples.md).
 
@@ -20,7 +22,7 @@ On the EV3 the Sharpshooter Vision (EV3 edition) shows up as a **stock LEGO Infr
 | Mode 1 Beacon | 8 | "Heading" and "distance" of channels 1~4, 8 values with the main data |
 | Mode 2 Remote | 4 | One value per channel 1~4; only used by sub-option ①, Color order, Line following and Object detection ① |
 
-- Every value is an integer −127~100. **Switching modes takes about 0.5 s**, so don't keep switching between modes 1 and 2 in the same loop; decide which one you need.
+- Every value is an integer −127~100. **Switching modes takes about 1.1 s** (the same for the LEGO infrared sensor), so don't keep switching between modes 1 and 2 in the same loop; decide which one you need.
 - Mode 5 is the device ID (you can ignore it).
 
 ## Decoding
@@ -85,7 +87,7 @@ The camera sorts the objects in the picture from largest to smallest (object 1 =
 
 - Positions are the same 8×6 cell X×10+Y (**Y bottom = small**).
 - Angle: the camera sends "(angle + 1) ÷ 2"; the value × 2 is 0~179 degrees (within 1 degree; long side pointing right = 0, turning toward the bottom of the picture is positive).
-- Mode 52 is all in mode 1, so the loop never switches modes; in 51 object 5 and the object count are in mode 2 (+0.5 s).
+- Mode 52 is all in mode 1, so the loop never switches modes; in 51 object 5 and the object count are in mode 2 (about +1.1 s).
 
 ```python
 #!/usr/bin/env pybricks-micropython
@@ -118,4 +120,4 @@ The MBC library `MBC_UniCam_EV3.py` is easier: `object(i)`, `object_xy(i)`, `obj
 
 - **The EV3 shows an Infrared Sensor?** That's expected: the camera emulates a stock LEGO sensor, so the stock blocks read it.
 - **Mode 0 shows a different mode than I want?** Change it in the camera's MODE menu; the EV3 can only read it, not switch it.
-- **Values freeze for half a second now and then?** Switching infrared modes takes about 0.5 s; read the same mode as much as you can.
+- **Values freeze for a second or so now and then?** Switching infrared modes takes about 1.1 s; read the same mode as much as you can.

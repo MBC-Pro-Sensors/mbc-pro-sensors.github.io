@@ -49,9 +49,9 @@ The Ranger 2-Way has **two lasers side by side on the front, both pointing strai
 | **raw green** | right distance × 256 | ÷ 256, rounded down = **right distance** |
 | **raw blue** | average distance × 256 | ÷ 256, rounded down = **average distance** |
 
-> [!WARNING]
-> **The official App readings above are worked out from the sensor firmware and have not yet been checked one by one on real hardware.** If the numbers in Example 1 look wrong in the official App (for example always 0, or in the thousands), please switch to the MBC Blocks website or Pybricks for now and let us know.
-> Also, the "color" block gives the left distance and the "reflected light" block gives the right distance, but the App may only accept 0 to 10 (color) and 0 to 100 (reflected light), and we have not confirmed whether larger values get clipped. So the examples on this page **do not use those two blocks**.
+> [!NOTE]
+> **The official App is verified on hardware (2026-11-03)**: on SPIKE Prime (Education, SPIKE App 3) Examples 1~4 pass on the real hub and the ÷ 256 reading above is correct; "color" = left distance and "reflected light" = right distance, and the App does **not** clip them to 10 / 100 (nothing ahead = 120).
+> **Robot Inventor blocks convert differently**: raw red / green / blue must be **÷ 64** (not ÷ 256) = left / right / average; "reflected light" = **left** distance (the opposite of Education), "ambient light" = left distance (max 100), and "color" always returns −1. Robot Inventor Python `get_rgb_intensity()` is the same as Education, ÷ 256. See [reading it in the official App](/en/sensors/tof2/spike/official.md).
 
 ---
 

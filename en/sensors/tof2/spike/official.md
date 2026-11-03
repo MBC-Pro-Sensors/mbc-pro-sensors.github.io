@@ -30,7 +30,9 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 | Hub | Value | Block (More Sensors → Color Sensor) | Decode |
 | :--- | :--- | :--- | :--- |
 | SPIKE Prime | left distance (cm) | 「color」 | the number it returns |
-| Robot Inventor | left distance (cm) | 「reflected light」 | the number it returns |
+| Robot Inventor | left distance (cm) | 「reflected light」 | the number it returns (0~120) |
+| Robot Inventor | left distance (cm) | 「raw red」 | the number ÷ 64 |
+| Robot Inventor | left distance (cm) | 「ambient light」 | the number it returns (max 100: 120 = nothing ahead shows as 100) |
 
 <p class="ref-note">Firmware note: 16 B = [左, 右, 0, 左, 0, 右, 0, 平均, 0×8]：App 顏色 = 左、原始紅 = 256×左; 8 B 原樣（不壓縮）</p>
 
@@ -49,7 +51,7 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 | Hub | Value | Block (More Sensors → Color Sensor) | Decode |
 | :--- | :--- | :--- | :--- |
 | SPIKE Prime | right distance (cm) | 「reflected light」 | the number it returns |
-| Robot Inventor | right distance (cm) | 「color」 | the number it returns |
+| Robot Inventor | right distance (cm) | 「raw green」 | the number ÷ 64 |
 
 <p class="ref-note">Firmware note: App 反射光 = 右、原始綠 = 256×右</p>
 
@@ -67,7 +69,8 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 
 | Hub | Value | Block (More Sensors → Color Sensor) | Decode |
 | :--- | :--- | :--- | :--- |
-| SPIKE Prime | average distance (mm) | 「raw blue」 | floor(the number ÷ 256) |
+| SPIKE Prime | average distance (cm) | 「raw blue」 | floor(the number ÷ 256) = average in cm (×10 = mm) |
+| Robot Inventor | average distance (cm) | 「raw blue」 | the number ÷ 64 = average in cm |
 
 <p class="ref-note">Firmware note: byte7 = (左 cm + 右 cm)>>1；App 原始藍 = 256×平均</p>
 

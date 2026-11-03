@@ -1,3 +1,11 @@
+### EV3 test results and notes
+
+**Tested on the stock EV3 firmware and Pybricks v4 (2026-11-03)**; ev3dev / EV3 MicroPython v2 are supported.
+
+- **With the stock `InfraredSensor` class, do not use `buttons()`**: mode 2 carries line-position data, not remote button codes, and Pybricks raises `OSError` (error 5, EIO). Use `distance()` (= line position, can be negative), or read with `LUMPDevice` / the MBC library.
+- **Switching modes on the EV3 takes about 1.1 s**: read one mode only in a line-following loop.
+- **The EV3 edition cannot take commands from the hub** (E0~E9 cannot be sent); use the board buttons for white-line mode and calibration.
+
 ### Calibrate first (only once)
 
 The Pathfinder has to "learn" the black and white of your mat before its numbers are right. Calibration is stored in the sensor and survives power-off (until you change mats).

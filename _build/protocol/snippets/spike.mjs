@@ -150,16 +150,41 @@ function officialRows(e, v, lang) {
   }
   return rows;
 }
+// 官方 App 實測跟一般規則不同的產品（上機報告為準）。回傳新的 rows。
+// tof2：2026-11-03 上機（04_雷射測距\01_兩路雷射\上機報告_SPIKE官方App_20261103.md）
+//   玩具版積木：原始紅／綠／藍 ÷64＝左／右／平均 cm、反射光＝左、環境光＝左（最多 100）、顏色只回 −1（不能讀距離）
+//   教育版：原始藍 ÷256＝平均 cm（byte7 是 cm）
+const OFFICIAL_FIX = {
+  tof2(v, rows, lang) {
+    const RI = T(lang, 'Robot Inventor（玩具版）', 'Robot Inventor');
+    const SP = T(lang, 'SPIKE Prime（教育版）', 'SPIKE Prime');
+    const edu = rows.filter((r) => r[0] === SP);
+    const d64 = T(lang, '讀到的數 ÷ 64', 'the number ÷ 64');
+    if (v.key === 'avgMm') {
+      const cm = T(lang, '左右平均 cm', 'average distance (cm)');
+      return [[SP, cm, `「${T(lang, '原始藍', 'raw blue')}」`, T(lang, '讀到的數 ÷ 256 取整數＝平均 cm（×10＝mm）', 'floor(the number ÷ 256) = average in cm (×10 = mm)')],
+        [RI, cm, `「${T(lang, '原始藍', 'raw blue')}」`, T(lang, '讀到的數 ÷ 64＝平均 cm', 'the number ÷ 64 = average in cm')]];
+    }
+    const name = valueName(v, lang);
+    if (v.key === 'leftCm') return [...edu,
+      [RI, name, `「${T(lang, '反射光', 'reflected light')}」`, T(lang, '讀到的數（0～120）', 'the number it returns (0~120)')],
+      [RI, name, `「${T(lang, '原始紅', 'raw red')}」`, d64],
+      [RI, name, `「${T(lang, '環境光', 'ambient light')}」`, T(lang, '讀到的數（最多 100：前面沒東西時 120 會變成 100）', 'the number it returns (max 100: 120 = nothing ahead shows as 100)')]];
+    if (v.key === 'rightCm') return [...edu, [RI, name, `「${T(lang, '原始綠', 'raw green')}」`, d64]];
+    return rows;
+  },
+};
 export function bySoftware(sw, product, v, lang) {
   const list = v.spike || [];
   if (!list.length) return null;
   if (sw === 'pybricks') return value(product, v, lang);
   if (sw === 'official') {
-    const rows = [];
+    let rows = [];
     for (const e of list.filter((x) => x.mode === 0 && x.hub)) {
       const r = officialRows(e, v, lang);
       if (r) rows.push(...r);
     }
+    if (OFFICIAL_FIX[product.id]) rows = OFFICIAL_FIX[product.id](v, rows, lang);
     if (!rows.length) return null;
     const head = `| ${T(lang, '主機', 'Hub')} | ${T(lang, '值', 'Value')} | ${T(lang, '積木（更多感應器 → 顏色感應器）', 'Block (More Sensors → Color Sensor)')} | ${T(lang, '換算', 'Decode')} |\n| :--- | :--- | :--- | :--- |\n`;
     const notes = list.filter((x) => x.mode === 0 && x.note).map((x) => x.note);
