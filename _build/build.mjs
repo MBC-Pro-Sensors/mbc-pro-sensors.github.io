@@ -868,7 +868,8 @@ function productLd(key, lang, url, name, description) {
           '@type': 'OfferShippingDetails',
           shippingRate: { '@type': 'MonetaryAmount', value: '150', currency: 'TWD' },
           shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'TW' },
-          // 使用者 2026-11-04 定：3～5 個工作天出貨、寄出後 1～3 天送達（GSC 11-03 通知缺 deliveryTime）
+          // 使用者 2026-11-04 定：3～5 個工作天出貨、寄出後台灣本島 1～3 天送達、離島另計（GSC 11-03 通知缺 deliveryTime）。
+          // 只放這組 TW；海外不加 shippingDetails／deliveryTime
           deliveryTime: {
             '@type': 'ShippingDeliveryTime',
             handlingTime: { '@type': 'QuantitativeValue', minValue: 3, maxValue: 5, unitCode: 'DAY' },
