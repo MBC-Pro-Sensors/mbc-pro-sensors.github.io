@@ -2,7 +2,7 @@
 <!-- 表單程式：_build/assets/support.js；信件欄位標籤（data-label）改了要同步內部規格檔 96_銷售經營\客服信件\信件格式規格_20261104.md -->
 # 🆘 Technical Support
 
-Something not working? Spend a minute on the pages below first: many problems are solved right there. Still stuck? Fill in the form and one click opens an email with the **recipient, subject and layout already filled in**. Our engineers reply within 2 business days.
+Something not working? Spend a minute on the pages below first: many problems are solved right there. Still stuck? Fill in the form and one click opens an email with the **recipient, subject and layout already filled in**. Our engineers reply within 3 business days.
 
 ## Check these first
 

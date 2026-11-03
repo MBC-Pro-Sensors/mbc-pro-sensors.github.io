@@ -93,4 +93,4 @@ Controller 2.4G (PS2) is sold in Taiwan only.
 
 ### How do I order, and do you work with distributors?
 
-Email [contactmbcrobot@gmail.com](mailto:contactmbcrobot@gmail.com) or message us on [LINE](https://line.me/R/ti/p/@692vcvuk) with your controller, the products you need and your country. We reply within 2 business days. School orders and distributor enquiries are welcome.
+Email [contactmbcrobot@gmail.com](mailto:contactmbcrobot@gmail.com) or message us on [LINE](https://line.me/R/ti/p/@692vcvuk) with your controller, the products you need and your country. We reply within 3 business days. School orders and distributor enquiries are welcome.

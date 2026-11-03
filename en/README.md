@@ -21,7 +21,7 @@
 <h2 id="finder">Already have a product? Pick it, your host and your software, and go straight to the code</h2>
 <!-- finder -->
 
-<div class="lp-promo"><p><b>Getting ready for next season?</b> Schools, clubs and teams: ask for a bulk quote. We reply within 2 business days.</p><a class="lp-btn line" href="mailto:contactmbcrobot@gmail.com?subject=Bulk%20quote%20request&body=Hello%2C%0A%0AWe%20would%20like%20a%20bulk%20quote.%0ASchool%20%2F%20club%3A%0AProducts%20and%20quantities%3A%0ACountry%3A%0A">✉️ Get a bulk quote</a></div>
+<div class="lp-promo"><p><b>Getting ready for next season?</b> Schools, clubs and teams: ask for a bulk quote. We reply within 3 business days.</p><a class="lp-btn line" href="mailto:contactmbcrobot@gmail.com?subject=Bulk%20quote%20request&body=Hello%2C%0A%0AWe%20would%20like%20a%20bulk%20quote.%0ASchool%20%2F%20club%3A%0AProducts%20and%20quantities%3A%0ACountry%3A%0A">✉️ Get a bulk quote</a></div>
 
 <p class="lp-proof">🏆 Named in the official rules of <b>AERC</b> (Taiwan) as an allowed sensor, and usable in WRO, Robofest and more. <a href="/en/competitions.md">See the Competition Guide →</a></p>
 
@@ -120,7 +120,7 @@
 <div class="lp-grid lp-steps">
 <div class="lp-card"><h3>Pick your controller</h3><p>SPIKE, EV3, Arduino, MATRIX or mBot? Each has its own edition — the <a href="/en/guide.md">Buying Guide</a> tells you in a minute.</p></div>
 <div class="lp-card"><h3>Choose your products</h3><p>Line following, ranging, expansion, remote control, vision — pick by challenge and budget, or just ask us.</p></div>
-<div class="lp-card"><h3>Email us for a quote</h3><p>Send your controller, products, quantities and country to <a href="mailto:contactmbcrobot@gmail.com">contactmbcrobot@gmail.com</a>. Schools, clubs and distributors are welcome. We reply within 2 business days.</p></div>
+<div class="lp-card"><h3>Email us for a quote</h3><p>Send your controller, products, quantities and country to <a href="mailto:contactmbcrobot@gmail.com">contactmbcrobot@gmail.com</a>. Schools, clubs and distributors are welcome. We reply within 3 business days.</p></div>
 </div>
 
 <h2 id="downloads">Free Downloads</h2>

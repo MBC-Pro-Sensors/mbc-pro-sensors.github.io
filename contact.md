@@ -255,7 +255,7 @@
     <div class="channel-icon-wrap">✉️</div>
     <div class="channel-info">
       <h3>技術支援信箱</h3>
-      <p>適合：附上程式截圖、影片或詳細文字說明的問題回報，以及採購詢價、合作提案。我們承諾於 2 個工作天內回覆。</p>
+      <p>適合：附上程式截圖、影片或詳細文字說明的問題回報，以及採購詢價、合作提案。我們承諾於 3 個工作天內回覆。</p>
       <a href="mailto:contactmbcrobot@gmail.com" style="text-decoration:none;"><code>contactmbcrobot@gmail.com</code></a>
     </div>
   </div>
