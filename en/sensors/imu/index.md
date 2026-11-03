@@ -58,8 +58,9 @@ The same IMU board can also be shipped with a **magnetometer-only "compass" firm
 
 | Platform | How |
 | :--- | :--- |
-| LEGO MINDSTORMS EV3 | Tested on the stock EV3 firmware (2026-11-02): works with EV3 Lab (EV3-G), EV3 Classroom (standard gyro blocks), clev3r, Pybricks v4 and ev3dev |
+| LEGO MINDSTORMS EV3 | EV3-G (EV3 Lab, standard gyro blocks) / EV3 Classroom / clev3r: tested on the stock EV3 firmware (2026-11-02); Pybricks v4: tested (2026-11-02); ev3dev / EV3 MicroPython v2: supported (same mode table as the stock firmware) |
 | LEGO SPIKE Prime / Robot Inventor | Not available |
+| LEGO SPIKE Essential | Not supported |
 | Arduino / ESP32 / Raspberry Pi | Universal I2C (address `0x6A`); tested on Arduino Nano (2026-11-02) |
 | MATRIX Mini R4 | I2C; tested with the stock library (2026-11-02) |
 

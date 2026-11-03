@@ -8,7 +8,7 @@
 > [!NOTE]
 > **📦 Editions: choose the one that matches your controller**
 > Each edition's connector and protocol are optimized for its controller, so **editions are not interchangeable**:
-> 1. **🧱 SPIKE Edition**: Uses LPF2 (Lego 6-pin) flat socket. Compatible ONLY with SPIKE Prime, SPIKE Essential, and Robot Inventor hubs.
+> 1. **🧱 SPIKE Edition**: Uses LPF2 (Lego 6-pin) flat socket. Compatible ONLY with SPIKE Prime and Robot Inventor hubs (**SPIKE Essential is not supported**).
 > 2. **🧱 EV3 Edition**: Uses RJ12 (Lego specific 6-pin) socket. Compatible ONLY with EV3 hubs.
 > 3. **∿ Universal I2C Edition**: Uses standard pin headers/XH2.54 ports. Designed for Arduino, ESP32, Raspberry Pi, etc.
 > 4. **🤖 MakeBlock Edition**: Connects to an RJ25 port through the mBot socket board. For mBot, mBot Ranger and other Makeblock boards (mBlock 5 blocks).

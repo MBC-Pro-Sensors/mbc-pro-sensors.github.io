@@ -58,8 +58,9 @@ MBC 陀螺儀 IMU 結合 6 軸慣性感測（陀螺儀＋加速度計）與磁�
 
 | 平台 | 支援方式 |
 | :--- | :--- |
-| LEGO MINDSTORMS EV3 | 原廠 EV3 韌體實測通過（2026-11-02）：EV3 Lab（EV3-G）、EV3 Classroom（原廠陀螺儀積木）、clev3r、Pybricks v4、ev3dev 都能用 |
+| LEGO MINDSTORMS EV3 | EV3-G（EV3 Lab，原廠陀螺儀積木）／EV3 Classroom／clev3r：原廠韌體實測通過（2026-11-02）；Pybricks v4：實測通過（2026-11-02）；ev3dev／EV3 MicroPython v2：支援（模式表與原廠相同） |
 | LEGO SPIKE Prime / Robot Inventor | 不提供 |
+| LEGO SPIKE Essential | 不支援 |
 | Arduino / ESP32 / 樹莓派 | 通用 I2C（位址 `0x6A`）；Arduino Nano 實測通過（2026-11-02） |
 | MATRIX Mini R4 | I2C；原廠函式庫實測通過（2026-11-02） |
 

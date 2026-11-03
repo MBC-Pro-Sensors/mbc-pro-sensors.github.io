@@ -219,6 +219,7 @@ EV3 的 Y 是**下＝小**：(119−Y)÷20＋1；SPIKE 系列照 Kito「上＝�
 | 平台 | 讀法 | 說明 |
 | :--- | :--- | :--- |
 | SPIKE Prime／Robot Inventor | Pybricks 函式庫（模式 9／6）、Pybricks 內建積木（模式 5／7）、官方 App 教育版／家用版（模式 0） | [SPIKE 讀值教學](/sensors/unicam/spike/index.md) |
+| SPIKE Essential | 不支援 | — |
 | EV3 | EV3-G、EV3 Classroom、EV3 MicroPython：紅外線感應器模式 0／1／2 | [EV3 讀值教學](/sensors/unicam/ev3/index.md) |
 | MATRIX Mini R4 | MATRIXblock mVision 積木（10 格） | [MATRIX 讀值教學](/sensors/unicam/matrix/mvision.md) |
 | Arduino／ESP32／UNO R4 | I2C 0x4C | [Arduino 讀值教學](/sensors/unicam/arduino/index.md) |

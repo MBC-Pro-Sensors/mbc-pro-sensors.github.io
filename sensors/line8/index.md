@@ -8,7 +8,7 @@
 > [!NOTE]
 > **📦 版本說明：請選擇與你的主機相符的版本**
 > 每個版本的接頭與通訊方式都針對該主機最佳化，**不同版本之間不能互換**：
-> 1. **🧱 SPIKE 專屬版**：採用 LPF2 (Lego 6-pin) 扁平插座，僅相容於 SPIKE Prime, SPIKE Essential 與 Robot Inventor 主機。
+> 1. **🧱 SPIKE 專屬版**：採用 LPF2 (Lego 6-pin) 扁平插座，僅相容於 SPIKE Prime 與 Robot Inventor 主機（**SPIKE Essential 不支援**）。
 > 2. **🧱 EV3 專屬版**：採用 RJ12 (樂高專用 6-pin 水晶頭) 插座，僅相容於 EV3 主機。
 > 3. **∿ 通用 I2C 開發版**：採用標準排針/XH2.54 通訊埠，僅適用於 Arduino、ESP32、樹莓派等自行開發系統。
 > 4. **🤖 MakeBlock 版**：搭配 mBot 插座片接 RJ25 連接埠，適用於 mBot、mBot Ranger 等 Makeblock 主板（mBlock 5 積木）。

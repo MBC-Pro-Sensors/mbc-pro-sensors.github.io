@@ -51,7 +51,6 @@ When you run out of hub ports, you can plug MBC sensors into EXP6 ports 1–6: *
 
 - Switch each sensor to **SPIKE mode** first.
 - The EXP6 needs firmware from **2026-11-03 or later**. For older firmware, contact us to update it.
-- **The 5-ch Line Follower is not supported on the EXP6**: plug it into the hub.
 
 **1. Normal mode: declare what is on each port.** When you create the EXP6 object, write `p5=LINE16` (Line Follower 16-ch on port 5). For the camera, write `(UNICAM, camera_mode)`. Then get each sensor object with `exp6.sensor(port)`.
 

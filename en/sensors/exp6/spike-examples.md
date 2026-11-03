@@ -39,7 +39,7 @@ This page is written for people who have **never written a program before**. EXP
 - What you can plug in:
   - **LEGO motors**: SPIKE medium, large and small motors, Technic angular motors.
   - **LEGO sensors**: only the SPIKE **Color Sensor, Ultrasonic Sensor and Force Sensor**.
-  - MBC's own sensors (Line Follower 8/16-ch, Laser Ranger, PS2/PS4 receiver, Sharpshooter Vision) are not used in these examples. To plug them into the EXP6 with Pybricks, see "MBC sensors on the EXP6" in [EXP6 × Pybricks](/en/sensors/exp6/spike/pybricks.md) (needs EXP6 firmware from 2026-11-03 or later). The 5-ch Line Follower cannot go on the EXP6.
+  - MBC's own sensors (Line Follower 8/16-ch, Laser Ranger, PS2/PS4 receiver, Sharpshooter Vision) are not used in these examples. To plug them into the EXP6 with Pybricks, see "MBC sensors on the EXP6" in [EXP6 × Pybricks](/en/sensors/exp6/spike/pybricks.md) (needs EXP6 firmware from 2026-11-03 or later).
 
 > [!NOTE]
 > We are still checking port by port on a real board whether expansion port numbers "1 to 6" match the numbers printed on the board on every port. If you plug a motor into port 1 but a different number in the program makes it move, please let us know.

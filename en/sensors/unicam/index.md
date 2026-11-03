@@ -219,6 +219,7 @@ Sharpshooter Vision units shipped before October 2026 (School and WRO editions) 
 | Host | How it is read | Guide |
 | :--- | :--- | :--- |
 | SPIKE Prime / Robot Inventor | Pybricks library (modes 9 / 6), Pybricks built-in blocks (modes 5 / 7), official app Education / home edition (mode 0) | [Reading it on SPIKE](/en/sensors/unicam/spike/index.md) |
+| SPIKE Essential | Not supported | — |
 | EV3 | EV3-G, EV3 Classroom, EV3 MicroPython: Infrared Sensor modes 0 / 1 / 2 | [Reading it on EV3](/en/sensors/unicam/ev3/index.md) |
 | MATRIX Mini R4 | MATRIXblock mVision blocks (10 slots) | [Reading it on MATRIX](/en/sensors/unicam/matrix/mvision.md) |
 | Arduino / ESP32 / UNO R4 | I2C 0x4C | [Reading it on Arduino](/en/sensors/unicam/arduino/index.md) |

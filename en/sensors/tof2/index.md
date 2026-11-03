@@ -43,7 +43,8 @@ The Ranger 2-Way uses **laser time-of-flight (ToF)**: it measures at the speed o
 | Platform | How |
 | :--- | :--- |
 | LEGO SPIKE Prime / Robot Inventor | Official app, Pybricks (👉 [SPIKE beginner examples: official app / MBC blocks site / Pybricks, 5 each — in Chinese](/sensors/tof2/spike-examples.md)); tested on Pybricks 4.1.2 (2026-11-02) |
-| LEGO MINDSTORMS EV3 | EV3 official software, Pybricks ([EV3 beginner examples](/en/sensors/tof2/ev3-examples.md)); tested on the stock EV3 firmware and Pybricks v4 (2026-11-02) |
+| LEGO SPIKE Essential | Not supported |
+| LEGO MINDSTORMS EV3 | EV3 official software, Pybricks ([EV3 beginner examples](/en/sensors/tof2/ev3-examples.md)); EV3-G / EV3 Classroom / clev3r: tested on the stock EV3 firmware (2026-11-02); Pybricks v4: tested (2026-11-02); ev3dev / EV3 MicroPython v2: supported (same mode table as the stock firmware) |
 | MakeBlock (mBot etc.) | Dedicated edition, [blocks & wiring](/en/makeblock.md) |
 | Arduino / ESP32 (Universal I2C edition, coming soon) | Address `0x29`, [Arduino Examples](/en/sensors/tof2/arduino-examples.md) |
 

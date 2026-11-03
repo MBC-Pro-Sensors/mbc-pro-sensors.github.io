@@ -39,6 +39,7 @@ The Controller PS4/PS5 Bluetooth Receiver lets SPIKE, EV3 or Arduino read every 
 | Platform | How |
 | :--- | :--- |
 | LEGO SPIKE Prime / Robot Inventor | Official app, Pybricks |
+| LEGO SPIKE Essential | Not supported |
 | LEGO MINDSTORMS EV3 | EV3 official software, Pybricks |
 | Arduino / ESP32 / Raspberry Pi | Universal I2C (address `0x42`), [Arduino Examples](/en/sensors/ps4/arduino-examples.md) |
 | MakeBlock (mBot etc.) | Dedicated edition, [blocks & wiring](/en/makeblock.md) |

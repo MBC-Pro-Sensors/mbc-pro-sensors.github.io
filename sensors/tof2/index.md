@@ -42,7 +42,8 @@
 | 平台 | 支援方式 |
 | :--- | :--- |
 | LEGO SPIKE Prime / Robot Inventor | 官方 App、Pybricks（👉 [SPIKE 新手範例：官方 App／MBC 積木網站／Pybricks 各 5 個](/sensors/tof2/spike-examples.md)）；Pybricks 4.1.2 實測通過（2026-11-02） |
-| LEGO MINDSTORMS EV3 | EV3 官方軟體、Pybricks（[EV3 新手範例](/sensors/tof2/ev3-examples.md)）；原廠 EV3 韌體、Pybricks v4 實測通過（2026-11-02） |
+| LEGO SPIKE Essential | 不支援 |
+| LEGO MINDSTORMS EV3 | EV3 官方軟體、Pybricks（[EV3 新手範例](/sensors/tof2/ev3-examples.md)）；EV3-G／EV3 Classroom／clev3r：原廠韌體實測通過（2026-11-02）；Pybricks v4：實測通過（2026-11-02）；ev3dev／EV3 MicroPython v2：支援（模式表與原廠相同） |
 | MakeBlock（mBot 等） | 專屬版本，[積木與接法](/makeblock.md) |
 | Arduino / ESP32（通用 I2C 版，即將推出） | 位址 `0x29`，[Arduino 範例](/sensors/tof2/arduino-examples.md) |
 

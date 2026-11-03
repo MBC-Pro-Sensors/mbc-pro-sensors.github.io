@@ -28,6 +28,7 @@
 | :--- | :--- |
 | LEGO MINDSTORMS EV3 | 偽裝原廠感應器，官方軟體直接用積木讀取 |
 | LEGO SPIKE Prime / Robot Inventor | 偽裝原廠顏色感應器；Pybricks 與官方 App 函式庫 |
+| LEGO SPIKE Essential | 不支援 |
 | Arduino / ESP32 / 樹莓派 | [MBC 通用 I2C 協議](/i2c-protocol.md) |
 
 ## 📌 目前進度

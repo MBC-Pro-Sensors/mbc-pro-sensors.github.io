@@ -28,6 +28,7 @@ The **Long-Range Colour Sensor OV3660** uses a 3-megapixel image sensor and **re
 | :--- | :--- |
 | LEGO MINDSTORMS EV3 | Emulates an official sensor; read it with the standard blocks |
 | LEGO SPIKE Prime / Robot Inventor | Emulates the official colour sensor; Pybricks and official-app libraries |
+| LEGO SPIKE Essential | Not supported |
 | Arduino / ESP32 / Raspberry Pi | [MBC universal I2C protocol](/en/i2c-protocol.md) |
 
 ## 📌 Status
