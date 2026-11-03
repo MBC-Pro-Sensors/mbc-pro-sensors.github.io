@@ -358,11 +358,11 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
   <section class="tips" aria-labelledby="tiph">
     <h2 id="tiph">使用注意</h2>
     <ol>
-      <li><b>官方 App 的讀法是依照感應器韌體推算的，還沒有用實機逐一確認（跟官方 App 積木頁一樣）。</b>如果數字怪怪的（例如一直是 0、或是好幾千），請先改用 Pybricks，並跟我們回報。</li>
+      <li><b>已上機驗證（2026-11-03，SPIKE Prime 教育版 SPIKE App 3）：</b>原始紅、綠、藍 ÷ 256＝左、右、平均距離，<code>color()</code>＝左、<code>reflection()</code>＝右，都不會被截在 10／100。</li>
       <li><b>每圈先 <code>update()</code>。</b>小幫手的功能都是拆「最近一次 <code>update()</code> 讀到的值」；沒 <code>update()</code> 就一直是舊的（一開始全是 0）。</li>
-      <li><b>這是官方 App 3 的寫法，跟 Pybricks 不一樣。</b>孔位是 <code>from hub import port</code> 的 <code>port.C</code>（不是 <code>Port.C</code> 或數字）、等待是 <code>await runloop.sleep_ms()</code>（不是 <code>wait()</code>），Pybricks 的程式不能直接貼過來。家用版（Robot Inventor）App 的 Python 讀法還沒驗證，這頁是教育版的。</li>
+      <li><b>這是官方 App 3 的寫法，跟 Pybricks 不一樣。</b>孔位是 <code>from hub import port</code> 的 <code>port.C</code>（不是 <code>Port.C</code> 或數字）、等待是 <code>await runloop.sleep_ms()</code>（不是 <code>wait()</code>），Pybricks 的程式不能直接貼過來。這頁是教育版的。家用版（Robot Inventor）App 的 Python 寫法不同（<code>hub.port.C.device</code>），讀值實測跟教育版一樣：<code>get_rgb_intensity()</code>＝(左, 右, 平均) × 256，÷ 256 就是公分。</li>
       <li><b>讀到 120 有 4 種可能：</b>前面真的沒東西、東西超過 120 公分、剛開機雷射還沒準備好（約 1～2 秒）、那顆雷射壞了。黑色、亮面、透明的東西比較難量，黑色物體大概 30～50 公分外就量不到。</li>
-      <li><b>方向：</b>站在車後面往前看，<code>left()</code> 是左邊那顆、<code>right()</code> 是右邊那顆；<code>diff()</code> 負數＝左邊比較近。小幫手只用原始紅、綠、藍（顏色、反射光可能被 App 限制在 0～10、0～100）。</li>
+      <li><b>方向：</b>左右以感應器朝前、從背後看為準（左＝J5、右＝J3），<code>left()</code> 是左邊那顆、<code>right()</code> 是右邊那顆；<code>diff()</code> 負數＝左邊比較近。小幫手只用原始紅、綠、藍。</li>
     </ol>
   </section>
 </div>

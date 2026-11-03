@@ -236,6 +236,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 .chip.other-mode:hover, .chip.other-mode:focus-visible { opacity: 1; }
 .v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
 .v1warn b { white-space: nowrap; }
+.v1ok { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--accent-soft); color: var(--ink); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
+.v1ok b { white-space: nowrap; }
 /* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
 .ucpick { display: grid; gap: 14px; }
 #modes { gap: 8px; }
@@ -250,7 +252,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     <span class="eyebrow">MBC 神攝手 × EV3 MicroPython（Pybricks）</span>
     <h1>三個步驟用 EV3 MicroPython 讀神攝手</h1>
     <p class="lead">寫程式一定照這個順序：先<b>匯入函式庫、選好相機模式</b>，再<b>建立物件、幫相機取名字</b>，最後用這個名字去<b>呼叫功能</b>。左邊一步一步做，右邊的程式會跟著長出來；在模擬的相機畫面裡拖色塊、色紙、積木或線，就能看到程式會印出什麼。</p>
-    <p class="v1warn" role="note"><b>v1 尚未上機驗證</b><span>數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。</span></p>
+    <p class="v1ok" role="note"><b>EV3 已上機驗證</b><span>2026-11-03 用出貨版韌體 v1.0-261101 在實機跑過：原廠 EV3 韌體（EV3-G 紅外線積木、13 個相機模式逐格讀）、Pybricks v4 範例 1～4；ev3dev／EV3 MicroPython v2 只核對模式表（跟原廠紅外線感應器相同）。EV3 版不能從主機下命令，相機模式在相機 MENU 切。</span></p>
   </header>
 
   <section class="main" aria-label="教學">
@@ -287,7 +289,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
           <p class="small">模式編號要不要寫在程式裡？</p>
           <div class="choice" role="group" aria-label="模式">
             <button type="button" class="opt" id="mt-off" aria-pressed="true"><b>寫 mode=（建議）</b><small>照第 1 步選的模式編號寫。少讀一次「模式 0」，開始比較快；要跟相機選單一樣。</small></button>
-            <button type="button" class="opt" id="mt-on" aria-pressed="false"><b>不寫，自動讀</b><small>第一次讀值時先讀紅外線「模式 0」拿到相機的模式編號（多 0.5 秒）。EV3 才能這樣，SPIKE 不行。</small></button>
+            <button type="button" class="opt" id="mt-on" aria-pressed="false"><b>不寫，自動讀</b><small>第一次讀值時先讀紅外線「模式 0」拿到相機的模式編號（多 1.1 秒）。EV3 才能這樣，SPIKE 不行。</small></button>
           </div>
           <p class="small"><code>mode=</code> 後面的數字是第 1 步選的模式編號；<b>相機選單也要切到同一個模式</b>（不一樣時函式庫會照你寫的模式解讀，數字會亂掉）。</p>
 
@@ -401,7 +403,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <li><b>模式編號一定要跟相機選單一樣。</b>寫了 <code>mode=</code> 就照你寫的解讀；不寫就讀紅外線模式 0 自動取得。用了這個模式沒有的功能會出現 <code>ValueError</code>（訊息會寫要用哪個模式）。</li>
       <li><b>先判斷有沒有看到。</b>座標 (0, 0)、面積 0＝沒看到。紅色的色相碼是 0，所以照順序給色號要先看 <code>total()</code> 才知道前幾格有效。</li>
       <li><b>座標方向：</b>X 0～159 左→右，Y 0～119 上→下（上＝小），畫面中間 X＝80。EV3 的位置是 8×6 格的格子中心（±10 像素），<code>grid()</code> 讀原始格子（EV3 原始 Y 是下＝小）。循線偏移：線在左＝負、在右＝正（站在車後面往前看）。</li>
-      <li><b>EV3 每換一次紅外線模式約 0.5 秒。</b>大部分值在模式 1；循線的 <code>edges()</code>、<code>far_width()</code>、<code>marker()</code>、<code>line_all()</code> 和照順序給色號要多讀模式 2。同一個迴圈不要一直在兩組之間換。EV3 沒有 <code>lost()</code>、<code>cell()</code>、<code>colors_found()</code>、<code>firmware_version()</code>；<code>count()</code> 只有模式 14。</li>
+      <li><b>EV3 每換一次紅外線模式約 1.1 秒。</b>大部分值在模式 1；循線的 <code>edges()</code>、<code>far_width()</code>、<code>marker()</code>、<code>line_all()</code> 和照順序給色號要多讀模式 2。同一個迴圈不要一直在兩組之間換。EV3 沒有 <code>lost()</code>、<code>cell()</code>、<code>colors_found()</code>、<code>firmware_version()</code>；<code>count()</code> 只有模式 14。</li>
       <li><b>顏色要在相機上教。</b>「目標 1」就是程式裡的色 1；程式改不了目標色。座標取色的取樣點位置也在相機上改。</li>
     </ol>
   </section>
@@ -744,7 +746,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
           body: ['if {n}.junction() > 0:', '    print("' + ('路口距離') + '", {n}.junction_dist(), "%")', 'else:', '    print("' + ('前面沒有路口') + '")'],
           out: function (V) { return cmp('>', V.junction(), 0) ? pr(('路口距離'), V.junction_dist(), '%') : ('前面沒有路口'); } },
         { id: 'edges', label: 'edges()', name: ('近處線的左右緣'), grp: 'line', modes: [41, 42, 43],
-          what: ('近處線的 (左緣, 右緣)，跟偏移同一種單位（−100～100）。沿線的邊走時用。') + (EV3 ? ('EV3 讀模式 2（多 0.5 秒）。') : ''), ret: ('(左緣, 右緣)'),
+          what: ('近處線的 (左緣, 右緣)，跟偏移同一種單位（−100～100）。沿線的邊走時用。') + (EV3 ? ('EV3 讀模式 2（多 1.1 秒）。') : ''), ret: ('(左緣, 右緣)'),
           body: ['l, r = {n}.edges()', 'print("' + ('左緣') + '", l, "' + ('右緣') + '", r)'], out: function (V) { var t = unpack(V.edges()); return pr(('左緣'), t[0], ('右緣'), t[1]); } },
         { id: 'far_width', label: 'far_width()', name: ('遠處線寬 %'), grp: 'line', modes: [41, 42, 43],
           what: ('遠處的線有多寬（%）。遠處看起來比較細。'), ret: ('0～100'),
@@ -786,7 +788,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
           what: ('這個主機在這個模式拿得到幾個物體：') + (EV3 ? '51→5, 52→2' : '51→4, 52→2') + ('。物體 1＝面積最大，2、3…越來越小。不用讀相機。'),
           ret: ('整數'), body: ['print("' + ('最多幾個物體:') + '", {n}.max_object())'], out: function (V) { return pr(('最多幾個物體:'), V.max_object()); } },
         { id: 'object_count', label: 'object_count()', name: ('畫面裡有幾個物體'), grp: 'obj', modes: [51],
-          what: ('畫面裡有幾個物體（0～8，可能比 max_object() 多）。只看目標色 1～8。只有模式 51 有。勾「拿走這個物體」看數字變小。') + (EV3 ? ('EV3 讀紅外線模式 2（多 0.5 秒）。') : ''),
+          what: ('畫面裡有幾個物體（0～8，可能比 max_object() 多）。只看目標色 1～8。只有模式 51 有。勾「拿走這個物體」看數字變小。') + (EV3 ? ('EV3 讀紅外線模式 2（多 1.1 秒）。') : ''),
           ret: ('0～8'), body: ['print("' + ('畫面裡有幾個物體:') + '", {n}.object_count())'], out: function (V) { return pr(('畫面裡有幾個物體:'), V.object_count()); } },
         { id: 'object', label: 'object(i)', name: ('物體代碼'), grp: 'obj', modes: [51, 52],
           what: ('物體 i 的代碼＝色號×10＋形狀，例 13＝目標色 1 的三角形、24＝目標色 2 的正方形；0＝沒有。形狀：1 圓 2 橢圓 3 三角 4 正方 5 長方 6 五邊 7 六邊 8 星 9 梯形 0 其他。在右邊換形狀、顏色試試看。'),

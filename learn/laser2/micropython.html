@@ -373,7 +373,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <li><b>讀到 120 有 4 種可能：</b>前面真的沒東西、東西超過 120 公分、剛開機雷射還沒準備好（約 1～2 秒）、那顆雷射壞了。要分清楚就用 <code>is_ok()</code>（只有 SPIKE）。黑色、亮面、透明的東西比較難量，黑色物體大概 30～50 公分外就量不到；貼得太近（幾公分內）也可能讀成 120。</li>
       <li><b>SPIKE：公分和毫米不要在同一個迴圈混著用。</b>公分那組（<code>left()</code>、<code>right()</code>、<code>ch()</code>、<code>average()</code>、<code>min_distance()</code>、<code>min_side()</code>、<code>diff()</code>、<code>is_ok()</code>、<code>init_status()</code>、<code>fault_status()</code>、<code>read_all()</code>）和毫米那組（<code>left_mm()</code>、<code>right_mm()</code>、<code>average_mm()</code>）是感應器的兩組資料，每換一組要多等幾十毫秒；<code>device_id()</code>、<code>firmware_version()</code> 放在迴圈外面。毫米要感應器韌體 2026-10 以後的版本。EV3 公分和毫米是同一組，沒有這個問題。</li>
       <li><b>不用讀太快。</b>雷射大約每 0.1 秒才量好一次，迴圈 <code>wait(20)</code>～<code>wait(50)</code> 就夠；同一組資料 10 ms 內只向感應器讀一次，一次呼叫好幾個功能沒關係。</li>
-      <li><b>方向：</b>站在車後面往前看，第 1 顆（<code>ch(1)</code>）在左邊、第 2 顆在右邊。<code>diff()</code> = 左減右，負數 = 左邊比較近；<code>min_side()</code> 回傳 −1 = 左邊比較近、+1 = 右邊比較近、0 = 一樣近。</li>
+      <li><b>方向：</b>站在車後面往前看（左右以感應器朝前、從背後看為準：左＝J5、右＝J3），第 1 顆（<code>ch(1)</code>）在左邊、第 2 顆在右邊。<code>diff()</code> = 左減右，負數 = 左邊比較近；<code>min_side()</code> 回傳 −1 = 左邊比較近、+1 = 右邊比較近、0 = 一樣近。</li>
     </ol>
   </section>
 </div>

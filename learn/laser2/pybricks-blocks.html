@@ -364,7 +364,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
       <li><b>await 和 call 要跟多工一致：</b>多工 true 就選 await，多工 false 就選 call。混著用，程式會在主機上出錯。</li>
       <li><b>積木背後就是 MicroPython。</b>Pybricks Code 右邊的程式窗格就是積木產生的程式，跟這頁「對應的 MicroPython」一樣（多工版會多一行 <code>await wait(0)</code>，是 Pybricks 自動加的）。</li>
       <li><b>拔線不會讓程式停：</b>讀不到時回傳上一次讀到的值；用 <code>sensor_ok</code> 功能可以知道有沒有接好。<b>讀到 120</b> 可能是前面沒東西、太遠、剛開機還沒準備好，或那顆雷射壞了，用 <code>is_ok</code> 分辨。公分（<code>left</code> 等）和毫米（<code>left_mm</code> 等）不要在同一個迴圈混著用，每換一組要多等幾十毫秒。</li>
-      <li><b>方向：</b>站在車後面往前看，第 1 顆在左邊、第 2 顆在右邊；<code>diff</code> = 左減右，負數 = 左邊比較近。</li>
+      <li><b>方向：</b>站在車後面往前看（左右以感應器朝前、從背後看為準：左＝J5、右＝J3），第 1 顆在左邊、第 2 顆在右邊；<code>diff</code> = 左減右，負數 = 左邊比較近。</li>
     </ol>
   </section>
 </div>

@@ -236,6 +236,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 .chip.other-mode:hover, .chip.other-mode:focus-visible { opacity: 1; }
 .v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
 .v1warn b { white-space: nowrap; }
+.v1ok { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--accent-soft); color: var(--ink); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
+.v1ok b { white-space: nowrap; }
 /* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
 .ucpick { display: grid; gap: 14px; }
 #modes { gap: 8px; }
@@ -250,7 +252,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     <span class="eyebrow">MBC Sharpshooter Vision × EV3-G (EV3 Lab software)</span>
     <h1>Read Sharpshooter Vision with EV3-G in three steps</h1>
     <p class="lead">On the EV3, the Sharpshooter Vision shows up as a LEGO <b>Infrared Sensor</b>, so you do not import a library or add an extension: you read it with the Infrared Sensor blocks. Proximity gives the <b>camera mode number</b>, the heading and proximity of the 4 beacon channels are the <b>8 main values</b>, and the 4 remote channels are <b>4 more values</b>. What each value means depends on the mode chosen in the camera menu. Work down the steps on the left and the blocks on the right grow with you; these pictures were taken in EV3-G after opening each program (English interface).</p>
-    <p class="v1warn" role="note"><b>v1 not yet hardware-verified</b><span>The value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after hardware testing.</span></p>
+    <p class="v1ok" role="note"><b>Verified on EV3 hardware</b><span>Run on real EV3 bricks on 2026-11-03 with shipping firmware v1.0-261101: the stock EV3 firmware (EV3-G infrared blocks, all 13 camera modes read slot by slot) and Pybricks v4 examples 1~4; ev3dev / EV3 MicroPython v2 checked against the mode table only (same as the LEGO infrared sensor). The EV3 edition cannot take commands from the hub; switch camera modes in the camera MENU.</span></p>
   </header>
 
   <section class="main" aria-label="Tutorial">
@@ -302,7 +304,7 @@ details.alltbl h3 { font-size: 0.98rem; margin: 14px 0 6px; }
         <div class="step-body">
           <p class="why">Drag the Infrared Sensor block from the yellow Sensors tab and pick a Measure mode at the bottom left (Proximity, Beacon or Remote); the number at the top right is the port: choose <b>1</b>. The table shows, for the mode you picked in step 1, which mode reads each value, what you get and how to read it:</p>
           <div id="ev3tbl" aria-live="polite"></div>
-          <p class="small">Every value is a whole number from −127 to 100. Keep one program on Beacon (or on Remote) only: every infrared mode change makes the EV3 pause for about 0.5 seconds. To split tens and ones, use the math blocks: divide by 10 and round down, and the remainder after dividing by 10.</p>
+          <p class="small">Every value is a whole number from −127 to 100. Keep one program on Beacon (or on Remote) only: every infrared mode change makes the EV3 pause for about 1.1 seconds. To split tens and ones, use the math blocks: divide by 10 and round down, and the remainder after dividing by 10.</p>
           <div id="ev3cant"></div>
           <details class="alltbl"><summary>See the table for all 13 modes</summary>
 <h3>Mode number 11 = Colour tracking ① Max colours</h3>
@@ -432,7 +434,7 @@ details.alltbl h3 { font-size: 0.98rem; margin: 14px 0 6px; }
     <ol>
       <li><b>Plug the camera into port 1.</b> For another port, change the port number on the block. <b>Switch the EV3 on first, then plug in the camera</b>; if the numbers never change, unplug it and plug it in again.</li>
       <li><b>The mode number must match the camera menu.</b> An EV3 program cannot switch the camera mode, and one value means different things in different modes; read the mode number with Proximity and check it at the start.</li>
-      <li><b>Use Beacon only or Remote only in one program.</b> Each infrared mode change makes the EV3 pause for about 0.5 seconds, and a racing robot can lose control.</li>
+      <li><b>Use Beacon only or Remote only in one program.</b> Each infrared mode change makes the EV3 pause for about 1.1 seconds, and a racing robot can lose control.</li>
       <li><b>When the camera is unplugged:</b> the EV3 cannot read it, the number becomes "not a number" and the screen shows <code>----</code>; each reading waits about 1.2 seconds. The program does not stop and recovers when you plug it back in. Tick "Unplug the sensor" to see it.</li>
       <li><b>Colours are taught on the camera.</b> "Target 1" is colour 1; sample spots are also set on the camera. The EV3 only reads the numbers.</li>
       <li><b>More:</b> <a href="/en/sensors/unicam/ev3/index.html">EV3 reading guide</a>, <a href="/en/sensors/unicam/reference.html#host-ev3">Value reference: EV3</a>. The screenshots use the English interface; the block icons are the same in other languages.</li>
@@ -712,7 +714,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         modeWarn: function (m) {
           if ($('ev3tbl')) $('ev3tbl').innerHTML = '<p class="small"><b>' + ('Mode number ') + m + (' (') + modeTitle(m).replace(/^\d+ = /, '') + (')') + '</b></p>' + CFG.tbl[m];
           if ($('ev3cant')) $('ev3cant').innerHTML = CFG.cant[m];
-          return repsKey(m) === 'reps2' ? ('Some values of this mode are on Remote (infrared mode 2): do not read Beacon and Remote in one program; each switch pauses about 0.5 s.') : '';
+          return repsKey(m) === 'reps2' ? ('Some values of this mode are on Remote (infrared mode 2): do not read Beacon and Remote in one program; each switch pauses about 1.1 s.') : '';
         },
         view: view,
         warn: function () { log.length = 0; return []; },

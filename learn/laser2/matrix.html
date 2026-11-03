@@ -353,7 +353,7 @@ svg.blk .blocklyDropdownText { fill: #fff !important; }
       <li><b>拔線不會停程式：</b>MATRIX 函式庫讀不到感應器時，七格都回 255，程式照樣跑。用「檢查有沒有接好」那張卡判斷；插回去就恢復。</li>
       <li><b>只有前三格有值：</b>Red = 左、Green = 右、Blue = 較近，都是公分 0 ~ 120；Cyan、Magenta、Yellow、Key 都是 0。毫米、初始化、故障資料 MATRIXblock 讀不到，要用請改 Arduino、mBlock 或 micro:bit。</li>
       <li><b>讀到 120 有 4 種可能：</b>前面真的沒東西、東西超過 120 公分、剛開機雷射還沒準備好（約 1 ～ 2 秒）、那顆雷射壞了。黑色、亮面、透明的東西比較難量。</li>
-      <li><b>方向：</b>站在車後面往前看，左雷射在左邊、右雷射在右邊。</li>
+      <li><b>方向：</b>站在車後面往前看，左雷射在左邊、右雷射在右邊（左右以感應器朝前、從背後看為準：左＝J5、右＝J3）。</li>
     </ol>
   </section>
 </div>

@@ -236,6 +236,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 .chip.other-mode:hover, .chip.other-mode:focus-visible { opacity: 1; }
 .v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
 .v1warn b { white-space: nowrap; }
+.v1ok { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--accent-soft); color: var(--ink); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
+.v1ok b { white-space: nowrap; }
 /* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
 .ucpick { display: grid; gap: 14px; }
 #modes { gap: 8px; }
@@ -250,7 +252,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     <span class="eyebrow">MBC Sharpshooter Vision × EV3 clev3r (EV3 BASIC)</span>
     <h1>Read Sharpshooter Vision with clev3r in three steps</h1>
     <p class="lead">clev3r needs no library: on the EV3 the camera is a <b>LEGO infrared sensor</b>, each EV3 mode sends back a few numbers (cells), and what each cell holds depends on the <b>camera mode</b>. In order: <b>create the project and pick the camera mode</b>, then <b>pick the port and set the EV3 mode</b>, then <b>read the cells, split them into values and show them on the EV3 screen</b>. Work down the steps on the left and watch the program grow on the right; drag the blobs, papers, blocks, line or shapes in the simulated camera view to see what the EV3 screen shows.</p>
-    <p class="v1warn" role="note"><b>v1 not yet hardware-verified</b><span>The value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after hardware testing.</span></p>
+    <p class="v1ok" role="note"><b>Verified on EV3 hardware</b><span>Run on real EV3 bricks on 2026-11-03 with shipping firmware v1.0-261101: the stock EV3 firmware (EV3-G infrared blocks, all 13 camera modes read slot by slot) and Pybricks v4 examples 1~4; ev3dev / EV3 MicroPython v2 checked against the mode table only (same as the LEGO infrared sensor). The EV3 edition cannot take commands from the hub; switch camera modes in the camera MENU.</span></p>
   </header>
 
   <section class="main" aria-label="Tutorial">
@@ -286,7 +288,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
             <span class="small">Which port is the camera in?</span>
             <div class="ports" id="ports" role="group" aria-label="Port"></div>
           </div>
-          <p class="small">In <code>Sensor.SetMode(<b id="portnum">1</b>, <b id="evnum">1</b>)</code> the first number is the port (1–4) and the second is the EV3 mode, which follows the reading you pick in step 3. <b>Try to use one EV3 mode per program</b>: each switch takes about 0.5 s.</p>
+          <p class="small">In <code>Sensor.SetMode(<b id="portnum">1</b>, <b id="evnum">1</b>)</code> the first number is the port (1–4) and the second is the EV3 mode, which follows the reading you pick in step 3. <b>Try to use one EV3 mode per program</b>: each switch takes about 1.1 s.</p>
 
           <div class="mini" id="mini2" aria-live="polite"></div>
           <button type="button" class="next" id="next2">Done, next step</button>
@@ -391,7 +393,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <div class="panel">
         <div class="panel-head"><span>List the objects on screen (mode 51)</span><button type="button" class="copy" data-copy="obj">Copy</button></div>
         <pre class="code" id="ex-obj"></pre>
-        <p class="bubble"><i>!</i><span>Set the camera menu to mode 51 and teach target colors 1–8 (you can set a shape while teaching). EV3 mode 1 has the codes and cells of objects 1–4; object 5 and the count are in EV3 mode 2, which costs another 0.5 s, so this example reads mode 1 only.</span></p>
+        <p class="bubble"><i>!</i><span>Set the camera menu to mode 51 and teach target colors 1–8 (you can set a shape while teaching). EV3 mode 1 has the codes and cells of objects 1–4; object 5 and the count are in EV3 mode 2, which costs another 1.1 s, so this example reads mode 1 only.</span></p>
       </div>
     </div>
   </section>
@@ -401,7 +403,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     <ol>
       <li><b>Unplugged reads 0 and the program keeps running.</b> clev3r's <code>Sensor.ReadRawValue</code> returns 0 when there is no data: a position of 0 = "not seen", and a hue of 0 looks like red. To know the camera is connected, use <code>Sensor.GetType</code> from the "Is the sensor connected" card (33 = connected). Tick "Unplug the sensor" to see it.</li>
       <li><b>The camera menu mode must match the program.</b> A cell holds different things in different camera modes, so a mismatch gives meaningless numbers. clev3r can read EV3 mode 0 for the camera's current mode number and check it first (the "Which camera mode" card).</li>
-      <li><b>Each EV3 mode switch takes about 0.5 s.</b> Most values are in EV3 mode 1; only colors/spots 9–12 in modes 11 and 21, blocks 9–11 and the total in color order, line edges, far width, marker count, object 5 and the object count are in EV3 mode 2. Do not switch back and forth in one loop. EV3 modes 3 and 4 are always 0.</li>
+      <li><b>Each EV3 mode switch takes about 1.1 s.</b> Most values are in EV3 mode 1; only colors/spots 9–12 in modes 11 and 21, blocks 9–11 and the total in color order, line edges, far width, marker count, object 5 and the object count are in EV3 mode 2. Do not switch back and forth in one loop. EV3 modes 3 and 4 are always 0.</li>
       <li><b>Positions are 8×6 cells:</b> X×10 + Y, X 1–8 left→right, <b>Y 1–6 bottom→top (bottom = small, the opposite of pixels)</b>, 0 = not seen. To pixel centres: X = (cell X − 1) × 20 + 10, Y = 109 − (cell Y − 1) × 20 (picture 160×120, top = 0). Line offset: left = negative, right = positive (looking forward from behind the robot).</li>
       <li><b>An EV3 cell only holds −127–100.</b> Hue codes 0–240 are sent as hue × 100 ÷ 240 (0–100) and white/grey/black as −1 to −15; the examples turn them back into hue codes (±2). Mode 23 sends the raw hue code in two cells (hundreds, remainder) instead. Object angles are sent as (angle + 1) ÷ 2; multiply by 2. Colors are taught on the camera; the program cannot change them.</li>
       <li><b>The EV3 screen shows only English letters and digits</b>, so <code>LCD.Text</code> labels are short English words, padded with spaces to wipe out longer text from before.</li>

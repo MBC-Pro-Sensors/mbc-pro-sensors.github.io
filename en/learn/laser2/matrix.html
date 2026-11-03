@@ -353,7 +353,7 @@ svg.blk .blocklyDropdownText { fill: #fff !important; }
       <li><b>Unplugging does not stop the program:</b> when the MATRIX library cannot reach the sensor, all seven slots read 255 and the program keeps running. Use the "Is it plugged in?" card to check; plug it back in and it works again.</li>
       <li><b>Only the first three slots have data:</b> Red = left, Green = right, Blue = nearer, all in cm from 0 to 120. Cyan, Magenta, Yellow and Key are 0. MATRIXblock cannot read millimetres, init or fault data; use Arduino, mBlock or micro:bit for those.</li>
       <li><b>A reading of 120 can mean 4 things:</b> nothing in front, something farther than 120 cm, the laser has just powered on (about 1 to 2 seconds), or that laser is broken. Black, shiny and see-through things are harder to measure.</li>
-      <li><b>Direction:</b> stand behind the robot and look forward: the left laser is on the left, the right laser on the right.</li>
+      <li><b>Direction:</b> stand behind the robot and look forward: the left laser is on the left, the right laser on the right (as seen from behind the sensor: left = J5, right = J3).</li>
     </ol>
   </section>
 </div>

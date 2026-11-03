@@ -287,7 +287,7 @@ img.shot { display: block; max-width: none; height: auto; background: #fff; bord
             <tr><td>heading to beacon 1</td><td>Light value of each channel (#1: L1)</td><td>0 to 100 (0 black, 100 white)</td></tr>
             <tr><td>proximity to beacon 1</td><td>Light value of each channel (#2: L2)</td><td>0 to 100 (0 black, 100 white)</td></tr>
           </table></div>
-          <p class="small">Use blocks of only one mode in a program (Proximity, Beacon or Remote). Every mode change makes the EV3 pause for about 0.5 seconds.</p>
+          <p class="small">Use blocks of only one mode in a program (Proximity, Beacon or Remote). Every mode change makes the EV3 pause for about 1.1 seconds.</p>
           <div class="mini" id="mini2" aria-live="polite"></div>
           <button type="button" class="next" id="next2">Got it, next step</button>
         </div>
@@ -348,7 +348,7 @@ img.shot { display: block; max-width: none; height: auto; background: #fff; bord
     <h2 id="tiph">Things to know</h2>
     <ol>
       <li><b>Plug the sensor into port 1.</b> If you use another port, change the port number on the block. <b>Switch the EV3 on first, then plug in the sensor</b>; if the number never changes, unplug it and plug it in again.</li>
-      <li><b>Use one mode per program.</b> Each change between Proximity, Beacon and Remote makes the EV3 pause for about 0.5 seconds, and a racing robot can lose control.</li>
+      <li><b>Use one mode per program.</b> Each change between Proximity, Beacon and Remote makes the EV3 pause for about 1.1 seconds, and a racing robot can lose control.</li>
       <li><b>When the sensor is unplugged:</b> the EV3 cannot read it, the number becomes "not a number" and the screen shows <code>----</code>. Each reading also waits about 1.2 seconds. The program does not stop, and it works again when you plug the sensor back in.</li>
       <li><b>Direction:</b> stand behind the robot and look forward. A line on the left is negative, on the right positive. Channel 1 is on the far left.</li>
       <li><b>Check "is there a line?" with line width.</b> Line width = 0 means no line. When the line leaves completely, line position stays at the side where it left (-8 / 8).</li>

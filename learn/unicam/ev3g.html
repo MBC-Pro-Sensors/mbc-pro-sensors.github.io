@@ -236,6 +236,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 .chip.other-mode:hover, .chip.other-mode:focus-visible { opacity: 1; }
 .v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
 .v1warn b { white-space: nowrap; }
+.v1ok { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--accent-soft); color: var(--ink); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
+.v1ok b { white-space: nowrap; }
 /* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
 .ucpick { display: grid; gap: 14px; }
 #modes { gap: 8px; }
@@ -250,7 +252,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     <span class="eyebrow">MBC 神攝手 × EV3-G（EV3 官方軟體）</span>
     <h1>三個步驟用 EV3-G 讀神攝手</h1>
     <p class="lead">神攝手插在 EV3 上會被當成樂高的<b>紅外線感應器</b>，所以不用匯入函式庫、不用裝擴充，直接用紅外線感應器的積木讀：近接讀<b>相機模式編號</b>，信標 4 個頻道的方向、近接是 <b>8 格主要資料</b>，遙控 4 個頻道是<b>另外 4 格</b>。每一格放什麼，要看相機選單切在哪個模式。左邊一步一步做，右邊的積木會跟著長出來；這些圖是在 EV3-G 裡打開程式後直接截下來的（英文介面）。</p>
-    <p class="v1warn" role="note"><b>v1 尚未上機驗證</b><span>數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。</span></p>
+    <p class="v1ok" role="note"><b>EV3 已上機驗證</b><span>2026-11-03 用出貨版韌體 v1.0-261101 在實機跑過：原廠 EV3 韌體（EV3-G 紅外線積木、13 個相機模式逐格讀）、Pybricks v4 範例 1～4；ev3dev／EV3 MicroPython v2 只核對模式表（跟原廠紅外線感應器相同）。EV3 版不能從主機下命令，相機模式在相機 MENU 切。</span></p>
   </header>
 
   <section class="main" aria-label="教學">
@@ -302,7 +304,7 @@ details.alltbl h3 { font-size: 0.98rem; margin: 14px 0 6px; }
         <div class="step-body">
           <p class="why">從黃色的「感應器」拖出「紅外線感應器」積木，按積木左下角選「測量」的模式（近接、信標、遙控）；右上角是孔號，選 <b>1</b>。下表是你在第 1 步選的模式，每一格用哪個模式讀、讀到什麼、怎麼換算：</p>
           <div id="ev3tbl" aria-live="polite"></div>
-          <p class="small">每格是 −127～100 的整數。同一支程式盡量只用信標（或只用遙控）：EV3 每換一次紅外線模式要卡約 0.5 秒。換算要拆十位、個位時，用「數學」積木除以 10 取整數、除以 10 的餘數。</p>
+          <p class="small">每格是 −127～100 的整數。同一支程式盡量只用信標（或只用遙控）：EV3 每換一次紅外線模式要卡約 1.1 秒。換算要拆十位、個位時，用「數學」積木除以 10 取整數、除以 10 的餘數。</p>
           <div id="ev3cant"></div>
           <details class="alltbl"><summary>看全部 13 個模式的對照表</summary>
 <h3>模式編號 11＝顏色追蹤 ① 最多色</h3>
@@ -432,7 +434,7 @@ details.alltbl h3 { font-size: 0.98rem; margin: 14px 0 6px; }
     <ol>
       <li><b>相機插 1 號孔。</b>插別的孔，就把積木上的孔號改成那一孔。EV3 要<b>先開機再插相機</b>；數字一直不動時拔掉重插一次。</li>
       <li><b>模式編號一定要跟相機選單一樣。</b>EV3 程式不能切換相機模式，同一格在不同模式意思不一樣；用「近接」讀模式編號，程式一開始可以先檢查。</li>
-      <li><b>一支程式只用信標或只用遙控。</b>EV3 每換一次紅外線模式要卡約 0.5 秒，比賽時車子可能失控。</li>
+      <li><b>一支程式只用信標或只用遙控。</b>EV3 每換一次紅外線模式要卡約 1.1 秒，比賽時車子可能失控。</li>
       <li><b>拔掉相機時：</b>EV3 讀不到，數字變成「不是數字」，螢幕顯示 <code>----</code>，而且每讀一次要等約 1.2 秒；程式不會停，插回去會自動恢復。在右邊勾「拔掉感應器」看看。</li>
       <li><b>顏色要在相機上教。</b>「目標 1」就是色 1；取樣點位置也在相機上設。EV3 這邊只負責讀數字。</li>
       <li><b>還想知道更多：</b><a href="/sensors/unicam/ev3/index.html">EV3 讀值教學</a>、<a href="/sensors/unicam/reference.html#host-ev3">讀值參考：EV3</a>。截圖是英文介面，中文版 EV3-G 的積木圖示一樣。</li>
@@ -728,7 +730,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         modeWarn: function (m) {
           if ($('ev3tbl')) $('ev3tbl').innerHTML = '<p class="small"><b>' + ('模式編號 ') + m + ('（') + modeTitle(m).replace(/^\d+ = /, '') + ('）') + '</b></p>' + CFG.tbl[m];
           if ($('ev3cant')) $('ev3cant').innerHTML = CFG.cant[m];
-          return repsKey(m) === 'reps2' ? ('這個模式有些值在遙控（紅外線模式 2）：同一支程式不要同時讀信標和遙控，換一次要卡約 0.5 秒。') : '';
+          return repsKey(m) === 'reps2' ? ('這個模式有些值在遙控（紅外線模式 2）：同一支程式不要同時讀信標和遙控，換一次要卡約 1.1 秒。') : '';
         },
         view: view,
         // EV3 螢幕：每次只顯示現在這一屏（不像電腦輸出那樣往下捲）

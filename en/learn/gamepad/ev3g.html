@@ -290,7 +290,7 @@ img.shot { display: block; max-width: none; height: auto; background: #fff; bord
             <tr><td>Measure → Beacon, channel 3: Proximity</td><td>Right stick (#1: RX)</td><td>0 to 99 (50 = centre)</td></tr>
             <tr><td>Measure → Beacon, channel 4: Proximity</td><td>Right stick (#2: RY)</td><td>0 to 99 (50 = centre)</td></tr>
           </table></div>
-          <p class="small">Use blocks of only one mode in a program (Proximity, Beacon or Remote). Every mode change makes the EV3 pause for about 0.5 seconds.</p>
+          <p class="small">Use blocks of only one mode in a program (Proximity, Beacon or Remote). Every mode change makes the EV3 pause for about 1.1 seconds.</p>
           <div class="mini" id="mini2" aria-live="polite"></div>
           <button type="button" class="next" id="next2">Got it, next step</button>
         </div>
@@ -347,7 +347,7 @@ img.shot { display: block; max-width: none; height: auto; background: #fff; bord
     <h2 id="tiph">Things to know</h2>
     <ol>
       <li><b>Plug the sensor into port 1.</b> If you use another port, change the port number on the block. <b>Switch the EV3 on first, then plug in the sensor</b>; if the number never changes, unplug it and plug it in again.</li>
-      <li><b>Use one mode per program.</b> Each change between Proximity, Beacon and Remote makes the EV3 pause for about 0.5 seconds, and a racing robot can lose control.</li>
+      <li><b>Use one mode per program.</b> Each change between Proximity, Beacon and Remote makes the EV3 pause for about 1.1 seconds, and a racing robot can lose control.</li>
       <li><b>When the sensor is unplugged:</b> the EV3 cannot read it, the number becomes "not a number" and the screen shows <code>----</code>. Each reading also waits about 1.2 seconds. The program does not stop, and it works again when you plug the sensor back in.</li>
       <li><b>One mode is enough:</b> Beacon mode has all the buttons and both sticks at once (heading = buttons, proximity = sticks). A driving program that only uses it never switches modes.</li>
       <li><b>When the pad is not connected:</b> buttons are 0 and sticks are 50 (centre), so the robot does not run off. The PS2 and PS4 receivers give exactly the same numbers on the EV3.</li>

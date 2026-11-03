@@ -343,11 +343,12 @@ svg.lego .blocklyDropdownText { fill: #fff !important; }
   <section class="tips" aria-labelledby="tiph">
     <h2 id="tiph">Good to know</h2>
     <ol>
-      <li><b>This way of reading the sensor in the official App was worked out from the sensor firmware and has not yet been checked one by one on real hardware.</b> If the numbers look wrong (for example always 0, or in the thousands), please switch to the MBC Blocks website or Pybricks for now and let us know.</li>
+      <li><b>Verified on hardware (2026-11-03, SPIKE Prime Education, SPIKE App 3):</b> the examples pass on the real hub; raw red, green and blue ÷ 256 are the left, right and average distance.</li>
       <li><b>Always convert.</b> Raw red, green and blue all have to be ÷ 256 and then rounded down (floor). If you forget, the numbers are in the thousands.</li>
-      <li><b>Do not use the color and reflected light blocks.</b> They also give the left and right distance, but the App may only accept numbers from 0 ~ 10 and 0 ~ 100, and we have not confirmed whether larger values get clipped.</li>
+      <li><b>On Education, color = left distance and reflected light = right distance</b>; tested, they are not clipped to 10 / 100 (nothing ahead = 120), so you can use them too. This page sticks to raw red, green and blue.</li>
+      <li><b>Robot Inventor blocks convert differently:</b> raw red, green and blue must be <b>÷ 64</b> (not ÷ 256) = left, right and average distance; reflected light = <b>left</b> distance (the opposite of Education), ambient light = left distance (max 100), and color always returns −1, so it cannot be used for distance.</li>
       <li><b>A reading of 120 can mean 4 things:</b> there really is nothing in front, the object is farther than 120 cm, the laser is not ready yet right after power-on (about 1 to 2 seconds), or that laser is broken. Black, shiny and transparent objects are harder to measure; black objects usually cannot be seen beyond about 30 to 50 cm.</li>
-      <li><b>Direction:</b> stand behind the robot and look forward. Raw red is the left laser and raw green is the right laser. Left minus right: negative = the left side is closer, positive = the right side is closer.</li>
+      <li><b>Direction:</b> left and right are as seen from behind the sensor, looking the way it faces (left = J5, right = J3). Raw red is the left laser and raw green is the right laser. Left minus right: negative = the left side is closer, positive = the right side is closer.</li>
     </ol>
   </section>
 </div>

@@ -236,6 +236,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 .chip.other-mode:hover, .chip.other-mode:focus-visible { opacity: 1; }
 .v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
 .v1warn b { white-space: nowrap; }
+.v1ok { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--accent-soft); color: var(--ink); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
+.v1ok b { white-space: nowrap; }
 /* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
 .ucpick { display: grid; gap: 14px; }
 #modes { gap: 8px; }
@@ -250,7 +252,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     <span class="eyebrow">MBC Sharpshooter Vision × EV3 MicroPython (Pybricks)</span>
     <h1>Read Sharpshooter Vision with EV3 MicroPython in three steps</h1>
     <p class="lead">Programs always go in this order: first <b>import the library and pick the camera mode</b>, then <b>create an object and name the camera</b>, then <b>call its functions</b> with that name. Work down the steps on the left and watch the program grow on the right; drag the blobs, papers, blocks or line in the simulated camera view to see what the program prints.</p>
-    <p class="v1warn" role="note"><b>v1 not yet hardware-verified</b><span>The value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after hardware testing.</span></p>
+    <p class="v1ok" role="note"><b>Verified on EV3 hardware</b><span>Run on real EV3 bricks on 2026-11-03 with shipping firmware v1.0-261101: the stock EV3 firmware (EV3-G infrared blocks, all 13 camera modes read slot by slot) and Pybricks v4 examples 1~4; ev3dev / EV3 MicroPython v2 checked against the mode table only (same as the LEGO infrared sensor). The EV3 edition cannot take commands from the hub; switch camera modes in the camera MENU.</span></p>
   </header>
 
   <section class="main" aria-label="Tutorial">
@@ -287,7 +289,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
           <p class="small">Write the mode number in the program?</p>
           <div class="choice" role="group" aria-label="Mode">
             <button type="button" class="opt" id="mt-off" aria-pressed="true"><b>Write mode= (recommended)</b><small>Use the mode number from step 1. Skips reading "mode 0", so it starts faster; it must match the camera menu.</small></button>
-            <button type="button" class="opt" id="mt-on" aria-pressed="false"><b>Leave it out, read it</b><small>The first reading asks infrared "mode 0" for the camera's mode number (0.5 s extra). Only the EV3 can do this, not SPIKE.</small></button>
+            <button type="button" class="opt" id="mt-on" aria-pressed="false"><b>Leave it out, read it</b><small>The first reading asks infrared "mode 0" for the camera's mode number (1.1 s extra). Only the EV3 can do this, not SPIKE.</small></button>
           </div>
           <p class="small">The number after <code>mode=</code> is the mode number from step 1; <b>switch the camera menu to the same mode</b> (otherwise the library decodes the wrong layout and the numbers make no sense).</p>
 
@@ -401,7 +403,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <li><b>The mode number must match the camera menu.</b> With <code>mode=</code> the library uses what you wrote; without it, it reads infrared mode 0. A function the mode does not have raises <code>ValueError</code> (the message says which mode to use).</li>
       <li><b>Check that something is seen first.</b> (0, 0) or area 0 = not seen. Red's hue code is 0, so in color order read <code>total()</code> first to know how many entries are real.</li>
       <li><b>Directions:</b> X 0–159 left→right, Y 0–119 top→bottom (top = small); the middle is X = 80. EV3 positions are 8×6 grid-cell centres (±10 px); <code>grid()</code> gives the raw cell (raw EV3 Y is bottom = small). Line offset: line on the left = negative, right = positive (looking forward from behind the robot).</li>
-      <li><b>Each EV3 infrared mode switch takes about 0.5 s.</b> Most values are in mode 1; line <code>edges()</code>, <code>far_width()</code>, <code>marker()</code>, <code>line_all()</code> and color order also read mode 2. Do not switch back and forth in one loop. The EV3 has no <code>lost()</code>, <code>cell()</code>, <code>colors_found()</code> or <code>firmware_version()</code>; <code>count()</code> is mode 14 only.</li>
+      <li><b>Each EV3 infrared mode switch takes about 1.1 s.</b> Most values are in mode 1; line <code>edges()</code>, <code>far_width()</code>, <code>marker()</code>, <code>line_all()</code> and color order also read mode 2. Do not switch back and forth in one loop. The EV3 has no <code>lost()</code>, <code>cell()</code>, <code>colors_found()</code> or <code>firmware_version()</code>; <code>count()</code> is mode 14 only.</li>
       <li><b>Colors are taught on the camera.</b> "Target 1" is color 1 in the program; the program cannot change target colors. Sample-spot positions are also set on the camera.</li>
     </ol>
   </section>
@@ -728,7 +730,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
           body: ['if {n}.junction() > 0:', '    print("' + ('junction at') + '", {n}.junction_dist(), "%")', 'else:', '    print("' + ('no junction ahead') + '")'],
           out: function (V) { return cmp('>', V.junction(), 0) ? pr(('junction at'), V.junction_dist(), '%') : ('no junction ahead'); } },
         { id: 'edges', label: 'edges()', name: ('Near line edges'), grp: 'line', modes: [41, 42, 43],
-          what: ('(left edge, right edge) of the near line, same units as the offset (−100–100). For edge following.') + (EV3 ? (' EV3 reads mode 2 (0.5 s more).') : ''), ret: ('(left, right)'),
+          what: ('(left edge, right edge) of the near line, same units as the offset (−100–100). For edge following.') + (EV3 ? (' EV3 reads mode 2 (1.1 s more).') : ''), ret: ('(left, right)'),
           body: ['l, r = {n}.edges()', 'print("' + ('left edge') + '", l, "' + ('right edge') + '", r)'], out: function (V) { var t = unpack(V.edges()); return pr(('left edge'), t[0], ('right edge'), t[1]); } },
         { id: 'far_width', label: 'far_width()', name: ('Far line width %'), grp: 'line', modes: [41, 42, 43],
           what: ('Width of the far line (%). It looks thinner far away.'), ret: ('0–100'),
@@ -768,7 +770,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
           what: ('How many objects this host gets in this mode: ') + (EV3 ? '51→5, 52→2' : '51→4, 52→2') + ('. Object 1 is the largest, then 2, 3… smaller. No camera read.'),
           ret: ('integer'), body: ['print("' + ('max objects:') + '", {n}.max_object())'], out: function (V) { return pr(('max objects:'), V.max_object()); } },
         { id: 'object_count', label: 'object_count()', name: ('Objects in view'), grp: 'obj', modes: [51],
-          what: ('How many objects are in view (0–8, can be more than max_object()). Only target colors 1–8 count. Mode 51 only. Remove an object to see it drop.') + (EV3 ? (' The EV3 reads infrared mode 2 (0.5 s more).') : ''),
+          what: ('How many objects are in view (0–8, can be more than max_object()). Only target colors 1–8 count. Mode 51 only. Remove an object to see it drop.') + (EV3 ? (' The EV3 reads infrared mode 2 (1.1 s more).') : ''),
           ret: ('0–8'), body: ['print("' + ('objects in view:') + '", {n}.object_count())'], out: function (V) { return pr(('objects in view:'), V.object_count()); } },
         { id: 'object', label: 'object(i)', name: ('Object code'), grp: 'obj', modes: [51, 52],
           what: ('Code of object i = color × 10 + shape, e.g. 13 = a triangle of target color 1, 24 = a square of target color 2; 0 = none. Shapes: 1 circle 2 ellipse 3 triangle 4 square 5 rectangle 6 pentagon 7 hexagon 8 star 9 trapezoid 0 other. Change the shape and color on the right.'),

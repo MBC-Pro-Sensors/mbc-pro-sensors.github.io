@@ -236,6 +236,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 .chip.other-mode:hover, .chip.other-mode:focus-visible { opacity: 1; }
 .v1warn { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--warn-soft); color: var(--warn); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
 .v1warn b { white-space: nowrap; }
+.v1ok { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; background: var(--accent-soft); color: var(--ink); padding: 8px 12px; border-radius: 8px; max-width: 70ch; }
+.v1ok b { white-space: nowrap; }
 /* not .ref: the mobile follow script would move .side into a .ref and the next menu redraw would delete it */
 .ucpick { display: grid; gap: 14px; }
 #modes { gap: 8px; }
@@ -250,7 +252,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     <span class="eyebrow">MBC 神攝手 × EV3 clev3r（EV3 BASIC）</span>
     <h1>三個步驟用 clev3r 讀神攝手</h1>
     <p class="lead">clev3r 不用函式庫：神攝手在 EV3 上是一顆<b>樂高原廠紅外線感應器</b>，每個 EV3 模式送回幾個數字（格子），每格放什麼由<b>相機模式</b>決定。照順序做：先<b>建立專案、選好相機模式</b>，再<b>選孔位、設定 EV3 模式</b>，最後<b>讀格子、拆成值、顯示在 EV3 螢幕上</b>。左邊一步一步做，右邊的程式會跟著長出來；在模擬的相機畫面裡拖色塊、色紙、積木、線或形狀，就能看到 EV3 螢幕會顯示什麼。</p>
-    <p class="v1warn" role="note"><b>v1 尚未上機驗證</b><span>數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。</span></p>
+    <p class="v1ok" role="note"><b>EV3 已上機驗證</b><span>2026-11-03 用出貨版韌體 v1.0-261101 在實機跑過：原廠 EV3 韌體（EV3-G 紅外線積木、13 個相機模式逐格讀）、Pybricks v4 範例 1～4；ev3dev／EV3 MicroPython v2 只核對模式表（跟原廠紅外線感應器相同）。EV3 版不能從主機下命令，相機模式在相機 MENU 切。</span></p>
   </header>
 
   <section class="main" aria-label="教學">
@@ -286,7 +288,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
             <span class="small">相機插在哪個孔？</span>
             <div class="ports" id="ports" role="group" aria-label="孔位"></div>
           </div>
-          <p class="small">程式裡 <code>Sensor.SetMode(<b id="portnum">1</b>, <b id="evnum">1</b>)</code> 的第 1 個數字是孔位（1～4 號孔），第 2 個是 EV3 模式；EV3 模式跟著第 3 步選的讀值走。<b>一個程式盡量只用一種 EV3 模式</b>：每換一次要等約 0.5 秒。</p>
+          <p class="small">程式裡 <code>Sensor.SetMode(<b id="portnum">1</b>, <b id="evnum">1</b>)</code> 的第 1 個數字是孔位（1～4 號孔），第 2 個是 EV3 模式；EV3 模式跟著第 3 步選的讀值走。<b>一個程式盡量只用一種 EV3 模式</b>：每換一次要等約 1.1 秒。</p>
 
           <div class="mini" id="mini2" aria-live="polite"></div>
           <button type="button" class="next" id="next2">寫好了，下一步</button>
@@ -391,7 +393,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <div class="panel">
         <div class="panel-head"><span>螢幕列出物體（模式 51）</span><button type="button" class="copy" data-copy="obj">複製</button></div>
         <pre class="code" id="ex-obj"></pre>
-        <p class="bubble"><i>!</i><span>相機選單切到模式 51，先教目標色 1～8（教色時可以指定形狀）。EV3 模式 1 有物體 1～4 的代碼和格子；物體 5 和物體數在 EV3 模式 2，換模式要多等約 0.5 秒，所以這個範例只讀模式 1。</span></p>
+        <p class="bubble"><i>!</i><span>相機選單切到模式 51，先教目標色 1～8（教色時可以指定形狀）。EV3 模式 1 有物體 1～4 的代碼和格子；物體 5 和物體數在 EV3 模式 2，換模式要多等約 1.1 秒，所以這個範例只讀模式 1。</span></p>
       </div>
     </div>
   </section>
@@ -401,7 +403,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     <ol>
       <li><b>拔線時讀到 0，程式不會停。</b>clev3r 的 <code>Sensor.ReadRawValue</code> 拿不到資料時回傳 0：位置 0＝「沒看到」，色相 0 會被當成紅色。要知道有沒有接好，用「感應器有接好嗎」那張卡的 <code>Sensor.GetType</code>（接好是 33）。在右邊勾「拔掉感應器」看看。</li>
       <li><b>相機選單的模式要跟程式寫的一樣。</b>同一格在不同相機模式放的東西不一樣，不一樣時數字沒有意義。clev3r 可以讀 EV3 模式 0 拿到相機現在的模式編號，先確認再讀（「相機現在是哪個模式」那張卡）。</li>
-      <li><b>EV3 每換一次模式約 0.5 秒。</b>大部分值在 EV3 模式 1；只有模式 11、21 的第 9～12 色／點、照順序第 9～11 塊和總塊數、循線左右緣、遠處線寬、標記線條數、物體 5 和物體數在 EV3 模式 2。同一個迴圈不要一直在兩個模式之間換。EV3 模式 3、4 一直是 0。</li>
+      <li><b>EV3 每換一次模式約 1.1 秒。</b>大部分值在 EV3 模式 1；只有模式 11、21 的第 9～12 色／點、照順序第 9～11 塊和總塊數、循線左右緣、遠處線寬、標記線條數、物體 5 和物體數在 EV3 模式 2。同一個迴圈不要一直在兩個模式之間換。EV3 模式 3、4 一直是 0。</li>
       <li><b>位置是 8×6 格：</b>X×10＋Y，X 1～8 左→右，<b>Y 1～6 下→上（下＝小，跟像素相反）</b>，0＝沒看到。換成像素中心：X＝(格 X−1)×20＋10、Y＝109−(格 Y−1)×20（畫面 160×120，上＝0）。循線偏移：線在左＝負、在右＝正（站在車後面往前看）。</li>
       <li><b>EV3 一格只能放 −127～100。</b>色相碼 0～240 送成「色相碼×100÷240」（0～100），白／灰／黑送負數 −1～−15；範例換回色相碼（±2）。模式 23 改送原始色相碼兩格（百位、餘數）。物體角度送「(角度＋1)÷2」，乘 2 還原。顏色要在相機上教，程式改不了。</li>
       <li><b>EV3 螢幕只能顯示英文和數字</b>，所以 <code>LCD.Text</code> 的標籤用英文縮寫，後面補空白蓋掉上一次比較長的字。</li>
