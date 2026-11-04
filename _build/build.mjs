@@ -40,7 +40,7 @@ const git = (args) => execSync(`git ${args}`, { cwd: ROOT, encoding: 'utf8' });
 const tracked = git('-c core.quotepath=off ls-files --cached --others --exclude-standard').split('\n').filter(Boolean);
 
 // ---------------------------------------------------------------- URL mapping
-const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol|makeblock|guide|privacy|wro-rules|competitions|faq|support|where-to-buy|distributors|reference|matrix|microbit|downloads)\.md$/.test(f) || /^(en\/)?(sensors|articles)\//.test(f) || /^(en\/)?learn\/index\.md$/.test(f));
+const isPage = (f) => f.endsWith('.md') && (f === 'README.md' || f === 'contact.md' || /^(en\/)?(README|contact|i2c-protocol|makeblock|guide|privacy|terms|wro-rules|competitions|faq|support|where-to-buy|distributors|reference|matrix|microbit|downloads)\.md$/.test(f) || /^(en\/)?(sensors|articles)\//.test(f) || /^(en\/)?learn\/index\.md$/.test(f));
 const pages = tracked.filter(isPage);
 
 function urlFor(mdPath) {
@@ -331,8 +331,8 @@ const SOCIAL = [
   ['LINE', LINE_URL],
 ];
 const socialHtml = `<p class="sf-social">${SOCIAL.map(([n, u]) => `<a href="${u}" target="_blank" rel="noopener me">${n}</a>`).join(' · ')}</p>`;
-// 頁尾：技術支援／常見問題／聯絡我們入口（2026-11-04 加技術支援頁）
-const FOOTER_LINKS = { zh: [['技術支援', '/support.html'], ['常見問題', '/faq.html'], ['聯絡我們', '/contact.html']], en: [['Support', '/en/support.html'], ['FAQ', '/en/faq.html'], ['Contact', '/en/contact.html']] };
+// 頁尾：技術支援／常見問題／聯絡我們／隱私權政策／服務條款入口（2026-11-04 加技術支援頁；同日加隱私權與服務條款，YouTube API 稽核要求）
+const FOOTER_LINKS = { zh: [['技術支援', '/support.html'], ['常見問題', '/faq.html'], ['聯絡我們', '/contact.html'], ['隱私權政策', '/privacy.html'], ['服務條款', '/terms.html']], en: [['Support', '/en/support.html'], ['FAQ', '/en/faq.html'], ['Contact', '/en/contact.html'], ['Privacy Policy', '/en/privacy.html'], ['Terms of Use', '/en/terms.html']] };
 const footerLinks = (lang) => `<p class="sf-social">${FOOTER_LINKS[lang].map(([n, u]) => `<a href="${u}">${n}</a>`).join(' · ')}</p>`;
 const footerHtml = (lang) => `<footer class="site-footer">${footerLinks(lang)}${socialHtml}<p>${FOOTER[lang]}</p><p>© ${new Date().getFullYear()} ${lang === 'en' ? 'Shaobo Creative Robotics Company Limited (MBC Robot)' : '少伯創意機器人有限公司（MBC Robot）'}</p></footer>`;
 

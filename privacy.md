@@ -38,6 +38,24 @@ Google 如何使用這些資料，請參考 [Google 如何運用來自採用 Goo
 
 過程中我們可能看到你在本公司粉專公開留言時顯示的名稱與留言內容。這些資料只用於回覆與管理留言，**不會**用於行銷名單、不會出售或提供給第三方，也不會存取你的私人訊息或個人帳號資料。我們不另外建立粉絲個人資料庫；管理粉專所需的存取權杖只保存在本公司管理的設備上。
 
+## YouTube API 服務（YouTube API Services）
+
+我們使用 **YouTube API Services**（YouTube API 服務）管理本公司自有的 YouTube 頻道 [@mbc_robot](https://www.youtube.com/@mbc_robot)。這是本公司員工在公司電腦上執行的內部工具，不對外提供服務，本網站的訪客不會用到它。用途只有：
+
+- 上傳本公司的產品示範與教學影片，編輯這些影片的標題、說明、縮圖、播放清單與字幕
+- 讀取本公司頻道的統計與分析報表（觀看次數、觀看時間、訂閱數），用來規劃之後的影片內容
+- 讀取本公司頻道影片下的公開留言，以便回覆
+
+**我們存取、收集與保存哪些資料**：工具只用 Google OAuth 登入本公司自己的頻道，**不會**存取其他人的 YouTube 頻道或 Google 帳號，也**不會**透過 YouTube API 收集本網站訪客或其他 YouTube 使用者的個人資料。頻道統計是 YouTube 提供的彙整數字，每次需要時即時讀取，不另外建立資料庫。讀到的公開留言只用來回覆，不另外儲存，也不會出售或提供給第三方。授權用的 OAuth 權杖只保存在本公司管理的設備上。
+
+**Google 隱私權政策**：YouTube API Services 由 Google 提供，Google 如何處理資料，請參考 [Google 隱私權政策](http://www.google.com/policies/privacy)。使用 YouTube 相關功能也適用 [YouTube 服務條款](https://www.youtube.com/t/terms)，見本網站的[服務條款](/terms.md)。
+
+**撤銷授權**：如果你曾授權任何 MBC 工具存取你的 Google 帳號，可以隨時到 [Google 帳戶安全性設定（第三方存取權）](https://security.google.com/settings/security/permissions) 撤銷授權。
+
+**資料刪除**：我們不保存第三方使用者的資料。如果有任何資料是經由 YouTube API 取得的，授權撤銷後我們會在 **7 天內**刪除；你也可以來信 [contactmbcrobot@gmail.com](mailto:contactmbcrobot@gmail.com) 要求刪除，我們會在收到後 **7 天內**處理並回覆。
+
+**嵌入影片**：本網站部分頁面嵌入 YouTube 影片，使用 YouTube 的隱私加強模式（youtube-nocookie.com）。影片由 YouTube 播放，播放時適用 Google 隱私權政策。
+
 ## 你的權利與資料刪除
 
 依中華民國《個人資料保護法》，你可以隨時請求查詢、閱覽、複製、補充、更正、停止蒐集／處理／利用或刪除你的個人資料。
@@ -51,4 +69,4 @@ Google 如何使用這些資料，請參考 [Google 如何運用來自採用 Goo
 - LINE：[@692vcvuk](https://line.me/R/ti/p/@692vcvuk)
 - Email：[contactmbcrobot@gmail.com](mailto:contactmbcrobot@gmail.com)
 
-最後更新：2026 年 10 月 16 日
+最後更新：2026 年 11 月 4 日

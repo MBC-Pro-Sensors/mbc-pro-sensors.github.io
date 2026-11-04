@@ -52,4 +52,5 @@
   - [🤝 Become a Distributor](/en/distributors.md)
   - [💬 Contact & Support](/en/contact.md)
   - [🔒 Privacy Policy](/en/privacy.md)
+  - [📄 Terms of Use](/en/terms.md)
 

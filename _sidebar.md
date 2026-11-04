@@ -58,3 +58,4 @@
   - [🤝 經銷合作](/distributors.md)
   - [💬 聯絡 & 支援](/contact.md)
   - [🔒 隱私權政策](/privacy.md)
+  - [📄 服務條款](/terms.md)
