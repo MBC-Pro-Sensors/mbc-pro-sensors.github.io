@@ -101,15 +101,15 @@ junction = b[6]                  # 路口類型：0 無 1 十字 2 T 3 左 4 右
 
 ### 插在 EXP6 擴充器上
 
-孔不夠用時，神攝手可以插在 [EXP6 六路擴充器](/sensors/exp6/index.md) 的 1～6 號孔。功能名稱跟上面的 `UniCam` 一樣，讀不到時回傳 `None`。EXP6 韌體要是 **2026-11-03 以後的版本**。官方 SPIKE App 也有同名寫法（`MBC_exp6_SPIKE_App_Lib_v2.py`）。
+孔不夠用時，神攝手可以插在 [EXP6 六路擴充器](/sensors/exp6/index.md) 的 1～6 號孔。功能名稱跟上面的 `UniCam` 一樣，讀不到時回傳 `None`。EXP6 韌體要是 **2026-11-03 以後的版本**。官方 SPIKE App 也有同名寫法（`MBC_exp6_SPIKE_App_Lib.py`）。
 
-1. 下載 [EXP6 Pybricks 函式庫 v2](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip)。
-2. 把 `MBC_exp6_obj_Lib_v2.py`、`MBC_exp6_mbc_common.py`、`MBC_exp6_unicam.py` 三個檔放進同一個 Pybricks 專案。
+1. 下載 [EXP6 Pybricks 函式庫](/downloads/MBC_EXP6_Pybricks_Lib.zip)。
+2. 把 `MBC_exp6_obj_Lib.py`、`MBC_exp6_mbc_common.py`、`MBC_exp6_unicam.py` 三個檔放進同一個 Pybricks 專案。
 3. 程式裡一定要寫 `from MBC_exp6_unicam import *`，2026-11-03 以前的寫法少這一行會出錯。
 
 ```python
 from pybricks.tools import wait
-from MBC_exp6_obj_Lib_v2 import MBC_EXP6, run_task
+from MBC_exp6_obj_Lib import MBC_EXP6, run_task
 from MBC_exp6_unicam import *     # 神攝手的 EXP6 檔
 
 exp6 = MBC_EXP6(1, True, p5=(UNICAM, 13))   # EXP6 插主機 A 孔（1），神攝手插 EXP6 的 5 號孔

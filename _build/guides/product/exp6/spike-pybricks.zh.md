@@ -9,11 +9,12 @@
 
 ### 匯入 EXP6 函式庫
 
-1. 下載 [📥 Pybricks 函式庫 v2＋範例（.zip）](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip)（2026-10 以前出貨的 v1 韌體用 [舊版 zip](/downloads/MBC_EXP6_Pybricks_Lib.zip)）。主機用 **Pybricks 韌體 v4.1**（指令說明書寫的「4.0.0 以上」v4.1 一樣適用）。
+1. 下載 [📥 Pybricks 函式庫＋範例（.zip）](/downloads/MBC_EXP6_Pybricks_Lib.zip)。EXP6 韌體要 2026-11-03 以後；主機用 **Pybricks 韌體 v4.1**。函式說明在包裡的 `EXP6_Library_Manual.pdf`。
 2. 把用得到的檔案放進同一個 Pybricks 專案，檔名不用改：
-   - **一定要放**：`MBC_exp6_obj_Lib_v2.py`（EXP6、馬達、樂高感應器）。包裡的範例寫的就是 `from MBC_exp6_obj_Lib_v2 import MBC_EXP6`。
+   - **一定要放**：`MBC_exp6_obj_Lib.py`（EXP6、馬達、樂高感應器）。包裡的範例寫的就是 `from MBC_exp6_obj_Lib import MBC_EXP6`。
    - **有插 MBC 感應器才放**：`MBC_exp6_mbc_common.py`（共用檔，會被下面的產品檔自動載入），再加上用到的產品檔：`MBC_exp6_line.py`（循行者 8／16 路）、`MBC_exp6_laser.py`（測距者 2／8 路）、`MBC_exp6_pad.py`（掌控者 PS2／PS4）、`MBC_exp6_unicam.py`（神攝手）。
    - **用不到的不要放**：Pybricks 主機的程式（你的程式加上全部函式庫）上限大約 52 KB，全部放進去會超過。
+   - **用 Pybricks 圖形積木**：下載包的 `beginner_examples/` 有 5 個積木範例，也可以單獨下載：[ex01 轉一圈](/examples/exp6/spike_beginner/pybricks/ex01_one_turn_block.py)、[ex02 三顆馬達](/examples/exp6/spike_beginner/pybricks/ex02_three_motors_block.py)、[ex03 光控開關](/examples/exp6/spike_beginner/pybricks/ex03_light_switch_block.py)、[ex04 按鈕控制](/examples/exp6/spike_beginner/pybricks/ex04_button_motor_block.py)、[ex05 走正方形](/examples/exp6/spike_beginner/pybricks/ex05_square_block.py)。在 Pybricks Code 按「匯入檔案」選這個檔，跟 `MBC_exp6_obj_Lib.py` 放同一個專案，打開就是積木。積木裡只要有等待就會變成多工（`MBC_EXP6(3, True)`、每個指令都 `await`），所以多拖了一塊「from MBC_exp6_obj_Lib import run_task」：等待的時候由它在背景送心跳，馬達才不會被看門狗停掉。
 
 ![EXP6 Pybricks 範例](/images/sensors/exp6/exp6_pybricks_example.webp)
 
@@ -23,7 +24,7 @@
 
 ```python
 # 一般模式：一行一行執行
-from MBC_exp6_obj_Lib_v2 import MBC_EXP6
+from MBC_exp6_obj_Lib import MBC_EXP6
 exp6 = MBC_EXP6(3, False)
 exp6.motor_power(6, 100)
 exp6.keep_alive_wait(5000)
@@ -32,7 +33,7 @@ exp6.keep_alive_wait(5000)
 ```python
 # 多工模式：每個指令前加 await，要用函式庫的 run_task
 from pybricks.tools import multitask, run_task, wait
-from MBC_exp6_obj_Lib_v2 import MBC_EXP6, run_task
+from MBC_exp6_obj_Lib import MBC_EXP6, run_task
 exp6 = MBC_EXP6(3, True)
 
 async def main():
@@ -55,7 +56,7 @@ run_task(main())
 **1. 一般模式：先宣告每一孔接什麼。** 建立 EXP6 物件時寫 `p5=LINE16`（5 號孔接循行者 16 路），神攝手寫 `(UNICAM, 相機模式)`，接著用 `exp6.sensor(孔號)` 拿到感應器物件。程式一開始就會核對每一孔插的是不是宣告的那一款。插錯了會直接停下，並告訴你讀到的是哪一款，例如「5 號孔要接「循行者 16 路」，讀到的是「測距者 2 路」」。神攝手在宣告時就會自動切到你寫的相機模式。
 
 ```python
-from MBC_exp6_obj_Lib_v2 import MBC_EXP6
+from MBC_exp6_obj_Lib import MBC_EXP6
 from MBC_exp6_line import *       # 循行者 LINE8、LINE16
 from MBC_exp6_unicam import *     # 神攝手 UNICAM
 
@@ -78,7 +79,7 @@ while True:
 
 ```python
 from pybricks.tools import multitask, run_task, wait
-from MBC_exp6_obj_Lib_v2 import MBC_EXP6, run_task
+from MBC_exp6_obj_Lib import MBC_EXP6, run_task
 from MBC_exp6_pad import *        # 掌控者 PS2、PS4
 from MBC_exp6_unicam import *     # 神攝手 UNICAM
 
@@ -101,7 +102,9 @@ run_task(main())
 
 **3. 舊寫法也能用。** `exp6.line16(5)`、`exp6.laser8(3)`、`exp6.ps2(4)`、`exp6.unicam(5, 13)` 照樣可以用，只是不會核對插的是哪一款。**舊程式只要在上面加一行 import 產品檔**，例如 `from MBC_exp6_line import *`。沒有加這一行，程式會提示你要補哪一行。
 
-完整範例在下載包的 `examples/11_MBC_Sensors_v2.py`，示範循行者 8 路、測距者 8 路、掌控者 PS2 和神攝手一起用。
+完整範例在下載包的 `examples/11_MBC_Sensors.py`，示範循行者 8 路、測距者 8 路、掌控者 PS2 和神攝手一起用。
+
+**4. 積木寫法。** 積木只能照順序填參數，所以用 `EXP6_LINE8(exp6, 5)` 這種寫法建立感應器物件（第一格放 EXP6 物件、第二格是 EXP6 的孔號），用到的產品檔要多拖一塊匯入積木。範例：循行者 8 路插 EXP6 第 5 孔的 PD 循線，[積木檔](/examples/exp6/spike_beginner/pybricks/exp6_line8_pd_block.py)、[Python 檔](/examples/exp6/spike_beginner/pybricks/exp6_line8_pd_python.py)（左馬達接擴充孔 1、右馬達接擴充孔 2），一步一步的說明在 [EXP6 Pybricks 積木互動教學](/learn/exp6/pybricks-blocks.html#mbc-sensors)。
 
 > [!NOTE]
 > 2026-11-03 實機驗證過：EXP6 範例 P1～P5、範例 11、MBC 積木網站範例 M1～M5，11 個全部通過。

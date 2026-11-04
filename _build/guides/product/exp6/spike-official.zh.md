@@ -11,10 +11,10 @@
 
 官方 App 沒有 EXP6 的積木，**只能用 Python 文字模式**（SPIKE 3；函式庫標示適用 3.4.3 版）。函式庫用純 Python 寫，不支援多工（async），所有指令都是**同步（Sync）**執行。
 
-1. 下載 [📥 官方 App 函式庫 v2＋範例（.zip）](/downloads/MBC_EXP6_Official_App_Lib_v2.zip)（2026-10 以前出貨的 v1 韌體用 [舊版 zip](/downloads/MBC_EXP6_Official_App_Lib.zip)）。
-2. 把下載包 `SPIKE_Education` 資料夾裡的**安裝腳本**（`Install_MBC_exp6_Lib…py`）內容貼進 SPIKE App 的 Python 專案，執行一次。腳本會把核心函式庫寫進主機。
+1. 下載 [📥 官方 App 函式庫＋範例（.zip）](/downloads/MBC_EXP6_Official_App_Lib.zip)。EXP6 韌體要 2026-11-03 以後。函式說明在包裡的 `EXP6_Library_Manual.pdf`。
+2. 把下載包 `SPIKE_Education` 資料夾裡的**安裝腳本**（`Install_MBC_exp6_Lib.py`）內容貼進 SPIKE App 的 Python 專案，執行一次。腳本會把核心函式庫寫進主機。
 3. 安裝成功後，任何新專案都能直接 `from MBC_exp6_SPIKE_App_Lib import MBC_EXP6`，不用再貼一長串原始碼。
-4. 不再需要時，執行下載包裡的**解除安裝腳本**（`Uninstall_MBC_exp6_Lib…py`），就能把函式庫從主機乾淨移除。
+4. 不再需要時，執行下載包裡的**解除安裝腳本**（`Uninstall_MBC_exp6_Lib.py`），就能把函式庫從主機乾淨移除。
 
 ![在 SPIKE App 執行安裝腳本](/images/sensors/exp6/exp6_official_app_install.webp)
 

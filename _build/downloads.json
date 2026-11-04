@@ -2,81 +2,67 @@
   "_說明": "下載區打包清單（node _build/pack-downloads.mjs）。out = 網站內輸出路徑；src = 正本資料夾（絕對路徑可用 ${MBC} = 02_MBC產品開發）；include = 要包的檔案／資料夾（相對 src，省略 = 全部，*.bak*、__pycache__ 一律排除）；legacy = 既有舊檔（不重打包，只列在下載頁）；label = 下載頁顯示文字。 rename = zip 內改名對照（中文資料夾／檔名 → ASCII，避免跨平台解壓亂碼）。",
   "items": [
     {
-      "out": "downloads/MBC_EXP6_Pybricks_Lib_v2.zip",
+      "out": "downloads/MBC_EXP6_Pybricks_Lib.zip",
       "src": "${MBC}/05_馬達舵機擴充/01_SPIKE六路馬達擴充器/02_上位機函式庫與範例/pyBricks",
       "include": [
-        "MBC_exp6_obj_Lib_v2.py",
+        "MBC_exp6_obj_Lib.py",
         "MBC_exp6_mbc_common.py",
         "MBC_exp6_line.py",
         "MBC_exp6_laser.py",
         "MBC_exp6_pad.py",
         "MBC_exp6_unicam.py",
         "Exp6_objMode_Demo.py",
-        "EXP6 擴充板 _ pyBricks指令說明書.pdf",
         "通用範例"
       ],
-      "version": "2.0",
-      "firmware": "EXP6 v2",
-      "legacy": false,
-      "label": {
-        "zh": "SPIKE 6 路擴充器 EXP6：Pybricks 函式庫 v2＋範例",
-        "en": "EXP6 expander: Pybricks library v2 + examples"
-      },
-      "rename": {
-        "教育版": "SPIKE_Education",
-        "玩具版": "Robot_Inventor",
-        "通用範例": "examples",
-        "EXP6 擴充板 _ pyBricks指令說明書.pdf": "EXP6_Pybricks_Manual.pdf",
-        "EXP6 擴充板 _ 官方 SPIKE App 指令說明書.pdf": "EXP6_SPIKE_App_Manual.pdf",
-        "工程日誌_MINDSTORMS_ImportError_分析.md": "ENGINEERING_NOTE_MINDSTORMS_ImportError.md"
-      }
-    },
-    {
-      "out": "downloads/MBC_EXP6_Official_App_Lib_v2.zip",
-      "src": "${MBC}/05_馬達舵機擴充/01_SPIKE六路馬達擴充器/02_上位機函式庫與範例/官方APP",
-      "include": [
-        "MBC_exp6_SPIKE_App_Lib.py",
-        "教育版",
-        "玩具版",
-        "通用範例"
+      "extra": [
+        {
+          "from": "${MBC}/05_馬達舵機擴充/01_SPIKE六路馬達擴充器/04_協議與說明文件/說明文件_v2/EXP6_上位機函式庫說明.pdf",
+          "as": "EXP6_Library_Manual.pdf"
+        },
+        {
+          "from": "${MBC}/95_產品網站/mbc-pro-sensors.github.io/examples/exp6/spike_beginner/pybricks",
+          "as": "beginner_examples",
+          "skip": "^MBC_exp6_obj_Lib\\.py$"
+        }
       ],
-      "version": "2.0",
-      "firmware": "EXP6 v2",
+      "version": "2026-11-04",
+      "firmware": "EXP6 2026-11-03+",
       "legacy": false,
       "label": {
-        "zh": "SPIKE 6 路擴充器 EXP6：官方 SPIKE App 函式庫 v2＋範例",
-        "en": "EXP6 expander: official SPIKE App library v2 + examples"
+        "zh": "SPIKE 6 路擴充器 EXP6：Pybricks 函式庫＋範例（含積木範例）",
+        "en": "EXP6 expander: Pybricks library + examples (incl. block examples)"
       },
       "rename": {
-        "教育版": "SPIKE_Education",
-        "玩具版": "Robot_Inventor",
-        "通用範例": "examples",
-        "EXP6 擴充板 _ pyBricks指令說明書.pdf": "EXP6_Pybricks_Manual.pdf",
-        "EXP6 擴充板 _ 官方 SPIKE App 指令說明書.pdf": "EXP6_SPIKE_App_Manual.pdf",
-        "工程日誌_MINDSTORMS_ImportError_分析.md": "ENGINEERING_NOTE_MINDSTORMS_ImportError.md"
-      }
-    },
-    {
-      "out": "downloads/MBC_EXP6_Pybricks_Lib.zip",
-      "src": null,
-      "legacy": true,
-      "version": "1.x",
-      "firmware": "EXP6 v1",
-      "label": {
-        "zh": "EXP6 Pybricks 函式庫（舊版，v1 韌體）",
-        "en": "EXP6 Pybricks library (legacy, v1 firmware)"
+        "通用範例": "examples"
       }
     },
     {
       "out": "downloads/MBC_EXP6_Official_App_Lib.zip",
-      "src": null,
-      "legacy": true,
-      "version": "1.x",
-      "firmware": "EXP6 v1",
+      "src": "${MBC}/05_馬達舵機擴充/01_SPIKE六路馬達擴充器/02_上位機函式庫與範例/官方APP",
+      "include": [
+        "教育版/MBC_exp6_SPIKE_App_Lib.py",
+        "教育版/Install_MBC_exp6_Lib.py",
+        "教育版/Uninstall_MBC_exp6_Lib.py",
+        "通用範例"
+      ],
+      "extra": [
+        {
+          "from": "${MBC}/05_馬達舵機擴充/01_SPIKE六路馬達擴充器/04_協議與說明文件/說明文件_v2/EXP6_上位機函式庫說明.pdf",
+          "as": "EXP6_Library_Manual.pdf"
+        }
+      ],
+      "version": "2026-11-04",
+      "firmware": "EXP6 2026-11-03+",
+      "legacy": false,
       "label": {
-        "zh": "EXP6 官方 SPIKE App 函式庫（舊版，v1 韌體）",
-        "en": "EXP6 official SPIKE App library (legacy, v1 firmware)"
-      }
+        "zh": "SPIKE 6 路擴充器 EXP6：官方 SPIKE App 函式庫＋範例",
+        "en": "EXP6 expander: official SPIKE App library + examples"
+      },
+      "rename": {
+        "教育版": "SPIKE_Education",
+        "通用範例": "examples"
+      },
+      "_note": "玩具版（Robot_Inventor）2026-11-03 起先不放（使用者定案：擴充器測玩具版 Python 通過再放回）；官方APP 根目錄那份 MBC_exp6_SPIKE_App_Lib.py 是 2026-10 的舊檔，不放"
     },
     {
       "out": "downloads/MBC_Servo6_Pybricks_Lib.zip",

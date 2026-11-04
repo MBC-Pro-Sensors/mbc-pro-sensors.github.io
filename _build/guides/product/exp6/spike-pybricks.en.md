@@ -9,11 +9,12 @@
 
 ### Import the EXP6 library
 
-1. Download [📥 Pybricks library v2 + examples (.zip)](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip) (v1 firmware shipped before 2026-10: [legacy zip](/downloads/MBC_EXP6_Pybricks_Lib.zip)). Use **Pybricks firmware v4.1** (the command manual says "4.0.0 and later"; v4.1 works the same).
+1. Download [📥 Pybricks library + examples (.zip)](/downloads/MBC_EXP6_Pybricks_Lib.zip). The EXP6 needs firmware dated 2026-11-03 or later; use **Pybricks firmware v4.1** on the hub. The function reference is `EXP6_Library_Manual.pdf` in the pack.
 2. Put the files you need in the same Pybricks project (no renaming needed):
-   - **Always**: `MBC_exp6_obj_Lib_v2.py` (EXP6, motors, LEGO sensors). The pack's examples say `from MBC_exp6_obj_Lib_v2 import MBC_EXP6`.
+   - **Always**: `MBC_exp6_obj_Lib.py` (EXP6, motors, LEGO sensors). The pack's examples say `from MBC_exp6_obj_Lib import MBC_EXP6`.
    - **Only with MBC sensors**: `MBC_exp6_mbc_common.py`, a shared file that the product files below load automatically. Add the product files you use: `MBC_exp6_line.py` (Line Follower 8/16-ch), `MBC_exp6_laser.py` (Laser Ranger 2/8-ch), `MBC_exp6_pad.py` (PS2/PS4 receiver), `MBC_exp6_unicam.py` (Sharpshooter Vision).
    - **Leave out the rest**: a Pybricks hub program (your code plus all libraries) is limited to about 52 KB, and all the files together are too big.
+   - **Pybricks blocks**: the pack's `beginner_examples/` folder has 5 block examples, also as single downloads: [ex01 one turn](/examples/exp6/spike_beginner/pybricks/ex01_one_turn_block.py), [ex02 three motors](/examples/exp6/spike_beginner/pybricks/ex02_three_motors_block.py), [ex03 light switch](/examples/exp6/spike_beginner/pybricks/ex03_light_switch_block.py), [ex04 button control](/examples/exp6/spike_beginner/pybricks/ex04_button_motor_block.py), [ex05 square](/examples/exp6/spike_beginner/pybricks/ex05_square_block.py). In Pybricks Code click "Import a file", pick the file and keep it in the same project as `MBC_exp6_obj_Lib.py`; it opens as blocks. Any wait block turns the program into multitask mode (`MBC_EXP6(3, True)`, every command is `await`ed), so the examples add one more block, "from MBC_exp6_obj_Lib import run_task": it sends the heartbeat in the background while waiting, so the EXP6 watchdog does not stop the motors.
 
 ![EXP6 Pybricks example](/images/sensors/exp6/exp6_pybricks_example.webp)
 
@@ -23,7 +24,7 @@ Assuming the expander is on hub **port C (3)**:
 
 ```python
 # Normal mode: one line after another
-from MBC_exp6_obj_Lib_v2 import MBC_EXP6
+from MBC_exp6_obj_Lib import MBC_EXP6
 exp6 = MBC_EXP6(3, False)
 exp6.motor_power(6, 100)
 exp6.keep_alive_wait(5000)
@@ -32,7 +33,7 @@ exp6.keep_alive_wait(5000)
 ```python
 # Multitask mode: await in front of every command, use the library's run_task
 from pybricks.tools import multitask, run_task, wait
-from MBC_exp6_obj_Lib_v2 import MBC_EXP6, run_task
+from MBC_exp6_obj_Lib import MBC_EXP6, run_task
 exp6 = MBC_EXP6(3, True)
 
 async def main():
@@ -59,7 +60,7 @@ When you run out of hub ports, you can plug MBC sensors into EXP6 ports 1–6: *
 - The camera switches to the declared mode right away.
 
 ```python
-from MBC_exp6_obj_Lib_v2 import MBC_EXP6
+from MBC_exp6_obj_Lib import MBC_EXP6
 from MBC_exp6_line import *       # Line Follower LINE8, LINE16
 from MBC_exp6_unicam import *     # Sharpshooter Vision UNICAM
 
@@ -82,7 +83,7 @@ while True:
 
 ```python
 from pybricks.tools import multitask, run_task, wait
-from MBC_exp6_obj_Lib_v2 import MBC_EXP6, run_task
+from MBC_exp6_obj_Lib import MBC_EXP6, run_task
 from MBC_exp6_pad import *        # receiver PS2, PS4
 from MBC_exp6_unicam import *     # Sharpshooter Vision UNICAM
 
@@ -105,7 +106,9 @@ run_task(main())
 
 **3. The old style still works.** You can still write `exp6.line16(5)`, `exp6.laser8(3)`, `exp6.ps2(4)` and `exp6.unicam(5, 13)`, but they do not check which sensor is plugged in. **Old programs need one extra import line for the product file**, for example `from MBC_exp6_line import *`. Without it, the program tells you which line to add.
 
-The pack's `examples/11_MBC_Sensors_v2.py` shows the Line Follower 8-ch, Laser Ranger 8-ch, PS2 receiver and camera together.
+The pack's `examples/11_MBC_Sensors.py` shows the Line Follower 8-ch, Laser Ranger 8-ch, PS2 receiver and camera together.
+
+**4. With blocks.** Blocks only take values in order, so create the sensor object as `EXP6_LINE8(exp6, 5)` (first slot the EXP6 object, second the EXP6 port) and add one more import block for the product file. Example: PD line following with a Line Follower 8-ch in EXP6 port 5, [block file](/examples/exp6/spike_beginner/pybricks/exp6_line8_pd_block.py) and [Python file](/examples/exp6/spike_beginner/pybricks/exp6_line8_pd_python.py) (left motor in EXP6 port 1, right motor in port 2); step-by-step in the [EXP6 Pybricks blocks tutorial](/en/learn/exp6/pybricks-blocks.html#mbc-sensors).
 
 > [!NOTE]
 > Hardware-tested on 2026-11-03: EXP6 examples P1–P5, example 11 and MBC SPIKE Blocks examples M1–M5. All 11 passed.

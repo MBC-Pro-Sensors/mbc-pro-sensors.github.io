@@ -1,12 +1,33 @@
 # ════════════════════════════════════════════════════════════════
-#  EXP6 智能擴充板 Python 函式庫（Pybricks SPIKE Prime 版）
-#  EXP6 Smart Expansion Board Library for Pybricks SPIKE Prime
-#  Author: MBC robotics    Date: 2026.06
+#  EXP6 智能擴充板 Python 函式庫（Pybricks SPIKE Prime 版）2026.11
+#  EXP6 Smart Expansion Board Library for Pybricks SPIKE Prime, 2026.11
+#  Author: MBC robotics    Date: 2026.11
+#  ⚠ 需搭配 EXP6 韌體 2026-11-03 以後（組模式＋命令轉送）。以前的函式全部保留、用法不變；舊韌體的板子請先更新 EXP6 韌體。
+#  ⚠ Requires EXP6 firmware dated 2026-11-03 or later. All earlier functions are unchanged; boards with older firmware need a firmware update.
 # ════════════════════════════════════════════════════════════════
+#
+#  2026.11 新增：MBC 感應器插在 EXP6 的孔上 / New in 2026.11: MBC sensors on EXP6 ports
+#  ────────────────────────────────────────────────────────────
+#  感應器先切到 SPIKE 模式，再用下面的寫法宣告它插在哪一孔；函式名稱與回傳值
+#  跟感應器直接插 Hub 時的函式庫相同（MBC_sensors.py、MBC_UniCam.py；一次回傳整組資料的
+#  read_all() 之類還沒做），命令 cmd()／wait_done() 也一樣（序號 1~99、參數 -9999~9999）。
+#  Switch the sensor to SPIKE mode, then declare which EXP6 port it is on.
+#  Method names/returns and commands match each sensor's direct-to-hub library
+#  (read_all()-style functions not yet).
+#      exp6  = MBC_EXP6(1)            # EXP6 插在 Hub 的 A 孔 / EXP6 on hub port A
+#      line8 = exp6.line8(2)          # 循行者 8 路插在 EXP6 的 2 號孔 / Line8 on EXP6 port 2
+#      print(line8.pos100())
+#  可用 / Available：line8 line16 laser2 laser8 ps2 ps4 unicam（神攝手 / Sharpshooter Vision）
+#  主要的值（循線位置／線寬／黑白、測距 cm、遙控按鍵＋搖桿、神攝手該模式最常用的值）每 10 ms 一直更新、
+#  不用切換；每路光值、測距 8 顆距離分 2 組輪流（約 20 ms）；毫米、連線、型號、命令回覆會讓感應器暫時換模式
+#  （第一次約多 20~40 ms），放迴圈外或偶爾讀。
+#  遙控 pad 跟直插一樣：每一圈先 pad.update()，之後 pressed()／stick() 用這次的快照；
+#  buttons() 2026-11-03 起跟直插一樣，以前的 PSX 排列改叫 buttons_psx()。
+#  Main values refresh every 10 ms without switching; light values / 8 distances alternate in 2 groups.
 #
 #  快速上手 / Quick start
 #  ────────────────────────────────────────────────────────────
-#      from MBC_exp6_auto_Lib import MBC_EXP6
+#      from MBC_exp6_obj_Lib import MBC_EXP6
 #      exp6 = MBC_EXP6(port, multitask)
 #
 #  port：1~6，對應 Port.A~F。
@@ -28,7 +49,7 @@
 #     ⚠ To get automatic background keep-alive AND auto-stop-on-exit,
 #       import run_task like this (AFTER the pybricks.tools import):
 #         from pybricks.tools import run_task
-#         from MBC_exp6_auto_Lib import MBC_EXP6, run_task
+#         from MBC_exp6_obj_Lib import MBC_EXP6, run_task
 #       漏了這行，run_task() 會變成 Pybricks 原生版，不會有上述保護。
 #       Without it, run_task() silently falls back to plain Pybricks
 #       and you lose that protection.
@@ -99,6 +120,15 @@ DEV_FORCE      = 1
 DEV_COLOR      = 3
 DEV_ULTRASONIC = 4
 DEV_MOTOR      = 5
+DEV_MBC        = 6   # MBC 感應器原始視窗已生效 / MBC sensor window active
+
+# MBC 感應器原始視窗（fmt=100）。L3 = 感應器 mode、L4 = 起始 byte；
+# 上行 int32 的 byte0~1 = 資料、byte2 = 起始 byte 回應、byte3 = 0x40 | mode 回應。
+_FMT_MBC_WINDOW  = 100
+_MBC_TIMEOUT_MS  = 250    # 換欄位後等新資料的上限（含感應器切 mode）
+_MBC_WARN_MS     = 2000   # 讀不到感應器的提示限流
+_FMT_MBC_GROUP   = 101    # 2026-11-03 組模式（EXP6 韌體內部格式碼；_port_mode_cache 標記用）
+_GRP_TIMEOUT_MS  = 400    # 組模式：等這孔送來要的組的上限（含感應器切模式）
 
 DIR_HOLD  = 0
 DIR_CW    = 1
@@ -457,6 +487,20 @@ def _build_drive_stop(left_port, right_port, stop):
         return None
     return (left_port * 10 + right_port, l2, 0, 0)
 
+# ── MBC 感應器原始視窗 ─────────────────────────────────────────
+def _build_set_window(port_num, mode, ofs):
+    _check_port(port_num)
+    return (_L1_MODE_BASE + port_num, _FMT_MBC_WINDOW, mode, ofs)
+
+def _window_echo_ok(raw, port_num, mode, ofs):
+    # 只有「視窗已生效 + 回應的 mode / 起始 byte 跟要求的一樣」才採信，切換前的舊值一律不收。
+    if raw is None or len(raw) < 32:
+        return False
+    if _parse_device_id(raw, port_num) != DEV_MBC:
+        return False
+    o = (port_num - 1) * 4
+    return raw[o + 2] == ofs and raw[o + 3] == (0x40 | mode)
+
 # 參數暫存器：對每個 _build_* 分別套用獨立快取(見 _cache_validated 說明)，同一指令連續
 # 呼叫相同參數時(例如控制迴圈每 tick 都送同樣的 drive(...))，第二次以後直接跳過驗證與組包運算。
 _build_motor_run          = _cache_validated(_build_motor_run)
@@ -684,6 +728,9 @@ _STOP_DRAIN_MS = 30
 _STOP_GAP_MS   = 2
 _FEED_MS    = 50
 _SILENCE_MS = 100
+# 2026-11-04：電池超過這個電壓（3S 以上），EXP6 韌體（2026-11-04 以後）會停止對樂高顏色／超音波感應器供電，
+# 函式庫印一次中英文警告（跟韌體 SENSOR_SUPPLY_CUT_MV 9000 一致）
+_SENSOR_CUT_V = 9.0
 
 # 開機偵測擴充板：策反成功的板子會每 10ms 送一包上行串流，在此時間內
 # 收到任一合法封包即視為板子存在。板子通常早已上電、幾十~上百 ms 內就
@@ -771,6 +818,7 @@ class MBC_EXP6:
     DEV_COLOR = DEV_COLOR
     DEV_ULTRASONIC = DEV_ULTRASONIC
     DEV_MOTOR = DEV_MOTOR
+    DEV_MBC = DEV_MBC
 
     DIR_HOLD = DIR_HOLD
     DIR_CW = DIR_CW
@@ -793,7 +841,7 @@ class MBC_EXP6:
     MODE_DISTANCE = MODE_DISTANCE
     MODE_FORCE = MODE_FORCE
 
-    def __init__(self, port, multitask=False):
+    def __init__(self, port, multitask=False, p1=None, p2=None, p3=None, p4=None, p5=None, p6=None):
         self._port = port
         self._multitask = bool(multitask)
 
@@ -809,6 +857,10 @@ class MBC_EXP6:
         self._last_drain_ms  = -_STALE_MS - 1
         self._port_mode_cache = {}
         self._inverted        = {i: False for i in range(1, 7)}   # 各孔正/反裝，預設全部正裝；斷線重連時據此重送給韌體
+        self._mbc_warn_ms     = {}      # 各孔「讀不到 MBC 感應器」提示的上次時間（限流）
+        self._batt_warned     = False   # 電池超過 2S 安全電壓的警告印過了沒（每個物件印一次）
+        self._grp_ids         = {}      # 2026-11-03 組模式：組 → 組編號 1~31（已在 EXP6 定義）
+        self._grp_act         = {}      # 　　　　　　　　　 孔 → (第 1 組, 第 2 組) 目前的輪流清單
         self._uart_busy      = False
         self.connected       = True    # 開機偵測結果；偵測不到擴充板時設 False（見下）
         self._err_last_ms    = -_ERR_REPEAT_MS   # 上次印錯誤訊息的時間（限流用；初值確保首次立即印）
@@ -861,6 +913,14 @@ class MBC_EXP6:
             )
 
         _instances.append(self)
+
+        # 宣告每孔接哪一款 MBC 感應器（p5=LINE16、p6=(UNICAM, 51)…，名稱在各產品檔）：
+        # 同步寫法這裡就讀產品碼核對，插錯直接報錯；之後用 exp6.sensor(5) 拿物件
+        self._decl = {}
+        for i, k in enumerate((p1, p2, p3, p4, p5, p6)):
+            if k is not None:
+                k = k if isinstance(k, tuple) else (k,)
+                self._decl[i + 1] = k[0]._declare(self, i + 1, *k[1:])
 
     # ── 內部：初始化 / 連線狀態檢查 ─────────────────────────────
     def _open_uart(self, port, multitask):
@@ -934,6 +994,8 @@ class MBC_EXP6:
         # 已失效，須重問模式）。
         self.connected = True
         self._port_mode_cache = {}
+        self._grp_ids = {}               # EXP6 可能斷過電：組定義、輪流清單都要重送
+        self._grp_act = {}
         print(self._reconn_msg)
 
     def _resend_inverted_sync(self):
@@ -1038,6 +1100,7 @@ class MBC_EXP6:
                 if latest is not None:
                     self._cache = latest
                     self._cache_time = _watch.time()
+                    self._check_battery(latest)
                 return
             if n - i < 2:
                 break
@@ -1071,6 +1134,19 @@ class MBC_EXP6:
         if latest is not None:
             self._cache = latest
             self._cache_time = _watch.time()
+            self._check_battery(latest)
+
+    def _check_battery(self, raw):
+        # 2026-11-04：接 3S 時樂高顏色／超音波感應器會嚴重發燙 → 韌體超過 9V 就停止對它們供電；這裡提醒使用者一次
+        if self._batt_warned:
+            return
+        v = _parse_voltage(raw)
+        if v > _SENSOR_CUT_V:
+            self._batt_warned = True
+            print("[EXP6] 電池電壓 %.1f V 超過 2S 鋰電池的安全電壓（%.0f V）：已停止對樂高顏色／超音波感應器供電，"
+                  "保護感應器（馬達照常）。請改用 2S 鋰電池（7.4 V）。/ Battery %.1f V is above the 2S Li-ion safe "
+                  "voltage (%.0f V): power to LEGO color/ultrasonic sensors is cut to protect them (motors still "
+                  "work). Please use a 2S Li-ion battery (7.4 V)." % (v, _SENSOR_CUT_V, v, _SENSOR_CUT_V))
 
     def _maybe_heartbeat_sync(self):
         if _watch.time() - self._last_tx_ms > _HEARTBEAT_MS:
@@ -1375,6 +1451,15 @@ class MBC_EXP6:
     get_motor_abs_angle = _make_mode_gated_func(MODE_ABS_ANGLE, _parse_motor_abs_s32)
     get_motor_speed     = _make_mode_gated_func(MODE_SPEED,     _parse_motor_s32)
 
+    # ── MBC 感應器在各產品的檔（2026-11-03 分檔：主機程式上限 52 KB，用到哪款才載入哪款）──
+    #  from MBC_exp6_line import *（循行者）、MBC_exp6_laser（測距者）、MBC_exp6_pad（掌控者）、MBC_exp6_unicam（神攝手）
+    #  載入後 line8()～unicam()、sensor() 才能用
+    def _no_mbc(self, *a, **k):
+        raise ImportError('要用 MBC 感應器，程式最上面加 from MBC_exp6_line import *（循行者）、MBC_exp6_laser（測距者）、'
+                          'MBC_exp6_pad（掌控者）、MBC_exp6_unicam（神攝手）/ import the sensor file first')
+    line8 = line16 = laser2 = laser8 = ps2 = ps4 = unicam = sensor = _no_mbc
+
+
 
 # ── 舊版「函式式」相容層 / Legacy procedural-API compatibility layer ──
 # 這些 exp_* 自由函式只認「最後建立的那個 MBC_EXP6 物件」，僅供單板、
@@ -1419,34 +1504,7 @@ def exp_get_color_blue(*a):       return _default_instance().get_color_blue(*a)
 def exp_get_device_id(*a): return _default_instance().get_device_id(*a)
 def exp_get_voltage():     return _default_instance().get_voltage()
 
-__all__ = [
-    "exp_run_task",
-    "run_task", "keep_alive", "keep_alive_wait",
-    "DEV_NONE", "DEV_FORCE", "DEV_COLOR", "DEV_ULTRASONIC", "DEV_MOTOR",
-    "DIR_HOLD", "DIR_CW", "DIR_CCW", "DIR_COAST", "DIR_BRAKE",
-    "STOP_COAST", "STOP_BRAKE", "STOP_HOLD", "STOP_CONTINUE",
-    "MODE_SPEED", "MODE_ANGLE", "MODE_ABS_ANGLE", "MODE_RESET",
-    "MODE_COLOR", "MODE_RGB", "MODE_HSV", "MODE_DISTANCE", "MODE_FORCE",
-    "exp_motor_run", "exp_motor_power",
-    "exp_motor_stop",
-    "exp_motor_set_pid",
-    "exp_motor_run_degrees", "exp_motor_track_target", "exp_motor_run_target",
-    "exp_set_motor_inverted",
-    "exp_drive", "exp_drive_stop",
-    "exp_stop_all", "exp_reset_angle",
-    "exp_get_port_raw",
-    "exp_get_motor_angle", "exp_get_motor_abs_angle", "exp_get_motor_speed",
-    "exp_get_ultrasonic_distance",
-    "exp_get_touch_force",
-    "exp_get_color_color", "exp_get_color_reflection",
-    "exp_get_color_rgb",   "exp_get_color_hsv",
-    "exp_get_color_hue",   "exp_get_color_sat",   "exp_get_color_val",
-    "exp_get_color_red",   "exp_get_color_green", "exp_get_color_blue",
-    "exp_get_device_id",
-    "exp_get_voltage",
-    "exp_set_port_mode",
-    "MBC_EXP6",
-]
+# （__all__ 2026-11-03 拿掉：MicroPython 不看它，只佔主機空間）
 
 # ════════════════════════════════════════════════════════════════
 #  MBC_EXP6 物件可用函數列表 / Available Object Methods

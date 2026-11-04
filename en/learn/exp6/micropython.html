@@ -360,15 +360,80 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <div class="panel">
         <div class="panel-head"><span>With an MBC sensor: line-following car</span><button type="button" class="copy" data-copy="mix">Copy</button></div>
         <pre class="code" id="ex-mix"></pre>
-        <p class="bubble"><i>!</i><span>MBC sensors (here the Pathfinder 8-Way) plug <b>straight into the hub</b>. The EXP6 expansion ports only accept LEGO motors and the LEGO colour, ultrasonic and force sensors. Import the Pathfinder library <code>MBC_line8.py</code> into the same project too.</span></p>
+        <p class="bubble"><i>!</i><span>This example plugs the Pathfinder 8-Way <b>straight into the hub</b>; import the Pathfinder library <code>MBC_line8.py</code> into the same project too. MBC sensors can also go into the EXP6 expansion ports; see "MBC sensors on the EXP6" below.</span></p>
       </div>
     </div>
+  </section>
+
+  <section class="ref" id="mbc-sensors" aria-labelledby="mbch">
+    <h2 id="mbch">MBC sensors on the EXP6 (Line Follower, Laser Ranger, Controller, Sharpshooter)</h2>
+    <p class="ref-intro">When you run out of hub ports, MBC sensors can go into EXP6 ports 1–6. Switch the sensor to <b>SPIKE mode</b> first; the EXP6 needs firmware dated <b>2026-11-03 or later</b>. It is the same three steps; the example below has a Line Follower 8-ch in EXP6 port 5.</p>
+    <div style="display:grid;gap:14px">
+      <div class="panel">
+        <div class="panel-head"><span>① Import: the core library + the product file you use</span></div>
+        <p style="padding:10px 14px;margin:0">Always import <code>MBC_EXP6</code> and <code>run_task</code> from the core <code>MBC_exp6_obj_Lib</code>; then import <b>only the product file of the sensor you plug in</b>: <code>MBC_exp6_line</code> (<code>EXP6_LINE8</code>, <code>EXP6_LINE16</code>), <code>MBC_exp6_laser</code> (<code>EXP6_LASER2</code>, <code>EXP6_LASER8</code>), <code>MBC_exp6_pad</code> (<code>EXP6_PS2</code>, <code>EXP6_PS4</code>), <code>MBC_exp6_unicam</code> (<code>EXP6_UNICAM</code>). <b>Why several files:</b> a Pybricks hub program (your program plus every library) is limited to about 52 KB, and all of them together are too big, so you load only what you use. Also put the shared file <code>MBC_exp6_mbc_common.py</code> in the project (the product files load it themselves; no import needed).</p><pre class="code" style="padding:12px 14px;white-space:pre">from pybricks.tools import multitask, run_task, wait
+
+from MBC_exp6_line import EXP6_LINE8
+from MBC_exp6_obj_Lib import MBC_EXP6, run_task</pre>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>② Create the objects: EXP6 first, then the sensor</span></div>
+        <p style="padding:10px 14px;margin:0">Create the EXP6 object first, then the sensor object. Any of the three ways works; the functions are the same:</p><pre class="code" style="padding:12px 14px;white-space:pre">exp6 = MBC_EXP6(3, True)
+line8 = EXP6_LINE8(exp6, 5)        # way 1: same as the blocks (2nd number = EXP6 port)
+line8 = exp6.line8(5)              # way 2: ask the EXP6 object (needs from MBC_exp6_line import *)
+# way 3: declare it (normal mode checks that port 5 really has a Line Follower 8-ch and tells you if not)
+# from MBC_exp6_line import *
+# exp6 = MBC_EXP6(3, False, p5=LINE8)
+# line8 = exp6.sensor(5)</pre>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>③ Use the functions: same names as on the hub</span></div>
+        <p style="padding:10px 14px;margin:0">Function names and return values are the same as with the sensor plugged straight into the hub (for example <code>pos100()</code> and <code>width()</code> on the Line Follower). In multitask mode put <code>await</code> in front of every function and just use <code>wait</code>: the imported <code>run_task</code> comes from the EXP6 library and sends the heartbeat in the background, so the watchdog does not stop the motors.</p><pre class="code" style="padding:12px 14px;white-space:pre">from pybricks.hubs import PrimeHub
+from pybricks.tools import multitask, run_task, wait
+
+from MBC_exp6_line import EXP6_LINE8
+from MBC_exp6_obj_Lib import MBC_EXP6, run_task
+
+# Set up.
+hub = PrimeHub()
+exp6 = MBC_EXP6(3, True)
+line8 = EXP6_LINE8(exp6, 5)
+SPEED = 50
+KP = 0.4
+KD = 1.5
+error = 0
+lastError = 0
+PD = 0
+
+async def main():
+    global error, PD, lastError
+    # 接線：EXP6 的 Host 線插主機 C 孔；循行者 8 路（SPIKE 模式）插 EXP6 第 5 孔；左馬達接 EXP6 擴充孔 1（反裝）、右馬達接擴充孔 2
+    # 只匯入用到的產品檔：主機程式上限約 52 KB，循行者只要 MBC_exp6_line（EXP6_LINE8）。EXP6_LINE8(exp6, 5) = 插在 exp6 的 5 號孔
+    await exp6.set_motor_inverted(1, True)
+    while True:
+        await wait(0)
+        if await line8.width() &gt; 5:
+            await exp6.motor_power(1, 0)
+            await exp6.motor_power(2, 0)
+        else:
+            error = await line8.pos100()
+            PD = error * KP + (error - lastError) * KD
+            await exp6.motor_power(1, SPEED + PD)
+            await exp6.motor_power(2, SPEED - PD)
+            lastError = error
+        await wait(10)
+
+
+run_task(main())</pre>
+      </div>
+    </div>
+    <p class="small">Download this example: <a href="/examples/exp6/spike_beginner/pybricks/exp6_line8_pd_block.py" download>block file exp6_line8_pd_block.py</a>, <a href="/examples/exp6/spike_beginner/pybricks/exp6_line8_pd_python.py" download>Python file exp6_line8_pd_python.py</a> (PD line following: left motor in EXP6 port 1, right motor in port 2; in Pybricks Code click "Import a file" and keep it in the same project as <code>MBC_exp6_obj_Lib.py</code>, <code>MBC_exp6_mbc_common.py</code> and <code>MBC_exp6_line.py</code>).</p>
   </section>
 
   <section class="tips" aria-labelledby="tiph">
     <h2 id="tiph">Things to know</h2>
     <ol>
-      <li><b>Always connect the EXP6 battery.</b> Every motor on the expansion ports runs on EXP6's own battery (a 2S LiPo is recommended). With only the Host cable and no battery, nothing moves. EXP6 only accepts <b>LEGO motors</b> and the LEGO SPIKE <b>colour, ultrasonic and force sensors</b>. Plug MBC sensors straight into the hub.</li>
+      <li><b>Always connect the EXP6 battery.</b> Every motor on the expansion ports runs on EXP6's own battery (a 2S LiPo is recommended). With only the Host cable and no battery, nothing moves. The EXP6 ports take <b>LEGO motors</b>, the LEGO SPIKE <b>colour, ultrasonic and force sensors</b>, and MBC sensors too (see "MBC sensors on the EXP6" above).</li>
       <li><b>Do not mix up the two kinds of port number.</b> The 3 in <code>MBC_EXP6(3)</code> is the <b>hub</b> port (1 to 6 = A to F). The 1 in <code>exp6.motor_run(1, 50)</code> is the <b>expansion port on EXP6</b> (the 1 to 6 printed on the board).</li>
       <li><b>Wait with <code>keep_alive_wait()</code>, not <code>wait()</code>.</b> If EXP6 hears nothing from the hub for more than 0.5 seconds, it stops the motors by itself (a watchdog for safety; you cannot turn it off). In the normal style, always write waits as <code>exp6.keep_alive_wait(milliseconds)</code>. If a calculation takes a long time, call <code>exp6.keep_alive()</code> once in the middle. With multitasking, use the library's <code>run_task()</code>: it sends the heartbeat in the background, so plain <code>await wait()</code> is fine.</li>
       <li><b>Unplugging the expander does not stop the program.</b> Readings become 0 (not the last value), actions cannot be sent, and the computer prints a warning at most once a second. Plug it back in and it reconnects by itself. To check whether it is connected, read <code>exp6.connected</code>. Tick "Unplug the expander" on the simulated EXP6 to see this.</li>

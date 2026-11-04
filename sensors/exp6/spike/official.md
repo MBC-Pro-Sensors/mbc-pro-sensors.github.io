@@ -27,7 +27,6 @@
 ## 下載
 
 - [MBC_EXP6_Official_App_Lib.zip](/downloads/MBC_EXP6_Official_App_Lib.zip)
-- [MBC_EXP6_Official_App_Lib_v2.zip](/downloads/MBC_EXP6_Official_App_Lib_v2.zip)
 - [下載中心（全部產品的函式庫、韌體、型錄）](/downloads.md)
 
 ## 本頁依據

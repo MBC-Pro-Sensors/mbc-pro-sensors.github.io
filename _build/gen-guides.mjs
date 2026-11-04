@@ -163,6 +163,8 @@ function downloads(key, host, sw, lang, protos) {
     // v4.0.0 檔名的 zip 只是舊連結相容用的複本（內容＝v4.x），不列出
     for (const f of listDir(`examples/${key}`, /pybricks_spike.*\.zip$/i)) if (!/v3\.6\.1|v4\.0\.0/.test(f)) add(f, base(f));
     for (const f of listDir('downloads', new RegExp(`^MBC_${K}_Pybricks_Lib.*\\.zip$`, 'i'))) add(f, base(f));
+    // 新手範例的 Pybricks 積木檔（Pybricks Code 匯出的 *_block.py，「匯入檔案」打開就是積木）
+    for (const f of listDir(`examples/${key}/spike_beginner/pybricks`, /_block\.py$/i)) add(f, `${T(lang, 'Pybricks 積木範例', 'Pybricks block example')} ${base(f)}`);
   }
   if (host === 'spike' && sw === 'official') {
     for (const f of listDir(`examples/${key}/spike`, /\.(llsp3|lms)$/i)) add(f, base(f));

@@ -478,10 +478,10 @@ The WRO edition's mVision data **keeps the original HUE12 packing** (12 colour-s
 
 The official App has no EXP6 blocks; **Python text mode only** (SPIKE 3; the library is marked for version 3.4.3). The library is plain Python without multitasking (async); every command runs **synchronously**.
 
-1. Download [📥 official App library v2 + examples (.zip)](/downloads/MBC_EXP6_Official_App_Lib_v2.zip) (v1 firmware shipped before 2026-10: [legacy zip](/downloads/MBC_EXP6_Official_App_Lib.zip)).
-2. Paste the **install script** from the `SPIKE_Education` folder of the download (`Install_MBC_exp6_Lib…py`) into a SPIKE App Python project and run it once. The script writes the core library into the hub.
+1. Download [📥 official App library + examples (.zip)](/downloads/MBC_EXP6_Official_App_Lib.zip). The EXP6 needs firmware dated 2026-11-03 or later. The function reference is `EXP6_Library_Manual.pdf` in the pack.
+2. Paste the **install script** from the `SPIKE_Education` folder of the download (`Install_MBC_exp6_Lib.py`) into a SPIKE App Python project and run it once. The script writes the core library into the hub.
 3. After that, any new project can simply `from MBC_exp6_SPIKE_App_Lib import MBC_EXP6`; no more pasting long source code.
-4. When you no longer need it, run the **uninstall script** (`Uninstall_MBC_exp6_Lib…py`) from the download to remove the library from the hub cleanly.
+4. When you no longer need it, run the **uninstall script** (`Uninstall_MBC_exp6_Lib.py`) from the download to remove the library from the hub cleanly.
 
 ![Running the install script in the SPIKE App](/images/sensors/exp6/exp6_official_app_install.webp)
 
@@ -508,8 +508,8 @@ exp6.stop_all(1)          # always stop all motors before the program ends (1 = 
 @@@ exp6-pybricks
 ### Import the EXP6 library
 
-1. Download [📥 Pybricks library v2 + examples (.zip)](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip) (v1 firmware shipped before 2026-10: [legacy zip](/downloads/MBC_EXP6_Pybricks_Lib.zip)). Use **Pybricks firmware v4.1** (the command manual says "4.0.0 and later"; v4.1 works the same).
-2. Put the library in your Pybricks project. The v2 pack's library is `MBC_exp6_obj_Lib_v2.py` and its examples say `from MBC_exp6_obj_Lib_v2 import MBC_EXP6`, so no renaming is needed.
+1. Download [📥 Pybricks library + examples (.zip)](/downloads/MBC_EXP6_Pybricks_Lib.zip). The EXP6 needs firmware dated 2026-11-03 or later; use **Pybricks firmware v4.1** on the hub. The function reference is `EXP6_Library_Manual.pdf` in the pack.
+2. Put the library in your Pybricks project. The pack's library is `MBC_exp6_obj_Lib.py` and its examples say `from MBC_exp6_obj_Lib import MBC_EXP6`, so no renaming is needed.
 
 ![EXP6 Pybricks example](/images/sensors/exp6/exp6_pybricks_example.webp)
 
@@ -519,7 +519,7 @@ Assuming the expander is on hub **port C (3)**:
 
 ```python
 # Normal mode: one line after another
-from MBC_exp6_obj_Lib_v2 import MBC_EXP6
+from MBC_exp6_obj_Lib import MBC_EXP6
 exp6 = MBC_EXP6(3, False)
 exp6.motor_power(6, 100)
 exp6.keep_alive_wait(5000)
@@ -528,7 +528,7 @@ exp6.keep_alive_wait(5000)
 ```python
 # Multitask mode: await in front of every command, use the library's run_task
 from pybricks.tools import multitask, run_task, wait
-from MBC_exp6_obj_Lib_v2 import MBC_EXP6, run_task
+from MBC_exp6_obj_Lib import MBC_EXP6, run_task
 exp6 = MBC_EXP6(3, True)
 
 async def main():

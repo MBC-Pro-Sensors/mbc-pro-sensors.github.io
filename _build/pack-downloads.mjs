@@ -14,7 +14,7 @@ const CHECK = process.argv.includes('--check');
 const MBC = 'D:\\AI_Agent_AI助理\\02_MBC產品開發';
 // Git Bash 的 GNU tar 不會依副檔名出 zip；固定用 Windows 內建的 bsdtar
 const TAR = process.platform === 'win32' && fs.existsSync('C:\\Windows\\System32\\tar.exe') ? 'C:\\Windows\\System32\\tar.exe' : 'tar';
-const EXCLUDE = /(\.bak|\.before_|__pycache__|\.pyc$|~$|\.DS_Store)/;   // .before_* = 改正本前的備份檔
+const EXCLUDE = /(\.bak|\.before_|__pycache__|\.pyc$|~$|\.DS_Store|_舊版_|_舊名備份_|診斷工具)/;   // .before_* = 改正本前的備份檔；_舊版_*／_舊名備份_*／診斷工具 = 產品資料夾裡不上網站的封存與內部工具
 
 const spec = JSON.parse(fs.readFileSync(path.join(BUILD, 'downloads.json'), 'utf8'));
 const resolveSrc = (s) => s && s.replace('${MBC}', MBC).replace(/\//g, path.sep);
@@ -44,7 +44,7 @@ const zipList = (zip) => execFileSync(TAR, ['-t', '-f', zip], { encoding: 'utf8'
 // zip 裡跟正本內容不同的檔（只比檔名清單會漏掉「正本改了內容」）；回傳不同的檔名，清單不同時回傳 null
 function zipDiff(zip, files, src, srcOf) {
   if (JSON.stringify(zipList(zip)) !== JSON.stringify(files)) return null;
-  return files.filter((f) => !execFileSync(TAR, ['-x', '-O', '-f', zip, f], { maxBuffer: 64 << 20 }).equals(fs.readFileSync(path.join(src, srcOf[f]))));
+  return files.filter((f) => !execFileSync(TAR, ['-x', '-O', '-f', zip, f], { maxBuffer: 64 << 20 }).equals(fs.readFileSync(srcOf[f])));
 }
 
 const generated = [];
@@ -66,8 +66,16 @@ for (const it of spec.items) {
   const src = resolveSrc(it.src);
   if (!fs.existsSync(src)) { console.log(`找不到正本：${src}`); bad++; generated.push(entry); continue; }
   const srcFiles = listFiles(src, it.include);
-  const files = srcFiles.map((f) => zipName(f, it.rename)).sort();
-  const srcOf = Object.fromEntries(srcFiles.map((f) => [zipName(f, it.rename), f]));
+  const srcOf = Object.fromEntries(srcFiles.map((f) => [zipName(f, it.rename), path.join(src, f)]));
+  // extra：正本不在 src 底下的檔（例如說明書 PDF、網站上的積木範例）→ [{ from: 檔案或資料夾, as: zip 裡的路徑, skip: 資料夾裡不要的檔名正規式 }]
+  for (const x of it.extra || []) {
+    const abs = resolveSrc(x.from);
+    if (!fs.existsSync(abs)) throw new Error(`extra 找不到：${abs}`);
+    if (fs.statSync(abs).isDirectory()) {
+      for (const f of listFiles(abs)) if (!(x.skip && new RegExp(x.skip).test(f))) srcOf[zipName(`${x.as}/${f}`, it.rename)] = path.join(abs, f);
+    } else srcOf[zipName(x.as, it.rename)] = abs;
+  }
+  const files = Object.keys(srcOf).sort();
   entry.files = files;
   if (CHECK) {
     if (!fs.existsSync(outAbs)) { console.log(`未打包：${it.out}`); bad++; }
@@ -83,7 +91,7 @@ for (const it of spec.items) {
   } else {
     // 先複製到暫存（排除備份檔），再打包，zip 裡只有乾淨的檔案
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mbc-pack-'));
-    for (const f of files) { const d = path.join(tmp, f); fs.mkdirSync(path.dirname(d), { recursive: true }); fs.copyFileSync(path.join(src, srcOf[f]), d); }
+    for (const f of files) { const d = path.join(tmp, f); fs.mkdirSync(path.dirname(d), { recursive: true }); fs.copyFileSync(srcOf[f], d); }
     fs.mkdirSync(path.dirname(outAbs), { recursive: true });
     fs.rmSync(outAbs, { force: true });
     const top = [...new Set(files.map((f) => f.split('/')[0]))];

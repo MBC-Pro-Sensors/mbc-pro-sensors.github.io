@@ -360,15 +360,80 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <div class="panel">
         <div class="panel-head"><span>跟 MBC 感應器一起用：循線小車</span><button type="button" class="copy" data-copy="mix">複製</button></div>
         <pre class="code" id="ex-mix"></pre>
-        <p class="bubble"><i>!</i><span>MBC 的感應器（這裡是循行者 8 路）要<b>直接插主機</b>，EXP6 的擴充孔只認得樂高馬達和樂高的顏色、超音波、力量感應器。循行者的函式庫 <code>MBC_line8.py</code> 也要匯入同一個專案。</span></p>
+        <p class="bubble"><i>!</i><span>這個範例把循行者 8 路<b>直接插主機</b>，循行者的函式庫 <code>MBC_line8.py</code> 也要匯入同一個專案。MBC 感應器也可以插在 EXP6 的擴充孔上，寫法見下面「MBC 感應器插在 EXP6」。</span></p>
       </div>
     </div>
+  </section>
+
+  <section class="ref" id="mbc-sensors" aria-labelledby="mbch">
+    <h2 id="mbch">MBC 感應器插在 EXP6（循行者、測距者、掌控者、神攝手）</h2>
+    <p class="ref-intro">主機的孔不夠用時，MBC 感應器可以插在 EXP6 的 1～6 號孔。感應器要先切到 <b>SPIKE 模式</b>，EXP6 韌體要 <b>2026-11-03 以後</b>。寫法一樣是三步，下面用「循行者 8 路插 EXP6 第 5 孔」示範。</p>
+    <div style="display:grid;gap:14px">
+      <div class="panel">
+        <div class="panel-head"><span>① 匯入：核心函式庫＋用到的產品檔</span></div>
+        <p style="padding:10px 14px;margin:0">一定要匯入核心 <code>MBC_exp6_obj_Lib</code> 的 <code>MBC_EXP6</code> 和 <code>run_task</code>；接著<b>只匯入插上去那一款的產品檔</b>：<code>MBC_exp6_line</code>（<code>EXP6_LINE8</code>、<code>EXP6_LINE16</code>）、<code>MBC_exp6_laser</code>（<code>EXP6_LASER2</code>、<code>EXP6_LASER8</code>）、<code>MBC_exp6_pad</code>（<code>EXP6_PS2</code>、<code>EXP6_PS4</code>）、<code>MBC_exp6_unicam</code>（<code>EXP6_UNICAM</code>）。<b>為什麼分成好幾個檔：</b>Pybricks 主機的程式（你的程式加上全部函式庫）上限大約 52 KB，全部放進去會超過，所以用到哪款才載入哪款。專案裡還要放共用檔 <code>MBC_exp6_mbc_common.py</code>（產品檔會自動載入它，不用寫 import）。</p><pre class="code" style="padding:12px 14px;white-space:pre">from pybricks.tools import multitask, run_task, wait
+
+from MBC_exp6_line import EXP6_LINE8
+from MBC_exp6_obj_Lib import MBC_EXP6, run_task</pre>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>② 建立物件：先 EXP6，再感應器</span></div>
+        <p style="padding:10px 14px;margin:0">先建立 EXP6 物件，再建立感應器物件。三種寫法都可以，函式完全一樣：</p><pre class="code" style="padding:12px 14px;white-space:pre">exp6 = MBC_EXP6(3, True)
+line8 = EXP6_LINE8(exp6, 5)        # 寫法 1：跟積木一樣（第 2 個數字＝EXP6 的孔號）
+line8 = exp6.line8(5)              # 寫法 2：用 EXP6 物件拿（要先 from MBC_exp6_line import *）
+# 寫法 3：宣告式（一般模式會核對 5 號孔插的是不是循行者 8 路，插錯直接告訴你）
+# from MBC_exp6_line import *
+# exp6 = MBC_EXP6(3, False, p5=LINE8)
+# line8 = exp6.sensor(5)</pre>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>③ 使用功能：名稱跟直插主機一樣</span></div>
+        <p style="padding:10px 14px;margin:0">函式名稱、回傳值都跟感應器直接插主機時一樣（例如循行者的 <code>pos100()</code>、<code>width()</code>）。多工模式每個函式前面都要加 <code>await</code>，等待直接用 <code>wait</code>：匯入的 <code>run_task</code> 是 EXP6 函式庫的，會在背景送心跳，馬達不會被看門狗停掉。</p><pre class="code" style="padding:12px 14px;white-space:pre">from pybricks.hubs import PrimeHub
+from pybricks.tools import multitask, run_task, wait
+
+from MBC_exp6_line import EXP6_LINE8
+from MBC_exp6_obj_Lib import MBC_EXP6, run_task
+
+# Set up.
+hub = PrimeHub()
+exp6 = MBC_EXP6(3, True)
+line8 = EXP6_LINE8(exp6, 5)
+SPEED = 50
+KP = 0.4
+KD = 1.5
+error = 0
+lastError = 0
+PD = 0
+
+async def main():
+    global error, PD, lastError
+    # 接線：EXP6 的 Host 線插主機 C 孔；循行者 8 路（SPIKE 模式）插 EXP6 第 5 孔；左馬達接 EXP6 擴充孔 1（反裝）、右馬達接擴充孔 2
+    # 只匯入用到的產品檔：主機程式上限約 52 KB，循行者只要 MBC_exp6_line（EXP6_LINE8）。EXP6_LINE8(exp6, 5) = 插在 exp6 的 5 號孔
+    await exp6.set_motor_inverted(1, True)
+    while True:
+        await wait(0)
+        if await line8.width() &gt; 5:
+            await exp6.motor_power(1, 0)
+            await exp6.motor_power(2, 0)
+        else:
+            error = await line8.pos100()
+            PD = error * KP + (error - lastError) * KD
+            await exp6.motor_power(1, SPEED + PD)
+            await exp6.motor_power(2, SPEED - PD)
+            lastError = error
+        await wait(10)
+
+
+run_task(main())</pre>
+      </div>
+    </div>
+    <p class="small">下載這個範例：<a href="/examples/exp6/spike_beginner/pybricks/exp6_line8_pd_block.py" download>積木檔 exp6_line8_pd_block.py</a>、<a href="/examples/exp6/spike_beginner/pybricks/exp6_line8_pd_python.py" download>Python 檔 exp6_line8_pd_python.py</a>（PD 循線：左馬達接擴充孔 1、右馬達接擴充孔 2；在 Pybricks Code 按「Import a file」匯入，跟 <code>MBC_exp6_obj_Lib.py</code>、<code>MBC_exp6_mbc_common.py</code>、<code>MBC_exp6_line.py</code> 放同一個專案）。</p>
   </section>
 
   <section class="tips" aria-labelledby="tiph">
     <h2 id="tiph">使用注意</h2>
     <ol>
-      <li><b>一定要接 EXP6 的電池。</b>擴充孔上的馬達全部靠 EXP6 自己的電池（建議 2S 鋰電池），只接 Host 線、不接電池，什麼都不會動。EXP6 只能接<b>樂高馬達</b>和樂高 SPIKE 的<b>顏色、超音波、力量感應器</b>；MBC 的感應器請直接插主機。</li>
+      <li><b>一定要接 EXP6 的電池。</b>擴充孔上的馬達全部靠 EXP6 自己的電池（建議 2S 鋰電池），只接 Host 線、不接電池，什麼都不會動。EXP6 的擴充孔可以接<b>樂高馬達</b>、樂高 SPIKE 的<b>顏色、超音波、力量感應器</b>，也可以接 MBC 感應器（見上面「MBC 感應器插在 EXP6」）。</li>
       <li><b>兩種孔號不要搞混。</b><code>MBC_EXP6(3)</code> 的 3 是<b>主機</b>的孔（1~6 = A~F）；<code>exp6.motor_run(1, 50)</code> 的 1 是 <b>EXP6 上的擴充孔</b>（板子上印的 1~6）。</li>
       <li><b>等待用 <code>keep_alive_wait()</code>，不要用 <code>wait()</code>。</b>EXP6 超過 0.5 秒沒收到主機的訊號，會讓馬達自己停下來（看門狗，保護用，關不掉）。一般寫法的等待一律寫 <code>exp6.keep_alive_wait(毫秒)</code>；算很久的地方中間補一次 <code>exp6.keep_alive()</code>。開多工時用函式庫的 <code>run_task()</code>，背景會自動送，直接 <code>await wait()</code> 就好。</li>
       <li><b>拔掉擴充板不會讓程式停。</b>讀到的值會變成 0（不是上一次的值），動作送不出去，電腦畫面每秒最多印一行提醒；插回去會自己重新連線。要知道有沒有接好就看 <code>exp6.connected</code>。在模擬 EXP6 勾「拔掉擴充板」可以看到這個情形。</li>

@@ -27,7 +27,12 @@
 ## 下載
 
 - [MBC_EXP6_Pybricks_Lib.zip](/downloads/MBC_EXP6_Pybricks_Lib.zip)
-- [MBC_EXP6_Pybricks_Lib_v2.zip](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip)
+- [Pybricks 積木範例 ex01_one_turn_block.py](/examples/exp6/spike_beginner/pybricks/ex01_one_turn_block.py)
+- [Pybricks 積木範例 ex02_three_motors_block.py](/examples/exp6/spike_beginner/pybricks/ex02_three_motors_block.py)
+- [Pybricks 積木範例 ex03_light_switch_block.py](/examples/exp6/spike_beginner/pybricks/ex03_light_switch_block.py)
+- [Pybricks 積木範例 ex04_button_motor_block.py](/examples/exp6/spike_beginner/pybricks/ex04_button_motor_block.py)
+- [Pybricks 積木範例 ex05_square_block.py](/examples/exp6/spike_beginner/pybricks/ex05_square_block.py)
+- [Pybricks 積木範例 exp6_line8_pd_block.py](/examples/exp6/spike_beginner/pybricks/exp6_line8_pd_block.py)
 - [下載中心（全部產品的函式庫、韌體、型錄）](/downloads.md)
 
 ## 本頁依據

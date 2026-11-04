@@ -34,7 +34,7 @@ Download Official App Library
 <a href="/downloads/MBC_EXP6_Official_App_Lib.zip" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #00d2ff 0%, #0077ff 100%); color: white; text-decoration: none; padding: 12px 25px; border-radius: 30px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,210,255,0.4); transition: transform 0.2s, box-shadow 0.2s;">
 Download .zip Package
 </a>
-<p style="font-size: 0.85em; color: #888; margin-top: 15px;">Includes: <code>Install_MBC_exp6_Lib.py</code>, <code>Uninstall_MBC_exp6_Lib.py</code>, 8 example programs (<code>01</code>–<code>08</code>) and the PDF manual</p>
+<p style="font-size: 0.85em; color: #888; margin-top: 15px;">Includes: <code>Install_MBC_exp6_Lib.py</code>, <code>Uninstall_MBC_exp6_Lib.py</code>, 9 example programs (<code>01</code>–<code>09</code>) and the PDF manual <code>EXP6_Library_Manual.pdf</code></p>
 </div>
 
 <div style="flex: 1; min-width: 300px; background: rgba(255,69,0,0.05); border: 1px solid rgba(255,69,0,0.3); border-radius: 12px; padding: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">

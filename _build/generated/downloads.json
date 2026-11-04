@@ -2,23 +2,35 @@
   "generatedBy": "_build/pack-downloads.mjs",
   "items": [
     {
-      "out": "/downloads/MBC_EXP6_Pybricks_Lib_v2.zip",
+      "out": "/downloads/MBC_EXP6_Pybricks_Lib.zip",
       "label": {
-        "zh": "SPIKE 6 路擴充器 EXP6：Pybricks 函式庫 v2＋範例",
-        "en": "EXP6 expander: Pybricks library v2 + examples"
+        "zh": "SPIKE 6 路擴充器 EXP6：Pybricks 函式庫＋範例（含積木範例）",
+        "en": "EXP6 expander: Pybricks library + examples (incl. block examples)"
       },
-      "version": "2.0",
-      "firmware": "EXP6 v2",
+      "version": "2026-11-04",
+      "firmware": "EXP6 2026-11-03+",
       "legacy": false,
       "files": [
-        "EXP6_Pybricks_Manual.pdf",
+        "EXP6_Library_Manual.pdf",
         "Exp6_objMode_Demo.py",
         "MBC_exp6_laser.py",
         "MBC_exp6_line.py",
         "MBC_exp6_mbc_common.py",
-        "MBC_exp6_obj_Lib_v2.py",
+        "MBC_exp6_obj_Lib.py",
         "MBC_exp6_pad.py",
         "MBC_exp6_unicam.py",
+        "beginner_examples/ex01_one_turn.py",
+        "beginner_examples/ex01_one_turn_block.py",
+        "beginner_examples/ex02_three_motors.py",
+        "beginner_examples/ex02_three_motors_block.py",
+        "beginner_examples/ex03_light_switch.py",
+        "beginner_examples/ex03_light_switch_block.py",
+        "beginner_examples/ex04_button_motor.py",
+        "beginner_examples/ex04_button_motor_block.py",
+        "beginner_examples/ex05_square.py",
+        "beginner_examples/ex05_square_block.py",
+        "beginner_examples/exp6_line8_pd_block.py",
+        "beginner_examples/exp6_line8_pd_python.py",
         "examples/01_Motor_Basic.py",
         "examples/02_Motor_Run_Degrees.py",
         "examples/03_Motor_Track_Target.py",
@@ -29,35 +41,24 @@
         "examples/08_Sensor_Color.py",
         "examples/09_System_Misc.py",
         "examples/10_Multitask_KeepAlive.py",
-        "examples/11_MBC_Sensors_v2.py"
+        "examples/11_MBC_Sensors.py"
       ],
-      "size": 1609291
+      "size": 1946272
     },
     {
-      "out": "/downloads/MBC_EXP6_Official_App_Lib_v2.zip",
+      "out": "/downloads/MBC_EXP6_Official_App_Lib.zip",
       "label": {
-        "zh": "SPIKE 6 路擴充器 EXP6：官方 SPIKE App 函式庫 v2＋範例",
-        "en": "EXP6 expander: official SPIKE App library v2 + examples"
+        "zh": "SPIKE 6 路擴充器 EXP6：官方 SPIKE App 函式庫＋範例",
+        "en": "EXP6 expander: official SPIKE App library + examples"
       },
-      "version": "2.0",
-      "firmware": "EXP6 v2",
+      "version": "2026-11-04",
+      "firmware": "EXP6 2026-11-03+",
       "legacy": false,
       "files": [
-        "MBC_exp6_SPIKE_App_Lib.py",
-        "Robot_Inventor/ENGINEERING_NOTE_MINDSTORMS_ImportError.md",
-        "Robot_Inventor/Install_MBC_exp6_Lib.py",
-        "Robot_Inventor/Install_MBC_exp6_Lib_v2.py",
-        "Robot_Inventor/MBC_exp6_SPIKE_App_Lib.py",
-        "Robot_Inventor/MBC_exp6_SPIKE_App_Lib_v2.py",
-        "Robot_Inventor/Uninstall_MBC_exp6_Lib_v2.py",
-        "SPIKE_Education/EXP6_SPIKE_App_Manual.pdf",
+        "EXP6_Library_Manual.pdf",
         "SPIKE_Education/Install_MBC_exp6_Lib.py",
-        "SPIKE_Education/Install_MBC_exp6_Lib_v2.py",
         "SPIKE_Education/MBC_exp6_SPIKE_App_Lib.py",
-        "SPIKE_Education/MBC_exp6_SPIKE_App_Lib_v2.py",
-        "SPIKE_Education/README.md",
         "SPIKE_Education/Uninstall_MBC_exp6_Lib.py",
-        "SPIKE_Education/Uninstall_MBC_exp6_Lib_v2.py",
         "examples/01_Motor_Basic.py",
         "examples/02_Motor_Advanced.py",
         "examples/03_Drive_Base.py",
@@ -66,33 +67,9 @@
         "examples/06_System_Misc.py",
         "examples/07_Motor_Inverted.py",
         "examples/08_Stop_Modes.py",
-        "examples/09_MBC_Sensors_v2.py"
+        "examples/09_MBC_Sensors.py"
       ],
-      "size": 1263345
-    },
-    {
-      "out": "/downloads/MBC_EXP6_Pybricks_Lib.zip",
-      "label": {
-        "zh": "EXP6 Pybricks 函式庫（舊版，v1 韌體）",
-        "en": "EXP6 Pybricks library (legacy, v1 firmware)"
-      },
-      "version": "1.x",
-      "firmware": "EXP6 v1",
-      "legacy": true,
-      "files": null,
-      "size": 1594603
-    },
-    {
-      "out": "/downloads/MBC_EXP6_Official_App_Lib.zip",
-      "label": {
-        "zh": "EXP6 官方 SPIKE App 函式庫（舊版，v1 韌體）",
-        "en": "EXP6 official SPIKE App library (legacy, v1 firmware)"
-      },
-      "version": "1.x",
-      "firmware": "EXP6 v1",
-      "legacy": true,
-      "files": null,
-      "size": 1187397
+      "size": 1900354
     },
     {
       "out": "/downloads/MBC_Servo6_Pybricks_Lib.zip",

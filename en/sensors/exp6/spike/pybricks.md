@@ -27,7 +27,12 @@ Still stuck? [Contact us](/en/contact.md) with your software and a screenshot of
 ## Downloads
 
 - [MBC_EXP6_Pybricks_Lib.zip](/downloads/MBC_EXP6_Pybricks_Lib.zip)
-- [MBC_EXP6_Pybricks_Lib_v2.zip](/downloads/MBC_EXP6_Pybricks_Lib_v2.zip)
+- [Pybricks block example ex01_one_turn_block.py](/examples/exp6/spike_beginner/pybricks/ex01_one_turn_block.py)
+- [Pybricks block example ex02_three_motors_block.py](/examples/exp6/spike_beginner/pybricks/ex02_three_motors_block.py)
+- [Pybricks block example ex03_light_switch_block.py](/examples/exp6/spike_beginner/pybricks/ex03_light_switch_block.py)
+- [Pybricks block example ex04_button_motor_block.py](/examples/exp6/spike_beginner/pybricks/ex04_button_motor_block.py)
+- [Pybricks block example ex05_square_block.py](/examples/exp6/spike_beginner/pybricks/ex05_square_block.py)
+- [Pybricks block example exp6_line8_pd_block.py](/examples/exp6/spike_beginner/pybricks/exp6_line8_pd_block.py)
 - [Download centre (libraries, firmware, catalogue for every product)](/en/downloads.md)
 
 ## Sources

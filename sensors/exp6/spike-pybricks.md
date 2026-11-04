@@ -227,7 +227,7 @@ await exp6.motor_run(1, 30)
 </ul>
 </li>
 </ul>
-<p><i>備註：舊版 <code>motor_run_target</code> 已更名為 <code>motor_track_target</code>，但舊名仍可相容使用。</i></p>
+<p><i>備註：<code>motor_run_target</code> 已更名為 <code>motor_track_target</code>，但舊名仍可相容使用。</i></p>
 <p><b>⚠️ 角度指令送出就會往下執行，不會等馬達轉完。</b>同一顆馬達還在轉的時候再送下一個角度指令，下一個指令會被擴充板丟掉。所以兩個角度指令中間要先等它轉完（例如用 <code>keep_alive_wait</code> 等一段時間；速度 30 轉 360 度大約要 1.2 秒）。</p>
 <div class="block-label">一般積木</div>
 <pre v-pre class="blocks">@greenFlag [exp6 v] [call v] [motor_run_degrees] (1) (30) (360) (3) ‹ › :: #FF6680

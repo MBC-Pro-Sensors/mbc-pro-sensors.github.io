@@ -27,7 +27,6 @@ Still stuck? [Contact us](/en/contact.md) with your software and a screenshot of
 ## Downloads
 
 - [MBC_EXP6_Official_App_Lib.zip](/downloads/MBC_EXP6_Official_App_Lib.zip)
-- [MBC_EXP6_Official_App_Lib_v2.zip](/downloads/MBC_EXP6_Official_App_Lib_v2.zip)
 - [Download centre (libraries, firmware, catalogue for every product)](/en/downloads.md)
 
 ## Sources
