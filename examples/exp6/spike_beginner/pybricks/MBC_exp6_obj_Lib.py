@@ -8,10 +8,10 @@
 #
 #  2026.11 新增：MBC 感應器插在 EXP6 的孔上 / New in 2026.11: MBC sensors on EXP6 ports
 #  ────────────────────────────────────────────────────────────
-#  感應器先切到 SPIKE 模式，再用下面的寫法宣告它插在哪一孔；函式名稱與回傳值
+#  感應器直接插上就能用（跟插在主機上一樣、不用另外設定），用下面的寫法宣告它插在哪一孔；函式名稱與回傳值
 #  跟感應器直接插 Hub 時的函式庫相同（MBC_sensors.py、MBC_UniCam.py；一次回傳整組資料的
 #  read_all() 之類還沒做），命令 cmd()／wait_done() 也一樣（序號 1~99、參數 -9999~9999）。
-#  Switch the sensor to SPIKE mode, then declare which EXP6 port it is on.
+#  Just plug the sensor in (same as on the hub, no setup), then declare which EXP6 port it is on.
 #  Method names/returns and commands match each sensor's direct-to-hub library
 #  (read_all()-style functions not yet).
 #      exp6  = MBC_EXP6(1)            # EXP6 插在 Hub 的 A 孔 / EXP6 on hub port A
