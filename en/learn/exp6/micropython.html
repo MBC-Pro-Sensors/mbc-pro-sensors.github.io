@@ -379,7 +379,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 </style>
 <section class="ref" id="mbc-sensors" aria-labelledby="mbch">
   <h2 id="mbch">MBC sensors on the EXP6 (Line Follower, Laser Ranger, Controller, Sharpshooter)</h2>
-  <p class="ref-intro">When you run out of hub ports, MBC sensors can go into EXP6 ports 1–6. Switch the sensor to <b>SPIKE mode</b> first; the EXP6 needs firmware dated <b>2026-11-03 or later</b>. Same three steps as above: pick the sensor, pick the EXP6 port it is in, pick a function, and the program on the right follows along; both the normal style and multitask work.</p>
+  <p class="ref-intro">When you run out of hub ports, plug MBC sensors straight into EXP6 ports 1–6, just as you would into the hub; there is nothing to set up. The EXP6 needs firmware dated <b>2026-11-03 or later</b>. Same three steps as above: pick the sensor, pick the EXP6 port it is in, pick a function, and the program on the right follows along; both the normal style and multitask work.</p>
   <div class="main">
     <div class="steps">
       <article class="step current" id="mc-step1">
@@ -454,7 +454,7 @@ PD = 0
 
 async def main():
     global error, PD, lastError
-    # Wiring: EXP6 Host cable in hub port C; Line Follower 8-ch (SPIKE mode) in EXP6 port 5; left motor in EXP6 port 1 (mounted reversed), right motor in port 2
+    # Wiring: EXP6 Host cable in hub port C; Line Follower 8-ch in EXP6 port 5; left motor in EXP6 port 1 (mounted reversed), right motor in port 2
     # Import only the product files you use (hub program limit about 52 KB); the Line Follower needs just MBC_exp6_line (EXP6_LINE8). EXP6_LINE8(exp6, 5) = the sensor in EXP6 port 5
     await exp6.set_motor_inverted(1, True)
     while True:

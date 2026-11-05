@@ -380,7 +380,7 @@ svg.pyb .blocklyEditableText > rect:not(.blocklyDropdownRect) { fill: #fff; }
 </style>
 <section class="ref" id="mbc-sensors" aria-labelledby="mbch">
   <h2 id="mbch">MBC sensors on the EXP6 (Line Follower, Laser Ranger, Controller, Sharpshooter)</h2>
-  <p class="ref-intro">When you run out of hub ports, MBC sensors can go into EXP6 ports 1–6. Switch the sensor to <b>SPIKE mode</b> first; the EXP6 needs firmware dated <b>2026-11-03 or later</b>. It is the same three steps as above: pick the sensor, pick the EXP6 port it is in, pick a function, and the blocks and code on the right follow along. All blocks were built and exported in Pybricks Code; the block version always uses multitask (true).</p>
+  <p class="ref-intro">When you run out of hub ports, plug MBC sensors straight into EXP6 ports 1–6, just as you would into the hub; there is nothing to set up. The EXP6 needs firmware dated <b>2026-11-03 or later</b>. It is the same three steps as above: pick the sensor, pick the EXP6 port it is in, pick a function, and the blocks and code on the right follow along. All blocks were built and exported in Pybricks Code; the block version always uses multitask (true).</p>
   <div class="main">
     <div class="steps">
       <article class="step current" id="ms-step1">
@@ -519,7 +519,7 @@ PD = 0
 
 async def main():
     global error, PD, lastError
-    # 接線：EXP6 的 Host 線插主機 C 孔；循行者 8 路（SPIKE 模式）插 EXP6 第 5 孔；左馬達接 EXP6 擴充孔 1（反裝）、右馬達接擴充孔 2
+    # 接線：EXP6 的 Host 線插主機 C 孔；循行者 8 路插 EXP6 第 5 孔；左馬達接 EXP6 擴充孔 1（反裝）、右馬達接擴充孔 2
     # 只匯入用到的產品檔：主機程式上限約 52 KB，循行者只要 MBC_exp6_line（EXP6_LINE8）。EXP6_LINE8(exp6, 5) = 插在 exp6 的 5 號孔
     await exp6.set_motor_inverted(1, True)
     while True:

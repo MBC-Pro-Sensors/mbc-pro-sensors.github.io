@@ -50,7 +50,7 @@ run_task(main())
 
 When you run out of hub ports, you can plug MBC sensors into EXP6 ports 1–6: **Line Follower 8/16-ch, Laser Ranger 2/8-ch, PS2/PS4 receiver and Sharpshooter Vision**. The function names and return values are the same as when the sensor is plugged straight into the hub.
 
-- Switch each sensor to **SPIKE mode** first.
+- Just plug the sensors in, the same as into the hub; there is nothing to set up.
 - The EXP6 needs firmware from **2026-11-03 or later**. For older firmware, contact us to update it.
 
 **1. Normal mode: declare what is on each port.** When you create the EXP6 object, write `p5=LINE16` (Line Follower 16-ch on port 5). For the camera, write `(UNICAM, camera_mode)`. Then get each sensor object with `exp6.sensor(port)`.

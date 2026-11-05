@@ -1,6 +1,6 @@
 # EXP6 × 循行者 8 路 PD 循線（速度 50）／EXP6 + Line Follower 8-ch PD line following (speed 50)
-# 接線：EXP6 的 Host 線 → 主機 C 孔；循行者 8 路（SPIKE 模式）→ EXP6 第 5 孔；左馬達 → EXP6 擴充孔 1（反裝）；右馬達 → 擴充孔 2；EXP6 接上電池
-# Wiring: EXP6 Host cable → hub port C; Line Follower 8-ch (SPIKE mode) → EXP6 port 5; left motor → EXP6 port 1 (mounted reversed); right motor → port 2
+# 接線：EXP6 的 Host 線 → 主機 C 孔；循行者 8 路→ EXP6 第 5 孔；左馬達 → EXP6 擴充孔 1（反裝）；右馬達 → 擴充孔 2；EXP6 接上電池
+# Wiring: EXP6 Host cable → hub port C; Line Follower 8-ch → EXP6 port 5; left motor → EXP6 port 1 (mounted reversed); right motor → port 2
 # 函式庫：MBC_exp6_obj_Lib.py、MBC_exp6_mbc_common.py、MBC_exp6_line.py 三個檔放同一個 Pybricks 專案（EXP6 韌體 2026-11-03 以後）
 # Libraries: put MBC_exp6_obj_Lib.py, MBC_exp6_mbc_common.py and MBC_exp6_line.py in the same Pybricks project (EXP6 firmware 2026-11-03 or later)
 # 只匯入用到的產品檔：主機程式上限約 52 KB，循行者只要 MBC_exp6_line／Import only the product file you use: hub programs are limited to about 52 KB
