@@ -69,7 +69,7 @@ EXP6 也可以接 **LEGO MINDSTORMS Robot Inventor（51515）主機**，用 **Ro
 **安裝函式庫（只做一次）**　👉 一步一步的版本：[玩具版安裝教學](/sensors/exp6/install-robot-inventor.md)
 
 1. 下載 [📥 Robot Inventor 函式庫＋範例（.zip）](/downloads/MBC_EXP6_Robot_Inventor_Lib.zip)（安裝程式、移除程式、10 支範例、函式庫原始碼）。EXP6 韌體要 2026-11-03 以後。
-2. 主機**用 USB 線接電腦**、開機，在 Robot Inventor App 連上主機（安裝時請用 USB 線連接）。
+2. 主機開機，在 Robot Inventor App 連上主機：**USB 線或藍牙都可以**（建議 USB 線，比較穩）。
 3. 新開一個 Python 專案，把 `Install_MBC_exp6_Lib.py` 整份貼上，按執行。約 6 秒後主控台印出 `安裝成功！ (Installed OK)`（前面會列出 3 個檔都 OK）。
 4. 函式庫裝在主機的 `/projects/mbc_exp6/`，關機不會不見；主機**韌體更新後要再裝一次**。不要了就執行 `Uninstall_MBC_exp6_Lib.py`（印出「移除完成！」）。
 
@@ -118,7 +118,7 @@ MBC 感應器的寫法也一樣：`line8 = exp.line8(2)`（8 路循行者插 EXP
 | 印出「讀不到擴充板資料（請確認 EXP6 接在這個孔且已開電）」 | 孔位寫錯、EXP6 沒電 | 檢查 `MBC_EXP6(port.X)` 跟實際插的孔、EXP6 電池 |
 | App 裝置頁看不到 EXP6 | EXP6 已在 Robot Inventor 的通訊方式 | 拔 EXP6 電池再插回 |
 | 馬達跑一陣子自己停了 | 超過 10 秒沒呼叫函式庫 | 用 `exp.keep_alive_wait(毫秒)` 等 |
-| 安裝時主機自己關機 | 用藍牙傳安裝程式 | 改用 USB 線再裝一次 |
+| 安裝時主機自己關機 | 傳輸中斷 | 改用 USB 線再裝一次 |
 | `MemoryError` | 程式太大，又用了很多種 MBC 感應器（核心約 26 KB，MBC 感應器最多再 19 KB；App 可用約 98 KB，全部載入後約剩 37 KB） | 把程式拆小、重開主機 |
 | MBC 感應器讀到亂碼（例如手把一直「按下」很多鍵） | 宣告的型號跟實際插的不一樣 | 宣告要跟實際插的感應器一樣 |
 

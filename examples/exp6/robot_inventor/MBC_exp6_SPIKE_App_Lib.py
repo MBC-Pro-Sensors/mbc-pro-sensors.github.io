@@ -816,6 +816,7 @@ class _EXP6_SENSOR:
         self._exp = exp
         self._port = port_num
         self._sq = None     # 下命令：最後一個序號（1~99）
+        self._unsent = False  # 第一個命令因為讀不到感應器沒送出（wait_done 要回 False）
         self._ck = None     # 　　　　最後一個 (命令碼, 參數…)
         self._pk = None     # 　　　　最後送出的封包（重送用）
         self._ct = 0        # 　　　　最後送出的時間
@@ -863,11 +864,13 @@ class _EXP6_SENSOR:
         if self._sq is None:
             f = self._exp._mbc_read(self._port, 8, 2)   # 第 2、3 個 byte：第 3 個 bit0 = 支援命令
             if f is None:
+                self._unsent = True
                 return None
             if not (f[1] & 1):
                 raise ValueError('cmd(): 感應器韌體太舊，不支援命令，請更新韌體 / sensor firmware too old for commands')
             s = self._st()
             if s is None:
+                self._unsent = True
                 return None
             self._sq = s[1]                 # 從感應器最後收下的序號 +1 開始，才不會跟上一個程式撞號
         self._sq = self._sq % 99 + 1
@@ -891,7 +894,7 @@ class _EXP6_SENSOR:
 
     def wait_done(self, timeout=10000):
         if self._sq is None:
-            return True
+            return not self._unsent     # 沒下過命令＝True；命令沒送出（讀不到感應器）＝False
         t0 = time.ticks_ms()
         while True:
             s = self.cmd_state()

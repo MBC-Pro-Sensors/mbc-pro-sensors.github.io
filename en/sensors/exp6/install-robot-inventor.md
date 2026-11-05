@@ -8,18 +8,20 @@ For teachers, students and first-time users: follow these steps in order and the
 ## What you need
 
 - A Robot Inventor hub (battery charged)
-- **A USB cable that carries data** (the one that came with the hub works; charge-only cables do not)
+- **A USB cable or Bluetooth, either works** (USB is recommended: the cable that came with the hub works; charge-only cables do not)
 - A computer or tablet with the LEGO MINDSTORMS App (Robot Inventor App 10.x)
 - EXP6 firmware dated 2026-11-03 or later
 - [MBC_EXP6_Robot_Inventor_Lib.zip](/downloads/MBC_EXP6_Robot_Inventor_Lib.zip) from this site, unzipped
 
-## Why a USB cable
+## USB or Bluetooth
 
-The install sends a fairly large file to the hub, and over Bluetooth the hub may switch off halfway. **You only need the USB cable for this one install**; afterwards you can program over Bluetooth as usual.
+We have installed it in the App both ways and both worked (Bluetooth took about 3 seconds). **USB is recommended**: the install sends a fairly large file, and a cable is steadier. If you have no data cable at hand, Bluetooth works too.
+
+> LEGO stopped updating and supporting the Robot Inventor App on 2026-10-01; on 2026-11-05 we tested App 10.5.4 and installing and running both work.
 
 ## Install steps
 
-1. Connect the hub to the computer with the USB cable and press the centre button to turn it on.
+1. Connect the hub to the computer with the USB cable (or use Bluetooth) and press the centre button to turn it on.
 2. Open the LEGO MINDSTORMS App and connect to the hub (the App shows it is connected).
 3. Make a new project and choose **Python**.
 4. Open the unzipped `Install_MBC_exp6_Lib.py` in a text editor, **select all and copy**.
@@ -35,10 +37,10 @@ MBC_exp6_cam.py … B OK
 ```
 
    "Installed OK" means you are done. You can delete this install project; the library stays on the hub (`/projects/mbc_exp6/`, kept after power-off).
-8. You can unplug the USB cable now and connect over Bluetooth from then on.
+8. If you installed over USB, you can unplug the cable now and connect over Bluetooth from then on.
 
 > [!TIP]
-> If you see "Install failed, please run again": press Run once more. If it still fails, make sure you are connected by USB.
+> If you see "Install failed, please run again": press Run once more. If it still fails, connect by USB and install again.
 
 ## Start programming
 

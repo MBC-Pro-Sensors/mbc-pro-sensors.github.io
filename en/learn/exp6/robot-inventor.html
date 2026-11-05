@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Control the SPIKE 6-Way Expander (EXP6) with Python in the LEGO MINDSTORMS Robot Inventor (51515) App: install the library on the hub once over USB, create the object, pick a function and watch the program build up; all 33 functions have examples, plus MBC sensors and sensor commands.">
+<meta name="description" content="Control the SPIKE 6-Way Expander (EXP6) with Python in the LEGO MINDSTORMS Robot Inventor (51515) App: install the library on the hub once (USB or Bluetooth), create the object, pick a function and watch the program build up; all 33 functions have examples, plus MBC sensors and sensor commands.">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/exp6/robot-inventor.html">
 <link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/exp6/robot-inventor.html">
@@ -252,12 +252,12 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
           <p class="why">The Robot Inventor App cannot import files the way Pybricks does, so you <b>install the EXP6 library on the hub once</b> (it goes into <code>/projects/mbc_exp6/</code> on the hub and survives power-off); after that every Python project just needs three import lines at the top. Without them the hub does not know what <code>MBC_EXP6</code> means and you get an <code>ImportError</code> or <code>NameError</code>.</p>
           <ol class="howto">
             <li>Download <a href="/downloads/MBC_EXP6_Robot_Inventor_Lib.zip" download>MBC_EXP6_Robot_Inventor_Lib.zip</a> (installer, uninstaller and 10 examples). The installer is <a href="/examples/exp6/robot_inventor/Install_MBC_exp6_Lib.py" download>Install_MBC_exp6_Lib.py</a>; the library it installs is called <code id="libfile">MBC_exp6_SPIKE_App_Lib</code>.</li>
-            <li><b>Connect the hub to the computer with a USB cable</b>, turn it on and connect it in the Robot Inventor App (use USB for the install).</li>
+            <li>Turn the hub on and connect it in the Robot Inventor App: <b>USB cable or Bluetooth, either works</b> (USB is steadier and recommended).</li>
             <li>Make a new <b>Python</b> project, paste the whole of <code>Install_MBC_exp6_Lib.py</code> and run it. After about 6 seconds the console prints "安裝成功！ (Installed OK)" (after listing all 3 files as OK).</li>
             <li>You only do this once. A <b>hub firmware update</b> wipes the library, so install it again afterwards. To remove it, run <code>Uninstall_MBC_exp6_Lib.py</code> from the download pack.</li>
             <li>Make a new <b>Python</b> project and type the three lines below at the very top (marked ① in the program on the right).</li>
           </ol>
-          <p class="small">First time? Step-by-step version: <a href="/en/sensors/exp6/install-robot-inventor.html">Robot Inventor install guide</a>. You only need the USB cable for the install; afterwards Bluetooth is fine.</p>
+          <p class="small">First time? Step-by-step version: <a href="/en/sensors/exp6/install-robot-inventor.html">Robot Inventor install guide</a>. You can install over USB or Bluetooth; USB is recommended.</p>
           <p class="small">Only the import line differs from the LEGO SPIKE App (Education): there it is <code>from MBC_exp6_SPIKE_App_Lib import MBC_EXP6</code>; on Robot Inventor it is <code>from projects.mbc_exp6.MBC_exp6_SPIKE_App_Lib import MBC_EXP6</code>.</p>
           <div class="mini" id="mini1" aria-live="polite"></div>
           <button type="button" class="next" id="next1">Done, next step</button>
@@ -559,7 +559,7 @@ line8.wait_done()</pre>
       <li><b>No heartbeat to write.</b> The library keeps EXP6 alive in the background.</li>
       <li><b>The motors stop by themselves about 10 seconds after the program ends.</b> If a motor must keep running for more than 10 seconds while your program calls nothing, wait with <code>exp6.keep_alive_wait(ms)</code>, for example <code>exp6.keep_alive_wait(15000)</code>.</li>
       <li><b>Always connect the EXP6 battery, and do not mix up the two kinds of port.</b> <code>port.C</code> in <code>MBC_EXP6(port.C)</code> is the <b>hub</b> port; the 1 in <code>exp6.motor_run(1, 50)</code> is the <b>EXP6 expansion port</b>. A turn command moves on right away; wait, or keep reading the angle until it gets there.</li>
-      <li><b>If something goes wrong:</b> <code>ImportError</code> means the library is not installed (or a firmware update wiped it), or the import line is the SPIKE App one; "讀不到擴充板資料" means the hub port in <code>MBC_EXP6(port.X)</code> is wrong or EXP6 has no power; the hub switching off during install means Bluetooth, so use USB; <code>MemoryError</code> means the program is too big: split it and restart the hub. All core functions use about 26 KB and the MBC sensors up to another 19 KB, leaving about 37 KB of the App's ~98 KB for your program.</li>
+      <li><b>If something goes wrong:</b> <code>ImportError</code> means the library is not installed (or a firmware update wiped it), or the import line is the SPIKE App one; "讀不到擴充板資料" means the hub port in <code>MBC_EXP6(port.X)</code> is wrong or EXP6 has no power; if the hub switches off during install, connect by USB and install again; <code>MemoryError</code> means the program is too big: split it and restart the hub. All core functions use about 26 KB and the MBC sensors up to another 19 KB, leaving about 37 KB of the App's ~98 KB for your program.</li>
     </ol>
   </section>
 </div>
@@ -1365,7 +1365,7 @@ line8.wait_done()</pre>
   // ===== Robot Inventor（玩具版）覆寫（products/exp6/build_robotinventor.js 插入；行為照 官方APP\玩具版\MBC_exp6_SPIKE_App_Lib.py）=====
   var RI_TXT = {"keep_alive_wait":{"what":"Waits that many milliseconds and keeps telling EXP6 \"the program is still running\" meanwhile, so the motors do not stop by themselves. On Robot Inventor the motors stop about 10 seconds after the program ends, or when your program calls nothing for 10 seconds; to keep a motor turning longer than that, wait with this.","body":["{n}.motor_run(1, 30)","{n}.keep_alive_wait(1000)    # wait 1 s (can be longer than 10 s; the motor keeps turning)","print(\"Angle:\", {n}.get_motor_angle(1))"]},"keep_alive":{"what":"Sends one heartbeat to EXP6 right away. The library already sends it in the background, so you normally do not need this; it is kept so programs written the Pybricks way run unchanged."}};
   Object.keys(RI_TXT).forEach(function (k) { for (var p in RI_TXT[k]) BY[k][p] = RI_TXT[k][p]; });
-  var RI_L = {"tip1":"Step 1: the three lines at the very top: port (which hub port), time (waiting) and the MBC EXP6 library from /projects/mbc_exp6/. Install the library on the hub once with Install_MBC_exp6_Lib.py first (use USB).","once":"This example sits outside the loop and runs once. A motor still running when the program ends stops by itself within about 10 seconds; end with stop_all(1) to stop at once."}; for (var k in RI_L) AL[k] = RI_L[k];
+  var RI_L = {"tip1":"Step 1: the three lines at the very top: port (which hub port), time (waiting) and the MBC EXP6 library from /projects/mbc_exp6/. Install the library on the hub once with Install_MBC_exp6_Lib.py first (USB or Bluetooth).","once":"This example sits outside the loop and runs once. A motor still running when the program ends stops by itself within about 10 seconds; end with stop_all(1) to stop at once."}; for (var k in RI_L) AL[k] = RI_L[k];
   AL.sq = AL.sq.map(function (l) { return l.replace("(the official App needs this)", "(they would also stop within about 10 s)"); });
   function endMode() { return 'watchdog'; }   // 玩具版：程式結束約 10 秒後馬達停（上面把 500 毫秒改成 10000）
   // ===== Robot Inventor 版結束 =====

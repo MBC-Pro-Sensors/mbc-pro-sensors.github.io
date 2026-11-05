@@ -43,7 +43,7 @@
         "examples/10_Multitask_KeepAlive.py",
         "examples/11_MBC_Sensors.py"
       ],
-      "size": 2199342
+      "size": 2199411
     },
     {
       "out": "/downloads/MBC_EXP6_Official_App_Lib.zip",
@@ -70,7 +70,7 @@
         "examples/09_MBC_Sensors.py",
         "examples/10_MBC_Commands.py"
       ],
-      "size": 2150295
+      "size": 2150409
     },
     {
       "out": "/downloads/MBC_EXP6_Robot_Inventor_Lib.zip",
@@ -97,7 +97,7 @@
         "examples/09_MBC_Sensors.py",
         "examples/10_MBC_Commands.py"
       ],
-      "size": 2157228
+      "size": 2157335
     },
     {
       "out": "/downloads/MBC_Servo6_Pybricks_Lib.zip",

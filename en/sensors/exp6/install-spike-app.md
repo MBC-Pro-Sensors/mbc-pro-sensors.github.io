@@ -21,7 +21,7 @@ For teachers, students and first-time users: follow these steps in order to cont
 4. Press Run (▶) and open the console at the bottom of the App. When it says "**安裝成功！(Installation Successful!)**", you are done. You can delete this install project; the library stays on the hub.
 
 > [!TIP]
-> Prefer not to copy and paste? Download [install_exp6_lib.llsp3](/examples/exp6/spike_beginner/official/install_exp6_lib.llsp3), open it in the SPIKE App with File → Open and press ▶ once. It contains the same program as `Install_MBC_exp6_Lib.py`.
+> Prefer not to copy and paste? Download [install_exp6_lib.llsp3](/examples/exp6/spike_beginner/official/install_exp6_lib.llsp3) and **double-click** it on your computer: it opens straight in the SPIKE App (or use File → Open in the App). Press ▶ once. It contains the same program as `Install_MBC_exp6_Lib.py`.
 
 ## Start programming
 
@@ -40,6 +40,9 @@ exp.stop_all(1)                 # stop all motors at the end (on Education they 
 ```
 
 3. Press Run. You can also open the 10 examples in the `examples` folder of the download pack (EXP6 in port F).
+
+> [!NOTE]
+> The App's editor puts a **red underline** under `MBC_exp6_SPIKE_App_Lib`. Ignore it: the App's syntax check does not know about libraries installed on the hub, and the program still runs.
 
 👉 Try each function in your browser first: [LEGO SPIKE App interactive tutorial](/en/learn/exp6/spike-app.html); everything is explained in the [official App guide](/en/sensors/exp6/spike/official.md).
 

@@ -69,7 +69,7 @@ The EXP6 also works with the **LEGO MINDSTORMS Robot Inventor (51515) hub**, usi
 **Install the library (once)**　👉 Step-by-step version: [Robot Inventor install guide](/en/sensors/exp6/install-robot-inventor.md)
 
 1. Download [📥 Robot Inventor library + examples (.zip)](/downloads/MBC_EXP6_Robot_Inventor_Lib.zip) (installer, uninstaller, 10 examples, library source). The EXP6 needs firmware dated 2026-11-03 or later.
-2. **Connect the hub to the computer with a USB cable**, turn it on and connect it in the Robot Inventor App (use USB for the install).
+2. Turn the hub on and connect it in the Robot Inventor App: **USB cable or Bluetooth, either works** (USB is steadier and recommended).
 3. Make a new Python project, paste the whole of `Install_MBC_exp6_Lib.py` and run it. After about 6 seconds the console prints `安裝成功！ (Installed OK)` (after listing all 3 files as OK).
 4. The library lives in `/projects/mbc_exp6/` on the hub and survives power-off; **install it again after a hub firmware update**. To remove it, run `Uninstall_MBC_exp6_Lib.py`.
 
@@ -118,7 +118,7 @@ MBC sensors work the same way: `line8 = exp.line8(2)` (Line Follower 8-ch in EXP
 | "讀不到擴充板資料" (cannot read the expander) | Wrong hub port, or EXP6 has no power | Check `MBC_EXP6(port.X)` against the real port, and the EXP6 battery |
 | The App's device screen cannot see EXP6 | EXP6 is in Robot Inventor mode | Take the EXP6 battery out and put it back |
 | The motors stop after a while | Nothing called the library for 10 seconds | Wait with `exp.keep_alive_wait(ms)` |
-| The hub switches off during install | The installer was sent over Bluetooth | Install again over USB |
+| The hub switches off during install | The transfer was interrupted | Install again over USB |
 | `MemoryError` | The program is too big and uses many kinds of MBC sensor (core about 26 KB, MBC sensors up to another 19 KB; the App has about 98 KB, leaving about 37 KB) | Split the program and restart the hub |
 | Garbage readings from an MBC sensor (e.g. the gamepad shows many buttons pressed) | The declared sensor is not the one plugged in | Declare the sensor that is really there |
 

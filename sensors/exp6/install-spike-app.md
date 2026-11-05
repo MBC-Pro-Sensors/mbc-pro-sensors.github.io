@@ -21,7 +21,7 @@
 4. 按「執行」（▶），打開 App 下方的主控台（Console），出現「**安裝成功！(Installation Successful!)**」就完成了。這個安裝專案可以刪掉，函式庫已經存在主機裡。
 
 > [!TIP]
-> 不想複製貼上：也可以下載 [install_exp6_lib.llsp3](/examples/exp6/spike_beginner/official/install_exp6_lib.llsp3)，在 SPIKE App 用「檔案」→「開啟」打開它、按 ▶ 執行一次，裡面的程式跟 `Install_MBC_exp6_Lib.py` 一樣。
+> 不想複製貼上：也可以下載 [install_exp6_lib.llsp3](/examples/exp6/spike_beginner/official/install_exp6_lib.llsp3)，在電腦上**雙擊**它就會直接開進 SPIKE App（或在 App 用「檔案」→「開啟」），按 ▶ 執行一次就好，裡面的程式跟 `Install_MBC_exp6_Lib.py` 一樣。
 
 ## 開始寫程式
 
@@ -40,6 +40,9 @@ exp.stop_all(1)                 # 最後讓全部馬達停下（教育版程式�
 ```
 
 3. 按執行。也可以打開下載包裡 `examples` 資料夾的 10 支範例來試（EXP6 插 F 孔）。
+
+> [!NOTE]
+> App 編輯區裡 `MBC_exp6_SPIKE_App_Lib` 底下會出現**紅色底線**，不用理會：那是 App 的語法檢查不認得裝在主機裡的函式庫，照樣可以執行。
 
 👉 想先在網頁上點點看每個功能怎麼寫：[官方 SPIKE App 互動教學](/learn/exp6/spike-app.html)；全部說明在 [官方 App 說明頁](/sensors/exp6/spike/official.md)。
 

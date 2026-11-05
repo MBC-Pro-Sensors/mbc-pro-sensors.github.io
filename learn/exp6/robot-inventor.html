@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="在 LEGO MINDSTORMS Robot Inventor（51515）App 用 Python 控制 EXP6 六路馬達擴充器：用 USB 線把函式庫裝進主機一次，再建立物件、選功能，右邊的程式跟著長出來；33 個功能都有範例，也能接 MBC 感應器、對感應器下命令。">
+<meta name="description" content="在 LEGO MINDSTORMS Robot Inventor（51515）App 用 Python 控制 EXP6 六路馬達擴充器：把函式庫裝進主機一次（USB 線或藍牙），再建立物件、選功能，右邊的程式跟著長出來；33 個功能都有範例，也能接 MBC 感應器、對感應器下命令。">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/exp6/robot-inventor.html">
 <link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/exp6/robot-inventor.html">
@@ -252,12 +252,12 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
           <p class="why">Robot Inventor App 不能像 Pybricks 那樣匯入檔案，所以要先把 EXP6 的函式庫<b>裝進主機一次</b>（裝在主機的 <code>/projects/mbc_exp6/</code>，關機不會不見），之後每個 Python 專案最上面寫三行匯入就能用。沒有匯入，後面寫的 <code>MBC_EXP6</code> 主機看不懂，會出現 <code>ImportError</code> 或 <code>NameError</code>。</p>
           <ol class="howto">
             <li>下載 <a href="/downloads/MBC_EXP6_Robot_Inventor_Lib.zip" download>MBC_EXP6_Robot_Inventor_Lib.zip</a>（安裝程式、移除程式、10 支範例）。安裝程式是裡面的 <a href="/examples/exp6/robot_inventor/Install_MBC_exp6_Lib.py" download>Install_MBC_exp6_Lib.py</a>，裝進主機的函式庫叫 <code id="libfile">MBC_exp6_SPIKE_App_Lib</code>。</li>
-            <li>主機<b>用 USB 線接電腦</b>、開機，在 Robot Inventor App 連上主機（安裝時請用 USB 線連接）。</li>
+            <li>主機開機，在 Robot Inventor App 連上主機：<b>USB 線或藍牙都可以</b>（建議 USB 線，比較穩）。</li>
             <li>新開一個 <b>Python</b> 專案，把 <code>Install_MBC_exp6_Lib.py</code> 整份貼上，按執行。約 6 秒後主控台印出「安裝成功！ (Installed OK)」（前面會列出 3 個檔都 OK）就裝好了。</li>
             <li>只要裝一次；主機<b>更新韌體</b>之後函式庫會被清掉，要再裝一次。不要了就執行下載包裡的 <code>Uninstall_MBC_exp6_Lib.py</code>（印出「移除完成！」）。</li>
             <li>新增一個 <b>Python</b> 專案，在最上面寫下面這三行（右邊程式標 ① 的地方）。</li>
           </ol>
-          <p class="small">第一次裝？一步一步的版本：<a href="/sensors/exp6/install-robot-inventor.html">玩具版安裝教學</a>。只有安裝這一次要接 USB 線，裝好之後平常用藍牙就可以。</p>
+          <p class="small">第一次裝？一步一步的版本：<a href="/sensors/exp6/install-robot-inventor.html">玩具版安裝教學</a>。安裝用 USB 線或藍牙都可以，建議 USB 線。</p>
           <p class="small">跟官方 SPIKE App（教育版）只差匯入那一行：教育版寫 <code>from MBC_exp6_SPIKE_App_Lib import MBC_EXP6</code>，Robot Inventor 寫 <code>from projects.mbc_exp6.MBC_exp6_SPIKE_App_Lib import MBC_EXP6</code>。</p>
           <div class="mini" id="mini1" aria-live="polite"></div>
           <button type="button" class="next" id="next1">寫好了，下一步</button>
@@ -559,7 +559,7 @@ line8.wait_done()</pre>
       <li><b>不用寫心跳。</b>函式庫在背景自動處理。</li>
       <li><b>程式結束後約 10 秒，馬達會自己停。</b>要讓馬達轉超過 10 秒、中間又不呼叫任何函式，用 <code>exp6.keep_alive_wait(毫秒)</code> 等，例如 <code>exp6.keep_alive_wait(15000)</code>。</li>
       <li><b>一定要接 EXP6 的電池，兩種孔不要搞混。</b><code>MBC_EXP6(port.C)</code> 的 <code>port.C</code> 是<b>主機</b>的孔；<code>exp6.motor_run(1, 50)</code> 的 1 是 <b>EXP6 上的擴充孔</b>。轉角度送出就往下做，不會等轉完，後面要等一下或一直讀角度。</li>
-      <li><b>出問題時：</b><code>ImportError</code> → 還沒安裝（或更新韌體被清掉），或匯入那行寫成教育版的；印出「讀不到擴充板資料」→ <code>MBC_EXP6(port.X)</code> 的孔寫錯或 EXP6 沒電；安裝時主機自己關機 → 用了藍牙，改 USB 線再裝；<code>MemoryError</code> → 程式太大，拆小、重開主機（核心約 26 KB，MBC 感應器最多再 19 KB，App 可用約 98 KB，剩約 37 KB 給你的程式）。</li>
+      <li><b>出問題時：</b><code>ImportError</code> → 還沒安裝（或更新韌體被清掉），或匯入那行寫成教育版的；印出「讀不到擴充板資料」→ <code>MBC_EXP6(port.X)</code> 的孔寫錯或 EXP6 沒電；安裝時主機自己關機 → 改用 USB 線再裝；<code>MemoryError</code> → 程式太大，拆小、重開主機（核心約 26 KB，MBC 感應器最多再 19 KB，App 可用約 98 KB，剩約 37 KB 給你的程式）。</li>
     </ol>
   </section>
 </div>
@@ -1365,7 +1365,7 @@ line8.wait_done()</pre>
   // ===== Robot Inventor（玩具版）覆寫（products/exp6/build_robotinventor.js 插入；行為照 官方APP\玩具版\MBC_exp6_SPIKE_App_Lib.py）=====
   var RI_TXT = {"keep_alive_wait":{"what":"等指定的毫秒，等的時候會一直告訴 EXP6「程式還在跑」，馬達不會自己停。Robot Inventor 版程式結束後、或超過 10 秒沒有呼叫函式庫，馬達會自己停；要讓馬達轉更久，就用它等。","body":["{n}.motor_run(1, 30)","{n}.keep_alive_wait(1000)    # 等 1 秒（等超過 10 秒也可以，馬達不會自己停）","print(\"角度:\", {n}.get_motor_angle(1))"]},"keep_alive":{"what":"馬上送一次心跳給 EXP6。函式庫在背景已經會自動送，一般不用寫；保留它是為了讓照 Pybricks 寫的程式不用改就能跑。"}};
   Object.keys(RI_TXT).forEach(function (k) { for (var p in RI_TXT[k]) BY[k][p] = RI_TXT[k][p]; });
-  var RI_L = {"tip1":"第 1 步：最上面三行：port（主機的孔）、time（等待）和裝在 /projects/mbc_exp6/ 的 MBC EXP6 函式庫。函式庫要先用 Install_MBC_exp6_Lib.py 裝進主機一次（用 USB 線）。","once":"這個範例放在迴圈外面，只做一次。程式結束時馬達還在轉的話，約 10 秒內會自己停；要馬上停就在最後寫 stop_all(1)。"}; for (var k in RI_L) AL[k] = RI_L[k];
+  var RI_L = {"tip1":"第 1 步：最上面三行：port（主機的孔）、time（等待）和裝在 /projects/mbc_exp6/ 的 MBC EXP6 函式庫。函式庫要先用 Install_MBC_exp6_Lib.py 裝進主機一次（USB 線或藍牙）。","once":"這個範例放在迴圈外面，只做一次。程式結束時馬達還在轉的話，約 10 秒內會自己停；要馬上停就在最後寫 stop_all(1)。"}; for (var k in RI_L) AL[k] = RI_L[k];
   AL.sq = AL.sq.map(function (l) { return l.replace("（官方 App 一定要寫）", "（不寫也會在約 10 秒內自己停）"); });
   function endMode() { return 'watchdog'; }   // 玩具版：程式結束約 10 秒後馬達停（上面把 500 毫秒改成 10000）
   // ===== Robot Inventor 版結束 =====
