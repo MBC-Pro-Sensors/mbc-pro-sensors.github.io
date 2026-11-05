@@ -471,7 +471,7 @@ WRO 版的 mVision 資料**維持原本的 HUE12 打包**（12 色點顏色碼�
 3. **接裝置**：樂高感應器（顏色、超音波、力量）與馬達，任意接在擴充器的 **1～6 號**孔。
 
 > [!WARNING]
-> EXP6 **只支援 SPIKE Prime**（不支援 Robot Inventor 與 EV3）。**換另一種寫法之前，先讓 EXP6 斷電一次**（關主機或拔掉 Host 線）：EXP6 一旦跑過 Pybricks 程式，就會一直用 Pybricks 的方式溝通，直到重新開機，這時候官方 App 會連不上。
+> EXP6 支援 **SPIKE Prime**，也支援 **Robot Inventor（51515）的 Robot Inventor App Python**；不支援 EV3。**換另一種寫法之前，先讓 EXP6 斷電一次**（關主機或拔掉 Host 線）：EXP6 一旦跑過 Pybricks 程式，就會一直用 Pybricks 的方式溝通，直到重新開機，這時候官方 App 會連不上。
 
 @@@ exp6-official
 ### 安裝 EXP6 函式庫（只要做一次）
@@ -580,7 +580,7 @@ EXP6 跟 Arduino 用 **UART 序列埠**（TX／RX 兩條線）溝通，**不用�
 3. 樂高感應器與馬達接在擴充器的 1～6 號孔。
 
 > [!WARNING]
-> EXP6 **只支援 SPIKE Prime**。**換另一種寫法之前，先讓 EXP6 斷電一次**（關主機或拔掉 Host 線）：EXP6 一旦跑過 Pybricks 程式，就會一直用 Pybricks 的方式溝通，直到重新開機。
+> 這個寫法的 EXP6 只支援 **SPIKE Prime** 主機（Robot Inventor（51515）主機請用 [Robot Inventor App 的 Python](/learn/exp6/robot-inventor.html)；不支援 EV3）。**換另一種寫法之前，先讓 EXP6 斷電一次**（關主機或拔掉 Host 線）：EXP6 一旦跑過 Pybricks 程式，就會一直用 Pybricks 的方式溝通，直到重新開機。
 
 @@@ servo6-common
 > [!NOTE]

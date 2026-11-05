@@ -26,7 +26,7 @@
 
 ### SPIKE 6 路擴充器（EXP6）可以用 SPIKE 積木嗎？
 
-不行。EXP6 **只支援 SPIKE™ Prime**（不支援 Robot Inventor 與 EV3）。在官方 SPIKE App 裡必須使用 **Python 文字模式**；Pybricks 完整支援。詳見 [EXP6 產品頁](/sensors/exp6/index.md)。
+不行。官方 App 裡必須使用 **Python 文字模式**。EXP6 支援 **SPIKE™ Prime**，Robot Inventor（51515）可以用 Robot Inventor App 的 Python；不支援 EV3。Pybricks 完整支援。詳見 [EXP6 產品頁](/sensors/exp6/index.md)。
 
 ## 比賽規則
 

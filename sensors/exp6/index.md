@@ -12,7 +12,7 @@
 >
 > | 項目 | 說明 |
 > | :--- | :--- |
-> | **相容主機** | SPIKE Prime 限定（不支援 Robot Inventor 與 EV3） |
+> | **相容主機** | SPIKE Prime；Robot Inventor（51515）只能用 Robot Inventor App 的 Python（👉 [說明](/sensors/exp6/spike/official.md)、[互動教學](/learn/exp6/robot-inventor.html)）；不支援 EV3 |
 > | **SPIKE 官方軟體** | 僅支援 Python 文字模式，不支援圖控積木模式（👉 [SPIKE 新手範例：官方 App／MBC 積木網站／Pybricks 各 5 個](/sensors/exp6/spike-examples.md)） |
 
 ---

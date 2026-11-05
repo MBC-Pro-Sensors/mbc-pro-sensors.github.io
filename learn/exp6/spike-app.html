@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="寫 Pybricks 程式一定照這個順序：先匯入函式庫，再建立物件、幫 EXP6 取名字，最後才用這個名字去呼叫功能（轉馬達、讀感應器）。左邊一步一步做，右邊的程式會跟著長出來；在模擬 EXP6 上選每個擴充孔接什麼，就能看到馬達怎麼轉、程式會印出什麼。">
+<meta name="description" content="在樂高官方 SPIKE App 用 Python 控制 EXP6 六路馬達擴充器：先把函式庫裝進主機，再建立物件、選功能，右邊的程式跟著長出來；33 個功能都有範例，也能接 MBC 感應器。">
 <link rel="icon" href="/favicon.ico">
-<link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/exp6/micropython.html">
-<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/exp6/micropython.html">
-<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/exp6/micropython.html">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/exp6/spike-app.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/exp6/spike-app.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/exp6/spike-app.html">
 <title>EXP6 六路馬達擴充器 樂高官方 SPIKE App 教學 | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -232,7 +232,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/learn/">全部互動教學</a><a class="back" href="/sensors/exp6/spike/">← EXP6 SPIKE 說明</a><a class="lang" href="/en/learn/exp6/spike-app.html" hreflang="en">EN</a><div class="tabs"><span class="tl">主機</span><a href="/learn/exp6/micropython.html" aria-current="page">SPIKE</a><a href="/learn/exp6/arduino.html">Arduino</a><span class="tsep"></span><a href="/learn/exp6/micropython.html">MicroPython（Pybricks）</a><a href="/learn/exp6/pybricks-blocks.html">Pybricks 積木</a><a href="/learn/exp6/mbc-blocks.html">MBC 積木網站</a><a href="/learn/exp6/spike-app.html" aria-current="page">樂高官方 SPIKE App</a></div></div></nav>
+<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/learn/">全部互動教學</a><a class="back" href="/sensors/exp6/spike/">← EXP6 SPIKE 說明</a><a class="lang" href="/en/learn/exp6/spike-app.html" hreflang="en">EN</a><div class="tabs"><span class="tl">主機</span><a href="/learn/exp6/micropython.html" aria-current="page">SPIKE</a><a href="/learn/exp6/arduino.html">Arduino</a><span class="tsep"></span><a href="/learn/exp6/micropython.html">MicroPython（Pybricks）</a><a href="/learn/exp6/pybricks-blocks.html">Pybricks 積木</a><a href="/learn/exp6/mbc-blocks.html">MBC 積木網站</a><a href="/learn/exp6/spike-app.html" aria-current="page">樂高官方 SPIKE App</a><a href="/learn/exp6/robot-inventor.html">Robot Inventor App</a></div></div></nav>
 <div class="wrap">
   <header class="top">
     <span class="eyebrow">MBC EXP6 六路馬達擴充器 × 樂高官方 SPIKE App</span>
@@ -256,6 +256,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
             <li>只要裝一次；主機<b>重新安裝或更新韌體</b>之後函式庫會被清掉，要再執行一次。不要了就執行下載包裡的 <code>Uninstall_MBC_exp6_Lib.py</code>。</li>
             <li>新增一個 <b>Python</b> 專案，在最上面寫下面這三行（右邊程式標 ① 的地方）。</li>
           </ol>
+          <p class="small">第一次裝？一步一步的版本（也可以複製貼上 <code>Install_MBC_exp6_Lib.py</code> 來裝）：<a href="/sensors/exp6/install-spike-app.html">教育版安裝教學</a>。</p>
           <div class="mini" id="mini1" aria-live="polite"></div>
           <button type="button" class="next" id="next1">寫好了，下一步</button>
         </div>
@@ -423,6 +424,28 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     </aside>
   </div>
 
+  <div class="pdbox" id="mbc-cmd">
+    <h3>對 MBC 感應器下命令：cmd()、wait_done()、cmd_state()</h3>
+    <div class="panel">
+      <div class="panel-head"><span>循行者 8 路：改二值化門檻（E4）</span></div>
+      <p style="padding:10px 14px;margin:0">除了讀值，也可以透過 EXP6 對 MBC 感應器下命令，命令碼和參數跟感應器直接插主機時一樣（循行者 8 路見<a href="/sensors/line8/reference.html">指令參考</a>）。<code>cmd(命令碼, 參數…)</code>：命令碼 0xE0～0xEE、參數最多 5 個（-9999～9999），回傳序號；同一個命令、同樣參數預設不重送，要重做加 <code>again=True</code>。<code>wait_done()</code>：等做完，True 完成，False 是失敗、拒絕或逾時（預設等 10 秒）；<code>cmd_state()</code>：0 完成、1 執行中、2 失敗（參數不對）、3 拒絕（這款沒有這個命令）；<code>busy()</code>：還沒做完是 True。每個命令從送出到收到結果約 0.1～0.2 秒。</p><pre class="code" style="padding:12px 14px;white-space:pre">from hub import port
+import time
+from MBC_exp6_SPIKE_App_Lib import MBC_EXP6
+
+exp6 = MBC_EXP6(port.C)
+line8 = exp6.line8(5)          # 循行者 8 路插在 EXP6 的 5 號孔
+
+seq = line8.cmd(0xE4, 60)      # 二值化門檻改成 60（1～99，重開機回到 50）
+if line8.wait_done():          # 等感應器做完：True 完成
+    print("門檻改好了，序號", seq)
+else:
+    print("沒成功，狀態", line8.cmd_state())   # 2 失敗、3 拒絕
+print("黑白:", line8.bin_raw())
+line8.cmd(0xE4, 50)            # 改回預設 50
+line8.wait_done()</pre>
+      <p class="bubble"><i>!</i><span>黑白校準 E2／E3、5 秒校準 E7 會寫進感應器，練習時不要亂送；E4、E9 重開機就回到預設。目前只有 8 路循行者實測過下命令。改失敗、拒絕的例子在<a href="/downloads/MBC_EXP6_Official_App_Lib.zip" download>下載包</a>裡的範例 10（<code>examples/10_MBC_Commands.py</code>）。</span></p>
+    </div>
+  </div>
 </section>
 <script>
 (function () {

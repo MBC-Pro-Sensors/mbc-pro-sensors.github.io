@@ -9,7 +9,7 @@
 > [!IMPORTANT]
 > **⚠️ Important Notice on Purchase and Compatibility**
 > This expander is designed **EXCLUSIVELY for the SPIKE series**, featuring the LPF2 (Lego 6-pin) interface.
-> It is ONLY compatible with the SPIKE Prime hub. **It DOES NOT support Robot Inventor or EV3 hubs!**
+> It works with the **SPIKE Prime** hub, and with the **Robot Inventor (51515)** hub through Python in the Robot Inventor App only ([guide](/en/sensors/exp6/spike/official.md), [interactive tutorial](/en/learn/exp6/robot-inventor.html)). **It DOES NOT support EV3 hubs!**
 
 ---
 

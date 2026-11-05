@@ -43,7 +43,7 @@
         "examples/10_Multitask_KeepAlive.py",
         "examples/11_MBC_Sensors.py"
       ],
-      "size": 1946272
+      "size": 2199342
     },
     {
       "out": "/downloads/MBC_EXP6_Official_App_Lib.zip",
@@ -51,7 +51,7 @@
         "zh": "SPIKE 6 路擴充器 EXP6：官方 SPIKE App 函式庫＋範例",
         "en": "EXP6 expander: official SPIKE App library + examples"
       },
-      "version": "2026-11-04",
+      "version": "2026-11-05",
       "firmware": "EXP6 2026-11-03+",
       "legacy": false,
       "files": [
@@ -67,9 +67,37 @@
         "examples/06_System_Misc.py",
         "examples/07_Motor_Inverted.py",
         "examples/08_Stop_Modes.py",
-        "examples/09_MBC_Sensors.py"
+        "examples/09_MBC_Sensors.py",
+        "examples/10_MBC_Commands.py"
       ],
-      "size": 1900354
+      "size": 2150295
+    },
+    {
+      "out": "/downloads/MBC_EXP6_Robot_Inventor_Lib.zip",
+      "label": {
+        "zh": "SPIKE 6 路擴充器 EXP6：Robot Inventor（51515）App 函式庫＋範例",
+        "en": "EXP6 expander: Robot Inventor (51515) App library + examples"
+      },
+      "version": "2026-11-05",
+      "firmware": "EXP6 2026-11-03+",
+      "legacy": false,
+      "files": [
+        "EXP6_Library_Manual.pdf",
+        "Install_MBC_exp6_Lib.py",
+        "MBC_exp6_SPIKE_App_Lib.py",
+        "Uninstall_MBC_exp6_Lib.py",
+        "examples/01_Motor_Basic.py",
+        "examples/02_Motor_Advanced.py",
+        "examples/03_Drive_Base.py",
+        "examples/04_Sensor_Distance_Force.py",
+        "examples/05_Sensor_Color_Pro.py",
+        "examples/06_System_Misc.py",
+        "examples/07_Motor_Inverted.py",
+        "examples/08_Stop_Modes.py",
+        "examples/09_MBC_Sensors.py",
+        "examples/10_MBC_Commands.py"
+      ],
+      "size": 2157228
     },
     {
       "out": "/downloads/MBC_Servo6_Pybricks_Lib.zip",

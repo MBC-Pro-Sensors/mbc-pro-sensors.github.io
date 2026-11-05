@@ -339,7 +339,7 @@
       "spike": ["official", "mbcblocks", "pybricks"],
       "arduino": ["ide"],
       "edition": {
-        "spike": { "zh": "EXP6 的「Host 通訊線」插 SPIKE Prime 主機任一孔（只支援 SPIKE Prime，不支援 Robot Inventor 與 EV3），另外要接獨立電源給馬達。", "en": "Plug the EXP6 host cable into any SPIKE Prime port (SPIKE Prime only, not Robot Inventor or EV3) and connect a separate power supply for the motors." },
+        "spike": { "zh": "EXP6 的「Host 通訊線」插 SPIKE Prime 主機任一孔（SPIKE Prime；Robot Inventor（51515）主機只能用 Robot Inventor App 的 Python；不支援 EV3），另外要接獨立電源給馬達。", "en": "Plug the EXP6 host cable into any SPIKE Prime port (SPIKE Prime; on a Robot Inventor (51515) hub, Python in the Robot Inventor App only; not EV3) and connect a separate power supply for the motors." },
         "arduino": { "zh": "EXP6 **不能用 I2C** 接 Arduino（主機接頭的隔離晶片只能單向傳送）；改用 **序列埠（UART）**，建議 Arduino UNO R4、Mega 或 ESP32。", "en": "The EXP6 **cannot use I2C** with Arduino (the host-port isolator is one-way); use **serial (UART)** instead, ideally with an Arduino UNO R4, Mega or ESP32." }
       },
       "noWiringFigure": true

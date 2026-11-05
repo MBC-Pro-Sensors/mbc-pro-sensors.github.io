@@ -471,7 +471,7 @@ The WRO edition's mVision data **keeps the original HUE12 packing** (12 colour-s
 3. **Devices**: plug LEGO sensors (colour, ultrasonic, force) and motors into any of the expander's ports **1~6**.
 
 > [!WARNING]
-> The EXP6 **supports SPIKE Prime only** (not Robot Inventor or EV3). **Before switching to another programming method, power the EXP6 off once** (turn off the hub or unplug the Host cable): once it has run a Pybricks program it keeps talking the Pybricks way until it restarts, and the official App cannot connect.
+> The EXP6 supports **SPIKE Prime**, and **Python in the Robot Inventor App on the Robot Inventor (51515) hub**; not EV3. **Before switching to another programming method, power the EXP6 off once** (turn off the hub or unplug the Host cable): once it has run a Pybricks program it keeps talking the Pybricks way until it restarts, and the official App cannot connect.
 
 @@@ exp6-official
 ### Install the EXP6 library (only once)
@@ -580,7 +580,7 @@ Connect the EXP6 **Host port** to the Arduino with a "LEGO 6-pin to Dupont" cabl
 3. Plug LEGO sensors and motors into the expander's ports 1~6.
 
 > [!WARNING]
-> The EXP6 **supports SPIKE Prime only**. **Before switching to another programming method, power the EXP6 off once** (turn off the hub or unplug the Host cable): once it has run a Pybricks program it keeps talking the Pybricks way until it restarts.
+> With this software the EXP6 works with the **SPIKE Prime** hub only (on a Robot Inventor (51515) hub use [Python in the Robot Inventor App](/en/learn/exp6/robot-inventor.html); not EV3). **Before switching to another programming method, power the EXP6 off once** (turn off the hub or unplug the Host cable): once it has run a Pybricks program it keeps talking the Pybricks way until it restarts.
 
 @@@ servo6-common
 > [!NOTE]

@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="A Pybricks program always goes in this order: first import the library, then create an object and give EXP6 a name, and only then use that name to call function">
+<meta name="description" content="Control the SPIKE 6-Way Expander (EXP6) with Python in the LEGO SPIKE App: install the library on the hub, create the object, pick a function and watch the program build up; all 33 functions have examples, MBC sensors included.">
 <link rel="icon" href="/favicon.ico">
-<link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/exp6/micropython.html">
-<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/exp6/micropython.html">
-<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/exp6/micropython.html">
+<link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/exp6/spike-app.html">
+<link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/exp6/spike-app.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/exp6/spike-app.html">
 <title>SPIKE 6-Way Expander (EXP6) LEGO SPIKE App Tutorial | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -232,7 +232,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/exp6/spike/">← EXP6 SPIKE guide</a><a class="lang" href="/learn/exp6/spike-app.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/exp6/micropython.html" aria-current="page">SPIKE</a><a href="/en/learn/exp6/arduino.html">Arduino</a><span class="tsep"></span><a href="/en/learn/exp6/micropython.html">MicroPython (Pybricks)</a><a href="/en/learn/exp6/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/exp6/mbc-blocks.html">MBC Blocks website</a><a href="/en/learn/exp6/spike-app.html" aria-current="page">LEGO SPIKE App</a></div></div></nav>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/exp6/spike/">← EXP6 SPIKE guide</a><a class="lang" href="/learn/exp6/spike-app.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/exp6/micropython.html" aria-current="page">SPIKE</a><a href="/en/learn/exp6/arduino.html">Arduino</a><span class="tsep"></span><a href="/en/learn/exp6/micropython.html">MicroPython (Pybricks)</a><a href="/en/learn/exp6/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/exp6/mbc-blocks.html">MBC Blocks website</a><a href="/en/learn/exp6/spike-app.html" aria-current="page">LEGO SPIKE App</a><a href="/en/learn/exp6/robot-inventor.html">Robot Inventor App</a></div></div></nav>
 <div class="wrap">
   <header class="top">
     <span class="eyebrow">MBC SPIKE 6-Way Expander (EXP6) × LEGO SPIKE App</span>
@@ -256,6 +256,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
             <li>You only do this once. After you <b>reinstall or update the hub firmware</b> the library is wiped, so run it again. To remove it, run <code>Uninstall_MBC_exp6_Lib.py</code> from the download pack.</li>
             <li>Make a new <b>Python</b> project and type the three lines below at the very top (marked ① in the program on the right).</li>
           </ol>
+          <p class="small">First time? Step-by-step version (you can also copy and paste <code>Install_MBC_exp6_Lib.py</code>): <a href="/en/sensors/exp6/install-spike-app.html">Education install guide</a>.</p>
           <div class="mini" id="mini1" aria-live="polite"></div>
           <button type="button" class="next" id="next1">Done, next step</button>
         </div>
@@ -423,6 +424,28 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     </aside>
   </div>
 
+  <div class="pdbox" id="mbc-cmd">
+    <h3>Send commands to an MBC sensor: cmd(), wait_done(), cmd_state()</h3>
+    <div class="panel">
+      <div class="panel-head"><span>Line Follower 8-ch: change the binarisation threshold (E4)</span></div>
+      <p style="padding:10px 14px;margin:0">Besides reading values, you can send commands to an MBC sensor through EXP6, with the same codes and parameters as when the sensor is on the hub (for the Line Follower 8-ch see the <a href="/en/sensors/line8/reference.html">command reference</a>). <code>cmd(code, params…)</code>: code 0xE0 to 0xEE, up to 5 parameters (-9999 to 9999), returns a number for the command; the same command with the same parameters is not sent again unless you add <code>again=True</code>. <code>wait_done()</code>: waits for the result, True = done, False = failed, rejected or timed out (10 seconds by default); <code>cmd_state()</code>: 0 done, 1 busy, 2 failed (bad parameter), 3 rejected (this sensor has no such command); <code>busy()</code>: True while it is not finished. Each command takes about 0.1 to 0.2 seconds to come back.</p><pre class="code" style="padding:12px 14px;white-space:pre">from hub import port
+import time
+from MBC_exp6_SPIKE_App_Lib import MBC_EXP6
+
+exp6 = MBC_EXP6(port.C)
+line8 = exp6.line8(5)          # Line Follower 8-ch in EXP6 port 5
+
+seq = line8.cmd(0xE4, 60)      # binarisation threshold to 60 (1 to 99; back to 50 on power-up)
+if line8.wait_done():          # wait for the sensor: True = done
+    print("Threshold changed, number", seq)
+else:
+    print("Did not work, state", line8.cmd_state())   # 2 failed, 3 rejected
+print("Black/white:", line8.bin_raw())
+line8.cmd(0xE4, 50)            # back to the default 50
+line8.wait_done()</pre>
+      <p class="bubble"><i>!</i><span>Black/white calibration E2 / E3 and the 5-second calibration E7 are saved in the sensor, so do not send them while practising; E4 and E9 go back to default on power-up. So far only the Line Follower 8-ch has been tested with commands. Failed and rejected commands are shown in the <a href="/downloads/MBC_EXP6_Official_App_Lib.zip" download>download pack</a> example 10 (<code>examples/10_MBC_Commands.py</code>).</span></p>
+    </div>
+  </div>
 </section>
 <script>
 (function () {

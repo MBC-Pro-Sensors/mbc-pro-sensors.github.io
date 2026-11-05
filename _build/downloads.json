@@ -51,7 +51,7 @@
           "as": "EXP6_Library_Manual.pdf"
         }
       ],
-      "version": "2026-11-04",
+      "version": "2026-11-05",
       "firmware": "EXP6 2026-11-03+",
       "legacy": false,
       "label": {
@@ -62,7 +62,34 @@
         "教育版": "SPIKE_Education",
         "通用範例": "examples"
       },
-      "_note": "玩具版（Robot_Inventor）2026-11-03 起先不放（使用者定案：擴充器測玩具版 Python 通過再放回）；官方APP 根目錄那份 MBC_exp6_SPIKE_App_Lib.py 是 2026-10 的舊檔，不放"
+      "_note": "範例 01～10（10_MBC_Commands 下命令：11-05 教育版上機 8/8 通過後加入）；玩具版另一包 MBC_EXP6_Robot_Inventor_Lib.zip；官方APP 根目錄那份 MBC_exp6_SPIKE_App_Lib.py 是 2026-10 的舊檔，不放"
+    },
+    {
+      "out": "downloads/MBC_EXP6_Robot_Inventor_Lib.zip",
+      "src": "${MBC}/05_馬達舵機擴充/01_SPIKE六路馬達擴充器/02_上位機函式庫與範例/官方APP/玩具版",
+      "include": [
+        "MBC_exp6_SPIKE_App_Lib.py",
+        "Install_MBC_exp6_Lib.py",
+        "Uninstall_MBC_exp6_Lib.py",
+        "範例"
+      ],
+      "version": "2026-11-05",
+      "firmware": "EXP6 2026-11-03+",
+      "legacy": false,
+      "label": {
+        "zh": "SPIKE 6 路擴充器 EXP6：Robot Inventor（51515）App 函式庫＋範例",
+        "en": "EXP6 expander: Robot Inventor (51515) App library + examples"
+      },
+      "rename": {
+        "範例": "examples"
+      },
+      "_note": "2026-11-05 擴充器交接：玩具版上機通過（12/12＋下命令 8/8）；正本由教育版自動產生，網站不要手改",
+      "extra": [
+        {
+          "from": "${MBC}/05_馬達舵機擴充/01_SPIKE六路馬達擴充器/04_協議與說明文件/說明文件_v2/EXP6_上位機函式庫說明.pdf",
+          "as": "EXP6_Library_Manual.pdf"
+        }
+      ]
     },
     {
       "out": "downloads/MBC_Servo6_Pybricks_Lib.zip",

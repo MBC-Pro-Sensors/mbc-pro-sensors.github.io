@@ -1076,7 +1076,7 @@
         "extra": [
           [
             "適用主機",
-            "只支援 SPIKE™ Prime（不支援 Robot Inventor、EV3）"
+            "SPIKE™ Prime；Robot Inventor（51515）只能用 Robot Inventor App 的 Python（不支援 EV3）"
           ]
         ]
       },
@@ -1085,7 +1085,7 @@
         "extra": [
           [
             "Controller",
-            "SPIKE™ Prime only (not Robot Inventor or EV3)"
+            "SPIKE™ Prime; Robot Inventor (51515) with Python in the Robot Inventor App only (not EV3)"
           ]
         ]
       }

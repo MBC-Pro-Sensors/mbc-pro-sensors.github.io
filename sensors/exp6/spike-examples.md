@@ -18,7 +18,7 @@
 > [!IMPORTANT]
 > - **官方 App 沒有 EXP6 的積木**，只能用 Python。範例已經寫好，下載打開就能跑，不用自己打字。
 > - **MBC 積木網站與 Pybricks 要先把主機換成 Pybricks 韌體**（MBC 積木網站上方選單「SPIKE 主機 → 安裝／更新 Pybricks 韌體」就能燒，約 3 分鐘；之後也能用 SPIKE App 換回樂高原廠韌體）。
-> - 官方 App 這裡用的是**教育版（SPIKE 3；函式庫標示適用 3.4.3 版）**。EXP6 只支援 SPIKE Prime 主機。
+> - 官方 App 這裡用的是**教育版（SPIKE 3；函式庫標示適用 3.4.3 版）**。這頁的範例用 SPIKE Prime 主機；Robot Inventor（51515）的 10 支範例在 [官方 App 說明頁最後](/sensors/exp6/spike/official.md)。
 > - **換另一種寫法之前，先讓 EXP6 斷電一次**（關主機或拔掉 Host 線）。EXP6 一旦跑過 Pybricks 程式，就會一直用 Pybricks 的方式溝通，直到重新開機，這時候官方 App 會連不上。
 
 ## 開始之前（3 件事）

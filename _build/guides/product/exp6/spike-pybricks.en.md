@@ -5,7 +5,7 @@
 3. **Devices**: plug LEGO sensors (colour, ultrasonic, force) and motors into any of the expander's ports **1~6**.
 
 > [!WARNING]
-> The EXP6 **supports SPIKE Prime only** (not Robot Inventor or EV3). **Before switching to another programming method, power the EXP6 off once** (turn off the hub or unplug the Host cable): once it has run a Pybricks program it keeps talking the Pybricks way until it restarts, and the official App cannot connect.
+> With this software the EXP6 works with the **SPIKE Prime** hub only (on a Robot Inventor (51515) hub use [Python in the Robot Inventor App](/en/learn/exp6/robot-inventor.html); not EV3). **Before switching to another programming method, power the EXP6 off once** (turn off the hub or unplug the Host cable): once it has run a Pybricks program it keeps talking the Pybricks way until it restarts, and the official App cannot connect.
 
 ### Import the EXP6 library
 

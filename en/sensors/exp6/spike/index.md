@@ -9,7 +9,7 @@ Using the SPIKE 6-Way Expander (EXP6) with SPIKE Prime / Robot Inventor: check t
 
 ## Which edition
 
-Plug the EXP6 host cable into any SPIKE Prime port (SPIKE Prime only, not Robot Inventor or EV3) and connect a separate power supply for the motors.
+Plug the EXP6 host cable into any SPIKE Prime port (SPIKE Prime; on a Robot Inventor (51515) hub, Python in the Robot Inventor App only; not EV3) and connect a separate power supply for the motors.
 
 ## ② Pick your software
 

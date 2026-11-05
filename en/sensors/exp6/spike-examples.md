@@ -21,7 +21,7 @@ This page is written for people who have **never written a program before**. EXP
 > [!IMPORTANT]
 > - **The official App has no EXP6 blocks**, so it is Python only. The examples are already written; download, open and run, no typing needed.
 > - **The MBC Blocks website and Pybricks need the hub flashed with Pybricks firmware first** (on the MBC Blocks website, top menu "SPIKE Hub → Install / update Pybricks firmware" does it, about 3 minutes; you can switch back to the original LEGO firmware later with the SPIKE App).
-> - The official App used here is the **Education version (SPIKE 3; the library is marked for version 3.4.3)**. EXP6 only supports the SPIKE Prime hub.
+> - The official App used here is the **Education version (SPIKE 3; the library is marked for version 3.4.3)**. These examples use the SPIKE Prime hub; the 10 Robot Inventor (51515) examples are at the end of the [official App guide](/en/sensors/exp6/spike/official.md).
 > - **Before switching to a different version, power-cycle EXP6 once** (turn the hub off or unplug the Host cable). Once EXP6 has run a Pybricks program, it keeps talking the Pybricks way until it reboots, and the official App will not be able to connect to it.
 
 ## Before you start (3 things)

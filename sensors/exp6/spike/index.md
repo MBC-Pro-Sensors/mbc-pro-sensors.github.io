@@ -9,7 +9,7 @@ SPIKE 6 路擴充器 (EXP6)用在 SPIKE Prime／Robot Inventor：先確認要買
 
 ## 要買哪個版本
 
-EXP6 的「Host 通訊線」插 SPIKE Prime 主機任一孔（只支援 SPIKE Prime，不支援 Robot Inventor 與 EV3），另外要接獨立電源給馬達。
+EXP6 的「Host 通訊線」插 SPIKE Prime 主機任一孔（SPIKE Prime；Robot Inventor（51515）主機只能用 Robot Inventor App 的 Python；不支援 EV3），另外要接獨立電源給馬達。
 
 ## ② 選你用的軟體
 

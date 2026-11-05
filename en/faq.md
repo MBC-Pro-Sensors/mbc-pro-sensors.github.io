@@ -26,7 +26,7 @@ No. Each product comes in controller-specific editions with different connectors
 
 ### Does the SPIKE 6-Way Expander (EXP6) work with SPIKE word blocks?
 
-No. The EXP6 works with **SPIKE™ Prime only** (not Robot Inventor or EV3). In the official SPIKE app it requires **Python text mode**; it is also fully supported in Pybricks. See the [EXP6 page](/en/sensors/exp6/index.md).
+No. In the official app it requires **Python text mode**. The EXP6 works with **SPIKE™ Prime**, and with Robot Inventor (51515) through Python in the Robot Inventor App; not EV3. it is also fully supported in Pybricks. See the [EXP6 page](/en/sensors/exp6/index.md).
 
 ## Competitions
 
