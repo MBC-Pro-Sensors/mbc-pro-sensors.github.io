@@ -1175,11 +1175,7 @@
         "lib": "/sensors/exp6/spike-pybricks.md"
       },
       "ev3": false,
-      "arduino": {
-        "start": "/sensors/exp6/arduino-examples.md",
-        "ref": "/sensors/exp6/arduino-examples.md",
-        "lib": "/sensors/exp6/arduino-examples.md"
-      },
+      "arduino": false,
       "mblock": false,
       "matrix": false,
       "microbit": false

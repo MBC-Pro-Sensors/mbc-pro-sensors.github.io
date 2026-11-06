@@ -1,8 +1,13 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-<!-- moved: /en/sensors/exp6/arduino/ide.md -->
-<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/exp6/arduino/ide.md">SPIKE 6-Way Expander › Arduino › Arduino IDE</a></p>
+<!-- moved: /en/sensors/exp6/index.md -->
+<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/exp6/index.md">SPIKE 6-Way Expander</a></p>
 
 # 🧪 SPIKE 6-Way Expander (EXP6) × Arduino Examples
+
+> [!WARNING]
+> **EXP6 × Arduino (UART): Under development — not yet supported.** This page is kept for reference while we develop and test it; for now please use the EXP6 with [SPIKE Prime or Robot Inventor](/en/sensors/exp6/index.md).
+<!-- exp6-arduino-dev -->
+
 
 [🔙 Back to EXP6 overview](/en/sensors/exp6/index.md)
 

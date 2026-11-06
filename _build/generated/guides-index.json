@@ -785,12 +785,6 @@
       "mbcblocks",
       "pybricks"
      ]
-    },
-    {
-     "id": "arduino",
-     "sws": [
-      "ide"
-     ]
     }
    ]
   },
@@ -881,8 +875,8 @@
   "sensors/esp32cam/reference.md": "/sensors/esp32cam/index.md",
   "sensors/esp32cam/spike-examples-wro.md": "/sensors/esp32cam/spike/index.md",
   "sensors/esp32cam/spike-examples.md": "/sensors/esp32cam/spike/index.md",
-  "sensors/exp6/arduino-examples.md": "/sensors/exp6/arduino/ide.md",
-  "sensors/exp6/arduino-i2c.md": "/sensors/exp6/arduino/ide.md",
+  "sensors/exp6/arduino-examples.md": "/sensors/exp6/index.md",
+  "sensors/exp6/arduino-i2c.md": "/sensors/exp6/index.md",
   "sensors/exp6/spike-examples.md": "/sensors/exp6/spike/index.md",
   "sensors/exp6/spike-official.md": "/sensors/exp6/spike/official.md",
   "sensors/exp6/spike-pybricks.md": "/sensors/exp6/spike/pybricks.md",
@@ -992,8 +986,8 @@
   "en/sensors/esp32cam/reference.md": "/en/sensors/esp32cam/index.md",
   "en/sensors/esp32cam/spike-examples-wro.md": "/en/sensors/esp32cam/spike/index.md",
   "en/sensors/esp32cam/spike-examples.md": "/en/sensors/esp32cam/spike/index.md",
-  "en/sensors/exp6/arduino-examples.md": "/en/sensors/exp6/arduino/ide.md",
-  "en/sensors/exp6/arduino-i2c.md": "/en/sensors/exp6/arduino/ide.md",
+  "en/sensors/exp6/arduino-examples.md": "/en/sensors/exp6/index.md",
+  "en/sensors/exp6/arduino-i2c.md": "/en/sensors/exp6/index.md",
   "en/sensors/exp6/spike-examples.md": "/en/sensors/exp6/spike/index.md",
   "en/sensors/exp6/spike-official.md": "/en/sensors/exp6/spike/official.md",
   "en/sensors/exp6/spike-pybricks.md": "/en/sensors/exp6/spike/pybricks.md",

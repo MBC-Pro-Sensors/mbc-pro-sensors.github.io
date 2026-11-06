@@ -20,7 +20,7 @@
 | [掌控者 PS2 (PS2)](/sensors/ps2/index.md) | [樂高官方 App](/sensors/ps2/spike/official.md)・[MBC 積木網站](/sensors/ps2/spike/mbcblocks.md)・[Pybricks](/sensors/ps2/spike/pybricks.md) | [EV3-G 官方軟體](/sensors/ps2/ev3/ev3g.md)・[EV3 Classroom](/sensors/ps2/ev3/classroom.md)・[Pybricks](/sensors/ps2/ev3/pybricks.md)・[clev3r](/sensors/ps2/ev3/clev3r.md) | [Arduino IDE](/sensors/ps2/arduino/ide.md) | [mBlock 5](/sensors/ps2/mblock/mblock5.md) | [MATRIXblock 原廠積木](/sensors/ps2/matrix/matrixblock.md) | [MakeCode](/sensors/ps2/microbit/makecode.md) |
 | [掌控者 PS4/PS5](/sensors/ps4/index.md) | [樂高官方 App](/sensors/ps4/spike/official.md)・[MBC 積木網站](/sensors/ps4/spike/mbcblocks.md)・[Pybricks](/sensors/ps4/spike/pybricks.md) | [EV3-G 官方軟體](/sensors/ps4/ev3/ev3g.md)・[EV3 Classroom](/sensors/ps4/ev3/classroom.md)・[Pybricks](/sensors/ps4/ev3/pybricks.md)・[clev3r](/sensors/ps4/ev3/clev3r.md) | [Arduino IDE](/sensors/ps4/arduino/ide.md) | [mBlock 5](/sensors/ps4/mblock/mblock5.md) | [MATRIXblock 原廠積木](/sensors/ps4/matrix/matrixblock.md) | [MakeCode](/sensors/ps4/microbit/makecode.md) |
 | [神攝手](/sensors/unicam/index.md) | [讀值教學](/sensors/unicam/spike/index.md) | [讀值教學](/sensors/unicam/ev3/index.md) | [讀值教學](/sensors/unicam/arduino/index.md) | [讀值教學](/sensors/unicam/mblock/index.md) | [讀值教學](/sensors/unicam/matrix/mvision.md) | [讀值教學](/sensors/unicam/microbit/index.md) |
-| [SPIKE 6 路擴充器 (EXP6)](/sensors/exp6/index.md) | [樂高官方 App](/sensors/exp6/spike/official.md)・[MBC 積木網站](/sensors/exp6/spike/mbcblocks.md)・[Pybricks](/sensors/exp6/spike/pybricks.md) | — | [Arduino IDE](/sensors/exp6/arduino/ide.md) | — | — | — |
+| [SPIKE 6 路擴充器 (EXP6)](/sensors/exp6/index.md) | [樂高官方 App](/sensors/exp6/spike/official.md)・[MBC 積木網站](/sensors/exp6/spike/mbcblocks.md)・[Pybricks](/sensors/exp6/spike/pybricks.md) | — | — | — | — | — |
 | [陀螺儀 IMU 九軸](/sensors/imu/index.md) | — | [EV3-G 官方軟體](/sensors/imu/ev3/ev3g.md)・[EV3 Classroom](/sensors/imu/ev3/classroom.md)・[Pybricks](/sensors/imu/ev3/pybricks.md)・[clev3r](/sensors/imu/ev3/clev3r.md) | [Arduino IDE](/sensors/imu/arduino/ide.md) | [mBlock 5](/sensors/imu/mblock/mblock5.md) | [MATRIXblock 原廠積木](/sensors/imu/matrix/matrixblock.md) | [MakeCode](/sensors/imu/microbit/makecode.md) |
 | [SPIKE 6 路舵機擴充器 (Servo6)](/sensors/servo6/index.md) | [樂高官方 App](/sensors/servo6/spike/official.md)・[Pybricks](/sensors/servo6/spike/pybricks.md) | — | — | — | — | — |
 | [遠距離顏色感應器 OV3660](/sensors/ov3660/index.md) | — | — | — | — | — | — |
@@ -76,7 +76,6 @@
 | [循行者 8 路](/sensors/line8/arduino-i2c.md) | 循線 | `0x16` |
 | [循行者 16 路](/sensors/line16/arduino-i2c.md) | 高速循線、十字路口 | `0x16` |
 | [測距者 8 路](/sensors/tof8/index.md) | 180° 避障 | `0x29` |
-| [SPIKE 6 路擴充器](/sensors/exp6/arduino-examples.md) | 用 Arduino 驅動 LEGO 馬達與感應器 | 序列埠（UART） |
 | [掌控者 PS4/PS5](/sensors/ps4/index.md) | 藍牙手把遙控 | `0x42` |
 | [掌控者 PS2](/sensors/ps2/index.md) | 2.4G 手把遙控 | `0x42` |
 | [陀螺儀 IMU](/sensors/imu/index.md) | 航向、九軸資料 | `0x6A` |

@@ -85,11 +85,4 @@ EXP6 擴充器最大的特色在於**「雙生態系完美支援」**。請選�
 <p style="font-size: 1.1rem;">為競賽與極限效能打造。<br>原生支援非同步多工併行 (Async/await) 與極速 RAW 通訊！</p>
 </a>
 
-<a href="/sensors/exp6/arduino-examples.md" class="env-card mcu" style="padding: 40px 20px;">
-<div style="display: flex; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
-<svg viewBox="0 0 100 40" style="width: 120px; height: 50px; fill: none; stroke: #00d2ff; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.6));"><path d="M 5,25 H 25 V 5 H 45 V 35 H 65 V 5 H 85 V 35 H 95" /></svg>
-</div>
-<h3 style="font-size: 1.8rem; margin-bottom: 15px !important;">Arduino（序列埠）</h3>
-<p style="font-size: 1.1rem;">用 Arduino UNO R4、Mega、ESP32 控制樂高馬達與感應器。<br>6 個新手範例，直接複製上傳！</p>
-</a>
 </div>

@@ -464,6 +464,8 @@ const LEARN_KINDS = {
   matrix: { matrixblock: ['matrix'], mvision: ['matrix'] },
   microbit: { makecode: ['makecode'] },
 };
+// 頁面留著、但不列進互動教學清單的（教學 → 種類）。2026-11-06 使用者：EXP6 × Arduino「格子拿掉、頁面留著」（UART 開發與驗證中）
+const LEARN_HIDE = { exp6: { arduino: 1 } };
 const LEARN_HOST_NAME = { spike: 'SPIKE', ev3: 'EV3', arduino: 'Arduino', mblock: 'mBlock', matrix: 'MATRIX', microbit: 'micro:bit' };
 const LK = {
   zh: { title: '互動教學', sub: '不用接主機，先在網頁上點點看：左邊選功能，右邊的程式或積木跟著長出來，還能拖拉模擬感應器看數值。',
@@ -486,7 +488,7 @@ function learnOf(lang, key, host, sws) {
   for (const h of host ? [host] : Object.keys(LEARN_KINDS)) {
     const kinds = [...new Set((sws || Object.keys(LEARN_KINDS[h])).flatMap((s) => LEARN_KINDS[h][s] || []))];
     for (const t of LEARN[key] || []) {
-      const items = kinds.map((kind) => ({ kind, url: `${learnHub(lang)}${t}/${kind}.html` })).filter((x) => fileOk(x.url));
+      const items = kinds.filter((kind) => !(LEARN_HIDE[t] || {})[kind]).map((kind) => ({ kind, url: `${learnHub(lang)}${t}/${kind}.html` })).filter((x) => fileOk(x.url));
       if (items.length) out.push({ t, host: h, items });
     }
   }

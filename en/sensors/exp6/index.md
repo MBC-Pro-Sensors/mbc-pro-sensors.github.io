@@ -81,11 +81,4 @@ The greatest feature of the EXP6 expander is its **"Perfect Dual Ecosystem Suppo
 <p style="font-size: 1.1rem;">Built for competitions and extreme performance.<br>Natively supports asynchronous multitasking (Async/await) and blazing-fast RAW communication!</p>
 </a>
 
-<a href="/en/sensors/exp6/arduino-examples.md" class="env-card mcu" style="padding: 40px 20px;">
-<div style="display: flex; justify-content: center; margin-bottom: 20px; min-height: 110px; align-items: flex-end;">
-<svg viewBox="0 0 100 40" style="width: 120px; height: 50px; fill: none; stroke: #00d2ff; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.6));"><path d="M 5,25 H 25 V 5 H 45 V 35 H 65 V 5 H 85 V 35 H 95" /></svg>
-</div>
-<h3 style="font-size: 1.8rem; margin-bottom: 15px !important;">Arduino (UART)</h3>
-<p style="font-size: 1.1rem;">Control LEGO motors and sensors with Arduino UNO R4, Mega or ESP32.<br>6 beginner examples: just copy and upload!</p>
-</a>
 </div>

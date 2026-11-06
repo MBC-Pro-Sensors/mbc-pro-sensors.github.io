@@ -1,6 +1,6 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-<!-- moved: /sensors/exp6/arduino/ide.md -->
-<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/exp6/arduino/ide.md">SPIKE 6 路擴充器 › Arduino › Arduino IDE</a></p>
+<!-- moved: /sensors/exp6/index.md -->
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/exp6/index.md">SPIKE 6 路擴充器</a></p>
 
 # ∿ EXP6 × Arduino：請改用序列埠（UART）
 

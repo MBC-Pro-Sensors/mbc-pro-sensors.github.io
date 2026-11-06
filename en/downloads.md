@@ -67,7 +67,7 @@ MATRIX uses the stock colour-sensor blocks (0x22): nothing to download. Mapping 
 | Controller PS4 / PS5 | [ps4_arduino_examples.zip](/examples/ps4/arduino/ps4_arduino_examples.zip) | [ps4_arduino_examples_en.zip](/examples/ps4/arduino-en/ps4_arduino_examples_en.zip) |
 | IMU gyro | [imu_arduino_examples.zip](/examples/imu/arduino/imu_arduino_examples.zip) | [imu_arduino_examples_en.zip](/examples/imu/arduino-en/imu_arduino_examples_en.zip) |
 | Sharpshooter Vision (I2C, firmware v1 not yet hardware-verified) | [unicam_arduino_examples.zip](/examples/unicam/arduino/unicam_arduino_examples.zip) | [unicam_arduino_examples_en.zip](/examples/unicam/arduino-en/unicam_arduino_examples_en.zip) |
-| SPIKE 6-Way Expander EXP6 (UART) | [exp6_arduino_examples.zip](/examples/exp6/arduino/exp6_arduino_examples.zip) | [exp6_arduino_examples_en.zip](/examples/exp6/arduino-en/exp6_arduino_examples_en.zip) |
+| SPIKE 6-Way Expander EXP6 (UART, under development, not yet supported) | [exp6_arduino_examples.zip](/examples/exp6/arduino/exp6_arduino_examples.zip) | [exp6_arduino_examples_en.zip](/examples/exp6/arduino-en/exp6_arduino_examples_en.zip) |
 | Universal I2C tools (scan, read version) | [i2c_arduino_examples.zip](/examples/i2c/arduino/i2c_arduino_examples.zip) | — |
 
 Line-by-line explanations are on each product's "Arduino Examples" page; start at [First time with Arduino](/en/sensors/arduino-start.md). Examples and libraries for the [legacy Sharpshooter Vision (no longer supported)](/en/sensors/esp32cam/index.md) are collected on the legacy overview page.

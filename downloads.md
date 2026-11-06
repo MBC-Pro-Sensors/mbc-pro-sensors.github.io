@@ -67,7 +67,7 @@ MATRIX 用原廠顏色感應器積木（0x22）讀，不用下載任何東西。
 | 掌控者 PS4／PS5 | [ps4_arduino_examples.zip](/examples/ps4/arduino/ps4_arduino_examples.zip) | [ps4_arduino_examples_en.zip](/examples/ps4/arduino-en/ps4_arduino_examples_en.zip) |
 | IMU 陀螺儀 | [imu_arduino_examples.zip](/examples/imu/arduino/imu_arduino_examples.zip) | [imu_arduino_examples_en.zip](/examples/imu/arduino-en/imu_arduino_examples_en.zip) |
 | 神攝手（I2C，韌體 v1 尚未上機驗證） | [unicam_arduino_examples.zip](/examples/unicam/arduino/unicam_arduino_examples.zip) | [unicam_arduino_examples_en.zip](/examples/unicam/arduino-en/unicam_arduino_examples_en.zip) |
-| SPIKE 6 路擴充器 EXP6（UART） | [exp6_arduino_examples.zip](/examples/exp6/arduino/exp6_arduino_examples.zip) | [exp6_arduino_examples_en.zip](/examples/exp6/arduino-en/exp6_arduino_examples_en.zip) |
+| SPIKE 6 路擴充器 EXP6（UART，開發與驗證中，尚未支援） | [exp6_arduino_examples.zip](/examples/exp6/arduino/exp6_arduino_examples.zip) | [exp6_arduino_examples_en.zip](/examples/exp6/arduino-en/exp6_arduino_examples_en.zip) |
 | 通用 I2C 小工具（掃位址、讀版本） | [i2c_arduino_examples.zip](/examples/i2c/arduino/i2c_arduino_examples.zip) | — |
 
 每支範例的逐行說明在各產品的「Arduino 範例」頁，從 [🔰 第一次用 Arduino](/sensors/arduino-start.md) 開始。[神攝手舊版（停止支援）](/sensors/esp32cam/index.md)的範例與函式庫集中在舊版總覽頁。
