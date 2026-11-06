@@ -1085,11 +1085,7 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # sensor on port A
 
-words = dev.read(9)[2:6]
-stick = []
-for w in words:
-    stick.append(w & 0xFF)          # odd channel
-    stick.append((w >> 8) & 0xFF)   # even channel
+stick = list(dev.read(9)[2:6])   # [LX, LY, RX, RY]
 ```
 
 **MBC library**
@@ -1100,7 +1096,7 @@ from MBC_gamepad_Lib import MBC_GAMEPAD
 
 pad = MBC_GAMEPAD(Port.A)
 pad.update()   # refresh once per loop
-stick = pad.stick('LX')   # list, channel 1 = [0]
+stick = pad.stick('LX')
 ```
 
 </details>

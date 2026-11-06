@@ -1085,11 +1085,7 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-words = dev.read(9)[2:6]
-stick = []
-for w in words:
-    stick.append(w & 0xFF)          # 奇數路
-    stick.append((w >> 8) & 0xFF)   # 偶數路
+stick = list(dev.read(9)[2:6])   # [LX, LY, RX, RY]
 ```
 
 **MBC 函式庫**
@@ -1100,7 +1096,7 @@ from MBC_gamepad_Lib import MBC_GAMEPAD
 
 pad = MBC_GAMEPAD(Port.A)
 pad.update()   # 每圈先更新一次
-stick = pad.stick('LX')   # list，第 1 路 = [0]
+stick = pad.stick('LX')
 ```
 
 </details>

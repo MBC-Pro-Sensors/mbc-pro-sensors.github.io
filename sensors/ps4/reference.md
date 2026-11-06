@@ -171,7 +171,7 @@ from pybricks.parameters import Port
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
 w = dev.read(9)[0]
-dpad = (w & 0xFF)   # 方向鍵（低 byte）
+dpad = (w & 0x0F)   # 方向鍵（低 byte 的低 4 位元）
 ```
 
 **MBC 函式庫**
@@ -292,7 +292,7 @@ from pybricks.parameters import Port
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
 w = dev.read(9)[0]
-shapeKeys = (w & 0xFF)   # 形狀鍵（低 byte）
+shapeKeys = ((w >> 4) & 0x0F)   # 形狀鍵（低 byte 的高 4 位元）
 ```
 
 **MBC 函式庫**
@@ -405,7 +405,7 @@ from pybricks.parameters import Port
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
 w = dev.read(9)[1]
-shoulderKeys = (w & 0xFF)   # 肩鍵（低 byte）
+shoulderKeys = (w & 0x0F)   # 肩鍵（低 byte 的低 4 位元）
 ```
 
 **MBC 函式庫**
@@ -517,7 +517,7 @@ from pybricks.parameters import Port
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
 w = dev.read(9)[1]
-funcKeys = (w & 0xFF)   # 功能鍵（低 byte）
+funcKeys = ((w >> 4) & 0x0F)   # 功能鍵（低 byte 的高 4 位元）
 ```
 
 **MBC 函式庫**
@@ -1097,11 +1097,7 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-words = dev.read(9)[2:6]
-stick = []
-for w in words:
-    stick.append(w & 0xFF)          # 奇數路
-    stick.append((w >> 8) & 0xFF)   # 偶數路
+stick = list(dev.read(9)[2:6])   # [LX, LY, RX, RY]
 ```
 
 **MBC 函式庫**
@@ -1112,7 +1108,7 @@ from MBC_gamepad_Lib import MBC_GAMEPAD
 
 pad = MBC_GAMEPAD(Port.A)
 pad.update()   # 每圈先更新一次
-stick = pad.stick('LX')   # list，第 1 路 = [0]
+stick = pad.stick('LX')
 ```
 
 </details>
