@@ -1127,8 +1127,8 @@
           "/sensors/exp6/spike/pybricks.md"
         ],
         [
-          "通用 I2C 版",
-          "/sensors/exp6/arduino/ide.md"
+          "Robot Inventor App",
+          "/sensors/exp6/install-robot-inventor.md"
         ]
       ]
     },
@@ -1159,8 +1159,8 @@
           "/en/sensors/exp6/spike/pybricks.md"
         ],
         [
-          "Universal I2C",
-          "/en/sensors/exp6/arduino/ide.md"
+          "Robot Inventor App",
+          "/en/sensors/exp6/install-robot-inventor.md"
         ]
       ]
     },
