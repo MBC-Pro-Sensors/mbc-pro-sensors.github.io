@@ -51,7 +51,7 @@ Watch the demonstration video below for the most intuitive guide:
 
 1. **Press Calibration Button**: Hold the calibration button on the sensor for **0.5 seconds** until the **🟢 green calibration indicator** remains steadily lit.
 2. **Start Scanning**: Move the sensor back and forth across the black line and white areas of your track.
-3. **Maintain Height**: Keep the sensor between **0.5 ~ 1.2 cm** above the ground.
+3. **Maintain Height**: Keep the sensor between **3 ~ 12 mm** above the ground.
 4. **Complete**: After 5 seconds, the green calibration indicator turns off. Calibration is complete and saved automatically!
 
 ---
@@ -179,10 +179,10 @@ Default is **Black Line Mode** (tracking dark lines). After switching, it become
 - **❓ Robot wobbles while following the line?**
   → The most common cause: **not yet calibrated**, or calibration did not succeed. Return to the calibration steps and recalibrate.
   *If already calibrated but still wobbling, check:*
-  1. Is the sensor height between **0.5 and 1.2 cm** above the ground?
+  1. Is the sensor height between **3 and 12 mm** above the ground?
 
 - **❓ Why did the robot follow a flashy pattern on the side?**
-  → The 8-Way has a very strong anti-interference filter, but it still requires a **correct calibration baseline**. Make sure calibration covered both "the darkest black line" and "the whitest white area". Check that lighting is even and that sensor height is 0.5 to 1.2 cm.
+  → The 8-Way has a very strong anti-interference filter, but it still requires a **correct calibration baseline**. Make sure calibration covered both "the darkest black line" and "the whitest white area". Check that lighting is even and that sensor height is 3 to 12 mm.
 
 - **❓ Different apps return different values?**
   → The Education Edition (yellow hub) and Home Edition (teal hub) return data in different formats. Confirm which version you are using and refer to the corresponding platform documentation page.

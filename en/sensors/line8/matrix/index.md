@@ -12,6 +12,9 @@ Using the Pathfinder 8-Way (Line8) with MATRIX Mini R4: check the edition and th
 
 Get the **MATRIX edition** and connect it with the stock MATRIX 4-pin cable to I2C1 or I2C2 of the Mini R4 (address `0x22`); pick that port in the block.
 
+> [!TIP]
+> **Tested on MATRIX Mini R4 (2026-11-06)**: the stock MATRIXblock colour-sensor blocks (address 0x22) read the line position, fine position, line width and light values correctly (line on the left = negative) on white, centred, left and right; 2000 reads in a row with no errors.
+
 ## Wiring
 
 <figure class="ref-fig"><img src="/images/figures/line8/wiring-matrix.svg" alt="Pathfinder 8-Way (Line8) × MATRIX Mini R4" loading="lazy"></figure>

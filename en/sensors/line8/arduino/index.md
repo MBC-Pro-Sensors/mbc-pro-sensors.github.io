@@ -12,6 +12,9 @@ Using the Pathfinder 8-Way (Line8) with Arduino / ESP32 / UNO R4 (I2C): check th
 
 Get the **Universal I2C edition** (4 pins: 5V, GND, SDA, SCL), factory I2C address `0x16`. UNO / Nano: A4 (SDA), A5 (SCL); UNO R4 and ESP32: the pins marked SDA / SCL.
 
+> [!TIP]
+> **Tested on Arduino (2026-11-06, Arduino Nano)**: identity and value table, line position direction (line on the left = negative), E7 5-second calibration, E2 / E3 black and white calibration, E1 / E0 white-line mode, E4 threshold, E9 left/right swap and EF restart all behave as documented; 2000 reads in a row at 100 kHz and 500 at 400 kHz with no errors. Two lines / T-junction branching was not tested this time.
+
 ## Wiring
 
 <figure class="ref-fig"><img src="/images/figures/line8/wiring-uno.svg" alt="Pathfinder 8-Way (Line8) × Arduino / ESP32 / UNO R4 (I2C)" loading="lazy"></figure>

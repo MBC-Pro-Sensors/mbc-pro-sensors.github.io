@@ -12,6 +12,11 @@
 
 買 **通用 I2C 版**（4 pin：5V、GND、SDA、SCL），出廠 I2C 位址 `0x16`。UNO／Nano 接 A4（SDA）、A5（SCL）；UNO R4、ESP32 接板子上標 SDA／SCL 的腳。
 
+> [!TIP]
+> **Arduino 實測通過（2026-11-06，Arduino Nano）**：身分與值表、線位置左右方向（線在左＝負）、E7 5 秒校準、E2／E3 黑白校準、E1／E0 白線模式、E4 門檻、E9 左右反向、EF 重開機都照說明；100 kHz 連續讀 2000 次、400 kHz 連續讀 500 次都沒有讀錯。兩條線／T 字分岔這次沒有測。
+>
+> 16 路的 I2C 腳耐 5 V：Arduino 端 I2C 讀錯時，可以跟 8 路一樣在 A4／A5 加 4.7 kΩ 上拉電阻到 5 V。
+
 ## 怎麼接
 
 <figure class="ref-fig"><img src="/images/figures/line16/wiring-uno.svg" alt="循行者 16 路 (Line16) × Arduino／ESP32／UNO R4（I2C）" loading="lazy"></figure>

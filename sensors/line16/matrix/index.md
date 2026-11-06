@@ -12,6 +12,9 @@
 
 買 **MATRIX 版**，用 MATRIX 原廠 4 pin 感應器線接 Mini R4 的 I2C1 或 I2C2（位址 `0x22`），積木裡選對應的孔。
 
+> [!TIP]
+> **MATRIX Mini R4 實測通過（2026-11-06）**：MATRIXblock 原廠顏色感應器積木（位址 0x22）讀到的線位置、細位置、線寬、光值都對（線在左＝負），白底、線在中間、左、右都照說明；連續讀 2000 次沒有錯。
+
 ## 怎麼接
 
 <figure class="ref-fig"><img src="/images/figures/line16/wiring-matrix.svg" alt="循行者 16 路 (Line16) × MATRIX Mini R4" loading="lazy"></figure>
