@@ -35,7 +35,8 @@ sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
 dpad = sensor.read(0)[0]   # 方向鍵：0~15 bit
 dpad = sensor.read(1)[0]   # 方向鍵：0~15 bit
-dpad = sensor.read(3)[0]   # 方向鍵：0~15 bit
+w = sensor.read(3)[0]
+dpad = w & 0x0F   # 方向鍵（bit 0~3）
 dpad = sensor.read(4)[0]   # 方向鍵：0~15 bit
 ```
 
@@ -60,7 +61,8 @@ from pybricks.parameters import Port
 sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
 shapeKeys = sensor.read(1)[2]   # 形狀鍵：0~15 bit
-shapeKeys = sensor.read(3)[0]   # 形狀鍵：0~15 bit
+w = sensor.read(3)[0]
+shapeKeys = (w >> 4) & 0x0F   # 形狀鍵（bit 4~7）
 shapeKeys = sensor.read(4)[2]   # 形狀鍵：0~15 bit
 ```
 
@@ -128,7 +130,8 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
-connected = sensor.read(3)[0]   # 已連線：0~1
+w = sensor.read(3)[0]
+connected = (w >> 8) & 1   # 已連線（bit 8）
 ```
 
 <p class="ref-note">模式 3 · int16 · bit8（值 ≥ 256 = 已連線，#67 新增）</p>
@@ -143,7 +146,7 @@ connected = sensor.read(3)[0]   # 已連線：0~1
 
 | 範圍 | 意思 |
 | :--- | :--- |
-| `-100~+100` | 10 LX、11 LY、12 RX、13 RY：−100 ~ +100，0 = 中間，右／上為正；未連線 0 |
+| `-100~+100`（EV3 模式 1、模式 2、模式 4 讀到的是換算值：0~99（50 = 中間）） | 10 LX、11 LY、12 RX、13 RY：−100 ~ +100，0 = 中間，右／上為正；未連線 0 |
 
 ```python
 from pybricks.iodevices import LUMPDevice
@@ -151,9 +154,9 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
-stick = sensor.read(1)[1]   # 搖桿 1~4 軸：-100~+100
+stick = sensor.read(1)[1::2]   # 搖桿 1~4 軸（index 1、3、5、7）：0~99（50 = 中間）
 stick = sensor.read(2)[0:4]   # 搖桿 1~4 軸
-stick = sensor.read(4)[1]   # 搖桿 1~4 軸：-100~+100
+stick = sensor.read(4)[1::2]   # 搖桿 1~4 軸（index 1、3）：0~99（50 = 中間）
 ```
 
 <p class="ref-note">模式 1 · int8 · LX；LY 在 index 3、RX 5、RY 7（與按鍵交錯）；0~99，50 = 中間（未連線 50）；模式 2 · int8 · IR-REMOTE [LX, LY, RX, RY] 0~99，50 = 中間；模式 4 · int8 · LX；LY 在 index 3（RX、RY 不在模式 4）（已鎖住的模式，韌體與主機端都不再改）</p>

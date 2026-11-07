@@ -89,11 +89,14 @@
 
 | 範圍 | 意思 |
 | :--- | :--- |
-| `-100~+100` | 10 LX、11 LY、12 RX、13 RY：−100 ~ +100，0 = 中間，右／上為正；未連線 0 |
+| `-100~+100`（EV3 模式 1、模式 2、模式 4 讀到的是換算值：0~99（50 = 中間）） | 10 LX、11 LY、12 RX、13 RY：−100 ~ +100，0 = 中間，右／上為正；未連線 0 |
 
 | 值 | 積木 | 換算 | 模式 |
 | :--- | :--- | :--- | :--- |
-| 搖桿 1~4 軸 | Infrared Sensor → Beacon proximity, channel 1 | 讀到的數 | 模式 1 |
+| LX | Infrared Sensor → Beacon proximity, channel 1 | 讀到的數：0~99（50 = 中間） | 模式 1 |
+| LY | Infrared Sensor → Beacon proximity, channel 2 | 讀到的數：0~99（50 = 中間） | 模式 1 |
+| RX | Infrared Sensor → Beacon proximity, channel 3 | 讀到的數：0~99（50 = 中間） | 模式 1 |
+| RY | Infrared Sensor → Beacon proximity, channel 4 | 讀到的數：0~99（50 = 中間） | 模式 1 |
 
 </section>
 

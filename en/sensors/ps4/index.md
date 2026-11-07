@@ -78,7 +78,7 @@ The Controller PS4/PS5 Bluetooth Receiver lets SPIKE, EV3 or Arduino read every 
 | Mode | Content |
 | :---: | :--- |
 | 0 | D-pad state |
-| 1 | D-pad, left stick X, shape buttons (■ ✕ ● ▲), left stick Y, shoulder buttons (L1 R1 L2 R2), right stick X, function buttons (START SELECT L3 R3), right stick Y |
+| 1 | D-pad, left stick X, shape buttons (▲ ● ✕ ■), left stick Y, shoulder buttons (L2 R2 L1 R1), right stick X, function buttons (SHARE L3 R3 OPTIONS), right stick Y |
 | 2 | Left stick X, left stick Y, right stick X, right stick Y |
 
 ## ∿ Universal I2C Registers (address `0x42`)
@@ -91,33 +91,40 @@ See the [MBC Universal I2C Protocol](/en/i2c-protocol.md) for shared rules and A
 > [!NOTE]
 > The receiver has built-in level shifting and connects directly to 5 V boards like the Arduino UNO. **Wait 2 ms** after writing the register number before reading.
 
-| Register | Dir | Len | Content |
-| :---: | :---: | :---: | :--- |
-| `0x10` | W | 1 | Rumble: strength `0` ~ `255` for 200 ms; `0` = stop |
-| `0x11` | R | 9 | Gamepad bundle (= `0x12` ~ `0x15`) |
-| `0x12` | R | 2 | Buttons uint16 (b15 ■, b14 ✕, b13 ●, b12 ▲, b11 R1, b10 L1, b9 R2, b8 L2, b7 left, b6 down, b5 right, b4 up, b3 START, b2 R3, b1 L3, b0 SELECT) |
-| `0x13` | R | 4 | Sticks LX, LY, RX, RY: int8 `-127` ~ `+127`, 0 = center, **right / up positive**, dead zone applied |
-| `0x14` | R | 2 | Analog triggers L2, R2: `0` ~ `255` |
-| `0x15` | R | 1 | System buttons: bit0 = PS button, bit3 = Capture button |
-| `0x22` | R | 4 | Simple sticks LX, LY, RX, RY: `0` ~ `99`, 50 = center (same as the SPIKE / EV3 editions) |
-| `0x23` | RW | 3 | Light bar color R, G, B (write all 3 bytes; remembered while disconnected, applied on connect) |
-| `0x32` | R | 1 | bit0 = ready, bit1 = gamepad connected |
-| `0x34` | R | 1 | Gamepad type: 0 = none, 3 = PS4 gamepad, 4 = PS5 or other Bluetooth gamepad |
-| `0x35` | R | 1 | Gamepad battery `1` ~ `255` (`0` = unknown) |
+**How to read:** write `[ID]` → wait 2 ms → read 2×k bytes: k values starting at that ID (each value is an int16, low byte first, k ≤ 16). Unknown IDs return `-32768`. Values read in one go are from the same instant.
 
-Variant `0x06` byte 1 = `2` (the PS2 receiver reports `1`). While disconnected, buttons, sticks and triggers read 0.
+| ID | Value | Content |
+| :---: | :--- | :--- |
+| `0x01` | 16 buttons | All 16 buttons in one number (1 = pressed): b0 SHARE, b1 L3, b2 R3, b3 OPTIONS, b4 up, b5 right, b6 down, b7 left, b8 L2, b9 R2, b10 L1, b11 R1, b12 ▲, b13 ●, b14 ✕, b15 ■; 0 when not connected. ⚠️ Read as int16, ■ alone is `-32768` (same as "no value"): cast to `uint16_t` before testing |
+| `0x02` | D-pad | `0` ~ `15`: up 1, right 2, down 4, left 8 (added when pressed together) |
+| `0x03` | Shape buttons | `0` ~ `15`: ▲ 1, ● 2, ✕ 4, ■ 8 |
+| `0x04` | Shoulder buttons | `0` ~ `15`: L2 1, R2 2, L1 4, R1 8 |
+| `0x05` | Function buttons | `0` ~ `15`: SHARE 1, L3 2, R3 4, OPTIONS 8 |
+| `0x06` | Connected | 1 = gamepad connected with data in the last 300 ms, 0 = not (while disconnected, buttons, sticks and triggers read 0) |
+| `0x07` | Battery | `0` ~ `100` |
+| `0x08`, `0x09` | L2, R2 analog triggers | `0` ~ `255` (how far pressed) |
+| `0x0A` | System buttons | b0 = PS button, b1 = Capture button (PS5: Mute) |
+| `0x0B` | Gamepad type | 0 = none, 3 = PS4 gamepad, 4 = PS5 or other Bluetooth gamepad |
+| `0x10` ~ `0x13` | Sticks LX, LY, RX, RY | `-100` ~ `+100`, 0 = center, **right / up positive**, dead zone applied |
+
+| Command | Parameters | What it does |
+| :---: | :--- | :--- |
+| `E5` | [strength `0` ~ `255`] | Rumble for 200 ms; `0` = stop |
+| `E6` | [R][G][B], `0` ~ `255` each | Light bar color, exactly 3 bytes; remembered while disconnected and applied on connect; default blue |
+
+`F0` device ID: low byte `0x42`, high byte `2` (= PS4; the PS2 receiver reports `1`). For `F1`–`F5`, `F8` (change address) and `EF` (restart) see the [MBC Universal I2C Protocol](/en/i2c-protocol.md). How to read it from Arduino, and every value in detail: [Arduino IDE guide](/en/sensors/ps4/arduino/ide.md).
 
 ```cpp
-// Read buttons and sticks (keep the delay(2) inside iicRead)
-uint8_t d[9];
-if (iicRead(0x42, 0x11, d, 9)) {
-  uint16_t btn = (d[0] << 8) | d[1];
-  int8_t lx = (int8_t)d[2], ly = (int8_t)d[3];
-  bool cross = btn & (1 << 14);              // ✕ button
+// Uses mbcReadMany() / mbcWrite() from the MBC Universal I2C Protocol page (they wait 2 ms after the ID)
+int16_t v[5];
+if (mbcReadMany(0x42, 0x01, 5, v)) {   // 0x01 16 buttons, 0x02 D-pad, 0x03 shape, 0x04 shoulder, 0x05 function
+  uint16_t btn = (uint16_t)v[0];
+  bool cross = btn & (1 << 14);         // ✕ button (b14)
+  bool up = v[1] & 1;                   // D-pad: up = 1
 }
+int16_t s[4];
+mbcReadMany(0x42, 0x10, 4, s);          // sticks LX, LY, RX, RY: -100 ~ +100
 
-// Set the light bar to red
-Wire.beginTransmission(0x42);
-Wire.write(0x23); Wire.write(255); Wire.write(0); Wire.write(0);
-Wire.endTransmission();
+uint8_t red[3] = {255, 0, 0};
+mbcWrite(0x42, 0xE6, red, 3);           // light bar red (exactly 3 bytes)
 ```

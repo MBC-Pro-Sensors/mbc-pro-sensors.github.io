@@ -33,7 +33,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-buttons16 = dev.read(9)[6]   # 十六鍵
+w = dev.read(9)[6]
+buttons16 = w & 0xFFFF   # 十六鍵（int16 轉回 0~65535；按住 ■ 時讀到負數）
 ```
 
 **MBC 函式庫**
@@ -68,7 +69,7 @@ from pybricks.parameters import Port
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
 w = dev.read(9)[0]
-dpad = (w & 0x0F)   # 方向鍵（低 byte 的低 4 位元）
+dpad = w & 0x0F   # 方向鍵（bit 0~3）
 ```
 
 **MBC 函式庫**
@@ -103,7 +104,7 @@ from pybricks.parameters import Port
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
 w = dev.read(9)[0]
-shapeKeys = ((w >> 4) & 0x0F)   # 形狀鍵（低 byte 的高 4 位元）
+shapeKeys = (w >> 4) & 0x0F   # 形狀鍵（bit 4~7）
 ```
 
 **MBC 函式庫**
@@ -138,7 +139,7 @@ from pybricks.parameters import Port
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
 w = dev.read(9)[1]
-shoulderKeys = (w & 0x0F)   # 肩鍵（低 byte 的低 4 位元）
+shoulderKeys = w & 0x0F   # 肩鍵（bit 0~3）
 ```
 
 **MBC 函式庫**
@@ -152,7 +153,7 @@ pad.update()   # 每圈先更新一次
 shoulderKeys = pad.pressed('L1')
 ```
 
-<p class="ref-note">模式 0 (edu) byte 0 🔒；模式 2 byte 0；模式 6 v[1] lo；模式 7 v[1] lo 🔒；模式 9 v[1] lo 🔒。備註：低 nibble；高 nibble = 功能鍵; 低 nibble；高 nibble = 功能鍵; 低 nibble；高 nibble = 功能鍵</p>
+<p class="ref-note">模式 0 (edu) byte 0 🔒；模式 2 byte 0；模式 6 v[1] lo；模式 7 v[1] lo 🔒；模式 9 v[1] lo 🔒；模式 0 (toy) byte 6 🔒；模式 0 (toy) byte 1 🔒。備註：低 nibble；高 nibble = 功能鍵; 低 nibble；高 nibble = 功能鍵; 低 nibble；高 nibble = 功能鍵; 原始藍 = 肩 | 功能<<4（0~255）; 單鍵編號（L2=1 R2=2 L1=3 R1=4 SHARE=5 L3=6 R3=7 OPTIONS=8，沒按 0；同時按只回編號最小的那個）</p>
 
 </section>
 
@@ -173,7 +174,7 @@ from pybricks.parameters import Port
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
 w = dev.read(9)[1]
-funcKeys = ((w >> 4) & 0x0F)   # 功能鍵（低 byte 的高 4 位元）
+funcKeys = (w >> 4) & 0x0F   # 功能鍵（bit 4~7）
 ```
 
 **MBC 函式庫**
@@ -187,7 +188,7 @@ pad.update()   # 每圈先更新一次
 funcKeys = pad.pressed('START')
 ```
 
-<p class="ref-note">模式 0 (edu) byte 0 🔒；模式 0 (toy) byte 1 🔒；模式 2 byte 0；模式 6 v[1] hi；模式 7 v[1] hi 🔒；模式 9 v[1] lo 🔒。備註：高 nibble; 單鍵編號 1~8（掃 功能鍵<<4|肩鍵 的 bit0→7：1 L2 2 R2 3 L1 4 R1 5 SELECT 6 L3 7 R3 8 START）; 高 nibble; 高 nibble</p>
+<p class="ref-note">模式 0 (edu) byte 0 🔒；模式 0 (toy) byte 1 🔒；模式 2 byte 0；模式 6 v[1] hi；模式 7 v[1] hi 🔒；模式 9 v[1] lo 🔒；模式 0 (toy) byte 6 🔒。備註：高 nibble; 單鍵編號 1~8（掃 功能鍵<<4|肩鍵 的 bit0→7：1 L2 2 R2 3 L1 4 R1 5 SELECT 6 L3 7 R3 8 START）; 高 nibble; 高 nibble; 原始藍 = 肩 | 功能<<4（0~255）</p>
 
 </section>
 
@@ -287,7 +288,7 @@ pad.update()   # 每圈先更新一次
 stick = pad.stick('LX')
 ```
 
-<p class="ref-note">模式 0 (edu) byte 2 🔒；模式 0 (toy) byte 2 🔒；模式 4 byte 0；模式 7 v[2] 🔒；模式 9 v[2] 🔒。備註：LX×10+LY（各 1~9，5 = 中間）；byte 4~5 = RX×10+RY; LX×10+LY 查表編碼；byte 4~5 = RX×10+RY；byte 6~7 = 肩鍵 byte 查表; [LX, LY, RX, RY] 0~99（宣告 2×int16，送 4 B）; LX×1000+LY×100+RX×10+RY（各 1~9）；個位數 RY 在 4.1.x 的 ambient() 讀不到，4.1.x 改從模式 5 reflection() 的小數位讀（見按鍵 buttons16）; v[2..5] = LX LY RX RY，1~9，5 = 中間</p>
+<p class="ref-note">模式 0 (edu) byte 2 🔒；模式 0 (toy) byte 2 🔒；模式 4 v[0]；模式 7 v[2] 🔒；模式 9 v[2] 🔒。備註：LX×10+LY（各 1~9，5 = 中間）；byte 4~5 = RX×10+RY; 原始紅 = LX×10+LY、原始綠 = RX×10+RY（各 1~9，5 = 中間）; v0 = LX | LY<<8、v1 = RX | RY<<8（各 1~9，5 = 中間）; LX×1000+LY×100+RX×10+RY（各 1~9）；個位數 RY 在 4.1.x 的 ambient() 讀不到，4.1.x 改從模式 5 reflection() 的小數位讀（見按鍵 buttons16）; v[2..5] = LX LY RX RY，1~9，5 = 中間</p>
 
 </section>
 

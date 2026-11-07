@@ -66,7 +66,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-buttons16 = dev.read(9)[6]   # 十六鍵
+w = dev.read(9)[6]
+buttons16 = w & 0xFFFF   # 十六鍵（int16 轉回 0~65535；按住 ■ 時讀到負數）
 ```
 
 **MBC 函式庫**
@@ -170,7 +171,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-dpad = dev.read(9)[0]   # 方向鍵
+w = dev.read(9)[0]
+dpad = w & 0x0F   # 方向鍵（bit 0~3）
 ```
 
 **MBC 函式庫**
@@ -199,7 +201,8 @@ sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
 dpad = sensor.read(0)[0]   # 方向鍵：0~15 bit
 dpad = sensor.read(1)[0]   # 方向鍵：0~15 bit
-dpad = sensor.read(3)[0]   # 方向鍵：0~15 bit
+w = sensor.read(3)[0]
+dpad = w & 0x0F   # 方向鍵（bit 0~3）
 dpad = sensor.read(4)[0]   # 方向鍵：0~15 bit
 ```
 
@@ -210,7 +213,8 @@ dpad = Sensor.ReadRawValue(1, 0)
 Sensor.SetMode(1, 1)
 dpad = Sensor.ReadRawValue(1, 0)
 Sensor.SetMode(1, 3)
-dpad = Sensor.ReadRawValue(1, 0)
+w = Sensor.ReadRawValue(1, 0)
+dpad = Math.Remainder(w, 16)   ' bit 0~3
 Sensor.SetMode(1, 4)
 dpad = Sensor.ReadRawValue(1, 0)
 ```
@@ -290,7 +294,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-shape = dev.read(9)[0]   # 形狀鍵
+w = dev.read(9)[0]
+shape = (w >> 4) & 0x0F   # 形狀鍵（bit 4~7）
 ```
 
 **MBC 函式庫**
@@ -318,7 +323,8 @@ from pybricks.parameters import Port
 sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
 shape = sensor.read(1)[2]   # 形狀鍵：0~15 bit
-shape = sensor.read(3)[0]   # 形狀鍵：0~15 bit
+w = sensor.read(3)[0]
+shape = (w >> 4) & 0x0F   # 形狀鍵（bit 4~7）
 shape = sensor.read(4)[2]   # 形狀鍵：0~15 bit
 ```
 
@@ -327,7 +333,8 @@ shape = sensor.read(4)[2]   # 形狀鍵：0~15 bit
 Sensor.SetMode(1, 1)
 shape = Sensor.ReadRawValue(1, 2)
 Sensor.SetMode(1, 3)
-shape = Sensor.ReadRawValue(1, 0)
+w = Sensor.ReadRawValue(1, 0)
+shape = Math.Remainder(Math.Floor(w / 16), 16)   ' bit 4~7
 Sensor.SetMode(1, 4)
 shape = Sensor.ReadRawValue(1, 2)
 ```
@@ -394,7 +401,7 @@ let shape = mbc.padGroup(MbcPadGroup.Shapes)   // 形狀鍵：0~15 bit
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-模式 0 (edu) byte 0 🔒；模式 0 (toy) byte 6 🔒；模式 2 byte 0；模式 6 v[1] lo；模式 9 v[1] 🔒。備註：byte0 = 肩 | 功能<<4（App 顏色，START = −128）：低 4 bit; byte6~7 = (肩 | 功能<<4) 經玩具版查表編碼；byte1 = 單鍵編號（L2=1 R2=2 L1=3 R1=4 SELECT=5 L3=6 R3=7 START=8，沒按 0）; 低 4 bit（高 4 bit = 功能）; v1 = 肩 | 功能<<4（bit0-3）
+模式 0 (edu) byte 0 🔒；模式 2 byte 0；模式 6 v[1] lo；模式 9 v[1] 🔒；模式 0 (toy) byte 6 🔒；模式 0 (toy) byte 1 🔒。備註：byte0 = 肩 | 功能<<4（App 顏色，START = −128）：低 4 bit; 低 4 bit（高 4 bit = 功能）; v1 = 肩 | 功能<<4（bit0-3）; 原始藍 = 肩 | 功能<<4（0~255）; 單鍵編號（L2=1 R2=2 L1=3 R1=4 SELECT=5 L3=6 R3=7 START=8，沒按 0；同時按只回編號最小的那個）
 
 ```python
 from pybricks.iodevices import PUPDevice
@@ -402,7 +409,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-shoulder = dev.read(9)[1]   # 肩鍵
+w = dev.read(9)[1]
+shoulder = w & 0x0F   # 肩鍵（bit 0~3）
 ```
 
 **MBC 函式庫**
@@ -505,7 +513,7 @@ let shoulder = mbc.padGroup(MbcPadGroup.Shoulders)   // 肩鍵：0~15 bit
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-模式 0 (edu) byte 0 🔒；模式 2 byte 0；模式 6 v[1] hi；模式 9 v[1] 🔒。備註：高 4 bit; 高 4 bit; v1 bit4-7
+模式 0 (edu) byte 0 🔒；模式 2 byte 0；模式 6 v[1] hi；模式 9 v[1] 🔒；模式 0 (toy) byte 6 🔒；模式 0 (toy) byte 1 🔒。備註：高 4 bit; 高 4 bit; v1 bit4-7; 原始藍 = 肩 | 功能<<4（0~255）; 單鍵編號（L2=1 R2=2 L1=3 R1=4 SELECT=5 L3=6 R3=7 START=8，沒按 0；同時按只回編號最小的那個）
 
 ```python
 from pybricks.iodevices import PUPDevice
@@ -513,7 +521,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-func = dev.read(9)[1]   # 功能鍵
+w = dev.read(9)[1]
+func = (w >> 4) & 0x0F   # 功能鍵（bit 4~7）
 ```
 
 **MBC 函式庫**
@@ -643,13 +652,15 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
-connected = sensor.read(3)[0]   # 已連線：0~1
+w = sensor.read(3)[0]
+connected = (w >> 8) & 1   # 已連線（bit 8）
 ```
 
 ```basic
 ' clev3r (BASIC)
 Sensor.SetMode(1, 3)
-connected = Sensor.ReadRawValue(1, 0)
+w = Sensor.ReadRawValue(1, 0)
+connected = Math.Remainder(Math.Floor(w / 256), 2)   ' bit 8
 ```
 
 </details>
@@ -1077,7 +1088,7 @@ let padType = mbc.padType()   // 手把類型：0~2
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-模式 0 (edu) byte 2 🔒；模式 0 (toy) byte 2 🔒；模式 4 v[0]；模式 7 v[2] 🔒；模式 8 v[0]；模式 9 v[2] 🔒。備註：byte2~3 = LX×10+LY、byte4~5 = RX×10+RY（11~99，中心 55；App 原始紅／綠）; LX×10+LY、RX×10+RY 經玩具版查表編碼成 byte2~3、byte4~5; v0 = LX | LY<<8、v1 = RX | RY<<8; Pybricks ambient() 用：v2 = LX×1000 + LY×100 + RX×10 + RY（1111~9999，中心 5555）；v0、v1 同模式 6；個位數 RY 在 4.1.x 的 ambient() 讀不到，4.1.x 改從模式 5 reflection() 的小數位讀（見按鍵 buttons16）; 只送 4 B：v0 = LX | LY<<8、v1 = RX | RY<<8; v2~v5 = LX、LY、RX、RY（0~99 ÷10，0 補 1）
+模式 0 (edu) byte 2 🔒；模式 0 (toy) byte 2 🔒；模式 4 v[0]；模式 7 v[2] 🔒；模式 9 v[2] 🔒。備註：byte2~3 = LX×10+LY、byte4~5 = RX×10+RY（11~99，中心 55；App 原始紅／綠）; 原始紅 = LX×10+LY、原始綠 = RX×10+RY（各 1~9，5 = 中間）; v0 = LX | LY<<8、v1 = RX | RY<<8（各 1~9，5 = 中間）; Pybricks ambient() 用：v2 = LX×1000 + LY×100 + RX×10 + RY（1111~9999，中心 5555）；v0、v1 同模式 6；個位數 RY 在 4.1.x 的 ambient() 讀不到，4.1.x 改從模式 5 reflection() 的小數位讀（見按鍵 buttons16）; v2~v5 = LX、LY、RX、RY（0~99 ÷10，0 補 1）
 
 ```python
 from pybricks.iodevices import PUPDevice
@@ -1112,19 +1123,19 @@ from pybricks.parameters import Port
 
 sensor = LUMPDevice(Port.S1)   # 感應器插 1 號孔
 
-stick = sensor.read(1)[1:5]   # 搖桿 LX／LY／RX／RY
+stick = sensor.read(1)[1::2]   # 搖桿 LX／LY／RX／RY（index 1、3、5、7）：0~99（50 = 中間）
 stick = sensor.read(2)[0:4]   # 搖桿 LX／LY／RX／RY
-stick = sensor.read(4)[1:3]   # 搖桿 LX／LY／RX／RY
+stick = sensor.read(4)[1::2]   # 搖桿 LX／LY／RX／RY（index 1、3）：0~99（50 = 中間）
 ```
 
 ```basic
 ' clev3r (BASIC)
 Sensor.SetMode(1, 1)
-stick1 = Sensor.ReadRawValue(1, 1)   ' 第 1 筆；第 N 筆改成 1 + N - 1
+stick1 = Sensor.ReadRawValue(1, 1)   ' 第 1 筆；第 N 筆的 index ＝ 1 + 2×(N − 1)（1、3、5、7）
 Sensor.SetMode(1, 2)
 stick1 = Sensor.ReadRawValue(1, 0)   ' 第 1 筆；第 N 筆改成 0 + N - 1
 Sensor.SetMode(1, 4)
-stick1 = Sensor.ReadRawValue(1, 1)   ' 第 1 筆；第 N 筆改成 1 + N - 1
+stick1 = Sensor.ReadRawValue(1, 1)   ' 第 1 筆；第 N 筆的 index ＝ 1 + 2×(N − 1)（1、3）
 ```
 
 </details>

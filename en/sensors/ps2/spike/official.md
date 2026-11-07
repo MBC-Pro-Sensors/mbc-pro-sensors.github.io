@@ -29,7 +29,7 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 
 | Hub | Value | Block (More Sensors → Color Sensor) | Decode |
 | :--- | :--- | :--- | :--- |
-| SPIKE Prime | 16 buttons | 「raw blue」 | the number it returns |
+| SPIKE Prime | 16 buttons | 「raw blue」 | the number it returns (negative while ■ is held: add 65536 first) |
 
 <p class="ref-note">Firmware note: App 原始藍 = button16（.ino:201-211）</p>
 
@@ -47,8 +47,8 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 
 | Hub | Value | Block (More Sensors → Color Sensor) | Decode |
 | :--- | :--- | :--- | :--- |
-| SPIKE Prime | d-pad | 「reflected light」 | the number it returns |
-| Robot Inventor | d-pad | 「reflected light」 | the number it returns |
+| SPIKE Prime | d-pad | 「reflected light」 | the number mod 16 |
+| Robot Inventor | d-pad | 「reflected light」 | the number mod 16 (negative while ■ is held, ■ alone = −128: add 256 first) |
 
 <p class="ref-note">Firmware note: byte1 = 方向 | 形狀<<4（App 反射光）：低 4 bit; byte0 = 方向 | 形狀<<4</p>
 
@@ -66,8 +66,8 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 
 | Hub | Value | Block (More Sensors → Color Sensor) | Decode |
 | :--- | :--- | :--- | :--- |
-| SPIKE Prime | shape buttons | 「reflected light」 | the number it returns |
-| Robot Inventor | shape buttons | 「reflected light」 | the number it returns |
+| SPIKE Prime | shape buttons | 「reflected light」 | floor(the number ÷ 16) |
+| Robot Inventor | shape buttons | 「reflected light」 | floor(the number ÷ 16) (negative while ■ is held, ■ alone = −128: add 256 first) |
 
 <p class="ref-note">Firmware note: 高 4 bit; 高 4 bit</p>
 
@@ -85,10 +85,11 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 
 | Hub | Value | Block (More Sensors → Color Sensor) | Decode |
 | :--- | :--- | :--- | :--- |
-| SPIKE Prime | shoulder buttons | 「color」 | the number it returns |
-| Robot Inventor | shoulder buttons | 「raw blue」 | the number mod 256 (Robot Inventor look-up encoding, see setup above) |
+| SPIKE Prime | shoulder buttons | 「color」 | the number mod 16 (negative while START is held, START alone = −128: add 256 first) |
+| Robot Inventor | shoulder buttons | 「raw blue」 | the number mod 16 |
+| Robot Inventor | one-button code | 「color」 | the number = one-button code: L2 1, R2 2, L1 3, R1 4, SELECT 5, L3 6, R3 7, START 8, none 0 (with several held, only the smallest code) |
 
-<p class="ref-note">Firmware note: byte0 = 肩 | 功能<<4（App 顏色，START = −128）：低 4 bit; byte6~7 = (肩 | 功能<<4) 經玩具版查表編碼；byte1 = 單鍵編號（L2=1 R2=2 L1=3 R1=4 SELECT=5 L3=6 R3=7 START=8，沒按 0）</p>
+<p class="ref-note">Firmware note: byte0 = 肩 | 功能<<4（App 顏色，START = −128）：低 4 bit; 原始藍 = 肩 | 功能<<4（0~255）; 單鍵編號（L2=1 R2=2 L1=3 R1=4 SELECT=5 L3=6 R3=7 START=8，沒按 0；同時按只回編號最小的那個）</p>
 
 </section>
 
@@ -104,9 +105,11 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 
 | Hub | Value | Block (More Sensors → Color Sensor) | Decode |
 | :--- | :--- | :--- | :--- |
-| SPIKE Prime | function buttons | 「color」 | the number it returns |
+| SPIKE Prime | function buttons | 「color」 | floor(the number ÷ 16) (negative while START is held, START alone = −128: add 256 first) |
+| Robot Inventor | function buttons | 「raw blue」 | floor(the number ÷ 16) |
+| Robot Inventor | one-button code | 「color」 | the number = one-button code: L2 1, R2 2, L1 3, R1 4, SELECT 5, L3 6, R3 7, START 8, none 0 (with several held, only the smallest code) |
 
-<p class="ref-note">Firmware note: 高 4 bit</p>
+<p class="ref-note">Firmware note: 高 4 bit; 原始藍 = 肩 | 功能<<4（0~255）; 單鍵編號（L2=1 R2=2 L1=3 R1=4 SELECT=5 L3=6 R3=7 START=8，沒按 0；同時按只回編號最小的那個）</p>
 
 </section>
 
@@ -122,12 +125,12 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 
 | Hub | Value | Block (More Sensors → Color Sensor) | Decode |
 | :--- | :--- | :--- | :--- |
-| SPIKE Prime | group 1 | 「raw red」 | the number it returns |
-| SPIKE Prime | group 2 | 「raw green」 | the number it returns |
-| Robot Inventor | group 1 | 「raw red」 | the number mod 256 (Robot Inventor look-up encoding, see setup above) |
-| Robot Inventor | group 2 | 「raw red」 | floor(the number ÷ 256) (Robot Inventor look-up encoding, see setup above) |
+| SPIKE Prime | left stick LX, LY | 「raw red」 | the number = LX×10 + LY: floor(number ÷ 10) = LX, number mod 10 = LY (1~9 each, 5 = centre) |
+| SPIKE Prime | right stick RX, RY | 「raw green」 | the number = RX×10 + RY: floor(number ÷ 10) = RX, number mod 10 = RY (1~9 each, 5 = centre) |
+| Robot Inventor | left stick LX, LY | 「raw red」 | the number = LX×10 + LY: floor(number ÷ 10) = LX, number mod 10 = LY (1~9 each, 5 = centre) |
+| Robot Inventor | right stick RX, RY | 「raw green」 | the number = RX×10 + RY: floor(number ÷ 10) = RX, number mod 10 = RY (1~9 each, 5 = centre) |
 
-<p class="ref-note">Firmware note: byte2~3 = LX×10+LY、byte4~5 = RX×10+RY（11~99，中心 55；App 原始紅／綠）; LX×10+LY、RX×10+RY 經玩具版查表編碼成 byte2~3、byte4~5</p>
+<p class="ref-note">Firmware note: byte2~3 = LX×10+LY、byte4~5 = RX×10+RY（11~99，中心 55；App 原始紅／綠）; 原始紅 = LX×10+LY、原始綠 = RX×10+RY（各 1~9，5 = 中間）</p>
 
 </section>
 

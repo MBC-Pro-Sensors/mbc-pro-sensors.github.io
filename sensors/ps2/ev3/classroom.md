@@ -93,10 +93,10 @@
 
 | 值 | 積木 | 換算 | 模式 |
 | :--- | :--- | :--- | :--- |
-| 第 1 個 | Infrared Sensor → Beacon proximity, channel 1 | 讀到的數 | 模式 1 |
-| 第 2 個 | Infrared Sensor → Beacon heading, channel 2 | 讀到的數 | 模式 1 |
-| 第 3 個 | Infrared Sensor → Beacon proximity, channel 2 | 讀到的數 | 模式 1 |
-| 第 4 個 | Infrared Sensor → Beacon heading, channel 3 | 讀到的數 | 模式 1 |
+| LX | Infrared Sensor → Beacon proximity, channel 1 | 讀到的數：0~99（50 = 中間） | 模式 1 |
+| LY | Infrared Sensor → Beacon proximity, channel 2 | 讀到的數：0~99（50 = 中間） | 模式 1 |
+| RX | Infrared Sensor → Beacon proximity, channel 3 | 讀到的數：0~99（50 = 中間） | 模式 1 |
+| RY | Infrared Sensor → Beacon proximity, channel 4 | 讀到的數：0~99（50 = 中間） | 模式 1 |
 
 </section>
 

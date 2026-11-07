@@ -85,7 +85,9 @@
           "hub": "edu",
           "byte": 6,
           "format": "u16",
-          "note": "PSX 排列（#65 已改，原本是 Bluepad32 排列）"
+          "note": "PSX 排列（#65 已改，原本是 Bluepad32 排列）",
+          "app": "raw",
+          "neg": "■"
         },
         {
           "mode": 6,
@@ -95,7 +97,11 @@
         {
           "mode": 9,
           "v": 6,
-          "note": "PSX 排列（D3，PS2／PS4 相同；函式庫 buttons_psx()）"
+          "note": "PSX 排列（D3，PS2／PS4 相同；函式庫 buttons_psx()）",
+          "bits": [
+            0,
+            16
+          ]
         }
       ],
       "matrix": {
@@ -157,7 +163,11 @@
           "mode": 3,
           "index": 0,
           "format": "int16",
-          "note": "低 nibble；高 nibble = 形狀鍵；bit8 = 已連線（+256，#67 新增）"
+          "note": "低 nibble；高 nibble = 形狀鍵；bit8 = 已連線（+256，#67 新增）",
+          "bits": [
+            0,
+            4
+          ]
         },
         {
           "mode": 4,
@@ -172,14 +182,17 @@
           "hub": "edu",
           "byte": 1,
           "format": "u8",
-          "note": "低 nibble；高 nibble = 形狀鍵"
+          "note": "低 nibble；高 nibble = 形狀鍵",
+          "app": "lo4"
         },
         {
           "mode": 0,
           "hub": "toy",
           "byte": 0,
           "format": "u8",
-          "note": "低 nibble；高 nibble = 形狀鍵"
+          "note": "低 nibble；高 nibble = 形狀鍵",
+          "app": "lo4",
+          "neg": "■"
         },
         {
           "mode": 1,
@@ -201,7 +214,11 @@
           "mode": 9,
           "v": 0,
           "part": "lo",
-          "note": "低 nibble；高 nibble = 形狀鍵"
+          "note": "低 nibble；高 nibble = 形狀鍵",
+          "bits": [
+            0,
+            4
+          ]
         }
       ],
       "matrix": {
@@ -256,7 +273,11 @@
           "mode": 3,
           "index": 0,
           "format": "int16",
-          "note": "高 nibble（÷16 取整數再 mod 16）"
+          "note": "高 nibble（÷16 取整數再 mod 16）",
+          "bits": [
+            4,
+            4
+          ]
         },
         {
           "mode": 4,
@@ -270,14 +291,17 @@
           "hub": "edu",
           "byte": 1,
           "format": "u8",
-          "note": "高 nibble"
+          "note": "高 nibble",
+          "app": "hi4"
         },
         {
           "mode": 0,
           "hub": "toy",
           "byte": 0,
           "format": "u8",
-          "note": "高 nibble"
+          "note": "高 nibble",
+          "app": "hi4",
+          "neg": "■"
         },
         {
           "mode": 1,
@@ -299,7 +323,11 @@
           "mode": 9,
           "v": 0,
           "part": "lo",
-          "note": "高 nibble"
+          "note": "高 nibble",
+          "bits": [
+            4,
+            4
+          ]
         }
       ],
       "matrix": {
@@ -353,7 +381,9 @@
           "hub": "edu",
           "byte": 0,
           "format": "u8",
-          "note": "低 nibble；高 nibble = 功能鍵"
+          "note": "低 nibble；高 nibble = 功能鍵",
+          "app": "lo4",
+          "neg": "OPTIONS"
         },
         {
           "mode": 2,
@@ -375,7 +405,27 @@
           "mode": 9,
           "v": 1,
           "part": "lo",
-          "note": "低 nibble；高 nibble = 功能鍵"
+          "note": "低 nibble；高 nibble = 功能鍵",
+          "bits": [
+            0,
+            4
+          ]
+        },
+        {
+          "mode": 0,
+          "hub": "toy",
+          "byte": 6,
+          "format": "u16",
+          "note": "原始藍 = 肩 | 功能<<4（0~255）",
+          "app": "lo4"
+        },
+        {
+          "mode": 0,
+          "hub": "toy",
+          "byte": 1,
+          "format": "u8",
+          "app": "keyNo",
+          "note": "單鍵編號（L2=1 R2=2 L1=3 R1=4 SHARE=5 L3=6 R3=7 OPTIONS=8，沒按 0；同時按只回編號最小的那個）"
         }
       ],
       "matrix": {
@@ -433,14 +483,17 @@
           "hub": "edu",
           "byte": 0,
           "format": "u8",
-          "note": "高 nibble"
+          "note": "高 nibble",
+          "app": "hi4",
+          "neg": "OPTIONS"
         },
         {
           "mode": 0,
           "hub": "toy",
           "byte": 1,
           "format": "u8",
-          "note": "單鍵編號 1~8（掃 功能鍵<<4|肩鍵 的 bit0→7：1 L2 2 R2 3 L1 4 R1 5 SELECT 6 L3 7 R3 8 START）"
+          "note": "單鍵編號 1~8（掃 功能鍵<<4|肩鍵 的 bit0→7：1 L2 2 R2 3 L1 4 R1 5 SELECT 6 L3 7 R3 8 START）",
+          "app": "keyNo"
         },
         {
           "mode": 2,
@@ -462,7 +515,19 @@
           "mode": 9,
           "v": 1,
           "part": "lo",
-          "note": "高 nibble"
+          "note": "高 nibble",
+          "bits": [
+            4,
+            4
+          ]
+        },
+        {
+          "mode": 0,
+          "hub": "toy",
+          "byte": 6,
+          "format": "u16",
+          "note": "原始藍 = 肩 | 功能<<4（0~255）",
+          "app": "hi4"
         }
       ],
       "matrix": {
@@ -503,7 +568,11 @@
           "mode": 3,
           "index": 0,
           "format": "int16",
-          "note": "bit8（值 ≥ 256 = 已連線，#67 新增）"
+          "note": "bit8（值 ≥ 256 = 已連線，#67 新增）",
+          "bits": [
+            8,
+            1
+          ]
         }
       ],
       "spike": [
@@ -751,20 +820,27 @@
           "mode": 1,
           "index": 1,
           "format": "int8",
-          "note": "LX；LY 在 index 3、RX 5、RY 7（與按鍵交錯）；0~99，50 = 中間（未連線 50）"
+          "note": "LX；LY 在 index 3、RX 5、RY 7（與按鍵交錯）；0~99，50 = 中間（未連線 50）",
+          "count": 4,
+          "stride": 2,
+          "scale": "0~99（50 = 中間）"
         },
         {
           "mode": 2,
           "index": 0,
           "count": 4,
           "format": "int8",
-          "note": "IR-REMOTE [LX, LY, RX, RY] 0~99，50 = 中間"
+          "note": "IR-REMOTE [LX, LY, RX, RY] 0~99，50 = 中間",
+          "scale": "0~99（50 = 中間）"
         },
         {
           "mode": 4,
           "index": 1,
           "format": "int8",
-          "note": "LX；LY 在 index 3（RX、RY 不在模式 4）"
+          "note": "LX；LY 在 index 3（RX、RY 不在模式 4）",
+          "count": 2,
+          "stride": 2,
+          "scale": "0~99（50 = 中間）"
         }
       ],
       "spike": [
@@ -773,21 +849,27 @@
           "hub": "edu",
           "byte": 2,
           "format": "u16",
-          "note": "LX×10+LY（各 1~9，5 = 中間）；byte 4~5 = RX×10+RY"
+          "note": "LX×10+LY（各 1~9，5 = 中間）；byte 4~5 = RX×10+RY",
+          "count": 2,
+          "app": "x10",
+          "scale": "1~9（5 = 中間）"
         },
         {
           "mode": 0,
           "hub": "toy",
           "byte": 2,
           "format": "u16",
-          "note": "LX×10+LY 查表編碼；byte 4~5 = RX×10+RY；byte 6~7 = 肩鍵 byte 查表"
+          "note": "原始紅 = LX×10+LY、原始綠 = RX×10+RY（各 1~9，5 = 中間）",
+          "count": 2,
+          "app": "x10",
+          "scale": "1~9（5 = 中間）"
         },
         {
           "mode": 4,
-          "byte": 0,
-          "count": 4,
-          "format": "u8",
-          "note": "[LX, LY, RX, RY] 0~99（宣告 2×int16，送 4 B）"
+          "count": 2,
+          "note": "v0 = LX | LY<<8、v1 = RX | RY<<8（各 1~9，5 = 中間）",
+          "v": 0,
+          "scale": "1~9（5 = 中間）"
         },
         {
           "mode": 7,

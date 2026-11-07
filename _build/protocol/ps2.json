@@ -75,7 +75,9 @@
           "hub": "edu",
           "byte": 6,
           "format": "u16",
-          "note": "App 原始藍 = button16（.ino:201-211）"
+          "note": "App 原始藍 = button16（.ino:201-211）",
+          "app": "raw",
+          "neg": "■"
         },
         {
           "mode": 5,
@@ -90,7 +92,11 @@
         {
           "mode": 9,
           "v": 6,
-          "note": "v6 = button16（PSX）"
+          "note": "v6 = button16（PSX）",
+          "bits": [
+            0,
+            16
+          ]
         }
       ],
       "matrix": {
@@ -150,7 +156,11 @@
           "mode": 3,
           "index": 0,
           "format": "int16",
-          "note": "#67 改：IR-REM-A 1×int16 = 方向 | 形狀<<4 | 已連線<<8（bit0-3 = 方向）"
+          "note": "#67 改：IR-REM-A 1×int16 = 方向 | 形狀<<4 | 已連線<<8（bit0-3 = 方向）",
+          "bits": [
+            0,
+            4
+          ]
         },
         {
           "mode": 4,
@@ -165,14 +175,17 @@
           "hub": "edu",
           "byte": 1,
           "format": "u8",
-          "note": "byte1 = 方向 | 形狀<<4（App 反射光）：低 4 bit"
+          "note": "byte1 = 方向 | 形狀<<4（App 反射光）：低 4 bit",
+          "app": "lo4"
         },
         {
           "mode": 0,
           "hub": "toy",
           "byte": 0,
           "format": "u8",
-          "note": "byte0 = 方向 | 形狀<<4"
+          "note": "byte0 = 方向 | 形狀<<4",
+          "app": "lo4",
+          "neg": "■"
         },
         {
           "mode": 1,
@@ -188,7 +201,11 @@
         {
           "mode": 9,
           "v": 0,
-          "note": "v0 = 方向 | 形狀<<4（bit0-3）"
+          "note": "v0 = 方向 | 形狀<<4（bit0-3）",
+          "bits": [
+            0,
+            4
+          ]
         }
       ],
       "matrix": {
@@ -241,7 +258,11 @@
           "mode": 3,
           "index": 0,
           "format": "int16",
-          "note": "#67 改：bit4-7 = 形狀（同一個 int16）"
+          "note": "#67 改：bit4-7 = 形狀（同一個 int16）",
+          "bits": [
+            4,
+            4
+          ]
         },
         {
           "mode": 4,
@@ -255,14 +276,17 @@
           "hub": "edu",
           "byte": 1,
           "format": "u8",
-          "note": "高 4 bit"
+          "note": "高 4 bit",
+          "app": "hi4"
         },
         {
           "mode": 0,
           "hub": "toy",
           "byte": 0,
           "format": "u8",
-          "note": "高 4 bit"
+          "note": "高 4 bit",
+          "app": "hi4",
+          "neg": "■"
         },
         {
           "mode": 1,
@@ -278,7 +302,11 @@
         {
           "mode": 9,
           "v": 0,
-          "note": "v0 bit4-7"
+          "note": "v0 bit4-7",
+          "bits": [
+            4,
+            4
+          ]
         }
       ],
       "matrix": {
@@ -330,14 +358,9 @@
           "hub": "edu",
           "byte": 0,
           "format": "u8",
-          "note": "byte0 = 肩 | 功能<<4（App 顏色，START = −128）：低 4 bit"
-        },
-        {
-          "mode": 0,
-          "hub": "toy",
-          "byte": 6,
-          "format": "u8×2 查表",
-          "note": "byte6~7 = (肩 | 功能<<4) 經玩具版查表編碼；byte1 = 單鍵編號（L2=1 R2=2 L1=3 R1=4 SELECT=5 L3=6 R3=7 START=8，沒按 0）"
+          "note": "byte0 = 肩 | 功能<<4（App 顏色，START = −128）：低 4 bit",
+          "app": "lo4",
+          "neg": "START"
         },
         {
           "mode": 2,
@@ -353,7 +376,27 @@
         {
           "mode": 9,
           "v": 1,
-          "note": "v1 = 肩 | 功能<<4（bit0-3）"
+          "note": "v1 = 肩 | 功能<<4（bit0-3）",
+          "bits": [
+            0,
+            4
+          ]
+        },
+        {
+          "mode": 0,
+          "hub": "toy",
+          "byte": 6,
+          "format": "u16",
+          "note": "原始藍 = 肩 | 功能<<4（0~255）",
+          "app": "lo4"
+        },
+        {
+          "mode": 0,
+          "hub": "toy",
+          "byte": 1,
+          "format": "u8",
+          "app": "keyNo",
+          "note": "單鍵編號（L2=1 R2=2 L1=3 R1=4 SELECT=5 L3=6 R3=7 START=8，沒按 0；同時按只回編號最小的那個）"
         }
       ],
       "matrix": {
@@ -409,7 +452,9 @@
           "hub": "edu",
           "byte": 0,
           "format": "u8",
-          "note": "高 4 bit"
+          "note": "高 4 bit",
+          "app": "hi4",
+          "neg": "START"
         },
         {
           "mode": 2,
@@ -425,7 +470,27 @@
         {
           "mode": 9,
           "v": 1,
-          "note": "v1 bit4-7"
+          "note": "v1 bit4-7",
+          "bits": [
+            4,
+            4
+          ]
+        },
+        {
+          "mode": 0,
+          "hub": "toy",
+          "byte": 6,
+          "format": "u16",
+          "note": "原始藍 = 肩 | 功能<<4（0~255）",
+          "app": "hi4"
+        },
+        {
+          "mode": 0,
+          "hub": "toy",
+          "byte": 1,
+          "format": "u8",
+          "app": "keyNo",
+          "note": "單鍵編號（L2=1 R2=2 L1=3 R1=4 SELECT=5 L3=6 R3=7 START=8，沒按 0；同時按只回編號最小的那個）"
         }
       ],
       "matrix": {
@@ -466,7 +531,11 @@
           "mode": 3,
           "index": 0,
           "format": "int16",
-          "note": "#67 改：bit8 = 已連線（+256）"
+          "note": "#67 改：bit8 = 已連線（+256）",
+          "bits": [
+            8,
+            1
+          ]
         }
       ],
       "spike": [
@@ -694,7 +763,8 @@
           "count": 4,
           "format": "int8",
           "scale": "0~99（50 = 中間）",
-          "note": "交錯：index 1 = LX、3 = LY、5 = RX、7 = RY（偶數 index 是按鍵）"
+          "note": "交錯：index 1 = LX、3 = LY、5 = RX、7 = RY（偶數 index 是按鍵）",
+          "stride": 2
         },
         {
           "mode": 2,
@@ -710,7 +780,8 @@
           "count": 2,
           "format": "int8",
           "scale": "0~99（50 = 中間）",
-          "note": "index 1 = LX、3 = LY（只到左搖桿）"
+          "note": "index 1 = LX、3 = LY（只到左搖桿）",
+          "stride": 2
         }
       ],
       "spike": [
@@ -721,23 +792,25 @@
           "count": 2,
           "format": "u16",
           "scale": "1~9（5 = 中間）",
-          "note": "byte2~3 = LX×10+LY、byte4~5 = RX×10+RY（11~99，中心 55；App 原始紅／綠）"
+          "note": "byte2~3 = LX×10+LY、byte4~5 = RX×10+RY（11~99，中心 55；App 原始紅／綠）",
+          "app": "x10"
         },
         {
           "mode": 0,
           "hub": "toy",
           "byte": 2,
           "count": 2,
-          "format": "u8×2 查表",
+          "format": "u16",
           "scale": "1~9（5 = 中間）",
-          "note": "LX×10+LY、RX×10+RY 經玩具版查表編碼成 byte2~3、byte4~5"
+          "note": "原始紅 = LX×10+LY、原始綠 = RX×10+RY（各 1~9，5 = 中間）",
+          "app": "x10"
         },
         {
           "mode": 4,
           "v": 0,
           "count": 2,
-          "scale": "0~99（50 = 中間）",
-          "note": "v0 = LX | LY<<8、v1 = RX | RY<<8"
+          "scale": "1~9（5 = 中間）",
+          "note": "v0 = LX | LY<<8、v1 = RX | RY<<8（各 1~9，5 = 中間）"
         },
         {
           "mode": 7,
@@ -745,13 +818,6 @@
           "scale": "1~9（5 = 中間）",
           "note": "Pybricks ambient() 用：v2 = LX×1000 + LY×100 + RX×10 + RY（1111~9999，中心 5555）；v0、v1 同模式 6；個位數 RY 在 4.1.x 的 ambient() 讀不到，4.1.x 改從模式 5 reflection() 的小數位讀（見按鍵 buttons16）",
           "ambientOnes": "舊版"
-        },
-        {
-          "mode": 8,
-          "v": 0,
-          "count": 2,
-          "scale": "0~99（50 = 中間）",
-          "note": "只送 4 B：v0 = LX | LY<<8、v1 = RX | RY<<8"
         },
         {
           "mode": 9,

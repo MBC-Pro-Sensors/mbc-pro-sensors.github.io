@@ -35,7 +35,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-buttons16 = dev.read(9)[6]   # 十六鍵
+w = dev.read(9)[6]
+buttons16 = w & 0xFFFF   # 十六鍵（int16 轉回 0~65535；按住 ■ 時讀到負數）
 ```
 
 </section>
@@ -58,7 +59,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-dpad = dev.read(9)[0]   # 方向鍵
+w = dev.read(9)[0]
+dpad = w & 0x0F   # 方向鍵（bit 0~3）
 ```
 
 </section>
@@ -81,7 +83,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-shape = dev.read(9)[0]   # 形狀鍵
+w = dev.read(9)[0]
+shape = (w >> 4) & 0x0F   # 形狀鍵（bit 4~7）
 ```
 
 </section>
@@ -104,7 +107,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-shoulder = dev.read(9)[1]   # 肩鍵
+w = dev.read(9)[1]
+shoulder = w & 0x0F   # 肩鍵（bit 0~3）
 ```
 
 </section>
@@ -127,7 +131,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-func = dev.read(9)[1]   # 功能鍵
+w = dev.read(9)[1]
+func = (w >> 4) & 0x0F   # 功能鍵（bit 4~7）
 ```
 
 </section>

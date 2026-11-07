@@ -61,7 +61,7 @@ The Controller 2.4G Receiver provides a **high cost-performance solution**: It a
 | EV3 mode | Content |
 | :---: | :--- |
 | 0 | D-pad state |
-| 1 | D-pad, left stick X, shape buttons (■ ✕ ● ▲), left stick Y, shoulder buttons (L1 R1 L2 R2), right stick X, function buttons (START SELECT L3 R3), right stick Y |
+| 1 | D-pad, left stick X, shape buttons (▲ ● ✕ ■), left stick Y, shoulder buttons (L2 R2 L1 R1), right stick X, function buttons (SELECT L3 R3 START), right stick Y |
 | 2 | Left stick X, left stick Y, right stick X, right stick Y |
 
 ## ∿ Universal I2C Registers (address `0x42`)
@@ -71,17 +71,23 @@ Same register table as the [PS4/PS5 receiver](/en/sensors/ps4/index.md), so host
 > [!TIP]
 > **No coding experience? No problem:** see the [🧪 Arduino Examples](/en/sensors/ps2/arduino-examples.md). Every example can be copied and uploaded right away, with an English note on every line.
 
-| Register | Dir | Len | Content |
-| :---: | :---: | :---: | :--- |
-| `0x11` | R | 9 | Gamepad bundle (= `0x12` ~ `0x15`) |
-| `0x12` | R | 2 | Buttons uint16 (b15 ■, b14 ✕, b13 ●, b12 ▲, b11 R1, b10 L1, b9 R2, b8 L2, b7 left, b6 down, b5 right, b4 up, b3 START, b2 R3, b1 L3, b0 SELECT) |
-| `0x13` | R | 4 | Sticks LX, LY, RX, RY: int8 `-127` ~ `+127`, 0 = center, right / up positive; values within ±8 of center read as 0 (dead zone). In digital mode (ANALOG light off), the sticks always read 0 |
-| `0x14` | R | 2 | Triggers L2, R2: `0` ~ `255` (only 0 / 255 if the gamepad has no pressure sensing) |
-| `0x22` | R | 4 | Simple sticks LX, LY, RX, RY: `0` ~ `99`, 50 = center |
-| `0x32` | R | 1 | bit0 = ready, bit1 = gamepad connected |
-| `0x34` | R | 1 | Gamepad type: 0 = none, 1 = digital mode, 2 = analog mode |
+**How to read:** write `[ID]` → wait 2 ms → read 2×k bytes: k values starting at that ID (each value is an int16, low byte first, k ≤ 16). Unknown IDs return `-32768`. Values read in one go are from the same instant.
 
-Variant `0x06` byte 1 = `1`. The PS2 edition has no rumble or light bar (writes to `0x10` and `0x23` are ignored).
+| ID | Value | Content |
+| :---: | :--- | :--- |
+| `0x01` | 16 buttons | All 16 buttons in one number (1 = pressed): b0 SELECT, b1 L3, b2 R3, b3 START, b4 up, b5 right, b6 down, b7 left, b8 L2, b9 R2, b10 L1, b11 R1, b12 ▲, b13 ●, b14 ✕, b15 ■; 0 when not connected. ⚠️ Read as int16, ■ alone is `-32768` (same as "no value"): cast to `uint16_t` before testing |
+| `0x02` | D-pad | `0` ~ `15`: up 1, right 2, down 4, left 8 (added when pressed together) |
+| `0x03` | Shape buttons | `0` ~ `15`: ▲ 1, ● 2, ✕ 4, ■ 8 |
+| `0x04` | Shoulder buttons | `0` ~ `15`: L2 1, R2 2, L1 4, R1 8 |
+| `0x05` | Function buttons | `0` ~ `15`: SELECT 1, L3 2, R3 4, START 8 |
+| `0x06` | Connected | 1 = gamepad connected, 0 = not (while disconnected all buttons and sticks read 0) |
+| `0x07` | Battery | PS2 pads report no battery: always `0` |
+| `0x08`, `0x09` | L2, R2 analog | `0` ~ `255` (pressure only on a DualShock 2 in analog mode; otherwise pressed = 255, released = 0) |
+| `0x0A` | System buttons | PS2 pads have none: always `0` |
+| `0x0B` | Gamepad type | 0 = none, 1 = digital mode, 2 = analog mode |
+| `0x10` ~ `0x13` | Sticks LX, LY, RX, RY | `-100` ~ `+100`, 0 = center, right / up positive (within ±7 of center reads as center); the sticks only move when the pad's ANALOG light is on |
+
+Commands `E5` (rumble) and `E6` (light bar) are acknowledged but ignored by the PS2 receiver (PS2 pads have no light bar, and rumble is turned off). `F0` device ID: low byte `0x42`, high byte `1` (= PS2). For `F1`–`F5`, `F8` (change address) and `EF` (restart) see the [MBC Universal I2C Protocol](/en/i2c-protocol.md). How to read it from Arduino, and every value in detail: [Arduino IDE guide](/en/sensors/ps2/arduino/ide.md).
 
 ## 🔌 Hardware Wiring
 

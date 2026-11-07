@@ -29,7 +29,7 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 
 | Hub | Value | Block (More Sensors → Color Sensor) | Decode |
 | :--- | :--- | :--- | :--- |
-| SPIKE Prime | 16 buttons | 「raw blue」 | the number it returns |
+| SPIKE Prime | 16 buttons | 「raw blue」 | the number it returns (negative while ■ is held: add 65536 first) |
 
 <p class="ref-note">Firmware note: PSX 排列（#65 已改，原本是 Bluepad32 排列）</p>
 
@@ -47,8 +47,8 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 
 | Hub | Value | Block (More Sensors → Color Sensor) | Decode |
 | :--- | :--- | :--- | :--- |
-| SPIKE Prime | D-pad | 「reflected light」 | the number it returns |
-| Robot Inventor | D-pad | 「reflected light」 | the number it returns |
+| SPIKE Prime | D-pad | 「reflected light」 | the number mod 16 |
+| Robot Inventor | D-pad | 「reflected light」 | the number mod 16 (negative while ■ is held, ■ alone = −128: add 256 first) |
 
 <p class="ref-note">Firmware note: 低 nibble；高 nibble = 形狀鍵; 低 nibble；高 nibble = 形狀鍵</p>
 
@@ -66,8 +66,8 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 
 | Hub | Value | Block (More Sensors → Color Sensor) | Decode |
 | :--- | :--- | :--- | :--- |
-| SPIKE Prime | shape buttons | 「reflected light」 | the number it returns |
-| Robot Inventor | shape buttons | 「reflected light」 | the number it returns |
+| SPIKE Prime | shape buttons | 「reflected light」 | floor(the number ÷ 16) |
+| Robot Inventor | shape buttons | 「reflected light」 | floor(the number ÷ 16) (negative while ■ is held, ■ alone = −128: add 256 first) |
 
 <p class="ref-note">Firmware note: 高 nibble; 高 nibble</p>
 
@@ -85,9 +85,11 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 
 | Hub | Value | Block (More Sensors → Color Sensor) | Decode |
 | :--- | :--- | :--- | :--- |
-| SPIKE Prime | shoulder buttons | 「color」 | the number it returns |
+| SPIKE Prime | shoulder buttons | 「color」 | the number mod 16 (negative while OPTIONS is held, OPTIONS alone = −128: add 256 first) |
+| Robot Inventor | shoulder buttons | 「raw blue」 | the number mod 16 |
+| Robot Inventor | one-button code | 「color」 | the number = one-button code: L2 1, R2 2, L1 3, R1 4, SHARE 5, L3 6, R3 7, OPTIONS 8, none 0 (with several held, only the smallest code) |
 
-<p class="ref-note">Firmware note: 低 nibble；高 nibble = 功能鍵</p>
+<p class="ref-note">Firmware note: 低 nibble；高 nibble = 功能鍵; 原始藍 = 肩 | 功能<<4（0~255）; 單鍵編號（L2=1 R2=2 L1=3 R1=4 SHARE=5 L3=6 R3=7 OPTIONS=8，沒按 0；同時按只回編號最小的那個）</p>
 
 </section>
 
@@ -103,10 +105,11 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 
 | Hub | Value | Block (More Sensors → Color Sensor) | Decode |
 | :--- | :--- | :--- | :--- |
-| SPIKE Prime | function buttons | 「color」 | the number it returns |
-| Robot Inventor | function buttons | 「color」 | the number it returns |
+| SPIKE Prime | function buttons | 「color」 | floor(the number ÷ 16) (negative while OPTIONS is held, OPTIONS alone = −128: add 256 first) |
+| Robot Inventor | one-button code | 「color」 | the number = one-button code: L2 1, R2 2, L1 3, R1 4, SHARE 5, L3 6, R3 7, OPTIONS 8, none 0 (with several held, only the smallest code) |
+| Robot Inventor | function buttons | 「raw blue」 | floor(the number ÷ 16) |
 
-<p class="ref-note">Firmware note: 高 nibble; 單鍵編號 1~8（掃 功能鍵<<4|肩鍵 的 bit0→7：1 L2 2 R2 3 L1 4 R1 5 SELECT 6 L3 7 R3 8 START）</p>
+<p class="ref-note">Firmware note: 高 nibble; 單鍵編號 1~8（掃 功能鍵<<4|肩鍵 的 bit0→7：1 L2 2 R2 3 L1 4 R1 5 SELECT 6 L3 7 R3 8 START）; 原始藍 = 肩 | 功能<<4（0~255）</p>
 
 </section>
 
@@ -122,10 +125,12 @@ The official app shows the sensor as a Color Sensor. Read it with the color, ref
 
 | Hub | Value | Block (More Sensors → Color Sensor) | Decode |
 | :--- | :--- | :--- | :--- |
-| SPIKE Prime | stick axis 1~4 | 「raw red」 | the number it returns |
-| Robot Inventor | stick axis 1~4 | 「raw red」 | the number it returns |
+| SPIKE Prime | left stick LX, LY | 「raw red」 | the number = LX×10 + LY: floor(number ÷ 10) = LX, number mod 10 = LY (1~9 each, 5 = centre) |
+| SPIKE Prime | right stick RX, RY | 「raw green」 | the number = RX×10 + RY: floor(number ÷ 10) = RX, number mod 10 = RY (1~9 each, 5 = centre) |
+| Robot Inventor | left stick LX, LY | 「raw red」 | the number = LX×10 + LY: floor(number ÷ 10) = LX, number mod 10 = LY (1~9 each, 5 = centre) |
+| Robot Inventor | right stick RX, RY | 「raw green」 | the number = RX×10 + RY: floor(number ÷ 10) = RX, number mod 10 = RY (1~9 each, 5 = centre) |
 
-<p class="ref-note">Firmware note: LX×10+LY（各 1~9，5 = 中間）；byte 4~5 = RX×10+RY; LX×10+LY 查表編碼；byte 4~5 = RX×10+RY；byte 6~7 = 肩鍵 byte 查表</p>
+<p class="ref-note">Firmware note: LX×10+LY（各 1~9，5 = 中間）；byte 4~5 = RX×10+RY; 原始紅 = LX×10+LY、原始綠 = RX×10+RY（各 1~9，5 = 中間）</p>
 
 </section>
 

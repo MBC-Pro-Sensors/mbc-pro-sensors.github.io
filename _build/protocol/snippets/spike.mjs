@@ -25,6 +25,14 @@ function head(lang) {
 function nativeLine(v, e, lang) {
   const off = e.offset ? ` - ${e.offset}` : '';
   const name = valueName(v, lang);
+  // bits: [shift, width]：值在這個 int16 的哪幾個位元（掌控者模式 9 v0 = 方向 | 形狀<<4；v6 十六鍵 int16 要轉回 0~65535）
+  if (e.v != null && e.bits) {
+    const [s, wd] = e.bits;
+    const mask = wd >= 16 ? '0xFFFF' : wd === 1 ? '1' : '0x' + ((1 << wd) - 1).toString(16).toUpperCase().padStart(2, '0');
+    const pick = s ? `(w >> ${s}) & ${mask}` : `w & ${mask}`;
+    const why = wd >= 16 ? T(lang, 'int16 轉回 0~65535；按住 ■ 時讀到負數', 'int16 back to 0~65535; negative while ■ is held') : T(lang, `bit ${s}${wd > 1 ? `~${s + wd - 1}` : ''}`, `bit${wd > 1 ? 's' : ''} ${s}${wd > 1 ? `~${s + wd - 1}` : ''}`);
+    return `w = dev.read(${e.mode})[${e.v}]\n${v.key} = ${pick}${off}   # ${name}${T(lang, `（${why}）`, ` (${why})`)}`;
+  }
   if (e.v != null && e.part) {
     const w = `w = dev.read(${e.mode})[${e.v}]`;
     // 同一個 byte 放兩組 4-bit（例：掌控者方向鍵＝低 nibble、形狀鍵＝高 nibble）要再遮掉另一半
@@ -128,7 +136,31 @@ function officialBlock(hub, b, lang) {
   if (b >= 2 && b <= 7) return L(RGB[(b - 2) >> 1], lang);
   return null;
 }
-function officialRows(e, v, lang) {
+// protocol app 欄（掌控者，見 _build/protocol-site-fixes.mjs）：App 讀到的數怎麼拆
+function appHow(product, e, i, wide, lang) {
+  const neg = e.neg ? (wide
+    ? T(lang, `（按住 ${e.neg} 時讀到負數，先加 65536）`, ` (negative while ${e.neg} is held: add 65536 first)`)
+    : T(lang, `（按住 ${e.neg} 時讀到負數，只按 ${e.neg} = −128：先加 256 再算）`, ` (negative while ${e.neg} is held, ${e.neg} alone = −128: add 256 first)`)) : '';
+  const ps4 = product.id === 'ps4';
+  if (e.app === 'lo4') return T(lang, '讀到的數 ÷ 16 的餘數', 'the number mod 16') + neg;
+  if (e.app === 'hi4') return T(lang, '讀到的數 ÷ 16 取整數（無條件捨去）', 'floor(the number ÷ 16)') + neg;
+  if (e.app === 'raw') return T(lang, '讀到的數', 'the number it returns') + neg;
+  if (e.app === 'x10') {
+    const [x, y] = i ? ['RX', 'RY'] : ['LX', 'LY'];
+    return T(lang, `讀到的數＝${x}×10＋${y}：÷ 10 取整數＝${x}、÷ 10 的餘數＝${y}（各 1~9，5＝中間）`, `the number = ${x}×10 + ${y}: floor(number ÷ 10) = ${x}, number mod 10 = ${y} (1~9 each, 5 = centre)`);
+  }
+  if (e.app === 'keyNo') {
+    const [sel, st] = ps4 ? ['SHARE', 'OPTIONS'] : ['SELECT', 'START'];
+    return T(lang, `讀到的數＝單鍵編號：L2 1、R2 2、L1 3、R1 4、${sel} 5、L3 6、R3 7、${st} 8，沒按 0（同時按好幾個只回編號最小的那個）`, `the number = one-button code: L2 1, R2 2, L1 3, R1 4, ${sel} 5, L3 6, R3 7, ${st} 8, none 0 (with several held, only the smallest code)`);
+  }
+  return null;
+}
+function appLabel(e, i, v, lang) {
+  if (e.app === 'x10') return i ? T(lang, '右搖桿 RX、RY', 'right stick RX, RY') : T(lang, '左搖桿 LX、LY', 'left stick LX, LY');
+  if (e.app === 'keyNo') return T(lang, '單鍵編號', 'one-button code');
+  return null;
+}
+function officialRows(e, v, lang, product) {
   const f = e.format || 'u8';
   const wide = /16/.test(f) && !/查表/.test(f);
   const step = e.count && wide ? 2 : 1;
@@ -139,6 +171,12 @@ function officialRows(e, v, lang) {
     const blk = officialBlock(e.hub, b, lang);
     if (!blk) return null; // byte 8 以後官方 App 讀不到
     let how;
+    if (e.app && product) {
+      how = appHow(product, e, i, wide, lang);
+      const label = appLabel(e, i, v, lang) || (n > 1 ? T(lang, `第 ${i + 1} 組`, `group ${i + 1}`) : valueName(v, lang));
+      rows.push([e.hub === 'toy' ? T(lang, 'Robot Inventor（玩具版）', 'Robot Inventor') : T(lang, 'SPIKE Prime（教育版）', 'SPIKE Prime'), label, `「${blk}」`, how]);
+      continue;
+    }
     if (b <= 1 || (wide && b % 2 === 0)) how = T(lang, '讀到的數', 'the number it returns');
     else if (/nibble/.test(f)) how = T(lang, '讀到的數：每個數字含 4 路、每路 4 bit', 'each number packs 4 channels of 4 bits');
     else if (b % 2 === 0) how = T(lang, '讀到的數 ÷ 256 取餘數', 'the number mod 256');
@@ -181,7 +219,7 @@ export function bySoftware(sw, product, v, lang) {
   if (sw === 'official') {
     let rows = [];
     for (const e of list.filter((x) => x.mode === 0 && x.hub)) {
-      const r = officialRows(e, v, lang);
+      const r = officialRows(e, v, lang, product);
       if (r) rows.push(...r);
     }
     if (OFFICIAL_FIX[product.id]) rows = OFFICIAL_FIX[product.id](v, rows, lang);

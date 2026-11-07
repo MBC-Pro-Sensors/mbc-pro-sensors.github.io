@@ -2,7 +2,7 @@
 import { L, T, valueName } from '../../gen-lib.mjs';
 
 // protocol 的 scale（例如「cm×100/120（0~100）」）：EV3 讀到的是換算後的數，註解照它寫，不寫值本身的範圍
-export function scaleText(s, lang) { return lang === 'en' ? s.replace(/平均\s*/g, 'average ').replace(/（/g, ' (').replace(/）/g, ')') : s; }
+export function scaleText(s, lang) { return lang === 'en' ? s.replace(/平均\s*/g, 'average ').replace(/中間/g, 'centre').replace(/（/g, ' (').replace(/）/g, ')') : s; }
 
 export function available(product) { return !!(product.hosts && product.hosts.ev3); }
 
@@ -20,7 +20,21 @@ export function value(product, v, lang) {
   const parts = v.ev3.map((e) => {
     const off = e.offset ? ` - ${e.offset}` : '';
     let py, basic;
-    if (e.count) {
+    const sc = e.scale ? T(lang, '：', ': ') + scaleText(e.scale, lang) : '';
+    if (e.bits) {
+      // bits: [shift, width]：同一個 int16 放好幾個值（掌控者模式 3 = 方向 | 形狀<<4 | 已連線<<8）
+      const [s, wd] = e.bits;
+      const mask = wd === 1 ? '1' : '0x' + ((1 << wd) - 1).toString(16).toUpperCase().padStart(2, '0');
+      const bitTxt = T(lang, `bit ${s}${wd > 1 ? `~${s + wd - 1}` : ''}`, `bit${wd > 1 ? 's' : ''} ${s}${wd > 1 ? `~${s + wd - 1}` : ''}`);
+      py = `w = sensor.read(${e.mode})[${e.index}]\n${v.key} = ${s ? `(w >> ${s}) & ${mask}` : `w & ${mask}`}${off}   # ${name}${T(lang, `（${bitTxt}）`, ` (${bitTxt})`)}`;
+      const div = s ? `Math.Floor(w / ${2 ** s})` : 'w';
+      basic = `Sensor.SetMode(1, ${e.mode})\nw = Sensor.ReadRawValue(1, ${e.index})\n${v.key} = Math.Remainder(${div}, ${2 ** wd})${off}   ' ${bitTxt}`;
+    } else if (e.count && e.stride) {
+      // stride：count 個值隔 stride 格放（掌控者模式 1 [方向, LX, 形狀, LY, 肩, RX, 功能, RY]）
+      const idx = Array.from({ length: e.count }, (_, k) => e.index + k * e.stride);
+      py = `${v.key} = sensor.read(${e.mode})[${e.index}::${e.stride}]   # ${name}${T(lang, `（index ${idx.join('、')}）`, ` (index ${idx.join(', ')})`)}${sc}`;
+      basic = `Sensor.SetMode(1, ${e.mode})\n${v.key}1 = Sensor.ReadRawValue(1, ${e.index})   ' ${T(lang, `第 1 筆；第 N 筆的 index ＝ ${e.index} + ${e.stride}×(N − 1)（${idx.join('、')}）`, `first; the N-th is at index ${e.index} + ${e.stride}×(N − 1) (${idx.join(', ')})`)}`;
+    } else if (e.count) {
       py = `${v.key} = sensor.read(${e.mode})[${e.index}:${e.index + e.count}]${off ? '   # ' + T(lang, `每筆減 ${e.offset}`, `subtract ${e.offset} from each`) : ''}   # ${name}`;
       basic = `Sensor.SetMode(1, ${e.mode})\n${v.key}1 = Sensor.ReadRawValue(1, ${e.index})   ' ${T(lang, '第 1 筆；第 N 筆改成', 'first; for the N-th use')} ${e.index} + N - 1`;
     } else {
@@ -51,7 +65,7 @@ export function status(product, lang) {
 function stockBlock(product, e, i, sw, lang) {
   const type = product.lego && product.lego.ev3Type;
   const en = sw === 'classroom' || lang === 'en'; // Classroom 沒有繁中介面：積木名用英文
-  const n = e.index + i;
+  const n = e.index + i * (e.stride || 1);   // stride：隔格放（掌控者模式 1 搖桿在 index 1、3、5、7）
   if (type === 33) {
     if (e.mode === 0 && n === 0) return en ? 'Infrared Sensor → Proximity' : '紅外線感應器 →「近接」';
     if (e.mode === 1 && n < 8) {
@@ -86,7 +100,9 @@ export function bySoftware(sw, product, v, lang) {
         const b = stockBlock(product, e, i, sw, lang);
         if (b === undefined) { custom = true; continue; }
         if (!b) continue;
-        rows.push([n > 1 ? T(lang, `第 ${i + 1} 個`, `#${i + 1}`) : valueName(v, lang), b, e.offset ? T(lang, `讀到的數 − ${e.offset}`, `value − ${e.offset}`) : T(lang, '讀到的數', 'the value'), T(lang, `模式 ${e.mode}`, `mode ${e.mode}`)]);
+        const sc = e.scale && e.stride ? T(lang, '：', ': ') + scaleText(e.scale, lang) : '';   // 掌控者搖桿（隔格放的模式 1）註明 0~99
+        const lbl = v.key === 'stick' && n === 4 ? ['LX', 'LY', 'RX', 'RY'][i] : n > 1 ? T(lang, `第 ${i + 1} 個`, `#${i + 1}`) : valueName(v, lang);
+        rows.push([lbl, b, (e.offset ? T(lang, `讀到的數 − ${e.offset}`, `value − ${e.offset}`) : T(lang, '讀到的數', 'the value')) + sc, T(lang, `模式 ${e.mode}`, `mode ${e.mode}`)]);
       }
       if (rows.length) break; // 第一個讀得到的模式就夠（換模式要等 0.5 秒）
     }

@@ -89,14 +89,14 @@ The EV3 sees a stock LEGO sensor; read it with the stock Classroom sensor blocks
 
 | Range | Meaning |
 | :--- | :--- |
-| `-100~+100` (EV3 mode 1, mode 2, mode 4 give a scaled value: 0~99 (50 = 中間)) | 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right / up positive (raw 0~255 with ±7 dead zone); 0 when not connected. EV3 / SPIKE / MATRIX carry 0~99 (50 = centre) or 1~9 (5 = centre), see each platform |
+| `-100~+100` (EV3 mode 1, mode 2, mode 4 give a scaled value: 0~99 (50 = centre)) | 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right / up positive (raw 0~255 with ±7 dead zone); 0 when not connected. EV3 / SPIKE / MATRIX carry 0~99 (50 = centre) or 1~9 (5 = centre), see each platform |
 
 | Value | Block | Decode | Mode |
 | :--- | :--- | :--- | :--- |
-| #1 | Infrared Sensor → Beacon proximity, channel 1 | the value | mode 1 |
-| #2 | Infrared Sensor → Beacon heading, channel 2 | the value | mode 1 |
-| #3 | Infrared Sensor → Beacon proximity, channel 2 | the value | mode 1 |
-| #4 | Infrared Sensor → Beacon heading, channel 3 | the value | mode 1 |
+| LX | Infrared Sensor → Beacon proximity, channel 1 | the value: 0~99 (50 = centre) | mode 1 |
+| LY | Infrared Sensor → Beacon proximity, channel 2 | the value: 0~99 (50 = centre) | mode 1 |
+| RX | Infrared Sensor → Beacon proximity, channel 3 | the value: 0~99 (50 = centre) | mode 1 |
+| RY | Infrared Sensor → Beacon proximity, channel 4 | the value: 0~99 (50 = centre) | mode 1 |
 
 </section>
 

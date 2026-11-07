@@ -34,7 +34,8 @@ dpad = Sensor.ReadRawValue(1, 0)
 Sensor.SetMode(1, 1)
 dpad = Sensor.ReadRawValue(1, 0)
 Sensor.SetMode(1, 3)
-dpad = Sensor.ReadRawValue(1, 0)
+w = Sensor.ReadRawValue(1, 0)
+dpad = Math.Remainder(w, 16)   ' bit 0~3
 Sensor.SetMode(1, 4)
 dpad = Sensor.ReadRawValue(1, 0)
 ```
@@ -58,7 +59,8 @@ dpad = Sensor.ReadRawValue(1, 0)
 Sensor.SetMode(1, 1)
 shapeKeys = Sensor.ReadRawValue(1, 2)
 Sensor.SetMode(1, 3)
-shapeKeys = Sensor.ReadRawValue(1, 0)
+w = Sensor.ReadRawValue(1, 0)
+shapeKeys = Math.Remainder(Math.Floor(w / 16), 16)   ' bit 4~7
 Sensor.SetMode(1, 4)
 shapeKeys = Sensor.ReadRawValue(1, 2)
 ```
@@ -118,7 +120,8 @@ funcKeys = Sensor.ReadRawValue(1, 6)
 ```basic
 ' clev3r (BASIC)
 Sensor.SetMode(1, 3)
-connected = Sensor.ReadRawValue(1, 0)
+w = Sensor.ReadRawValue(1, 0)
+connected = Math.Remainder(Math.Floor(w / 256), 2)   ' bit 8
 ```
 
 <p class="ref-note">模式 3 · int16 · bit8（值 ≥ 256 = 已連線，#67 新增）</p>
@@ -133,16 +136,16 @@ connected = Sensor.ReadRawValue(1, 0)
 
 | 範圍 | 意思 |
 | :--- | :--- |
-| `-100~+100` | 10 LX、11 LY、12 RX、13 RY：−100 ~ +100，0 = 中間，右／上為正；未連線 0 |
+| `-100~+100`（EV3 模式 1、模式 2、模式 4 讀到的是換算值：0~99（50 = 中間）） | 10 LX、11 LY、12 RX、13 RY：−100 ~ +100，0 = 中間，右／上為正；未連線 0 |
 
 ```basic
 ' clev3r (BASIC)
 Sensor.SetMode(1, 1)
-stick = Sensor.ReadRawValue(1, 1)
+stick1 = Sensor.ReadRawValue(1, 1)   ' 第 1 筆；第 N 筆的 index ＝ 1 + 2×(N − 1)（1、3、5、7）
 Sensor.SetMode(1, 2)
 stick1 = Sensor.ReadRawValue(1, 0)   ' 第 1 筆；第 N 筆改成 0 + N - 1
 Sensor.SetMode(1, 4)
-stick = Sensor.ReadRawValue(1, 1)
+stick1 = Sensor.ReadRawValue(1, 1)   ' 第 1 筆；第 N 筆的 index ＝ 1 + 2×(N − 1)（1、3）
 ```
 
 <p class="ref-note">模式 1 · int8 · LX；LY 在 index 3、RX 5、RY 7（與按鍵交錯）；0~99，50 = 中間（未連線 50）；模式 2 · int8 · IR-REMOTE [LX, LY, RX, RY] 0~99，50 = 中間；模式 4 · int8 · LX；LY 在 index 3（RX、RY 不在模式 4）（已鎖住的模式，韌體與主機端都不再改）</p>

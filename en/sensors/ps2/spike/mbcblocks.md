@@ -35,7 +35,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # sensor on port A
 
-buttons16 = dev.read(9)[6]   # 16 buttons
+w = dev.read(9)[6]
+buttons16 = w & 0xFFFF   # 16 buttons (int16 back to 0~65535; negative while ■ is held)
 ```
 
 </section>
@@ -58,7 +59,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # sensor on port A
 
-dpad = dev.read(9)[0]   # d-pad
+w = dev.read(9)[0]
+dpad = w & 0x0F   # d-pad (bits 0~3)
 ```
 
 </section>
@@ -81,7 +83,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # sensor on port A
 
-shape = dev.read(9)[0]   # shape buttons
+w = dev.read(9)[0]
+shape = (w >> 4) & 0x0F   # shape buttons (bits 4~7)
 ```
 
 </section>
@@ -104,7 +107,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # sensor on port A
 
-shoulder = dev.read(9)[1]   # shoulder buttons
+w = dev.read(9)[1]
+shoulder = w & 0x0F   # shoulder buttons (bits 0~3)
 ```
 
 </section>
@@ -127,7 +131,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # sensor on port A
 
-func = dev.read(9)[1]   # function buttons
+w = dev.read(9)[1]
+func = (w >> 4) & 0x0F   # function buttons (bits 4~7)
 ```
 
 </section>

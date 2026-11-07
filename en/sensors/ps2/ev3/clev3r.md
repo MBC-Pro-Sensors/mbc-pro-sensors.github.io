@@ -34,7 +34,8 @@ dpad = Sensor.ReadRawValue(1, 0)
 Sensor.SetMode(1, 1)
 dpad = Sensor.ReadRawValue(1, 0)
 Sensor.SetMode(1, 3)
-dpad = Sensor.ReadRawValue(1, 0)
+w = Sensor.ReadRawValue(1, 0)
+dpad = Math.Remainder(w, 16)   ' bits 0~3
 Sensor.SetMode(1, 4)
 dpad = Sensor.ReadRawValue(1, 0)
 ```
@@ -58,7 +59,8 @@ dpad = Sensor.ReadRawValue(1, 0)
 Sensor.SetMode(1, 1)
 shape = Sensor.ReadRawValue(1, 2)
 Sensor.SetMode(1, 3)
-shape = Sensor.ReadRawValue(1, 0)
+w = Sensor.ReadRawValue(1, 0)
+shape = Math.Remainder(Math.Floor(w / 16), 16)   ' bits 4~7
 Sensor.SetMode(1, 4)
 shape = Sensor.ReadRawValue(1, 2)
 ```
@@ -118,7 +120,8 @@ func = Sensor.ReadRawValue(1, 6)
 ```basic
 ' clev3r (BASIC)
 Sensor.SetMode(1, 3)
-connected = Sensor.ReadRawValue(1, 0)
+w = Sensor.ReadRawValue(1, 0)
+connected = Math.Remainder(Math.Floor(w / 256), 2)   ' bit 8
 ```
 
 <p class="ref-note">mode 3 · int16 · #67 改：bit8 = 已連線（+256）</p>
@@ -133,16 +136,16 @@ connected = Sensor.ReadRawValue(1, 0)
 
 | Range | Meaning |
 | :--- | :--- |
-| `-100~+100` (EV3 mode 1, mode 2, mode 4 give a scaled value: 0~99 (50 = 中間)) | 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right / up positive (raw 0~255 with ±7 dead zone); 0 when not connected. EV3 / SPIKE / MATRIX carry 0~99 (50 = centre) or 1~9 (5 = centre), see each platform |
+| `-100~+100` (EV3 mode 1, mode 2, mode 4 give a scaled value: 0~99 (50 = centre)) | 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right / up positive (raw 0~255 with ±7 dead zone); 0 when not connected. EV3 / SPIKE / MATRIX carry 0~99 (50 = centre) or 1~9 (5 = centre), see each platform |
 
 ```basic
 ' clev3r (BASIC)
 Sensor.SetMode(1, 1)
-stick1 = Sensor.ReadRawValue(1, 1)   ' first; for the N-th use 1 + N - 1
+stick1 = Sensor.ReadRawValue(1, 1)   ' first; the N-th is at index 1 + 2×(N − 1) (1, 3, 5, 7)
 Sensor.SetMode(1, 2)
 stick1 = Sensor.ReadRawValue(1, 0)   ' first; for the N-th use 0 + N - 1
 Sensor.SetMode(1, 4)
-stick1 = Sensor.ReadRawValue(1, 1)   ' first; for the N-th use 1 + N - 1
+stick1 = Sensor.ReadRawValue(1, 1)   ' first; the N-th is at index 1 + 2×(N − 1) (1, 3)
 ```
 
 <p class="ref-note">mode 1 · int8 · 交錯：index 1 = LX、3 = LY、5 = RX、7 = RY（偶數 index 是按鍵）; mode 2 · int8 · IR-REMOTE [LX, LY, RX, RY]（描述表宣告 0~10，實送 0~99）; mode 4 · int8 · index 1 = LX、3 = LY（只到左搖桿） (locked mode: firmware and hosts will not change it)</p>

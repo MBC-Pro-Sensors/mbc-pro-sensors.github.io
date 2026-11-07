@@ -89,11 +89,14 @@ The EV3 sees a stock LEGO sensor, so read it with the stock sensor block.
 
 | Range | Meaning |
 | :--- | :--- |
-| `-100~+100` | 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right/up positive; 0 when not connected |
+| `-100~+100` (EV3 mode 1, mode 2, mode 4 give a scaled value: 0~99 (50 = centre)) | 10 LX, 11 LY, 12 RX, 13 RY: −100 to +100, 0 = centre, right/up positive; 0 when not connected |
 
 | Value | Block | Decode | Mode |
 | :--- | :--- | :--- | :--- |
-| stick axis 1~4 | Infrared Sensor → Beacon proximity, channel 1 | the value | mode 1 |
+| LX | Infrared Sensor → Beacon proximity, channel 1 | the value: 0~99 (50 = centre) | mode 1 |
+| LY | Infrared Sensor → Beacon proximity, channel 2 | the value: 0~99 (50 = centre) | mode 1 |
+| RX | Infrared Sensor → Beacon proximity, channel 3 | the value: 0~99 (50 = centre) | mode 1 |
+| RY | Infrared Sensor → Beacon proximity, channel 4 | the value: 0~99 (50 = centre) | mode 1 |
 
 </section>
 

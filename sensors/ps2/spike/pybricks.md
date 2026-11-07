@@ -33,7 +33,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-buttons16 = dev.read(9)[6]   # 十六鍵
+w = dev.read(9)[6]
+buttons16 = w & 0xFFFF   # 十六鍵（int16 轉回 0~65535；按住 ■ 時讀到負數）
 ```
 
 **MBC 函式庫**
@@ -67,7 +68,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-dpad = dev.read(9)[0]   # 方向鍵
+w = dev.read(9)[0]
+dpad = w & 0x0F   # 方向鍵（bit 0~3）
 ```
 
 **MBC 函式庫**
@@ -101,7 +103,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-shape = dev.read(9)[0]   # 形狀鍵
+w = dev.read(9)[0]
+shape = (w >> 4) & 0x0F   # 形狀鍵（bit 4~7）
 ```
 
 **MBC 函式庫**
@@ -135,7 +138,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-shoulder = dev.read(9)[1]   # 肩鍵
+w = dev.read(9)[1]
+shoulder = w & 0x0F   # 肩鍵（bit 0~3）
 ```
 
 **MBC 函式庫**
@@ -149,7 +153,7 @@ pad.update()   # 每圈先更新一次
 shoulder = pad.pressed('L1')
 ```
 
-<p class="ref-note">模式 0 (edu) byte 0 🔒；模式 0 (toy) byte 6 🔒；模式 2 byte 0；模式 6 v[1] lo；模式 9 v[1] 🔒。備註：byte0 = 肩 | 功能<<4（App 顏色，START = −128）：低 4 bit; byte6~7 = (肩 | 功能<<4) 經玩具版查表編碼；byte1 = 單鍵編號（L2=1 R2=2 L1=3 R1=4 SELECT=5 L3=6 R3=7 START=8，沒按 0）; 低 4 bit（高 4 bit = 功能）; v1 = 肩 | 功能<<4（bit0-3）</p>
+<p class="ref-note">模式 0 (edu) byte 0 🔒；模式 2 byte 0；模式 6 v[1] lo；模式 9 v[1] 🔒；模式 0 (toy) byte 6 🔒；模式 0 (toy) byte 1 🔒。備註：byte0 = 肩 | 功能<<4（App 顏色，START = −128）：低 4 bit; 低 4 bit（高 4 bit = 功能）; v1 = 肩 | 功能<<4（bit0-3）; 原始藍 = 肩 | 功能<<4（0~255）; 單鍵編號（L2=1 R2=2 L1=3 R1=4 SELECT=5 L3=6 R3=7 START=8，沒按 0；同時按只回編號最小的那個）</p>
 
 </section>
 
@@ -169,7 +173,8 @@ from pybricks.parameters import Port
 
 dev = PUPDevice(Port.A)   # 感應器插 A 孔
 
-func = dev.read(9)[1]   # 功能鍵
+w = dev.read(9)[1]
+func = (w >> 4) & 0x0F   # 功能鍵（bit 4~7）
 ```
 
 **MBC 函式庫**
@@ -183,7 +188,7 @@ pad.update()   # 每圈先更新一次
 func = pad.pressed('START')
 ```
 
-<p class="ref-note">模式 0 (edu) byte 0 🔒；模式 2 byte 0；模式 6 v[1] hi；模式 9 v[1] 🔒。備註：高 4 bit; 高 4 bit; v1 bit4-7</p>
+<p class="ref-note">模式 0 (edu) byte 0 🔒；模式 2 byte 0；模式 6 v[1] hi；模式 9 v[1] 🔒；模式 0 (toy) byte 6 🔒；模式 0 (toy) byte 1 🔒。備註：高 4 bit; 高 4 bit; v1 bit4-7; 原始藍 = 肩 | 功能<<4（0~255）; 單鍵編號（L2=1 R2=2 L1=3 R1=4 SELECT=5 L3=6 R3=7 START=8，沒按 0；同時按只回編號最小的那個）</p>
 
 </section>
 
@@ -281,7 +286,7 @@ pad.update()   # 每圈先更新一次
 stick = pad.stick('LX')
 ```
 
-<p class="ref-note">模式 0 (edu) byte 2 🔒；模式 0 (toy) byte 2 🔒；模式 4 v[0]；模式 7 v[2] 🔒；模式 8 v[0]；模式 9 v[2] 🔒。備註：byte2~3 = LX×10+LY、byte4~5 = RX×10+RY（11~99，中心 55；App 原始紅／綠）; LX×10+LY、RX×10+RY 經玩具版查表編碼成 byte2~3、byte4~5; v0 = LX | LY<<8、v1 = RX | RY<<8; Pybricks ambient() 用：v2 = LX×1000 + LY×100 + RX×10 + RY（1111~9999，中心 5555）；v0、v1 同模式 6；個位數 RY 在 4.1.x 的 ambient() 讀不到，4.1.x 改從模式 5 reflection() 的小數位讀（見按鍵 buttons16）; 只送 4 B：v0 = LX | LY<<8、v1 = RX | RY<<8; v2~v5 = LX、LY、RX、RY（0~99 ÷10，0 補 1）</p>
+<p class="ref-note">模式 0 (edu) byte 2 🔒；模式 0 (toy) byte 2 🔒；模式 4 v[0]；模式 7 v[2] 🔒；模式 9 v[2] 🔒。備註：byte2~3 = LX×10+LY、byte4~5 = RX×10+RY（11~99，中心 55；App 原始紅／綠）; 原始紅 = LX×10+LY、原始綠 = RX×10+RY（各 1~9，5 = 中間）; v0 = LX | LY<<8、v1 = RX | RY<<8（各 1~9，5 = 中間）; Pybricks ambient() 用：v2 = LX×1000 + LY×100 + RX×10 + RY（1111~9999，中心 5555）；v0、v1 同模式 6；個位數 RY 在 4.1.x 的 ambient() 讀不到，4.1.x 改從模式 5 reflection() 的小數位讀（見按鍵 buttons16）; v2~v5 = LX、LY、RX、RY（0~99 ÷10，0 補 1）</p>
 
 </section>
 

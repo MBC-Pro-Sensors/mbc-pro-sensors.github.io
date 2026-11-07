@@ -34,7 +34,8 @@ dpad = Sensor.ReadRawValue(1, 0)
 Sensor.SetMode(1, 1)
 dpad = Sensor.ReadRawValue(1, 0)
 Sensor.SetMode(1, 3)
-dpad = Sensor.ReadRawValue(1, 0)
+w = Sensor.ReadRawValue(1, 0)
+dpad = Math.Remainder(w, 16)   ' bit 0~3
 Sensor.SetMode(1, 4)
 dpad = Sensor.ReadRawValue(1, 0)
 ```
@@ -58,7 +59,8 @@ dpad = Sensor.ReadRawValue(1, 0)
 Sensor.SetMode(1, 1)
 shape = Sensor.ReadRawValue(1, 2)
 Sensor.SetMode(1, 3)
-shape = Sensor.ReadRawValue(1, 0)
+w = Sensor.ReadRawValue(1, 0)
+shape = Math.Remainder(Math.Floor(w / 16), 16)   ' bit 4~7
 Sensor.SetMode(1, 4)
 shape = Sensor.ReadRawValue(1, 2)
 ```
@@ -118,7 +120,8 @@ func = Sensor.ReadRawValue(1, 6)
 ```basic
 ' clev3r (BASIC)
 Sensor.SetMode(1, 3)
-connected = Sensor.ReadRawValue(1, 0)
+w = Sensor.ReadRawValue(1, 0)
+connected = Math.Remainder(Math.Floor(w / 256), 2)   ' bit 8
 ```
 
 <p class="ref-note">模式 3 · int16 · #67 改：bit8 = 已連線（+256）</p>
@@ -138,11 +141,11 @@ connected = Sensor.ReadRawValue(1, 0)
 ```basic
 ' clev3r (BASIC)
 Sensor.SetMode(1, 1)
-stick1 = Sensor.ReadRawValue(1, 1)   ' 第 1 筆；第 N 筆改成 1 + N - 1
+stick1 = Sensor.ReadRawValue(1, 1)   ' 第 1 筆；第 N 筆的 index ＝ 1 + 2×(N − 1)（1、3、5、7）
 Sensor.SetMode(1, 2)
 stick1 = Sensor.ReadRawValue(1, 0)   ' 第 1 筆；第 N 筆改成 0 + N - 1
 Sensor.SetMode(1, 4)
-stick1 = Sensor.ReadRawValue(1, 1)   ' 第 1 筆；第 N 筆改成 1 + N - 1
+stick1 = Sensor.ReadRawValue(1, 1)   ' 第 1 筆；第 N 筆的 index ＝ 1 + 2×(N − 1)（1、3）
 ```
 
 <p class="ref-note">模式 1 · int8 · 交錯：index 1 = LX、3 = LY、5 = RX、7 = RY（偶數 index 是按鍵）；模式 2 · int8 · IR-REMOTE [LX, LY, RX, RY]（描述表宣告 0~10，實送 0~99）；模式 4 · int8 · index 1 = LX、3 = LY（只到左搖桿）（已鎖住的模式，韌體與主機端都不再改）</p>
