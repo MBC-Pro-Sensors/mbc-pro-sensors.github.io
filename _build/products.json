@@ -956,6 +956,7 @@
       "zh": "WRO RoboMission：國中、高中組可用（相機不開放國小組）",
       "en": "WRO RoboMission: allowed for Junior and Senior (cameras are not allowed in Elementary)"
     },
+    "image": "/images/sensors/unicam/unicam-product.webp",
     "zh": {
       "badge": "CAM-VIS · 視覺",
       "pitch": "一台相機五種用法：顏色追蹤（最多 16 色）、座標取色、照順序給色號、循線、物體偵測（顏色＋形狀），在相機選單切換；SPIKE（含 Robot Inventor）與 EV3 已上機驗證，MATRIX、Arduino、micro:bit、mBlock 版尚未上機驗證。",

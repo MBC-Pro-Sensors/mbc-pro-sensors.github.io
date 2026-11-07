@@ -126,6 +126,10 @@
 
 相機背面有 1.8 吋彩色螢幕和 4 顆按鍵，設定都在相機上做，不用電腦。
 
+<div style="text-align: center;">
+<img src="/images/sensors/unicam/unicam-product2.webp" alt="神攝手背面的 1.8 吋彩色螢幕" style="max-width: 320px; margin: 1rem auto; display: block;" />
+</div>
+
 1. **即時畫面**用左右鍵循環：目標 1 … 目標 N → **MENU**。N＝已教到的最後一色＋1 個空位（最多 16）。相機模式 2（座標取色）時改成取樣點 S1 … Sn → MENU（n＝已設定的最後一點＋1 個空位）。
 2. **停在目標按 OK：教色**（AxisX → AxisY → OK 取色；按住 OK 0.8 秒直接完成；之後可調 Hue／Sta／Size／Locked・MaxArea）。停在目標按**側鍵**：清除這個目標（指定的形狀一起清）。物體偵測模式教完目標 1～8 會跳出 `Target N shape` 選形狀。
    相機模式 2：停在取樣點按 OK＝**設定這一點的位置**（跟教色一樣：AxisX → OK → AxisY → OK 存；側鍵＝不存）；停在取樣點按側鍵＝清掉這一點。**沒設定的點不畫、送給主機的 H S V 都是 0**（跟沒教的目標一樣）；位置跟主機命令 E1 改的是同一份。

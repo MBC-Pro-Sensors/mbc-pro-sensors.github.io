@@ -515,7 +515,7 @@ function learnBox(lang, key, host, sws, mode) {
 function learnHubHtml(lang) {
   const K = LK[lang], seen = new Set(), items = [];
   // 還沒進三層導覽（guides-index）的產品（神攝手）：名稱用側欄的產品名、拿掉「（開發中）」；順序照 products.json，舊版（legacy）不列
-  const extra = (k) => ({ short: { zh: (PRODUCTS.zh[k] || k).replace(/（[^）]*）$/, ''), en: (PRODUCTS.en[k] || k).replace(/\s*\([^)]*\)$/, '') } });
+  const extra = (k) => ({ short: { zh: (PRODUCTS.zh[k] || k).replace(/（[^）]*）$/, ''), en: (PRODUCTS.en[k] || k).replace(/\s*\([^)]*\)$/, '') }, image: PRODUCT_DATA[k].image || null });
   for (const [k, p] of Object.keys(PRODUCT_DATA).filter((k) => LEARN[k] && !isLegacy(k)).map((k) => [k, GI.products[k] || extra(k)])) {
     for (const t of LEARN[k] || []) {
       if (seen.has(t)) continue;

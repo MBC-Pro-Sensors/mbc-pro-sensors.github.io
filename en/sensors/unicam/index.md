@@ -126,6 +126,10 @@ The same sub-option carries different amounts of data on each host, and the came
 
 The back of the camera has a 1.8" color screen and 4 buttons; everything is set on the camera, no computer needed.
 
+<div style="text-align: center;">
+<img src="/images/sensors/unicam/unicam-product2.webp" alt="1.8-inch color screen on the back of the Sharpshooter Vision" style="max-width: 320px; margin: 1rem auto; display: block;" />
+</div>
+
 1. **Live view**: left / right cycles target 1 … target N → **MENU**. N = the last taught color + 1 empty slot (up to 16). In camera mode 2 (color at points) it cycles sample points S1 … Sn → MENU instead (n = the last point set + 1 empty slot).
 2. **OK on a target: teach a color** (AxisX → AxisY → OK to pick; hold OK for 0.8 s to finish at once; then adjust Hue / Sta / Size / Locked · MaxArea). **Side button** on a target: clear it (with its assigned shape). In object detection, teaching target 1~8 is followed by a `Target N shape` prompt.
    Camera mode 2: OK on a sample point = **set its position** (like teaching a color: AxisX → OK → AxisY → OK saves; side button = don't save); side button on a sample point = clear it. **Points that are not set are not drawn and send H S V 0 to the host** (like an untaught target); the positions are the same ones the host changes with command E1.
