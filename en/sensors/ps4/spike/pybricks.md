@@ -48,7 +48,7 @@ pad.update()   # refresh once per loop
 buttons16 = pad.buttons_psx()
 ```
 
-<p class="ref-note">mode 5 v[0] 🔒; mode 0 (edu) byte 6 🔒; mode 6 v[2]; mode 9 v[6] 🔒. Note: Pybricks reflection() 編碼：跟 PS2 同一套 11 鍵 complexXY = SELECT<<10 | R1<<9 | L1<<8 | ■<<7 | ✕<<6 | ●<<5 | ▲<<4 | 左<<3 | 下<<2 | 右<<1 | 上；L2、R2、L3、R3、START 讀不到（PS4 .ino:768）。2026-10-30 起（方案 A，使用者定案）：模式 5 總和 S = ceil((10×complexXY + RY)×3.072)，R = G = S/3、B = S−2R → Pybricks 4.1.x <code>int(reflection())</code> = complexXY（不變）、<code>round(reflection()×10) % 10</code> = RY（1~9）；3.6.1／4.0.0 的 reflection() 照舊 = complexXY; PSX 排列（#65 已改，原本是 Bluepad32 排列）; PSX 排列; PSX 排列（D3，PS2／PS4 相同；函式庫 buttons_psx()）</p>
+<p class="ref-note">mode 5 v[0] 🔒; mode 0 (edu) byte 6 🔒; mode 6 v[2]; mode 9 v[6] 🔒. Note: Pybricks reflection() 編碼：跟 PS2 同一套 11 鍵 complexXY = SELECT（SHARE）<<10 | R1<<9 | L1<<8 | ■<<7 | ✕<<6 | ●<<5 | ▲<<4 | 左<<3 | 下<<2 | 右<<1 | 上；L2、R2、L3、R3、START（OPTIONS） 讀不到（PS4 .ino:768）。2026-10-30 起（方案 A，使用者定案）：模式 5 總和 S = ceil((10×complexXY + RY)×3.072)，R = G = S/3、B = S−2R → Pybricks 4.1.x <code>int(reflection())</code> = complexXY（不變）、<code>round(reflection()×10) % 10</code> = RY（1~9）；3.6.1／4.0.0 的 reflection() 照舊 = complexXY; PSX 排列（#65 已改，原本是 Bluepad32 排列）; PSX 排列; PSX 排列（D3，PS2／PS4 相同；函式庫 buttons_psx()）</p>
 
 </section>
 
@@ -153,7 +153,7 @@ pad.update()   # refresh once per loop
 shoulderKeys = pad.pressed('L1')
 ```
 
-<p class="ref-note">mode 0 (edu) byte 0 🔒; mode 2 byte 0; mode 6 v[1] lo; mode 7 v[1] lo 🔒; mode 9 v[1] lo 🔒; mode 0 (toy) byte 6 🔒; mode 0 (toy) byte 1 🔒. Note: 低 nibble；高 nibble = 功能鍵; 低 nibble；高 nibble = 功能鍵; 低 nibble；高 nibble = 功能鍵; 原始藍 = 肩 | 功能<<4（0~255）; 單鍵編號（L2=1 R2=2 L1=3 R1=4 SHARE=5 L3=6 R3=7 OPTIONS=8，沒按 0；同時按只回編號最小的那個）</p>
+<p class="ref-note">mode 0 (edu) byte 0 🔒; mode 2 byte 0; mode 6 v[1] lo; mode 7 v[1] lo 🔒; mode 9 v[1] lo 🔒; mode 0 (toy) byte 6 🔒; mode 0 (toy) byte 1 🔒. Note: 低 nibble；高 nibble = 功能鍵; 低 nibble；高 nibble = 功能鍵; 低 nibble；高 nibble = 功能鍵; 原始藍 = 肩 | 功能<<4（0~255）; 單鍵編號（L2=1 R2=2 L1=3 R1=4 SELECT（SHARE）=5 L3=6 R3=7 START（OPTIONS）=8，沒按 0；同時按只回編號最小的那個）</p>
 
 </section>
 
@@ -188,7 +188,7 @@ pad.update()   # refresh once per loop
 funcKeys = pad.pressed('START')
 ```
 
-<p class="ref-note">mode 0 (edu) byte 0 🔒; mode 0 (toy) byte 1 🔒; mode 2 byte 0; mode 6 v[1] hi; mode 7 v[1] hi 🔒; mode 9 v[1] lo 🔒; mode 0 (toy) byte 6 🔒. Note: 高 nibble; 單鍵編號 1~8（掃 功能鍵<<4|肩鍵 的 bit0→7：1 L2 2 R2 3 L1 4 R1 5 SELECT 6 L3 7 R3 8 START）; 高 nibble; 高 nibble; 原始藍 = 肩 | 功能<<4（0~255）</p>
+<p class="ref-note">mode 0 (edu) byte 0 🔒; mode 0 (toy) byte 1 🔒; mode 2 byte 0; mode 6 v[1] hi; mode 7 v[1] hi 🔒; mode 9 v[1] lo 🔒; mode 0 (toy) byte 6 🔒. Note: 高 nibble; 單鍵編號 1~8（掃 功能鍵<<4|肩鍵 的 bit0→7：1 L2 2 R2 3 L1 4 R1 5 SELECT（SHARE） 6 L3 7 R3 8 START（OPTIONS））; 高 nibble; 高 nibble; 原始藍 = 肩 | 功能<<4（0~255）</p>
 
 </section>
 

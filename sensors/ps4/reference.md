@@ -58,7 +58,7 @@
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-模式 5 v[0] 🔒；模式 0 (edu) byte 6 🔒；模式 6 v[2]；模式 9 v[6] 🔒。備註：Pybricks reflection() 編碼：跟 PS2 同一套 11 鍵 complexXY = SELECT<<10 | R1<<9 | L1<<8 | ■<<7 | ✕<<6 | ●<<5 | ▲<<4 | 左<<3 | 下<<2 | 右<<1 | 上；L2、R2、L3、R3、START 讀不到（PS4 .ino:768）。2026-10-30 起（方案 A，使用者定案）：模式 5 總和 S = ceil((10×complexXY + RY)×3.072)，R = G = S/3、B = S−2R → Pybricks 4.1.x `int(reflection())` = complexXY（不變）、`round(reflection()×10) % 10` = RY（1~9）；3.6.1／4.0.0 的 reflection() 照舊 = complexXY; PSX 排列（#65 已改，原本是 Bluepad32 排列）; PSX 排列; PSX 排列（D3，PS2／PS4 相同；函式庫 buttons_psx()）
+模式 5 v[0] 🔒；模式 0 (edu) byte 6 🔒；模式 6 v[2]；模式 9 v[6] 🔒。備註：Pybricks reflection() 編碼：跟 PS2 同一套 11 鍵 complexXY = SELECT（SHARE）<<10 | R1<<9 | L1<<8 | ■<<7 | ✕<<6 | ●<<5 | ▲<<4 | 左<<3 | 下<<2 | 右<<1 | 上；L2、R2、L3、R3、START（OPTIONS） 讀不到（PS4 .ino:768）。2026-10-30 起（方案 A，使用者定案）：模式 5 總和 S = ceil((10×complexXY + RY)×3.072)，R = G = S/3、B = S−2R → Pybricks 4.1.x `int(reflection())` = complexXY（不變）、`round(reflection()×10) % 10` = RY（1~9）；3.6.1／4.0.0 的 reflection() 照舊 = complexXY; PSX 排列（#65 已改，原本是 Bluepad32 排列）; PSX 排列; PSX 排列（D3，PS2／PS4 相同；函式庫 buttons_psx()）
 
 ```python
 from pybricks.iodevices import PUPDevice
@@ -401,7 +401,7 @@ let shapeKeys = mbc.padGroup(MbcPadGroup.Shapes)   // 形狀鍵：0~15 bit
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-模式 0 (edu) byte 0 🔒；模式 2 byte 0；模式 6 v[1] lo；模式 7 v[1] lo 🔒；模式 9 v[1] lo 🔒；模式 0 (toy) byte 6 🔒；模式 0 (toy) byte 1 🔒。備註：低 nibble；高 nibble = 功能鍵; 低 nibble；高 nibble = 功能鍵; 低 nibble；高 nibble = 功能鍵; 原始藍 = 肩 | 功能<<4（0~255）; 單鍵編號（L2=1 R2=2 L1=3 R1=4 SHARE=5 L3=6 R3=7 OPTIONS=8，沒按 0；同時按只回編號最小的那個）
+模式 0 (edu) byte 0 🔒；模式 2 byte 0；模式 6 v[1] lo；模式 7 v[1] lo 🔒；模式 9 v[1] lo 🔒；模式 0 (toy) byte 6 🔒；模式 0 (toy) byte 1 🔒。備註：低 nibble；高 nibble = 功能鍵; 低 nibble；高 nibble = 功能鍵; 低 nibble；高 nibble = 功能鍵; 原始藍 = 肩 | 功能<<4（0~255）; 單鍵編號（L2=1 R2=2 L1=3 R1=4 SELECT（SHARE）=5 L3=6 R3=7 START（OPTIONS）=8，沒按 0；同時按只回編號最小的那個）
 
 ```python
 from pybricks.iodevices import PUPDevice
@@ -474,7 +474,7 @@ int16_t shoulderKeys = mbcRead(0x42, 0x04);   // 肩鍵：0~15 bit
 0x22 G。
 
 ```cpp
-// A. 原廠 0x22 積木：G = 肩鍵（G = 肩鍵 | 功能鍵<<4（L2 1 R2 2 L1 4 R1 8、SELECT 16 L3 32 R3 64 START 128））
+// A. 原廠 0x22 積木：G = 肩鍵（G = 肩鍵 | 功能鍵<<4（L2 1 R2 2 L1 4 R1 8、SELECT（SHARE） 16 L3 32 R3 64 START（OPTIONS） 128））
 int shoulderKeys = MiniR4.I2C1.MXColor.getColor(G);
 ```
 
@@ -513,7 +513,7 @@ let shoulderKeys = mbc.padGroup(MbcPadGroup.Shoulders)   // 肩鍵：0~15 bit
 <details class="plat plat-spike" data-host="spike" open>
 <summary><span class="plat-dot"></span>SPIKE</summary>
 
-模式 0 (edu) byte 0 🔒；模式 0 (toy) byte 1 🔒；模式 2 byte 0；模式 6 v[1] hi；模式 7 v[1] hi 🔒；模式 9 v[1] lo 🔒；模式 0 (toy) byte 6 🔒。備註：高 nibble; 單鍵編號 1~8（掃 功能鍵<<4|肩鍵 的 bit0→7：1 L2 2 R2 3 L1 4 R1 5 SELECT 6 L3 7 R3 8 START）; 高 nibble; 高 nibble; 原始藍 = 肩 | 功能<<4（0~255）
+模式 0 (edu) byte 0 🔒；模式 0 (toy) byte 1 🔒；模式 2 byte 0；模式 6 v[1] hi；模式 7 v[1] hi 🔒；模式 9 v[1] lo 🔒；模式 0 (toy) byte 6 🔒。備註：高 nibble; 單鍵編號 1~8（掃 功能鍵<<4|肩鍵 的 bit0→7：1 L2 2 R2 3 L1 4 R1 5 SELECT（SHARE） 6 L3 7 R3 8 START（OPTIONS））; 高 nibble; 高 nibble; 原始藍 = 肩 | 功能<<4（0~255）
 
 ```python
 from pybricks.iodevices import PUPDevice

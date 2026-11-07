@@ -24,7 +24,7 @@
 | 積木 | 內容 | 解法 |
 | :--- | :--- | :--- |
 | R | [方向鍵](/sensors/ps4/reference.md#v02) | R = 方向鍵 \| 形狀鍵<<4（上 1 右 2 下 4 左 8、▲16 ●32 ✕64 ■128） |
-| G | [肩鍵](/sensors/ps4/reference.md#v04) | G = 肩鍵 \| 功能鍵<<4（L2 1 R2 2 L1 4 R1 8、SELECT 16 L3 32 R3 64 START 128） |
+| G | [肩鍵](/sensors/ps4/reference.md#v04) | G = 肩鍵 \| 功能鍵<<4（L2 1 R2 2 L1 4 R1 8、SELECT（SHARE） 16 L3 32 R3 64 START（OPTIONS） 128） |
 | K | [已連線](/sensors/ps4/reference.md#v06) | K = 1／0 |
 | B | [搖桿 1~4 軸](/sensors/ps4/reference.md#v10) 第 1~2 路 | B C M Y = LX LY RX RY，0~99，50 = 中間 |
 | C | [搖桿 1~4 軸](/sensors/ps4/reference.md#v10) 第 3~4 路 | B C M Y = LX LY RX RY，0~99，50 = 中間 |

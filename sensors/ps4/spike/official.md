@@ -89,7 +89,7 @@
 | Robot Inventor（玩具版） | 肩鍵 | 「原始藍」 | 讀到的數 ÷ 16 的餘數 |
 | Robot Inventor（玩具版） | 單鍵編號 | 「顏色」 | 讀到的數＝單鍵編號：L2 1、R2 2、L1 3、R1 4、SHARE 5、L3 6、R3 7、OPTIONS 8，沒按 0（同時按好幾個只回編號最小的那個） |
 
-<p class="ref-note">韌體備註：低 nibble；高 nibble = 功能鍵；原始藍 = 肩 | 功能<<4（0~255）；單鍵編號（L2=1 R2=2 L1=3 R1=4 SHARE=5 L3=6 R3=7 OPTIONS=8，沒按 0；同時按只回編號最小的那個）</p>
+<p class="ref-note">韌體備註：低 nibble；高 nibble = 功能鍵；原始藍 = 肩 | 功能<<4（0~255）；單鍵編號（L2=1 R2=2 L1=3 R1=4 SELECT（SHARE）=5 L3=6 R3=7 START（OPTIONS）=8，沒按 0；同時按只回編號最小的那個）</p>
 
 </section>
 
@@ -109,7 +109,7 @@
 | Robot Inventor（玩具版） | 單鍵編號 | 「顏色」 | 讀到的數＝單鍵編號：L2 1、R2 2、L1 3、R1 4、SHARE 5、L3 6、R3 7、OPTIONS 8，沒按 0（同時按好幾個只回編號最小的那個） |
 | Robot Inventor（玩具版） | 功能鍵 | 「原始藍」 | 讀到的數 ÷ 16 取整數（無條件捨去） |
 
-<p class="ref-note">韌體備註：高 nibble；單鍵編號 1~8（掃 功能鍵<<4|肩鍵 的 bit0→7：1 L2 2 R2 3 L1 4 R1 5 SELECT 6 L3 7 R3 8 START）；原始藍 = 肩 | 功能<<4（0~255）</p>
+<p class="ref-note">韌體備註：高 nibble；單鍵編號 1~8（掃 功能鍵<<4|肩鍵 的 bit0→7：1 L2 2 R2 3 L1 4 R1 5 SELECT（SHARE） 6 L3 7 R3 8 START（OPTIONS））；原始藍 = 肩 | 功能<<4（0~255）</p>
 
 </section>
 

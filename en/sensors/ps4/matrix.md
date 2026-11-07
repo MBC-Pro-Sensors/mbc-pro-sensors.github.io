@@ -24,7 +24,7 @@ The "colour sensor → R / G / B / C / M / Y / K" blocks each return one 0~255 n
 | Block | Content | Decode |
 | :--- | :--- | :--- |
 | R | [D-pad](/en/sensors/ps4/reference.md#v02) | R = 方向鍵 \| 形狀鍵<<4（上 1 右 2 下 4 左 8、▲16 ●32 ✕64 ■128） |
-| G | [shoulder buttons](/en/sensors/ps4/reference.md#v04) | G = 肩鍵 \| 功能鍵<<4（L2 1 R2 2 L1 4 R1 8、SELECT 16 L3 32 R3 64 START 128） |
+| G | [shoulder buttons](/en/sensors/ps4/reference.md#v04) | G = 肩鍵 \| 功能鍵<<4（L2 1 R2 2 L1 4 R1 8、SELECT（SHARE） 16 L3 32 R3 64 START（OPTIONS） 128） |
 | K | [connected](/en/sensors/ps4/reference.md#v06) | K = 1／0 |
 | B | [stick axis 1~4](/en/sensors/ps4/reference.md#v10)  1~2  | B C M Y = LX LY RX RY，0~99，50 = 中間 |
 | C | [stick axis 1~4](/en/sensors/ps4/reference.md#v10)  3~4  | B C M Y = LX LY RX RY，0~99，50 = 中間 |
