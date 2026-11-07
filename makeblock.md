@@ -13,7 +13,7 @@
 
 <div style="background: rgba(0,210,255,0.05); border: 1px solid rgba(0,210,255,0.3); border-radius: 12px; padding: 22px; margin: 20px 0;">
 <p style="margin-top: 0;"><b>MBC Pro Sensors 擴展 v2.0.0</b>：循行者、測距者、掌控者、IMU 陀螺儀、神攝手共 95 個積木，搭配 2026-10 之後出貨（協定 v2）的 MakeBlock 版感應器。</p>
-<p><b>開發中</b>：新版擴展還沒在 Makeblock 擴展平台上架，正式上架後在 mBlock 5「擴展中心」搜尋「MBC」即可加入。v2.2.0 另加「神攝手」分類（37 顆積木：顏色追蹤、座標取色、照順序給色號、循線、物體偵測；搭配開發中的 <a href="/sensors/unicam/mblock/index.md">神攝手</a>，韌體 v1 尚未上機驗證），原本給學校版／WRO 版的分類改叫「神攝手舊版」（積木不變），匯入檔：<a href="/downloads/MBC_Pro_Sensors_mBlock5_v2.2.0_import.mext"><code>mbc_pro_sensors_2.2.0_import.mext</code></a>。</p>
+<p><b>開發中</b>：新版擴展還沒在 Makeblock 擴展平台上架，正式上架後在 mBlock 5「擴展中心」搜尋「MBC」即可加入。v2.2.0 另加「神攝手」分類（37 顆積木：顏色追蹤、座標取色、照順序給色號、循線、物體偵測；搭配 <a href="/sensors/unicam/mblock/index.md">神攝手</a>，神攝手 mBlock 版尚未上機驗證），原本給學校版／WRO 版的分類改叫「神攝手舊版」（積木不變），匯入檔：<a href="/downloads/MBC_Pro_Sensors_mBlock5_v2.2.0_import.mext"><code>mbc_pro_sensors_2.2.0_import.mext</code></a>。</p>
 <p style="margin-bottom: 0;">等不及的進階使用者：到 <a href="https://ext.mblock.cc">ext.mblock.cc</a> 登入自己的 Makeblock 帳號 → 我的擴展 → 匯入資料，上傳 <a href="/downloads/MBC_Pro_Sensors_mBlock5_v2.0.0_import.mext"><code>mbc_pro_sensors_2.0.0_import.mext</code></a>（匯入約 1 分鐘），再按「下載」取得可拖進 mBlock 的 <code>.mext</code>。</p>
 </div>
 
@@ -72,7 +72,7 @@ mBot2（CyberPi）沒有 RJ25 連接埠，不支援。
 <!-- /gen -->
 
 > [!NOTE]
-> IMU 陀螺儀的 MakeBlock 版是 2026 年 10 月新增，訂購前請先 [LINE 詢問](https://line.me/R/ti/p/@692vcvuk)確認出貨版本。[神攝手](/sensors/unicam/mblock/index.md)的 mBlock 版用 v2.2.0 的「神攝手」分類（含相機模式 5 物體偵測），還在開發，韌體 v1 尚未上機驗證；v2.2.0 裡的「神攝手舊版」分類（積木前綴「神攝手舊版」「神攝手舊版 WRO」，v2.0.0／v2.1.0 叫「神攝手」「神攝手 WRO」）是給[舊版神攝手](/sensors/esp32cam/index.md)用的（停止支援）。
+> IMU 陀螺儀的 MakeBlock 版是 2026 年 10 月新增，訂購前請先 [LINE 詢問](https://line.me/R/ti/p/@692vcvuk)確認出貨版本。[神攝手](/sensors/unicam/mblock/index.md)的 mBlock 版用 v2.2.0 的「神攝手」分類（含相機模式 5 物體偵測），mBlock 版尚未上機驗證；v2.2.0 裡的「神攝手舊版」分類（積木前綴「神攝手舊版」「神攝手舊版 WRO」，v2.0.0／v2.1.0 叫「神攝手」「神攝手 WRO」）是給[舊版神攝手](/sensors/esp32cam/index.md)用的（停止支援）。
 
 ---
 

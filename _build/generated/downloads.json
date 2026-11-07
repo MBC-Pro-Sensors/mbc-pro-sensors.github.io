@@ -218,7 +218,7 @@
         "en": "Sharpshooter Vision (firmware v1): host libraries (Pybricks SPIKE / EV3, SPIKE App, Arduino, micro:bit, MATRIX) + Python examples"
       },
       "version": "1.0",
-      "firmware": "韌體 v1（尚未上機驗證）",
+      "firmware": "韌體 v1（SPIKE、EV3 已上機驗證；Arduino、micro:bit、MATRIX 尚未）",
       "legacy": false,
       "files": [
         "README.md",

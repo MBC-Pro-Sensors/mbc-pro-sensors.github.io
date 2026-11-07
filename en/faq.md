@@ -84,7 +84,7 @@ Manufacturer's suggested retail prices (MSRP) in US dollars, shipping not includ
 | Pathfinder 16-Way (Line16) | 120 |
 | Ranger 2-Way (TOF2) | 60 |
 | Ranger 8-Way (TOF8) | 120 |
-| Sharpshooter Vision (in development) | Ask for a quote |
+| Sharpshooter Vision | Ask for a quote |
 | SPIKE 6-Way Expander (EXP6) | 145 |
 | Controller PS4/PS5 | 100 |
 | IMU 9-Axis Gyro | 100 |

@@ -3,7 +3,7 @@
 # Value reference: slot by slot
 
 > [!WARNING]
-> **The SPIKE edition is hardware-verified (2026-11-01, shipping firmware v1.0-261101)**; EV3, MATRIX, Arduino, micro:bit and mBlock are not yet. The value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
+> **The SPIKE edition (2026-11-01, shipping firmware v1.0-261101) and the EV3 edition (2026-11-03) are hardware-verified**; MATRIX, Arduino, micro:bit and mBlock are not yet. The value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
 
 What the Sharpshooter Vision sends on each host for each "camera mode · sub-option", and in which slot. Pick the mode on the camera first (see the [product page](/en/sensors/unicam/index.md)), then find your host below and open the matching table. For code on each host see [SPIKE](/en/sensors/unicam/spike/index.md), [EV3](/en/sensors/unicam/ev3/index.md), [MATRIX](/en/sensors/unicam/matrix/mvision.md), [Arduino](/en/sensors/unicam/arduino/index.md) and [micro:bit](/en/sensors/unicam/microbit/index.md).
 

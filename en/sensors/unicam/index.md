@@ -1,5 +1,5 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-# Sharpshooter Vision Camera Sensor (In Development)
+# Sharpshooter Vision Camera Sensor
 
 > [!WARNING]
 > **The SPIKE edition is verified on hardware** (2026-11-01, shipping firmware v1.0-261101, see [Reading it on SPIKE](/en/sensors/unicam/spike/index.md)); **the EV3 edition is verified on hardware** (2026-11-03, stock firmware / EV3-G and Pybricks v4; ev3dev supported, see [Reading it on EV3](/en/sensors/unicam/ev3/index.md)); **the MATRIX, Arduino, micro:bit and mBlock editions are not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
@@ -208,11 +208,11 @@ Sharpshooter Vision units shipped before October 2026 (School and WRO editions) 
 | Main features | Pick point + blob tracking + motion | Color code and vividness of 12 spots | Color tracking (up to 16 colors), color at points, color order, line following |
 | Switch jobs on the camera | — | — | 5 camera modes + sub-options |
 | Hosts | SPIKE, EV3, MATRIX, Arduino and more | SPIKE, EV3, MATRIX | SPIKE, EV3, MATRIX, Arduino, micro:bit, mBlock |
-| Status | No longer supported | No longer supported | **Firmware v1: SPIKE edition verified on hardware, other hosts still to be tested** |
+| Status | No longer supported | No longer supported | **Firmware v1: SPIKE and EV3 editions verified on hardware; MATRIX, Arduino, micro:bit and mBlock editions not yet** |
 | Guide | [Legacy overview](/en/sensors/esp32cam/index.md) | [Legacy overview](/en/sensors/esp32cam/index.md) | This page |
 
 - Programs written for a legacy edition do not run as-is on the current Sharpshooter Vision: the value layout is different, so rewrite them with the host guides on this page.
-- To try the current Sharpshooter Vision early, [contact us](/en/contact.md).
+- To buy the current Sharpshooter Vision or ask for a quote, [contact us](/en/contact.md).
 
 ## 🧩 Supported hosts
 
@@ -230,7 +230,7 @@ Example programs: [SPIKE](/en/sensors/unicam/spike-examples.md) · [EV3](/en/sen
 
 ## ⚠️ Known limits, to be tested on hardware
 
-The SPIKE edition is verified on hardware (2026-11-01, shipping firmware v1.0-261101); the firmware for the other hosts has not been run on real hardware yet, and these may change after testing:
+The SPIKE edition (2026-11-01, shipping firmware v1.0-261101) and the EV3 edition (2026-11-03) are verified on hardware; the MATRIX, Arduino, micro:bit and mBlock editions have not been run on real hardware yet, and these may change after testing:
 
 1. **fps**: the 16-color lookup and blob labelling do more work than 4 colors; real fps still has to be measured (Kito with 4 colors runs about 50 fps).
 2. **I2C pins**: SDA = IO3, SCL = IO1 is provisional; whether the ESP32 can be an I2C target on IO1 / IO3 has to be tested with an Arduino. The **mBlock edition** still has to be tried on an mBot (only the transport layer was tested on a PC).

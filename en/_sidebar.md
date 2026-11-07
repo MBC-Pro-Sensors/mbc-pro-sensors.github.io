@@ -29,7 +29,7 @@
   - [Controller PS4/PS5](/en/sensors/ps4/index.md)
 
 - **👁️ Robot Vision**
-  - [Sharpshooter Vision (In Development)](/en/sensors/unicam/index.md)
+  - [Sharpshooter Vision](/en/sensors/unicam/index.md)
     - [Value reference (slot by slot)](/en/sensors/unicam/reference.md)
     - [SPIKE](/en/sensors/unicam/spike/index.md)
     - [EV3](/en/sensors/unicam/ev3/index.md)

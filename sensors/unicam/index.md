@@ -1,5 +1,5 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-# 神攝手 攝影機感應器（開發中）
+# 神攝手 攝影機感應器
 
 > [!WARNING]
 > **SPIKE 版已上機驗證**（2026-11-01，出貨版韌體 v1.0-261101，見 [SPIKE 讀值教學](/sensors/unicam/spike/index.md)）；**EV3 版已上機驗證**（2026-11-03，原廠韌體／EV3-G、Pybricks v4；ev3dev 支援，見 [EV3 讀值教學](/sensors/unicam/ev3/index.md)）；**MATRIX、Arduino、micro:bit、mBlock 版尚未上機驗證**：數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
@@ -208,11 +208,11 @@ EV3 的 Y 是**下＝小**：(119−Y)÷20＋1；SPIKE 系列照 Kito「上＝�
 | 主要功能 | 取色點＋色塊追蹤＋動態偵測 | 12 個色點的顏色碼與鮮豔度 | 顏色追蹤（最多 16 色）、座標取色、照順序給色號、循線、物體偵測 |
 | 在相機上切換用法 | — | — | 5 個相機模式＋子選項 |
 | 平台 | SPIKE、EV3、MATRIX、Arduino 等 | SPIKE、EV3、MATRIX | SPIKE、EV3、MATRIX、Arduino、micro:bit、mBlock |
-| 狀態 | 停止支援 | 停止支援 | **韌體 v1：SPIKE 版已上機驗證，其他平台待上機** |
+| 狀態 | 停止支援 | 停止支援 | **韌體 v1：SPIKE、EV3 版已上機驗證；MATRIX、Arduino、micro:bit、mBlock 版尚未上機驗證** |
 | 說明 | [舊版總覽](/sensors/esp32cam/index.md) | [舊版總覽](/sensors/esp32cam/index.md) | 本頁 |
 
 - 舊版的程式不能直接用在目前的神攝手：數值排法不同，要照本頁各平台的讀值教學改寫。
-- 想先試用目前的神攝手，請 [聯絡我們](/contact.md)。
+- 購買或詢價目前的神攝手，請 [聯絡我們](/contact.md)。
 
 ## 🧩 支援平台
 
@@ -230,7 +230,7 @@ EV3 的 Y 是**下＝小**：(119−Y)÷20＋1；SPIKE 系列照 Kito「上＝�
 
 ## ⚠️ 已知限制與上機待測
 
-SPIKE 版已上機驗證（2026-11-01，出貨版韌體 v1.0-261101）；其他平台的韌體還沒接實體硬體測過，下面這些上機後可能調整：
+SPIKE 版（2026-11-01，出貨版韌體 v1.0-261101）與 EV3 版（2026-11-03）已上機驗證；MATRIX、Arduino、micro:bit、mBlock 版還沒接實體硬體測過，下面這些上機後可能調整：
 
 1. **fps**：16 色查表與連通標記比 4 色多做事，要量實際 fps（Kito 4 色約 50 fps）。
 2. **I2C 腳位**：SDA＝IO3、SCL＝IO1 是暫定，ESP32 從機能不能用 IO1／IO3 要接 Arduino 實測。**mBlock 版**要接 mBot 實測（電腦端只測過傳輸層）。

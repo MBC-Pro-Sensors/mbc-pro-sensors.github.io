@@ -925,7 +925,7 @@
           ],
           [
             "狀態",
-            "SPIKE 版已上機驗證（2026-11-01）；其他平台待上機"
+            "SPIKE（官方 App、Pybricks、Robot Inventor）與 EV3（原廠韌體、Pybricks）已上機驗證；MATRIX、Arduino、micro:bit、mBlock 版尚未上機驗證"
           ]
         ]
       },
@@ -942,7 +942,7 @@
           ],
           [
             "Status",
-            "SPIKE edition hardware-verified (2026-11-01); other platforms pending"
+            "Hardware-verified on SPIKE (official App, Pybricks, Robot Inventor) and EV3 (stock firmware, Pybricks); MATRIX, Arduino, micro:bit and mBlock editions not yet hardware-verified"
           ]
         ]
       }
@@ -953,8 +953,8 @@
       "en": "WRO RoboMission: allowed for Junior and Senior (cameras are not allowed in Elementary)"
     },
     "zh": {
-      "badge": "CAM-VIS · 開發中",
-      "pitch": "一台相機五種用法：顏色追蹤（最多 16 色）、座標取色、照順序給色號、循線、物體偵測（顏色＋形狀），在相機選單切換；SPIKE、EV3、MATRIX、Arduino、micro:bit、mBlock 都讀得到。",
+      "badge": "CAM-VIS · 視覺",
+      "pitch": "一台相機五種用法：顏色追蹤（最多 16 色）、座標取色、照順序給色號、循線、物體偵測（顏色＋形狀），在相機選單切換；SPIKE（含 Robot Inventor）與 EV3 已上機驗證，MATRIX、Arduino、micro:bit、mBlock 版尚未上機驗證。",
       "stats": [
         [
           "5 種",
@@ -965,8 +965,8 @@
           "同時追蹤"
         ],
         [
-          "6 種",
-          "主機都能讀"
+          "SPIKE＋EV3",
+          "已上機驗證"
         ]
       ],
       "editions": [
@@ -993,8 +993,8 @@
       ]
     },
     "en": {
-      "badge": "CAM-VIS · IN DEVELOPMENT",
-      "pitch": "One camera, five jobs: color tracking (up to 16 colors), color at points, color order, line following and object detection (color + shape), switched in the camera menu; SPIKE, EV3, MATRIX, Arduino, micro:bit and mBlock can all read it.",
+      "badge": "CAM-VIS · VISION",
+      "pitch": "One camera, five jobs: color tracking (up to 16 colors), color at points, color order, line following and object detection (color + shape), switched in the camera menu; hardware-verified on SPIKE (incl. Robot Inventor) and EV3; MATRIX, Arduino, micro:bit and mBlock editions not yet hardware-verified.",
       "stats": [
         [
           "5",
@@ -1005,8 +1005,8 @@
           "colors tracked"
         ],
         [
-          "6",
-          "host families"
+          "SPIKE + EV3",
+          "hardware-verified"
         ]
       ],
       "editions": [

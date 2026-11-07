@@ -29,7 +29,7 @@
   - [掌控者 PS4/PS5](/sensors/ps4/index.md)
 
 - **👁️ 機器人視覺**
-  - [神攝手（開發中）](/sensors/unicam/index.md)
+  - [神攝手](/sensors/unicam/index.md)
     - [讀值參考（逐格對照）](/sensors/unicam/reference.md)
     - [SPIKE](/sensors/unicam/spike/index.md)
     - [EV3](/sensors/unicam/ev3/index.md)

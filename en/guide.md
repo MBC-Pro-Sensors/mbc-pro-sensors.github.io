@@ -51,7 +51,7 @@ Pick your product and controller to go straight to setup steps, blocks and examp
 | [SPIKE 6-Port Servo Expander](/en/sensors/servo6/index.md) (coming soon) | Servos on your robot (gripper, turntable, arm) | **SPIKE Prime only**; servos powered by the hub, no battery |
 | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bluetooth gamepad control | Best for big events |
 | [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad control | Classes, projects |
-| [Sharpshooter Vision](/en/sensors/unicam/index.md) (in development) | Multi-color tracking, color at points, color order, line following | Official app, Pybricks |
+| [Sharpshooter Vision](/en/sensors/unicam/index.md) | Multi-color tracking, color at points, color order, line following | Official app, Pybricks |
 | [IMU Gyro](/en/sensors/imu/index.md) | Heading, turning | No SPIKE edition |
 
 <h3 id="ev3">🧱 LEGO MINDSTORMS EV3</h3>
@@ -64,7 +64,7 @@ Pick your product and controller to go straight to setup steps, blocks and examp
 | [Ranger 8-Way](/en/sensors/tof8/index.md) | 180° avoidance, sumo | |
 | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bluetooth gamepad control | |
 | [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad control | |
-| [Sharpshooter Vision](/en/sensors/unicam/index.md) (in development) | Multi-color tracking, color at points, color order, line following | EV3-G, EV3 Classroom, Pybricks |
+| [Sharpshooter Vision](/en/sensors/unicam/index.md) | Multi-color tracking, color at points, color order, line following | EV3-G, EV3 Classroom, Pybricks |
 | [IMU Gyro](/en/sensors/imu/index.md) | Heading, turning | Works with the standard gyro blocks |
 
 <h3 id="arduino">∿ Arduino / ESP32 / Raspberry Pi (Universal I2C)</h3>
@@ -79,7 +79,7 @@ The whole family shares one [Universal I2C Protocol](/en/i2c-protocol.md) — le
 | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bluetooth gamepad control | `0x42` |
 | [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad control | `0x42` |
 | [IMU Gyro](/en/sensors/imu/index.md) | Heading, 9-axis data | `0x6A` |
-| [Sharpshooter Vision](/en/sensors/unicam/arduino/index.md) (in development) | Multi-color tracking, color at points, line following (micro:bit too) | `0x4C` |
+| [Sharpshooter Vision](/en/sensors/unicam/arduino/index.md) (Arduino edition not yet hardware-verified) | Multi-color tracking, color at points, line following (micro:bit too) | `0x4C` |
 
 <h3 id="matrix">🤖 MATRIX Mini R4</h3>
 
@@ -88,7 +88,7 @@ The whole family shares one [Universal I2C Protocol](/en/i2c-protocol.md) — le
 | [Pathfinder 8-Way](/en/sensors/line8/index.md) | Line following |
 | [Pathfinder 16-Way](/en/sensors/line16/index.md) | Fast lines, intersections |
 | [Ranger 8-Way](/en/sensors/tof8/index.md) | 180° avoidance |
-| [Sharpshooter Vision](/en/sensors/unicam/matrix/mvision.md) (in development) | Multi-color tracking, color at points, color order, line following |
+| [Sharpshooter Vision](/en/sensors/unicam/matrix/mvision.md) (MATRIX edition not yet hardware-verified) | Multi-color tracking, color at points, color order, line following |
 | [IMU Gyro](/en/sensors/imu/index.md) | Heading, turning |
 
 <h3 id="makeblock">🤖 MakeBlock</h3>
@@ -116,7 +116,7 @@ Works with mBot, mBot Ranger, Orion and Ultimate 2.0 (MegaPi). Choose the MakeBl
 | Use servos with SPIKE | [SPIKE 6-Port Servo Expander](/en/sensors/servo6/index.md) | Six servos from one port, hub-powered (coming soon) |
 | Remote control at crowded events | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bonds to your gamepad only, stops on signal loss |
 | Remote control for classes on a budget | [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad, best value |
-| Track colors, find objects, sample points, sequences and lines | [Sharpshooter Vision](/en/sensors/unicam/index.md) | 5 camera modes switched in its menu (including object detection: color + shape), six host families (SPIKE, EV3, Arduino, mBlock, MATRIX, micro:bit) (in development) |
+| Track colors, find objects, sample points, sequences and lines | [Sharpshooter Vision](/en/sensors/unicam/index.md) | 5 camera modes switched in its menu (including object detection: color + shape), hardware-verified on SPIKE and EV3 (Arduino, mBlock, MATRIX and micro:bit editions not yet hardware-verified) |
 | Drive straight, turn precisely | [IMU Gyro](/en/sensors/imu/index.md) | Any mounting angle, compass fusion without drift |
 
 <div class="lp-final">

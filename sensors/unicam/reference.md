@@ -3,7 +3,7 @@
 # 讀值參考：逐格對照
 
 > [!WARNING]
-> **SPIKE 版已上機驗證（2026-11-01，出貨版 v1.0-261101）**；EV3、MATRIX、Arduino、micro:bit、mBlock 還沒上機，數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
+> **SPIKE 版（2026-11-01，出貨版 v1.0-261101）與 EV3 版（2026-11-03）已上機驗證**；MATRIX、Arduino、micro:bit、mBlock 還沒上機，數值排法已定案並通過電腦端測試，實機數值（fps、循線門檻、I2C 腳位）上機後可能調整。
 
 神攝手在每個上位機、每個「相機模式・子選項」送什麼值、放在哪一格。先在相機上選好模式（看 [產品首頁](/sensors/unicam/index.md) 的「相機上的操作」），再到這裡找你的上位機那一節，點開對應的表。各平台怎麼寫程式讀，看 [SPIKE](/sensors/unicam/spike/index.md)、[EV3](/sensors/unicam/ev3/index.md)、[MATRIX](/sensors/unicam/matrix/mvision.md)、[Arduino](/sensors/unicam/arduino/index.md)、[micro:bit](/sensors/unicam/microbit/index.md)。
 

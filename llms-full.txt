@@ -32,7 +32,7 @@
 ### 2.3 EXP6 6 路擴充器 (SPIKE 6-Port Expansion Hub)
 - **類型**：SPIKE Prime 專用 6 埠擴充模組
 - **主要用途**：突破 SPIKE Prime 僅有 6 個連線埠的硬體上限。
-- **特點**：自帶獨立隔離電源保護，避免外接多組馬達或大功耗感應器時造成主機過載重開機；支援 Pybricks，以及官方 SPIKE App 的 Python 文字模式（官方 App 積木模式與 Robot Inventor 不支援）。
+- **特點**：自帶獨立隔離電源保護，避免外接多組馬達或大功耗感應器時造成主機過載重開機；支援 Pybricks，以及官方 SPIKE App 的 Python 文字模式（官方 App 積木模式不支援）；Robot Inventor（51515）可以用 Robot Inventor App 的 Python；不支援 EV3。
 
 ### 2.4 測距者 2 路 (TOF2)
 - **類型**：雙通道微型 Time-of-Flight (TOF) 雷射測距感應器
@@ -49,9 +49,9 @@
 - **主要用途**：手動遙控競賽、現場展示操控、多自由度機械手臂手動微調。
 - **特點**：直接接入主機連接埠，相容 PS2 2.4G 無線手把與 PS4 / PS5 藍牙手把；PS4/PS5 版本具備配對記憶、只綁定自己的手把（比賽現場不會連到別隊）、斷訊 0.3 秒輸出自動歸零，比賽場地內穩定連線（空曠實測 100 公尺）。
 
-### 2.7 神攝手（攝影機感應器，開發中）
+### 2.7 神攝手（攝影機感應器）
 - **類型**：機器人視覺攝影機感應器（OV3660 鏡頭、1.8 吋彩色螢幕＋4 顆按鍵）
-- **主要用途**：在相機選單切換 5 種模式：顏色追蹤（最多 16 色）、座標取色、照順序給色號、循線、物體偵測（物體代碼＝色號×10＋形狀，9 種形狀，最多 8 個物體）；SPIKE、EV3、MATRIX、Arduino、micro:bit、mBlock 都讀得到。韌體 v1 尚未上機驗證。網址：https://mbc-pro-sensors.github.io/sensors/unicam/
+- **主要用途**：在相機選單切換 5 種模式：顏色追蹤（最多 16 色）、座標取色、照順序給色號、循線、物體偵測（物體代碼＝色號×10＋形狀，9 種形狀，最多 8 個物體）；SPIKE（含 Robot Inventor）與 EV3 已上機驗證；MATRIX、Arduino、micro:bit、mBlock 版尚未上機驗證。網址：https://mbc-pro-sensors.github.io/sensors/unicam/
 - **舊版**：2026-10 以前出貨的神攝手 ESP32CAM（學校版、WRO 版 HUE12）已停止支援，說明與範例保留在 https://mbc-pro-sensors.github.io/sensors/esp32cam/ 。升級成目前的神攝手：請聯繫原購買的經銷商寄回，韌體更新免費，來回運費由買家負擔。
 
 ---
@@ -96,7 +96,7 @@
 **A**: FIRST® LEGO® League Challenge 正式比賽只允許 LEGO 原廠零件，MBC 產品不適用；平時教學、練習與其他開放規則的賽事可以使用。
 
 ### Q7: 售價多少？
-**A**: 建議售價：循行者 8 路 NT$2,500／US$100、循行者 16 路 NT$3,000／US$120、測距者 2 路 NT$1,500／US$60、測距者 8 路 NT$3,000／US$120、EXP6 NT$3,600／US$145、掌控者 PS2 NT$2,000（僅限台灣販售）、掌控者 PS4/PS5 NT$2,500／US$100、陀螺儀 IMUNT$2,500／US$100；神攝手（開發中）價格洽詢。美金價格不含運費。購買或經銷洽詢：contactmbcrobot@gmail.com、LINE @692vcvuk。
+**A**: 建議售價：循行者 8 路 NT$2,500／US$100、循行者 16 路 NT$3,000／US$120、測距者 2 路 NT$1,500／US$60、測距者 8 路 NT$3,000／US$120、EXP6 NT$3,600／US$145、掌控者 PS2 NT$2,000（僅限台灣販售）、掌控者 PS4/PS5 NT$2,500／US$100、陀螺儀 IMUNT$2,500／US$100；神攝手價格洽詢。美金價格不含運費。購買或經銷洽詢：contactmbcrobot@gmail.com、LINE @692vcvuk。
 
 ---
 
