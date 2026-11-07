@@ -136,7 +136,7 @@ function officialBlock(hub, b, lang) {
   if (b >= 2 && b <= 7) return L(RGB[(b - 2) >> 1], lang);
   return null;
 }
-// protocol app 欄（掌控者，見 _build/protocol-site-fixes.mjs）：App 讀到的數怎麼拆
+// protocol app 欄（掌控者 ps2／ps4.json 模式 0：lo4／hi4／x10／keyNo／raw，neg＝哪個鍵讓 App 讀到負數）：App 讀到的數怎麼拆
 function appHow(product, e, i, wide, lang) {
   const neg = e.neg ? (wide
     ? T(lang, `（按住 ${e.neg} 時讀到負數，先加 65536）`, ` (negative while ${e.neg} is held: add 65536 first)`)

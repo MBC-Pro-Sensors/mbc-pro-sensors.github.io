@@ -7,7 +7,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { HIDE_BIG, FLAGS } from './site-flags.mjs';
-import { applyFixes } from './protocol-site-fixes.mjs';   // 網站副本的讀法修正（正本還沒改的部分，見檔頭）
 const HOLD = FLAGS.holdCommands || [];
 const HOLD_ALL = FLAGS.holdSync || [];
 const HIDE_HOSTS = FLAGS.hideHosts || {};
@@ -132,7 +131,6 @@ for (const f of files) {
   src = hideHosts(src, f.replace(/\.json$/, ''));
   src = hideUnreleasedMicrobit(src);
   src = hideUnreleasedMblock(src, f.replace(/\.json$/, ''));
-  src = applyFixes(src, f.replace(/\.json$/, ''));
   const dst = path.join(PROTOCOL_DST, f);
   const cur = fs.existsSync(dst) ? fs.readFileSync(dst, 'utf8') : null;
   // site-flags.json holdCommands：命令還沒上機的產品，讀值照常同步，命令／旗標／SPIKE 命令通道沿用網站目前的副本
