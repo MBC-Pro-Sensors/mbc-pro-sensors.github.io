@@ -948,6 +948,10 @@
       }
     },
     "color": "#00d2ff",
+    "msrp": {
+      "twd": 3000,
+      "usd": 120
+    },
     "wro": {
       "zh": "WRO RoboMission：國中、高中組可用（相機不開放國小組）",
       "en": "WRO RoboMission: allowed for Junior and Senior (cameras are not allowed in Elementary)"
