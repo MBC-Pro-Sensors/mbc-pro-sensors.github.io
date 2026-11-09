@@ -1,9 +1,9 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 _build/gen-guides.mjs 產生（esp32cam × matrix × mvision），請勿手改；改內容請改 _build/guides.json、_build/guides/**、_build/protocol/*.json 後重跑 node _build/gen-guides.mjs -->
 <!-- guide: esp32cam/matrix/mvision -->
-# Sharpshooter Vision (ESP32CAM) × MATRIX × mVision blocks
+# SharpShot Vision (ESP32CAM) × MATRIX × mVision blocks
 
-This page covers **MATRIXblock mVision serial blocks** only: how to set it up for the Sharpshooter Vision (ESP32CAM) on MATRIX Mini R4, how to read every value, the commands it supports and examples. Use the switcher above to change product, host or software.
+This page covers **MATRIXblock mVision serial blocks** only: how to set it up for the SharpShot Vision (ESP32CAM) on MATRIX Mini R4, how to read every value, the commands it supports and examples. Use the switcher above to change product, host or software.
 
 ## Which edition and how to connect
 
@@ -11,10 +11,10 @@ Get the **MATRIX edition** and connect it with the stock MATRIX 4-pin cable to I
 
 ## Setup
 
-<!-- setup: _build/guides/software/matrix-mvision.en.md + _build/guides/product/esp32cam/matrix-mvision.en.md {"product":"Sharpshooter Vision (ESP32CAM)","edition":"MATRIX edition","port":"I2C1","lib":"","libUrl":"","addr":"0x4C"} -->
+<!-- setup: _build/guides/software/matrix-mvision.en.md + _build/guides/product/esp32cam/matrix-mvision.en.md {"product":"SharpShot Vision (ESP32CAM)","edition":"MATRIX edition","port":"I2C1","lib":"","libUrl":"","addr":"0x4C"} -->
 <!-- include-fallback -->
 > [!NOTE]
-> Setup steps for this software are being moved onto this page. Meanwhile see the previous guide: [Sharpshooter Vision (ESP32CAM): MATRIXblock mVision serial blocks](/en/sensors/esp32cam/matrix.md).
+> Setup steps for this software are being moved onto this page. Meanwhile see the previous guide: [SharpShot Vision (ESP32CAM): MATRIXblock mVision serial blocks](/en/sensors/esp32cam/matrix.md).
 <!-- /include-fallback -->
 
 ## Reading values (School edition)

@@ -26,7 +26,7 @@
 
 #include <Wire.h>
 
-const uint8_t OLD_ADDR = 0x29;           // The sensor's current address   👉 Change this (Pathfinder 0x16, Ranger 0x29, Controller 0x42, IMU 0x6A, Sharpshooter 0x4C)
+const uint8_t OLD_ADDR = 0x29;           // The sensor's current address   👉 Change this (Pathfinder 0x16, Ranger 0x29, Controller 0x42, IMU 0x6A, SharpShot 0x4C)
 const uint8_t NEW_ADDR = 0x2A;           // The address you want           👉 Change this (0x08 ~ 0x77, must not clash with other devices)
 const int16_t MBC_NONE = -32768;         // Code for "no such value / cannot read"
 

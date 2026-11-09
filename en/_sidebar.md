@@ -29,7 +29,7 @@
   - [Controller PS4/PS5](/en/sensors/ps4/index.md)
 
 - **👁️ Robot Vision**
-  - [Sharpshooter Vision](/en/sensors/unicam/index.md)
+  - [SharpShot Vision](/en/sensors/unicam/index.md)
     - [Value reference (slot by slot)](/en/sensors/unicam/reference.md)
     - [SPIKE](/en/sensors/unicam/spike/index.md)
     - [EV3](/en/sensors/unicam/ev3/index.md)
@@ -37,7 +37,7 @@
     - [Arduino](/en/sensors/unicam/arduino/index.md)
     - [micro:bit](/en/sensors/unicam/microbit/index.md)
     - [mBlock](/en/sensors/unicam/mblock/index.md)
-    - [Sharpshooter Vision legacy editions (no longer supported)](/en/sensors/esp32cam/index.md)
+    - [SharpShot Vision legacy editions (no longer supported)](/en/sensors/esp32cam/index.md)
   - [Long-Range Colour Sensor OV3660 (In Development)](/en/sensors/ov3660/index.md)
 
 - **🧭 Motion Sensing**

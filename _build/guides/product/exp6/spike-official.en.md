@@ -42,7 +42,7 @@ exp6.stop_all(1)          # always stop all motors before the program ends (1 = 
 
 ### MBC sensors on the EXP6, and sending them commands
 
-MBC sensors (Line Follower, Laser Ranger, Controller, Sharpshooter Vision) just plug into EXP6 ports 1 to 6; the library already includes them:
+MBC sensors (Line Follower, Laser Ranger, Controller, SharpShot Vision) just plug into EXP6 ports 1 to 6; the library already includes them:
 
 ```python
 line8 = exp6.line8(2)            # Line Follower 8-ch in EXP6 port 2
@@ -106,7 +106,7 @@ MBC sensors work the same way: `line8 = exp.line8(2)` (Line Follower 8-ch in EXP
 | [06_System_Misc](/examples/exp6/robot_inventor/examples/06_System_Misc.py) | Voltage, device codes, raw values |
 | [07_Motor_Inverted](/examples/exp6/robot_inventor/examples/07_Motor_Inverted.py) | Motor mounted normally / reversed |
 | [08_Stop_Modes](/examples/exp6/robot_inventor/examples/08_Stop_Modes.py) | The 4 stop modes compared |
-| [09_MBC_Sensors](/examples/exp6/robot_inventor/examples/09_MBC_Sensors.py) | Line Follower, Laser Ranger 2-ch, PS4 gamepad, Sharpshooter Vision (sensor in EXP6 port 2) |
+| [09_MBC_Sensors](/examples/exp6/robot_inventor/examples/09_MBC_Sensors.py) | Line Follower, Laser Ranger 2-ch, PS4 gamepad, SharpShot Vision (sensor in EXP6 port 2) |
 | [10_MBC_Commands](/examples/exp6/robot_inventor/examples/10_MBC_Commands.py) | Commands to a Line Follower 8-ch: change the threshold, failed, rejected, restore |
 
 **Troubleshooting**

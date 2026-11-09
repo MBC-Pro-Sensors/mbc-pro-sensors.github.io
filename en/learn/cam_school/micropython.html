@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/cam_school/micropython.html">
 <link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/cam_school/micropython.html">
 <link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/cam_school/micropython.html">
-<title>Sharpshooter Vision (ESP32CAM) School edition Pybricks Tutorial | MBC-Pro Sensors</title>
+<title>SharpShot Vision (ESP32CAM) School edition Pybricks Tutorial | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -232,11 +232,11 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/esp32cam/spike/">← Sharpshooter Vision SPIKE guide</a><a class="lang" href="/learn/cam_school/micropython.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/cam_school/micropython.html" aria-current="page">SPIKE</a><a href="/en/learn/cam_school/ev3-pybricks.html">EV3</a><a href="/en/learn/cam_school/arduino.html">Arduino</a><a href="/en/learn/cam_school/mblock.html">mBlock</a><a href="/en/learn/cam_school/matrix.html">MATRIX</a><a href="/en/learn/cam_school/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/cam_school/micropython.html" aria-current="page">MicroPython (Pybricks)</a><a href="/en/learn/cam_school/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/cam_school/pybricks-builtin.html">Pybricks built-in blocks</a><a href="/en/learn/cam_school/mbc-blocks.html">MBC Blocks website</a><a href="/en/learn/cam_school/spike-app.html">LEGO SPIKE App</a><a href="/en/learn/cam_school/spike-app-python.html">SPIKE App Python</a></div></div></nav>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/esp32cam/spike/">← SharpShot Vision SPIKE guide</a><a class="lang" href="/learn/cam_school/micropython.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/cam_school/micropython.html" aria-current="page">SPIKE</a><a href="/en/learn/cam_school/ev3-pybricks.html">EV3</a><a href="/en/learn/cam_school/arduino.html">Arduino</a><a href="/en/learn/cam_school/mblock.html">mBlock</a><a href="/en/learn/cam_school/matrix.html">MATRIX</a><a href="/en/learn/cam_school/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/cam_school/micropython.html" aria-current="page">MicroPython (Pybricks)</a><a href="/en/learn/cam_school/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/cam_school/pybricks-builtin.html">Pybricks built-in blocks</a><a href="/en/learn/cam_school/mbc-blocks.html">MBC Blocks website</a><a href="/en/learn/cam_school/spike-app.html">LEGO SPIKE App</a><a href="/en/learn/cam_school/spike-app-python.html">SPIKE App Python</a></div></div></nav>
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">MBC Sharpshooter Vision (ESP32CAM) School edition × Pybricks</span>
-    <h1>Read the Sharpshooter Vision with MicroPython in three steps</h1>
+    <span class="eyebrow">MBC SharpShot Vision (ESP32CAM) School edition × Pybricks</span>
+    <h1>Read the SharpShot Vision with MicroPython in three steps</h1>
     <p class="lead">A Pybricks program always goes in this order: first <b>import the library</b>, then <b>create an object and give the sensor a name</b>, and last use that name to <b>call a function</b>. Follow the steps on the left, and the program on the right grows with you. In the pretend camera picture you can drag the blob, change its colour and change its size, and see what the program prints.</p>
     <div class="hostbar">
       <span class="small">Your hub:</span>
@@ -253,10 +253,10 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <article class="step current" id="step1">
         <div class="step-head"><span class="num">1</span><h2>Import the library</h2></div>
         <div class="step-body">
-          <p class="why">The <b>first thing</b> in the program tells Pybricks "I want to use the Sharpshooter library". Without this line the hub does not know what <code>MBC_CAM_SCHOOL</code> means, and you get a <code>NameError</code>.</p>
+          <p class="why">The <b>first thing</b> in the program tells Pybricks "I want to use the SharpShot library". Without this line the hub does not know what <code>MBC_CAM_SCHOOL</code> means, and you get a <code>NameError</code>.</p>
           <p class="small">Pick one library (both work the same way; only the import line is different):</p>
           <div class="choice" role="group" aria-label="Library">
-            <button type="button" class="opt" id="lib-single" aria-pressed="true"><b>Single library MBC_cam_school.py</b><small>Use it when only the Sharpshooter is connected. The file is small (about 3 KB), so it uploads faster when you press Run.</small></button>
+            <button type="button" class="opt" id="lib-single" aria-pressed="true"><b>Single library MBC_cam_school.py</b><small>Use it when only the SharpShot is connected. The file is small (about 3 KB), so it uploads faster when you press Run.</small></button>
             <button type="button" class="opt" id="lib-all" aria-pressed="false"><b>All-in-one library MBC_sensors.py</b><small>Use it when the same robot also has other MBC sensors (about 12 KB, all 7 products inside).</small></button>
           </div>
           <ol class="howto">
@@ -421,7 +421,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       out: function (s) { return s.mot == null ? TE('__gt__') : s.mot > 20 ? 'Something is moving! ' + s.mot : 'All still ' + s.mot; } },
     { id: 'read_all', zh: 'Read everything at once', grp: 'Read everything', ret: '8 numbers (list)', what: 'Read 8 numbers in one go, in this order: [hue, saturation, brightness, motion value, blob X, blob Y, blob width, blob height]. Take out the one you want with data[0] (hue), data[4] (blob X) and so on.',
       body: ['data = {n}.read_all()', 'print(data)'], out: function (s) { return py(s.all); } },
-    { id: 'device_id', zh: 'Sensor ID', grp: 'Sensor info', ret: '(address, model, firmware number)', what: 'Check which product is connected: address 76 (0x4C), model 1 = Sharpshooter Vision School edition, 102 = firmware 1.2. Only SPIKE can read it. Read it once outside the loop.', once: true, spikeOnly: true,
+    { id: 'device_id', zh: 'Sensor ID', grp: 'Sensor info', ret: '(address, model, firmware number)', what: 'Check which product is connected: address 76 (0x4C), model 1 = SharpShot Vision School edition, 102 = firmware 1.2. Only SPIKE can read it. Read it once outside the loop.', once: true, spikeOnly: true,
       body: ['print({n}.device_id())'], out: function (s) { return s.none ? 'None' : '(76, 1, 102)'; } },
     { id: 'firmware_version', zh: 'Firmware version', grp: 'Sensor info', ret: '(major, minor)', what: 'The version of the sensor firmware, for example (1, 2) = 1.2. Only SPIKE can read it. Read it once outside the loop.', once: true, spikeOnly: true,
       body: ['print({n}.firmware_version())'], out: function (s) { return s.none ? 'None' : '(1, 2)'; } },
@@ -684,7 +684,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       'from ' + modName() + ' import MBC_CAM_SCHOOL',
       '',
       '# ===== Things to change =====',
-      'CAM_PORT = 3         # which port the Sharpshooter is on (3 = C)',
+      'CAM_PORT = 3         # which port the SharpShot is on (3 = C)',
       'KP = 2               # how strongly it turns',
       '# ============================',
       '',
@@ -718,7 +718,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       'from pybricks.tools import wait',
       'from MBC_sensors import MBC_CAM_SCHOOL, MBC_LINE8',
       '',
-      'cam = MBC_CAM_SCHOOL(3)    # Sharpshooter on port C',
+      'cam = MBC_CAM_SCHOOL(3)    # SharpShot on port C',
       'line8 = MBC_LINE8(4)       # Pathfinder 8-Way on port D',
       '',
       'while True:',

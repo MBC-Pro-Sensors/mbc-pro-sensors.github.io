@@ -1,5 +1,5 @@
 /*
- * Sharpshooter ESP32CAM x Arduino   Example 4: Where is the color blob?
+ * SharpShot ESP32CAM x Arduino   Example 4: Where is the color blob?
  * ------------------------------------------------------------
  * What does this example do?
  *   Reads the position and size of the color blob (numbers 05~0A, 6 values in one read):
@@ -8,16 +8,16 @@
  *   Every 0.2 s it says whether the blob is "left / center / right", "top / middle / bottom", and how big it is.
  *   When nothing is found, X, Y, width, height and area are all 0.
  *
- * You need: Sharpshooter ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
+ * You need: SharpShot ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
  *
  * Wiring:
- *   Sharpshooter 5V  -> 5V       Sharpshooter GND -> GND
- *   Sharpshooter IO3 (SDA) -> A4   Sharpshooter IO1 (SCL) -> A5      (UNO / Nano)
+ *   SharpShot 5V  -> 5V       SharpShot GND -> GND
+ *   SharpShot IO3 (SDA) -> A4   SharpShot IO1 (SCL) -> A5      (UNO / Nano)
  *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *   * Hardware confirmed; the I2C firmware bench test is still pending. IO1/IO3 are shared with the EV3 / SPIKE serial editions, so only one firmware at a time.
  *
  * Before you start:
- *   On the screen on the back of the Sharpshooter, set up sample point S1 and the color to track (the settings are stored on the device).
+ *   On the screen on the back of the SharpShot, set up sample point S1 and the color to track (the settings are stored on the device).
  *
  * How to see the result:
  *   After uploading, open the Serial Monitor and choose 115200 baud. Move something of the target color left/right, up/down, near/far in front of the camera.
@@ -28,7 +28,7 @@
 
 #include <Wire.h>                        // Arduino's built-in I2C tool
 
-const uint8_t ADDR = 0x4C;               // The Sharpshooter's "house number" (I2C address). School and WRO editions are both 0x4C
+const uint8_t ADDR = 0x4C;               // The SharpShot's "house number" (I2C address). School and WRO editions are both 0x4C
 const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
 
 // Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
@@ -41,7 +41,7 @@ void setup() {
   mbcBegin();
   delay(500);
   if (!mbcWaitReady(ADDR, 8000)) {
-    Serial.println(F("Sharpshooter not found. Run Example 1 first to check the wiring."));
+    Serial.println(F("SharpShot not found. Run Example 1 first to check the wiring."));
     while (true) {}
   }
   Serial.println(F("Ready! Hold something of the target color in front of the camera."));
@@ -53,7 +53,7 @@ void loop() {
 
     // Read numbers 05~0A (6 values) in one go: [0] X [1] Y [2] width [3] height [4] area [5] found
     int16_t b[6];
-    if (!mbcReadMany(ADDR, 0x05, 6, b)) { Serial.println(F("Cannot read the Sharpshooter")); return; }
+    if (!mbcReadMany(ADDR, 0x05, 6, b)) { Serial.println(F("Cannot read the SharpShot")); return; }
 
     if (!b[5]) {                         // 0A = 0: the target color is not in the image
       Serial.println(F("No blob found"));

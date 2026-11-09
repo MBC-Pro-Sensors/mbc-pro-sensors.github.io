@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="In the EV3 software (EV3-G), the Sharpshooter Vision School edition shows up as a LEGO Infrared Sensor. So you do not import a library: you read it with the Inf">
+<meta name="description" content="In the EV3 software (EV3-G), the SharpShot Vision School edition shows up as a LEGO Infrared Sensor. So you do not import a library: you read it with the Inf">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/cam_school/ev3g.html">
 <link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/cam_school/ev3g.html">
 <link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/cam_school/ev3g.html">
-<title>Sharpshooter Vision (ESP32CAM) — School edition EV3-G Tutorial | MBC-Pro Sensors</title>
+<title>SharpShot Vision (ESP32CAM) — School edition EV3-G Tutorial | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -251,12 +251,12 @@ img.shot { display: block; max-width: none; height: auto; background: #fff; bord
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/esp32cam/ev3/">← Sharpshooter Vision EV3 guide</a><a class="lang" href="/learn/cam_school/ev3g.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/cam_school/micropython.html">SPIKE</a><a href="/en/learn/cam_school/ev3-pybricks.html" aria-current="page">EV3</a><a href="/en/learn/cam_school/arduino.html">Arduino</a><a href="/en/learn/cam_school/mblock.html">mBlock</a><a href="/en/learn/cam_school/matrix.html">MATRIX</a><a href="/en/learn/cam_school/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/cam_school/ev3-pybricks.html">Pybricks / EV3 MicroPython</a><a href="/en/learn/cam_school/clev3r.html">clev3r</a><a href="/en/learn/cam_school/ev3-classroom.html">EV3 Classroom</a><a href="/en/learn/cam_school/ev3g.html" aria-current="page">EV3-G (LEGO software)</a></div></div></nav>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/esp32cam/ev3/">← SharpShot Vision EV3 guide</a><a class="lang" href="/learn/cam_school/ev3g.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/cam_school/micropython.html">SPIKE</a><a href="/en/learn/cam_school/ev3-pybricks.html" aria-current="page">EV3</a><a href="/en/learn/cam_school/arduino.html">Arduino</a><a href="/en/learn/cam_school/mblock.html">mBlock</a><a href="/en/learn/cam_school/matrix.html">MATRIX</a><a href="/en/learn/cam_school/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/cam_school/ev3-pybricks.html">Pybricks / EV3 MicroPython</a><a href="/en/learn/cam_school/clev3r.html">clev3r</a><a href="/en/learn/cam_school/ev3-classroom.html">EV3 Classroom</a><a href="/en/learn/cam_school/ev3g.html" aria-current="page">EV3-G (LEGO software)</a></div></div></nav>
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">MBC Sharpshooter Vision School edition × EV3-G (EV3 Lab software)</span>
+    <span class="eyebrow">MBC SharpShot Vision School edition × EV3-G (EV3 Lab software)</span>
     <h1>Read the camera with EV3-G in three steps</h1>
-    <p class="lead">In the EV3 software (EV3-G), the Sharpshooter Vision School edition shows up as a LEGO <b>Infrared Sensor</b>. So you do not import a library: you read it with the Infrared Sensor block in the right mode. Work through the steps on the left and the blocks on the right grow with you. These pictures were taken in EV3-G after opening each program (100% size, English interface), so they look exactly like the software.</p>
+    <p class="lead">In the EV3 software (EV3-G), the SharpShot Vision School edition shows up as a LEGO <b>Infrared Sensor</b>. So you do not import a library: you read it with the Infrared Sensor block in the right mode. Work through the steps on the left and the blocks on the right grow with you. These pictures were taken in EV3-G after opening each program (100% size, English interface), so they look exactly like the software.</p>
   </header>
 
   <section class="main" aria-label="Tutorial">
@@ -278,7 +278,7 @@ img.shot { display: block; max-width: none; height: auto; background: #fff; bord
       <article class="step locked" id="step2">
         <div class="step-head"><span class="num">2</span><h2>Meet the reading blocks (Infrared Sensor)</h2></div>
         <div class="step-body">
-          <p class="why">On the EV3, the Sharpshooter Vision School edition shows up as a LEGO <b>Infrared Sensor</b>. Drag the Infrared Sensor block from the yellow Sensors tab and choose the mode at the bottom left of the block; the number at the top right is the port: choose <b>1</b> (the sensor is in port 1). The product puts different values in different modes:</p>
+          <p class="why">On the EV3, the SharpShot Vision School edition shows up as a LEGO <b>Infrared Sensor</b>. Drag the Infrared Sensor block from the yellow Sensors tab and choose the mode at the bottom left of the block; the number at the top right is the port: choose <b>1</b> (the sensor is in port 1). The product puts different values in different modes:</p>
           <div class="tbl-wrap"><table class="conv">
             <tr><th>Block</th><th>What you get</th><th>Range</th></tr>
             <tr><td>Measure → Proximity</td><td>Colour (hue)</td><td>0 to 100, -1 = black / white / grey</td></tr>

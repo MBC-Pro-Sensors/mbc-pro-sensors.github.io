@@ -1011,7 +1011,7 @@ class EXP6_PS(_EXP6_SENSOR):
     def ry(self): return self._get(4, lambda lo, hi: (lo | (hi << 8)) % 10)
 
 
-# 神攝手通用版/ Sharpshooter Vision：cam = exp.unicam(port, mode=13)，函式同 Pybricks 版 UniCam
+# 神攝手通用版/ SharpShot：cam = exp.unicam(port, mode=13)，函式同 Pybricks 版 UniCam
 #   mode＝相機模式 ×10＋子選項，要跟相機選單切的一樣（SPIKE 讀不到相機目前的模式）
 #   11 顏色追蹤 最多色  12 多色  13 標準 XY＋面積  14 精細 XYWH   21 座標取色 色相  22 色相＋飽和
 #   23 色相＋飽和＋明度   30 照順序給色號   41 循線 黑線  42 白線  43 色線   51 物體清單  52 物體詳細

@@ -12,7 +12,7 @@
 1. Download [📥 Pybricks library + examples (.zip)](/downloads/MBC_EXP6_Pybricks_Lib.zip). The EXP6 needs firmware dated 2026-11-03 or later; use **Pybricks firmware v4.1** on the hub. The function reference is `EXP6_Library_Manual.pdf` in the pack.
 2. Put the files you need in the same Pybricks project (no renaming needed):
    - **Always**: `MBC_exp6_obj_Lib.py` (EXP6, motors, LEGO sensors). The pack's examples say `from MBC_exp6_obj_Lib import MBC_EXP6`.
-   - **Only with MBC sensors**: `MBC_exp6_mbc_common.py`, a shared file that the product files below load automatically. Add the product files you use: `MBC_exp6_line.py` (Line Follower 8/16-ch), `MBC_exp6_laser.py` (Laser Ranger 2/8-ch), `MBC_exp6_pad.py` (PS2/PS4 receiver), `MBC_exp6_unicam.py` (Sharpshooter Vision).
+   - **Only with MBC sensors**: `MBC_exp6_mbc_common.py`, a shared file that the product files below load automatically. Add the product files you use: `MBC_exp6_line.py` (Line Follower 8/16-ch), `MBC_exp6_laser.py` (Laser Ranger 2/8-ch), `MBC_exp6_pad.py` (PS2/PS4 receiver), `MBC_exp6_unicam.py` (SharpShot Vision).
    - **Leave out the rest**: a Pybricks hub program (your code plus all libraries) is limited to about 52 KB, and all the files together are too big.
    - **Pybricks blocks**: the pack's `beginner_examples/` folder has 5 block examples, also as single downloads: [ex01 one turn](/examples/exp6/spike_beginner/pybricks/ex01_one_turn_block.py), [ex02 three motors](/examples/exp6/spike_beginner/pybricks/ex02_three_motors_block.py), [ex03 light switch](/examples/exp6/spike_beginner/pybricks/ex03_light_switch_block.py), [ex04 button control](/examples/exp6/spike_beginner/pybricks/ex04_button_motor_block.py), [ex05 square](/examples/exp6/spike_beginner/pybricks/ex05_square_block.py). In Pybricks Code click "Import a file", pick the file and keep it in the same project as `MBC_exp6_obj_Lib.py`; it opens as blocks. Any wait block turns the program into multitask mode (`MBC_EXP6(3, True)`, every command is `await`ed), so the examples add one more block, "from MBC_exp6_obj_Lib import run_task": it sends the heartbeat in the background while waiting, so the EXP6 watchdog does not stop the motors.
 
@@ -48,7 +48,7 @@ run_task(main())
 
 ### MBC sensors on the EXP6
 
-When you run out of hub ports, you can plug MBC sensors into EXP6 ports 1–6: **Line Follower 8/16-ch, Laser Ranger 2/8-ch, PS2/PS4 receiver and Sharpshooter Vision**. The function names and return values are the same as when the sensor is plugged straight into the hub.
+When you run out of hub ports, you can plug MBC sensors into EXP6 ports 1–6: **Line Follower 8/16-ch, Laser Ranger 2/8-ch, PS2/PS4 receiver and SharpShot Vision**. The function names and return values are the same as when the sensor is plugged straight into the hub.
 
 - Just plug the sensors in, the same as into the hub; there is nothing to set up.
 - The EXP6 needs firmware from **2026-11-03 or later**. For older firmware, contact us to update it.
@@ -62,7 +62,7 @@ When you run out of hub ports, you can plug MBC sensors into EXP6 ports 1–6: *
 ```python
 from MBC_exp6_obj_Lib import MBC_EXP6
 from MBC_exp6_line import *       # Line Follower LINE8, LINE16
-from MBC_exp6_unicam import *     # Sharpshooter Vision UNICAM
+from MBC_exp6_unicam import *     # SharpShot Vision UNICAM
 
 # EXP6 on hub port C (3); Line Follower 16-ch on EXP6 port 5, camera on port 6 (mode 51, object detection)
 exp6 = MBC_EXP6(3, False, p5=LINE16, p6=(UNICAM, 51))
@@ -85,7 +85,7 @@ while True:
 from pybricks.tools import multitask, run_task, wait
 from MBC_exp6_obj_Lib import MBC_EXP6, run_task
 from MBC_exp6_pad import *        # receiver PS2, PS4
-from MBC_exp6_unicam import *     # Sharpshooter Vision UNICAM
+from MBC_exp6_unicam import *     # SharpShot Vision UNICAM
 
 exp6 = MBC_EXP6(3, True, p4=PS4, p6=(UNICAM, 13))   # EXP6 on hub port C (3)
 pad = exp6.sensor(4)              # no await needed, but do it before run_task

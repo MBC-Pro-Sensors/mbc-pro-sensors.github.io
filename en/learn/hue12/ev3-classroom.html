@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="EV3 Classroom blocks only know LEGO's own sensors. On the EV3, the Sharpshooter Vision WRO edition reports device type 95 (HUE12 mode), which is not a stock LEG">
+<meta name="description" content="EV3 Classroom blocks only know LEGO's own sensors. On the EV3, the SharpShot Vision WRO edition reports device type 95 (HUE12 mode), which is not a stock LEG">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/hue12/ev3-classroom.html">
 <link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/hue12/ev3-classroom.html">
 <link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/hue12/ev3-classroom.html">
-<title>Sharpshooter Vision (ESP32CAM) — WRO edition (HUE12) EV3 Classroom Notes | MBC-Pro Sensors</title>
+<title>SharpShot Vision (ESP32CAM) — WRO edition (HUE12) EV3 Classroom Notes | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -235,12 +235,12 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/esp32cam/ev3/">← Sharpshooter Vision WRO EV3 guide</a><a class="lang" href="/learn/hue12/ev3-classroom.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/hue12/micropython.html">SPIKE</a><a href="/en/learn/hue12/ev3-pybricks.html" aria-current="page">EV3</a><a href="/en/learn/hue12/arduino.html">Arduino</a><a href="/en/learn/hue12/mblock.html">mBlock</a><a href="/en/learn/hue12/matrix.html">MATRIX</a><a href="/en/learn/hue12/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/hue12/ev3-pybricks.html">Pybricks / EV3 MicroPython</a><a href="/en/learn/hue12/clev3r.html">clev3r</a><a href="/en/learn/hue12/ev3-classroom.html" aria-current="page">EV3 Classroom</a><a href="/en/learn/hue12/ev3g.html">EV3-G (LEGO software)</a></div></div></nav>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/esp32cam/ev3/">← SharpShot Vision WRO EV3 guide</a><a class="lang" href="/learn/hue12/ev3-classroom.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/hue12/micropython.html">SPIKE</a><a href="/en/learn/hue12/ev3-pybricks.html" aria-current="page">EV3</a><a href="/en/learn/hue12/arduino.html">Arduino</a><a href="/en/learn/hue12/mblock.html">mBlock</a><a href="/en/learn/hue12/matrix.html">MATRIX</a><a href="/en/learn/hue12/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/hue12/ev3-pybricks.html">Pybricks / EV3 MicroPython</a><a href="/en/learn/hue12/clev3r.html">clev3r</a><a href="/en/learn/hue12/ev3-classroom.html" aria-current="page">EV3 Classroom</a><a href="/en/learn/hue12/ev3g.html">EV3-G (LEGO software)</a></div></div></nav>
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">MBC Sharpshooter Vision WRO edition × EV3 Classroom</span>
-    <h1>EV3 Classroom cannot read the Sharpshooter Vision WRO edition</h1>
-    <p class="lead">EV3 Classroom blocks only know LEGO's own sensors. On the EV3, the Sharpshooter Vision WRO edition reports device type 95 (HUE12 mode), which is not a stock LEGO sensor, and Classroom cannot import custom blocks. So it <b>cannot read</b> this camera. Use one of the three ways below instead.</p>
+    <span class="eyebrow">MBC SharpShot Vision WRO edition × EV3 Classroom</span>
+    <h1>EV3 Classroom cannot read the SharpShot Vision WRO edition</h1>
+    <p class="lead">EV3 Classroom blocks only know LEGO's own sensors. On the EV3, the SharpShot Vision WRO edition reports device type 95 (HUE12 mode), which is not a stock LEGO sensor, and Classroom cannot import custom blocks. So it <b>cannot read</b> this camera. Use one of the three ways below instead.</p>
   </header>
   <section class="note-grid">
     <article class="note-card">
@@ -258,7 +258,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     <article class="note-card">
       <h2>The values</h2>
       <p>You can set 12 spots (S1 to S12) on the camera picture. Each spot has a <b>colour code</b> (0 to 239 colour: red 0 / 239, yellow 40, green 80, cyan 120, blue 160, purple 200; 240 to 245 white, 246 to 250 black; 255 = spot not enabled) and a <b>vividness</b> (0 to 255).</p>
-      <p class="small">Complete examples are on the <a href="/en/sensors/esp32cam/ev3-examples-wro.html">Sharpshooter Vision WRO edition EV3 examples page</a>.</p>
+      <p class="small">Complete examples are on the <a href="/en/sensors/esp32cam/ev3-examples-wro.html">SharpShot Vision WRO edition EV3 examples page</a>.</p>
     </article>
   </section>
 </div>

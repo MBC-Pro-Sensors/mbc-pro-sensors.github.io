@@ -1594,7 +1594,7 @@ The speed is not set to **115200**. Change it at the bottom right of the Serial 
 It is the code for "no such value" (called `MBC_NONE` in the examples): either the box is empty (for example `0C`~`0F`), or the receiver cannot be read (a wire is loose). In your own code, check `v != MBC_NONE` before you use the value.
 
 **Q: Can I remove the `delay(2)` in the helpers?**
-No. The PS4/PS5 receiver is an ESP32 slave device. It cannot hold the I2C clock while it prepares the data, so the host must wait 2 ms after writing the box number. If you remove it, you read the previous data. The same applies to the Sharpshooter.
+No. The PS4/PS5 receiver is an ESP32 slave device. It cannot hold the I2C clock while it prepares the data, so the host must wait 2 ms after writing the box number. If you remove it, you read the previous data. The same applies to the SharpShot.
 
 **Q: What should I know when the ESP32 is the host?**
 The `delay(2)` is still needed; wire it to GPIO 21 (SDA) / 22 (SCL). The motor pins in the car example are different on ESP32 and UNO; the code already separates them with `#if defined(ESP32)`.

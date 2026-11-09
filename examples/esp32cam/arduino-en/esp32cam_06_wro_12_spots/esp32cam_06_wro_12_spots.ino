@@ -1,5 +1,5 @@
 /*
- * Sharpshooter ESP32CAM x Arduino   Example 6: WRO edition: all 12 color spots at once
+ * SharpShot ESP32CAM x Arduino   Example 6: WRO edition: all 12 color spots at once
  * ------------------------------------------------------------
  * What does this example do?
  *   This one is for the "WRO edition (HUE12)" firmware: the 12 color spots S1~S12 on the image are printed as 12 rows every 0.5 s.
@@ -8,16 +8,16 @@
  *     20~2B: S1~S12 vividness 0~255 (12 values in one read; black = 1, off = 0)
  *   Each row prints the color name + color code + vividness.
  *
- * You need: Sharpshooter ESP32CAM (WRO edition HUE12 I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
+ * You need: SharpShot ESP32CAM (WRO edition HUE12 I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
  *
  * Wiring:
- *   Sharpshooter 5V  -> 5V       Sharpshooter GND -> GND
- *   Sharpshooter IO3 (SDA) -> A4   Sharpshooter IO1 (SCL) -> A5      (UNO / Nano)
+ *   SharpShot 5V  -> 5V       SharpShot GND -> GND
+ *   SharpShot IO3 (SDA) -> A4   SharpShot IO1 (SCL) -> A5      (UNO / Nano)
  *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *   * Hardware confirmed; the I2C firmware bench test is still pending. IO1/IO3 are shared with the EV3 / SPIKE serial editions, so only one firmware at a time.
  *
  * Before you start:
- *   On the screen on the back of the Sharpshooter, turn on the color spots S1~S12 you need and aim them at the field.
+ *   On the screen on the back of the SharpShot, turn on the color spots S1~S12 you need and aim them at the field.
  *
  * How to see the result:
  *   After uploading, open the Serial Monitor and choose 115200 baud.
@@ -29,7 +29,7 @@
 
 #include <Wire.h>                        // Arduino's built-in I2C tool
 
-const uint8_t ADDR = 0x4C;               // The Sharpshooter's "house number" (I2C address). School and WRO editions are both 0x4C
+const uint8_t ADDR = 0x4C;               // The SharpShot's "house number" (I2C address). School and WRO editions are both 0x4C
 const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
 
 // Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
@@ -42,7 +42,7 @@ void setup() {
   mbcBegin();
   delay(500);
   if (!mbcWaitReady(ADDR, 8000)) {
-    Serial.println(F("Sharpshooter not found. Run Example 1 first to check the wiring."));
+    Serial.println(F("SharpShot not found. Run Example 1 first to check the wiring."));
     while (true) {}
   }
 

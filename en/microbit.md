@@ -1,7 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 # 🟠 micro:bit (MakeCode extension)
 
-The universal I2C editions of the Pathfinder, Ranger, Controller, IMU gyro and Sharpshooter all work with BBC micro:bit V1 / V2: add one MakeCode extension, **pxt-mbc-sensors v2**, and an "MBC Sensors" category appears with one block per value. Under the hood it speaks the [MBC universal I2C protocol v2](/en/i2c-protocol.md).
+The universal I2C editions of the Pathfinder, Ranger, Controller, IMU gyro and SharpShot all work with BBC micro:bit V1 / V2: add one MakeCode extension, **pxt-mbc-sensors v2**, and an "MBC Sensors" category appears with one block per value. Under the hood it speaks the [MBC universal I2C protocol v2](/en/i2c-protocol.md).
 
 > [!IMPORTANT]
 > **Bench test pending**: extension v2.0.5 compiles in MakeCode for V1 and V2, but the blocks have not yet been checked against real sensors one by one. Block names follow the GitHub release: <https://github.com/contactmbcrobot/pxt-mbc-sensors>. This page will be updated after testing.
@@ -35,9 +35,9 @@ The micro:bit I2C pins are fixed: **P19 = SCL, P20 = SDA** (on the edge connecto
 | Pathfinder 8 / 16-way, Ranger 2-way, Controller PS2, IMU gyro | micro:bit 3V works (external 5 V recommended on batteries) | STM32 products, low current |
 | **Ranger 8-way** | **external 5 V required** | 8 lasers ranging at once draw more than the 3V pin can supply |
 | **Controller PS4 / PS5** | **external 5 V required** | ESP32 Bluetooth receiver, high peak current |
-| **Sharpshooter Vision** (legacy editions too) | **external 5 V required** | ESP32 camera + screen |
+| **SharpShot Vision** (legacy editions too) | **external 5 V required** | ESP32 camera + screen |
 
-Several products can share the same P19 / P20 bus as long as their I2C addresses differ (factory addresses: Pathfinder `0x16`, Ranger `0x29`, Controller `0x42`, IMU `0x6A`, Sharpshooter `0x4C`).
+Several products can share the same P19 / P20 bus as long as their I2C addresses differ (factory addresses: Pathfinder `0x16`, Ranger `0x29`, Controller `0x42`, IMU `0x6A`, SharpShot `0x4C`).
 
 ## ⚠️ Hardware checklist
 
@@ -46,7 +46,7 @@ Several products can share the same P19 / P20 bus as long as their I2C addresses
 | **Logic level** | MBC products accept 3.3 V or 5 V on VCC; their I2C lines are 3.3 V, so they are compatible with the micro:bit without a level shifter. |
 | **3V pin current** | V1 about **90 mA**, V2 about **190 mA**; on batteries the rail can drop to just over 2 V. Products above the limit (see the table) must use external power. |
 | **V1 vs V2** | On V1 the external I2C bus is shared with the onboard accelerometer: a sensor holding SDA low also kills the compass and accelerometer. V2 has a separate external bus. Both run at 100 kHz. |
-| **Clock stretching** | STM32 products (Pathfinder, Ranger, PS2, IMU) hold SCL while preparing data; the nRF52 on the V2 has a known clock-stretching issue (errata 219), so **V1 and V2 both need a bench test** — if unstable, the firmware will be switched to no-stretch. ESP32 products (PS4, Sharpshooter) do not stretch; the extension already waits 2 ms after writing the value id. |
+| **Clock stretching** | STM32 products (Pathfinder, Ranger, PS2, IMU) hold SCL while preparing data; the nRF52 on the V2 has a known clock-stretching issue (errata 219), so **V1 and V2 both need a bench test** — if unstable, the firmware will be switched to no-stretch. ESP32 products (PS4, SharpShot) do not stretch; the extension already waits 2 ms after writing the value id. |
 | **Pull-ups** | The micro:bit has 4.7 kΩ pull-ups on board; sensor boards with their own pull-ups add in parallel, which is normally still fine. |
 | **Same address, same bus** | Pathfinder 8 and 16 are both `0x16`, Ranger 2 and 8 both `0x29`, PS2 and PS4 both `0x42`. To use two of a kind together, first change one with the "Device → change device at … to address …" block (saved in the sensor, applied after reboot), then tell the extension with the "… use address" block of that product. |
 | **Sensor not connected** | Reporter blocks return **0** (the internal −32768 is filtered) and every yes / no block returns **false**; nothing throws or stops. 0 can also be a real reading (line in the centre, object touching the sensor, hue red), so confirm the wiring first with "Device → wait for device at … ready" or "device at … is ready". |
@@ -62,7 +62,7 @@ One line per block: block text (English ｜ Traditional Chinese), function, rang
 | device at … is ready ｜ 位址 … 的裝置就緒？ | device answers and F3 bit0 = 1 | true / false |
 | wait for device at … ready, timeout … ms ｜ 等位址 … 的裝置就緒，最多 … 毫秒 | wait until ready or timeout | 0 ~ 60000 ms, default 5000 |
 | device at … factory id ｜ 位址 … 的裝置 出廠 ID | F0 low byte: factory address (unchanged after re-addressing) | 0x16 / 0x29 / 0x42 / 0x6A / 0x4C |
-| device at … kind ｜ 位址 … 的裝置 類別 | F0 high byte: Pathfinder channels 8 / 16, Ranger sensors 2 / 8, Controller 1 = PS2 / 2 = PS4, IMU 1, Sharpshooter Vision 3 = current Sharpshooter Vision (1 = legacy school / 2 = legacy WRO) | 0 ~ 255 |
+| device at … kind ｜ 位址 … 的裝置 類別 | F0 high byte: Pathfinder channels 8 / 16, Ranger sensors 2 / 8, Controller 1 = PS2 / 2 = PS4, IMU 1, SharpShot Vision 3 = current SharpShot Vision (1 = legacy school / 2 = legacy WRO) | 0 ~ 255 |
 | device at … protocol version ｜ 位址 … 的裝置 協議版本 | F1, must be 2 for this extension | 2 |
 | device at … firmware version ｜ 位址 … 的裝置 韌體版本 | F2 as a "major.minor" string | e.g. "4.0" |
 | device at … status flags ｜ 位址 … 的裝置 狀態旗標 | whole F3 byte | 0 ~ 255 |
@@ -159,9 +159,9 @@ All 8 sensors take about 2 ~ 4 s to initialise after power-on: use "Device → w
 | on IMU turned by … ° ｜ 當陀螺儀 轉了 … ° | fires every time the fused heading changes by the given angle | e.g. 90 |
 | IMU use address … ｜ 陀螺儀 改用位址 … (advanced) | tell the extension a changed address | 0x08 ~ 0x77 |
 
-### Camera, legacy Sharpshooter (school / WRO edition, `0x4C`, no longer supported)
+### Camera, legacy SharpShot (school / WRO edition, `0x4C`, no longer supported)
 
-These blocks are for the [legacy Sharpshooter Vision](/en/sensors/esp32cam/index.md). The current Sharpshooter Vision has no blocks in the extension yet; read it with MakeCode JavaScript, see [Sharpshooter Vision × micro:bit](/en/sensors/unicam/microbit/index.md).
+These blocks are for the [legacy SharpShot Vision](/en/sensors/esp32cam/index.md). The current SharpShot Vision has no blocks in the extension yet; read it with MakeCode JavaScript, see [SharpShot Vision × micro:bit](/en/sensors/unicam/microbit/index.md).
 
 | Block | Function | Range |
 | :--- | :--- | :--- |
@@ -176,7 +176,7 @@ These blocks are for the [legacy Sharpshooter Vision](/en/sensors/esp32cam/index
 | on camera blob … ｜ 當神攝手 色塊 … | school edition event: found / lost | 2 events |
 | camera use address … ｜ 神攝手 改用位址 … (advanced) | tell the extension a changed address | 0x08 ~ 0x77 |
 
-The legacy Sharpshooter's I2C uses **SDA = IO3, SCL = IO1** (decided 2026-10-21); once I2C is wired the USB serial monitor is no longer available. Hardware confirmed, **bench test pending**.
+The legacy SharpShot's I2C uses **SDA = IO3, SCL = IO1** (decided 2026-10-21); once I2C is wired the USB serial monitor is no longer available. Hardware confirmed, **bench test pending**.
 
 ## 📖 Per-product micro:bit pages and examples
 
@@ -191,8 +191,8 @@ One page per product lists the blocks it uses, the matching I2C value ids and th
 | Controller PS2 | [ps2 × micro:bit](/en/sensors/ps2/microbit.md) | [examples](/en/sensors/ps2/microbit-examples.md) |
 | Controller PS4 / PS5 | [ps4 × micro:bit](/en/sensors/ps4/microbit.md) | [examples](/en/sensors/ps4/microbit-examples.md) |
 | IMU gyro | [imu × micro:bit](/en/sensors/imu/microbit.md) | [examples](/en/sensors/imu/microbit-examples.md) |
-| Sharpshooter Vision | [Sharpshooter Vision × micro:bit](/en/sensors/unicam/microbit/index.md) | [examples](/en/sensors/unicam/microbit-examples.md) |
-| Sharpshooter Vision legacy (no longer supported) | [esp32cam × micro:bit](/en/sensors/esp32cam/microbit.md) | [examples](/en/sensors/esp32cam/microbit-examples.md) |
+| SharpShot Vision | [SharpShot Vision × micro:bit](/en/sensors/unicam/microbit/index.md) | [examples](/en/sensors/unicam/microbit-examples.md) |
+| SharpShot Vision legacy (no longer supported) | [esp32cam × micro:bit](/en/sensors/esp32cam/microbit.md) | [examples](/en/sensors/esp32cam/microbit-examples.md) |
 
 > [!NOTE]
 > The SPIKE 6-way expander (EXP6) uses UART and is not part of this extension; the Servo6 has no micro:bit edition.

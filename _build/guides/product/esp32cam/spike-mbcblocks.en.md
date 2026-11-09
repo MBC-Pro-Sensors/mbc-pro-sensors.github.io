@@ -1,6 +1,6 @@
 ### Set the colour on the sensor first
 
-All Sharpshooter settings are made on the **colour screen and buttons on the back of the sensor**; no computer needed:
+All SharpShot settings are made on the **colour screen and buttons on the back of the sensor**; no computer needed:
 
 1. The sensor only starts when plugged into a hub that is **already on** (the screen first shows "LEGO Sync..."); once the camera image appears it is ready.
 2. **Short-press the side button** to open the settings menu; left / right to choose, OK to enter. In the menu, hold the side button for 1 s to clear that colour set.

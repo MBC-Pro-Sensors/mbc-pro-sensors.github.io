@@ -1,7 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 _build/gen-reference.mjs 從 _build/protocol/cam_wro.json 產生（reference），請勿手改；改內容請改 JSON 後重跑 node _build/gen-reference.mjs -->
 <!-- moved: /en/sensors/esp32cam/index.md -->
-<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/esp32cam/index.md">Sharpshooter Vision</a></p>
+<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/esp32cam/index.md">SharpShot Vision</a></p>
 
 # Vision Sensor (WRO Edition, HUE12): value & command reference
 
@@ -113,7 +113,7 @@ Serial.println();
 
 Block returns spot 1~12 colour code（0~255）。Host sends `[10]` → reply `[lo][hi][10 ^ lo ^ hi]`, value = int16 little-endian; channel N uses id 0x10 + (N − 1).
 
-<pre class="blocks">(Sharpshooter Vision WRO (legacy) port [1 v] spot [1 v] colour code :: sensing)</pre>
+<pre class="blocks">(SharpShot Vision WRO (legacy) port [1 v] spot [1 v] colour code :: sensing)</pre>
 
 </details>
 
@@ -221,7 +221,7 @@ Serial.println();
 
 Block returns spot 1~12 vividness（0~255）。Host sends `[20]` → reply `[lo][hi][20 ^ lo ^ hi]`, value = int16 little-endian; channel N uses id 0x20 + (N − 1).
 
-<pre class="blocks">(Sharpshooter Vision WRO (legacy) port [1 v] spot [1 v] vividness :: sensing)</pre>
+<pre class="blocks">(SharpShot Vision WRO (legacy) port [1 v] spot [1 v] vividness :: sensing)</pre>
 
 </details>
 
@@ -301,7 +301,7 @@ bool ready = st & (1 << 0);   // ready
 
 The extension splits status flags F3 into boolean blocks (ready, calibrating, …).
 
-<pre class="blocks"><Sharpshooter Vision WRO (legacy) port [1 v] connected? :: sensing></pre>
+<pre class="blocks"><SharpShot Vision WRO (legacy) port [1 v] connected? :: sensing></pre>
 
 </details>
 

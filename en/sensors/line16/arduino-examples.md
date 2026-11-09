@@ -1330,7 +1330,7 @@ Light L 100 98 100 99 12 8 35 100 100 100 99 100 100 98 100 99 R  on line (L→R
 
 ## 🔧 Shared command examples (the same for every MBC universal I2C product)
 
-These three are in `examples/i2c/arduino-en/`. They work with the Pathfinder, Ranger, Controller, IMU and Sharpshooter. Just change `ADDR` / `OLD_ADDR` at the top of the program to your product's address.
+These three are in `examples/i2c/arduino-en/`. They work with the Pathfinder, Ranger, Controller, IMU and SharpShot. Just change `ADDR` / `OLD_ADDR` at the top of the program to your product's address.
 
 <h3 id="exi1">Shared 1: Change the I2C address (F8)</h3>
 
@@ -1368,7 +1368,7 @@ These three are in `examples/i2c/arduino-en/`. They work with the Pathfinder, Ra
 
 #include <Wire.h>
 
-const uint8_t OLD_ADDR = 0x29;           // The sensor's current address   👉 Change this (Pathfinder 0x16, Ranger 0x29, Controller 0x42, IMU 0x6A, Sharpshooter 0x4C)
+const uint8_t OLD_ADDR = 0x29;           // The sensor's current address   👉 Change this (Pathfinder 0x16, Ranger 0x29, Controller 0x42, IMU 0x6A, SharpShot 0x4C)
 const uint8_t NEW_ADDR = 0x2A;           // The address you want           👉 Change this (0x08 ~ 0x77, must not clash with other devices)
 const int16_t MBC_NONE = -32768;         // Code for "no such value / cannot read"
 
@@ -1533,7 +1533,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 
 #include <Wire.h>
 
-const uint8_t ADDR = 0x16;               // Sensor address   👉 Change this (Pathfinder 0x16, Ranger 0x29, Controller 0x42, IMU 0x6A, Sharpshooter 0x4C)
+const uint8_t ADDR = 0x16;               // Sensor address   👉 Change this (Pathfinder 0x16, Ranger 0x29, Controller 0x42, IMU 0x6A, SharpShot 0x4C)
 const int16_t MBC_NONE = -32768;         // Code for "no such value / cannot read"
 
 bool mbcWrite(uint8_t addr, uint8_t id, const uint8_t *p = NULL, uint8_t n = 0);
@@ -1588,8 +1588,8 @@ void printProduct(uint8_t factory, uint8_t hw0) {
   else if (factory == 0x42 && hw0 == 1)  Serial.print(F("Controller PS2"));
   else if (factory == 0x42 && hw0 == 2)  Serial.print(F("Controller PS4"));
   else if (factory == 0x6A)              Serial.print(F("IMU 9-Axis Gyro"));
-  else if (factory == 0x4C && hw0 == 1)  Serial.print(F("Sharpshooter (School edition)"));
-  else if (factory == 0x4C && hw0 == 2)  Serial.print(F("Sharpshooter (WRO edition)"));
+  else if (factory == 0x4C && hw0 == 1)  Serial.print(F("SharpShot (School edition)"));
+  else if (factory == 0x4C && hw0 == 2)  Serial.print(F("SharpShot (WRO edition)"));
   else                                   Serial.print(F("Unknown MBC device"));
 }
 
@@ -1731,8 +1731,8 @@ void printProduct(uint8_t factory, uint8_t hw0) {
   else if (factory == 0x42 && hw0 == 1)  Serial.print(F("Controller PS2"));
   else if (factory == 0x42 && hw0 == 2)  Serial.print(F("Controller PS4"));
   else if (factory == 0x6A)              Serial.print(F("IMU 9-Axis Gyro"));
-  else if (factory == 0x4C && hw0 == 1)  Serial.print(F("Sharpshooter (School edition)"));
-  else if (factory == 0x4C && hw0 == 2)  Serial.print(F("Sharpshooter (WRO edition)"));
+  else if (factory == 0x4C && hw0 == 1)  Serial.print(F("SharpShot (School edition)"));
+  else if (factory == 0x4C && hw0 == 2)  Serial.print(F("SharpShot (WRO edition)"));
   else                                   Serial.print(F("Unknown MBC device"));
 }
 
@@ -1819,7 +1819,7 @@ Total: 1 device(s)
 `-32768` (called `MBC_NONE` in the code) means one of two things: ① the helper cannot read the sensor (loose wire, wrong address); ② that number is an empty slot. For example the 16-Way only has `10` ~ `1F`, so reading `20` gives `-32768`. A real value can never be this number, so you can use it to tell "this data cannot be used".
 
 **Q: ESP32 cannot read, or the values look strange?**
-Some MBC products (Controller PS4, Sharpshooter) are built on ESP32 and cannot "clock stretch", so the host must **wait 2 ms** after writing the number before reading. The helper `mbcReadMany` already has `delay(2)`. Please do not remove it, and do the same in your own code. When an ESP32 is the host, its default I2C pins are GPIO 21 (SDA) / 22 (SCL).
+Some MBC products (Controller PS4, SharpShot) are built on ESP32 and cannot "clock stretch", so the host must **wait 2 ms** after writing the number before reading. The helper `mbcReadMany` already has `delay(2)`. Please do not remove it, and do the same in your own code. When an ESP32 is the host, its default I2C pins are GPIO 21 (SDA) / 22 (SCL).
 
 **Q: The Serial Monitor shows garbage?**
 The baud rate is not **115200**. Change it at the bottom right of the Serial Monitor.

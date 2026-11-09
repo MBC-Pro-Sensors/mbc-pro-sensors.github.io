@@ -1,6 +1,6 @@
 #!/usr/bin/env pybricks-micropython
 # 神攝手 × EV3 範例 4：跟著正方形走、螢幕顯示它轉了幾度
-# Sharpshooter Vision × EV3 example 4: drive to a square and show its angle on the screen
+# SharpShot × EV3 example 4: drive to a square and show its angle on the screen
 # 需要把相機選單切到 相機模式 5 物體偵測 ・子選項 ② 物體詳細＝模式編號 52
 # Camera menu: camera mode 5 Object detection, option 2 Object detail = mode number 52
 # 軟體 Software：Pybricks v4（code.pybricks.com）或 樂高官方 EV3 MicroPython v2（同一支程式都能跑）

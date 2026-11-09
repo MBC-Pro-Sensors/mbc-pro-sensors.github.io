@@ -1,10 +1,10 @@
 # 神攝手（學校版）× 樂高官方 SPIKE App（教育版 Python）範例 1：跟著色塊轉
-# Sharpshooter Vision (school) × LEGO SPIKE App (Education, Python) example 1: turn toward a blob
+# SharpShot Vision (school) × LEGO SPIKE App (Education, Python) example 1: turn toward a blob
 # 接線：相機 → C 孔；左輪 E、右輪 F / Wiring: camera → port C; left wheel E, right wheel F
 # 準備：先在相機上做「設定 2：TRACK」選顏色 / choose the colour with "2: TRACK" on the camera first
 # 用法：SPIKE App 新增「Python」專案，整支貼上 / new Python project in the SPIKE App, paste all of this
 # ===== 神攝手（學校版）讀值小工具（樂高官方 SPIKE App 3 教育版 Python，照抄就好、不用改）=====
-# ===== Sharpshooter Vision (school) reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
+# ===== SharpShot Vision (school) reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
 # 相機在 SPIKE App 裡是「顏色感應器」：顏色＝色相、反射光＝動態值、原始紅＝色塊 X、原始綠＝色塊 Y、原始藍＝色塊面積。
 # In the SPIKE App the camera is a colour sensor: colour = hue, reflection = motion, raw red = blob X, raw green = blob Y, raw blue = blob area.
 # 顏色看「設定 1：COLOR」的取色點、色塊看「設定 2：TRACK」選的顏色，都在相機機身上設定 / set up "1: COLOR" and "2: TRACK" on the camera itself

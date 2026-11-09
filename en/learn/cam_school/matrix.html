@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="In MATRIXblock, the software for the MATRIX Mini R4, the Sharpshooter Vision (School edition) shows up as an mVision camera (serial port), so the built-in mVisi">
+<meta name="description" content="In MATRIXblock, the software for the MATRIX Mini R4, the SharpShot Vision (School edition) shows up as an mVision camera (serial port), so the built-in mVisi">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/cam_school/matrix.html">
 <link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/cam_school/matrix.html">
 <link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/cam_school/matrix.html">
-<title>Sharpshooter Vision (School edition) MATRIXblock Tutorial | MBC-Pro Sensors</title>
+<title>SharpShot Vision (School edition) MATRIXblock Tutorial | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -252,12 +252,12 @@ svg.blk .blocklyDropdownText { fill: #fff !important; }
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/esp32cam/matrix/">← Sharpshooter Vision MATRIX guide</a><a class="lang" href="/learn/cam_school/matrix.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/cam_school/micropython.html">SPIKE</a><a href="/en/learn/cam_school/ev3-pybricks.html">EV3</a><a href="/en/learn/cam_school/arduino.html">Arduino</a><a href="/en/learn/cam_school/mblock.html">mBlock</a><a href="/en/learn/cam_school/matrix.html" aria-current="page">MATRIX</a><a href="/en/learn/cam_school/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/cam_school/matrix.html" aria-current="page">MATRIXblock</a></div></div></nav>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/esp32cam/matrix/">← SharpShot Vision MATRIX guide</a><a class="lang" href="/learn/cam_school/matrix.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/cam_school/micropython.html">SPIKE</a><a href="/en/learn/cam_school/ev3-pybricks.html">EV3</a><a href="/en/learn/cam_school/arduino.html">Arduino</a><a href="/en/learn/cam_school/mblock.html">mBlock</a><a href="/en/learn/cam_school/matrix.html" aria-current="page">MATRIX</a><a href="/en/learn/cam_school/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/cam_school/matrix.html" aria-current="page">MATRIXblock</a></div></div></nav>
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">MBC Sharpshooter Vision (School edition) × MATRIX Mini R4 (MATRIXblock)</span>
-    <h1>Read the Sharpshooter Vision (School edition) with MATRIXblock in three steps</h1>
-    <p class="lead">In MATRIXblock, the software for the MATRIX Mini R4, the Sharpshooter Vision (School edition) shows up as an <b>mVision camera</b> (serial port), so the built-in mVision blocks can read it and <b>no library is needed</b>. First put <b>MVision Begin</b> in <b>Setup</b> of "Mini Begin", then <b>MVision Polling</b> in <b>Loop</b>, and finally the <b>MVision data blocks</b> in its "Data Available" part. Follow the steps on the left and the blocks on the right build up; these pictures are drawn by MATRIXblock's own block code, so they look the same as in the software.</p>
+    <span class="eyebrow">MBC SharpShot Vision (School edition) × MATRIX Mini R4 (MATRIXblock)</span>
+    <h1>Read the SharpShot Vision (School edition) with MATRIXblock in three steps</h1>
+    <p class="lead">In MATRIXblock, the software for the MATRIX Mini R4, the SharpShot Vision (School edition) shows up as an <b>mVision camera</b> (serial port), so the built-in mVision blocks can read it and <b>no library is needed</b>. First put <b>MVision Begin</b> in <b>Setup</b> of "Mini Begin", then <b>MVision Polling</b> in <b>Loop</b>, and finally the <b>MVision data blocks</b> in its "Data Available" part. Follow the steps on the left and the blocks on the right build up; these pictures are drawn by MATRIXblock's own block code, so they look the same as in the software.</p>
     <p class="siteurl small">MATRIXblock is the free block software from MATRIX (installed in <code>C:\matrixblock-r4\</code> by default). Buy the MATRIX edition of the sensor and plug it into the Mini R4 serial port used by the mVision camera.</p>
   </header>
 
@@ -266,7 +266,7 @@ svg.blk .blocklyDropdownText { fill: #fff !important; }
       <article class="step current" id="step1">
         <div class="step-head"><span class="num">1</span><h2>Set up: start mVision</h2></div>
         <div class="step-body">
-          <p class="why">On the MATRIX, the Sharpshooter Vision (School edition) acts as an mVision camera on the serial port, not I2C. The <b>first thing</b> in the program is "MVision Begin" inside "Setup" of the blue "Mini Begin" block.</p>
+          <p class="why">On the MATRIX, the SharpShot Vision (School edition) acts as an mVision camera on the serial port, not I2C. The <b>first thing</b> in the program is "MVision Begin" inside "Setup" of the blue "Mini Begin" block.</p>
           <p class="small where">Wiring: plug the sensor into the Mini R4 serial port used by the mVision camera (Serial1, 115200). There is no port to pick.</p>
           <ol class="howto">
             <li>Open MATRIXblock. A new project already has a blue "Mini Begin" block (if not, drag one from the "Mini Core" category).</li>
@@ -295,7 +295,7 @@ svg.blk .blocklyDropdownText { fill: #fff !important; }
       <article class="step locked" id="step3">
         <div class="step-head"><span class="num">3</span><h2>Use the MVision data blocks</h2></div>
         <div class="step-body">
-          <p class="why">The "MVision 0 Data" block in "Sensing" picks a data slot in its dropdown; each slot is one value from the Sharpshooter Vision (School edition). The example goes inside the "Data Available" part. Click a function and the blocks and output change to its example.</p>
+          <p class="why">The "MVision 0 Data" block in "Sensing" picks a data slot in its dropdown; each slot is one value from the SharpShot Vision (School edition). The example goes inside the "Data Available" part. Click a function and the blocks and output change to its example.</p>
           <div id="picker" class="ref"></div>
           <div class="explain" id="explain" aria-live="polite"></div>
           <div class="mini" id="mini3" aria-live="polite"></div>
@@ -350,7 +350,7 @@ svg.blk .blocklyDropdownText { fill: #fff !important; }
   <section class="tips" aria-labelledby="tiph">
     <h2 id="tiph">Things to know</h2>
     <ol>
-      <li><b>Wiring:</b> plug the Sharpshooter Vision (School edition) into the Mini R4 serial port used by the mVision camera (Serial1, 115200), not an I2C port. Use only the "MVision" blocks, not the colour sensor blocks.</li>
+      <li><b>Wiring:</b> plug the SharpShot Vision (School edition) into the Mini R4 serial port used by the mVision camera (Serial1, 115200), not an I2C port. Use only the "MVision" blocks, not the colour sensor blocks.</li>
       <li><b>Set it up on the sensor first:</b> pick the sample point and tracking colour with the screen and buttons on the back of the sensor (short-press the side button for the menu). No computer needed; the settings are saved.</li>
       <li><b>Use data 0 to 9 only, never 10:</b> the MATRIX program only sets aside 10 slots (data 0 to 9). The "10" in the dropdown reads some other memory.</li>
       <li><b>When it is unplugged:</b> "MVision Polling" waits about 0.5 seconds, then runs the "Not Available" part; the data stays at the last values received. This product uses the serial port, so do not use the colour sensor blocks.</li>

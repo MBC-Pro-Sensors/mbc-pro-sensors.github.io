@@ -28,13 +28,13 @@ Not every robotics competition allows third-party sensors. This page lists compe
 
 ¹ One camera per robot　² Cameras in Junior and Senior only　³ For remote-control events　Servo6 = SPIKE 6-Port Servo Expander (coming soon; treated like EXP6: a programmable expansion device, servos count as motors)　⁴ Ranger 8-Way: Elementary and Junior teams should check with the organizer first
 
-Pathfinder = 8 / 16-way line sensor, Ranger = 2 / 8-way laser ranging, Vision = Sharpshooter Vision camera sensor, EXP6 = SPIKE 6-Way Expander (SPIKE™ Prime; Robot Inventor with App Python only), Controller = PS4/PS5 receiver.
+Pathfinder = 8 / 16-way line sensor, Ranger = 2 / 8-way laser ranging, Vision = SharpShot Vision camera sensor, EXP6 = SPIKE 6-Way Expander (SPIKE™ Prime; Robot Inventor with App Python only), Controller = PS4/PS5 receiver.
 
 ## Worldwide
 
 ### WRO Future Engineers
 
-A self-driving car challenge for high-school students and older: build a car that drives itself around a randomly configured track. **Teams choose their own hardware, electronics, controllers and programming language**, within the technical rules. Ranger works well for wall detection and Sharpshooter Vision for recognizing the red and green traffic signs.
+A self-driving car challenge for high-school students and older: build a car that drives itself around a randomly configured track. **Teams choose their own hardware, electronics, controllers and programming language**, within the technical rules. Ranger works well for wall detection and SharpShot Vision for recognizing the red and green traffic signs.
 
 Official information: [WRO Association](https://wro-association.org/)
 
@@ -50,7 +50,7 @@ Official information: [Robofest](https://www.robofest.net/)
 
 ### RoboCupJunior
 
-The youth leagues of RoboCup. The 2026 world championship is in Incheon, Korea, with regional events such as RoboCup Asia-Pacific. Platforms are open, but the Rescue rules **ban commercial modules designed or marketed to solve a single primary task** ("task-solvers"). Ready-made line-following modules fall into this group, so **Pathfinder cannot be used in Rescue Line**. Ranger and Sharpshooter Vision are general-purpose sensors, but the organizer decides, so ask first.
+The youth leagues of RoboCup. The 2026 world championship is in Incheon, Korea, with regional events such as RoboCup Asia-Pacific. Platforms are open, but the Rescue rules **ban commercial modules designed or marketed to solve a single primary task** ("task-solvers"). Ready-made line-following modules fall into this group, so **Pathfinder cannot be used in Rescue Line**. Ranger and SharpShot Vision are general-purpose sensors, but the organizer decides, so ask first.
 
 Official information: [RoboCupJunior](https://junior.robocup.org/)
 
@@ -68,7 +68,7 @@ The Asia Educational Robot Competition (亞洲智慧型機器人大賽), held fo
 
 - **Group A (LEGO)**: LEGO® (including SPIKE™) controllers, sensors and motors only, but the rules **name "MBC Pathfinder – LEGO edition" as an allowed sensor**, together with Mindsensors and HiTechnic.
 - **Group D (any brand)**: Any brand of components, as long as the event rules are met. All MBC products can be used.
-- **Matching events**: line following (Pathfinder), programmed obstacle avoidance (Ranger), remote-controlled obstacle avoidance (Controller, Group D) and AI vision line following (Sharpshooter Vision, Group D).
+- **Matching events**: line following (Pathfinder), programmed obstacle avoidance (Ranger), remote-controlled obstacle avoidance (Controller, Group D) and AI vision line following (SharpShot Vision, Group D).
 
 Official information: [AERC website](http://www.aerc1988.com.tw)｜[2026 rules (Chinese)](https://jr.hs.ntnu.edu.tw/wp-content/uploads/2026/03/第38屆AERC亞洲智慧型機器人大賽競賽辦法.pdf)
 
@@ -88,8 +88,8 @@ Official information: [GRG Taiwan](https://global-robotics-games-taiwan.github.i
 The Taiwan qualifier, organized by SPARK, has more than 20 robot sports such as soccer, hockey, sumo and marathon, many of them remote-controlled.
 
 - The original controller of an educational kit (LEGO, mBot, Maqueen and others) must be used.
-- **Third-party sensors are allowed** if they are electrically compatible with the controller and unmodified. Pathfinder, Ranger and Sharpshooter Vision can all be used.
-- **Why Sharpshooter Vision and the Controller are allowed**: the ban on added microcontrollers such as Arduino or ESP32 stops teams from controlling the robot with a second control board. Sharpshooter Vision and the Controller are a sensor and a remote receiver, and the robot is still controlled by the educational kit's hub, so they can be used (as explained by the Taiwan organizer).
+- **Third-party sensors are allowed** if they are electrically compatible with the controller and unmodified. Pathfinder, Ranger and SharpShot Vision can all be used.
+- **Why SharpShot Vision and the Controller are allowed**: the ban on added microcontrollers such as Arduino or ESP32 stops teams from controlling the robot with a second control board. SharpShot Vision and the Controller are a sensor and a remote receiver, and the robot is still controlled by the educational kit's hub, so they can be used (as explained by the Taiwan organizer).
 - **Remote-control events**: The Controller can be used.
 - **Not allowed**: programmable expansion units and independent power sources, so **EXP6 cannot be used**.
 

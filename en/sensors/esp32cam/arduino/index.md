@@ -2,9 +2,9 @@
 <!-- 本頁由 _build/gen-guides.mjs 產生（esp32cam × arduino），請勿手改；改內容請改 _build/guides.json、_build/guides/**、_build/protocol/*.json 後重跑 node _build/gen-guides.mjs -->
 <!-- guide: esp32cam/arduino -->
 <!-- noindex -->
-# Sharpshooter Vision (ESP32CAM) × Arduino / ESP32 / UNO R4 (I2C)
+# SharpShot Vision (ESP32CAM) × Arduino / ESP32 / UNO R4 (I2C)
 
-Using the Sharpshooter Vision (ESP32CAM) with Arduino / ESP32 / UNO R4 (I2C): check the edition and the wiring, then pick your software; its page covers that software only.
+Using the SharpShot Vision (ESP32CAM) with Arduino / ESP32 / UNO R4 (I2C): check the edition and the wiring, then pick your software; its page covers that software only.
 
 <figure class="guide-hero"><img src="/images/illust/host-arduino.webp" alt="Arduino / ESP32 / UNO R4 (I2C)"></figure>
 
@@ -14,7 +14,7 @@ Get the **Universal I2C edition** (4 pins: 5V, GND, SDA, SCL), factory I2C addre
 
 ## Wiring
 
-<figure class="ref-fig"><img src="/images/figures/esp32cam/wiring-uno.svg" alt="Sharpshooter Vision (ESP32CAM) × Arduino / ESP32 / UNO R4 (I2C)" loading="lazy"></figure>
+<figure class="ref-fig"><img src="/images/figures/esp32cam/wiring-uno.svg" alt="SharpShot Vision (ESP32CAM) × Arduino / ESP32 / UNO R4 (I2C)" loading="lazy"></figure>
 
 ## ② Pick your software
 
@@ -22,5 +22,5 @@ Get the **Universal I2C edition** (4 pins: 5V, GND, SDA, SCL), factory I2C addre
 
 ## More
 
-- [Sharpshooter Vision (ESP32CAM): overview, specs and calibration](/en/sensors/esp32cam/index.md)
+- [SharpShot Vision (ESP32CAM): overview, specs and calibration](/en/sensors/esp32cam/index.md)
 - [Download centre](/en/downloads.md)

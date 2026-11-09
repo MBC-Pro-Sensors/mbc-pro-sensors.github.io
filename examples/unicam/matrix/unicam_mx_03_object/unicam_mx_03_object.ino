@@ -1,6 +1,6 @@
 /*
  * 神攝手 × MATRIX Mini R4　範例 3：開到紅色三角形前面（物體偵測）
- * Sharpshooter Vision × MATRIX Mini R4  example 3: drive to the red triangle (object detection)
+ * SharpShot Vision × MATRIX Mini R4  example 3: drive to the red triangle (object detection)
  * ------------------------------------------------------------
  * ★ 需要把相機選單切到 相機模式 5 物體偵測 ・子選項 ① 物體清單（模式編號 51）
  *   Set the camera menu to camera mode 5 object detection · option ① object list (mode number 51)

@@ -1,22 +1,22 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 _build/gen-guides.mjs 產生（esp32cam × arduino × ide），請勿手改；改內容請改 _build/guides.json、_build/guides/**、_build/protocol/*.json 後重跑 node _build/gen-guides.mjs -->
 <!-- guide: esp32cam/arduino/ide -->
-# Sharpshooter Vision (ESP32CAM) × Arduino × Arduino IDE
+# SharpShot Vision (ESP32CAM) × Arduino × Arduino IDE
 
-This page covers **Arduino IDE (C++)** only: how to set it up for the Sharpshooter Vision (ESP32CAM) on Arduino / ESP32 / UNO R4 (I2C), how to read every value, the commands it supports and examples. Use the switcher above to change product, host or software.
+This page covers **Arduino IDE (C++)** only: how to set it up for the SharpShot Vision (ESP32CAM) on Arduino / ESP32 / UNO R4 (I2C), how to read every value, the commands it supports and examples. Use the switcher above to change product, host or software.
 
 ## Which edition and how to connect
 
 Get the **Universal I2C edition** (4 pins: 5V, GND, SDA, SCL), factory I2C address `0x4C`. UNO / Nano: A4 (SDA), A5 (SCL); UNO R4 and ESP32: the pins marked SDA / SCL.
 
-<figure class="ref-fig"><img src="/images/figures/esp32cam/wiring-uno.svg" alt="Sharpshooter Vision (ESP32CAM) × Arduino / ESP32 / UNO R4 (I2C)" loading="lazy"></figure>
+<figure class="ref-fig"><img src="/images/figures/esp32cam/wiring-uno.svg" alt="SharpShot Vision (ESP32CAM) × Arduino / ESP32 / UNO R4 (I2C)" loading="lazy"></figure>
 
 ## Setup
 
-<!-- setup: _build/guides/software/arduino-ide.en.md + _build/guides/product/esp32cam/arduino-ide.en.md {"product":"Sharpshooter Vision (ESP32CAM)","edition":"Universal I2C edition","port":"I2C","lib":"","libUrl":"","addr":"0x4C"} -->
+<!-- setup: _build/guides/software/arduino-ide.en.md + _build/guides/product/esp32cam/arduino-ide.en.md {"product":"SharpShot Vision (ESP32CAM)","edition":"Universal I2C edition","port":"I2C","lib":"","libUrl":"","addr":"0x4C"} -->
 <!-- include-fallback -->
 > [!NOTE]
-> Setup steps for this software are being moved onto this page. Meanwhile see the previous guide: [Sharpshooter Vision (ESP32CAM): Arduino IDE (C++)](/en/sensors/esp32cam/arduino-i2c.md).
+> Setup steps for this software are being moved onto this page. Meanwhile see the previous guide: [SharpShot Vision (ESP32CAM): Arduino IDE (C++)](/en/sensors/esp32cam/arduino-i2c.md).
 <!-- /include-fallback -->
 
 ## Reading values (School edition)

@@ -30,10 +30,10 @@ Hosts: **Arduino UNO / Nano / Mega / R4, ESP32, micro:bit, Raspberry Pi** and an
 <!-- /gen -->
 
 > [!NOTE]
-> - **The current [Sharpshooter Vision](/en/sensors/unicam/arduino/index.md)** is also `0x4C`, hw0 = `3`; for which value sits in which slot see the [Sharpshooter Vision value reference](/en/sensors/unicam/reference.md). The School / WRO editions marked "legacy" above are no longer supported.
+> - **The current [SharpShot Vision](/en/sensors/unicam/arduino/index.md)** is also `0x4C`, hw0 = `3`; for which value sits in which slot see the [SharpShot Vision value reference](/en/sensors/unicam/reference.md). The School / WRO editions marked "legacy" above are no longer supported.
 > - **The SPIKE 6-Port Expander (EXP6) does not use I2C**: its hub connector is isolated, so Arduino talks to it over UART. See [EXP6 Arduino examples](/en/sensors/exp6/arduino-examples.md).
-> - Products with the **same address cannot share one SDA/SCL bus** (Line8 + Line16, TOF2 + TOF8, PS2 + PS4, the current and the legacy Sharpshooter Vision). Re-address one of them with `F8` first.
-> - Products of one family share an address; tell the variant apart with the high byte of `F0` (hw0): Line 8/16, TOF 2/8, PS2 = 1 / PS4 = 2, Sharpshooter Vision = 3 (legacy school = 1 / WRO = 2).
+> - Products with the **same address cannot share one SDA/SCL bus** (Line8 + Line16, TOF2 + TOF8, PS2 + PS4, the current and the legacy SharpShot Vision). Re-address one of them with `F8` first.
+> - Products of one family share an address; tell the variant apart with the high byte of `F0` (hw0): Line 8/16, TOF 2/8, PS2 = 1 / PS4 = 2, SharpShot Vision = 3 (legacy school = 1 / WRO = 2).
 
 ---
 

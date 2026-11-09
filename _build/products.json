@@ -874,7 +874,7 @@
     },
     "name": {
       "zh": "神攝手 ESP32CAM",
-      "en": "Sharpshooter Vision (ESP32CAM)"
+      "en": "SharpShot Vision (ESP32CAM)"
     },
     "legacy": true,
     "routes": {
@@ -1039,7 +1039,7 @@
     },
     "name": {
       "zh": "神攝手",
-      "en": "Sharpshooter Vision"
+      "en": "SharpShot Vision"
     },
     "routes": {
       "spike": {

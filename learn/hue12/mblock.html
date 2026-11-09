@@ -619,7 +619,7 @@ var LANG = 'zh';
     lastField = sig;
     var focused = document.activeElement && document.activeElement.getAttribute && document.activeElement.getAttribute('data-slot');
     var h = '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#f7f7f2"/>';
-    h += '<text x="14" y="22" font-size="13" fill="#3d4a47">' + TX('神攝手畫面（示意）', 'Sharpshooter picture (sketch)') + '</text><text x="' + (W - 14) + '" y="22" text-anchor="end" font-size="13" fill="#3d4a47">' + TX('點色點換顏色', 'click a spot to paint it') + '</text>';
+    h += '<text x="14" y="22" font-size="13" fill="#3d4a47">' + TX('神攝手畫面（示意）', 'SharpShot picture (sketch)') + '</text><text x="' + (W - 14) + '" y="22" text-anchor="end" font-size="13" fill="#3d4a47">' + TX('點色點換顏色', 'click a spot to paint it') + '</text>';
     h += '<rect x="6" y="' + (cy - 12) + '" width="' + (W - 12) + '" height="' + (ch + 24) + '" rx="10" fill="#1b2422" opacity="0.92"/>';
     for (var i = 0; i < 12; i++) {
       var x = x0 + i * (cw + gap), p = PAL[cells[i]], light = p.k === 'wht' || p.k === 'yel';

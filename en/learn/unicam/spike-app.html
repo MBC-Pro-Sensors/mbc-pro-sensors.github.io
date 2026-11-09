@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="In the LEGO SPIKE App, Sharpshooter Vision shows up as a color sensor, so there is no library to import: read it with the five color sensor blocks (color, refle">
+<meta name="description" content="In the LEGO SPIKE App, SharpShot Vision shows up as a color sensor, so there is no library to import: read it with the five color sensor blocks (color, refle">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/unicam/spike-app.html">
 <link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/unicam/spike-app.html">
 <link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/unicam/spike-app.html">
-<title>Sharpshooter Vision LEGO SPIKE App tutorial | MBC-Pro Sensors</title>
+<title>SharpShot Vision LEGO SPIKE App tutorial | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -246,12 +246,12 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/unicam/spike/">← Sharpshooter Vision SPIKE guide</a><a class="lang" href="/learn/unicam/spike-app.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/unicam/micropython.html" aria-current="page">SPIKE</a><a href="/en/learn/unicam/ev3-pybricks.html">EV3</a><a href="/en/learn/unicam/arduino.html">Arduino</a><a href="/en/learn/unicam/mblock.html">mBlock</a><a href="/en/learn/unicam/matrix.html">MATRIX</a><a href="/en/learn/unicam/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/unicam/micropython.html">MicroPython (Pybricks)</a><a href="/en/learn/unicam/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/unicam/pybricks-builtin.html">Pybricks built-in blocks</a><a href="/en/learn/unicam/mbc-blocks.html">MBC Blocks website</a><a href="/en/learn/unicam/spike-app.html" aria-current="page">LEGO SPIKE App</a><a href="/en/learn/unicam/spike-app-python.html">SPIKE App Python</a></div></div></nav>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/unicam/spike/">← SharpShot Vision SPIKE guide</a><a class="lang" href="/learn/unicam/spike-app.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/unicam/micropython.html" aria-current="page">SPIKE</a><a href="/en/learn/unicam/ev3-pybricks.html">EV3</a><a href="/en/learn/unicam/arduino.html">Arduino</a><a href="/en/learn/unicam/mblock.html">mBlock</a><a href="/en/learn/unicam/matrix.html">MATRIX</a><a href="/en/learn/unicam/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/unicam/micropython.html">MicroPython (Pybricks)</a><a href="/en/learn/unicam/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/unicam/pybricks-builtin.html">Pybricks built-in blocks</a><a href="/en/learn/unicam/mbc-blocks.html">MBC Blocks website</a><a href="/en/learn/unicam/spike-app.html" aria-current="page">LEGO SPIKE App</a><a href="/en/learn/unicam/spike-app-python.html">SPIKE App Python</a></div></div></nav>
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">MBC Sharpshooter Vision × LEGO SPIKE App</span>
-    <h1>Read Sharpshooter Vision with the LEGO SPIKE App in three steps</h1>
-    <p class="lead">In the LEGO SPIKE App, Sharpshooter Vision shows up as a <b>color sensor</b>, so there is no library to import: read it with the five color sensor blocks (color, reflected light, raw red/green/blue). Each camera mode puts different things in them, and some slots hold two values that you split apart (step 2 has the table). Work down the steps on the left and watch the blocks grow on the right; the pictures are exported from the web App (spike.legoeducation.com).</p>
+    <span class="eyebrow">MBC SharpShot Vision × LEGO SPIKE App</span>
+    <h1>Read SharpShot Vision with the LEGO SPIKE App in three steps</h1>
+    <p class="lead">In the LEGO SPIKE App, SharpShot Vision shows up as a <b>color sensor</b>, so there is no library to import: read it with the five color sensor blocks (color, reflected light, raw red/green/blue). Each camera mode puts different things in them, and some slots hold two values that you split apart (step 2 has the table). Work down the steps on the left and watch the blocks grow on the right; the pictures are exported from the web App (spike.legoeducation.com).</p>
     <p class="v1ok" role="note"><b>Verified on SPIKE hardware</b><span>Run on real hubs on 2026-11-01 with shipping firmware v1.0-261101 (Pybricks library and blocks, Pybricks built-in blocks, the official app Education and home edition, MBC Blocks website).</span></p>
   </header>
 
@@ -300,7 +300,7 @@ svg.lego .blocklyDropdownText { fill: #fff !important; }
       <article class="step locked" id="step2">
         <div class="step-head"><span class="num">2</span><h2>Meet the five reading blocks, pick the port</h2></div>
         <div class="step-body">
-          <p class="why">The App reads Sharpshooter Vision with the five color sensor blocks; each starts with a port menu, so pick the port the camera is on. The table shows what each block gives in <b>the mode you picked in step 1</b> (it changes with the mode):</p>
+          <p class="why">The App reads SharpShot Vision with the five color sensor blocks; each starts with a port menu, so pick the port the camera is on. The table shows what each block gives in <b>the mode you picked in step 1</b> (it changes with the mode):</p>
           <div class="row">
             <span class="small">Which port is the camera on?</span>
             <div class="ports" id="ports" role="group" aria-label="Port"></div>
@@ -762,13 +762,13 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
           body: (EV3 ? ['{n}.device_id()    # ' + ('EV3: read once first; sensor_ok() reports the last read')] : []).concat(['if {n}.sensor_ok():', '    print("' + ('camera OK') + '")', 'else:', '    print("' + ('camera not connected!') + '")']),
           out: function (V) { if (EV3) V.device_id(); return V.sensor_ok() ? ('camera OK') : ('camera not connected!'); } },
         { id: 'device_id', label: 'device_id()', name: ('Device ID'), grp: 'info', modes: null, once: true,
-          what: ('(address 76 = 0x4C, model 3 = current Sharpshooter Vision, firmware 100 = 1.0). School version is model 1, WRO version 2.') + (EV3 ? (' The EV3 reads infrared mode 5.') : (' Reads mode 8: keep it outside the loop.')),
+          what: ('(address 76 = 0x4C, model 3 = current SharpShot Vision, firmware 100 = 1.0). School version is model 1, WRO version 2.') + (EV3 ? (' The EV3 reads infrared mode 5.') : (' Reads mode 8: keep it outside the loop.')),
           ret: ('(address, model, firmware)'), body: ['print({n}.device_id())'], out: function (V) { return py(V.device_id()); } },
-        { id: 'is_unicam', label: 'is_unicam()', name: ('Is it the current Sharpshooter Vision'), grp: 'info', modes: null, once: true,
-          what: ('Is this Sharpshooter Vision (model 3)? School and WRO versions use their own libraries.'),
+        { id: 'is_unicam', label: 'is_unicam()', name: ('Is it the current SharpShot Vision'), grp: 'info', modes: null, once: true,
+          what: ('Is this SharpShot Vision (model 3)? School and WRO versions use their own libraries.'),
           ret: ('True / False'),
-          body: ['if {n}.is_unicam():', '    print("' + ('current Sharpshooter Vision') + '")', 'else:', '    print("' + ('not the current Sharpshooter Vision') + '")'],
-          out: function (V) { return V.is_unicam() ? ('current Sharpshooter Vision') : ('not the current Sharpshooter Vision'); } });
+          body: ['if {n}.is_unicam():', '    print("' + ('current SharpShot Vision') + '")', 'else:', '    print("' + ('not the current SharpShot Vision') + '")'],
+          out: function (V) { return V.is_unicam() ? ('current SharpShot Vision') : ('not the current SharpShot Vision'); } });
       if (!EV3) FNS.push({ id: 'firmware_version', label: 'firmware_version()', name: ('Firmware version'), grp: 'info', modes: null, once: true,
         what: ('Camera firmware (major, minor), e.g. (1, 0) = 1.0. Reads mode 8: keep it outside the loop.'),
         ret: ('(major, minor)'), body: ['print({n}.firmware_version())'], out: function (V) { return py(V.firmware_version()); } });
@@ -1208,7 +1208,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
   HOST.place = function () { return ('inside forever under when program starts'); };
   HOST.bubble = function (step, f) {
     if (step === 1) return ('Step 1: under "when program starts" put "forever" with "wait 0.1 seconds" inside, reading every 0.1 s. Set the camera menu to mode ') + S.mode + ('.');
-    if (step === 2) return ('Step 2: in the App, Sharpshooter Vision is a color sensor. Set each reading block to port ') + pl() + ('. The table on the left shows what each block gives in mode ') + S.mode + ('.');
+    if (step === 2) return ('Step 2: in the App, SharpShot Vision is a color sensor. Set each reading block to port ') + pl() + ('. The table on the left shows what each block gives in mode ') + S.mode + ('.');
     return ('Step 3: store the reading with "set … to …" (that names it), then show or test it.');
   };
   HOST.valid = function () { return true; };

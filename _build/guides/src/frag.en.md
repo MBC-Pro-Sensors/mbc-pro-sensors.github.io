@@ -399,7 +399,7 @@ The table assumes the sensor faces forward with the components up. Put your hand
 @@@ cam-setup
 ### Set the colour on the sensor first
 
-All Sharpshooter settings are made on the **colour screen and buttons on the back of the sensor**; no computer needed:
+All SharpShot settings are made on the **colour screen and buttons on the back of the sensor**; no computer needed:
 
 1. The sensor only starts when plugged into a hub that is **already on** (the screen first shows "LEGO Sync..."); once the camera image appears it is ready.
 2. **Short-press the side button** to open the settings menu; left / right to choose, OK to enter. In the menu, hold the side button for 1 s to clear that colour set.
@@ -408,7 +408,7 @@ All Sharpshooter settings are made on the **colour screen and buttons on the bac
 @@@ cam-setup-i2c
 ### Set the colour on the sensor first
 
-All Sharpshooter settings are made on the **colour screen and buttons on the back of the sensor**, no computer needed: **short-press the side button** to open the settings menu, left / right to choose, OK to enter. Colour settings and camera parameters are saved automatically and used at the next power-on.
+All SharpShot settings are made on the **colour screen and buttons on the back of the sensor**, no computer needed: **short-press the side button** to open the settings menu, left / right to choose, OK to enter. Colour settings and camera parameters are saved automatically and used at the next power-on.
 
 @@@ cam-spike-official
 > [!NOTE]
@@ -449,15 +449,15 @@ The WRO edition's mVision data **keeps the original HUE12 packing** (12 colour-s
 
 @@@ cam-microbit
 > [!NOTE]
-> The Sharpshooter's I2C uses **SDA = IO3, SCL = IO1** (fixed 2026-10-21); once I2C is connected the USB serial monitor is gone. Hardware confirmed, **bench test pending**.
+> The SharpShot's I2C uses **SDA = IO3, SCL = IO1** (fixed 2026-10-21); once I2C is connected the USB serial monitor is gone. Hardware confirmed, **bench test pending**.
 
 @@@ cam-arduino
 > [!NOTE]
-> The Sharpshooter's I2C (address `0x4C`) uses **SDA = IO3, SCL = IO1**; once I2C is connected the USB serial monitor is gone. Hardware confirmed, **bench test pending**. The Sharpshooter is itself an ESP32 and cannot clock-stretch, so always wait 2 ms before reading (the example helper already has `delay(2)`).
+> The SharpShot's I2C (address `0x4C`) uses **SDA = IO3, SCL = IO1**; once I2C is connected the USB serial monitor is gone. Hardware confirmed, **bench test pending**. The SharpShot is itself an ESP32 and cannot clock-stretch, so always wait 2 ms before reading (the example helper already has `delay(2)`).
 
 @@@ cam-mblock
 > [!NOTE]
-> The Sharpshooter MakeBlock edition is new in October 2026; before ordering, [ask us on LINE](https://line.me/R/ti/p/@692vcvuk) to confirm the shipping version. On the mBot it uses the IO1 / IO3 serial pins, **bench test in progress**.
+> The SharpShot MakeBlock edition is new in October 2026; before ordering, [ask us on LINE](https://line.me/R/ti/p/@692vcvuk) to confirm the shipping version. On the mBot it uses the IO1 / IO3 serial pins, **bench test in progress**.
 
 @@@ imu-mblock
 > [!NOTE]

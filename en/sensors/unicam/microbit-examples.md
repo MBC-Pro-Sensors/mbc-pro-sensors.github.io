@@ -1,8 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- Code blocks = original text of examples/unicam/microbit/en/*.ts (helper master: 上位機函式庫\microbit\MBC_UniCam_microbit.ts) -->
-# 🟧 micro:bit examples: Sharpshooter Vision
+# 🟧 micro:bit examples: SharpShot Vision
 
-[🔙 Back to Sharpshooter Vision](/en/sensors/unicam/index.md)　｜　[micro:bit reading guide](/en/sensors/unicam/microbit/index.md)　｜　[📋 Value reference (I2C)](/en/sensors/unicam/reference.md#host-i2c)
+[🔙 Back to SharpShot Vision](/en/sensors/unicam/index.md)　｜　[micro:bit reading guide](/en/sensors/unicam/microbit/index.md)　｜　[📋 Value reference (I2C)](/en/sensors/unicam/reference.md#host-i2c)
 
 > [!WARNING]
 > **v1 not yet hardware-verified**: the value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after bench testing.
@@ -10,7 +10,7 @@
 This page is for people who **have never written a program**. Four examples: **which side is the blob**, **what colour does the spot see**, a **line-following car** and **which side is the red triangle (object detection)**. All are written in **MakeCode** JavaScript: switch to JavaScript, paste the whole example, done. You can switch back to Blocks to see what it looks like as blocks.
 
 > [!IMPORTANT]
-> - **No extension needed.** At the bottom of every example there is a "UniCam helpers" section that talks to the camera with the built-in `pins.i2c…` functions. The "camera" blocks in the **pxt-mbc-sensors** extension are for the **School edition** and cannot read the current Sharpshooter Vision's values — do not mix them.
+> - **No extension needed.** At the bottom of every example there is a "UniCam helpers" section that talks to the camera with the built-in `pins.i2c…` functions. The "camera" blocks in the **pxt-mbc-sensors** extension are for the **School edition** and cannot read the current SharpShot Vision's values — do not mix them.
 > - Use a camera with the **common I2C** firmware. SPIKE, EV3 and MATRIX firmware cannot be read by a micro:bit.
 > - The examples were compiled on a computer with the MakeCode CLI (V1 + V2) and their logic was run with fake I2C data; **they have not been run with a real camera yet**.
 
@@ -63,7 +63,7 @@ If you only ever see an X: check SDA/SCL are not swapped → the external power 
 | `0x03` | Colours taught |
 | `0x04` | Values in this level |
 | from `0x10` | Values of this mode (order as in the [value reference](/en/sensors/unicam/reference.md#host-i2c): value 1 = `0x10`, value 2 = `0x11` …) |
-| `0xF0` | Device id (`0x4C` + 3×256, 3 = current Sharpshooter Vision) |
+| `0xF0` | Device id (`0x4C` + 3×256, 3 = current SharpShot Vision) |
 | `0xF2` | Firmware version (100 = 1.0) |
 | `0xF3` | Status (bit0 = ready, bit1 = something found in the current mode) |
 | write `0xE0` | [camera mode 1~5, option]: switch mode (saved in the camera; object detection [5, 1] / [5, 2]) |
@@ -100,7 +100,7 @@ Reading (MBC common I2C protocol v2): write [id] → wait 2 ms → read 2×k byt
 
 **You need**
 - micro:bit V1 or V2 + USB cable
-- Sharpshooter Vision (common I2C firmware) + external 5 V power
+- SharpShot Vision (common I2C firmware) + external 5 V power
 - One brightly coloured block
 
 **Camera setup**: teach "target 1" on the camera (live view on target 1 → press OK). Camera mode **1 colour tracking · option ③ standard** (mode number 13) — the program switches it with E0 at start.
@@ -112,7 +112,7 @@ Reading (MBC common I2C protocol v2): write [id] → wait 2 ms → read 2×k byt
 **Program**
 
 ```typescript
-// Sharpshooter Vision × micro:bit example 1: which side is the blob (arrow)
+// SharpShot Vision × micro:bit example 1: which side is the blob (arrow)
 // ★ Set the camera menu to camera mode 1 colour tracking · option ③ standard (mode number 13) (the program also switches it with E0 at start)
 // What it does: colour 1 (the first colour taught to the camera) on the left → left arrow, middle → up arrow, right → right arrow; not found → question mark. Press A to show the area %.
 // Wiring: camera SDA → P20, SCL → P19, VCC → external 5 V (do not power it from the micro:bit 3V pin), GND → GND (common ground).
@@ -343,7 +343,7 @@ function ucColorCode(h: number): number {
 **Program**
 
 ```typescript
-// Sharpshooter Vision × micro:bit example 2: what colour does the spot see
+// SharpShot Vision × micro:bit example 2: what colour does the spot see
 // ★ Set the camera menu to camera mode 2 spot colour · option ① hue (mode number 21) (the program also switches it with E0 at start)
 // What it does: the LEDs show a letter for the colour seen by spot S1: R red, O orange, Y yellow, G green, C cyan, B blue, P purple, W white/grey, K black.
 //               Press A: the E1 command moves S1 to the centre of the picture (X 80, Y 60); press B: show the hue code number (0~255).
@@ -581,7 +581,7 @@ function ucColorCode(h: number): number {
 **Program**
 
 ```typescript
-// Sharpshooter Vision × micro:bit example 3: line-following car (near/far offset PD, stops at a junction)
+// SharpShot Vision × micro:bit example 3: line-following car (near/far offset PD, stops at a junction)
 // ★ Set the camera menu to camera mode 4 line following · option ① black line (mode number 41) (the program also switches it with E0 at start; white line = ②, colour line = ③)
 // What it does: press A to follow a black line: line to the left → steer left, to the right → steer right (near + far offsets together, so it reacts to bends earlier);
 //               at a cross or T junction it stops and shows a square; with no line in view it spins toward the side where it last saw the line. Press B to stop.
@@ -845,7 +845,7 @@ function ucColorCode(h: number): number {
 **Program**
 
 ```typescript
-// Sharpshooter Vision × micro:bit example 4: which side is the red triangle (object detection)
+// SharpShot Vision × micro:bit example 4: which side is the red triangle (object detection)
 // ★ Set the camera menu to camera mode 5 object detection · option ① object list (mode number 51) (the program also switches it with E0 at start)
 // What it does: the camera sorts objects from largest to smallest (object 1 = largest) and gives each an "object code" = colour × 10 + shape. It looks from the largest down for a "triangle of target 1" (code 13):
 //   on the left → left arrow, middle → up arrow, right → right arrow; not found → question mark. Press A to show how many objects are in view, B to scroll the shape name of object 1.
@@ -1080,4 +1080,4 @@ function ucColorCode(h: number): number {
 
 - Every value in detail: [value reference (I2C)](/en/sensors/unicam/reference.md#host-i2c)
 - Helper master files, Arduino version and other hosts: [downloads](/en/downloads.md)
-- Product page and camera menu: [Sharpshooter Vision](/en/sensors/unicam/index.md)
+- Product page and camera menu: [SharpShot Vision](/en/sensors/unicam/index.md)

@@ -1,5 +1,5 @@
 // MBC 神攝手（韌體 v1）：Arduino 小幫手（I2C 0x4C，MBC 通用 I2C 協議 v2）
-// MBC Sharpshooter Vision (firmware v1): Arduino helpers (I2C 0x4C, MBC common I2C protocol v2)
+// MBC SharpShot Vision (firmware v1): Arduino helpers (I2C 0x4C, MBC common I2C protocol v2)
 // 版本 v1.0　2026-10-28　（v1 尚未上機驗證 / not yet hardware-verified）
 //
 // 網站上的範例（examples/unicam/arduino/）都是「單一檔案」：這個檔案的內容原封不動貼在每支 .ino 的最下面，

@@ -44,7 +44,7 @@ The form **sends nothing to any server**: the buttons open an email in your own 
 <option value="Line16">Pathfinder 16-Way (Line16)</option>
 <option value="TOF2">Ranger 2-Way (TOF2)</option>
 <option value="TOF8">Ranger 8-Way (TOF8)</option>
-<option value="UniCam">Sharpshooter Vision</option>
+<option value="UniCam">SharpShot Vision</option>
 <option value="IMU">IMU 9-Axis Gyro</option>
 <option value="EXP6">SPIKE 6-Way Expander (EXP6)</option>
 <option value="PS4">Controller PS4/PS5</option>
@@ -59,7 +59,7 @@ The form **sends nothing to any server**: the buttons open an email in your own 
 <option>SPIKE edition</option>
 <option>EV3 edition</option>
 <option>Universal I2C edition (Arduino, ESP32, MATRIX, mBot, micro:bit)</option>
-<option>One edition for all (Sharpshooter Vision, EXP6)</option>
+<option>One edition for all (SharpShot Vision, EXP6)</option>
 <option>Not sure</option>
 </select></label>
 <label class="sp-f sp-tech"><span class="sp-l">Controller</span>
@@ -101,7 +101,7 @@ The form **sends nothing to any server**: the buttons open an email in your own 
 <ul>
 <li><b>Pybricks</b> (with the MBC library): <code>print(sensor.firmware_version())</code>, e.g. <code>(1, 0)</code>.</li>
 <li><b>Arduino / ESP32 and other I2C</b>: read register <code>F2</code>, 102 = 1.2. See the <a href="/en/i2c-protocol.md">Universal I2C protocol</a>.</li>
-<li><b>Sharpshooter Vision</b>: the settings menu on the camera screen.</li>
+<li><b>SharpShot Vision</b>: the settings menu on the camera screen.</li>
 <li>Can't find it? Write "don't know" and the <b>month you bought it</b>; we will check our shipping records.</li>
 </ul></details></div>
 <label class="sp-f sp-tech"><span class="sp-l">How often does it happen?</span>

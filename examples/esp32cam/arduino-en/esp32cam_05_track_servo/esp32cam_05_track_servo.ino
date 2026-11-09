@@ -1,25 +1,25 @@
 /*
- * Sharpshooter ESP32CAM x Arduino   Example 5: Servo follows the color blob (advanced)
+ * SharpShot ESP32CAM x Arduino   Example 5: Servo follows the color blob (advanced)
  * ------------------------------------------------------------
  * What does this example do?
- *   Mount the Sharpshooter on an SG90 servo. Wherever the color blob goes, the servo turns that way:
+ *   Mount the SharpShot on an SG90 servo. Wherever the color blob goes, the servo turns that way:
  *     read number 05 blob X (0~100) -> turn it into an angle and send it to the servo.
  *     If no blob is found (0A = 0), go back to 90 degrees (the middle).
  *   No library to install: UNO / Nano / UNO R4 send one pulse every 20 ms by themselves; ESP32 uses the built-in ledc to send a 50 Hz signal.
  *
- * You need: Sharpshooter ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32. Also: 1 SG90 servo.
+ * You need: SharpShot ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32. Also: 1 SG90 servo.
  *
  * Wiring:
- *   Sharpshooter 5V  -> 5V       Sharpshooter GND -> GND
- *   Sharpshooter IO3 (SDA) -> A4   Sharpshooter IO1 (SCL) -> A5      (UNO / Nano)
+ *   SharpShot 5V  -> 5V       SharpShot GND -> GND
+ *   SharpShot IO3 (SDA) -> A4   SharpShot IO1 (SCL) -> A5      (UNO / Nano)
  *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *   * Hardware confirmed; the I2C firmware bench test is still pending. IO1/IO3 are shared with the EV3 / SPIKE serial editions, so only one firmware at a time.
  *   SG90 brown -> GND    red -> 5V    orange (signal) -> 9
  *   (On ESP32, connect the signal wire to GPIO 13)
  *
  * Before you start:
- *   On the screen on the back of the Sharpshooter, set up sample point S1 and the color to track (the settings are stored on the device).
- *   Fix the Sharpshooter on the servo arm, camera facing forward.
+ *   On the screen on the back of the SharpShot, set up sample point S1 and the color to track (the settings are stored on the device).
+ *   Fix the SharpShot on the servo arm, camera facing forward.
  *
  * How to see the result:
  *   Move something of the target color left and right; the servo follows it. The Serial Monitor (115200) prints the angle.
@@ -32,7 +32,7 @@
 
 #include <Wire.h>
 
-const uint8_t ADDR = 0x4C;               // The Sharpshooter's "house number" (I2C address). School and WRO editions are both 0x4C
+const uint8_t ADDR = 0x4C;               // The SharpShot's "house number" (I2C address). School and WRO editions are both 0x4C
 const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
 
 // Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
@@ -60,14 +60,14 @@ void setup() {
   mbcBegin();
   delay(500);
   if (!mbcWaitReady(ADDR, 8000)) {
-    Serial.println(F("Sharpshooter not found. Run Example 1 first to check the wiring."));
+    Serial.println(F("SharpShot not found. Run Example 1 first to check the wiring."));
     while (true) {}
   }
   Serial.println(F("Ready! Move something of the target color left and right."));
 }
 
 void loop() {
-  // ---- 1. Every 0.1 s read the Sharpshooter: numbers 05~0A, 6 values: [0] X ... [5] found ----
+  // ---- 1. Every 0.1 s read the SharpShot: numbers 05~0A, 6 values: [0] X ... [5] found ----
   if (millis() - lastRead >= 100) {
     lastRead = millis();
     int16_t b[6];

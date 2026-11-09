@@ -2,10 +2,10 @@
 # 🟢 MATRIX Mini R4
 
 <!-- hide:hideMatrixBigChannel -->
-MBC MATRIX-edition sensors plug into a Mini R4 **I2C port** (address `0x22`) and are read with the stock "colour sensor" blocks in MATRIXblock; the Sharpshooter uses the **serial port** and the stock "mVision" camera blocks. This page is the overview of the three methods; each product has its own page at the bottom.
+MBC MATRIX-edition sensors plug into a Mini R4 **I2C port** (address `0x22`) and are read with the stock "colour sensor" blocks in MATRIXblock; the SharpShot uses the **serial port** and the stock "mVision" camera blocks. This page is the overview of the three methods; each product has its own page at the bottom.
 <!-- /hide -->
 <!-- show:hideMatrixBigChannel -->
-MBC MATRIX-edition sensors plug into a Mini R4 **I2C port** (address `0x22`) and are read with the stock "colour sensor" blocks in MATRIXblock; the Sharpshooter uses the **serial port** and the stock "mVision" camera blocks. Neither needs any file to be installed or replaced. This page is the overview; each product has its own page at the bottom.
+MBC MATRIX-edition sensors plug into a Mini R4 **I2C port** (address `0x22`) and are read with the stock "colour sensor" blocks in MATRIXblock; the SharpShot uses the **serial port** and the stock "mVision" camera blocks. Neither needs any file to be installed or replaced. This page is the overview; each product has its own page at the bottom.
 <!-- /show -->
 
 <!-- hide:hideMatrixBigChannel -->
@@ -13,7 +13,7 @@ MBC MATRIX-edition sensors plug into a Mini R4 **I2C port** (address `0x22`) and
 | :--- | :--- | :--- | :--- |
 | **A. Stock blocks (0x22)** | Pathfinder 8 / 16, Ranger 2 / 8, IMU, Controller PS2 / PS4 | Nothing, built into MATRIXblock | R, G, B, C, M, Y, K: seven 0~255 numbers |
 | **B. LauMo big channel** | same | Swap two library files ([download](/downloads/MiniR4ColorSensorExt_LauMo_v2.zip)) | one 30-byte packet with every product value (mm, bitmaps, status) |
-| **C. mVision (serial)** | Sharpshooter Vision (also the legacy school / WRO editions) | Nothing | camera blocks "mVision data 0~9" |
+| **C. mVision (serial)** | SharpShot Vision (also the legacy school / WRO editions) | Nothing | camera blocks "mVision data 0~9" |
 
 > [!IMPORTANT]
 > A and B need **different library files**; one computer can use only one at a time. The firmware supports both, so switching methods never needs a sensor re-flash.
@@ -22,7 +22,7 @@ MBC MATRIX-edition sensors plug into a Mini R4 **I2C port** (address `0x22`) and
 | Method | Products | What to install | What you get |
 | :--- | :--- | :--- | :--- |
 | **A. Stock blocks (0x22)** | Pathfinder 8 / 16, Ranger 2 / 8, IMU, Controller PS2 / PS4 | Nothing, built into MATRIXblock | R, G, B, C, M, Y, K: seven 0~255 numbers |
-| **B. mVision (serial)** | Sharpshooter Vision (also the legacy school / WRO editions) | Nothing | camera blocks "mVision data 0~9" |
+| **B. mVision (serial)** | SharpShot Vision (also the legacy school / WRO editions) | Nothing | camera blocks "mVision data 0~9" |
 <!-- /show -->
 
 ---
@@ -220,23 +220,23 @@ int heading = bigI16(2);    // IMU: fused heading (bytes 2~3)
 <!-- /hide -->
 
 <!-- hide:hideMatrixBigChannel -->
-## C. Sharpshooter: mVision camera blocks (serial)
+## C. SharpShot: mVision camera blocks (serial)
 <!-- /hide -->
 <!-- show:hideMatrixBigChannel -->
-## B. Sharpshooter: mVision camera blocks (serial)
+## B. SharpShot: mVision camera blocks (serial)
 <!-- /show -->
 
 <!-- hide:hideMatrixBigChannel -->
-MATRIXblock's camera blocks are mVision (Serial1 115200) and HuskyLens only — there is no I2C camera block — so the Sharpshooter **does not use 0x22 or the big channel**. It sends data in the mVision packet format: the "mVision data 0~9" blocks each hold one number, **one packet every 20 ms**.
+MATRIXblock's camera blocks are mVision (Serial1 115200) and HuskyLens only — there is no I2C camera block — so the SharpShot **does not use 0x22 or the big channel**. It sends data in the mVision packet format: the "mVision data 0~9" blocks each hold one number, **one packet every 20 ms**.
 <!-- /hide -->
 <!-- show:hideMatrixBigChannel -->
-MATRIXblock's camera blocks are mVision (Serial1 115200) and HuskyLens only — there is no I2C camera block — so the Sharpshooter **does not use 0x22**. It sends data in the mVision packet format: the "mVision data 0~9" blocks each hold one number, **one packet every 20 ms**.
+MATRIXblock's camera blocks are mVision (Serial1 115200) and HuskyLens only — there is no I2C camera block — so the SharpShot **does not use 0x22**. It sends data in the mVision packet format: the "mVision data 0~9" blocks each hold one number, **one packet every 20 ms**.
 <!-- /show -->
 
 > [!WARNING]
 > **Do not use data 10**: the MATRIX program declares only 10 slots (data 0~9); slot 10 reads unrelated memory.
 
-For what the current Sharpshooter Vision sends in each slot, see [Sharpshooter Vision × MATRIX (mVision)](/en/sensors/unicam/matrix/mvision.md). The table below is the layout of the [legacy editions](/en/sensors/esp32cam/index.md) (school / WRO, no longer supported), kept for teams still using them.
+For what the current SharpShot Vision sends in each slot, see [SharpShot Vision × MATRIX (mVision)](/en/sensors/unicam/matrix/mvision.md). The table below is the layout of the [legacy editions](/en/sensors/esp32cam/index.md) (school / WRO, no longer supported), kept for teams still using them.
 
 | mVision data | Legacy school edition | Legacy WRO edition (HUE12) |
 | :---: | :--- | :--- |
@@ -275,7 +275,7 @@ One page per product: wiring figure, the 0x22 seven-slot map (linked to each val
 | Controller PS2 | [ps2 × MATRIX](/en/sensors/ps2/matrix.md) |
 | Controller PS4 / PS5 | [ps4 × MATRIX](/en/sensors/ps4/matrix.md) |
 | IMU gyro | [imu × MATRIX](/en/sensors/imu/matrix.md) |
-| Sharpshooter Vision | [Sharpshooter Vision × MATRIX (mVision)](/en/sensors/unicam/matrix/mvision.md) |
-| Sharpshooter Vision legacy (no longer supported) | [esp32cam × MATRIX (mVision)](/en/sensors/esp32cam/matrix.md) |
+| SharpShot Vision | [SharpShot Vision × MATRIX (mVision)](/en/sensors/unicam/matrix/mvision.md) |
+| SharpShot Vision legacy (no longer supported) | [esp32cam × MATRIX (mVision)](/en/sensors/esp32cam/matrix.md) |
 
 The EXP6 and Servo6 have no MATRIX edition. Library downloads and files for the other platforms: [Downloads](/en/downloads.md).

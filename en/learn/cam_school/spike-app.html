@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="In the LEGO SPIKE App, the Sharpshooter shows up as a Color Sensor. So you do not import a library: you read it with the Color Sensor blocks. &quot;color&quot; is the hue">
+<meta name="description" content="In the LEGO SPIKE App, the SharpShot shows up as a Color Sensor. So you do not import a library: you read it with the Color Sensor blocks. &quot;color&quot; is the hue">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/cam_school/spike-app.html">
 <link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/cam_school/spike-app.html">
 <link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/cam_school/spike-app.html">
-<title>Sharpshooter Vision (ESP32CAM) — School edition LEGO SPIKE App Tutorial | MBC-Pro Sensors</title>
+<title>SharpShot Vision (ESP32CAM) — School edition LEGO SPIKE App Tutorial | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -250,12 +250,12 @@ svg.lego .blocklyDropdownText { fill: #fff !important; }
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/esp32cam/spike/">← Sharpshooter Vision SPIKE guide</a><a class="lang" href="/learn/cam_school/spike-app.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/cam_school/micropython.html" aria-current="page">SPIKE</a><a href="/en/learn/cam_school/ev3-pybricks.html">EV3</a><a href="/en/learn/cam_school/arduino.html">Arduino</a><a href="/en/learn/cam_school/mblock.html">mBlock</a><a href="/en/learn/cam_school/matrix.html">MATRIX</a><a href="/en/learn/cam_school/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/cam_school/micropython.html">MicroPython (Pybricks)</a><a href="/en/learn/cam_school/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/cam_school/pybricks-builtin.html">Pybricks built-in blocks</a><a href="/en/learn/cam_school/mbc-blocks.html">MBC Blocks website</a><a href="/en/learn/cam_school/spike-app.html" aria-current="page">LEGO SPIKE App</a><a href="/en/learn/cam_school/spike-app-python.html">SPIKE App Python</a></div></div></nav>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/esp32cam/spike/">← SharpShot Vision SPIKE guide</a><a class="lang" href="/learn/cam_school/spike-app.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/cam_school/micropython.html" aria-current="page">SPIKE</a><a href="/en/learn/cam_school/ev3-pybricks.html">EV3</a><a href="/en/learn/cam_school/arduino.html">Arduino</a><a href="/en/learn/cam_school/mblock.html">mBlock</a><a href="/en/learn/cam_school/matrix.html">MATRIX</a><a href="/en/learn/cam_school/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/cam_school/micropython.html">MicroPython (Pybricks)</a><a href="/en/learn/cam_school/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/cam_school/pybricks-builtin.html">Pybricks built-in blocks</a><a href="/en/learn/cam_school/mbc-blocks.html">MBC Blocks website</a><a href="/en/learn/cam_school/spike-app.html" aria-current="page">LEGO SPIKE App</a><a href="/en/learn/cam_school/spike-app-python.html">SPIKE App Python</a></div></div></nav>
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">MBC Sharpshooter Vision (ESP32CAM) School edition × LEGO SPIKE App</span>
-    <h1>Read the Sharpshooter Vision with the LEGO SPIKE App in three steps</h1>
-    <p class="lead">In the LEGO SPIKE App, the Sharpshooter shows up as a <b>Color Sensor</b>. So you do not import a library: you read it with the Color Sensor blocks. "color" is the hue, "reflected light" is the motion value, and "raw red / green / blue" are the blob X, Y and area. Follow the steps on the left, and the blocks on the right grow with you. These block pictures were built and exported straight from the LEGO web app (spike.legoeducation.com), so they look the same as in your app.</p>
+    <span class="eyebrow">MBC SharpShot Vision (ESP32CAM) School edition × LEGO SPIKE App</span>
+    <h1>Read the SharpShot Vision with the LEGO SPIKE App in three steps</h1>
+    <p class="lead">In the LEGO SPIKE App, the SharpShot shows up as a <b>Color Sensor</b>. So you do not import a library: you read it with the Color Sensor blocks. "color" is the hue, "reflected light" is the motion value, and "raw red / green / blue" are the blob X, Y and area. Follow the steps on the left, and the blocks on the right grow with you. These block pictures were built and exported straight from the LEGO web app (spike.legoeducation.com), so they look the same as in your app.</p>
   </header>
 
   <section class="main" aria-label="Tutorial">
@@ -277,9 +277,9 @@ svg.lego .blocklyDropdownText { fill: #fff !important; }
       <article class="step locked" id="step2">
         <div class="step-head"><span class="num">2</span><h2>Meet the five reading blocks, pick the right port</h2></div>
         <div class="step-body">
-          <p class="why">The LEGO app reads the Sharpshooter with five Color Sensor blocks. Each block starts with a port drop-down: pick the port the Sharpshooter is plugged into. You can use the numbers as they are; no maths needed:</p>
+          <p class="why">The LEGO app reads the SharpShot with five Color Sensor blocks. Each block starts with a port drop-down: pick the port the SharpShot is plugged into. You can use the numbers as they are; no maths needed:</p>
           <div class="row">
-            <span class="small">Which port is the Sharpshooter on?</span>
+            <span class="small">Which port is the SharpShot on?</span>
             <div class="ports" id="ports" role="group" aria-label="Port"></div>
           </div>
           <table class="conv">
@@ -331,7 +331,7 @@ svg.lego .blocklyDropdownText { fill: #fff !important; }
         <h2 id="refh">Block examples for every function</h2>
         <p class="ref-intro">Everything the LEGO app can read, each with a set of blocks you can copy (port C). Press "Try it" to jump to step 3.</p>
         <div class="cards" id="cards"></div>
-        <p class="cant"><b>What the LEGO app cannot read:</b> the LEGO app only reads the sensor's "combined data", so it cannot read the Sharpshooter's <code>saturation</code>, <code>brightness</code>, <code>blob width</code>, <code>blob height</code>, <code>sensor ID</code>, <code>firmware version</code> or <code>sensor connected</code>. For saturation, brightness and blob width / height you can use the <a href="https://mbc-spike-blocks.mbcrobot.workers.dev/" target="_blank" rel="noopener">MBC SPIKE Blocks website</a>; Pybricks can read every function (both need Pybricks firmware on the hub).</p>
+        <p class="cant"><b>What the LEGO app cannot read:</b> the LEGO app only reads the sensor's "combined data", so it cannot read the SharpShot's <code>saturation</code>, <code>brightness</code>, <code>blob width</code>, <code>blob height</code>, <code>sensor ID</code>, <code>firmware version</code> or <code>sensor connected</code>. For saturation, brightness and blob width / height you can use the <a href="https://mbc-spike-blocks.mbcrobot.workers.dev/" target="_blank" rel="noopener">MBC SPIKE Blocks website</a>; Pybricks can read every function (both need Pybricks firmware on the hub).</p>
       </section>
     </div>
 
@@ -351,8 +351,8 @@ svg.lego .blocklyDropdownText { fill: #fff !important; }
   <section class="tips" aria-labelledby="tiph">
     <h2 id="tiph">Good to know</h2>
     <ol>
-      <li><b>Use the "Color Sensor" group of sensor blocks in the LEGO app.</b> To the LEGO app, the Sharpshooter is just a Color Sensor. You do not need to install anything.</li>
-      <li><b>Do not use colour-picking blocks like "is color [red]?".</b> They compare LEGO's own colour codes, not the Sharpshooter's hue. Always store "color" in a variable and compare numbers.</li>
+      <li><b>Use the "Color Sensor" group of sensor blocks in the LEGO app.</b> To the LEGO app, the SharpShot is just a Color Sensor. You do not need to install anything.</li>
+      <li><b>Do not use colour-picking blocks like "is color [red]?".</b> They compare LEGO's own colour codes, not the SharpShot's hue. Always store "color" in a variable and compare numbers.</li>
       <li><b>You set the colours on the sensor:</b> "color" looks at the sample point from "Setup 1: COLOR"; raw red / green / blue look at the blob from "Setup 2: TRACK". You can only set them with the buttons on the sensor. If you have not done Setup 1, color is always 0, the same as red.</li>
       <li><b>Check that a blob is found first.</b> raw blue (area) = 0 means no blob is found. Then X and Y are also 0, which looks like the bottom-left corner. The area here is 0 ~ 100; this is a different unit from <code>area()</code> in Pybricks (width × height, 0 ~ 7500).</li>
       <li><b>Which way is which:</b> stand behind the robot and look forward. X: left 0, right 98, centre about 50 (X − 50 is negative on the left, positive on the right). Y is small at the bottom and big at the top (bottom 1, top 75). The motion value is only right when the robot is still.</li>

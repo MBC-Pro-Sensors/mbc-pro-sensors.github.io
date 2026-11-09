@@ -1,12 +1,12 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-# Sharpshooter Vision legacy editions (no longer supported)
+# SharpShot Vision legacy editions (no longer supported)
 
-<div class="lgb-hero"><a class="lgb-go" href="/en/sensors/unicam/index.md">Looking for the current Sharpshooter Vision? →</a></div>
+<div class="lgb-hero"><a class="lgb-go" href="/en/sensors/unicam/index.md">Looking for the current SharpShot Vision? →</a></div>
 
 > [!WARNING]
-> **No longer supported**: Sharpshooter Vision units shipped before 2026-10 (School and WRO editions) are no longer supported; their guides and examples stay here for reference. To upgrade to the current Sharpshooter Vision, contact the distributor you bought it from and send it back: **the firmware update is free**, and the buyer pays shipping both ways.
+> **No longer supported**: SharpShot Vision units shipped before 2026-10 (School and WRO editions) are no longer supported; their guides and examples stay here for reference. To upgrade to the current SharpShot Vision, contact the distributor you bought it from and send it back: **the firmware update is free**, and the buyer pays shipping both ways.
 
-This page collects the guides, examples, interactive tutorials and downloads for the legacy Sharpshooter ESP32CAM (School edition and WRO edition HUE12). The old addresses are unchanged, so saved links still work.
+This page collects the guides, examples, interactive tutorials and downloads for the legacy SharpShot ESP32CAM (School edition and WRO edition HUE12). The old addresses are unchanged, so saved links still work.
 
 <!-- platform-grid -->
 
@@ -56,7 +56,7 @@ Beginner example files for the SPIKE official app, the MBC Blocks website and th
 
 The official LEGO color sensor only sees a single spot directly underneath it. It cannot track a moving color blob or tell where a target is in the scene.
 
-The Sharpshooter ESP32CAM gives your robot real eyes: it finds the position and size of a chosen color blob in real time, reads the color at any point of the image, and detects motion. Everything is set up on the **color screen and buttons on the back of the sensor** while you watch the live image; settings are stored on the device and ready at the next power-on.
+The SharpShot ESP32CAM gives your robot real eyes: it finds the position and size of a chosen color blob in real time, reads the color at any point of the image, and detects motion. Everything is set up on the **color screen and buttons on the back of the sensor** while you watch the live image; settings are stored on the device and ready at the next power-on.
 
 ### 🎯 Core Advantages
 
@@ -68,7 +68,7 @@ The Sharpshooter ESP32CAM gives your robot real eyes: it finds the position and 
 - 🔭 **Optional lenses**: narrow (see far) or wide (see more) to suit your field
 
 <div style="text-align: center;">
-<img src="/images/sensors/esp32cam/esp32cam-product2.webp" alt="1.8-inch color screen on the back of the Sharpshooter" style="max-width: 320px; margin: 1rem auto; display: block;" />
+<img src="/images/sensors/esp32cam/esp32cam-product2.webp" alt="1.8-inch color screen on the back of the SharpShot" style="max-width: 320px; margin: 1rem auto; display: block;" />
 </div>
 
 ### 📋 Specifications

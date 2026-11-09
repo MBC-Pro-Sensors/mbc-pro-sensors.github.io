@@ -1,4 +1,4 @@
-// Sharpshooter Vision × micro:bit example 1: which side is the blob (arrow)
+// SharpShot Vision × micro:bit example 1: which side is the blob (arrow)
 // ★ Set the camera menu to camera mode 1 colour tracking · option ③ standard (mode number 13) (the program also switches it with E0 at start)
 // What it does: colour 1 (the first colour taught to the camera) on the left → left arrow, middle → up arrow, right → right arrow; not found → question mark. Press A to show the area %.
 // Wiring: camera SDA → P20, SCL → P19, VCC → external 5 V (do not power it from the micro:bit 3V pin), GND → GND (common ground).

@@ -1,13 +1,13 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- Code blocks = original text of examples/unicam/matrix/*/*.ino (decode helper master: 上位機函式庫\matrix\MBC_UniCam_MATRIX.h); decode table from spec section 5 (spec_layout.json host mx) -->
-# 🟩 MATRIX examples: Sharpshooter Vision × MATRIX Mini R4
+# 🟩 MATRIX examples: SharpShot Vision × MATRIX Mini R4
 
-[🔙 Back to Sharpshooter Vision](/en/sensors/unicam/index.md)　｜　[MATRIX mVision reading guide](/en/sensors/unicam/matrix/mvision.md)　｜　[📋 Value reference (MATRIX)](/en/sensors/unicam/reference.md#host-mx)
+[🔙 Back to SharpShot Vision](/en/sensors/unicam/index.md)　｜　[MATRIX mVision reading guide](/en/sensors/unicam/matrix/mvision.md)　｜　[📋 Value reference (MATRIX)](/en/sensors/unicam/reference.md#host-mx)
 
 > [!WARNING]
 > **v1 not yet hardware-verified**: the value layout is final and passed computer tests; real-hardware numbers (fps, line thresholds, I2C pins) may change after bench testing.
 
-To a MATRIX Mini R4, Sharpshooter Vision (MATRIX firmware) is an **mVision camera**: every **20 ms** it sends a packet of 10 cells over **Serial1 at 115200**. The MATRIXblock "mVision" blocks read it — no library to install, no I2C.
+To a MATRIX Mini R4, SharpShot Vision (MATRIX firmware) is an **mVision camera**: every **20 ms** it sends a packet of 10 cells over **Serial1 at 115200**. The MATRIXblock "mVision" blocks read it — no library to install, no I2C.
 
 This page has two parts:
 1. **MATRIXblock blocks only**: the "how to split the cells" tables below tell you what each "mVision data 0~9" holds in each mode and how to calculate it.
@@ -91,7 +91,7 @@ Split the code: colour = code ÷ 10 (whole number), shape = remainder of code ÷
 
 **You need**
 - MATRIX Mini R4 + a car with two DC motors (left M1, right M2) + battery
-- Sharpshooter Vision (MATRIX firmware)
+- SharpShot Vision (MATRIX firmware)
 - A brightly coloured ball or block
 
 **Camera setup**: teach "target 1"; camera mode **1 colour tracking · option ③ standard** (mode number 13).
@@ -105,7 +105,7 @@ Split the code: colour = code ÷ 10 (whole number), shape = remainder of code ÷
 ```cpp
 /*
  * 神攝手 × MATRIX Mini R4　範例 1：跟著色塊轉
- * Sharpshooter Vision × MATRIX Mini R4  example 1: follow the colour blob
+ * SharpShot Vision × MATRIX Mini R4  example 1: follow the colour blob
  * ------------------------------------------------------------
  * ★ 需要把相機選單切到 相機模式 1 顏色追蹤 ・子選項 ③ 標準（模式編號 13）
  *   Set the camera menu to camera mode 1 colour tracking · option ③ standard (mode number 13)
@@ -360,7 +360,7 @@ uint8_t ucColorCode(int h) {
 ```cpp
 /*
  * 神攝手 × MATRIX Mini R4　範例 2：循線小車（近／遠偏移 PD 循線，遇到路口停車）
- * Sharpshooter Vision × MATRIX Mini R4  example 2: line follower (near/far offset PD, stop at a junction)
+ * SharpShot Vision × MATRIX Mini R4  example 2: line follower (near/far offset PD, stop at a junction)
  * ------------------------------------------------------------
  * ★ 需要把相機選單切到 相機模式 4 循線 ・子選項 ① 黑線（模式編號 41；白線 ②、色線 ③ 也能用）
  *   Set the camera menu to camera mode 4 line following · option ① black line (mode number 41; ② white, ③ colour also work)
@@ -617,7 +617,7 @@ uint8_t ucColorCode(int h) {
 ```cpp
 /*
  * 神攝手 × MATRIX Mini R4　範例 3：開到紅色三角形前面（物體偵測）
- * Sharpshooter Vision × MATRIX Mini R4  example 3: drive to the red triangle (object detection)
+ * SharpShot Vision × MATRIX Mini R4  example 3: drive to the red triangle (object detection)
  * ------------------------------------------------------------
  * ★ 需要把相機選單切到 相機模式 5 物體偵測 ・子選項 ① 物體清單（模式編號 51）
  *   Set the camera menu to camera mode 5 object detection · option ① object list (mode number 51)
@@ -868,4 +868,4 @@ uint8_t ucColorCode(int h) {
 
 - Every cell in detail: [value reference (MATRIX)](/en/sensors/unicam/reference.md#host-mx)
 - Decode helper master files and other hosts: [downloads](/en/downloads.md)
-- Product page and camera menu: [Sharpshooter Vision](/en/sensors/unicam/index.md)
+- Product page and camera menu: [SharpShot Vision](/en/sensors/unicam/index.md)

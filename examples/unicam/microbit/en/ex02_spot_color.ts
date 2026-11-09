@@ -1,4 +1,4 @@
-// Sharpshooter Vision × micro:bit example 2: what colour does the spot see
+// SharpShot Vision × micro:bit example 2: what colour does the spot see
 // ★ Set the camera menu to camera mode 2 spot colour · option ① hue (mode number 21) (the program also switches it with E0 at start)
 // What it does: the LEDs show a letter for the colour seen by spot S1: R red, O orange, Y yellow, G green, C cyan, B blue, P purple, W white/grey, K black.
 //               Press A: the E1 command moves S1 to the centre of the picture (X 80, Y 60); press B: show the hue code number (0~255).

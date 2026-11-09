@@ -68,8 +68,8 @@ void printProduct(uint8_t factory, uint8_t hw0) {
   else if (factory == 0x42 && hw0 == 1)  Serial.print(F("Controller PS2"));
   else if (factory == 0x42 && hw0 == 2)  Serial.print(F("Controller PS4"));
   else if (factory == 0x6A)              Serial.print(F("IMU 9-Axis Gyro"));
-  else if (factory == 0x4C && hw0 == 1)  Serial.print(F("Sharpshooter (School edition)"));
-  else if (factory == 0x4C && hw0 == 2)  Serial.print(F("Sharpshooter (WRO edition)"));
+  else if (factory == 0x4C && hw0 == 1)  Serial.print(F("SharpShot (School edition)"));
+  else if (factory == 0x4C && hw0 == 2)  Serial.print(F("SharpShot (WRO edition)"));
   else                                   Serial.print(F("Unknown MBC device"));
 }
 

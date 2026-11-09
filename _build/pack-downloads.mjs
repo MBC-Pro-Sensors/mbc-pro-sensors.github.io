@@ -1,5 +1,6 @@
 // 下載區打包：照 _build/downloads.json 用 tar -a -c -f 打 zip（Windows 內建 bsdtar），並輸出 _build/generated/downloads.json 供產生 downloads.md
 // 用法：node _build/pack-downloads.mjs            重新打包（legacy 項目不動）
+//       node _build/pack-downloads.mjs --only A.zip,B.zip   只重打這幾包（其他包照舊不動，例如正本含未上機內容的包）
 //       node _build/pack-downloads.mjs --check    檢查 zip 存在、檔案清單與每個檔的內容都跟正本一致、generated/downloads.json 一致；不一致結束碼 1
 import fs from 'node:fs';
 import path from 'node:path';
@@ -11,6 +12,8 @@ import { FLAGS } from './site-flags.mjs';
 const BUILD = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(BUILD, '..');
 const CHECK = process.argv.includes('--check');
+const onlyIdx = process.argv.indexOf('--only');
+const ONLY = onlyIdx > -1 ? new Set(process.argv[onlyIdx + 1].split(',')) : null;
 const MBC = 'D:\\AI_Agent_AI助理\\02_MBC產品開發';
 // Git Bash 的 GNU tar 不會依副檔名出 zip；固定用 Windows 內建的 bsdtar
 const TAR = process.platform === 'win32' && fs.existsSync('C:\\Windows\\System32\\tar.exe') ? 'C:\\Windows\\System32\\tar.exe' : 'tar';
@@ -85,6 +88,8 @@ for (const it of spec.items) {
       else if (diff.length) { console.log(`檔案內容跟正本不同：${it.out}\n    ${diff.join(', ')}`); bad++; }
       entry.size = fs.statSync(outAbs).size;
     }
+  } else if (ONLY && !ONLY.has(path.basename(it.out)) && fs.existsSync(outAbs)) {
+    entry.size = fs.statSync(outAbs).size;   // --only 沒列到的包：不動
   } else if (fs.existsSync(outAbs) && zipDiff(outAbs, files, src, srcOf)?.length === 0) {
     // 內容跟正本完全一樣就不重打（重打只會改時間戳，git 會多一筆無意義的變更）
     entry.size = fs.statSync(outAbs).size;

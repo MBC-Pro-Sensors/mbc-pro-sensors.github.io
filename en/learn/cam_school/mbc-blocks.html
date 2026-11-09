@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="On the MBC SPIKE Blocks website, you do not need to import a library for the Sharpshooter. First, under &quot;run once at start&quot;, tell the website which port the sen">
+<meta name="description" content="On the MBC SPIKE Blocks website, you do not need to import a library for the SharpShot. First, under &quot;run once at start&quot;, tell the website which port the sen">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/cam_school/mbc-blocks.html">
 <link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/cam_school/mbc-blocks.html">
 <link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/cam_school/mbc-blocks.html">
-<title>Sharpshooter Vision (ESP32CAM) — School edition MBC Blocks Website Tutorial | MBC-Pro Sensors</title>
+<title>SharpShot Vision (ESP32CAM) — School edition MBC Blocks Website Tutorial | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -250,28 +250,28 @@ svg.blk .blocklyIconSymbol { fill: #fff; }
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/esp32cam/spike/">← Sharpshooter Vision SPIKE guide</a><a class="lang" href="/learn/cam_school/mbc-blocks.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/cam_school/micropython.html" aria-current="page">SPIKE</a><a href="/en/learn/cam_school/ev3-pybricks.html">EV3</a><a href="/en/learn/cam_school/arduino.html">Arduino</a><a href="/en/learn/cam_school/mblock.html">mBlock</a><a href="/en/learn/cam_school/matrix.html">MATRIX</a><a href="/en/learn/cam_school/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/cam_school/micropython.html">MicroPython (Pybricks)</a><a href="/en/learn/cam_school/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/cam_school/pybricks-builtin.html">Pybricks built-in blocks</a><a href="/en/learn/cam_school/mbc-blocks.html" aria-current="page">MBC Blocks website</a><a href="/en/learn/cam_school/spike-app.html">LEGO SPIKE App</a><a href="/en/learn/cam_school/spike-app-python.html">SPIKE App Python</a></div></div></nav>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/esp32cam/spike/">← SharpShot Vision SPIKE guide</a><a class="lang" href="/learn/cam_school/mbc-blocks.html" hreflang="zh-Hant">中文</a><div class="tabs"><span class="tl">Host</span><a href="/en/learn/cam_school/micropython.html" aria-current="page">SPIKE</a><a href="/en/learn/cam_school/ev3-pybricks.html">EV3</a><a href="/en/learn/cam_school/arduino.html">Arduino</a><a href="/en/learn/cam_school/mblock.html">mBlock</a><a href="/en/learn/cam_school/matrix.html">MATRIX</a><a href="/en/learn/cam_school/makecode.html">micro:bit</a><span class="tsep"></span><a href="/en/learn/cam_school/micropython.html">MicroPython (Pybricks)</a><a href="/en/learn/cam_school/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/cam_school/pybricks-builtin.html">Pybricks built-in blocks</a><a href="/en/learn/cam_school/mbc-blocks.html" aria-current="page">MBC Blocks website</a><a href="/en/learn/cam_school/spike-app.html">LEGO SPIKE App</a><a href="/en/learn/cam_school/spike-app-python.html">SPIKE App Python</a></div></div></nav>
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">MBC Sharpshooter Vision (ESP32CAM) School edition × MBC SPIKE Blocks website</span>
-    <h1>Read the Sharpshooter Vision with the MBC Blocks website in three steps</h1>
-    <p class="lead">On the <a href="https://mbc-spike-blocks.mbcrobot.workers.dev/" target="_blank" rel="noopener">MBC SPIKE Blocks website</a>, you do not need to import a library for the Sharpshooter. First, under "run once at start", <b>tell the website which port the sensor is on</b>. Then add the <b>main loop</b>. Last, put a <b>reading block</b> inside the main loop. Follow the steps on the left, and the blocks on the right grow with you. These block pictures were built and exported straight from the website, so they look the same as on your screen.</p>
+    <span class="eyebrow">MBC SharpShot Vision (ESP32CAM) School edition × MBC SPIKE Blocks website</span>
+    <h1>Read the SharpShot Vision with the MBC Blocks website in three steps</h1>
+    <p class="lead">On the <a href="https://mbc-spike-blocks.mbcrobot.workers.dev/" target="_blank" rel="noopener">MBC SPIKE Blocks website</a>, you do not need to import a library for the SharpShot. First, under "run once at start", <b>tell the website which port the sensor is on</b>. Then add the <b>main loop</b>. Last, put a <b>reading block</b> inside the main loop. Follow the steps on the left, and the blocks on the right grow with you. These block pictures were built and exported straight from the website, so they look the same as on your screen.</p>
     <p class="siteurl small"><b>The website is only in Chinese, so its blocks are in Chinese.</b> On this page every block comes with an English explanation, written as "Chinese block name (English meaning)", so you can find it on the screen. The website is free and needs no login. The hub needs Pybricks firmware (the website's "SPIKE 主機" (SPIKE hub) menu can install it for you).</p>
   </header>
 
   <section class="main" aria-label="Tutorial">
     <div class="steps">
       <article class="step current" id="step1">
-        <div class="step-head"><span class="num">1</span><h2>Setup: which port the Sharpshooter is on</h2></div>
+        <div class="step-head"><span class="num">1</span><h2>Setup: which port the SharpShot is on</h2></div>
         <div class="step-body">
-          <p class="why">The <b>first thing</b> in the program is a "○ 埠 接 MBC 神攝手學校版" (port ○ is the MBC Sharpshooter School edition) block under the yellow "開機時執行一次" (run once at start). Then the website knows that port has a Sharpshooter.</p>
+          <p class="why">The <b>first thing</b> in the program is a "○ 埠 接 MBC 神攝手學校版" (port ○ is the MBC SharpShot School edition) block under the yellow "開機時執行一次" (run once at start). Then the website knows that port has a SharpShot.</p>
           <div class="row">
             <span class="small">Which port is the sensor on?</span>
             <div class="ports" id="ports" role="group" aria-label="Port"></div>
           </div>
           <ol class="howto">
             <li>Open the MBC SPIKE Blocks website and press "+" to start a new program.</li>
-            <li>In the block list on the left, click "MBC 感應器" (MBC sensors) → "神攝手學校版" (Sharpshooter School edition). The first block is "○ 埠 接 MBC 神攝手學校版".</li>
+            <li>In the block list on the left, click "MBC 感應器" (MBC sensors) → "神攝手學校版" (SharpShot School edition). The first block is "○ 埠 接 MBC 神攝手學校版".</li>
             <li>Attach it under "開機時執行一次" and pick <b id="pl1">C</b> in the drop-down.</li>
           </ol>
           <div class="mini" id="mini1" aria-live="polite"></div>
@@ -352,7 +352,7 @@ svg.blk .blocklyIconSymbol { fill: #fff; }
     <h2 id="tiph">Good to know</h2>
     <ol>
       <li><b>You need only one setup block.</b> Each port can be set up once. The reading blocks must use the same port as the setup block; if you pick a wrong port, the website warns you before it downloads.</li>
-      <li><b>No library to download.</b> When the website downloads your program, it sends the Sharpshooter reading code to the hub too.</li>
+      <li><b>No library to download.</b> When the website downloads your program, it sends the SharpShot reading code to the hub too.</li>
       <li><b>The same functions as the Pybricks library:</b> every function in MBC_cam_school.py has a block here (found = "有找到色塊" (blob found), area = "色塊面積" (blob area), blob_xya = "色塊 [X, Y, 面積]" (blob [X, Y, area]), read_all = "8 個數字" (8 numbers)), and the values are the same. Unplugging does not stop the program: if the sensor cannot be read, you get the last value, and the terminal prints one warning line (in Chinese and English; it starts with <code>MBC: Port</code>). Plug it back in and it works again by itself. Use "感應器有接好" (sensor connected) to check the connection. Tick "Unplug the sensor" on the right to see this.</li>
       <li><b>Check that a blob is found first.</b> When no blob is found, blob X, Y, width, height and area are all 0, which looks like "the blob is in the bottom-left corner". So check "有找到色塊" before you look at the position. "色塊 [X, Y, 面積]", the sensor ID and the firmware version are another data group in the sensor. "色塊面積", "色塊 [X, Y, 面積]" and the sensor ID need sensor firmware from 2026-10 or later (with older firmware the area is always 0).</li>
       <li><b>You set the colours on the sensor:</b> hue looks at the sample point from "Setup 1: COLOR"; the blob is the colour from "Setup 2: TRACK". You can only set them with the buttons on the sensor. If you have not done Setup 1, hue is always 0, the same as red.</li>
@@ -391,7 +391,7 @@ var BLK = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
     { id: 'blob_xya', zh: '色塊 [X, Y, 面積]（清單） (blob [X, Y, area], list)', grp: 'Blob (tracking)', ret: '[X, Y, area] (list)', what: 'Get the blob X, Y and area in one go, in one list; when no blob is found it is [0, 0, 0]. The example prints the whole list with "終端機印出" (print in the terminal). This block reads another data group in the sensor and needs sensor firmware from 2026-10 or later.', out: function (s) { return s.bx == null ? 'None' : pyList([s.bx, s.by, s.area]); } },
     { id: 'motion', zh: '動態值 (motion value)', grp: 'Motion', ret: '0 ~ 100', what: 'How much the whole picture changed since the last one; it gets bigger when something moves. Keep the robot still. Example: above 20 it prints "Something is moving!".', out: function (s) { return s.mot == null ? TE('__gt__') : s.mot > 20 ? 'Something is moving!' : 'All still'; } },
     { id: 'read_all', zh: '8 個數字（清單） (8 numbers, list)', grp: 'Read everything', ret: '8 numbers (list)', what: 'Read 8 numbers in one go: [hue, saturation, brightness, motion value, blob X, blob Y, blob width, blob height]. The example prints the whole list with "終端機印出".', out: function (s) { return py(s.all); } },
-    { id: 'device_id', zh: '感應器身分（位址, 型號, 韌體版本字） (sensor ID: address, model, firmware number)', grp: 'Sensor info', ret: '(address, model, firmware number)', what: 'Check which product is connected: address 76 (0x4C), model 1 = Sharpshooter Vision School edition, 102 = firmware 1.2. Read it once in "開機時執行一次" (run once at start). Needs sensor firmware from 2026-10 or later.', once: true, out: function (s) { return s.none ? 'None' : '(76, 1, 102)'; } },
+    { id: 'device_id', zh: '感應器身分（位址, 型號, 韌體版本字） (sensor ID: address, model, firmware number)', grp: 'Sensor info', ret: '(address, model, firmware number)', what: 'Check which product is connected: address 76 (0x4C), model 1 = SharpShot Vision School edition, 102 = firmware 1.2. Read it once in "開機時執行一次" (run once at start). Needs sensor firmware from 2026-10 or later.', once: true, out: function (s) { return s.none ? 'None' : '(76, 1, 102)'; } },
     { id: 'firmware_version', zh: '感應器韌體版本（主版, 次版） (sensor firmware version: major, minor)', grp: 'Sensor info', ret: '(major, minor)', what: 'The version of the sensor firmware, (1, 2) = 1.2. Read it once in "開機時執行一次".', once: true, out: function (s) { return s.none ? 'None' : '(1, 2)'; } },
     { id: 'sensor_ok', zh: '感應器有接好 (sensor connected)', grp: 'Sensor info', ret: 'yes / no', what: 'Did the last reading reach the sensor? It is "no" when the cable is unplugged or loose. Tick "Unplug the sensor" below and see.', out: function (s) { return s.ok ? 'Sensor OK' : 'Sensor not connected!'; } }
   ];
@@ -448,7 +448,7 @@ var BLK = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
     drawBlocks(); drawCode();
     $('mainblocks').hidden = S.codeView; $('maincode').hidden = !S.codeView;
     var tips = {
-      1: 'Step 1: under "開機時執行一次" (run once at start), attach "' + S.port + ' 埠 接 MBC 神攝手學校版" (port ' + S.port + ' is the MBC Sharpshooter School edition). Now the website knows port ' + S.port + ' has a Sharpshooter.',
+      1: 'Step 1: under "開機時執行一次" (run once at start), attach "' + S.port + ' 埠 接 MBC 神攝手學校版" (port ' + S.port + ' is the MBC SharpShot School edition). Now the website knows port ' + S.port + ' has a SharpShot.',
       2: 'Step 2: put "等待 100 毫秒" (wait 100 ms) inside "主迴圈（一直重複）" (main loop, repeat forever), so it runs once every 0.1 s.',
       3: 'Step 3: put the reading block inside the main loop (above the wait), and pick port ' + S.port + ' in the middle of the block.'
     };

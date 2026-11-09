@@ -1273,7 +1273,7 @@ The gamepad is in digital mode. Press the **ANALOG** button in the middle of the
 It is the code for "no such value" (called `MBC_NONE` in the examples): either the box is empty (for example `0C`~`0F`), or the receiver cannot be read (a wire is loose). In your own code, check `v != MBC_NONE` before you use the value.
 
 **Q: Can I remove the `delay(2)` in the helpers?**
-The PS2 receiver itself does not need it, but the PS4/PS5 receiver (built on an ESP32) and the Sharpshooter do. Both receivers use the same address, so a program cannot tell them apart in advance. That is why every MBC example waits 2 ms. We suggest you keep it.
+The PS2 receiver itself does not need it, but the PS4/PS5 receiver (built on an ESP32) and the SharpShot do. Both receivers use the same address, so a program cannot tell them apart in advance. That is why every MBC example waits 2 ms. We suggest you keep it.
 
 **Q: What should I know when the ESP32 is the host?**
 Wire it to GPIO 21 (SDA) / 22 (SCL). The motor pins in the car example are different on ESP32 and UNO; the code already separates them with `#if defined(ESP32)`.

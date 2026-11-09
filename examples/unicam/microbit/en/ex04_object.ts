@@ -1,4 +1,4 @@
-// Sharpshooter Vision × micro:bit example 4: which side is the red triangle (object detection)
+// SharpShot Vision × micro:bit example 4: which side is the red triangle (object detection)
 // ★ Set the camera menu to camera mode 5 object detection · option ① object list (mode number 51) (the program also switches it with E0 at start)
 // What it does: the camera sorts objects from largest to smallest (object 1 = largest) and gives each an "object code" = colour × 10 + shape. It looks from the largest down for a "triangle of target 1" (code 13):
 //   on the left → left arrow, middle → up arrow, right → right arrow; not found → question mark. Press A to show how many objects are in view, B to scroll the shape name of object 1.

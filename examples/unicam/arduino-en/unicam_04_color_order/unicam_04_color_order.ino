@@ -1,5 +1,5 @@
 /*
- * Sharpshooter Vision x Arduino  Example 4: Colour order (WRO mission)
+ * SharpShot Vision x Arduino  Example 4: Colour order (WRO mission)
  * ------------------------------------------------------------
  * Camera menu: camera mode 3 Colour order (no option; the sketch also switches it with E0)
  *
@@ -148,7 +148,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- Sharpshooter Vision ----------
+// ---------- SharpShot Vision ----------
 
 // Switch camera mode (E0): camMode 1~5, sub = option (0 for colour order; object detection 1 list, 2 detail). Saved in the camera
 bool ucSetMode(uint8_t camMode, uint8_t sub) {

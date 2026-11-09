@@ -1,5 +1,5 @@
 /*
- * Sharpshooter Vision x Arduino  Example 6: find the red triangle (object detection)
+ * SharpShot Vision x Arduino  Example 6: find the red triangle (object detection)
  * ------------------------------------------------------------
  * Camera menu: camera mode 5 Object detection, option 1 Object list (the sketch also switches it with E0)
  *
@@ -151,7 +151,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- Sharpshooter Vision ----------
+// ---------- SharpShot Vision ----------
 
 // Switch camera mode (E0): camMode 1~5, sub = option (0 for colour order; object detection 1 list, 2 detail). Saved in the camera
 bool ucSetMode(uint8_t camMode, uint8_t sub) {

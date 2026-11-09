@@ -853,7 +853,7 @@ var LANG = 'zh';
     else if (m === 30) info = TX('總塊數 ', 'blocks ') + q(VAL(st.ok ? st : live, 'orderTotal'));
     else if (objMode) info = TX('物體數 ', 'objects ') + q(VAL(st.ok ? st : live, 'objCount')) + TX('  第 1 個代碼 ', '  object 1 code ') + q(VAL(st.ok ? st : live, 'objCode', 1)) + '  x ' + q(VAL(st.ok ? st : live, 'objX', 1));
     else info = TX('近處偏移 ', 'near offset ') + q(VAL(st.ok ? st : live, 'line', 0)) + TX('  角度 ', '  angle ') + q(VAL(st.ok ? st : live, 'line', 3));
-    if (!st.ok) info = TX('（拔線：「神攝手」分類的積木讀到 −32768）', '(unplugged: "Sharpshooter Vision" blocks read −32768)');
+    if (!st.ok) info = TX('（拔線：「神攝手」分類的積木讀到 −32768）', '(unplugged: "SharpShot Vision" blocks read −32768)');
     h += '<rect x="' + OX + '" y="' + OY + '" width="' + FW * K + '" height="28" fill="#1b2422" opacity="0.88"/>';
     h += '<text x="' + (OX + 10) + '" y="' + (OY + 19) + '" font-family="JetBrains Mono, monospace" font-size="12" fill="#e3ece9">' + TX('模式 ', 'mode ') + m + '  ' + esc(info) + '</text>';
     h += '<text x="' + OX + '" y="' + (H - 4) + '" font-size="13" fill="#3d4a47">' + TX('← 左 X 1', '← left X 1') + '</text><text x="' + (OX + FW * K) + '" y="' + (H - 4) + '" text-anchor="end" font-size="13" fill="#3d4a47">' + TX('X 159 右 →', 'X 159 right →') + '</text>';

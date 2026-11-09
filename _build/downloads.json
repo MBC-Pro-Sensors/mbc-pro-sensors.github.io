@@ -226,7 +226,7 @@
       "legacy": false,
       "label": {
         "zh": "神攝手（韌體 v1）：上位機函式庫（Pybricks SPIKE／EV3、SPIKE App、Arduino、micro:bit、MATRIX）＋Python 範例",
-        "en": "Sharpshooter Vision (firmware v1): host libraries (Pybricks SPIKE / EV3, SPIKE App, Arduino, micro:bit, MATRIX) + Python examples"
+        "en": "SharpShot Vision (firmware v1): host libraries (Pybricks SPIKE / EV3, SPIKE App, Arduino, micro:bit, MATRIX) + Python examples"
       }
     },
     {

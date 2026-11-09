@@ -6,7 +6,7 @@
 >
 > **The EV3 edition cannot take commands from the hub**: its format is exactly the same as the LEGO infrared sensor, so the EV3 (stock firmware, Pybricks, ev3dev) cannot send MBC commands; switch camera modes in the camera MENU. To send commands from a program, use SPIKE, Arduino, etc.
 
-On the EV3 the Sharpshooter Vision (EV3 edition) shows up as a **stock LEGO Infrared Sensor**, so EV3-G, EV3 Classroom and EV3 MicroPython (Pybricks) read it with the infrared sensor blocks or modes; no extension needed. Every slot is in the [value reference: EV3](/en/sensors/unicam/reference.md#host-ev3), full programs in the [EV3 examples](/en/sensors/unicam/ev3-examples.md).
+On the EV3 the SharpShot Vision (EV3 edition) shows up as a **stock LEGO Infrared Sensor**, so EV3-G, EV3 Classroom and EV3 MicroPython (Pybricks) read it with the infrared sensor blocks or modes; no extension needed. Every slot is in the [value reference: EV3](/en/sensors/unicam/reference.md#host-ev3), full programs in the [EV3 examples](/en/sensors/unicam/ev3-examples.md).
 
 ## Wiring
 

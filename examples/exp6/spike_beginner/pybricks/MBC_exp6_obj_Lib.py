@@ -17,7 +17,7 @@
 #      exp6  = MBC_EXP6(1)            # EXP6 插在 Hub 的 A 孔 / EXP6 on hub port A
 #      line8 = exp6.line8(2)          # 循行者 8 路插在 EXP6 的 2 號孔 / Line8 on EXP6 port 2
 #      print(line8.pos100())
-#  可用 / Available：line8 line16 laser2 laser8 ps2 ps4 unicam（神攝手 / Sharpshooter Vision）
+#  可用 / Available：line8 line16 laser2 laser8 ps2 ps4 unicam（神攝手 / SharpShot）
 #  主要的值（循線位置／線寬／黑白、測距 cm、遙控按鍵＋搖桿、神攝手該模式最常用的值）每 10 ms 一直更新、
 #  不用切換；每路光值、測距 8 顆距離分 2 組輪流（約 20 ms）；毫米、連線、型號、命令回覆會讓感應器暫時換模式
 #  （第一次約多 20~40 ms），放迴圈外或偶爾讀。

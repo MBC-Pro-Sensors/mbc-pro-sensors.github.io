@@ -1,22 +1,22 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 _build/gen-guides.mjs 產生（esp32cam × microbit × makecode），請勿手改；改內容請改 _build/guides.json、_build/guides/**、_build/protocol/*.json 後重跑 node _build/gen-guides.mjs -->
 <!-- guide: esp32cam/microbit/makecode -->
-# Sharpshooter Vision (ESP32CAM) × micro:bit × MakeCode
+# SharpShot Vision (ESP32CAM) × micro:bit × MakeCode
 
-This page covers **MakeCode (blocks / JavaScript)** only: how to set it up for the Sharpshooter Vision (ESP32CAM) on BBC micro:bit V1 / V2, how to read every value, the commands it supports and examples. Use the switcher above to change product, host or software.
+This page covers **MakeCode (blocks / JavaScript)** only: how to set it up for the SharpShot Vision (ESP32CAM) on BBC micro:bit V1 / V2, how to read every value, the commands it supports and examples. Use the switcher above to change product, host or software.
 
 ## Which edition and how to connect
 
 Get the **Universal I2C edition** and connect it to the I2C header of a micro:bit breakout (SDA = P20, SCL = P19), factory address `0x4C`. It **must use an external 5 V supply** (ESP32 camera + screen + lights), not the micro:bit 3V pin; share the supply GND with the micro:bit.
 
-<figure class="ref-fig"><img src="/images/figures/esp32cam/wiring-microbit.svg" alt="Sharpshooter Vision (ESP32CAM) × BBC micro:bit V1 / V2" loading="lazy"></figure>
+<figure class="ref-fig"><img src="/images/figures/esp32cam/wiring-microbit.svg" alt="SharpShot Vision (ESP32CAM) × BBC micro:bit V1 / V2" loading="lazy"></figure>
 
 ## Setup
 
-<!-- setup: _build/guides/software/microbit-makecode.en.md + _build/guides/product/esp32cam/microbit-makecode.en.md {"product":"Sharpshooter Vision (ESP32CAM)","edition":"Universal I2C edition","port":"I2C","lib":"","libUrl":"","addr":"0x4C"} -->
+<!-- setup: _build/guides/software/microbit-makecode.en.md + _build/guides/product/esp32cam/microbit-makecode.en.md {"product":"SharpShot Vision (ESP32CAM)","edition":"Universal I2C edition","port":"I2C","lib":"","libUrl":"","addr":"0x4C"} -->
 <!-- include-fallback -->
 > [!NOTE]
-> Setup steps for this software are being moved onto this page. Meanwhile see the previous guide: [Sharpshooter Vision (ESP32CAM): MakeCode (blocks / JavaScript)](/en/sensors/esp32cam/microbit.md).
+> Setup steps for this software are being moved onto this page. Meanwhile see the previous guide: [SharpShot Vision (ESP32CAM): MakeCode (blocks / JavaScript)](/en/sensors/esp32cam/microbit.md).
 <!-- /include-fallback -->
 
 ## Reading values (School edition)

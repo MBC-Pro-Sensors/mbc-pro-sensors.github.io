@@ -1,12 +1,12 @@
 # 神攝手 × 樂高官方 SPIKE App（教育版 Python）範例 2：PD 循線＋路口停車
-# Sharpshooter Vision × LEGO SPIKE App (Education, Python) example 2: PD line following + stop at a junction
+# SharpShot × LEGO SPIKE App (Education, Python) example 2: PD line following + stop at a junction
 # 需要把相機選單切到 相機模式 4 循線 ・子選項 ① 黑線 ＝模式編號 41（白線 42、色線 43 也一樣）
 # Camera menu: camera mode 4 Line, option 1 Black line = mode number 41 (42 / 43 work the same)
 # 準備：相機裝在車頭、斜斜往前下方看線 / camera at the front, looking down and forward
 # 接線 Wiring：相機 → C 孔；左輪 E、右輪 F / camera → port C; left wheel E, right wheel F
 # 方向：站在車後往前看，線在左＝負 / standing behind the robot: line on the left = negative
 # ===== 神攝手 讀值小工具（樂高官方 SPIKE App 3 教育版 Python，照抄就好、不用改）=====
-# ===== Sharpshooter Vision reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
+# ===== SharpShot reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
 # 相機在 SPIKE App 裡是「顏色感應器」：顏色、反射光、原始紅／綠／藍 這 5 個數字（byte 0~7）積木與 Python 都讀得到。
 # device.data() 回 8 個值：byte 0、byte 1，之後 6 個 int16（byte 8~13 也讀得到，14~15 讀不到；2026-11-01 上機）。
 # 「顏色」改讀 device.data() 的第 1 個值：color_sensor.color() 會把 5 換成 6（樂高的綠色），5 和 6 就分不出來。

@@ -1,17 +1,17 @@
 /*
- * Sharpshooter ESP32CAM x Arduino   Example 1: Say hello to the Sharpshooter
+ * SharpShot ESP32CAM x Arduino   Example 1: Say hello to the SharpShot
  * ------------------------------------------------------------
  * What does this example do?
- *   Checks that the Sharpshooter is connected. If it is, it prints the sensor's
+ *   Checks that the SharpShot is connected. If it is, it prints the sensor's
  *   "ID card" (device ID, School edition or WRO edition, protocol version,
  *   firmware version) and the status flags F3 (ready? is a color blob found?).
- *   Run this example first every time you connect a new Sharpshooter.
+ *   Run this example first every time you connect a new SharpShot.
  *
- * You need: Sharpshooter ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
+ * You need: SharpShot ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
  *
  * Wiring:
- *   Sharpshooter 5V  -> 5V       Sharpshooter GND -> GND
- *   Sharpshooter IO3 (SDA) -> A4   Sharpshooter IO1 (SCL) -> A5      (UNO / Nano)
+ *   SharpShot 5V  -> 5V       SharpShot GND -> GND
+ *   SharpShot IO3 (SDA) -> A4   SharpShot IO1 (SCL) -> A5      (UNO / Nano)
  *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *   * Hardware confirmed; the I2C firmware bench test is still pending. IO1/IO3 are shared with the EV3 / SPIKE serial editions, so only one firmware at a time.
  *
@@ -19,13 +19,13 @@
  *   After uploading, open the Serial Monitor and choose 115200 baud.
  *
  * Tip:
- *   The Sharpshooter needs a few seconds to boot (camera init + screen), so the example waits up to 8 s.
+ *   The SharpShot needs a few seconds to boot (camera init + screen), so the example waits up to 8 s.
  *   This example runs on both the School and the WRO edition; the high byte of F0 tells you which one you have.
  */
 
-#include <Wire.h>                        // Arduino's built-in I2C tool, used to talk to the Sharpshooter
+#include <Wire.h>                        // Arduino's built-in I2C tool, used to talk to the SharpShot
 
-const uint8_t ADDR = 0x4C;               // The Sharpshooter's "house number" (I2C address). School and WRO editions are both 0x4C
+const uint8_t ADDR = 0x4C;               // The SharpShot's "house number" (I2C address). School and WRO editions are both 0x4C
 const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
 
 // Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
@@ -36,14 +36,14 @@ void setup() {
   mbcBegin();                            // Get I2C ready (helper at the bottom of the file)
   delay(500);
 
-  Serial.println(F("=== Sharpshooter ESP32CAM: Say hello to the Sharpshooter ==="));
+  Serial.println(F("=== SharpShot ESP32CAM: Say hello to the SharpShot ==="));
 
-  // Wait until the Sharpshooter says "I am ready" (bit0 of status flags F3), up to 8 seconds
+  // Wait until the SharpShot says "I am ready" (bit0 of status flags F3), up to 8 seconds
   if (!mbcWaitReady(ADDR, 8000)) {
-    Serial.println(F("Sharpshooter not found! Please check:"));
+    Serial.println(F("SharpShot not found! Please check:"));
     Serial.println(F("  1. IO3 (SDA) -> A4, IO1 (SCL) -> A5 (ESP32: 21 / 22). Are they swapped?"));
-    Serial.println(F("  2. 5V and GND plugged in firmly? Is the Sharpshooter's screen on?"));
-    Serial.println(F("  3. Is the Sharpshooter flashed with the I2C firmware? (EV3 and SPIKE editions use the same pins and cannot connect to Arduino)"));
+    Serial.println(F("  2. 5V and GND plugged in firmly? Is the SharpShot's screen on?"));
+    Serial.println(F("  3. Is the SharpShot flashed with the I2C firmware? (EV3 and SPIKE editions use the same pins and cannot connect to Arduino)"));
     while (true) {}                      // Stop here if not found
   }
 

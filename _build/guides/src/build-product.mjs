@@ -26,7 +26,7 @@ const V = {
   ps4: { zh: { NAME: '掌控者 PS4／PS5', WHY: 'ESP32 藍牙接收，瞬間電流大' }, en: { NAME: 'Controller PS4 / PS5', WHY: 'ESP32 Bluetooth receiver, high peak current' } },
   tof8: { zh: { NAME: '測距者 8 路', WHY: '8 顆雷射同時量測，電流超過 3V 腳能給的' }, en: { NAME: 'Ranger 8-Way', WHY: '8 lasers ranging at once draw more than the 3V pin can supply' } },
   imu: { zh: {}, en: {} },
-  esp32cam: { zh: { NAME: '神攝手', WHY: 'ESP32 相機＋螢幕＋補光燈' }, en: { NAME: 'Sharpshooter', WHY: 'ESP32 camera + screen + flash light' } },
+  esp32cam: { zh: { NAME: '神攝手', WHY: 'ESP32 相機＋螢幕＋補光燈' }, en: { NAME: 'SharpShot', WHY: 'ESP32 camera + screen + flash light' } },
   exp6: { zh: {}, en: {} },
   servo6: { zh: {}, en: {} },
 };

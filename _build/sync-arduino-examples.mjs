@@ -14,6 +14,8 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CHECK = process.argv.includes('--check');
+// Git Bash 的 GNU tar 不會依副檔名出 zip（會打成 tar 卻叫 .zip，2026-11-09 查到 6 包）；固定用 Windows 內建的 bsdtar
+const TAR = process.platform === 'win32' && fs.existsSync('C:\\Windows\\System32\\tar.exe') ? 'C:\\Windows\\System32\\tar.exe' : 'tar';
 // 結尾的 ``` 必須自成一行；空的佔位框（```cpp 下一行就是 ```）也能正確配對，不會吃到下一個程式框
 const MARK = /(<!-- ino: ([^ ]+\.ino) -->\r?\n)```cpp\r?\n[\s\S]*?^```[ \t]*$/gm;
 
@@ -55,6 +57,6 @@ for (const p of fs.readdirSync(path.join(ROOT, 'examples'))) for (const [sub, su
   if (!sketches.length) continue;
   const zip = `${p}_arduino_examples${suffix}.zip`;
   fs.rmSync(path.join(dir, zip), { force: true });
-  execFileSync('tar', ['-a', '-c', '-f', zip, ...sketches], { cwd: dir });
+  execFileSync(TAR, ['-a', '-c', '-f', zip, ...sketches], { cwd: dir });
   console.log(`已打包：examples/${p}/${sub}/${zip}（${sketches.length} 個範例）`);
 }

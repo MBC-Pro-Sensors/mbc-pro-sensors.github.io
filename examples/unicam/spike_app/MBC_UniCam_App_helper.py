@@ -1,5 +1,5 @@
 # ===== 神攝手 讀值小工具（樂高官方 SPIKE App 3 教育版 Python，照抄就好、不用改）=====
-# ===== Sharpshooter Vision reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
+# ===== SharpShot reading helper (LEGO SPIKE App 3, Education, Python: copy as is) =====
 # 相機在 SPIKE App 裡是「顏色感應器」：顏色、反射光、原始紅／綠／藍 這 5 個數字（byte 0~7）積木與 Python 都讀得到。
 # device.data() 回 8 個值：byte 0、byte 1，之後 6 個 int16（byte 8~13 也讀得到，14~15 讀不到；2026-11-01 上機）。
 # 「顏色」改讀 device.data() 的第 1 個值：color_sensor.color() 會把 5 換成 6（樂高的綠色），5 和 6 就分不出來。

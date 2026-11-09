@@ -1,6 +1,6 @@
 ### Set the colour on the sensor first
 
-All Sharpshooter settings are made on the **colour screen and buttons on the back of the sensor**, no computer needed: **short-press the side button** to open the settings menu, left / right to choose, OK to enter. Colour settings and camera parameters are saved automatically and used at the next power-on.
+All SharpShot settings are made on the **colour screen and buttons on the back of the sensor**, no computer needed: **short-press the side button** to open the settings menu, left / right to choose, OK to enter. Colour settings and camera parameters are saved automatically and used at the next power-on.
 
 ### WRO edition (HUE12)
 

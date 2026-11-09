@@ -43,7 +43,7 @@
         "examples/10_Multitask_KeepAlive.py",
         "examples/11_MBC_Sensors.py"
       ],
-      "size": 2199411
+      "size": 2199396
     },
     {
       "out": "/downloads/MBC_EXP6_Official_App_Lib.zip",
@@ -70,7 +70,7 @@
         "examples/09_MBC_Sensors.py",
         "examples/10_MBC_Commands.py"
       ],
-      "size": 2150409
+      "size": 2150401
     },
     {
       "out": "/downloads/MBC_EXP6_Robot_Inventor_Lib.zip",
@@ -97,7 +97,7 @@
         "examples/09_MBC_Sensors.py",
         "examples/10_MBC_Commands.py"
       ],
-      "size": 2157335
+      "size": 2157328
     },
     {
       "out": "/downloads/MBC_Servo6_Pybricks_Lib.zip",
@@ -215,7 +215,7 @@
       "out": "/downloads/MBC_UniCam_v1_Host_Libraries.zip",
       "label": {
         "zh": "神攝手（韌體 v1）：上位機函式庫（Pybricks SPIKE／EV3、SPIKE App、Arduino、micro:bit、MATRIX）＋Python 範例",
-        "en": "Sharpshooter Vision (firmware v1): host libraries (Pybricks SPIKE / EV3, SPIKE App, Arduino, micro:bit, MATRIX) + Python examples"
+        "en": "SharpShot Vision (firmware v1): host libraries (Pybricks SPIKE / EV3, SPIKE App, Arduino, micro:bit, MATRIX) + Python examples"
       },
       "version": "1.0",
       "firmware": "韌體 v1（SPIKE、EV3 已上機驗證；Arduino、micro:bit、MATRIX 尚未）",
@@ -241,7 +241,7 @@
         "spike_app/examples/ex01_track_turn.py",
         "spike_app/examples/ex02_line_follow.py"
       ],
-      "size": 64597
+      "size": 63584
     },
     {
       "out": "/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext",

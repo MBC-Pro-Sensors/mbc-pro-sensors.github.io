@@ -1,6 +1,6 @@
 /*
  * 神攝手 × MATRIX Mini R4　範例 2：循線小車（近／遠偏移 PD 循線，遇到路口停車）
- * Sharpshooter Vision × MATRIX Mini R4  example 2: line follower (near/far offset PD, stop at a junction)
+ * SharpShot Vision × MATRIX Mini R4  example 2: line follower (near/far offset PD, stop at a junction)
  * ------------------------------------------------------------
  * ★ 需要把相機選單切到 相機模式 4 循線 ・子選項 ① 黑線（模式編號 41；白線 ②、色線 ③ 也能用）
  *   Set the camera menu to camera mode 4 line following · option ① black line (mode number 41; ② white, ③ colour also work)

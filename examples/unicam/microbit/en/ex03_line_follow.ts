@@ -1,4 +1,4 @@
-// Sharpshooter Vision × micro:bit example 3: line-following car (near/far offset PD, stops at a junction)
+// SharpShot Vision × micro:bit example 3: line-following car (near/far offset PD, stops at a junction)
 // ★ Set the camera menu to camera mode 4 line following · option ① black line (mode number 41) (the program also switches it with E0 at start; white line = ②, colour line = ③)
 // What it does: press A to follow a black line: line to the left → steer left, to the right → steer right (near + far offsets together, so it reacts to bends earlier);
 //               at a cross or T junction it stops and shows a square; with no line in view it spins toward the side where it last saw the line. Press B to stop.

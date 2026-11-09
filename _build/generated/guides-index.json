@@ -714,11 +714,11 @@
   "esp32cam": {
    "name": {
     "zh": "神攝手 ESP32CAM",
-    "en": "Sharpshooter Vision (ESP32CAM)"
+    "en": "SharpShot Vision (ESP32CAM)"
    },
    "short": {
     "zh": "神攝手 ESP32CAM",
-    "en": "Sharpshooter Vision"
+    "en": "SharpShot Vision"
    },
    "image": "/images/sensors/esp32cam/esp32cam-product.webp",
    "color": "#00d2ff",

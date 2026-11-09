@@ -2,9 +2,9 @@
 <!-- 本頁由 _build/gen-guides.mjs 產生（esp32cam × matrix），請勿手改；改內容請改 _build/guides.json、_build/guides/**、_build/protocol/*.json 後重跑 node _build/gen-guides.mjs -->
 <!-- guide: esp32cam/matrix -->
 <!-- noindex -->
-# Sharpshooter Vision (ESP32CAM) × MATRIX Mini R4
+# SharpShot Vision (ESP32CAM) × MATRIX Mini R4
 
-Using the Sharpshooter Vision (ESP32CAM) with MATRIX Mini R4: check the edition and the wiring, then pick your software; its page covers that software only.
+Using the SharpShot Vision (ESP32CAM) with MATRIX Mini R4: check the edition and the wiring, then pick your software; its page covers that software only.
 
 <figure class="guide-hero"><img src="/images/illust/host-matrix.webp" alt="MATRIX Mini R4"></figure>
 
@@ -18,5 +18,5 @@ Get the **MATRIX edition** and connect it with the stock MATRIX 4-pin cable to I
 
 ## More
 
-- [Sharpshooter Vision (ESP32CAM): overview, specs and calibration](/en/sensors/esp32cam/index.md)
+- [SharpShot Vision (ESP32CAM): overview, specs and calibration](/en/sensors/esp32cam/index.md)
 - [Download centre](/en/downloads.md)

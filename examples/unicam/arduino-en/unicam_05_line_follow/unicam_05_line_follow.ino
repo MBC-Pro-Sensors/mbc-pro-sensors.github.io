@@ -1,5 +1,5 @@
 /*
- * Sharpshooter Vision x Arduino  Example 5 (advanced): line follower that looks ahead
+ * SharpShot Vision x Arduino  Example 5 (advanced): line follower that looks ahead
  * ------------------------------------------------------------
  * Camera menu: camera mode 4 Line following, option 1 Black line (the sketch also switches it with E0)
  *
@@ -193,7 +193,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
   return false;
 }
 
-// ---------- Sharpshooter Vision ----------
+// ---------- SharpShot Vision ----------
 
 // Switch camera mode (E0): camMode 1~5, sub = option (0 for colour order; object detection 1 list, 2 detail). Saved in the camera
 bool ucSetMode(uint8_t camMode, uint8_t sub) {

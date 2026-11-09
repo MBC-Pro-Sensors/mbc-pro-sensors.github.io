@@ -1,5 +1,5 @@
 /*
- * Sharpshooter ESP32CAM x Arduino   Example 2: Print all the values at once (School edition)
+ * SharpShot ESP32CAM x Arduino   Example 2: Print all the values at once (School edition)
  * ------------------------------------------------------------
  * What does this example do?
  *   Every 0.5 s it reads the 10 values 01~0A of the School edition "value table" in one go and prints them:
@@ -8,16 +8,16 @@
  *   Numbers that are next to each other can be read "in one row" (mbcReadMany),
  *   and you get the values from the same instant.
  *
- * You need: Sharpshooter ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
+ * You need: SharpShot ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
  *
  * Wiring:
- *   Sharpshooter 5V  -> 5V       Sharpshooter GND -> GND
- *   Sharpshooter IO3 (SDA) -> A4   Sharpshooter IO1 (SCL) -> A5      (UNO / Nano)
+ *   SharpShot 5V  -> 5V       SharpShot GND -> GND
+ *   SharpShot IO3 (SDA) -> A4   SharpShot IO1 (SCL) -> A5      (UNO / Nano)
  *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *   * Hardware confirmed; the I2C firmware bench test is still pending. IO1/IO3 are shared with the EV3 / SPIKE serial editions, so only one firmware at a time.
  *
  * Before you start:
- *   On the screen on the back of the Sharpshooter, set up sample point S1 and the color to track (the settings are stored on the device).
+ *   On the screen on the back of the SharpShot, set up sample point S1 and the color to track (the settings are stored on the device).
  *
  * How to see the result:
  *   After uploading, open the Serial Monitor and choose 115200 baud. Hold things of different colors in front of the camera and watch which numbers change.
@@ -28,7 +28,7 @@
 
 #include <Wire.h>                        // Arduino's built-in I2C tool
 
-const uint8_t ADDR = 0x4C;               // The Sharpshooter's "house number" (I2C address). School and WRO editions are both 0x4C
+const uint8_t ADDR = 0x4C;               // The SharpShot's "house number" (I2C address). School and WRO editions are both 0x4C
 const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
 
 // Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
@@ -41,7 +41,7 @@ void setup() {
   mbcBegin();
   delay(500);
   if (!mbcWaitReady(ADDR, 8000)) {
-    Serial.println(F("Sharpshooter not found. Run Example 1 first to check the wiring."));
+    Serial.println(F("SharpShot not found. Run Example 1 first to check the wiring."));
     while (true) {}
   }
   Serial.println(F("Ready! Printing all values every 0.5 s."));
@@ -53,7 +53,7 @@ void loop() {
 
     // Numbers 01~0A, 10 values in one read
     int16_t a[10];
-    if (!mbcReadMany(ADDR, 0x01, 10, a)) { Serial.println(F("Cannot read the Sharpshooter")); return; }
+    if (!mbcReadMany(ADDR, 0x01, 10, a)) { Serial.println(F("Cannot read the SharpShot")); return; }
 
     Serial.println(F("------------------------------"));
     Serial.print(F("01 Hue -1~100 (-1 = black/white/gray): ")); Serial.println(a[0]);

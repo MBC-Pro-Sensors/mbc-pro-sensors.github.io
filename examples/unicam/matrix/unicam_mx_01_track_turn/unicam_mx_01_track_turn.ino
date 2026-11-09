@@ -1,6 +1,6 @@
 /*
  * 神攝手 × MATRIX Mini R4　範例 1：跟著色塊轉
- * Sharpshooter Vision × MATRIX Mini R4  example 1: follow the colour blob
+ * SharpShot Vision × MATRIX Mini R4  example 1: follow the colour blob
  * ------------------------------------------------------------
  * ★ 需要把相機選單切到 相機模式 1 顏色追蹤 ・子選項 ③ 標準（模式編號 13）
  *   Set the camera menu to camera mode 1 colour tracking · option ③ standard (mode number 13)

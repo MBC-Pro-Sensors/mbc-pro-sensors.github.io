@@ -1,7 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 _build/gen-reference.mjs 從 _build/protocol/cam_wro.json 產生（mblock），請勿手改；改內容請改 JSON 後重跑 node _build/gen-reference.mjs -->
 <!-- moved: /en/sensors/esp32cam/mblock/mblock5.md -->
-<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/esp32cam/mblock/mblock5.md">Sharpshooter Vision › mBlock › mBlock 5</a></p>
+<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/esp32cam/mblock/mblock5.md">SharpShot Vision › mBlock › mBlock 5</a></p>
 
 # Vision Sensor (WRO Edition, HUE12) × mBlock 5 (Makeblock edition)
 
@@ -21,14 +21,14 @@ Sensor → mBot adapter → RJ25 port on the board (S1 = host TX, S2 = host RX).
 
 | Block | Returns | Id | Meaning |
 | :--- | :--- | :--- | :--- |
-| Sharpshooter Vision WRO (legacy) port [port] spot [1~12] colour code | 0~255 | [`10~1B`](/en/sensors/esp32cam/reference-wro.md#v10) | 10~1B = colour code of spots S1~S12: 0~239 colour (hue 0~255 scaled to 0~239), 240~245 white (saturation < 30, lower = larger), 246~250 black (value < 30, darker = larger), 255 = spot not enabled |
-| Sharpshooter Vision WRO (legacy) port [port] spot [1~12] vividness | 0~255 | [`20~2B`](/en/sensors/esp32cam/reference-wro.md#v20) | 20~2B = vividness (saturation) of spots S1~S12, 0~255: black = 1, white/colour = actual saturation; 0 when the spot is not enabled |
+| SharpShot Vision WRO (legacy) port [port] spot [1~12] colour code | 0~255 | [`10~1B`](/en/sensors/esp32cam/reference-wro.md#v10) | 10~1B = colour code of spots S1~S12: 0~239 colour (hue 0~255 scaled to 0~239), 240~245 white (saturation < 30, lower = larger), 246~250 black (value < 30, darker = larger), 255 = spot not enabled |
+| SharpShot Vision WRO (legacy) port [port] spot [1~12] vividness | 0~255 | [`20~2B`](/en/sensors/esp32cam/reference-wro.md#v20) | 20~2B = vividness (saturation) of spots S1~S12, 0~255: black = 1, white/colour = actual saturation; 0 when the spot is not enabled |
 
 ## Command blocks
 
 | Block | Id | Meaning |
 | :--- | :--- | :--- |
-| Sharpshooter Vision WRO (legacy) port [port] update all values | `FD` | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
+| SharpShot Vision WRO (legacy) port [port] update all values | `FD` | reads the whole value table into a cache (FD pack-all); reporter blocks within the next 10 ms use the cache instead of asking one by one |
 
 ## Status blocks
 

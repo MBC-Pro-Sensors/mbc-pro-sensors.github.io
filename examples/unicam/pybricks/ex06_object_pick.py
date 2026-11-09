@@ -1,5 +1,5 @@
 # 神攝手 × Pybricks（SPIKE）範例 6：找最大的紅色三角形、轉過去
-# Sharpshooter Vision × Pybricks (SPIKE) example 6: find the biggest red triangle and drive to it
+# SharpShot × Pybricks (SPIKE) example 6: find the biggest red triangle and drive to it
 # 需要把相機選單切到 相機模式 5 物體偵測 ・子選項 ① 物體清單＝模式編號 51
 # Camera menu: camera mode 5 Object detection, option 1 Object list = mode number 51
 # 準備：用要找的物體本身（紅色三角形）教「目標 1」，並指定形狀 Tri（相機選單 Target 1 shape，或 cam.target_shape(1, 3)）

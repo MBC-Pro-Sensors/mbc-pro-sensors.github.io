@@ -256,7 +256,7 @@ function referencePage(lang) {
   out.push(notVerified(lang), '');
   out.push(T(lang,
     `神攝手在每個上位機、每個「相機模式・子選項」送什麼值、放在哪一格。先在相機上選好模式（看 [產品首頁](/sensors/unicam/index.md) 的「相機上的操作」），再到這裡找你的上位機那一節，點開對應的表。各平台怎麼寫程式讀，看 [SPIKE](/sensors/unicam/spike/index.md)、[EV3](/sensors/unicam/ev3/index.md)、[MATRIX](/sensors/unicam/matrix/mvision.md)、[Arduino](/sensors/unicam/arduino/index.md)、[micro:bit](/sensors/unicam/microbit/index.md)。`,
-    `What the Sharpshooter Vision sends on each host for each "camera mode · sub-option", and in which slot. Pick the mode on the camera first (see the [product page](/en/sensors/unicam/index.md)), then find your host below and open the matching table. For code on each host see [SPIKE](/en/sensors/unicam/spike/index.md), [EV3](/en/sensors/unicam/ev3/index.md), [MATRIX](/en/sensors/unicam/matrix/mvision.md), [Arduino](/en/sensors/unicam/arduino/index.md) and [micro:bit](/en/sensors/unicam/microbit/index.md).`), '');
+    `What the SharpShot Vision sends on each host for each "camera mode · sub-option", and in which slot. Pick the mode on the camera first (see the [product page](/en/sensors/unicam/index.md)), then find your host below and open the matching table. For code on each host see [SPIKE](/en/sensors/unicam/spike/index.md), [EV3](/en/sensors/unicam/ev3/index.md), [MATRIX](/en/sensors/unicam/matrix/mvision.md), [Arduino](/en/sensors/unicam/arduino/index.md) and [micro:bit](/en/sensors/unicam/microbit/index.md).`), '');
   out.push(`## ${T(lang, '怎麼看這些表', 'How to read the tables')}`, '');
   out.push(T(lang,
     [

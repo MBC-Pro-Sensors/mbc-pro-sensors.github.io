@@ -34,7 +34,7 @@ The micro:bit I2C pins are fixed: **P19 = SCL, P20 = SDA** (on the edge connecto
 | VCC | **3V** or external 5 V | power-hungry products must not draw from the micro:bit 3V pin |
 | GND | GND | with external power, share GND with the micro:bit |
 
-- **3V pin current**: V1 about **90 mA**, V2 about **190 mA**; on batteries the rail can drop to just over 2 V. Ranger 8-way, Controller PS4 / PS5 and the Sharpshooter **must use external 5 V**; other products can try 3V first, with external 5 V recommended on batteries.
+- **3V pin current**: V1 about **90 mA**, V2 about **190 mA**; on batteries the rail can drop to just over 2 V. Ranger 8-way, Controller PS4 / PS5 and the SharpShot **must use external 5 V**; other products can try 3V first, with external 5 V recommended on batteries.
 - **Logic level**: MBC product I2C lines are 3.3 V, compatible with the micro:bit without a level shifter.
 - This product's factory address is `{{addr}}`; products with different addresses can share the same P19 / P20 bus.
 
@@ -48,5 +48,5 @@ The micro:bit I2C pins are fixed: **P19 = SCL, P20 = SDA** (on the edge connecto
 
 - **Values are always 0?** With no device connected the reporter blocks return **0** (the internal −32768 is filtered), every yes / no block returns false, and nothing throws. Check in order: wiring (SDA = P20, SCL = P19) → external power on → "device at … is ready" is true.
 - **On a V1, the compass and accelerometer stop working too?** On V1 the external I2C bus is shared with the onboard accelerometer, so a sensor holding SDA low also kills them. V2 has a separate external bus.
-- **Works on and off?** STM32 products (Pathfinder, Ranger, PS2, IMU) clock-stretch, and the nRF52 on the V2 has a known clock-stretching issue (errata 219), so V1 and V2 both need a bench test. ESP32 products (PS4, Sharpshooter) do not stretch; the extension already waits 2 ms after writing the value id.
+- **Works on and off?** STM32 products (Pathfinder, Ranger, PS2, IMU) clock-stretch, and the nRF52 on the V2 has a known clock-stretching issue (errata 219), so V1 and V2 both need a bench test. ESP32 products (PS4, SharpShot) do not stretch; the extension already waits 2 ms after writing the value id.
 - **Two products of the same kind?** They share an address: first change one with "Device → change device at … to address …" (applied after reboot), then tell the extension with that product's "use address" block.

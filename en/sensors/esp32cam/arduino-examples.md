@@ -1,13 +1,13 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- moved: /en/sensors/esp32cam/arduino/ide.md -->
-<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/esp32cam/arduino/ide.md">Sharpshooter Vision › Arduino › Arduino IDE</a></p>
+<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/esp32cam/arduino/ide.md">SharpShot Vision › Arduino › Arduino IDE</a></p>
 
-# 🧪 Sharpshooter ESP32CAM × Arduino Examples
+# 🧪 SharpShot ESP32CAM × Arduino Examples
 
-[🔙 Back to Sharpshooter Home](/en/sensors/esp32cam/index.md)　|　[📡 MBC Universal I2C Protocol v2 (advanced)](/en/i2c-protocol.md)
+[🔙 Back to SharpShot Home](/en/sensors/esp32cam/index.md)　|　[📡 MBC Universal I2C Protocol v2 (advanced)](/en/i2c-protocol.md)
 
 > [!WARNING]
-> **Hardware confirmed to work with Arduino; the I2C firmware bench test is still pending.** The wiring and examples on this page follow the final [MBC I2C Protocol v2](/en/i2c-protocol.md) and compile on all three boards. We will remove this notice after the bench test. If you want to use the Sharpshooter right now, use the [SPIKE](/en/sensors/esp32cam/spike-examples.md) or [EV3](/en/sensors/esp32cam/ev3-examples.md) edition first.
+> **Hardware confirmed to work with Arduino; the I2C firmware bench test is still pending.** The wiring and examples on this page follow the final [MBC I2C Protocol v2](/en/i2c-protocol.md) and compile on all three boards. We will remove this notice after the bench test. If you want to use the SharpShot right now, use the [SPIKE](/en/sensors/esp32cam/spike-examples.md) or [EV3](/en/sensors/esp32cam/ev3-examples.md) edition first.
 
 This page has **6 examples**: 5 for the School edition (color pick, blob tracking) and 1 for the WRO edition (12 color spots). You can copy and upload each example as it is, and every line of the code has an English comment. **Never written code before? No problem.** Just do them one by one, in order.
 
@@ -22,7 +22,7 @@ This page has **6 examples**: 5 for the School edition (color pick, blob trackin
 
 ## 🔌 Wiring (the same for every example)
 
-| Sharpshooter (product side) | Arduino UNO / Nano | Arduino UNO R4 | ESP32 |
+| SharpShot (product side) | Arduino UNO / Nano | Arduino UNO R4 | ESP32 |
 | :---: | :---: | :---: | :---: |
 | 5V | 5V | 5V | 5V (VIN) |
 | GND | GND | GND | GND |
@@ -30,23 +30,23 @@ This page has **6 examples**: 5 for the School edition (color pick, blob trackin
 | IO1 (= SCL) | A5 | SCL | GPIO 22 |
 
 <div style="text-align: center;">
-<img src="/images/figures/esp32cam/wiring-uno.svg" alt="Wiring diagram: Sharpshooter ESP32CAM to Arduino UNO" style="max-width: 520px; width: 100%; margin: 1rem auto; display: block;" />
+<img src="/images/figures/esp32cam/wiring-uno.svg" alt="Wiring diagram: SharpShot ESP32CAM to Arduino UNO" style="max-width: 520px; width: 100%; margin: 1rem auto; display: block;" />
 </div>
 
-**What are IO3 / IO1 on the product side?** The Sharpshooter's hub connector uses the ESP32 pins **IO3 and IO1** (the same wires as the EV3 / SPIKE serial editions). With the **I2C firmware**, IO3 is SDA and IO1 is SCL, and the I2C address is `0x4C`. So:
+**What are IO3 / IO1 on the product side?** The SharpShot's hub connector uses the ESP32 pins **IO3 and IO1** (the same wires as the EV3 / SPIKE serial editions). With the **I2C firmware**, IO3 is SDA and IO1 is SCL, and the I2C address is `0x4C`. So:
 
 > [!IMPORTANT]
-> - The Sharpshooter must be flashed with the **I2C firmware**. The EV3 and SPIKE editions use the same pins for serial, so **only one at a time**; they cannot be supported together.
+> - The SharpShot must be flashed with the **I2C firmware**. The EV3 and SPIKE editions use the same pins for serial, so **only one at a time**; they cannot be supported together.
 > - The hardware wiring is confirmed; the I2C firmware **bench test is pending** (see the notice at the top).
-> - First set up sample point S1 and the color to track on the **screen on the back** of the Sharpshooter (the settings are stored on the device). The Arduino only reads the results.
-> - The Sharpshooter is an ESP32-based slave, so the `delay(2)` in the helpers **must not be removed**.
+> - First set up sample point S1 and the color to track on the **screen on the back** of the SharpShot (the settings are stored on the device). The Arduino only reads the results.
+> - The SharpShot is an ESP32-based slave, so the `delay(2)` in the helpers **must not be removed**.
 > - It needs a few seconds to boot (camera init + screen); the examples wait up to 8 s. Unplug the USB cable before you connect the wires.
 
 ---
 
-<h2 id="cmds">📖 Command overview (what this Sharpshooter can give you)</h2>
+<h2 id="cmds">📖 Command overview (what this SharpShot can give you)</h2>
 
-Think of the Sharpshooter as a row of numbered "boxes". Each box holds one number (int16). Write `[number]`, then read 2 bytes, and you get one value. Boxes next to each other can be read in one row (up to 16). In the examples, `mbcRead(ADDR, number)` and `mbcReadMany(ADDR, first number, how many, array)` do exactly this. The **School edition** uses `01`~`0A`, the **WRO edition (HUE12)** uses `10`~`1B` and `20`~`2B`; the high byte of `F0` tells you which edition you have.
+Think of the SharpShot as a row of numbered "boxes". Each box holds one number (int16). Write `[number]`, then read 2 bytes, and you get one value. Boxes next to each other can be read in one row (up to 16). In the examples, `mbcRead(ADDR, number)` and `mbcReadMany(ADDR, first number, how many, array)` do exactly this. The **School edition** uses `01`~`0A`, the **WRO edition (HUE12)** uses `10`~`1B` and `20`~`2B`; the high byte of `F0` tells you which edition you have.
 
 <!-- gen:cmd-table -->
 | Number | Name | Range / unit | Meaning | Used in |
@@ -71,7 +71,7 @@ Think of the Sharpshooter as a row of numbered "boxes". Each box holds one numbe
 <!-- /gen -->
 
 > [!NOTE]
-> The Sharpshooter has **no write commands** (the target color and the flash light are set on the device's screen). A box that does not exist (School edition reading `10`~`2B`, WRO edition reading `01`~`0A`) reads as `-32768` (called `MBC_NONE` in the examples). You also get `-32768` when the Sharpshooter cannot be read. Full specification: [MBC Universal I2C Protocol v2](/en/i2c-protocol.md).
+> The SharpShot has **no write commands** (the target color and the flash light are set on the device's screen). A box that does not exist (School edition reading `10`~`2B`, WRO edition reading `01`~`0A`) reads as `-32768` (called `MBC_NONE` in the examples). You also get `-32768` when the SharpShot cannot be read. Full specification: [MBC Universal I2C Protocol v2](/en/i2c-protocol.md).
 
 ---
 
@@ -79,7 +79,7 @@ Think of the Sharpshooter as a row of numbered "boxes". Each box holds one numbe
 
 | # | Example | Edition | What you learn | You also need |
 | :---: | :--- | :---: | :--- | :--- |
-| 1 | [Say hello to the Sharpshooter](#ex1) | Both | Check the wiring, read the ID card, tell School / WRO edition apart | Nothing |
+| 1 | [Say hello to the SharpShot](#ex1) | Both | Check the wiring, read the ID card, tell School / WRO edition apart | Nothing |
 | 2 | [Print all the values at once](#ex2) | School | See what every box 01~0A holds | A few sheets of colored paper |
 | 3 | [What color is this?](#ex3) | School | Hue / saturation / brightness → color name | A few sheets of colored paper |
 | 4 | [Where is the color blob?](#ex4) | School | X / Y / width / height / area / found | An object of the target color |
@@ -87,16 +87,16 @@ Think of the Sharpshooter as a row of numbered "boxes". Each box holds one numbe
 | 6 | [WRO edition: all 12 color spots at once](#ex6) | WRO | Read 12 color codes + 12 vividness values in one go | WRO field |
 
 > [!TIP]
-> **Suggested order: 1 → 2 → 3 → 4 → 5.** A Sharpshooter with WRO edition firmware runs 1 → 6.
+> **Suggested order: 1 → 2 → 3 → 4 → 5.** A SharpShot with WRO edition firmware runs 1 → 6.
 
 ---
 
-<h2 id="ex1">1️⃣ Say hello to the Sharpshooter</h2>
+<h2 id="ex1">1️⃣ Say hello to the SharpShot</h2>
 
-**What it does:** Checks that the Sharpshooter is connected and prints its "ID card" (factory address, School or WRO edition, protocol version, firmware version) and the status flags. Run this one first every time you connect a new Sharpshooter.
+**What it does:** Checks that the SharpShot is connected and prints its "ID card" (factory address, School or WRO edition, protocol version, firmware version) and the status flags. Run this one first every time you connect a new SharpShot.
 
 **Steps:**
-1. Connect the 4 wires as in the table above, then plug the USB cable into the computer (the Sharpshooter's screen turns on).
+1. Connect the 4 wires as in the table above, then plug the USB cable into the computer (the SharpShot's screen turns on).
 2. Copy the code below, paste it into the Arduino IDE and click **→ Upload**.
 3. Open the Serial Monitor (the magnifying glass at the top right) and choose **115200** baud.
 
@@ -105,19 +105,19 @@ Think of the Sharpshooter as a row of numbered "boxes". Each box holds one numbe
 <!-- ino: examples/esp32cam/arduino-en/esp32cam_01_hello/esp32cam_01_hello.ino -->
 ```cpp
 /*
- * Sharpshooter ESP32CAM x Arduino   Example 1: Say hello to the Sharpshooter
+ * SharpShot ESP32CAM x Arduino   Example 1: Say hello to the SharpShot
  * ------------------------------------------------------------
  * What does this example do?
- *   Checks that the Sharpshooter is connected. If it is, it prints the sensor's
+ *   Checks that the SharpShot is connected. If it is, it prints the sensor's
  *   "ID card" (device ID, School edition or WRO edition, protocol version,
  *   firmware version) and the status flags F3 (ready? is a color blob found?).
- *   Run this example first every time you connect a new Sharpshooter.
+ *   Run this example first every time you connect a new SharpShot.
  *
- * You need: Sharpshooter ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
+ * You need: SharpShot ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
  *
  * Wiring:
- *   Sharpshooter 5V  -> 5V       Sharpshooter GND -> GND
- *   Sharpshooter IO3 (SDA) -> A4   Sharpshooter IO1 (SCL) -> A5      (UNO / Nano)
+ *   SharpShot 5V  -> 5V       SharpShot GND -> GND
+ *   SharpShot IO3 (SDA) -> A4   SharpShot IO1 (SCL) -> A5      (UNO / Nano)
  *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *   * Hardware confirmed; the I2C firmware bench test is still pending. IO1/IO3 are shared with the EV3 / SPIKE serial editions, so only one firmware at a time.
  *
@@ -125,13 +125,13 @@ Think of the Sharpshooter as a row of numbered "boxes". Each box holds one numbe
  *   After uploading, open the Serial Monitor and choose 115200 baud.
  *
  * Tip:
- *   The Sharpshooter needs a few seconds to boot (camera init + screen), so the example waits up to 8 s.
+ *   The SharpShot needs a few seconds to boot (camera init + screen), so the example waits up to 8 s.
  *   This example runs on both the School and the WRO edition; the high byte of F0 tells you which one you have.
  */
 
-#include <Wire.h>                        // Arduino's built-in I2C tool, used to talk to the Sharpshooter
+#include <Wire.h>                        // Arduino's built-in I2C tool, used to talk to the SharpShot
 
-const uint8_t ADDR = 0x4C;               // The Sharpshooter's "house number" (I2C address). School and WRO editions are both 0x4C
+const uint8_t ADDR = 0x4C;               // The SharpShot's "house number" (I2C address). School and WRO editions are both 0x4C
 const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
 
 // Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
@@ -142,14 +142,14 @@ void setup() {
   mbcBegin();                            // Get I2C ready (helper at the bottom of the file)
   delay(500);
 
-  Serial.println(F("=== Sharpshooter ESP32CAM: Say hello to the Sharpshooter ==="));
+  Serial.println(F("=== SharpShot ESP32CAM: Say hello to the SharpShot ==="));
 
-  // Wait until the Sharpshooter says "I am ready" (bit0 of status flags F3), up to 8 seconds
+  // Wait until the SharpShot says "I am ready" (bit0 of status flags F3), up to 8 seconds
   if (!mbcWaitReady(ADDR, 8000)) {
-    Serial.println(F("Sharpshooter not found! Please check:"));
+    Serial.println(F("SharpShot not found! Please check:"));
     Serial.println(F("  1. IO3 (SDA) -> A4, IO1 (SCL) -> A5 (ESP32: 21 / 22). Are they swapped?"));
-    Serial.println(F("  2. 5V and GND plugged in firmly? Is the Sharpshooter's screen on?"));
-    Serial.println(F("  3. Is the Sharpshooter flashed with the I2C firmware? (EV3 and SPIKE editions use the same pins and cannot connect to Arduino)"));
+    Serial.println(F("  2. 5V and GND plugged in firmly? Is the SharpShot's screen on?"));
+    Serial.println(F("  3. Is the SharpShot flashed with the I2C firmware? (EV3 and SPIKE editions use the same pins and cannot connect to Arduino)"));
     while (true) {}                      // Stop here if not found
   }
 
@@ -254,7 +254,7 @@ bool mbcWaitReady(uint8_t addr, uint16_t ms) {
 **You will see:** (School edition, target color in front of the camera)
 
 ```text
-=== Sharpshooter ESP32CAM: Say hello to the Sharpshooter ===
+=== SharpShot ESP32CAM: Say hello to the SharpShot ===
 Found it! Factory address 0x4C
 Edition: School edition (color pick + blob tracking + motion, numbers 01~0A)
 Protocol version: 2
@@ -267,12 +267,12 @@ Wiring is correct. You can try the other examples now!
 ```
 
 > [!NOTE]
-> **What are the "Communication helpers"?** At the bottom of every example there is the same piece of code. It "talks" to the Sharpshooter. You don't need to change it or understand it. Just remember:
+> **What are the "Communication helpers"?** At the bottom of every example there is the same piece of code. It "talks" to the SharpShot. You don't need to change it or understand it. Just remember:
 > - `mbcRead(ADDR, number)`: read one value (returns `-32768` if it cannot be read)
 > - `mbcReadMany(ADDR, first number, how many, array)`: read a row of values starting at a number (up to 16, all from the same instant)
-> - `mbcWaitReady(ADDR, milliseconds)`: wait until the Sharpshooter has booted
+> - `mbcWaitReady(ADDR, milliseconds)`: wait until the SharpShot has booted
 >
-> The `delay(2)` in the helpers (wait 2 ms after writing the number, before reading) **must not be removed**: the Sharpshooter is an ESP32-based slave and needs these 2 ms to prepare the data.
+> The `delay(2)` in the helpers (wait 2 ms after writing the number, before reading) **must not be removed**: the SharpShot is an ESP32-based slave and needs these 2 ms to prepare the data.
 
 ---
 
@@ -285,7 +285,7 @@ Wiring is correct. You can try the other examples now!
 <!-- ino: examples/esp32cam/arduino-en/esp32cam_02_all_values/esp32cam_02_all_values.ino -->
 ```cpp
 /*
- * Sharpshooter ESP32CAM x Arduino   Example 2: Print all the values at once (School edition)
+ * SharpShot ESP32CAM x Arduino   Example 2: Print all the values at once (School edition)
  * ------------------------------------------------------------
  * What does this example do?
  *   Every 0.5 s it reads the 10 values 01~0A of the School edition "value table" in one go and prints them:
@@ -294,16 +294,16 @@ Wiring is correct. You can try the other examples now!
  *   Numbers that are next to each other can be read "in one row" (mbcReadMany),
  *   and you get the values from the same instant.
  *
- * You need: Sharpshooter ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
+ * You need: SharpShot ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
  *
  * Wiring:
- *   Sharpshooter 5V  -> 5V       Sharpshooter GND -> GND
- *   Sharpshooter IO3 (SDA) -> A4   Sharpshooter IO1 (SCL) -> A5      (UNO / Nano)
+ *   SharpShot 5V  -> 5V       SharpShot GND -> GND
+ *   SharpShot IO3 (SDA) -> A4   SharpShot IO1 (SCL) -> A5      (UNO / Nano)
  *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *   * Hardware confirmed; the I2C firmware bench test is still pending. IO1/IO3 are shared with the EV3 / SPIKE serial editions, so only one firmware at a time.
  *
  * Before you start:
- *   On the screen on the back of the Sharpshooter, set up sample point S1 and the color to track (the settings are stored on the device).
+ *   On the screen on the back of the SharpShot, set up sample point S1 and the color to track (the settings are stored on the device).
  *
  * How to see the result:
  *   After uploading, open the Serial Monitor and choose 115200 baud. Hold things of different colors in front of the camera and watch which numbers change.
@@ -314,7 +314,7 @@ Wiring is correct. You can try the other examples now!
 
 #include <Wire.h>                        // Arduino's built-in I2C tool
 
-const uint8_t ADDR = 0x4C;               // The Sharpshooter's "house number" (I2C address). School and WRO editions are both 0x4C
+const uint8_t ADDR = 0x4C;               // The SharpShot's "house number" (I2C address). School and WRO editions are both 0x4C
 const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
 
 // Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
@@ -327,7 +327,7 @@ void setup() {
   mbcBegin();
   delay(500);
   if (!mbcWaitReady(ADDR, 8000)) {
-    Serial.println(F("Sharpshooter not found. Run Example 1 first to check the wiring."));
+    Serial.println(F("SharpShot not found. Run Example 1 first to check the wiring."));
     while (true) {}
   }
   Serial.println(F("Ready! Printing all values every 0.5 s."));
@@ -339,7 +339,7 @@ void loop() {
 
     // Numbers 01~0A, 10 values in one read
     int16_t a[10];
-    if (!mbcReadMany(ADDR, 0x01, 10, a)) { Serial.println(F("Cannot read the Sharpshooter")); return; }
+    if (!mbcReadMany(ADDR, 0x01, 10, a)) { Serial.println(F("Cannot read the SharpShot")); return; }
 
     Serial.println(F("------------------------------"));
     Serial.print(F("01 Hue -1~100 (-1 = black/white/gray): ")); Serial.println(a[0]);
@@ -444,7 +444,7 @@ Ready! Printing all values every 0.5 s.
 <!-- ino: examples/esp32cam/arduino-en/esp32cam_03_color_name/esp32cam_03_color_name.ino -->
 ```cpp
 /*
- * Sharpshooter ESP32CAM x Arduino   Example 3: What color is this?
+ * SharpShot ESP32CAM x Arduino   Example 3: What color is this?
  * ------------------------------------------------------------
  * What does this example do?
  *   Reads the color at sample point S1 (numbers 01~03, 3 values in one read) and says the color name:
@@ -454,16 +454,16 @@ Ready! Printing all values every 0.5 s.
  *     03 brightness 0~100: higher = brighter (for black/white/gray it tells black / gray / white apart)
  *   It only prints when the color changes, so the screen stays clean.
  *
- * You need: Sharpshooter ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
+ * You need: SharpShot ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
  *
  * Wiring:
- *   Sharpshooter 5V  -> 5V       Sharpshooter GND -> GND
- *   Sharpshooter IO3 (SDA) -> A4   Sharpshooter IO1 (SCL) -> A5      (UNO / Nano)
+ *   SharpShot 5V  -> 5V       SharpShot GND -> GND
+ *   SharpShot IO3 (SDA) -> A4   SharpShot IO1 (SCL) -> A5      (UNO / Nano)
  *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *   * Hardware confirmed; the I2C firmware bench test is still pending. IO1/IO3 are shared with the EV3 / SPIKE serial editions, so only one firmware at a time.
  *
  * Before you start:
- *   On the screen on the back of the Sharpshooter, set up sample point S1 and the color to track (the settings are stored on the device).
+ *   On the screen on the back of the SharpShot, set up sample point S1 and the color to track (the settings are stored on the device).
  *
  * How to see the result:
  *   After uploading, open the Serial Monitor and choose 115200 baud. Hold paper of different colors in front of the sample point.
@@ -475,7 +475,7 @@ Ready! Printing all values every 0.5 s.
 
 #include <Wire.h>                        // Arduino's built-in I2C tool
 
-const uint8_t ADDR = 0x4C;               // The Sharpshooter's "house number" (I2C address). School and WRO editions are both 0x4C
+const uint8_t ADDR = 0x4C;               // The SharpShot's "house number" (I2C address). School and WRO editions are both 0x4C
 const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
 
 // Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
@@ -488,7 +488,7 @@ void setup() {
   mbcBegin();
   delay(500);
   if (!mbcWaitReady(ADDR, 8000)) {
-    Serial.println(F("Sharpshooter not found. Run Example 1 first to check the wiring."));
+    Serial.println(F("SharpShot not found. Run Example 1 first to check the wiring."));
     while (true) {}
   }
   Serial.println(F("Ready! Hold something in front of the sample point."));
@@ -613,7 +613,7 @@ Color: white   (hue -1  sat 4  bright 95)
 <!-- ino: examples/esp32cam/arduino-en/esp32cam_04_blob_position/esp32cam_04_blob_position.ino -->
 ```cpp
 /*
- * Sharpshooter ESP32CAM x Arduino   Example 4: Where is the color blob?
+ * SharpShot ESP32CAM x Arduino   Example 4: Where is the color blob?
  * ------------------------------------------------------------
  * What does this example do?
  *   Reads the position and size of the color blob (numbers 05~0A, 6 values in one read):
@@ -622,16 +622,16 @@ Color: white   (hue -1  sat 4  bright 95)
  *   Every 0.2 s it says whether the blob is "left / center / right", "top / middle / bottom", and how big it is.
  *   When nothing is found, X, Y, width, height and area are all 0.
  *
- * You need: Sharpshooter ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
+ * You need: SharpShot ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
  *
  * Wiring:
- *   Sharpshooter 5V  -> 5V       Sharpshooter GND -> GND
- *   Sharpshooter IO3 (SDA) -> A4   Sharpshooter IO1 (SCL) -> A5      (UNO / Nano)
+ *   SharpShot 5V  -> 5V       SharpShot GND -> GND
+ *   SharpShot IO3 (SDA) -> A4   SharpShot IO1 (SCL) -> A5      (UNO / Nano)
  *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *   * Hardware confirmed; the I2C firmware bench test is still pending. IO1/IO3 are shared with the EV3 / SPIKE serial editions, so only one firmware at a time.
  *
  * Before you start:
- *   On the screen on the back of the Sharpshooter, set up sample point S1 and the color to track (the settings are stored on the device).
+ *   On the screen on the back of the SharpShot, set up sample point S1 and the color to track (the settings are stored on the device).
  *
  * How to see the result:
  *   After uploading, open the Serial Monitor and choose 115200 baud. Move something of the target color left/right, up/down, near/far in front of the camera.
@@ -642,7 +642,7 @@ Color: white   (hue -1  sat 4  bright 95)
 
 #include <Wire.h>                        // Arduino's built-in I2C tool
 
-const uint8_t ADDR = 0x4C;               // The Sharpshooter's "house number" (I2C address). School and WRO editions are both 0x4C
+const uint8_t ADDR = 0x4C;               // The SharpShot's "house number" (I2C address). School and WRO editions are both 0x4C
 const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
 
 // Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
@@ -655,7 +655,7 @@ void setup() {
   mbcBegin();
   delay(500);
   if (!mbcWaitReady(ADDR, 8000)) {
-    Serial.println(F("Sharpshooter not found. Run Example 1 first to check the wiring."));
+    Serial.println(F("SharpShot not found. Run Example 1 first to check the wiring."));
     while (true) {}
   }
   Serial.println(F("Ready! Hold something of the target color in front of the camera."));
@@ -667,7 +667,7 @@ void loop() {
 
     // Read numbers 05~0A (6 values) in one go: [0] X [1] Y [2] width [3] height [4] area [5] found
     int16_t b[6];
-    if (!mbcReadMany(ADDR, 0x05, 6, b)) { Serial.println(F("Cannot read the Sharpshooter")); return; }
+    if (!mbcReadMany(ADDR, 0x05, 6, b)) { Serial.println(F("Cannot read the SharpShot")); return; }
 
     if (!b[5]) {                         // 0A = 0: the target color is not in the image
       Serial.println(F("No blob found"));
@@ -771,7 +771,7 @@ No blob found
 
 <h2 id="ex5">5️⃣ Servo follows the color blob (advanced)</h2>
 
-**What it does:** Fix the Sharpshooter on an SG90 servo. Wherever the blob goes, the servo turns that way: `05` blob X 0~100 → 20~160 degrees; if nothing is found, back to 90 degrees. **No library to install**: UNO / Nano / R4 send one pulse every 20 ms by themselves, and ESP32 uses the built-in ledc to send a 50 Hz signal (the code separates them with `#if defined(ESP32)`).
+**What it does:** Fix the SharpShot on an SG90 servo. Wherever the blob goes, the servo turns that way: `05` blob X 0~100 → 20~160 degrees; if nothing is found, back to 90 degrees. **No library to install**: UNO / Nano / R4 send one pulse every 20 ms by themselves, and ESP32 uses the built-in ledc to send a 50 Hz signal (the code separates them with `#if defined(ESP32)`).
 
 **You also need:** 1 SG90 servo.
 
@@ -788,27 +788,27 @@ No blob found
 <!-- ino: examples/esp32cam/arduino-en/esp32cam_05_track_servo/esp32cam_05_track_servo.ino -->
 ```cpp
 /*
- * Sharpshooter ESP32CAM x Arduino   Example 5: Servo follows the color blob (advanced)
+ * SharpShot ESP32CAM x Arduino   Example 5: Servo follows the color blob (advanced)
  * ------------------------------------------------------------
  * What does this example do?
- *   Mount the Sharpshooter on an SG90 servo. Wherever the color blob goes, the servo turns that way:
+ *   Mount the SharpShot on an SG90 servo. Wherever the color blob goes, the servo turns that way:
  *     read number 05 blob X (0~100) -> turn it into an angle and send it to the servo.
  *     If no blob is found (0A = 0), go back to 90 degrees (the middle).
  *   No library to install: UNO / Nano / UNO R4 send one pulse every 20 ms by themselves; ESP32 uses the built-in ledc to send a 50 Hz signal.
  *
- * You need: Sharpshooter ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32. Also: 1 SG90 servo.
+ * You need: SharpShot ESP32CAM (I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32. Also: 1 SG90 servo.
  *
  * Wiring:
- *   Sharpshooter 5V  -> 5V       Sharpshooter GND -> GND
- *   Sharpshooter IO3 (SDA) -> A4   Sharpshooter IO1 (SCL) -> A5      (UNO / Nano)
+ *   SharpShot 5V  -> 5V       SharpShot GND -> GND
+ *   SharpShot IO3 (SDA) -> A4   SharpShot IO1 (SCL) -> A5      (UNO / Nano)
  *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *   * Hardware confirmed; the I2C firmware bench test is still pending. IO1/IO3 are shared with the EV3 / SPIKE serial editions, so only one firmware at a time.
  *   SG90 brown -> GND    red -> 5V    orange (signal) -> 9
  *   (On ESP32, connect the signal wire to GPIO 13)
  *
  * Before you start:
- *   On the screen on the back of the Sharpshooter, set up sample point S1 and the color to track (the settings are stored on the device).
- *   Fix the Sharpshooter on the servo arm, camera facing forward.
+ *   On the screen on the back of the SharpShot, set up sample point S1 and the color to track (the settings are stored on the device).
+ *   Fix the SharpShot on the servo arm, camera facing forward.
  *
  * How to see the result:
  *   Move something of the target color left and right; the servo follows it. The Serial Monitor (115200) prints the angle.
@@ -821,7 +821,7 @@ No blob found
 
 #include <Wire.h>
 
-const uint8_t ADDR = 0x4C;               // The Sharpshooter's "house number" (I2C address). School and WRO editions are both 0x4C
+const uint8_t ADDR = 0x4C;               // The SharpShot's "house number" (I2C address). School and WRO editions are both 0x4C
 const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
 
 // Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
@@ -849,14 +849,14 @@ void setup() {
   mbcBegin();
   delay(500);
   if (!mbcWaitReady(ADDR, 8000)) {
-    Serial.println(F("Sharpshooter not found. Run Example 1 first to check the wiring."));
+    Serial.println(F("SharpShot not found. Run Example 1 first to check the wiring."));
     while (true) {}
   }
   Serial.println(F("Ready! Move something of the target color left and right."));
 }
 
 void loop() {
-  // ---- 1. Every 0.1 s read the Sharpshooter: numbers 05~0A, 6 values: [0] X ... [5] found ----
+  // ---- 1. Every 0.1 s read the SharpShot: numbers 05~0A, 6 values: [0] X ... [5] found ----
   if (millis() - lastRead >= 100) {
     lastRead = millis();
     int16_t b[6];
@@ -981,14 +981,14 @@ Angle: 90 deg
 
 <h2 id="ex6">6️⃣ WRO edition: all 12 color spots at once</h2>
 
-**What it does:** For a Sharpshooter flashed with the **WRO edition (HUE12) firmware**: every 0.5 s it prints the 12 color spots S1~S12 as 12 rows. `10`~`1B` color codes in one read of 12, `20`~`2B` vividness in one read of 12; each row prints the color name + color code + vividness.
+**What it does:** For a SharpShot flashed with the **WRO edition (HUE12) firmware**: every 0.5 s it prints the 12 color spots S1~S12 as 12 rows. `10`~`1B` color codes in one read of 12, `20`~`2B` vividness in one read of 12; each row prints the color name + color code + vividness.
 
 <a href="/examples/esp32cam/arduino-en/esp32cam_06_wro_12_spots/esp32cam_06_wro_12_spots.ino" download data-ignore="true">📄 Download esp32cam_06_wro_12_spots.ino</a>
 
 <!-- ino: examples/esp32cam/arduino-en/esp32cam_06_wro_12_spots/esp32cam_06_wro_12_spots.ino -->
 ```cpp
 /*
- * Sharpshooter ESP32CAM x Arduino   Example 6: WRO edition: all 12 color spots at once
+ * SharpShot ESP32CAM x Arduino   Example 6: WRO edition: all 12 color spots at once
  * ------------------------------------------------------------
  * What does this example do?
  *   This one is for the "WRO edition (HUE12)" firmware: the 12 color spots S1~S12 on the image are printed as 12 rows every 0.5 s.
@@ -997,16 +997,16 @@ Angle: 90 deg
  *     20~2B: S1~S12 vividness 0~255 (12 values in one read; black = 1, off = 0)
  *   Each row prints the color name + color code + vividness.
  *
- * You need: Sharpshooter ESP32CAM (WRO edition HUE12 I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
+ * You need: SharpShot ESP32CAM (WRO edition HUE12 I2C firmware), Arduino UNO / Nano / UNO R4 or ESP32.
  *
  * Wiring:
- *   Sharpshooter 5V  -> 5V       Sharpshooter GND -> GND
- *   Sharpshooter IO3 (SDA) -> A4   Sharpshooter IO1 (SCL) -> A5      (UNO / Nano)
+ *   SharpShot 5V  -> 5V       SharpShot GND -> GND
+ *   SharpShot IO3 (SDA) -> A4   SharpShot IO1 (SCL) -> A5      (UNO / Nano)
  *   UNO R4: SDA / SCL pins; ESP32: GPIO 21 (SDA) / GPIO 22 (SCL)
  *   * Hardware confirmed; the I2C firmware bench test is still pending. IO1/IO3 are shared with the EV3 / SPIKE serial editions, so only one firmware at a time.
  *
  * Before you start:
- *   On the screen on the back of the Sharpshooter, turn on the color spots S1~S12 you need and aim them at the field.
+ *   On the screen on the back of the SharpShot, turn on the color spots S1~S12 you need and aim them at the field.
  *
  * How to see the result:
  *   After uploading, open the Serial Monitor and choose 115200 baud.
@@ -1018,7 +1018,7 @@ Angle: 90 deg
 
 #include <Wire.h>                        // Arduino's built-in I2C tool
 
-const uint8_t ADDR = 0x4C;               // The Sharpshooter's "house number" (I2C address). School and WRO editions are both 0x4C
+const uint8_t ADDR = 0x4C;               // The SharpShot's "house number" (I2C address). School and WRO editions are both 0x4C
 const int16_t MBC_NONE = -32768;         // Code for "no such value / could not read"
 
 // Helper declaration (the code is at the bottom of the file); mbcWrite's parameters can be left out
@@ -1031,7 +1031,7 @@ void setup() {
   mbcBegin();
   delay(500);
   if (!mbcWaitReady(ADDR, 8000)) {
-    Serial.println(F("Sharpshooter not found. Run Example 1 first to check the wiring."));
+    Serial.println(F("SharpShot not found. Run Example 1 first to check the wiring."));
     while (true) {}
   }
 
@@ -1164,26 +1164,26 @@ S12 off       code 255  vivid 0
 
 ## ❓ FAQ
 
-**Q: It keeps saying "Sharpshooter not found"?**
+**Q: It keeps saying "SharpShot not found"?**
 1. Check that IO3 (SDA) and IO1 (SCL) are not swapped (UNO: IO3 → A4, IO1 → A5; R4: SDA / SCL; ESP32: 21 / 22).
-2. Check that 5V and GND are plugged in firmly. Is the Sharpshooter's screen on?
-3. Is the Sharpshooter flashed with the **I2C firmware**? The EV3 and SPIKE editions use serial, so an Arduino cannot read them.
-4. The Sharpshooter needs a few seconds to boot, and the examples wait 8 s. If it still fails, press the RESET button on the Arduino and try again.
+2. Check that 5V and GND are plugged in firmly. Is the SharpShot's screen on?
+3. Is the SharpShot flashed with the **I2C firmware**? The EV3 and SPIKE editions use serial, so an Arduino cannot read them.
+4. The SharpShot needs a few seconds to boot, and the examples wait 8 s. If it still fails, press the RESET button on the Arduino and try again.
 
 **Q: The Serial Monitor shows strange characters?**
 The speed is not set to **115200**. Change it at the bottom right of the Serial Monitor and it will be fine.
 
 **Q: The hue is always 0?**
-Sample point S1 is not set yet (set it on the screen on the back of the Sharpshooter; it is stored on the device), or the sample point is looking at red (red = 0 and also = 100).
+Sample point S1 is not set yet (set it on the screen on the back of the SharpShot; it is stored on the device), or the sample point is looking at red (red = 0 and also = 100).
 
 **Q: Blob X and Y are both 0?**
 The target color is not in the image (`0A` = 0). First set the color to track and the HSV tolerances on the device's screen, and check whether the screen draws a box around the blob.
 
 **Q: What does `-32768` mean?**
-It is the code for "no such value" (called `MBC_NONE` in the examples): the School edition reading `10`~`2B` and the WRO edition reading `01`~`0A` both give this; so does a Sharpshooter that cannot be read (a wire is loose). In your own code, check `v != MBC_NONE` before you use the value.
+It is the code for "no such value" (called `MBC_NONE` in the examples): the School edition reading `10`~`2B` and the WRO edition reading `01`~`0A` both give this; so does a SharpShot that cannot be read (a wire is loose). In your own code, check `v != MBC_NONE` before you use the value.
 
 **Q: Can I remove the `delay(2)` in the helpers?**
-No. The Sharpshooter is an ESP32-based slave. It cannot hold the I2C clock while it waits for data, so the host must wait 2 ms after writing the number before the data is ready. If you remove it, you read the previous data.
+No. The SharpShot is an ESP32-based slave. It cannot hold the I2C clock while it waits for data, so the host must wait 2 ms after writing the number before the data is ready. If you remove it, you read the previous data.
 
 **Q: What should I know when the ESP32 is the host?**
 The `delay(2)` is still needed; wire it to GPIO 21 (SDA) / 22 (SCL). The servo in Example 5 uses `ledcAttach` / `ledcWrite` on ESP32 (ESP32 core 3.x), with the signal wire on GPIO 13.

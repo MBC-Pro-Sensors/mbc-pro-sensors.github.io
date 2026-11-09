@@ -1,5 +1,5 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-# Sharpshooter Vision Camera Sensor
+# SharpShot Vision Camera Sensor
 
 > [!WARNING]
 > **The SPIKE edition is verified on hardware** (2026-11-01, shipping firmware v1.0-261101, see [Reading it on SPIKE](/en/sensors/unicam/spike/index.md)); **the EV3 edition is verified on hardware** (2026-11-03, stock firmware / EV3-G and Pybricks v4; ev3dev supported, see [Reading it on EV3](/en/sensors/unicam/ev3/index.md)); **the MATRIX, Arduino, micro:bit and mBlock editions are not yet hardware-verified**: the value layout is final and passes the computer-side tests, but real-hardware numbers (fps, line-following thresholds, I2C pins) may change after bench testing.
@@ -127,7 +127,7 @@ The same sub-option carries different amounts of data on each host, and the came
 The back of the camera has a 1.8" color screen and 4 buttons; everything is set on the camera, no computer needed.
 
 <div style="text-align: center;">
-<img src="/images/sensors/unicam/unicam-product2.webp" alt="1.8-inch color screen on the back of the Sharpshooter Vision" style="max-width: 320px; margin: 1rem auto; display: block;" />
+<img src="/images/sensors/unicam/unicam-product2.webp" alt="1.8-inch color screen on the back of the SharpShot Vision" style="max-width: 320px; margin: 1rem auto; display: block;" />
 </div>
 
 1. **Live view**: left / right cycles target 1 … target N → **MENU**. N = the last taught color + 1 empty slot (up to 16). In camera mode 2 (color at points) it cycles sample points S1 … Sn → MENU instead (n = the last point set + 1 empty slot).
@@ -205,9 +205,9 @@ On EV3, Y is **small at the bottom**: (119−Y)÷20+1; the SPIKE family follows 
 
 ## 🔀 How it differs from the legacy editions (School / WRO)
 
-Sharpshooter Vision units shipped before October 2026 (School and WRO editions) are no longer supported; their guides and examples stay online for reference in [Sharpshooter Vision legacy editions (no longer supported)](/en/sensors/esp32cam/index.md). To upgrade one to the current Sharpshooter Vision, contact the dealer you bought it from and send it back: **the firmware update is free**, and the buyer pays shipping both ways.
+SharpShot Vision units shipped before October 2026 (School and WRO editions) are no longer supported; their guides and examples stay online for reference in [SharpShot Vision legacy editions (no longer supported)](/en/sensors/esp32cam/index.md). To upgrade one to the current SharpShot Vision, contact the dealer you bought it from and send it back: **the firmware update is free**, and the buyer pays shipping both ways.
 
-| | Legacy: School edition | Legacy: WRO edition (HUE12) | Current Sharpshooter Vision |
+| | Legacy: School edition | Legacy: WRO edition (HUE12) | Current SharpShot Vision |
 | :--- | :--- | :--- | :--- |
 | Main features | Pick point + blob tracking + motion | Color code and vividness of 12 spots | Color tracking (up to 16 colors), color at points, color order, line following |
 | Switch jobs on the camera | — | — | 5 camera modes + sub-options |
@@ -215,8 +215,8 @@ Sharpshooter Vision units shipped before October 2026 (School and WRO editions) 
 | Status | No longer supported | No longer supported | **Firmware v1: SPIKE and EV3 editions verified on hardware; MATRIX, Arduino, micro:bit and mBlock editions not yet** |
 | Guide | [Legacy overview](/en/sensors/esp32cam/index.md) | [Legacy overview](/en/sensors/esp32cam/index.md) | This page |
 
-- Programs written for a legacy edition do not run as-is on the current Sharpshooter Vision: the value layout is different, so rewrite them with the host guides on this page.
-- To buy the current Sharpshooter Vision or ask for a quote, [contact us](/en/contact.md).
+- Programs written for a legacy edition do not run as-is on the current SharpShot Vision: the value layout is different, so rewrite them with the host guides on this page.
+- To buy the current SharpShot Vision or ask for a quote, [contact us](/en/contact.md).
 
 ## 🧩 Supported hosts
 
