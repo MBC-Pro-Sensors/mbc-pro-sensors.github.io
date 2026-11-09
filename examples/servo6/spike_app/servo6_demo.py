@@ -1,8 +1,8 @@
 # Servo 擴充板上機測試（官方 SPIKE App）。擴充板插在 Port A，舵機插 CN1（定點）、CN2（360° 速度）。
-# 先把 MBC_servo6_SPIKE_App_Lib.py 的內容貼在本程式最上方（或依你們的匯入方式載入）。
+# 官方 App 的專案不能另外放檔案：先把 MBC_servo6_SPIKE_App_Lib.py 的整份內容貼在本程式最上方，不用 import。
+# The official App cannot hold extra files: paste the whole MBC_servo6_SPIKE_App_Lib.py above this line (no import needed).
 from hub import port
 import time
-from MBC_servo6_SPIKE_App_Lib import MBC_SERVO6
 
 sv = MBC_SERVO6(port.A)
 

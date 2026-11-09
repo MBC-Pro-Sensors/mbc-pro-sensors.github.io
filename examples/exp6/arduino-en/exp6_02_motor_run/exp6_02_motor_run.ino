@@ -14,7 +14,7 @@
  *   EXP6 Host port pin 4 (VCC)             -> 5V
  *   EXP6 Host port pin 5 (EXP6 receives)   -> D1 (TX)
  *   EXP6 Host port pin 6 (EXP6 sends)      -> D0 (RX)
- *   EXP6 XT30 power socket                 -> 2~3S lithium battery
+ *   EXP6 XT30 power socket                 -> 2S lithium battery
  *
  * How to see the result:
  *   After uploading, open the "Serial Monitor", choose 115200 baud, and watch the motor turn.

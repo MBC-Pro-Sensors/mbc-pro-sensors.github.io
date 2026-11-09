@@ -51,7 +51,7 @@ The LEGO 6-pin socket on EXP6 that connects to the controller is called the **Ho
 | Pin 6 (EXP6 sends) | D0 (RX) | 19 (RX1) | GPIO16 (RX2) |
 | Pins 1, 2 | Not connected | Not connected | Not connected |
 
-**Power:** the XT30 power socket on EXP6 must be connected to a **2~3S lithium battery**. The motors and sensors get their power from it.
+**Power:** the XT30 power socket on EXP6 must be connected to a **2S lithium battery** (not 3S or higher). The motors and sensors get their power from it.
 
 > [!IMPORTANT]
 > - **TX goes to "EXP6 receives", RX goes to "EXP6 sends"**: Arduino's TX (send) connects to EXP6's "receive" (pin 5). The two wires cross over.
@@ -114,7 +114,7 @@ That is why the examples always wait with **`exp6Wait(ms)`**, not `delay()`. Whi
  *   Every time you change the wiring, run this example first.
  *
  * You need:
- *   Arduino UNO R4 (Minima or WiFi), EXP6, a 2~3S lithium battery,
+ *   Arduino UNO R4 (Minima or WiFi), EXP6, a 2S lithium battery,
  *   a LEGO 6-pin to Dupont cable, and a few SPIKE motors or sensors.
  *
  * Wiring (UNO R4; for Mega and ESP32, see the wiring table on the web page):
@@ -122,7 +122,7 @@ That is why the examples always wait with **`exp6Wait(ms)`**, not `delay()`. Whi
  *   EXP6 Host port pin 4 (VCC)             -> 5V (EXP6 only turns on when this wire has power)
  *   EXP6 Host port pin 5 (EXP6 receives)   -> D1 (TX)
  *   EXP6 Host port pin 6 (EXP6 sends)      -> D0 (RX)
- *   EXP6 XT30 power socket                 -> 2~3S lithium battery
+ *   EXP6 XT30 power socket                 -> 2S lithium battery
  *
  * How to see the result:
  *   After uploading, open the "Serial Monitor" and choose 115200 baud.
@@ -375,7 +375,7 @@ Battery 8.11 V | 1:motor 2:none 3:color 4:none 5:ultrasonic 6:none
  *   EXP6 Host port pin 4 (VCC)             -> 5V
  *   EXP6 Host port pin 5 (EXP6 receives)   -> D1 (TX)
  *   EXP6 Host port pin 6 (EXP6 sends)      -> D0 (RX)
- *   EXP6 XT30 power socket                 -> 2~3S lithium battery
+ *   EXP6 XT30 power socket                 -> 2S lithium battery
  *
  * How to see the result:
  *   After uploading, open the "Serial Monitor", choose 115200 baud, and watch the motor turn.
@@ -667,7 +667,7 @@ Coast to a stop.
  *   EXP6 Host port pin 4 (VCC)             -> 5V
  *   EXP6 Host port pin 5 (EXP6 receives)   -> D1 (TX)
  *   EXP6 Host port pin 6 (EXP6 sends)      -> D0 (RX)
- *   EXP6 XT30 power socket                 -> 2~3S lithium battery
+ *   EXP6 XT30 power socket                 -> 2S lithium battery
  *
  * How to see the result:
  *   After uploading, open the "Serial Monitor" and choose 115200 baud.
@@ -974,7 +974,7 @@ Rest for 2 seconds...
  *   EXP6 Host port pin 4 (VCC)             -> 5V
  *   EXP6 Host port pin 5 (EXP6 receives)   -> D1 (TX)
  *   EXP6 Host port pin 6 (EXP6 sends)      -> D0 (RX)
- *   EXP6 XT30 power socket                 -> 2~3S lithium battery
+ *   EXP6 XT30 power socket                 -> 2S lithium battery
  *
  * How to see the result:
  *   After uploading, open the "Serial Monitor", choose 115200 baud, and turn the motor slowly by hand.
@@ -1228,7 +1228,7 @@ Angle reset to 0!
  *   EXP6 Host port pin 4 (VCC)             -> 5V
  *   EXP6 Host port pin 5 (EXP6 receives)   -> D1 (TX)
  *   EXP6 Host port pin 6 (EXP6 sends)      -> D0 (RX)
- *   EXP6 XT30 power socket                 -> 2~3S lithium battery
+ *   EXP6 XT30 power socket                 -> 2S lithium battery
  *
  * How to see the result:
  *   After uploading, open the "Serial Monitor" and choose 115200 baud.
@@ -1539,7 +1539,7 @@ Port 6 force: 57
  *   EXP6 Host port pin 4 (VCC)             -> 5V
  *   EXP6 Host port pin 5 (EXP6 receives)   -> D1 (TX)
  *   EXP6 Host port pin 6 (EXP6 sends)      -> D0 (RX)
- *   EXP6 XT30 power socket                 -> 2~3S lithium battery
+ *   EXP6 XT30 power socket                 -> 2S lithium battery
  *
  * How to see the result:
  *   First lift the car up (wheels in the air) and upload. Check that both wheels turn "forward".

@@ -28,7 +28,7 @@ SPIKE Prime 主機只有 6 個連接孔，但高階的機器人專案往往同�
 <div class="responsive-grid-2" style="gap: 20px; margin: 25px 0;">
 <div style="background: rgba(255,69,0,0.05); border: 1px solid rgba(255,69,0,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
 <h4 style="color: #ff4500; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">⚡ 獨立隔離供電</h4>
-<p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">馬達驅動電流完全由獨立的電池盒/變壓器供應，與 SPIKE 主機的訊號線經過隔離晶片完全電氣隔離，保護您昂貴的主機不受異常大電流損害，保證比賽不當機。</p>
+<p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">馬達驅動電流完全由 EXP6 自己的 2S 鋰電池供應，與 SPIKE 主機的訊號線經過隔離晶片完全電氣隔離，保護您昂貴的主機不受異常大電流損害，保證比賽不當機。</p>
 </div>
 <div style="background: rgba(0,255,100,0.05); border: 1px solid rgba(0,255,100,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
 <h4 style="color: #00ff64; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">🧠 板載邊緣運算</h4>
@@ -58,9 +58,38 @@ grid-template-columns: 1fr !important;
 ## 🔌 硬體接線與啟動
 
 1. **主機通訊連線**：將擴充器的「Host 通訊線」插入 SPIKE 主機的任一連接埠 (Port A~F)。
-2. **接入獨立電源**：擴充器必須接上額外的獨立電源（電池盒或變壓器），此電源將專門供電給馬達。
+2. **接上 2S 鋰電池**：擴充器一定要接 **2S 鋰電池**（7.4 V，充飽 8.4 V，XT30 接頭），馬達和樂高感應器的電都來自這顆電池，不是主機。**不要接 3S 以上或變壓器**：超過 9 V 時，EXP6 會停止供電給樂高顏色／超音波感應器。
 3. **連接裝置**：將您的樂高感應器（顏色、超音波、力量）與馬達，任意接入擴充器上的 1~6 號連接埠。
 4. **準備寫程式！**
+
+---
+
+## 💡 板上燈號
+
+**電量燈**（4 顆，由上往下是 LED1、LED2、LED3、紅燈）：電量**由下往上**亮，緊鄰紅燈的 LED3 是第 1 格。電量燈照 **2S 鋰電池**算；電壓約 4 秒平滑一次，往上升一格要再多 0.1 V，燈號不會來回跳。
+
+| 電池電壓（2S） | 紅燈 | LED3 | LED2 | LED1（最上） |
+| :--- | :--- | :--- | :--- | :--- |
+| 6.9 V 以下 | 慢閃（快沒電，請充電） | 暗 | 暗 | 看通訊狀態 |
+| 6.9～7.2 V | 亮 | 暗 | 暗 | 看通訊狀態 |
+| 7.2～7.5 V | 暗 | 亮 | 暗 | 看通訊狀態 |
+| 7.5～7.8 V | 暗 | 亮 | 亮 | 看通訊狀態 |
+| 7.8 V 以上 | 暗 | 亮 | 亮 | 亮 |
+
+**LED1 兼通訊燈**（通訊狀態優先於電量）：
+
+- **快閃**（0.1 秒）＝等主機握手。Pybricks 要等程式跑到 `MBC_EXP6(...)` 才會連上，所以**只開機、還沒跑程式時一直快閃是正常的**。
+- **慢閃**（0.5 秒）＝Pybricks 模式下超過 0.5 秒沒收到主機資料（程式結束、按了停止鍵）；這時看門狗已讓馬達滑行停止。
+- 其他時候＝電量第 3 格（7.8 V 以上亮）。
+
+**各孔燈**（6 顆，第 k 號孔亮第 k 顆）：
+
+| 孔燈 | 意思 |
+| :--- | :--- |
+| 熄 | 空孔 |
+| 快閃 | 跟裝置握手中 |
+| 常亮 | 已連線 |
+| 慢閃 | 這個孔的馬達正在執行動作 |
 
 ---
 

@@ -8,7 +8,7 @@
  *   每次重新接線，都建議先跑這個範例。
  *
  * 你需要：
- *   Arduino UNO R4（Minima 或 WiFi）、EXP6、2～3S 鋰電池、
+ *   Arduino UNO R4（Minima 或 WiFi）、EXP6、2S 鋰電池、
  *   樂高 6 針轉杜邦線、幾顆 SPIKE 馬達或感應器。
  *
  * 接線（UNO R4；Mega、ESP32 請看網頁的接線表）：
@@ -16,7 +16,7 @@
  *   EXP6 Host 孔第 4 腳（VCC）     → 5V（EXP6 要有這條電才會開機）
  *   EXP6 Host 孔第 5 腳（EXP6 收） → D1（TX）
  *   EXP6 Host 孔第 6 腳（EXP6 送） → D0（RX）
- *   EXP6 的 XT30 電源座            → 2～3S 鋰電池
+ *   EXP6 的 XT30 電源座            → 2S 鋰電池
  *
  * 怎麼看結果：
  *   上傳後，打開「序列埠監控窗」，速度選 115200。

@@ -1077,7 +1077,7 @@
   "exp6": {
     "specs": {
       "zh": {
-        "power": "馬達由外接 2～3S 鋰電池供電（電池需自備）",
+        "power": "馬達由外接 2S 鋰電池供電（電池需自備，不要接 3S 以上）",
         "extra": [
           [
             "適用主機",
@@ -1086,7 +1086,7 @@
         ]
       },
       "en": {
-        "power": "Motors powered by an external 2–3S LiPo battery (not included)",
+        "power": "Motors powered by an external 2S LiPo battery (not included; do not use 3S or higher)",
         "extra": [
           [
             "Controller",

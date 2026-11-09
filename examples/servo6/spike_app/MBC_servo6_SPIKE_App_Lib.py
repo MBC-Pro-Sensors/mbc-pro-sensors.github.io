@@ -9,8 +9,8 @@
 # ════════════════════════════════════════════════════════════════
 #
 #  快速上手 / Quick start
+#      （把本檔整份內容貼在程式最上方，不用 import / paste this whole file at the top, no import needed）
 #      from hub import port
-#      from MBC_servo6_SPIKE_App_Lib import MBC_SERVO6
 #      sv = MBC_SERVO6(port.A)
 #      sv.servo_angle(1, 90)        # 定點模式 / position mode
 #      sv.servo_run(2, 50)          # 速度模式 / speed mode (360° servo)

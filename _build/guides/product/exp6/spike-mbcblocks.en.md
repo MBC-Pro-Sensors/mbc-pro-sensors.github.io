@@ -1,7 +1,7 @@
 ### Wiring and power
 
 1. Plug the EXP6 **Host cable** into any SPIKE Prime port (A~F).
-2. The EXP6 must have its own power supply (battery box or adapter) for the motors.
+2. The EXP6 must have a **2S LiPo battery** (XT30 connector) to power the motors and LEGO sensors; do not use 3S or higher (above 9 V, it cuts power to LEGO Color / Ultrasonic sensors).
 3. Plug LEGO sensors and motors into the expander's ports 1~6.
 
 > [!WARNING]

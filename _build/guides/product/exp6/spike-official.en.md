@@ -1,7 +1,7 @@
 ### Wiring and power
 
 1. **Host cable**: plug the expander's **Host cable** into any SPIKE hub port (A~F).
-2. **Separate power**: the expander must have its own power supply (battery box or adapter) for the motors; motor current is not drawn from the hub, and the hub signal lines go through an isolator.
+2. **Separate power**: the expander must have a **2S LiPo battery** (7.4 V, 8.4 V fully charged, XT30 connector), which powers the motors and LEGO sensors; motor current is not drawn from the hub, and the hub signal lines go through an isolator. **Do not use 3S or higher**: above 9 V, EXP6 cuts power to LEGO Color / Ultrasonic sensors.
 3. **Devices**: plug LEGO sensors (colour, ultrasonic, force) and motors into any of the expander's ports **1~6**.
 
 > [!WARNING]

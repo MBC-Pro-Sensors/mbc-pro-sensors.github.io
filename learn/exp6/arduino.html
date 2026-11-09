@@ -260,7 +260,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
             <li>接線前先拔掉 USB 線和電池。用「樂高 6 針轉杜邦線」（或樂高接頭轉接板）接 EXP6 的 <b>Host 孔</b>（接主機的那個孔）。</li>
             <li>Host 孔第 3 腳 GND → <b>GND</b>、第 4 腳 VCC → <b id="pinvcc">5V</b>（第 4 腳也是 EXP6 的「開機鑰匙」，沒電 EXP6 不會開機）</li>
             <li>第 5 腳（EXP6 收）→ <b id="pintx">D1（TX）</b>、第 6 腳（EXP6 送）→ <b id="pinrx">D0（RX）</b>。兩條線是交叉的；第 1、2 腳不接。</li>
-            <li>EXP6 的 XT30 電源座一定要接 <b>2～3S 鋰電池</b>，馬達和感應器都靠它供電。EXP6 <b>不會供電給 Arduino</b>：Arduino 用 USB 或行動電源另外供電。</li>
+            <li>EXP6 的 XT30 電源座一定要接 <b>2S 鋰電池</b>（不要接 3S 以上），馬達和感應器都靠它供電。EXP6 <b>不會供電給 Arduino</b>：Arduino 用 USB 或行動電源另外供電。</li>
             <li>打開 Arduino IDE：<b>檔案 → 新增</b>，把原本的內容刪掉；開發板選你的板子（例如 Arduino UNO R4 Minima）。</li>
             <li><b>最下面</b>貼「通訊小幫手」（右邊程式標 ① 的地方，按「複製程式」會一起拿到）。最上面兩行是接線的註解，提醒你哪條線接哪裡。</li>
           </ol>
@@ -381,7 +381,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
   <section class="tips" aria-labelledby="tiph">
     <h2 id="tiph">使用注意</h2>
     <ol>
-      <li><b>一定要接 EXP6 的電池和第 4 腳。</b>馬達和感應器全部靠 EXP6 自己的電池（2～3S 鋰電池）；第 4 腳是 EXP6 的「開機鑰匙」，電壓要跟板子的訊號一樣（UNO R4、Mega 接 5V，ESP32 接 3V3）。EXP6 的埠只認得樂高馬達和樂高 SPIKE 的顏色、超音波、力量感應器。</li>
+      <li><b>一定要接 EXP6 的電池和第 4 腳。</b>馬達和感應器全部靠 EXP6 自己的電池（2S 鋰電池，不要接 3S 以上）；第 4 腳是 EXP6 的「開機鑰匙」，電壓要跟板子的訊號一樣（UNO R4、Mega 接 5V，ESP32 接 3V3）。EXP6 的埠只認得樂高馬達和樂高 SPIKE 的顏色、超音波、力量感應器。</li>
       <li><b>等待用 <code>exp6Wait()</code>，不要用 <code>delay()</code>。</b>EXP6 超過 0.5 秒沒收到 Arduino 的任何指令，就會自動把馬達停下來（看門狗）。<code>motorRun(1, 50); delay(3000);</code> 只會轉 0.5 秒；<code>motorRun(1, 50); exp6Wait(3000);</code> 才會轉 3 秒。算很久的地方中間送 <code>exp6Send(1, 0, 0, 0)</code>。</li>
       <li><b>拔線不會讓程式停。</b>收不到資料時 <code>exp6Receive()</code> 回傳 <code>false</code>（範例印「收不到資料，檢查一下線有沒有鬆掉。」），<code>exp6Port()</code>、<code>exp6Device()</code> 還是上一包的數字，所以每次讀值前先檢查 <code>exp6Receive()</code>。在右邊勾「拔掉 EXP6 的 Host 線」可以看到這個情形。開機時找不到 EXP6，<code>exp6Begin()</code> 回傳 <code>false</code>。</li>
       <li><b>指令的 L1～L4 都要在 0～100。</b>連續送兩筆一模一樣的指令，第二筆會被略過（轉角度、角度歸零不受這條限制）。轉角度的指令<b>只送一次</b>，EXP6 會自己轉到位；轉到之後再收到同一筆，它會再轉一次。</li>
@@ -478,7 +478,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
         ];
         return [
           ('// EXP6 Host 孔 → ' + b.name + '：第 5 腳 → ' + b.tx + '、第 6 腳 → ' + b.rx),
-          ('// 第 4 腳 → ' + b.vcc + '、第 3 腳 → GND；EXP6 的 XT30 接 2～3S 鋰電池')
+          ('// 第 4 腳 → ' + b.vcc + '、第 3 腳 → GND；EXP6 的 XT30 接 2S 鋰電池')
         ];
       },
       decl: function () {

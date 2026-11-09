@@ -20,7 +20,7 @@ Connect the EXP6 **Host port** to the Arduino with a "LEGO 6-pin to Dupont" cabl
 | pins 1, 2 | not connected | not connected | not connected |
 
 > [!IMPORTANT]
-> - The EXP6 XT30 power socket must have a **2~3S lithium battery**; motors and sensors run from it. The EXP6 **does not power the Arduino**.
+> - The EXP6 XT30 power socket must have a **2S lithium battery** (not 3S or higher); motors and sensors run from it. The EXP6 **does not power the Arduino**.
 > - **TX to EXP6 receive, RX to EXP6 send**: the two wires cross.
 > - **Pin 4 must match the board's signal voltage** (UNO R4, Mega: 5V; ESP32: 3V3). This pin is also the EXP6 "ignition key": without it the EXP6 does not start.
 > - Unplug USB and the battery before wiring.

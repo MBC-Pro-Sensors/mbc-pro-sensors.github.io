@@ -24,8 +24,7 @@
 ```python
 from hub import port
 import time
-# ↑ 上面先貼 MBC_servo6_SPIKE_App_Lib.py 的內容，或照下行匯入
-from MBC_servo6_SPIKE_App_Lib import MBC_SERVO6
+# ↑ 上面先貼 MBC_servo6_SPIKE_App_Lib.py 的整份內容，不用 import
 
 sv = MBC_SERVO6(port.A)        # 擴充器插在 Port A
 

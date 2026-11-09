@@ -467,7 +467,7 @@ The WRO edition's mVision data **keeps the original HUE12 packing** (12 colour-s
 ### Wiring and power
 
 1. **Host cable**: plug the expander's **Host cable** into any SPIKE hub port (A~F).
-2. **Separate power**: the expander must have its own power supply (battery box or adapter) for the motors; motor current is not drawn from the hub, and the hub signal lines go through an isolator.
+2. **Separate power**: the expander must have a **2S LiPo battery** (7.4 V, 8.4 V fully charged, XT30 connector), which powers the motors and LEGO sensors; motor current is not drawn from the hub, and the hub signal lines go through an isolator. **Do not use 3S or higher**: above 9 V, EXP6 cuts power to LEGO Color / Ultrasonic sensors.
 3. **Devices**: plug LEGO sensors (colour, ultrasonic, force) and motors into any of the expander's ports **1~6**.
 
 > [!WARNING]
@@ -564,7 +564,7 @@ Connect the EXP6 **Host port** to the Arduino with a "LEGO 6-pin to Dupont" cabl
 | pins 1, 2 | not connected | not connected | not connected |
 
 > [!IMPORTANT]
-> - The EXP6 XT30 power socket must have a **2~3S lithium battery**; motors and sensors run from it. The EXP6 **does not power the Arduino**.
+> - The EXP6 XT30 power socket must have a **2S lithium battery** (not 3S or higher); motors and sensors run from it. The EXP6 **does not power the Arduino**.
 > - **TX to EXP6 receive, RX to EXP6 send**: the two wires cross.
 > - **Pin 4 must match the board's signal voltage** (UNO R4, Mega: 5V; ESP32: 3V3). This pin is also the EXP6 "ignition key": without it the EXP6 does not start.
 > - Unplug USB and the battery before wiring.
@@ -576,7 +576,7 @@ Connect the EXP6 **Host port** to the Arduino with a "LEGO 6-pin to Dupont" cabl
 ### Wiring and power
 
 1. Plug the EXP6 **Host cable** into any SPIKE Prime port (A~F).
-2. The EXP6 must have its own power supply (battery box or adapter) for the motors.
+2. The EXP6 must have a **2S LiPo battery** (XT30 connector) to power the motors and LEGO sensors; do not use 3S or higher (above 9 V, it cuts power to LEGO Color / Ultrasonic sensors).
 3. Plug LEGO sensors and motors into the expander's ports 1~6.
 
 > [!WARNING]

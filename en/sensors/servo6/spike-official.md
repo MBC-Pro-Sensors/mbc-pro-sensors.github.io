@@ -24,8 +24,7 @@ The expander poses as a **SPIKE distance (ultrasonic) sensor**: commands go out 
 ```python
 from hub import port
 import time
-# paste MBC_servo6_SPIKE_App_Lib.py above this line, or import it as below
-from MBC_servo6_SPIKE_App_Lib import MBC_SERVO6
+# paste the whole MBC_servo6_SPIKE_App_Lib.py above this line (no import needed)
 
 sv = MBC_SERVO6(port.A)        # expander on Port A
 

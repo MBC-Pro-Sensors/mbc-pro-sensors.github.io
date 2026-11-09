@@ -24,7 +24,7 @@ The **SPIKE 6-Way Expander (EXP6)** allows you to connect up to 6 sensors or mot
 <div class="responsive-grid-2" style="gap: 20px; margin: 25px 0;">
 <div style="background: rgba(255,69,0,0.05); border: 1px solid rgba(255,69,0,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
 <h4 style="color: #ff4500; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">⚡ Independent Isolated Power</h4>
-<p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">The motor driving current is completely supplied by an independent battery box/adapter, and the signal lines to the SPIKE hub are fully electrically isolated by an isolation chip. This protects your expensive hub from abnormal large currents, ensuring crash-free competitions.</p>
+<p style="font-size: 0.95em; margin: 0; line-height: 1.6; color: #ccc;">The motor driving current is completely supplied by EXP6's own 2S LiPo battery, and the signal lines to the SPIKE hub are fully electrically isolated by an isolation chip. This protects your expensive hub from abnormal large currents, ensuring crash-free competitions.</p>
 </div>
 <div style="background: rgba(0,255,100,0.05); border: 1px solid rgba(0,255,100,0.3); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
 <h4 style="color: #00ff64; margin-top: 0; font-size: 1.15rem; margin-bottom: 10px;">🧠 On-board Edge Computing</h4>
@@ -54,9 +54,38 @@ grid-template-columns: 1fr !important;
 ## 🔌 Hardware Wiring & Startup
 
 1. **Hub Communication Connection**: Plug the "Host Comm Cable" of the expander into any port (Port A~F) of the SPIKE hub.
-2. **Connect Independent Power**: The expander must be connected to an additional independent power supply (battery box or adapter), which will exclusively power the motors.
+2. **Connect a 2S LiPo Battery**: The expander must have a **2S LiPo** (7.4 V, 8.4 V fully charged, XT30 connector). Both the motors and the LEGO sensors are powered by this battery, not by the hub. **Do not use 3S or higher, or a wall adapter**: above 9 V, EXP6 cuts power to LEGO Color / Ultrasonic sensors.
 3. **Connect Devices**: Plug your LEGO sensors (color, ultrasonic, force) and motors into any of the ports 1~6 on the expander.
 4. **Ready to Code!**
+
+---
+
+## 💡 On-board LEDs
+
+**Battery LEDs** (4 LEDs, top to bottom: LED1, LED2, LED3, red): the level fills **from the bottom up**; LED3, right next to the red LED, is the first bar. The levels are scaled for a **2S LiPo**. The voltage is smoothed over about 4 seconds, and moving up a bar needs an extra 0.1 V, so the LEDs do not flicker between levels.
+
+| Battery voltage (2S) | Red | LED3 | LED2 | LED1 (top) |
+| :--- | :--- | :--- | :--- | :--- |
+| Below 6.9 V | Slow blink (almost empty, please charge) | Off | Off | See link status |
+| 6.9~7.2 V | On | Off | Off | See link status |
+| 7.2~7.5 V | Off | On | Off | See link status |
+| 7.5~7.8 V | Off | On | On | See link status |
+| 7.8 V and above | Off | On | On | On |
+
+**LED1 also shows the link status** (link status takes priority over the battery level):
+
+- **Fast blink** (0.1 s) = waiting for the hub handshake. With Pybricks, EXP6 only connects when the program reaches `MBC_EXP6(...)`, so **fast blinking after power-on, before any program runs, is normal**.
+- **Slow blink** (0.5 s) = in Pybricks mode, no data from the hub for more than 0.5 s (the program ended or the stop button was pressed); the watchdog has already let the motors coast to a stop.
+- Otherwise = the third battery bar (on at 7.8 V and above).
+
+**Port LEDs** (6 LEDs, port k lights LED k):
+
+| Port LED | Meaning |
+| :--- | :--- |
+| Off | Empty port |
+| Fast blink | Handshaking with the device |
+| Steady on | Connected |
+| Slow blink | The motor on this port is running a move |
 
 ---
 

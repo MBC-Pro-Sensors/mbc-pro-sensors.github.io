@@ -51,7 +51,7 @@ EXP6 上接主機的那個樂高 6 針孔叫 **Host 孔**。用一條「樂高 6
 | 第 6 腳（EXP6 送） | D0（RX） | 19（RX1） | GPIO16（RX2） |
 | 第 1、2 腳 | 不接 | 不接 | 不接 |
 
-**電源：** EXP6 的 XT30 電源座一定要接 **2～3S 鋰電池**，馬達和感應器都靠它供電。
+**電源：** EXP6 的 XT30 電源座一定要接 **2S 鋰電池**（不要接 3S 以上），馬達和感應器都靠它供電。
 
 > [!IMPORTANT]
 > - **TX 接 EXP6 收、RX 接 EXP6 送**：Arduino 的 TX（送）要接 EXP6 的「收」（第 5 腳），兩條線是交叉的。
@@ -114,7 +114,7 @@ EXP6 有一隻「看門狗」：**超過 0.5 秒沒收到 Arduino 的任何指�
  *   每次重新接線，都建議先跑這個範例。
  *
  * 你需要：
- *   Arduino UNO R4（Minima 或 WiFi）、EXP6、2～3S 鋰電池、
+ *   Arduino UNO R4（Minima 或 WiFi）、EXP6、2S 鋰電池、
  *   樂高 6 針轉杜邦線、幾顆 SPIKE 馬達或感應器。
  *
  * 接線（UNO R4；Mega、ESP32 請看網頁的接線表）：
@@ -122,7 +122,7 @@ EXP6 有一隻「看門狗」：**超過 0.5 秒沒收到 Arduino 的任何指�
  *   EXP6 Host 孔第 4 腳（VCC）     → 5V（EXP6 要有這條電才會開機）
  *   EXP6 Host 孔第 5 腳（EXP6 收） → D1（TX）
  *   EXP6 Host 孔第 6 腳（EXP6 送） → D0（RX）
- *   EXP6 的 XT30 電源座            → 2～3S 鋰電池
+ *   EXP6 的 XT30 電源座            → 2S 鋰電池
  *
  * 怎麼看結果：
  *   上傳後，打開「序列埠監控窗」，速度選 115200。
@@ -374,7 +374,7 @@ bool exp6WaitDevice(uint8_t port, uint8_t kind, uint16_t timeoutMs) {
  *   EXP6 Host 孔第 4 腳（VCC）     → 5V
  *   EXP6 Host 孔第 5 腳（EXP6 收） → D1（TX）
  *   EXP6 Host 孔第 6 腳（EXP6 送） → D0（RX）
- *   EXP6 的 XT30 電源座            → 2～3S 鋰電池
+ *   EXP6 的 XT30 電源座            → 2S 鋰電池
  *
  * 怎麼看結果：
  *   上傳後，打開「序列埠監控窗」，速度選 115200，看馬達轉。
@@ -665,7 +665,7 @@ bool exp6WaitDevice(uint8_t port, uint8_t kind, uint16_t timeoutMs) {
  *   EXP6 Host 孔第 4 腳（VCC）     → 5V
  *   EXP6 Host 孔第 5 腳（EXP6 收） → D1（TX）
  *   EXP6 Host 孔第 6 腳（EXP6 送） → D0（RX）
- *   EXP6 的 XT30 電源座            → 2～3S 鋰電池
+ *   EXP6 的 XT30 電源座            → 2S 鋰電池
  *
  * 怎麼看結果：
  *   上傳後，打開「序列埠監控窗」，速度選 115200。
@@ -971,7 +971,7 @@ bool exp6WaitDevice(uint8_t port, uint8_t kind, uint16_t timeoutMs) {
  *   EXP6 Host 孔第 4 腳（VCC）     → 5V
  *   EXP6 Host 孔第 5 腳（EXP6 收） → D1（TX）
  *   EXP6 Host 孔第 6 腳（EXP6 送） → D0（RX）
- *   EXP6 的 XT30 電源座            → 2～3S 鋰電池
+ *   EXP6 的 XT30 電源座            → 2S 鋰電池
  *
  * 怎麼看結果：
  *   上傳後，打開「序列埠監控窗」，速度選 115200，慢慢用手轉馬達。
@@ -1224,7 +1224,7 @@ bool exp6WaitDevice(uint8_t port, uint8_t kind, uint16_t timeoutMs) {
  *   EXP6 Host 孔第 4 腳（VCC）     → 5V
  *   EXP6 Host 孔第 5 腳（EXP6 收） → D1（TX）
  *   EXP6 Host 孔第 6 腳（EXP6 送） → D0（RX）
- *   EXP6 的 XT30 電源座            → 2～3S 鋰電池
+ *   EXP6 的 XT30 電源座            → 2S 鋰電池
  *
  * 怎麼看結果：
  *   上傳後，打開「序列埠監控窗」，速度選 115200。
@@ -1534,7 +1534,7 @@ bool exp6WaitDevice(uint8_t port, uint8_t kind, uint16_t timeoutMs) {
  *   EXP6 Host 孔第 4 腳（VCC）     → 5V
  *   EXP6 Host 孔第 5 腳（EXP6 收） → D1（TX）
  *   EXP6 Host 孔第 6 腳（EXP6 送） → D0（RX）
- *   EXP6 的 XT30 電源座            → 2～3S 鋰電池
+ *   EXP6 的 XT30 電源座            → 2S 鋰電池
  *
  * 怎麼看結果：
  *   先把車子架高（輪子懸空）上傳，確認兩個輪子都往「前」轉，

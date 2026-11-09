@@ -8,7 +8,7 @@
  *   Every time you change the wiring, run this example first.
  *
  * You need:
- *   Arduino UNO R4 (Minima or WiFi), EXP6, a 2~3S lithium battery,
+ *   Arduino UNO R4 (Minima or WiFi), EXP6, a 2S lithium battery,
  *   a LEGO 6-pin to Dupont cable, and a few SPIKE motors or sensors.
  *
  * Wiring (UNO R4; for Mega and ESP32, see the wiring table on the web page):
@@ -16,7 +16,7 @@
  *   EXP6 Host port pin 4 (VCC)             -> 5V (EXP6 only turns on when this wire has power)
  *   EXP6 Host port pin 5 (EXP6 receives)   -> D1 (TX)
  *   EXP6 Host port pin 6 (EXP6 sends)      -> D0 (RX)
- *   EXP6 XT30 power socket                 -> 2~3S lithium battery
+ *   EXP6 XT30 power socket                 -> 2S lithium battery
  *
  * How to see the result:
  *   After uploading, open the "Serial Monitor" and choose 115200 baud.

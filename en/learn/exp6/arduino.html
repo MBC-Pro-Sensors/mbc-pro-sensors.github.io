@@ -260,7 +260,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
             <li>Unplug the USB cable and the battery before wiring. Use a "LEGO 6-pin to Dupont cable" (or a LEGO connector breakout board) on the EXP6 <b>Host port</b> (the port that goes to the controller).</li>
             <li>Host pin 3 GND → <b>GND</b>, pin 4 VCC → <b id="pinvcc">5V</b> (pin 4 is also EXP6's "power-on key": without it, EXP6 does not turn on)</li>
             <li>Pin 5 (EXP6 receives) → <b id="pintx">D1 (TX)</b>, pin 6 (EXP6 sends) → <b id="pinrx">D0 (RX)</b>. The two wires cross over. Pins 1 and 2 are not connected.</li>
-            <li>The EXP6 XT30 power socket must be connected to a <b>2~3S lithium battery</b>. The motors and sensors get their power from it. EXP6 <b>does not power the Arduino</b>: power the Arduino with USB or a power bank.</li>
+            <li>The EXP6 XT30 power socket must be connected to a <b>2S lithium battery</b> (not 3S or higher). The motors and sensors get their power from it. EXP6 <b>does not power the Arduino</b>: power the Arduino with USB or a power bank.</li>
             <li>Open the Arduino IDE: <b>File → New</b>, and delete what is already there. Pick your board (for example Arduino UNO R4 Minima).</li>
             <li>Paste the "Communication helpers" at the <b>very bottom</b> (marked ① in the program on the right; "Copy program" copies it too). The first two lines are wiring notes, to remind you which wire goes where.</li>
           </ol>
@@ -381,7 +381,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
   <section class="tips" aria-labelledby="tiph">
     <h2 id="tiph">Good to know</h2>
     <ol>
-      <li><b>Always connect the EXP6 battery and pin 4.</b> The motors and sensors all run on EXP6's own battery (2~3S lithium). Pin 4 is EXP6's "power-on key", and its voltage must match the board's signals (5V for UNO R4 and Mega, 3V3 for ESP32). The EXP6 ports only know LEGO motors and the LEGO SPIKE color, ultrasonic and force sensors.</li>
+      <li><b>Always connect the EXP6 battery and pin 4.</b> The motors and sensors all run on EXP6's own battery (2S lithium only, not 3S or higher). Pin 4 is EXP6's "power-on key", and its voltage must match the board's signals (5V for UNO R4 and Mega, 3V3 for ESP32). The EXP6 ports only know LEGO motors and the LEGO SPIKE color, ultrasonic and force sensors.</li>
       <li><b>Wait with <code>exp6Wait()</code>, not <code>delay()</code>.</b> If EXP6 gets no command from Arduino for more than 0.5 s, it stops the motors by itself (the watchdog). <code>motorRun(1, 50); delay(3000);</code> runs for only 0.5 s; <code>motorRun(1, 50); exp6Wait(3000);</code> runs for 3 s. In code that takes a long time, send <code>exp6Send(1, 0, 0, 0)</code> now and then.</li>
       <li><b>Unplugging does not stop the program.</b> When there is no data, <code>exp6Receive()</code> gives <code>false</code> (the examples print "No data. Check if a wire is loose."), and <code>exp6Port()</code>, <code>exp6Device()</code> still hold the numbers from the last pack. So check <code>exp6Receive()</code> before every read. Tick "Unplug the EXP6 Host cable" on the right to see this. If EXP6 is not found at power-on, <code>exp6Begin()</code> gives <code>false</code>.</li>
       <li><b>L1~L4 of every command must be 0~100.</b> If you send the exact same command twice in a row, the second one is skipped (turn-to-angle and reset-angle are not affected). Send a turn-to-angle command <b>only once</b>: EXP6 turns to the angle by itself. If it gets the same command again after it gets there, it turns again.</li>
@@ -467,7 +467,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
         ];
         return [
           ('// EXP6 Host port → ' + b.name + ': pin 5 → ' + b.tx + ', pin 6 → ' + b.rx),
-          ('// pin 4 → ' + b.vcc + ', pin 3 → GND; EXP6 XT30 socket → 2~3S lithium battery')
+          ('// pin 4 → ' + b.vcc + ', pin 3 → GND; EXP6 XT30 socket → 2S lithium battery')
         ];
       },
       decl: function () {
