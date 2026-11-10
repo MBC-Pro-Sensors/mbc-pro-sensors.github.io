@@ -1,5 +1,5 @@
 /*
- * SPIKE 6-Way Expander EXP6 x Arduino   Example 3: Turn to an angle
+ * MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) x Arduino   Example 3: Turn to an angle
  * ------------------------------------------------------------
  * What does this example do?
  *   The motor on port 1 turns 90 degrees -> turns back -> turns one full circle -> turns to the "0 degree mark" on the motor.

@@ -109,6 +109,6 @@ Every line in the examples has an English note. Knowing these few is enough to s
 | Controller 2.4G (PS2, Taiwan only) | [Arduino Examples](/en/sensors/ps2/arduino-examples.md) |
 | Controller PS4/PS5 | [Arduino Examples](/en/sensors/ps4/arduino-examples.md) |
 | IMU Gyro | [Arduino Examples](/en/sensors/imu/arduino-examples.md) |
-| SPIKE 6-Way Expander | [Arduino Examples](/en/sensors/exp6/arduino-examples.md) (this one connects over serial, not like Step 3 above; see its examples page) |
+| MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) | [Arduino Examples](/en/sensors/exp6/arduino-examples.md) (this one connects over serial, not like Step 3 above; see its examples page) |
 
 Want the communication rules shared by every MBC product (for people who can code)? See the [MBC Universal I2C Protocol](/en/i2c-protocol.md).

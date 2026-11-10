@@ -46,7 +46,7 @@ The form **sends nothing to any server**: the buttons open an email in your own 
 <option value="TOF8">Ranger 8-Way (TOF8)</option>
 <option value="UniCam">SharpShot Vision</option>
 <option value="IMU">IMU 9-Axis Gyro</option>
-<option value="EXP6">SPIKE 6-Way Expander (EXP6)</option>
+<option value="EXP6">MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™)</option>
 <option value="PS4">Controller PS4/PS5</option>
 <option value="PS2">Controller 2.4G (PS2, Taiwan only)</option>
 <option value="Multiple">Several products</option>

@@ -31,7 +31,7 @@ MBC-Pro 全系列的「通用 I2C 版」感應器都用同一套規則：**暫�
 
 > [!NOTE]
 > - **目前的[神攝手](/sensors/unicam/arduino/index.md)** 也是 `0x4C`，hw0＝`3`，每個值放哪一格看 [神攝手讀值參考](/sensors/unicam/reference.md)。上表標「舊版」的學校版／WRO 版已停止支援。
-> - **SPIKE 6 路擴充器（EXP6）不走 I2C**：主機接頭有隔離保護，Arduino 要用序列埠（UART）控制，請看 [EXP6 Arduino 範例](/sensors/exp6/arduino-examples.md)。
+> - **MBC EXP6 六路馬達擴充器（適用 SPIKE™）不走 I2C**：主機接頭有隔離保護，Arduino 要用序列埠（UART）控制，請看 [EXP6 Arduino 範例](/sensors/exp6/arduino-examples.md)。
 > - 同一條 SDA／SCL 上，**位址相同的產品不能同時接**（循行者 8 路和 16 路、測距者 2 路和 8 路、PS2 和 PS4、神攝手與舊版神攝手）。要同時接就先用 `F8` 把其中一台換位址。
 > - 同一類產品共用一個位址，用 `F0` 的高位元組（hw0）分辨款式：循行者 8／16、測距者 2／8、PS2＝1／PS4＝2、神攝手＝3（舊版學校版＝1／WRO 版＝2）。
 

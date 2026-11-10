@@ -24,7 +24,7 @@
 
 不行。每項產品依主機分成不同版本，接頭與通訊協議都不一樣。下單前請先確認主機型號，[選購指南](/guide.md)會告訴你該選哪一版。
 
-### SPIKE 6 路擴充器（EXP6）可以用 SPIKE 積木嗎？
+### MBC EXP6 六路馬達擴充器（適用 SPIKE™）可以用 SPIKE 積木嗎？
 
 不行。官方 App 裡必須使用 **Python 文字模式**。EXP6 支援 **SPIKE™ Prime**，Robot Inventor（51515）可以用 Robot Inventor App 的 Python；不支援 EV3。Pybricks 完整支援。詳見 [EXP6 產品頁](/sensors/exp6/index.md)。
 
@@ -85,7 +85,7 @@ FIRST® LEGO® League Challenge 正式比賽只允許 LEGO 原廠零件，所以
 | 測距者 2 路（TOF2） | NT$1,500 |
 | 測距者 8 路（TOF8） | NT$3,000 |
 | 神攝手 | NT$3,000 |
-| SPIKE 6 路擴充器（EXP6） | NT$3,600 |
+| MBC EXP6 六路馬達擴充器（適用 SPIKE™） | NT$3,600 |
 | 掌控者 PS2 | NT$2,000 |
 | 掌控者 PS4/PS5 | NT$2,500 |
 | 陀螺儀 IMU 九軸 | NT$2,500 |

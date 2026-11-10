@@ -385,6 +385,9 @@ const legacyBar = (lang) => { const N = LEGACY_NOTE[lang]; return `<div class="l
 // 互動教學頁不是 build.mjs 排版的，提示用行內樣式（插在頂部導覽列後面）
 const legacyLearnBar = (lang) => { const N = LEGACY_NOTE[lang]; return `<div class="legacy-learn" role="note" style="margin:0 0 14px;padding:10px 14px;border-radius:10px;background:#fff7d6;border:1px solid #f0d36b;color:#4a3b00;font-size:0.92rem;line-height:1.55"><b>${N.b}</b>${lang === 'en' ? ': ' : '：'}${N.t} <a href="${N.href}" style="color:#6b5400;font-weight:700;text-decoration:underline">${N.a}</a></div>`; };
 const LEARN_LEGACY = /^(en\/)?learn\/(cam_school|hue12)\/[^/]+\.html$/;
+// 互動教學頁（wrap_learn.js 產生、不經過 build.mjs 排版）：頁尾補同一段商標聲明（FOOTER，LEGO Fair Play；任務排程 #76）
+const LEARN_PAGE = /^(en\/)?learn\/[^/]+\/[^/]+\.html$/;
+const learnFooter = (lang) => `<footer class="learn-legal" style="max-width:1240px;margin:32px auto 0;padding:14px 16px 24px;border-top:1px solid var(--rule, #ddd);color:var(--muted, #666);font-size:0.8rem;line-height:1.6"><p style="margin:0 0 4px">${FOOTER[lang]}</p><p style="margin:0">© ${new Date().getFullYear()} ${lang === 'en' ? 'Shaobo Creative Robotics Company Limited (MBC Robot)' : '少伯創意機器人有限公司（MBC Robot）'}</p></footer>`;
 // 還沒進三層導覽（guides-index）但要放進首頁選擇器與切換列的產品：每個主機連到 products.json routes 的 start（手寫的平台頁）
 const NAV_EXTRA = ['unicam'];
 function productHero(key, lang, file, name) {
@@ -1000,12 +1003,19 @@ for (const f of tracked) {
   if (!fs.existsSync(src)) continue;
   const dst = path.join(OUT, f);
   fs.mkdirSync(path.dirname(dst), { recursive: true });
-  // 舊版神攝手的互動教學：頂部導覽列後面插停止支援提示
-  if (LEARN_LEGACY.test(f)) {
-    const t = fs.readFileSync(src, 'utf8');
-    const i = t.indexOf('</nav>');
-    if (i < 0) console.warn(`WARN ${f}: 找不到 </nav>，沒插舊版提示`);
-    fs.writeFileSync(dst, i < 0 ? t : t.slice(0, i + 6) + legacyLearnBar(f.startsWith('en/') ? 'en' : 'zh') + t.slice(i + 6));
+  if (LEARN_PAGE.test(f)) {
+    const lang = f.startsWith('en/') ? 'en' : 'zh';
+    let t = fs.readFileSync(src, 'utf8');
+    // 舊版神攝手的互動教學：頂部導覽列後面插停止支援提示
+    if (LEARN_LEGACY.test(f)) {
+      const i = t.indexOf('</nav>');
+      if (i < 0) console.warn(`WARN ${f}: 找不到 </nav>，沒插舊版提示`);
+      else t = t.slice(0, i + 6) + legacyLearnBar(lang) + t.slice(i + 6);
+    }
+    // 商標聲明：插在 </body> 前（頁面自己的 <script> 都在前面，不影響）
+    const j = t.lastIndexOf('</body>');
+    if (j < 0) throw new Error(`${f}: 找不到 </body>，沒辦法加商標聲明`);
+    fs.writeFileSync(dst, t.slice(0, j) + learnFooter(lang) + '\n' + t.slice(j));
     continue;
   }
   fs.copyFileSync(src, dst);

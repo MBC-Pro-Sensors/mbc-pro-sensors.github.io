@@ -1,16 +1,16 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 _build/gen-guides.mjs 產生（servo6 × spike × pybricks），請勿手改；改內容請改 _build/guides.json、_build/guides/**、_build/protocol/*.json 後重跑 node _build/gen-guides.mjs -->
 <!-- guide: servo6/spike/pybricks -->
-# SPIKE 6 路舵機擴充器 (Servo6) × SPIKE × Pybricks
+# MBC Servo6 舵機擴充器（適用 SPIKE™） × SPIKE × Pybricks
 
-這一頁只講 **Pybricks（Python）**：在 SPIKE Prime／Robot Inventor 上用它讀SPIKE 6 路舵機擴充器 (Servo6)的安裝步驟、每個值怎麼讀與範例。要換產品、主機或軟體，用上方的切換列。
+這一頁只講 **Pybricks（Python）**：在 SPIKE Prime／Robot Inventor 上用它讀MBC Servo6 舵機擴充器（適用 SPIKE™）的安裝步驟、每個值怎麼讀與範例。要換產品、主機或軟體，用上方的切換列。
 
 ## 安裝與設定
 
-<!-- setup: _build/guides/software/spike-pybricks.zh.md + _build/guides/product/servo6/spike-pybricks.zh.md {"product":"SPIKE 6 路舵機擴充器 (Servo6)","edition":"SPIKE 版","port":"A","lib":"","libUrl":"","addr":""} -->
+<!-- setup: _build/guides/software/spike-pybricks.zh.md + _build/guides/product/servo6/spike-pybricks.zh.md {"product":"MBC Servo6 舵機擴充器（適用 SPIKE™）","edition":"SPIKE 版","port":"A","lib":"","libUrl":"","addr":""} -->
 <!-- include-fallback -->
 > [!NOTE]
-> 這個軟體的安裝步驟正在搬到這一頁。先看原本的說明：[SPIKE 6 路舵機擴充器 (Servo6)：Pybricks（Python） 說明](/sensors/servo6/spike-pybricks.md)。
+> 這個軟體的安裝步驟正在搬到這一頁。先看原本的說明：[MBC Servo6 舵機擴充器（適用 SPIKE™）：Pybricks（Python） 說明](/sensors/servo6/spike-pybricks.md)。
 <!-- /include-fallback -->
 
 ## 範例

@@ -1,7 +1,7 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 2026-11-06：EXP6 的 routes.arduino 拿掉（使用者：格子拿掉、頁面留著），gen-guides 不再產生這頁；改成手寫的開發中說明頁 -->
 <!-- noindex -->
-# SPIKE 6 路擴充器 (EXP6) × Arduino（UART）
+# MBC EXP6 六路馬達擴充器（適用 SPIKE™） × Arduino（UART）
 
 > [!WARNING]
 > **EXP6 × Arduino（UART）開發與驗證中，尚未支援。** 這頁先保留給參考，請先用 [SPIKE Prime 或 Robot Inventor](/sensors/exp6/index.md) 主機。

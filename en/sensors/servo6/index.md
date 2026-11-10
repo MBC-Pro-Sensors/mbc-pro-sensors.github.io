@@ -1,5 +1,5 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-# SPIKE 6-Port Servo Expander (Servo6) (Coming Soon)
+# MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™) (Coming Soon)
 
 <!-- product-hero -->
 
@@ -26,7 +26,7 @@
 
 LEGO SPIKE Prime has no servo motors, yet grippers, turntables and arms that "turn to an angle and hold" are smallest and cheapest with hobby servos.
 
-The **SPIKE 6-Port Servo Expander (Servo6)** plugs into any hub port and drives **six standard 3-wire servos** (SG90, MG996R and similar, 500-2500 µs signal). Angle, speed, current readback and stall protection are computed on the expander; the hub only sends commands.
+The **MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™)** plugs into any hub port and drives **six standard 3-wire servos** (SG90, MG996R and similar, 500-2500 µs signal). Angle, speed, current readback and stall protection are computed on the expander; the hub only sends commands.
 
 ## 🧠 Hardware highlights
 

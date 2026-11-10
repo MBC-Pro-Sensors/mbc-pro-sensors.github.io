@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/exp6/arduino.html">
 <link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/exp6/arduino.html">
 <link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/exp6/arduino.html">
-<title>SPIKE 6 路擴充器 EXP6 Arduino 教學 | MBC-Pro Sensors</title>
+<title>MBC EXP6 六路馬達擴充器（適用 SPIKE™） Arduino 教學 | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -236,7 +236,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 <div class="exp6-arduino-dev" role="alert" style="margin:16px auto;max-width:1100px;padding:14px 18px;border:2px solid #d97706;border-radius:10px;background:#fff7ed;color:#7c2d12;font-weight:600;line-height:1.6">⚠ EXP6 × Arduino（UART）開發與驗證中，尚未支援。這頁先保留給參考，請先用 SPIKE Prime 或 Robot Inventor 主機。</div>
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">MBC SPIKE 6 路擴充器 EXP6 × Arduino</span>
+    <span class="eyebrow">MBC EXP6 六路馬達擴充器（適用 SPIKE™） × Arduino</span>
     <h1>三個步驟用 Arduino 控制 EXP6</h1>
     <p class="lead">寫 Arduino 程式照這個順序：先<b>選板子、接好線、貼上通訊小幫手</b>，再在 <code>setup()</code> 用 <code>exp6Begin()</code> <b>叫醒 EXP6</b>，最後在 <code>loop()</code> <b>送指令、讀值</b>（轉馬達、讀角度、讀感應器）。EXP6 走 <b>UART 序列埠</b>，不是 I2C。左邊一步一步做，右邊的程式會跟著長出來；在模擬 EXP6 上選每一埠接什麼，就能看到馬達怎麼轉、序列埠監控視窗會印出什麼。</p>
   </header>

@@ -46,7 +46,7 @@
 <option value="TOF8">測距者 8 路 (TOF8)</option>
 <option value="UniCam">神攝手</option>
 <option value="IMU">陀螺儀 IMU 九軸</option>
-<option value="EXP6">SPIKE 6 路擴充器 (EXP6)</option>
+<option value="EXP6">MBC EXP6 六路馬達擴充器（適用 SPIKE™）</option>
 <option value="PS4">掌控者 PS4/PS5</option>
 <option value="PS2">掌控者 PS2</option>
 <option value="多項">好幾個產品</option>

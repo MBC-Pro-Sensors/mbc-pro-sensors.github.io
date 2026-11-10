@@ -1,5 +1,5 @@
 /*
- * SPIKE 6-Way Expander EXP6 x Arduino   Example 6 (advanced): Two-wheel car
+ * MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) x Arduino   Example 6 (advanced): Two-wheel car
  * ------------------------------------------------------------
  * What does this example do?
  *   Use 2 SPIKE motors as the left and right wheels of a car. In order:

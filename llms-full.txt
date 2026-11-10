@@ -29,8 +29,8 @@
 - **主要用途**：高難度 WRO 賽道、複雜十字路口、直角彎、T字路口、極速循線避障。
 - **優勢**：單一感測器提供雙倍取樣密度與雙倍視野，無需使用兩顆感測器拼湊，大幅節省 SPIKE / EV3 寶貴的孔位。
 
-### 2.3 EXP6 6 路擴充器 (SPIKE 6-Port Expansion Hub)
-- **類型**：SPIKE Prime 專用 6 埠擴充模組
+### 2.3 MBC EXP6 六路馬達擴充器（適用 SPIKE™）（MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™)）
+- **類型**：6 埠擴充模組（適用 SPIKE™ Prime）
 - **主要用途**：突破 SPIKE Prime 僅有 6 個連線埠的硬體上限。
 - **特點**：自帶獨立隔離電源保護，避免外接多組馬達或大功耗感應器時造成主機過載重開機；支援 Pybricks，以及官方 SPIKE App 的 Python 文字模式（官方 App 積木模式不支援）；Robot Inventor（51515）可以用 Robot Inventor App 的 Python；不支援 EV3。
 

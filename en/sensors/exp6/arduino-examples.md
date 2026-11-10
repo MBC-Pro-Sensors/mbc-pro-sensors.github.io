@@ -1,8 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- moved: /en/sensors/exp6/index.md -->
-<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/exp6/index.md">SPIKE 6-Way Expander</a></p>
+<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/exp6/index.md">MBC EXP6 6-Port Motor Expander</a></p>
 
-# 🧪 SPIKE 6-Way Expander (EXP6) × Arduino Examples
+# 🧪 MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) × Arduino Examples
 
 > [!WARNING]
 > **EXP6 × Arduino (UART): Under development — not yet supported.** This page is kept for reference while we develop and test it; for now please use the EXP6 with [SPIKE Prime or Robot Inventor](/en/sensors/exp6/index.md).
@@ -105,7 +105,7 @@ That is why the examples always wait with **`exp6Wait(ms)`**, not `delay()`. Whi
 <!-- ino: examples/exp6/arduino-en/exp6_01_hello/exp6_01_hello.ino -->
 ```cpp
 /*
- * SPIKE 6-Way Expander EXP6 x Arduino   Example 1: Say hello to EXP6
+ * MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) x Arduino   Example 1: Say hello to EXP6
  * ------------------------------------------------------------
  * What does this example do?
  *   It checks that Arduino and EXP6 are connected well. If they are, once every second it prints:
@@ -360,7 +360,7 @@ Battery 8.11 V | 1:motor 2:none 3:color 4:none 5:ultrasonic 6:none
 <!-- ino: examples/exp6/arduino-en/exp6_02_motor_run/exp6_02_motor_run.ino -->
 ```cpp
 /*
- * SPIKE 6-Way Expander EXP6 x Arduino   Example 2: Make the motor run
+ * MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) x Arduino   Example 2: Make the motor run
  * ------------------------------------------------------------
  * What does this example do?
  *   The motor on port 1 does "forward 3 s -> brake -> backward 3 s -> coast to a stop", again and again.
@@ -651,7 +651,7 @@ Coast to a stop.
 <!-- ino: examples/exp6/arduino-en/exp6_03_motor_degrees/exp6_03_motor_degrees.ino -->
 ```cpp
 /*
- * SPIKE 6-Way Expander EXP6 x Arduino   Example 3: Turn to an angle
+ * MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) x Arduino   Example 3: Turn to an angle
  * ------------------------------------------------------------
  * What does this example do?
  *   The motor on port 1 turns 90 degrees -> turns back -> turns one full circle -> turns to the "0 degree mark" on the motor.
@@ -958,7 +958,7 @@ Rest for 2 seconds...
 <!-- ino: examples/exp6/arduino-en/exp6_04_read_angle/exp6_04_read_angle.ino -->
 ```cpp
 /*
- * SPIKE 6-Way Expander EXP6 x Arduino   Example 4: Read the motor angle
+ * MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) x Arduino   Example 4: Read the motor angle
  * ------------------------------------------------------------
  * What does this example do?
  *   A motor can do more than turn. It is also a very accurate "angle sensor".
@@ -1211,7 +1211,7 @@ Angle reset to 0!
 <!-- ino: examples/exp6/arduino-en/exp6_05_sensors/exp6_05_sensors.ino -->
 ```cpp
 /*
- * SPIKE 6-Way Expander EXP6 x Arduino   Example 5: Read the sensors
+ * MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) x Arduino   Example 5: Read the sensors
  * ------------------------------------------------------------
  * What does this example do?
  *   EXP6 finds out by itself which sensor is on each port. This example prints all their values:
@@ -1522,7 +1522,7 @@ Port 6 force: 57
 <!-- ino: examples/exp6/arduino-en/exp6_06_drive_car/exp6_06_drive_car.ino -->
 ```cpp
 /*
- * SPIKE 6-Way Expander EXP6 x Arduino   Example 6 (advanced): Two-wheel car
+ * MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) x Arduino   Example 6 (advanced): Two-wheel car
  * ------------------------------------------------------------
  * What does this example do?
  *   Use 2 SPIKE motors as the left and right wheels of a car. In order:

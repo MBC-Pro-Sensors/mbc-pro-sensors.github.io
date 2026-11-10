@@ -1,16 +1,16 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- 本頁由 _build/gen-guides.mjs 產生（servo6 × spike × official），請勿手改；改內容請改 _build/guides.json、_build/guides/**、_build/protocol/*.json 後重跑 node _build/gen-guides.mjs -->
 <!-- guide: servo6/spike/official -->
-# SPIKE 6-Port Servo Expander (Servo6) × SPIKE × Official LEGO App
+# MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™) × SPIKE × Official LEGO App
 
-This page covers **Official LEGO App (SPIKE 3, Robot Inventor)** only: how to set it up for the SPIKE 6-Port Servo Expander (Servo6) on SPIKE Prime / Robot Inventor, how to read every value and examples. Use the switcher above to change product, host or software.
+This page covers **Official LEGO App (SPIKE 3, Robot Inventor)** only: how to set it up for the MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™) on SPIKE Prime / Robot Inventor, how to read every value and examples. Use the switcher above to change product, host or software.
 
 ## Setup
 
-<!-- setup: _build/guides/software/spike-official.en.md + _build/guides/product/servo6/spike-official.en.md {"product":"SPIKE 6-Port Servo Expander (Servo6)","edition":"SPIKE edition","port":"A","lib":"","libUrl":"","addr":""} -->
+<!-- setup: _build/guides/software/spike-official.en.md + _build/guides/product/servo6/spike-official.en.md {"product":"MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™)","edition":"SPIKE edition","port":"A","lib":"","libUrl":"","addr":""} -->
 <!-- include-fallback -->
 > [!NOTE]
-> Setup steps for this software are being moved onto this page. Meanwhile see the previous guide: [SPIKE 6-Port Servo Expander (Servo6): Official LEGO App (SPIKE 3, Robot Inventor)](/en/sensors/servo6/spike-official.md).
+> Setup steps for this software are being moved onto this page. Meanwhile see the previous guide: [MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™): Official LEGO App (SPIKE 3, Robot Inventor)](/en/sensors/servo6/spike-official.md).
 <!-- /include-fallback -->
 
 ## Examples

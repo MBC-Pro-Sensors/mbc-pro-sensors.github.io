@@ -12,7 +12,7 @@
 
 ## 為什麼要代理 MBC-Pro Sensors
 
-- **解決真實的比賽痛點**：8／16 路循線、180° 雷射測距、SPIKE™ Prime 6 路擴充、PS4/PS5 手把接收器、視覺鏡頭。看[全部產品](/README.md#products)。
+- **解決真實的比賽痛點**：8／16 路循線、180° 雷射測距、6 路馬達擴充（適用 SPIKE™ Prime）、PS4/PS5 手把接收器、視覺鏡頭。看[全部產品](/README.md#products)。
 - **即插即用**：直接接上 SPIKE™ Prime、EV3 連接埠，支援官方 App 與 Pybricks，不需要轉接板。
 - **WRO 規則清楚**：每項產品都有 [WRO 規則對照](/wro-rules.md)，客戶一看就知道各組別能不能用。
 - **完整中英文文件**：產品頁、設定教學、[選購指南](/guide.md)與[通用 I2C 協議](/i2c-protocol.md)。

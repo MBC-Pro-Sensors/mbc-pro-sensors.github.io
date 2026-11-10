@@ -13,11 +13,11 @@ MBC 全系列的函式庫、積木擴充、範例程式與型錄，集中在這�
 <!-- gen:downloads-table -->
 | 檔案 | 內容 | 版本 | 搭配韌體 | 大小 | 日期 |
 | :--- | :--- | :---: | :--- | :---: | :---: |
-| [MBC_EXP6_Pybricks_Lib.zip](/downloads/MBC_EXP6_Pybricks_Lib.zip) | SPIKE 6 路擴充器 EXP6：Pybricks 函式庫＋範例（`MBC_exp6_obj_Lib.py`；插 MBC 感應器時加 `MBC_exp6_mbc_common.py` 和用到的 `MBC_exp6_line／laser／pad／unicam.py`；`Exp6_objMode_Demo.py`、說明書 `EXP6_Library_Manual.pdf`、`examples/` 11 支、`beginner_examples/` 新手範例 5 支（Python 與 Pybricks 積木各一份）＋循行者 8 路插 EXP6 的 PD 循線範例（Python 與積木）） | 2026-11-04 | EXP6 韌體 2026-11-03 以後 | 2.1 MB | 2026-11-05 |
-| [MBC_EXP6_Official_App_Lib.zip](/downloads/MBC_EXP6_Official_App_Lib.zip) | SPIKE 6 路擴充器 EXP6：官方 SPIKE App 函式庫＋範例（`SPIKE_Education/` 裡的 `MBC_exp6_SPIKE_App_Lib.py` 與安裝／解除安裝腳本、說明書 `EXP6_Library_Manual.pdf`、`examples/` 10 支（10 是對 MBC 感應器下命令）） | 2026-11-05 | EXP6 韌體 2026-11-03 以後 | 2.1 MB | 2026-11-05 |
-| [MBC_EXP6_Robot_Inventor_Lib.zip](/downloads/MBC_EXP6_Robot_Inventor_Lib.zip) | SPIKE 6 路擴充器 EXP6：LEGO MINDSTORMS Robot Inventor（51515）App 的 Python 函式庫＋範例（安裝程式 `Install_MBC_exp6_Lib.py`（USB 線或藍牙都能裝）、移除程式、函式庫原始碼、說明書 `EXP6_Library_Manual.pdf`、`examples/` 10 支；[互動教學](/learn/exp6/robot-inventor.html)） | 2026-11-05 | EXP6 韌體 2026-11-03 以後 | 2.1 MB | 2026-11-05 |
-| [MBC_Servo6_Pybricks_Lib.zip](/downloads/MBC_Servo6_Pybricks_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | SPIKE 6 路舵機擴充器 Servo6：Pybricks 函式庫 — 搭配 2026-10 以前韌體 | 1.0 | Servo6 | 8.7 KB | 2026-10-21 |
-| [MBC_Servo6_Official_App_Lib.zip](/downloads/MBC_Servo6_Official_App_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | SPIKE 6 路舵機擴充器 Servo6：官方 SPIKE App 函式庫 — 搭配 2026-10 以前韌體 | 1.0 | Servo6 | 5.3 KB | 2026-10-21 |
+| [MBC_EXP6_Pybricks_Lib.zip](/downloads/MBC_EXP6_Pybricks_Lib.zip) | MBC EXP6 六路馬達擴充器（適用 SPIKE™）：Pybricks 函式庫＋範例（`MBC_exp6_obj_Lib.py`；插 MBC 感應器時加 `MBC_exp6_mbc_common.py` 和用到的 `MBC_exp6_line／laser／pad／unicam.py`；`Exp6_objMode_Demo.py`、說明書 `EXP6_Library_Manual.pdf`、`examples/` 11 支、`beginner_examples/` 新手範例 5 支（Python 與 Pybricks 積木各一份）＋循行者 8 路插 EXP6 的 PD 循線範例（Python 與積木）） | 2026-11-04 | EXP6 韌體 2026-11-03 以後 | 2.1 MB | 2026-11-05 |
+| [MBC_EXP6_Official_App_Lib.zip](/downloads/MBC_EXP6_Official_App_Lib.zip) | MBC EXP6 六路馬達擴充器（適用 SPIKE™）：官方 SPIKE App 函式庫＋範例（`SPIKE_Education/` 裡的 `MBC_exp6_SPIKE_App_Lib.py` 與安裝／解除安裝腳本、說明書 `EXP6_Library_Manual.pdf`、`examples/` 10 支（10 是對 MBC 感應器下命令）） | 2026-11-05 | EXP6 韌體 2026-11-03 以後 | 2.1 MB | 2026-11-05 |
+| [MBC_EXP6_Robot_Inventor_Lib.zip](/downloads/MBC_EXP6_Robot_Inventor_Lib.zip) | MBC EXP6 六路馬達擴充器（適用 SPIKE™）：LEGO MINDSTORMS Robot Inventor（51515）App 的 Python 函式庫＋範例（安裝程式 `Install_MBC_exp6_Lib.py`（USB 線或藍牙都能裝）、移除程式、函式庫原始碼、說明書 `EXP6_Library_Manual.pdf`、`examples/` 10 支；[互動教學](/learn/exp6/robot-inventor.html)） | 2026-11-05 | EXP6 韌體 2026-11-03 以後 | 2.1 MB | 2026-11-05 |
+| [MBC_Servo6_Pybricks_Lib.zip](/downloads/MBC_Servo6_Pybricks_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | MBC Servo6 舵機擴充器（適用 SPIKE™）：Pybricks 函式庫 — 搭配 2026-10 以前韌體 | 1.0 | Servo6 | 8.7 KB | 2026-10-21 |
+| [MBC_Servo6_Official_App_Lib.zip](/downloads/MBC_Servo6_Official_App_Lib.zip) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | MBC Servo6 舵機擴充器（適用 SPIKE™）：官方 SPIKE App 函式庫 — 搭配 2026-10 以前韌體 | 1.0 | Servo6 | 5.3 KB | 2026-10-21 |
 | [line8_pybricks_spike_v4.x.zip](/examples/line8/line8_pybricks_spike_v4.x.zip) | 循行者 8 路：SPIKE Pybricks 函式庫與範例（`MBC_sensors.py`、`MBC_line8_obj_Lib.py`＋積木／Python 各 2 支） | 4.x | Pybricks 4.1 | 31 KB | 2026-10-25 |
 | [MBC_TOF8_Pybricks_Lib.zip](/downloads/MBC_TOF8_Pybricks_Lib.zip) | 測距者 8 路 TOF8：SPIKE Pybricks 函式庫（`MBC_sensors.py`、`MBC_laser8_obj_Lib.py`） | 1.0 | Pybricks 4.1 | 21 KB | 2026-10-25 |
 | [MBC_Pro_Sensors_mBlock5_v1.0.0.mext](/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext) <span style="display:inline-block;background:#666;color:#fff;font-size:0.75em;padding:1px 8px;border-radius:10px;vertical-align:middle;">舊版</span> | mBlock 5 擴展 v1.0.0（舊版，15 顆積木）— 搭配 2026-10 以前韌體 | 1.0.0 | mBlock v1（2026-10 前） | 1.9 MB | 2026-10-21 |
@@ -67,7 +67,7 @@ MATRIX 用原廠顏色感應器積木（0x22）讀，不用下載任何東西。
 | 掌控者 PS4／PS5 | [ps4_arduino_examples.zip](/examples/ps4/arduino/ps4_arduino_examples.zip) | [ps4_arduino_examples_en.zip](/examples/ps4/arduino-en/ps4_arduino_examples_en.zip) |
 | IMU 陀螺儀 | [imu_arduino_examples.zip](/examples/imu/arduino/imu_arduino_examples.zip) | [imu_arduino_examples_en.zip](/examples/imu/arduino-en/imu_arduino_examples_en.zip) |
 | 神攝手（I2C，韌體 v1 尚未上機驗證） | [unicam_arduino_examples.zip](/examples/unicam/arduino/unicam_arduino_examples.zip) | [unicam_arduino_examples_en.zip](/examples/unicam/arduino-en/unicam_arduino_examples_en.zip) |
-| SPIKE 6 路擴充器 EXP6（UART，開發與驗證中，尚未支援） | [exp6_arduino_examples.zip](/examples/exp6/arduino/exp6_arduino_examples.zip) | [exp6_arduino_examples_en.zip](/examples/exp6/arduino-en/exp6_arduino_examples_en.zip) |
+| MBC EXP6 六路馬達擴充器（適用 SPIKE™）（UART，開發與驗證中，尚未支援） | [exp6_arduino_examples.zip](/examples/exp6/arduino/exp6_arduino_examples.zip) | [exp6_arduino_examples_en.zip](/examples/exp6/arduino-en/exp6_arduino_examples_en.zip) |
 | 通用 I2C 小工具（掃位址、讀版本） | [i2c_arduino_examples.zip](/examples/i2c/arduino/i2c_arduino_examples.zip) | — |
 
 每支範例的逐行說明在各產品的「Arduino 範例」頁，從 [🔰 第一次用 Arduino](/sensors/arduino-start.md) 開始。[神攝手舊版（停止支援）](/sensors/esp32cam/index.md)的範例與函式庫集中在舊版總覽頁。
@@ -114,7 +114,7 @@ SPIKE 官方 App（.llsp3）、MBC 積木網站（.abp）與 EV3 官方軟體（
 | 掌控者 PS4／PS5 | [頁面](/sensors/ps4/spike-examples.md) | [頁面](/sensors/ps4/ev3-examples.md) |
 | IMU 陀螺儀 | — | [頁面](/sensors/imu/ev3-examples.md) |
 | 神攝手 | [頁面](/sensors/unicam/spike-examples.md) | [頁面](/sensors/unicam/ev3-examples.md) |
-| SPIKE 6 路擴充器 EXP6 | [頁面](/sensors/exp6/spike-examples.md) | — |
+| MBC EXP6 六路馬達擴充器（適用 SPIKE™） | [頁面](/sensors/exp6/spike-examples.md) | — |
 
 ## 📄 型錄與說明書
 

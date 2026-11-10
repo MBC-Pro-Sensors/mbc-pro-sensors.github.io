@@ -29,7 +29,7 @@ SPIKE Prime 主機只有 6 個孔。兩顆驅動馬達、一兩個手臂馬達�
 
 ## 解法 3：用擴充器，一個孔接出 6 路
 
-[SPIKE 6 路擴充器（EXP6）](/sensors/exp6/index.md) 接在主機的一個孔上，就能再接 **6 個 SPIKE 馬達或感應器**。擴充器有自己的電源，馬達的 PID 控制也由擴充器自己運算，不會拖慢主機。
+[MBC EXP6 六路馬達擴充器（適用 SPIKE™）](/sensors/exp6/index.md) 接在主機的一個孔上，就能再接 **6 個 SPIKE 馬達或感應器**。擴充器有自己的電源，馬達的 PID 控制也由擴充器自己運算，不會拖慢主機。
 
 - **優點：** 一次多出 5 個孔，馬達、顏色、超音波、力量感應器都能接。
 - **注意：** 目前**僅支援 SPIKE Prime**；官方 App 需使用 Python 文字模式，也支援 Pybricks。
@@ -61,6 +61,6 @@ SPIKE Prime 主機只有 6 個孔。兩顆驅動馬達、一兩個手臂馬達�
 
 ## 延伸閱讀
 
-- [SPIKE 6 路擴充器（EXP6）產品介紹](/sensors/exp6/index.md)
+- [MBC EXP6 六路馬達擴充器（適用 SPIKE™）產品介紹](/sensors/exp6/index.md)
 - [選購指南：依主機挑選產品](/guide.md)
 - [循線一加速就抖、過彎就脫線？5 個原因與解法](/articles/spike-line-following-wobble.md)

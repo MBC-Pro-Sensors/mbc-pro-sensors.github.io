@@ -1,5 +1,5 @@
 /*
- * SPIKE 6-Way Expander EXP6 x Arduino   Example 2: Make the motor run
+ * MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) x Arduino   Example 2: Make the motor run
  * ------------------------------------------------------------
  * What does this example do?
  *   The motor on port 1 does "forward 3 s -> brake -> backward 3 s -> coast to a stop", again and again.

@@ -13,9 +13,9 @@ Each product has one reference page listing how every value is read on the six h
 | [Controller 2.4G (PS2)](/en/sensors/ps2/reference.md) | `0x42` | [SPIKE](/en/sensors/ps2/reference.md) | [EV3](/en/sensors/ps2/reference.md) | [Arduino I2C](/en/sensors/ps2/arduino-i2c.md) | [mBlock](/en/sensors/ps2/mblock.md) | [MATRIX](/en/sensors/ps2/matrix.md) | [micro:bit](/en/sensors/ps2/microbit.md) |
 | [Controller PS4/PS5](/en/sensors/ps4/reference.md) | `0x42` | [SPIKE](/en/sensors/ps4/reference.md) | [EV3](/en/sensors/ps4/reference.md) | [Arduino I2C](/en/sensors/ps4/arduino-i2c.md) | [mBlock](/en/sensors/ps4/mblock.md) | [MATRIX](/en/sensors/ps4/matrix.md) | [micro:bit](/en/sensors/ps4/microbit.md) |
 | [SharpShot Vision](/en/sensors/unicam/reference.md) | — | [SPIKE](/en/sensors/unicam/reference.md) | [EV3](/en/sensors/unicam/reference.md) | [Arduino I2C](/en/sensors/unicam/reference.md) | [mBlock](/en/sensors/unicam/reference.md) | [MATRIX](/en/sensors/unicam/reference.md) | [micro:bit](/en/sensors/unicam/reference.md) |
-| [SPIKE 6-Way Expander (EXP6)](/en/sensors/exp6/index.md) | — | [SPIKE](/en/sensors/exp6/spike-pybricks.md) | — | — | — | — | — |
+| [MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™)](/en/sensors/exp6/index.md) | — | [SPIKE](/en/sensors/exp6/spike-pybricks.md) | — | — | — | — | — |
 | [IMU 9-Axis Gyro](/en/sensors/imu/reference.md) | `0x6A` | — | [EV3](/en/sensors/imu/reference.md) | [Arduino I2C](/en/sensors/imu/arduino-i2c.md) | [mBlock](/en/sensors/imu/mblock.md) | [MATRIX](/en/sensors/imu/matrix.md) | [micro:bit](/en/sensors/imu/microbit.md) |
-| [SPIKE 6-Port Servo Expander (Servo6)](/en/sensors/servo6/index.md) | — | [SPIKE](/en/sensors/servo6/spike-pybricks.md) | — | — | — | — | — |
+| [MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™)](/en/sensors/servo6/index.md) | — | [SPIKE](/en/sensors/servo6/spike-pybricks.md) | — | — | — | — | — |
 | [Long-Range Colour Sensor OV3660](/en/sensors/ov3660/index.md) | — | — | — | — | — | — | — |
 
 ## Shared rules

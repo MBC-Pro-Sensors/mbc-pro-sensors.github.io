@@ -4,8 +4,8 @@
     {
       "out": "/downloads/MBC_EXP6_Pybricks_Lib.zip",
       "label": {
-        "zh": "SPIKE 6 路擴充器 EXP6：Pybricks 函式庫＋範例（含積木範例）",
-        "en": "EXP6 expander: Pybricks library + examples (incl. block examples)"
+        "zh": "MBC EXP6 六路馬達擴充器（適用 SPIKE™）：Pybricks 函式庫＋範例（含積木範例）",
+        "en": "MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™): Pybricks library + examples (incl. block examples)"
       },
       "version": "2026-11-04",
       "firmware": "EXP6 2026-11-03+",
@@ -48,8 +48,8 @@
     {
       "out": "/downloads/MBC_EXP6_Official_App_Lib.zip",
       "label": {
-        "zh": "SPIKE 6 路擴充器 EXP6：官方 SPIKE App 函式庫＋範例",
-        "en": "EXP6 expander: official SPIKE App library + examples"
+        "zh": "MBC EXP6 六路馬達擴充器（適用 SPIKE™）：官方 SPIKE App 函式庫＋範例",
+        "en": "MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™): official SPIKE App library + examples"
       },
       "version": "2026-11-05",
       "firmware": "EXP6 2026-11-03+",
@@ -75,8 +75,8 @@
     {
       "out": "/downloads/MBC_EXP6_Robot_Inventor_Lib.zip",
       "label": {
-        "zh": "SPIKE 6 路擴充器 EXP6：Robot Inventor（51515）App 函式庫＋範例",
-        "en": "EXP6 expander: Robot Inventor (51515) App library + examples"
+        "zh": "MBC EXP6 六路馬達擴充器（適用 SPIKE™）：Robot Inventor（51515）App 函式庫＋範例",
+        "en": "MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™): Robot Inventor (51515) App library + examples"
       },
       "version": "2026-11-05",
       "firmware": "EXP6 2026-11-03+",
@@ -102,8 +102,8 @@
     {
       "out": "/downloads/MBC_Servo6_Pybricks_Lib.zip",
       "label": {
-        "zh": "SPIKE 6 路舵機擴充器 Servo6：Pybricks 函式庫",
-        "en": "Servo6 expander: Pybricks library"
+        "zh": "MBC Servo6 舵機擴充器（適用 SPIKE™）：Pybricks 函式庫",
+        "en": "MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™): Pybricks library"
       },
       "version": "1.0",
       "firmware": "Servo6",
@@ -114,8 +114,8 @@
     {
       "out": "/downloads/MBC_Servo6_Official_App_Lib.zip",
       "label": {
-        "zh": "SPIKE 6 路舵機擴充器 Servo6：官方 SPIKE App 函式庫",
-        "en": "Servo6 expander: official SPIKE App library"
+        "zh": "MBC Servo6 舵機擴充器（適用 SPIKE™）：官方 SPIKE App 函式庫",
+        "en": "MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™): official SPIKE App library"
       },
       "version": "1.0",
       "firmware": "Servo6",

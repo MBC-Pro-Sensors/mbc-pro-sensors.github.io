@@ -1170,8 +1170,8 @@
       ]
     },
     "name": {
-      "zh": "SPIKE 6 路擴充器 (EXP6)",
-      "en": "SPIKE 6-Way Expander (EXP6)"
+      "zh": "MBC EXP6 六路馬達擴充器（適用 SPIKE™）",
+      "en": "MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™)"
     },
     "routes": {
       "spike": {
@@ -1384,8 +1384,8 @@
       ]
     },
     "name": {
-      "zh": "SPIKE 6 路舵機擴充器 (Servo6)",
-      "en": "SPIKE 6-Port Servo Expander (Servo6)"
+      "zh": "MBC Servo6 舵機擴充器（適用 SPIKE™）",
+      "en": "MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™)"
     },
     "routes": {
       "spike": {

@@ -1,5 +1,5 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-# SPIKE 6-Way Expander (EXP6)
+# MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™)
 
 <!-- product-hero -->
 
@@ -17,7 +17,7 @@
 
 The SPIKE Prime hub only has 6 connection ports, but advanced robotics projects often require multiple sensors and motors simultaneously, making the ports insufficient.
 
-The **SPIKE 6-Way Expander (EXP6)** allows you to connect up to 6 sensors or motors using just a single port. It is not just a "splitter", but a **"smart controller"** with a built-in high-performance processor. It can independently calculate PID angle control for motors, significantly reducing the computing load on the SPIKE hub; more importantly, this product features an **independent isolated power supply system**. The large current required by the motors will not be drawn from the main hub, **completely eliminating the fatal flaw of hub crashes or burnouts caused by motor power consumption!**
+The **MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™)** allows you to connect up to 6 sensors or motors using just a single port. It is not just a "splitter", but a **"smart controller"** with a built-in high-performance processor. It can independently calculate PID angle control for motors, significantly reducing the computing load on the SPIKE hub; more importantly, this product features an **independent isolated power supply system**. The large current required by the motors will not be drawn from the main hub, **completely eliminating the fatal flaw of hub crashes or burnouts caused by motor power consumption!**
 
 ## 🧠 Core Hardware Features
 

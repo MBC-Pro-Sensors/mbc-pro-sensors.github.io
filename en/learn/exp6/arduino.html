@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/exp6/arduino.html">
 <link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/exp6/arduino.html">
 <link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/exp6/arduino.html">
-<title>SPIKE 6-Way Expander (EXP6) Arduino Tutorial | MBC-Pro Sensors</title>
+<title>MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) Arduino Tutorial | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -236,7 +236,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 <div class="exp6-arduino-dev" role="alert" style="margin:16px auto;max-width:1100px;padding:14px 18px;border:2px solid #d97706;border-radius:10px;background:#fff7ed;color:#7c2d12;font-weight:600;line-height:1.6">⚠ EXP6 × Arduino (UART): Under development — not yet supported. This page is kept for reference while we develop and test it; for now please use the EXP6 with SPIKE Prime or Robot Inventor.</div>
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">MBC SPIKE 6-Way Expander (EXP6) × Arduino</span>
+    <span class="eyebrow">MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) × Arduino</span>
     <h1>Control EXP6 with Arduino in three steps</h1>
     <p class="lead">An Arduino program goes in this order. First <b>pick your board, wire it up and paste the Communication helpers</b>. Then, in <code>setup()</code>, <b>wake EXP6 up</b> with <code>exp6Begin()</code>. Last, in <code>loop()</code>, <b>send commands and read values</b> (run motors, read angles, read sensors). EXP6 uses a <b>UART serial port</b>, not I2C. Follow the steps on the left, and the program on the right grows with you. Choose what is plugged into each port of the simulated EXP6 to see how the motors turn and what the Serial Monitor shows.</p>
   </header>

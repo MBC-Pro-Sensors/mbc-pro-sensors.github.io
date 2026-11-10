@@ -26,9 +26,9 @@ Not every robotics competition allows third-party sensors. This page lists compe
 | [JBC](#jbc-junior-botball-challenge-taiwan) | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
 | [FLL Challenge](#competitions-where-mbc-sensors-cannot-be-used) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
-¹ One camera per robot　² Cameras in Junior and Senior only　³ For remote-control events　Servo6 = SPIKE 6-Port Servo Expander (coming soon; treated like EXP6: a programmable expansion device, servos count as motors)　⁴ Ranger 8-Way: Elementary and Junior teams should check with the organizer first
+¹ One camera per robot　² Cameras in Junior and Senior only　³ For remote-control events　Servo6 = MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™) (coming soon; treated like EXP6: a programmable expansion device, servos count as motors)　⁴ Ranger 8-Way: Elementary and Junior teams should check with the organizer first
 
-Pathfinder = 8 / 16-way line sensor, Ranger = 2 / 8-way laser ranging, Vision = SharpShot Vision camera sensor, EXP6 = SPIKE 6-Way Expander (SPIKE™ Prime; Robot Inventor with App Python only), Controller = PS4/PS5 receiver.
+Pathfinder = 8 / 16-way line sensor, Ranger = 2 / 8-way laser ranging, Vision = SharpShot Vision camera sensor, EXP6 = MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™ Prime; Robot Inventor with App Python only), Controller = PS4/PS5 receiver.
 
 ## Worldwide
 

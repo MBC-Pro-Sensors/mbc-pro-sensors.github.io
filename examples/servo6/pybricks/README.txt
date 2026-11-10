@@ -1,4 +1,4 @@
-MBC SPIKE 6-Port Servo Expander (Servo6) - Pybricks library
+MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™) - Pybricks library
 https://mbc-pro-sensors.github.io/sensors/servo6/spike-pybricks.html
 
 MBC_servo6_Lib.py : put it in your Pybricks project next to the main program

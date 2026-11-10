@@ -1,5 +1,5 @@
 /*
- * SPIKE 6-Way Expander EXP6 x Arduino   Example 1: Say hello to EXP6
+ * MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) x Arduino   Example 1: Say hello to EXP6
  * ------------------------------------------------------------
  * What does this example do?
  *   It checks that Arduino and EXP6 are connected well. If they are, once every second it prints:

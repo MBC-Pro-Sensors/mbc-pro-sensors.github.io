@@ -109,6 +109,6 @@ Arduino 沒有螢幕，範例會把感應器讀到的東西「印」到電腦上
 | 掌控者 PS2 | [Arduino 範例](/sensors/ps2/arduino-examples.md) |
 | 掌控者 PS4/PS5 | [Arduino 範例](/sensors/ps4/arduino-examples.md) |
 | 陀螺儀 IMU | [Arduino 範例](/sensors/imu/arduino-examples.md) |
-| SPIKE 6 路擴充器 | [Arduino 範例](/sensors/exp6/arduino-examples.md)（這款用序列埠接線，跟上面第 3 步不同，請看範例頁） |
+| MBC EXP6 六路馬達擴充器（適用 SPIKE™） | [Arduino 範例](/sensors/exp6/arduino-examples.md)（這款用序列埠接線，跟上面第 3 步不同，請看範例頁） |
 
 想知道所有 MBC 產品共用的通訊規則（給會寫程式的人看），請看 [MBC 通用 I2C 協議](/i2c-protocol.md)。

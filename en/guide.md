@@ -20,9 +20,9 @@ Pick your product and controller to go straight to setup steps, blocks and examp
 | [Controller 2.4G (PS2)](/en/sensors/ps2/index.md) | [Official LEGO App](/en/sensors/ps2/spike/official.md)・[MBC Blocks website](/en/sensors/ps2/spike/mbcblocks.md)・[Pybricks](/en/sensors/ps2/spike/pybricks.md) | [EV3-G](/en/sensors/ps2/ev3/ev3g.md)・[EV3 Classroom](/en/sensors/ps2/ev3/classroom.md)・[Pybricks](/en/sensors/ps2/ev3/pybricks.md)・[clev3r](/en/sensors/ps2/ev3/clev3r.md) | [Arduino IDE](/en/sensors/ps2/arduino/ide.md) | [mBlock 5](/en/sensors/ps2/mblock/mblock5.md) | [MATRIXblock stock blocks](/en/sensors/ps2/matrix/matrixblock.md) | [MakeCode](/en/sensors/ps2/microbit/makecode.md) |
 | [Controller PS4/PS5](/en/sensors/ps4/index.md) | [Official LEGO App](/en/sensors/ps4/spike/official.md)・[MBC Blocks website](/en/sensors/ps4/spike/mbcblocks.md)・[Pybricks](/en/sensors/ps4/spike/pybricks.md) | [EV3-G](/en/sensors/ps4/ev3/ev3g.md)・[EV3 Classroom](/en/sensors/ps4/ev3/classroom.md)・[Pybricks](/en/sensors/ps4/ev3/pybricks.md)・[clev3r](/en/sensors/ps4/ev3/clev3r.md) | [Arduino IDE](/en/sensors/ps4/arduino/ide.md) | [mBlock 5](/en/sensors/ps4/mblock/mblock5.md) | [MATRIXblock stock blocks](/en/sensors/ps4/matrix/matrixblock.md) | [MakeCode](/en/sensors/ps4/microbit/makecode.md) |
 | [SharpShot Vision](/en/sensors/unicam/index.md) | [Guide](/en/sensors/unicam/spike/index.md) | [Guide](/en/sensors/unicam/ev3/index.md) | [Guide](/en/sensors/unicam/arduino/index.md) | [Guide](/en/sensors/unicam/mblock/index.md) | [Guide](/en/sensors/unicam/matrix/mvision.md) | [Guide](/en/sensors/unicam/microbit/index.md) |
-| [SPIKE 6-Way Expander (EXP6)](/en/sensors/exp6/index.md) | [Official LEGO App](/en/sensors/exp6/spike/official.md)・[MBC Blocks website](/en/sensors/exp6/spike/mbcblocks.md)・[Pybricks](/en/sensors/exp6/spike/pybricks.md) | — | — | — | — | — |
+| [MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™)](/en/sensors/exp6/index.md) | [Official LEGO App](/en/sensors/exp6/spike/official.md)・[MBC Blocks website](/en/sensors/exp6/spike/mbcblocks.md)・[Pybricks](/en/sensors/exp6/spike/pybricks.md) | — | — | — | — | — |
 | [IMU 9-Axis Gyro](/en/sensors/imu/index.md) | — | [EV3-G](/en/sensors/imu/ev3/ev3g.md)・[EV3 Classroom](/en/sensors/imu/ev3/classroom.md)・[Pybricks](/en/sensors/imu/ev3/pybricks.md)・[clev3r](/en/sensors/imu/ev3/clev3r.md) | [Arduino IDE](/en/sensors/imu/arduino/ide.md) | [mBlock 5](/en/sensors/imu/mblock/mblock5.md) | [MATRIXblock stock blocks](/en/sensors/imu/matrix/matrixblock.md) | [MakeCode](/en/sensors/imu/microbit/makecode.md) |
-| [SPIKE 6-Port Servo Expander (Servo6)](/en/sensors/servo6/index.md) | [Official LEGO App](/en/sensors/servo6/spike/official.md)・[Pybricks](/en/sensors/servo6/spike/pybricks.md) | — | — | — | — | — |
+| [MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™)](/en/sensors/servo6/index.md) | [Official LEGO App](/en/sensors/servo6/spike/official.md)・[Pybricks](/en/sensors/servo6/spike/pybricks.md) | — | — | — | — | — |
 | [Long-Range Colour Sensor OV3660](/en/sensors/ov3660/index.md) | — | — | — | — | — | — |
 <!-- /gen -->
 
@@ -47,8 +47,8 @@ Pick your product and controller to go straight to setup steps, blocks and examp
 | [Pathfinder 16-Way](/en/sensors/line16/index.md) | Fast lines, intersections | Official app blocks, Pybricks |
 | [Ranger 2-Way](/en/sensors/tof2/index.md) | Left/right ranging | |
 | [Ranger 8-Way](/en/sensors/tof8/index.md) | 180° avoidance, sumo | |
-| [SPIKE 6-Way Expander](/en/sensors/exp6/index.md) | More ports | **SPIKE Prime only**; official app requires Python text mode |
-| [SPIKE 6-Port Servo Expander](/en/sensors/servo6/index.md) (coming soon) | Servos on your robot (gripper, turntable, arm) | **SPIKE Prime only**; servos powered by the hub, no battery |
+| [MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™)](/en/sensors/exp6/index.md) | More ports | **SPIKE Prime only**; official app requires Python text mode |
+| [MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™)](/en/sensors/servo6/index.md) (coming soon) | Servos on your robot (gripper, turntable, arm) | **SPIKE Prime only**; servos powered by the hub, no battery |
 | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bluetooth gamepad control | Best for big events |
 | [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad control | Classes, projects |
 | [SharpShot Vision](/en/sensors/unicam/index.md) | Multi-color tracking, color at points, color order, line following | Official app, Pybricks |
@@ -112,8 +112,8 @@ Works with mBot, mBot Ranger, Orion and Ultimate 2.0 (MegaPi). Choose the MakeBl
 | Take fast turns and many intersections | [Pathfinder 16-Way](/en/sensors/line16/index.md) | 16-channel wide view reads turns and junctions at once |
 | Detect obstacles left and right | [Ranger 2-Way](/en/sensors/tof2/index.md) | Two laser points, small and fast |
 | Sumo, all-round avoidance | [Ranger 8-Way](/en/sensors/tof8/index.md) | 180° in one read, reports the nearest target's direction |
-| Get more ports on SPIKE | [SPIKE 6-Way Expander](/en/sensors/exp6/index.md) | Six channels from one port, own power |
-| Use servos with SPIKE | [SPIKE 6-Port Servo Expander](/en/sensors/servo6/index.md) | Six servos from one port, hub-powered (coming soon) |
+| Get more ports on SPIKE | [MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™)](/en/sensors/exp6/index.md) | Six channels from one port, own power |
+| Use servos with SPIKE | [MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™)](/en/sensors/servo6/index.md) | Six servos from one port, hub-powered (coming soon) |
 | Remote control at crowded events | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bonds to your gamepad only, stops on signal loss |
 | Remote control for classes on a budget | [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad, best value |
 | Track colors, find objects, sample points, sequences and lines | [SharpShot Vision](/en/sensors/unicam/index.md) | 5 camera modes switched in its menu (including object detection: color + shape), hardware-verified on SPIKE and EV3 (Arduino, mBlock, MATRIX and micro:bit editions not yet hardware-verified) |

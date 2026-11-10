@@ -1,5 +1,5 @@
 /*
- * SPIKE 6-Way Expander EXP6 x Arduino   Example 5: Read the sensors
+ * MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) x Arduino   Example 5: Read the sensors
  * ------------------------------------------------------------
  * What does this example do?
  *   EXP6 finds out by itself which sensor is on each port. This example prints all their values:

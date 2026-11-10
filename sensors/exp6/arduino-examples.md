@@ -1,8 +1,8 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- moved: /sensors/exp6/index.md -->
-<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/exp6/index.md">SPIKE 6 路擴充器</a></p>
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/exp6/index.md">MBC EXP6 六路馬達擴充器</a></p>
 
-# 🧪 SPIKE 六路馬達擴充器 EXP6 × Arduino 範例
+# 🧪 MBC EXP6 六路馬達擴充器（適用 SPIKE™） × Arduino 範例
 
 > [!WARNING]
 > **EXP6 × Arduino（UART）開發與驗證中，尚未支援。** 這頁先保留給參考，請先用 [SPIKE Prime 或 Robot Inventor](/sensors/exp6/index.md) 主機。
@@ -105,7 +105,7 @@ EXP6 有一隻「看門狗」：**超過 0.5 秒沒收到 Arduino 的任何指�
 <!-- ino: examples/exp6/arduino/exp6_01_hello/exp6_01_hello.ino -->
 ```cpp
 /*
- * SPIKE 六路馬達擴充器 EXP6 × Arduino　範例 1：跟 EXP6 打招呼
+ * MBC EXP6 六路馬達擴充器（適用 SPIKE™） × Arduino　範例 1：跟 EXP6 打招呼
  * ------------------------------------------------------------
  * 這個範例會做什麼？
  *   確認 Arduino 跟 EXP6 有沒有接好。接好了，每秒會印出一次：
@@ -359,7 +359,7 @@ bool exp6WaitDevice(uint8_t port, uint8_t kind, uint16_t timeoutMs) {
 <!-- ino: examples/exp6/arduino/exp6_02_motor_run/exp6_02_motor_run.ino -->
 ```cpp
 /*
- * SPIKE 六路馬達擴充器 EXP6 × Arduino　範例 2：馬達轉起來
+ * MBC EXP6 六路馬達擴充器（適用 SPIKE™） × Arduino　範例 2：馬達轉起來
  * ------------------------------------------------------------
  * 這個範例會做什麼？
  *   讓第 1 埠的馬達「正轉 3 秒 → 煞車 → 反轉 3 秒 → 滑行停下」，一直重複。
@@ -649,7 +649,7 @@ bool exp6WaitDevice(uint8_t port, uint8_t kind, uint16_t timeoutMs) {
 <!-- ino: examples/exp6/arduino/exp6_03_motor_degrees/exp6_03_motor_degrees.ino -->
 ```cpp
 /*
- * SPIKE 六路馬達擴充器 EXP6 × Arduino　範例 3：轉指定角度
+ * MBC EXP6 六路馬達擴充器（適用 SPIKE™） × Arduino　範例 3：轉指定角度
  * ------------------------------------------------------------
  * 這個範例會做什麼？
  *   讓第 1 埠的馬達：轉 90 度 → 轉回來 → 轉一整圈 → 轉到馬達上的「0 度記號」，
@@ -955,7 +955,7 @@ bool exp6WaitDevice(uint8_t port, uint8_t kind, uint16_t timeoutMs) {
 <!-- ino: examples/exp6/arduino/exp6_04_read_angle/exp6_04_read_angle.ino -->
 ```cpp
 /*
- * SPIKE 六路馬達擴充器 EXP6 × Arduino　範例 4：讀馬達角度
+ * MBC EXP6 六路馬達擴充器（適用 SPIKE™） × Arduino　範例 4：讀馬達角度
  * ------------------------------------------------------------
  * 這個範例會做什麼？
  *   馬達不只會轉，還是一個很準的「角度感應器」。
@@ -1207,7 +1207,7 @@ bool exp6WaitDevice(uint8_t port, uint8_t kind, uint16_t timeoutMs) {
 <!-- ino: examples/exp6/arduino/exp6_05_sensors/exp6_05_sensors.ino -->
 ```cpp
 /*
- * SPIKE 六路馬達擴充器 EXP6 × Arduino　範例 5：讀感應器
+ * MBC EXP6 六路馬達擴充器（適用 SPIKE™） × Arduino　範例 5：讀感應器
  * ------------------------------------------------------------
  * 這個範例會做什麼？
  *   EXP6 會自動認出每一埠接的是什麼感應器，這個範例把它們的數值都印出來：
@@ -1517,7 +1517,7 @@ bool exp6WaitDevice(uint8_t port, uint8_t kind, uint16_t timeoutMs) {
 <!-- ino: examples/exp6/arduino/exp6_06_drive_car/exp6_06_drive_car.ino -->
 ```cpp
 /*
- * SPIKE 六路馬達擴充器 EXP6 × Arduino　範例 6（進階）：兩輪小車
+ * MBC EXP6 六路馬達擴充器（適用 SPIKE™） × Arduino　範例 6（進階）：兩輪小車
  * ------------------------------------------------------------
  * 這個範例會做什麼？
  *   用 2 顆 SPIKE 馬達當小車的左右輪，照順序：

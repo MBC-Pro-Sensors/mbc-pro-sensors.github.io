@@ -195,7 +195,7 @@ One page per product lists the blocks it uses, the matching I2C value ids and th
 | SharpShot Vision legacy (no longer supported) | [esp32cam × micro:bit](/en/sensors/esp32cam/microbit.md) | [examples](/en/sensors/esp32cam/microbit-examples.md) |
 
 > [!NOTE]
-> The SPIKE 6-way expander (EXP6) uses UART and is not part of this extension; the Servo6 has no micro:bit edition.
+> The MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) uses UART and is not part of this extension; the Servo6 has no micro:bit edition.
 
 ## 💻 JavaScript
 

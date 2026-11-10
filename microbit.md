@@ -195,7 +195,7 @@ micro:bit 的 I2C 腳位是固定的：**P19 = SCL、P20 = SDA**（金手指邊�
 | 神攝手舊版（停止支援） | [esp32cam × micro:bit](/sensors/esp32cam/microbit.md) | [範例](/sensors/esp32cam/microbit-examples.md) |
 
 > [!NOTE]
-> SPIKE 6 路擴充器（EXP6）走 UART，不在這個擴充裡；Servo6 沒有 micro:bit 版。
+> MBC EXP6 六路馬達擴充器（適用 SPIKE™）走 UART，不在這個擴充裡；Servo6 沒有 micro:bit 版。
 
 ## 💻 JavaScript 寫法
 

@@ -24,7 +24,7 @@ No. MBC sensors use the same connectors and communication protocols as the LEGO�
 
 No. Each product comes in controller-specific editions with different connectors and protocols. Please confirm your controller model before ordering. The [Buying Guide](/en/guide.md) lists which edition you need.
 
-### Does the SPIKE 6-Way Expander (EXP6) work with SPIKE word blocks?
+### Does the MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) work with SPIKE word blocks?
 
 No. In the official app it requires **Python text mode**. The EXP6 works with **SPIKE™ Prime**, and with Robot Inventor (51515) through Python in the Robot Inventor App; not EV3. it is also fully supported in Pybricks. See the [EXP6 page](/en/sensors/exp6/index.md).
 
@@ -85,7 +85,7 @@ Manufacturer's suggested retail prices (MSRP) in US dollars, shipping not includ
 | Ranger 2-Way (TOF2) | 60 |
 | Ranger 8-Way (TOF8) | 120 |
 | SharpShot Vision | 120 |
-| SPIKE 6-Way Expander (EXP6) | 145 |
+| MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) | 145 |
 | Controller PS4/PS5 | 100 |
 | IMU 9-Axis Gyro | 100 |
 

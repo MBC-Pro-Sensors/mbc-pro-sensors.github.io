@@ -74,12 +74,12 @@
 <a class="lp-prod" href="/sensors/line16/index.md" style="--pc:#ff6b35;"><img src="/images/sensors/line16/line16-product-spike.webp" alt="循行者 16 路"><span class="lp-cat">循線</span><h3>循行者 16 路 (Line16)</h3><p>16 通道超寬視野，高速急彎與十字路口一次判斷，只佔 1 個孔。</p><p class="lp-price">建議售價 NT$3,000</p><span class="lp-more">了解更多 →</span></a>
 <a class="lp-prod" href="/sensors/tof8/index.md" style="--pc:#0ABAB5;"><img src="/images/sensors/tof8/tof8-product.webp" alt="測距者 8 路"><span class="lp-cat">雷射測距</span><h3>測距者 8 路 (TOF8)</h3><p>8 點雷射涵蓋前方 180°，直接回報最近目標的方向與距離。</p><p class="lp-price">建議售價 NT$3,000</p><span class="lp-more">了解更多 →</span></a>
 <a class="lp-prod" href="/sensors/tof2/index.md" style="--pc:#0ABAB5;"><img src="/images/sensors/tof2/tof2-product.webp" alt="測距者 2 路"><span class="lp-cat">雷射測距</span><h3>測距者 2 路 (TOF2)</h3><p>左右雙點雷射測距，比超音波更快、更小，判斷物體離開方向。</p><p class="lp-price">建議售價 NT$1,500</p><span class="lp-more">了解更多 →</span></a>
-<a class="lp-prod" href="/sensors/exp6/index.md" style="--pc:#00d2ff;"><img src="/images/sensors/exp6/exp6-product.webp" alt="SPIKE 6 路擴充器"><span class="lp-cat">擴充模組</span><h3>SPIKE 6 路擴充器 (EXP6)</h3><p>一個孔接出 6 路馬達與感應器，獨立供電，板載馬達 PID。</p><p class="lp-price">建議售價 NT$3,600</p><span class="lp-more">了解更多 →</span></a>
+<a class="lp-prod" href="/sensors/exp6/index.md" style="--pc:#00d2ff;"><img src="/images/sensors/exp6/exp6-product.webp" alt="MBC EXP6 六路馬達擴充器（適用 SPIKE™）"><span class="lp-cat">擴充模組</span><h3>MBC EXP6 六路馬達擴充器（適用 SPIKE™）</h3><p>一個孔接出 6 路馬達與感應器，獨立供電，板載馬達 PID。</p><p class="lp-price">建議售價 NT$3,600</p><span class="lp-more">了解更多 →</span></a>
 <a class="lp-prod" href="/sensors/ps4/index.md" style="--pc:#F2C200;"><img src="/images/sensors/ps4/ps4-product.webp" alt="掌控者 PS4/PS5"><span class="lp-cat">遙控</span><h3>掌控者 PS4/PS5</h3><p>PS4、PS5 手把都能用，只綁定你的手把，斷訊自動停車。</p><p class="lp-price">建議售價 NT$2,500</p><span class="lp-more">了解更多 →</span></a>
 <a class="lp-prod" href="/sensors/ps2/index.md" style="--pc:#F2C200;"><img src="/images/sensors/ps2/ps2-product.webp" alt="掌控者 PS2"><span class="lp-cat">遙控</span><h3>掌控者 2.4G (PS2)</h3><p>PS2 無線手把，雙搖桿加 16 鍵，教學與專題最划算的選擇。</p><p class="lp-price">建議售價 NT$2,000</p><span class="lp-more">了解更多 →</span></a>
 <a class="lp-prod" href="/sensors/unicam/index.md" style="--pc:#00d2ff;"><img src="/images/sensors/unicam/unicam-product.webp" alt="神攝手"><span class="lp-cat">機器人視覺</span><h3>神攝手</h3><p>攝影機感應器：在相機選單切換顏色追蹤、座標取色、照順序給色號、循線、物體偵測；SPIKE、EV3 已上機驗證。</p><p class="lp-price">建議售價 NT$3,000</p><span class="lp-more">了解更多 →</span></a>
 <a class="lp-prod" href="/sensors/imu/index.md" style="--pc:#a371f7;"><div class="lp-noimg">🧭</div><span class="lp-cat">姿態感測</span><h3>陀螺儀 IMU 九軸</h3><p>任意角度安裝都能算對航向，磁力計融合長距離不飄移。</p><p class="lp-price">預計售價 NT$2,500</p><span class="lp-more">了解更多 →</span></a>
-<a class="lp-prod" href="/sensors/servo6/index.md" style="--pc:#ff9f43;"><div class="lp-noimg">🎛️</div><span class="lp-cat">擴充模組</span><h3>SPIKE 6 路舵機擴充器 <span class="lp-soon">即將推出</span></h3><p>一個孔接 6 顆舵機，角度、速度、電流與堵轉保護都在板上，主機直接供電。</p><p class="lp-price">價格洽詢</p><span class="lp-more">了解更多 →</span></a>
+<a class="lp-prod" href="/sensors/servo6/index.md" style="--pc:#ff9f43;"><div class="lp-noimg">🎛️</div><span class="lp-cat">擴充模組</span><h3>MBC Servo6 舵機擴充器（適用 SPIKE™） <span class="lp-soon">即將推出</span></h3><p>一個孔接 6 顆舵機，角度、速度、電流與堵轉保護都在板上，主機直接供電。</p><p class="lp-price">價格洽詢</p><span class="lp-more">了解更多 →</span></a>
 <a class="lp-prod" href="/sensors/ov3660/index.md" style="--pc:#e84393;"><div class="lp-noimg">🎨</div><span class="lp-cat">機器人視覺</span><h3>遠距離顏色感應器 OV3660 <span class="lp-soon">開發中</span></h3><p>300 萬畫素影像感測器只看畫面中央，遠距離也能穩定判色。</p><p class="lp-price">開發中</p><span class="lp-more">產品預告 →</span></a>
 </div>
 
@@ -129,7 +129,7 @@
 <div class="lp-grid lp-dl">
 <div class="lp-card"><div class="lp-ico">🧩</div><h3>循行者 8 路</h3><p><a href="/examples/line8/spike/line8-demo.llsp3" download>📥 SPIKE App 範例（.llsp3）</a><a href="/examples/line8/line8_pybricks_ev3.zip" download>📥 EV3 Pybricks 程式庫（.zip）</a><a href="/sensors/line8/spike-pybricks.md">📖 SPIKE Pybricks 程式庫與教學</a></p></div>
 <div class="lp-card"><div class="lp-ico">🧩</div><h3>循行者 16 路</h3><p><a href="/examples/line16/spike/line16-demo.llsp3" download>📥 SPIKE App 範例（.llsp3）</a><a href="/examples/line16/line16_pybricks_ev3.zip" download>📥 EV3 Pybricks 程式庫（.zip）</a><a href="/sensors/line16/spike-pybricks.md">📖 SPIKE Pybricks 程式庫與教學</a></p></div>
-<div class="lp-card"><div class="lp-ico">🔌</div><h3>SPIKE 6 路擴充器</h3><p><a href="/downloads/MBC_EXP6_Official_App_Lib.zip" download>📥 官方 SPIKE App 程式庫（.zip）</a><a href="/downloads/MBC_EXP6_Pybricks_Lib.zip" download>📥 Pybricks 程式庫（.zip）</a><a href="/sensors/exp6/index.md">📖 產品介紹與接線</a></p></div>
+<div class="lp-card"><div class="lp-ico">🔌</div><h3>MBC EXP6 六路馬達擴充器（適用 SPIKE™）</h3><p><a href="/downloads/MBC_EXP6_Official_App_Lib.zip" download>📥 官方 SPIKE App 程式庫（.zip）</a><a href="/downloads/MBC_EXP6_Pybricks_Lib.zip" download>📥 Pybricks 程式庫（.zip）</a><a href="/sensors/exp6/index.md">📖 產品介紹與接線</a></p></div>
 <div class="lp-card"><div class="lp-ico">📄</div><h3>產品型錄</h3><p><a href="/downloads/MBC-Pro-Sensors-Catalog-2026-EN.pdf" download>📥 2026 英文產品型錄（PDF，2 MB）</a><a href="/guide.md">🧭 選購指南</a><a href="/guide.md#start">🚀 已經買好？找程式對照表</a></p></div>
 <div class="lp-card"><div class="lp-ico">🤖</div><h3>MakeBlock（mBot）</h3><p><a href="/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext" download>📥 mBlock 5 積木擴展（.mext）</a><a href="/makeblock.md">📖 安裝步驟與可用連接埠</a></p></div>
 </div>
@@ -139,7 +139,7 @@
 <div class="lp-faq">
 <details><summary>為什麼 WRO 選手推薦用 Line8 或 Line16 代替原廠顏色感應器？</summary><p>原廠顏色感應器是單點採樣，視角很窄、容易受場地反光與陰影干擾，高速過彎時機器人容易左右擺頭甚至脫軌。循行者系列有 8 或 16 通道陣列，內建濾波與校準，直接輸出線的位置，只佔 1 個主機孔位就能穩定高速循線。</p></details>
 <details><summary>支援 SPIKE Prime 官方積木嗎？</summary><p>支援。初學者可以直接用官方積木讀取數值；進階使用者可以用 Pybricks（MicroPython）高速讀取完整資料。</p></details>
-<details><summary>SPIKE Prime 孔位不夠接多個馬達和感應器怎麼辦？</summary><p>可以使用 SPIKE 6 路擴充器（EXP6）。EXP6 有獨立隔離電源，一個孔就能外接 6 個馬達或感應器。</p></details>
+<details><summary>SPIKE Prime 孔位不夠接多個馬達和感應器怎麼辦？</summary><p>可以使用 MBC EXP6 六路馬達擴充器（適用 SPIKE™）。EXP6 有獨立隔離電源，一個孔就能外接 6 個馬達或感應器。</p></details>
 <details><summary>我該買 SPIKE 版還是 EV3 版？</summary><p>依你的主機選擇。各版本接頭與通訊方式不同、不能互換。請看 <a href="/guide.md">選購指南</a>，或 LINE 告訴我們你的主機型號，我們幫你確認。</p></details>
 <details><summary>怎麼購買？學校採購有優惠嗎？</summary><p>請透過 LINE（@692vcvuk）或 Email（contactmbcrobot@gmail.com）詢價。學校、社團大量採購與教育機構方案歡迎直接洽詢。</p></details>
 </div>
@@ -154,7 +154,7 @@
 </div>
 
 <div class="lp-footer">
-<div><h3>產品</h3><a href="/sensors/line8/index.md">循行者 8 路</a><a href="/sensors/line16/index.md">循行者 16 路</a><a href="/sensors/tof8/index.md">測距者 8 路</a><a href="/sensors/exp6/index.md">SPIKE 6 路擴充器</a><a href="/sensors/ps4/index.md">掌控者 PS4/PS5</a></div>
+<div><h3>產品</h3><a href="/sensors/line8/index.md">循行者 8 路</a><a href="/sensors/line16/index.md">循行者 16 路</a><a href="/sensors/tof8/index.md">測距者 8 路</a><a href="/sensors/exp6/index.md">MBC EXP6 六路馬達擴充器（適用 SPIKE™）</a><a href="/sensors/ps4/index.md">掌控者 PS4/PS5</a></div>
 <div><h3>技術文件</h3><a href="/sensors/line8/spike-pybricks.md">Line8 Pybricks 教學</a><a href="/sensors/line16/spike-pybricks.md">Line16 Pybricks 教學</a><a href="/sensors/exp6/spike-pybricks.md">EXP6 Pybricks 教學</a><a href="/i2c-protocol.md">通用 I2C 協議</a><a href="/articles/index.md">教學文章</a></div>
 <div><h3>購買</h3><a href="/guide.md">選購指南</a><a href="/competitions.md">比賽對照</a><a href="https://line.me/R/ti/p/@692vcvuk" target="_blank" rel="noopener">LINE：@692vcvuk</a><a href="mailto:contactmbcrobot@gmail.com">contactmbcrobot@gmail.com</a><a href="/contact.md">聯絡我們</a><a href="/privacy.md">隱私權政策</a></div>
 </div>

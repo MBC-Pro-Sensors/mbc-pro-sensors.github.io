@@ -44,8 +44,8 @@
   - [IMU 9-Axis Gyro](/en/sensors/imu/index.md)
 
 - **🔌 Expansion Modules**
-  - [SPIKE 6-Way Expander (EXP6)](/en/sensors/exp6/index.md)
-  - [SPIKE 6-Port Servo Expander (Coming Soon)](/en/sensors/servo6/index.md)
+  - [MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™)](/en/sensors/exp6/index.md)
+  - [MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™) (Coming Soon)](/en/sensors/servo6/index.md)
 
 - **📞 Contact Us**
   - [🛒 Where to Buy](/en/where-to-buy.md)

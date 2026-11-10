@@ -1,5 +1,5 @@
 /*
- * SPIKE 6-Way Expander EXP6 x Arduino   Example 4: Read the motor angle
+ * MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) x Arduino   Example 4: Read the motor angle
  * ------------------------------------------------------------
  * What does this example do?
  *   A motor can do more than turn. It is also a very accurate "angle sensor".

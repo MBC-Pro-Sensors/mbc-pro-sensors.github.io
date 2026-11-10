@@ -17,7 +17,7 @@ For other competitions (Robofest, RoboCupJunior, AERC, GRG and more), see the [C
 | [Ranger 2-Way (TOF2)](/en/sensors/tof2/index.md) | ✅ | ✅ | ✅ | Laser eye-safety proof required (see point 3) |
 | [Ranger 8-Way (TOF8)](/en/sensors/tof8/index.md) | ✅* | ✅* | ✅ | *Eight fixed single-point ToF sensors, not a rotating LIDAR scanner. Confirm with your National Organizer before the event (see point 2) |
 | [SharpShot Vision](/en/sensors/unicam/index.md) | ❌ | ✅ | ✅ | Cameras are limited to Junior and Senior (the [legacy editions](/en/sensors/esp32cam/index.md) too) |
-| [SPIKE 6-Way Expander (EXP6)](/en/sensors/exp6/index.md) | ✅ | ✅ | ✅ | Motors on the expander count toward your age group's motor limit; the external battery must meet the power rules |
+| [MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™)](/en/sensors/exp6/index.md) | ✅ | ✅ | ✅ | Motors on the expander count toward your age group's motor limit; the external battery must meet the power rules |
 | [Controller 2.4G (PS2)](/en/sensors/ps2/index.md) / [PS4/PS5](/en/sensors/ps4/index.md) | ❌ | ❌ | ❌ | Remote control is not allowed during RoboMission runs. Use them for events that allow remote control, classes and demos |
 
 ## The Rules in Detail
