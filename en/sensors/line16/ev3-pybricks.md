@@ -110,8 +110,9 @@ We have provided core example programs and exclusive library functions. Please c
             <code style="color: #0abab5; font-size: 0.95rem; font-weight: bold;">line_init_port_multitask(port, multitask)</code>
           </div>
           <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5; margin-bottom: 15px;">Initialize the sensor port. <code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">port</code> passes the EV3 port object (e.g., <code>hub.port.S1</code>).<br>
-          👉 <strong>Non-multitask mode</strong>: The second parameter <code>multitask</code> should be <code>False</code>, select <strong><code>call</code></strong> when calling functions.<br>
-          👉 <strong>Multitask mode</strong>: The second parameter <code>multitask</code> should be <code>True</code>, select <strong><code>await</code></strong> when calling functions.</p>
+          👉 The second parameter <code>multitask</code> can be left out: the library detects it automatically (needs Pybricks 3.4 or later; the old way with <code>True</code>/<code>False</code> still works).<br>
+          👉 <strong>Non-multitask mode</strong>: select <strong><code>call</code></strong> when calling functions.<br>
+          👉 <strong>Multitask mode</strong>: select <strong><code>await</code></strong> when calling functions.</p>
           
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
             <!-- Non-multitask State -->

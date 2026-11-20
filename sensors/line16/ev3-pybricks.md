@@ -110,8 +110,9 @@
             <code style="color: #0abab5; font-size: 0.95rem; font-weight: bold;">line_init_port_multitask(port, multitask)</code>
           </div>
           <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5; margin-bottom: 15px;">初始化感應器連接埠。<code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">port</code> 傳入 EV3 埠物件（例如 <code>hub.port.S1</code>）。<br>
-          👉 <strong>非多工模式</strong>：第二參數 <code>multitask</code> 請填入 <code>False</code>，呼叫函數時前方條件請選擇 <strong><code>call</code></strong>。<br>
-          👉 <strong>多工模式</strong>：第二參數 <code>multitask</code> 請填入 <code>True</code>，呼叫函數時前方條件請選擇 <strong><code>await</code></strong>。</p>
+          👉 第二參數 <code>multitask</code> 可以不填，函式庫會自動判斷（需要 Pybricks 3.4 以上；舊寫法填 <code>True</code>／<code>False</code> 照樣能用）。<br>
+          👉 <strong>非多工模式</strong>：呼叫函數時前方條件請選擇 <strong><code>call</code></strong>。<br>
+          👉 <strong>多工模式</strong>：呼叫函數時前方條件請選擇 <strong><code>await</code></strong>。</p>
           
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
             <!-- 非多工狀態 -->

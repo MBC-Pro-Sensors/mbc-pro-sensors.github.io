@@ -35,7 +35,7 @@ Pybricks 有兩種讀法，挑一種就好：
 > **檔名要跟程式裡 `import` 的名字完全一樣**，函式庫才載得進來，否則會出現 `ImportError`。本站下載的函式庫檔名都沒有版本字尾，不用改名。
 
 > [!TIP]
-> 函式庫建立物件時大多有 `multitask` 參數：填 `False` 是一般模式，一行一行執行；填 `True` 是多工模式，每個呼叫前要加 `await`，可以同時做很多件事。
+> MBC 感應器函式庫（`MBC_sensors.py` 和舊檔名版）建立物件時不用填 `multitask`：Pybricks 3.4 以上會自動判斷一般／多工，多工程式（`async def main()`＋`run_task`）每個呼叫前要加 `await`，可以同時做很多件事；舊寫法填 `True`／`False` 照樣能用。EXP6、Servo6 擴充器的函式庫照各自說明填 `True`／`False`。
 
 ### 接線
 

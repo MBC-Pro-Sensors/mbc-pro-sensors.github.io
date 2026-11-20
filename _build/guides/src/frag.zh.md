@@ -148,7 +148,7 @@
 
 | 函數 | 範圍 | 說明 |
 | :--- | :--- | :--- |
-| `line_init_port_multitask(port, multitask)` | — | 初始化。`port` = 1~6 對應 A~F；`multitask=True` 啟用非同步模式（搭配 `await`） |
+| `line_init_port_multitask(port, multitask)` | — | 初始化。`port` = 1~6 對應 A~F；`multitask` 可以不填，自動判斷同步／多工（需要 Pybricks 3.4 以上；舊寫法填 `True` 照樣能用），多工程式搭配 `await` |
 | `line_pos%%N%%()` | `-%%N%% ~ +%%N%%` | 整數循線位置，比較不挑校準品質（沒校準時每一路都會被當成黑色） |
 | `line_pos100()` | `-100 ~ +100` | 高解析插值位置，最佳 PID 選擇，要確實校準 |
 | `line_width()` | `0 ~ %%N%%` | 特徵線寬，兩種位置函數都適用 |
@@ -289,7 +289,7 @@
 
 ### 方式二：匯入專屬函式庫
 
-`line_init_port_multitask(port, multitask)` 初始化：`port` 傳 EV3 埠物件（例如 `hub.port.S1`）。**非多工**：`multitask` 填 `False`，呼叫時前面選 `call`；**多工**：填 `True`，呼叫時前面選 `await`。
+`line_init_port_multitask(port, multitask)` 初始化：`port` 傳 EV3 埠物件（例如 `hub.port.S1`）。`multitask` 可以不填，函式庫會自動判斷同步／多工（需要 Pybricks 3.4 以上；舊寫法填 `True`／`False` 照樣能用，下面兩張圖就是舊寫法）。**非多工**程式呼叫時前面選 `call`；**多工**程式選 `await`。
 
 ![非多工設定](/images/sensors/%%P%%/ev3-pybricks-non-multitask.webp)
 

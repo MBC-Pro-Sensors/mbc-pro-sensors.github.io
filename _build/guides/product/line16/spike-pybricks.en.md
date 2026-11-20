@@ -62,7 +62,7 @@ Examples: blocks [line16_block_native.py](/examples/line16/pybricks/For%20firmwa
 
 | Function | Range | Meaning |
 | :--- | :--- | :--- |
-| `line_init_port_multitask(port, multitask)` | — | Initialise. `port` = 1~6 for A~F; `multitask=True` enables async mode (use with `await`) |
+| `line_init_port_multitask(port, multitask)` | — | Initialise. `port` = 1~6 for A~F; `multitask` can be left out: normal or multitask mode is detected automatically (needs Pybricks 3.4 or later; the old way with `True` still works); use `await` in a multitask program |
 | `line_pos16()` | `-16 ~ +16` | Integer line position, less sensitive to calibration (without calibration every channel reads as black) |
 | `line_pos100()` | `-100 ~ +100` | High-resolution interpolated position, best for PID; calibrate properly |
 | `line_width()` | `0 ~ 16` | Line width, works with both position functions |

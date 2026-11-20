@@ -165,7 +165,7 @@
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
             <code style="color: #0abab5; font-size: 0.95rem; font-weight: bold;">line_init_port_multitask(port, multitask)</code>
           </div>
-          <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;">初始化感應器連接埠。<code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">port</code>=1~6 對應 A~F；<code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">multitask</code>=True 時啟用非同步模式（搭配 <code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">await</code> 使用）。</p>
+          <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;">初始化感應器連接埠。<code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">port</code>=1~6 對應 A~F；<code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">multitask</code> 可以不填，自動判斷同步／多工（需要 Pybricks 3.4 以上；舊寫法填 True 照樣能用），多工程式搭配 <code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">await</code> 使用。</p>
         </div>
       </div>
     </div>

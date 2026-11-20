@@ -35,7 +35,7 @@ To import the library:
 > **The file name must match the name in the program's `import` exactly**, or you will get an `ImportError`. The library files on this site have no version suffix, so you do not need to rename them.
 
 > [!TIP]
-> Most libraries take a `multitask` argument when you create the object: `False` is normal mode, one line after another; `True` is multitask mode, where every call needs `await` in front so the robot can do several things at once.
+> The MBC sensor library (`MBC_sensors.py` and the old-name copies) no longer needs a `multitask` argument: with Pybricks 3.4 or later it detects normal or multitask mode automatically. In a multitask program (`async def main()` + `run_task`) every call needs `await` in front so the robot can do several things at once; the old way with `True`/`False` still works. The EXP6 and Servo6 expander libraries still take `True`/`False` as described on their pages.
 
 ### Wiring
 

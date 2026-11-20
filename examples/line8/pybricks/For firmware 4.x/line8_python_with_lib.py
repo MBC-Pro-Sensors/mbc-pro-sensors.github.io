@@ -6,7 +6,7 @@ from pybricks.tools import multitask, run_task, wait
 from MBC_line8_obj_Lib import MBC_LINE8
 
 # Set up.
-line8 = MBC_LINE8(3, True)
+line8 = MBC_LINE8(3)
 prime_hub = PrimeHub()
 motorL = Motor(Port.E, Direction.COUNTERCLOCKWISE)
 motorR = Motor(Port.F, Direction.CLOCKWISE)
@@ -35,7 +35,7 @@ async def subtask2():
 
 async def main():
     global PD, posLast
-    # Connect Line8 sensor to port C (3) and enable multitasking (true).
+    # Connect Line8 sensor to port C (3); multitasking is detected automatically (no true needed).
     await multitask(
         subtask(),
         subtask2(),

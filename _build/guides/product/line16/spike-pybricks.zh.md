@@ -62,7 +62,7 @@
 
 | 函數 | 範圍 | 說明 |
 | :--- | :--- | :--- |
-| `line_init_port_multitask(port, multitask)` | — | 初始化。`port` = 1~6 對應 A~F；`multitask=True` 啟用非同步模式（搭配 `await`） |
+| `line_init_port_multitask(port, multitask)` | — | 初始化。`port` = 1~6 對應 A~F；`multitask` 可以不填，自動判斷同步／多工（需要 Pybricks 3.4 以上；舊寫法填 `True` 照樣能用），多工程式搭配 `await` |
 | `line_pos16()` | `-16 ~ +16` | 整數循線位置，比較不挑校準品質（沒校準時每一路都會被當成黑色） |
 | `line_pos100()` | `-100 ~ +100` | 高解析插值位置，最佳 PID 選擇，要確實校準 |
 | `line_width()` | `0 ~ 16` | 特徵線寬，兩種位置函數都適用 |

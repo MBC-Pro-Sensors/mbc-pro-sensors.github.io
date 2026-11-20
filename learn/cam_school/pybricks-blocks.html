@@ -464,7 +464,7 @@ var PYB = {"img":["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAKCAQAAAA
     var ct = S.multi ? 'await' : 'call';
     var tips = {
       1: '第 1 步：「set up」下面先接匯入積木，告訴 Pybricks 要用 ' + S.lib + ' 這個函式庫。',
-      2: '第 2 步：建立物件。' + S.name + ' 是你取的名字，' + S.port + ' 是孔位（' + HOST_LET[S.port - 1] + ' 埠），' + (S.multi ? 'true 開啟多工。' : 'false 不開多工。'),
+      2: '第 2 步：建立物件。' + S.name + ' 是你取的名字，' + S.port + ' 是孔位（' + HOST_LET[S.port - 1] + ' 埠），' + (S.multi ? 'true 開啟多工（Pybricks 3.4 以上也可以只填孔位，函式庫會自動判斷多工）。' : 'false 不開多工。'),
       3: '第 3 步：在「program」下面放功能積木：第一格選 ' + S.name + '，中間選 ' + ct + '，最後一格選功能。' + (BY[S.fn].once ? '這個功能讀一次就好，不用放進迴圈。' : '「repeat while true」會一直重複，wait 100 ms 讓它每 0.1 秒讀一次。')
     };
     var b = $('bubble'); b.querySelector('i').textContent = S.view; b.querySelector('span').textContent = tips[S.view];

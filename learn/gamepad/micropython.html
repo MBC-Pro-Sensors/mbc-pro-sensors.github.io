@@ -286,7 +286,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
           <p class="small">要不要開啟多工？</p>
           <div class="choice" role="group" aria-label="多工">
             <button type="button" class="opt" id="mt-off" aria-pressed="true"><b>不開（一般寫法）</b><small>程式從上往下一行一行跑。初學者先用這個。</small></button>
-            <button type="button" class="opt" id="mt-on" aria-pressed="false"><b>開啟多工</b><small>要同時做好幾件事時用（例如邊開車邊播音樂）。第 2 個參數寫 True，之後每個功能前面都要加 await。</small></button>
+            <button type="button" class="opt" id="mt-on" aria-pressed="false"><b>開啟多工</b><small>要同時做好幾件事時用（例如邊開車邊播音樂）。不用填 True，函式庫會自動判斷多工（需要 Pybricks 3.4 以上；舊寫法填 True 照樣能用），之後每個功能前面都要加 await。</small></button>
           </div>
           <p class="small">程式裡的 <code id="portnum">3</code> 就是孔位編號：<span id="portmap">SPIKE 1~6 = A~F</span>。也可以寫成 <code id="portalt">Port.C</code>，但要多匯入 <code>from pybricks.parameters import Port</code>。</p>
           <div class="mini" id="mini2" aria-live="polite"></div>
@@ -353,7 +353,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <div class="panel">
         <div class="panel-head"><span>多工寫法（進階）</span><button type="button" class="copy" data-copy="multi">複製</button></div>
         <pre class="code" id="ex-multi"></pre>
-        <p class="bubble"><i>!</i><span>建立物件時第 2 個參數寫 <code>True</code>，物件要放在 <code>run_task()</code> 外面；每個功能前面都要加 <code>await</code>，<code>update()</code> 也一樣。</span></p>
+        <p class="bubble"><i>!</i><span>建立物件不用填 <code>True</code>（多工自動判斷，需要 Pybricks 3.4 以上；舊寫法填 True 照樣能用），物件要放在 <code>run_task()</code> 外面；每個功能前面都要加 <code>await</code>，<code>update()</code> 也一樣。</span></p>
       </div>
       <div class="panel">
         <div class="panel-head"><span>跟其他 MBC 感應器一起用</span><button type="button" class="copy" data-copy="mix">複製</button></div>
@@ -478,7 +478,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     L.push({ t: 'from ' + modName() + ' import MBC_GAMEPAD', tag: 1, hl: s1, key: 'import' });
     if (S.step >= 2) {
       L.push({ t: '' });
-      L.push({ t: n + ' = MBC_GAMEPAD(' + S.port + (S.multi ? ', True' : '') + ')    # ' + S.port + ' = ' + portLetter() + ' 埠' + (S.multi ? '，True = 開啟多工' : ''), tag: 2, hl: s2, key: 'obj' });
+      L.push({ t: n + ' = MBC_GAMEPAD(' + S.port + ')    # ' + S.port + ' = ' + portLetter() + ' 埠' + (S.multi ? '，多工自動判斷' : ''), tag: 2, hl: s2, key: 'obj' });
     }
     if (S.step >= 3) {
       L.push({ t: '' });
@@ -512,7 +512,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     var tips = {
       1: '第 1 步：程式最上面先匯入。第 1 行是 Pybricks 內建的 wait（等待），第 2 行才是 MBC 的函式庫。',
       2: '第 2 步：建立物件。等號左邊的 ' + S.name + ' 是你取的名字，右邊告訴程式接收器接在 ' + portLetter() + ' 埠。' +
-         (S.multi ? '第 2 個參數 True 代表開啟多工，所以第 1 行也多匯入了 run_task。' : ''),
+         (S.multi ? '多工不用填 True，函式庫會自動判斷（需要 Pybricks 3.4 以上；舊寫法填 True 照樣能用）；多工程式第 1 行多匯入了 run_task。' : ''),
       3: S.multi
         ? '第 3 步（多工）：程式放在 async def main() 裡，每個功能和 wait 前面都要加 await（update() 也要），最後一行 run_task(main()) 讓它開始跑。'
         : '第 3 步：' + (snap ? '每一圈先 ' + S.name + '.update() 讀一次手把，再' : '') + '用「' + S.name + '.功能()」讀值。' + (f.once ? '這個功能放在迴圈外面讀一次就好。' : 'while True 會一直重複，wait(100) 讓它每 0.1 秒讀一次。')
@@ -700,7 +700,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       'from pybricks.tools import wait, run_task',
       'from ' + modName() + ' import MBC_GAMEPAD',
       '',
-      'pad = MBC_GAMEPAD(3, True)    # True = 多工',
+      'pad = MBC_GAMEPAD(3)    # 多工自動判斷，不用填 True',
       '',
       'async def main():',
       '    while True:',

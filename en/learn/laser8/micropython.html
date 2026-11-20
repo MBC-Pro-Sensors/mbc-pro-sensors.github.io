@@ -286,7 +286,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
           <p class="small">Turn on multitasking?</p>
           <div class="choice" role="group" aria-label="Multitasking">
             <button type="button" class="opt" id="mt-off" aria-pressed="true"><b>Off (normal way)</b><small>The program runs from top to bottom, one line at a time. Start with this one.</small></button>
-            <button type="button" class="opt" id="mt-on" aria-pressed="false"><b>Turn on multitasking</b><small>Use it to do several things at once (for example, drive and watch for obstacles). Write True as the 2nd argument, then put await in front of every function.</small></button>
+            <button type="button" class="opt" id="mt-on" aria-pressed="false"><b>Turn on multitasking</b><small>Use it to do several things at once (for example, drive and watch for obstacles). No need to write True: the library detects multitasking automatically (needs Pybricks 3.4 or later; the old way with True still works). Put await in front of every function.</small></button>
           </div>
           <p class="small">The <code id="portnum">3</code> in the program is the port number: <span id="portmap">SPIKE 1~6 = A~F</span>. You can also write <code id="portalt">Port.C</code>, but then you also need <code>from pybricks.parameters import Port</code>.</p>
           <div class="mini" id="mini2" aria-live="polite"></div>
@@ -356,7 +356,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <div class="panel">
         <div class="panel-head"><span>Multitasking (advanced)</span><button type="button" class="copy" data-copy="multi">Copy</button></div>
         <pre class="code" id="ex-multi"></pre>
-        <p class="bubble"><i>!</i><span>Write <code>True</code> as the 2nd argument when you create the object, and create the object outside <code>run_task()</code>. Put <code>await</code> in front of every function.</span></p>
+        <p class="bubble"><i>!</i><span>You do not need <code>True</code> when you create the object (multitasking is detected automatically; needs Pybricks 3.4 or later; the old way with True still works). Create the object outside <code>run_task()</code>. Put <code>await</code> in front of every function.</span></p>
       </div>
       <div class="panel">
         <div class="panel-head"><span>Use it with other MBC sensors</span><button type="button" class="copy" data-copy="mix">Copy</button></div>
@@ -485,7 +485,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     L.push({ t: 'from ' + modName() + ' import MBC_LASER8', tag: 1, hl: s1, key: 'import' });
     if (S.step >= 2) {
       L.push({ t: '' });
-      L.push({ t: n + ' = MBC_LASER8(' + S.port + (S.multi ? ', True' : '') + ')    # ' + S.port + ' = port ' + portLetter() + (S.multi ? ', True = multitasking on' : ''), tag: 2, hl: s2, key: 'obj' });
+      L.push({ t: n + ' = MBC_LASER8(' + S.port + ')    # ' + S.port + ' = port ' + portLetter() + (S.multi ? ', multitasking detected automatically' : ''), tag: 2, hl: s2, key: 'obj' });
     }
     if (S.step >= 3) {
       L.push({ t: '' });
@@ -518,7 +518,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     var tips = {
       1: 'Step 1: import at the very top of the program. Line 1 is the wait (pause) built into Pybricks; line 2 is the MBC library.',
       2: 'Step 2: create the object. ' + S.name + ' on the left of the = sign is the name you chose; the right side tells the program the sensor is on port ' + portLetter() + '.' +
-         (S.multi ? ' The 2nd argument True turns multitasking on, so line 1 also imports run_task.' : ''),
+         (S.multi ? ' Multitasking is detected automatically, so you do not need True (needs Pybricks 3.4 or later; the old way with True still works). Line 1 also imports run_task for multitasking.' : ''),
       3: S.multi
         ? 'Step 3 (multitasking): the code goes inside async def main(). Put await in front of every function and wait, and the last line run_task(main()) starts it.'
         : 'Step 3: read values with "' + S.name + '.function()". ' + (BY[S.fn].once ? 'Read this one once, outside the loop.' : 'while True repeats forever, and wait(100) makes it read every 0.1 s.')
@@ -705,7 +705,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       'from pybricks.tools import wait, run_task',
       'from ' + modName() + ' import MBC_LASER8',
       '',
-      'laser8 = MBC_LASER8(3, True)    # True = multitasking',
+      'laser8 = MBC_LASER8(3)    # multitasking is detected automatically',
       '',
       'async def main():',
       '    while True:',

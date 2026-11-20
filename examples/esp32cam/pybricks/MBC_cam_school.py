@@ -1,5 +1,5 @@
 # MBC 樂高相容感應器：神攝手（學校老師創意賽版） 個別函式庫（SPIKE Prime 與 EV3 共用一份）
-# 作者：MBC Robot　適用：Pybricks v4.1（SPIKE Prime／Robot Inventor；EV3 新韌體）
+# 作者：MBC Robot　適用：Pybricks v4.1（SPIKE Prime／Robot Inventor；EV3 新韌體）。需要 Pybricks 韌體 3.4 以上（不相容 3.3）
 # 這個檔由 MBC_sensors.py 自動切出來，只含 神攝手（學校老師創意賽版），檔案比較小、上傳到主機比較快。
 #
 # ！！把這個檔案 MBC_cam_school.py 跟你的程式一起匯入 Pybricks（放同一層，不要放子資料夾）！！
@@ -22,7 +22,7 @@
 #          wait(10)
 #
 #  多工寫法（run_task + async）：物件要在 run_task() 之前建立，每個方法都要加 await：
-#      cam = MBC_CAM_SCHOOL(3, True)            # True = 多工
+#      cam = MBC_CAM_SCHOOL(3)                  # 同步、多工都一樣寫（自動判斷；舊寫法 (3, True) 照樣能用）
 #
 #  拔線不會讓程式停：讀不到時回傳上一次的值（從來沒讀到過回傳 None），
 #  第一次讀不到時印一行提醒；cam.sensor_ok() 可以查目前有沒有讀到。
@@ -32,7 +32,7 @@
 
 from pybricks.iodevices import PUPDevice
 from pybricks.parameters import Port
-from pybricks.tools import StopWatch as _StopWatch, wait as _wait
+from pybricks.tools import StopWatch as _StopWatch, wait as _wait, run_task as _rt
 
 # EV3 的 Port 有 S1~S4，SPIKE 沒有（EV3 上 hubs 也有 PrimeHub 別名，所以不能用主機類別判斷）
 _EV3 = hasattr(Port, 'S1')
@@ -40,6 +40,11 @@ _EV3 = hasattr(Port, 'S1')
 _CACHE_MS = 10     # 快取時間
 _RETRY_MS = 1000   # 沒有裝置時，多久重試建立一次
 _watch = _StopWatch()
+
+
+def _live():
+    # True = 現在在 run_task() 裡（Pybricks 3.4 起，run_task() 不帶參數 = 回傳 run loop 有沒有在跑）
+    return _rt()
 
 
 async def _aw(x):
@@ -122,12 +127,13 @@ def _fw5(v):
 class _MBC:
     _S = {}
     _E = {}
+    _pre = None   # _Free 用：已經建好的裝置（舊函式寫法同一孔不重複建立）
 
     def __init__(self, port, multitask=False):
+        # multitask 保留但不再使用（2026-11-19 起每次呼叫自動判斷，舊寫法 (port, True) 照樣能用）
         self._p, self._n = _port(port)
-        self._a = bool(multitask)
         self._t = self._E if _EV3 else self._S
-        self._d = None      # PUPDevice（第一次用到才建立）
+        self._d = self._pre  # PUPDevice（建立物件時就建）
         self._c = {}        # 模式 → (時間, 原始資料)
         self._bad = 0       # 1 = 目前讀不到（提醒已經印過）
         self._try = None    # 上一次嘗試建立裝置的時間
@@ -136,8 +142,8 @@ class _MBC:
         self._pk = None     # 　　　　最後送出的 8 個值（重送用）
         self._ct = 0        # 　　　　最後送出的時間
         self._rs = False
-        if self._a:
-            # 多工：run_task() 開始後就不能建立裝置，所以現在就建
+        if not _live():
+            # 同步、多工都現在就建（run_task() 開始後就不能建立裝置）
             self._open()
 
     def _open(self):
@@ -193,7 +199,7 @@ class _MBC:
         return v
 
     def _g(self, m, f, a=(), k=0):
-        if self._a:
+        if _live():
             return self._ga(m, f, a, k)
         v = self._rd(m, k)
         return None if v is None else f(v, *a)
@@ -209,7 +215,7 @@ class _MBC:
         return self._g(x[0], x[1], a, x[2] if len(x) > 2 else 0)
 
     def _r(self, x):
-        return _aw(x) if self._a else x
+        return _aw(x) if _live() else x
 
     def sensor_ok(self):
         """最近一次有沒有讀到感應器：True／False（拔線、沒接上 = False）"""
@@ -233,7 +239,7 @@ class _MBC:
     def cmd(self, code, *p, again=False):
         """下命令：code = 命令碼（例 0xE2），p = 參數（最多 5 個）。
         同一個命令＋同樣參數再呼叫不會重做；要再做一次寫 again=True。回傳這次的序號"""
-        if self._a:
+        if _live():
             return self._cmda(code, p, again)
         pk = self._cpk(code, p, again, self._rd(8, 1) if self._sq is None else None)
         if pk is not None:
@@ -317,7 +323,7 @@ class _MBC:
 
     def wait_done(self, timeout=10000):
         """等最後一個命令做完：True = 完成；False = 失敗、拒絕或等超過 timeout 毫秒"""
-        if self._a:
+        if _live():
             return self._wda(timeout)
         t0 = _watch.time()
         while True:

@@ -19,7 +19,7 @@
 1. 用 [Pybricks Code](https://code.pybricks.com) 開啟範例；主機請用 Pybricks 韌體 v4.1，開 `For firmware 4.x` 資料夾的檔案（`For firmware 3.6.1` 是舊版，已不再更新）。
 2. 使用函式庫的範例：把 `MBC_laser2_obj_Lib.py` 也匯入同一個 Pybricks 專案，**檔名不要改**（範例用 `from MBC_laser2_obj_Lib import MBC_LASER2` 匯入）。新專案可以改成只匯入 `MBC_sensors.py`（`from MBC_sensors import MBC_LASER2`）。
 3. 範例預設感應器接在 **Port B**，請依實際接線修改（函式庫的 port 參數：1 ~ 6 = A ~ F）。
-4. `MBC_LASER2(port, True)` 為多工模式，每個方法都要加 `await`；`MBC_LASER2(port, False)` 為一般模式，直接呼叫。
+4. `MBC_LASER2(port)` 同步／多工自動判斷（需要 Pybricks 3.4 以上；舊寫法填 `True`／`False` 照樣能用）：多工程式（`async def main()`＋`run_task`）每個方法都要加 `await`，一般程式直接呼叫。
 
 ## English
 
@@ -40,4 +40,4 @@ Distances are in centimeters (0 – 120); 120 means no target on that side. Chan
 1. Open the example in [Pybricks Code](https://code.pybricks.com). Use Pybricks firmware v4.1 on the hub and the files in `For firmware 4.x` (`For firmware 3.6.1` is legacy and no longer updated).
 2. For examples that use the library, import `MBC_laser2_obj_Lib.py` into the same Pybricks project **without renaming it** (the example imports it with `from MBC_laser2_obj_Lib import MBC_LASER2`). For a new project you can import only `MBC_sensors.py` instead (`from MBC_sensors import MBC_LASER2`).
 3. The examples assume the sensor is on **Port B**. Change it to match your wiring (library port argument: 1 – 6 = A – F).
-4. `MBC_LASER2(port, True)` is multitask mode: put `await` before every method call. `MBC_LASER2(port, False)` is normal mode: call the methods directly.
+4. `MBC_LASER2(port)` detects multitasking automatically (needs Pybricks 3.4 or later; the old way with `True`/`False` still works): in a multitask program (`async def main()` + `run_task`) put `await` before every method call; in a normal program call the methods directly.

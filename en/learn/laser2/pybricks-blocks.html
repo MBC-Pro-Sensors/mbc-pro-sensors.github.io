@@ -461,7 +461,7 @@ var PYB = {"img":["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAKCAQAAAA
     var ct = S.multi ? 'await' : 'call';
     var tips = {
       1: 'Step 1: attach the import block under "set up" first. It tells Pybricks to use the ' + S.lib + ' library.',
-      2: 'Step 2: create the object. ' + S.name + ' is the name you chose, ' + S.port + ' is the port (port ' + HOST_LET[S.port - 1] + '), ' + (S.multi ? 'and true turns on multitasking.' : 'and false leaves multitasking off.'),
+      2: 'Step 2: create the object. ' + S.name + ' is the name you chose, ' + S.port + ' is the port (port ' + HOST_LET[S.port - 1] + '), ' + (S.multi ? 'and true turns multitasking on (with Pybricks 3.4 or later you can also give just the port; the library detects multitasking automatically).' : 'and false leaves multitasking off.'),
       3: 'Step 3: put the function block under "program": pick ' + S.name + ' in the first box, ' + ct + ' in the middle, and the function in the last box. ' + (BY[S.fn].once ? 'Read this one once; it does not need a loop.' : '"repeat while true" repeats forever; wait 100 ms makes it read every 0.1 seconds.')
     };
     var b = $('bubble'); b.querySelector('i').textContent = S.view; b.querySelector('span').textContent = tips[S.view];

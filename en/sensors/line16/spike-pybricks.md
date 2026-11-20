@@ -165,7 +165,7 @@ We have provided four core example programs and exclusive library functions. Ple
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
             <code style="color: #0abab5; font-size: 0.95rem; font-weight: bold;">line_init_port_multitask(port, multitask)</code>
           </div>
-          <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;">Initialize the sensor port. <code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">port</code>=1~6 corresponding to A~F; <code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">multitask</code>=True to enable asynchronous mode (use with <code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">await</code>).</p>
+          <p style="margin: 0; font-size: 0.82rem; color: #aaa; line-height: 1.5;">Initialize the sensor port. <code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">port</code>=1~6 corresponding to A~F; <code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">multitask</code> can be left out: normal or multitask mode is detected automatically (needs Pybricks 3.4 or later; the old way with True still works); use <code style="background: rgba(10,186,181,0.1); padding: 1px 4px; border-radius: 3px; font-size: 0.78rem;">await</code> in a multitask program.</p>
         </div>
       </div>
     </div>

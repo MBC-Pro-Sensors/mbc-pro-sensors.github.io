@@ -1,6 +1,6 @@
 # MBC 樂高相容感應器：Pybricks 共用函式庫（SPIKE Prime 與 EV3 共用一份）
 # 作者：MBC Robot　日期：2026-10-24　版本：v1.0
-# 適用：Pybricks v4.1.1（SPIKE Prime／Robot Inventor；EV3 新韌體）
+# 適用：Pybricks v4.1.1（SPIKE Prime／Robot Inventor；EV3 新韌體）。需要 Pybricks 韌體 3.4 以上（不相容 3.3）
 #
 # ！！把這個檔案 MBC_sensors.py 跟你的程式一起匯入 Pybricks（放同一層，不要放子資料夾）！！
 # 舊檔名（MBC_line8_obj_Lib.py 等）是「這整份＋檔案最後的舊名稱」，由產生工具自動做出來，舊程式不用改。
@@ -30,12 +30,16 @@
 #
 #  多工寫法（run_task + async）：建立物件要放在 run_task() 之前（最外層），
 #  每個方法都要加 await：
-#      line8 = MBC_LINE8(3, True)            # True = 多工
+#      line8 = MBC_LINE8(3)                  # 同步、多工都一樣寫（2026-11-19 起自動判斷）
 #      async def main():
 #          while True:
 #              print(await line8.pos8())
 #              await wait(10)
 #      run_task(main())
+#  自動判斷：每次呼叫時看 run_task()（不帶參數）＝現在有沒有在 run_task 裡，
+#  在裡面就回傳可 await 的物件、在外面就直接回傳數值（跟 Pybricks 內建感應器一樣）。
+#  第二個參數 multitask 保留但不再使用：舊寫法 MBC_LINE8(3, True)／(3, False) 照樣能用。
+#  在 run_task 裡忘了 await 會看到 generator 的錯誤訊息（內建感應器也一樣）：補上 await 就好。
 #
 #  10 ms 快取：同一個模式 10 ms 內重複呼叫只讀一次硬體（感應器本來就每 10 ms 更新一次）。
 #
@@ -43,7 +47,7 @@
 #    - 讀不到時不會停止程式：回傳「上一次讀到的值」；從來沒讀到過就回傳 None。
 #    - 第一次讀不到時在電腦畫面印一行提醒（同一次斷線只印一次）。
 #    - 插回去之後下一次讀取就自動恢復；一開始就沒接上的話，同步模式每秒重試建立一次裝置。
-#    - 多工模式的裝置只能在 run_task() 之前建立：開機時就沒接上，要重新執行程式。
+#    - 裝置在建立物件時就建好；run_task() 開始後不能再建立：開機時就沒接上，多工程式要重新執行。
 #    - obj.sensor_ok() 可以查目前有沒有讀到（True／False）。
 #
 #  下命令（只有 SPIKE；感應器韌體要支援命令：2026-10 以後的版本）：
@@ -65,7 +69,7 @@
 
 from pybricks.iodevices import PUPDevice
 from pybricks.parameters import Port
-from pybricks.tools import StopWatch as _StopWatch, wait as _wait
+from pybricks.tools import StopWatch as _StopWatch, wait as _wait, run_task as _rt
 
 # EV3 的 Port 有 S1~S4，SPIKE 沒有（EV3 上 hubs 也有 PrimeHub 別名，所以不能用主機類別判斷）
 _EV3 = hasattr(Port, 'S1')
@@ -73,6 +77,11 @@ _EV3 = hasattr(Port, 'S1')
 _CACHE_MS = 10     # 快取時間
 _RETRY_MS = 1000   # 沒有裝置時，多久重試建立一次
 _watch = _StopWatch()
+
+
+def _live():
+    # True = 現在在 run_task() 裡（Pybricks 3.4 起，run_task() 不帶參數 = 回傳 run loop 有沒有在跑）
+    return _rt()
 
 
 async def _aw(x):
@@ -155,12 +164,13 @@ def _fw5(v):
 class _MBC:
     _S = {}
     _E = {}
+    _pre = None   # _Free 用：已經建好的裝置（舊函式寫法同一孔不重複建立）
 
     def __init__(self, port, multitask=False):
+        # multitask 保留但不再使用（2026-11-19 起每次呼叫自動判斷，舊寫法 (port, True) 照樣能用）
         self._p, self._n = _port(port)
-        self._a = bool(multitask)
         self._t = self._E if _EV3 else self._S
-        self._d = None      # PUPDevice（第一次用到才建立）
+        self._d = self._pre  # PUPDevice（建立物件時就建）
         self._c = {}        # 模式 → (時間, 原始資料)
         self._bad = 0       # 1 = 目前讀不到（提醒已經印過）
         self._try = None    # 上一次嘗試建立裝置的時間
@@ -169,8 +179,8 @@ class _MBC:
         self._pk = None     # 　　　　最後送出的 8 個值（重送用）
         self._ct = 0        # 　　　　最後送出的時間
         self._rs = False
-        if self._a:
-            # 多工：run_task() 開始後就不能建立裝置，所以現在就建
+        if not _live():
+            # 同步、多工都現在就建（run_task() 開始後就不能建立裝置）
             self._open()
 
     def _open(self):
@@ -226,7 +236,7 @@ class _MBC:
         return v
 
     def _g(self, m, f, a=(), k=0):
-        if self._a:
+        if _live():
             return self._ga(m, f, a, k)
         v = self._rd(m, k)
         return None if v is None else f(v, *a)
@@ -242,7 +252,7 @@ class _MBC:
         return self._g(x[0], x[1], a, x[2] if len(x) > 2 else 0)
 
     def _r(self, x):
-        return _aw(x) if self._a else x
+        return _aw(x) if _live() else x
 
     def sensor_ok(self):
         """最近一次有沒有讀到感應器：True／False（拔線、沒接上 = False）"""
@@ -266,7 +276,7 @@ class _MBC:
     def cmd(self, code, *p, again=False):
         """下命令：code = 命令碼（例 0xE2），p = 參數（最多 5 個）。
         同一個命令＋同樣參數再呼叫不會重做；要再做一次寫 again=True。回傳這次的序號"""
-        if self._a:
+        if _live():
             return self._cmda(code, p, again)
         pk = self._cpk(code, p, again, self._rd(8, 1) if self._sq is None else None)
         if pk is not None:
@@ -350,7 +360,7 @@ class _MBC:
 
     def wait_done(self, timeout=10000):
         """等最後一個命令做完：True = 完成；False = 失敗、拒絕或等超過 timeout 毫秒"""
-        if self._a:
+        if _live():
             return self._wda(timeout)
         t0 = _watch.time()
         while True:
@@ -522,7 +532,7 @@ class _LINE(_MBC):
 
 
 class MBC_LINE8(_LINE):
-    """循行者 8 路：line8 = MBC_LINE8(port, multitask=False)"""
+    """循行者 8 路：line8 = MBC_LINE8(port)（同步／多工自動判斷）"""
     _S, _E = _line(8)
 
     def pos8(self):
@@ -1191,7 +1201,7 @@ class MBC_HUE12(_MBC):
 
     def update(self):
         """讀一次最新資料：成功 True、讀不到 False（get_slot() 保留上一次的資料）"""
-        if self._a:
+        if _live():
             return self._upa()
         return self._dec(self._rd(0, 1))
 
@@ -1216,9 +1226,12 @@ class _Free:
         self.d = {}
 
     def init(self, port, multitask=False):
-        o = self.c(port)
-        o._a = bool(multitask)
-        o._d = self.d.get(o._n)
+        # multitask 保留但不再使用（自動判斷）；同一孔沿用已建好的裝置
+        _MBC._pre = self.d.get(_port(port)[1])
+        try:
+            o = self.c(port)
+        finally:
+            _MBC._pre = None
         if o._open() is not None:
             self.d[o._n] = o._d
         self.o = o

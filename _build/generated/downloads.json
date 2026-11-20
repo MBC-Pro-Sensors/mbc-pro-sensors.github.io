@@ -140,7 +140,7 @@
         "line8_python_native.py",
         "line8_python_with_lib.py"
       ],
-      "size": 39493
+      "size": 40328
     },
     {
       "out": "/examples/line8/line8_pd50_examples.zip",
@@ -167,7 +167,7 @@
         "spike_app/line8_pd50_ri_blocks.lms",
         "spike_app/line8_pd50_ri_python.py"
       ],
-      "size": 113713
+      "size": 114552
     },
     {
       "out": "/examples/line16/line16_pd50_examples.zip",
@@ -194,7 +194,7 @@
         "spike_app/line16_pd50_ri_blocks.lms",
         "spike_app/line16_pd50_ri_python.py"
       ],
-      "size": 114617
+      "size": 115456
     },
     {
       "out": "/downloads/MBC_TOF8_Pybricks_Lib.zip",
@@ -209,7 +209,7 @@
         "MBC_laser8_obj_Lib.py",
         "MBC_sensors.py"
       ],
-      "size": 28950
+      "size": 29789
     },
     {
       "out": "/downloads/MBC_UniCam_v1_Host_Libraries.zip",

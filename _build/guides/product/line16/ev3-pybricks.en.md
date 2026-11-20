@@ -42,7 +42,7 @@ Use Pybricks' low-level `device.mode(mode)` to get the data array directly:
 
 ### Method 2: import the library
 
-Initialise with `line_init_port_multitask(port, multitask)`: `port` is an EV3 port object (for example `hub.port.S1`). **Not multitask**: `multitask = False`, and choose `call` in front of each call; **multitask**: `True`, and choose `await`.
+Initialise with `line_init_port_multitask(port, multitask)`: `port` is an EV3 port object (for example `hub.port.S1`). You can leave `multitask` out: the library detects normal or multitask mode automatically (needs Pybricks 3.4 or later; the old way with `True`/`False` still works, and the two pictures below show the old way). In a **normal** program choose `call` in front of each call; in a **multitask** program choose `await`.
 
 ![Non-multitask setup](/images/sensors/line16/ev3-pybricks-non-multitask.webp)
 

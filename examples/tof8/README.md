@@ -23,7 +23,7 @@
 
 1. 用 [Pybricks Code](https://code.pybricks.com) 開啟範例；主機請用 Pybricks 韌體 v4.1，開 `For firmware 4.x` 資料夾的檔案（`For firmware 3.6.1` 是舊版，已不再更新；兩版的函式庫不能混用）。
 2. 使用函式庫的範例：把同資料夾的函式庫檔（`MBC_laser8_Lib.py` 或 `MBC_laser8_obj_Lib.py`）也匯入同一個 Pybricks 專案，**檔名不要改**。新專案可以改成只匯入 `MBC_sensors.py`（`from MBC_sensors import MBC_LASER8`）。
-3. 依實際接線修改連接埠（函式庫的 port 參數：1 ~ 6 = A ~ F）。4.x 版 `MBC_LASER8(port, True)` 為多工模式，每個方法都要加 `await`。
+3. 依實際接線修改連接埠（函式庫的 port 參數：1 ~ 6 = A ~ F）。4.x 版 `MBC_LASER8(port)` 多工自動判斷（需要 Pybricks 3.4 以上；舊寫法填 `True` 照樣能用），多工程式每個方法都要加 `await`。
 4. 開機後約 2 ~ 4 秒完成 8 顆初始化，期間讀到的值可能是 120。
 
 **使用方式（Arduino）**
@@ -55,7 +55,7 @@ Sensor 1 = far left (-90°) … sensor 8 = far right (+90°); sensors 4 and 5 bo
 
 1. Open the example in [Pybricks Code](https://code.pybricks.com). Use Pybricks firmware v4.1 on the hub and the files in `For firmware 4.x` (`For firmware 3.6.1` is legacy and no longer updated; the two libraries are not interchangeable).
 2. For examples that use a library, import the library file from the same folder (`MBC_laser8_Lib.py` or `MBC_laser8_obj_Lib.py`) into the same Pybricks project **without renaming it**. For a new project you can import only `MBC_sensors.py` instead (`from MBC_sensors import MBC_LASER8`).
-3. Change the port to match your wiring (library port argument: 1 – 6 = A – F). In 4.x, `MBC_LASER8(port, True)` is multitask mode: put `await` before every method call.
+3. Change the port to match your wiring (library port argument: 1 – 6 = A – F). In 4.x, `MBC_LASER8(port)` detects multitasking automatically (needs Pybricks 3.4 or later; the old way with `True` still works); in a multitask program put `await` before every method call.
 4. The 8 sensors take about 2 – 4 s to initialize after power-up; values may read 120 during that time.
 
 **How to use (Arduino)**
