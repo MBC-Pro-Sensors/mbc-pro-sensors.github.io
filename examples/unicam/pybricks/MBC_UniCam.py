@@ -3,8 +3,9 @@
 
 # MBC 神攝手（韌體 v1）：Pybricks 函式庫（SPIKE Prime／Robot Inventor）
 # MBC SharpShot Vision Camera Sensor (firmware v1): Pybricks library (SPIKE Prime / Robot Inventor)
-# 作者 Author：MBC Robot　日期 Date：2026-10-28　版本 Version：v1.0（2026-10-31 SPIKE 上機驗證通過 / hardware-verified on SPIKE 2026-10-31）
-# 適用 For：Pybricks v4.1（code.pybricks.com）
+# 作者 Author：MBC Robot　日期 Date：2026-10-28　版本 Version：v1.1（2026-11-20 多工自動判斷 / multitask auto-detect；
+#     v1.0 2026-10-31 SPIKE 上機驗證通過 / hardware-verified on SPIKE 2026-10-31）
+# 適用 For：Pybricks v4.1（code.pybricks.com）。需要 Pybricks 韌體 3.4 以上（不相容 3.3）/ needs Pybricks firmware 3.4+ (not 3.3)
 #
 # ！！把 MBC_UniCam.py 跟你的程式一起匯入 Pybricks（放同一層）！！
 # !! Import MBC_UniCam.py into Pybricks next to your program (same folder) !!
@@ -38,13 +39,26 @@
 #  換模式要多等約 30 ms：count()／colors_found() 在模式 11、12 不要每圈都叫。
 #
 #  拔線 Unplugged：不會停止程式，回傳上一次讀到的值；從來沒讀到過回傳 None。cam.sensor_ok() 查狀態。
-#  多工 Multitask：UniCam(Port.C, 13, True)，物件要在 run_task() 之前建立，每個方法都要 await。
+#  多工 Multitask（2026-11-20 起自動判斷 / auto-detected）：同步、多工都寫 UniCam(Port.C, 13)，
+#      物件要在 run_task() 之前建立（建立時就建好裝置、切好模式），在 run_task 裡每個方法都要 await：
+#          cam = UniCam(Port.C, 13)
+#          async def main():
+#              x, y = await cam.xy(1)
+#          run_task(main())
+#      每次呼叫看 run_task()（不帶參數）＝現在有沒有在 run_task 裡：在裡面回傳可 await 的物件、在外面直接回傳數值。
+#      舊寫法 UniCam(Port.C, 13, True)＋await cam.set_mode(13) 照樣能用（第三個參數保留不用；模式已經切好，set_mode 只確認一次）。
+#      在 run_task 裡忘了 await 會看到 generator 的錯誤訊息（內建感應器也一樣）：補上 await 就好。
+#      在 run_task 裡才建立物件：裝置建不起來（Pybricks 規定），讀值回 None 並提醒一次，要把建立物件移到 run_task() 之前。
+#  Multitask: write UniCam(Port.C, 13) for both; create it before run_task() and await every method inside run_task.
+#      Each call checks run_task() (no argument) = is the run loop active. The old UniCam(Port.C, 13, True) + await cam.set_mode(13)
+#      still works (3rd argument kept but unused). A missing await inside run_task shows a generator error: add the await.
 # ════════════════════════════════════════════════════════════════
 
 from pybricks.iodevices import PUPDevice
 from pybricks.parameters import Port
 from pybricks.tools import StopWatch as _StopWatch
 from pybricks.tools import wait as _wait
+from pybricks.tools import run_task as _rt
 
 _CACHE_MS = 10
 _CMD_FLAG = 0x100       # 模式 8 v1（協議版）有這個 bit ＝ 有命令通道（韌體 2026-10-29 起）/ firmware has commands
@@ -65,6 +79,11 @@ def _port(p):
             raise ValueError('port 要填 1~6 / port must be 1~6')
         return getattr(Port, n[p - 1]), n[p - 1]
     return p, str(p).split('.')[-1]
+
+
+def _live():
+    # True＝現在在 run_task() 裡（Pybricks 3.4 起 run_task() 不帶參數＝run loop 有沒有在跑）/ run loop active
+    return _rt()
 
 
 async def _aw(x):
@@ -210,14 +229,15 @@ def _ocount(v, m, a):
 
 
 class UniCam:
-    """神攝手（韌體 v1）/ SharpShot Vision (firmware v1): cam = UniCam(port, mode=13, multitask=False)"""
+    """神攝手（韌體 v1）/ SharpShot Vision (firmware v1): cam = UniCam(port, mode=13)（同步／多工自動判斷 / sync or multitask auto-detected）"""
 
     def __init__(self, port, mode=13, multitask=False):
+        # multitask 保留但不再使用（2026-11-20 起每次呼叫自動判斷）/ kept for old programs, not used any more
         if mode not in MODES:
             raise ValueError('mode 要填 %s / mode must be one of %s' % (MODES, MODES))
         self._p, self._n = _port(port)
         self._m = mode
-        self._a = bool(multitask)
+        self._pm = mode     # 還沒送出的切模式：建好裝置時送一次 / pending mode switch, sent once the device is there
         self._d = None
         self._c = {}
         self._bad = 0
@@ -225,10 +245,19 @@ class UniCam:
         self._seq = None
         self._last = None
         self._oldfw = 0
-        if self._a:
-            self._open()        # 多工：要自己 await cam.set_mode(mode) / multitask: await cam.set_mode(mode) yourself
-        else:
-            self.set_mode(mode)  # 把相機切到 mode（不用再到相機選單切）/ switch the camera to mode automatically
+        if not _live():
+            # 同步、多工都現在就建裝置並切模式（run_task() 開始後就不能建立裝置）
+            # build the device and switch the mode now (devices cannot be created once run_task() runs)
+            self._pend()
+
+    def _pend(self):
+        # 補送切模式（建立物件時沒接上 → 插上後第一次讀值時送）/ send the pending mode switch
+        if self._open() is not None:
+            self.set_mode(self._pm)
+
+    async def _penda(self):
+        if self._open() is not None:
+            await self.set_mode(self._pm)
 
     # ───── 讀取、快取、拔線容錯（跟 MBC_sensors.py 同一套做法）/ read, cache, unplug-safe ─────
     def _open(self):
@@ -283,17 +312,21 @@ class UniCam:
         return v
 
     def _g(self, m, f, a=None):
-        if self._a:
+        if _live():
             return self._ga(m, f, a)
+        if self._pm is not None:
+            self._pend()
         v = self._rd(m)
         return None if v is None else f(v, self._m, a)
 
     async def _ga(self, m, f, a):
+        if self._pm is not None:
+            await self._penda()
         v = await self._rda(m)
         return None if v is None else f(v, self._m, a)
 
     def _r(self, x):
-        return _aw(x) if self._a else x
+        return _aw(x) if _live() else x
 
     def _need(self, name, ok):
         if self._m not in ok:
@@ -599,7 +632,7 @@ class UniCam:
         """送命令、不等（回序號；送不出去回 None）。同命令＋同參數再叫不會重做，要再做一次寫 again=True
         send a command without waiting: cam.cmd(0xE2, 50); the same command + parameters is not repeated unless again=True"""
         q = self._pack(code, p)
-        if self._a:
+        if _live():
             return self._cmda(code, q, again)
         d = self._open()
         if d is None:
@@ -630,7 +663,7 @@ class UniCam:
 
     def busy(self):
         """最後一個命令還在做嗎 / is the last command still running"""
-        if self._a:
+        if _live():
             return self._busya()
         d = self._open()
         try:
@@ -650,7 +683,7 @@ class UniCam:
     def wait_done(self, timeout=5000):
         """等最後一個命令做完：回 0 完成、2 失敗、3 拒絕；逾時回 None
         wait for the last command: 0 done, 2 failed, 3 rejected; None on timeout"""
-        if self._a:
+        if _live():
             return self._waita(timeout)
         t0 = _watch.time()
         while _watch.time() - t0 < timeout:
@@ -680,7 +713,7 @@ class UniCam:
         return None
 
     def _do(self, timeout, code, *p, again=False):   # 送＋等 / send and wait
-        if self._a:
+        if _live():
             return self._doa(timeout, code, p, again)
         if self.cmd(code, *p, again=again) is None:
             return None
@@ -697,15 +730,20 @@ class UniCam:
             raise ValueError('mode 要填 %s / mode must be one of %s' % (MODES, MODES))
         self._m = mode
         self._c = {}
-        if self._a:
+        self._pm = None
+        if _live():
             return self._set_modea(mode)
         r = self._do(500, 0xE0, mode // 10, mode % 10)
+        if self._d is None:
+            self._pm = mode            # 還沒接上：插上後第一次讀值時再送 / not plugged in: sent on a later read
         if r == 0:
             _wait(60)                  # 下一幀才是新模式的值 / the next frame has the new mode
         return r
 
     async def _set_modea(self, mode):
         r = await self._doa(500, 0xE0, (mode // 10, mode % 10))
+        if self._d is None:
+            self._pm = mode
         if r == 0:
             await _wait(60)
         return r

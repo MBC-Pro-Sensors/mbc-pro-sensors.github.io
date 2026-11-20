@@ -834,7 +834,6 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       function ctor() {
         var args = portRef();
         if (!(EV3 && S.auto)) args += ', mode=' + S.mode;
-        if (!EV3 && S.multi) args += ', multitask=True';
         return S.name + ' = UniCam(' + args + ')';
       }
       function bodyOf(f, name) { return f.body.map(function (b) { return b.replace(/\{n\}\./g, (S.multi ? 'await ' : '') + name + '.'); }); }
@@ -874,7 +873,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         outLabel: ('The simulator prints: '),
         bubble: function (step, f) {
           if (step === 1) return ('Step 1: imports go at the top. The first lines are Pybricks\' own Port and wait, then the MBC library; the comment reminds you to set the camera menu to mode ') + S.mode + ('.');
-          if (step === 2) return ('Step 2: create the object. ') + S.name + (' (left of =) is your name; the right side says the camera is on ') + portRef() + (EV3 && S.auto ? (', with no mode, so the first reading asks the camera.') : (', mode ') + S.mode + ('.')) + (S.multi ? (' multitask=True turns on multitasking, so run_task is imported too.') : '');
+          if (step === 2) return ('Step 2: create the object. ') + S.name + (' (left of =) is your name; the right side says the camera is on ') + portRef() + (EV3 && S.auto ? (', with no mode, so the first reading asks the camera.') : (', mode ') + S.mode + ('.')) + (S.multi ? (' Multitasking uses the same line, no need to write True: the library detects it automatically (needs Pybricks 3.4 or later); run_task is imported too.') : '');
           return S.multi ? ('Step 3 (multitasking): code goes in async def main(), every function and wait gets await, and run_task(main()) starts it.')
             : ('Step 3: use "') + S.name + ('.function()" to read. ') + (f.once ? ('This one runs once, outside the loop.') : ('while True repeats forever; wait(100) reads every 0.1 s.'));
         },

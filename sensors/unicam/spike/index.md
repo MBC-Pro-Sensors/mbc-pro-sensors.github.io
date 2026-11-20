@@ -30,6 +30,8 @@
 
 模式 9 一次讀 7 個 int16＝14 byte，一個 byte 一個值；座標是 160×120 像素（Y 上＝小），0＝沒有目標。MBC 函式庫會照模式編號自動拆好（14 色的格號拆成 X、Y、數量從模式 6 讀），函式庫下載和整支範例在 [SPIKE 範例](/sensors/unicam/spike-examples.md)。
 
+**同步、多工都寫** `cam = UniCam(Port.C, 13)`：函式庫會自動判斷多工（2026-11-20 起，需要 Pybricks 3.4 以上）。物件要在 `run_task()` 之前建立，在 `run_task` 裡每個方法前面加 `await`（例 `x, y = await cam.xy(1)`）。舊寫法 `UniCam(Port.C, 13, True)`＋`await cam.set_mode(13)` 照樣能用。
+
 > [!IMPORTANT]
 > 這一代神攝手的模式 9 排法**跟舊版學校版／Kito 版不同**，Kito 的 `camLibForKitoMode9` 不能直接拿來用。
 
@@ -96,7 +98,7 @@ junction = b[6]                  # 路口類型：0 無 1 十字 2 T 3 左 4 右
 - 表上以外的命令碼（EA、EC～EF、F8）SPIKE 版不支援，回 `3`。
 - **同一個命令、同樣參數再叫不會重做**（`white_cal()` 例外，每次都做）。要再做一次寫 `cam.cmd(0xE2, 50, again=True)`。
 - `cam.cmd(命令碼, 參數…)` 只送不等，之後用 `cam.busy()`、`cam.wait_done()` 看做完沒。
-- 每等一個命令做完大約多 40～60 ms，**不要放在循線迴圈裡一直叫**，開頭設定一次就好。開了多工（`multitask=True`）前面要加 `await`。
+- 每等一個命令做完大約多 40～60 ms，**不要放在循線迴圈裡一直叫**，開頭設定一次就好。多工（在 `run_task` 裡）前面要加 `await`。
 - 2026-10-29 以前的相機韌體送不了命令：函式庫會提示「到相機選單切模式」，讀值照常。官方 App 和 Pybricks 內建積木也送不了命令。
 
 ### 插在 EXP6 擴充器上

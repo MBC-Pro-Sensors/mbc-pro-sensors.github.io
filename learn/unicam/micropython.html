@@ -289,7 +289,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
           <p class="small">要不要開啟多工？</p>
           <div class="choice" role="group" aria-label="多工">
             <button type="button" class="opt" id="mt-off" aria-pressed="true"><b>不開（一般寫法）</b><small>程式從上往下一行一行跑。初學者先用這個。</small></button>
-            <button type="button" class="opt" id="mt-on" aria-pressed="false"><b>開啟多工</b><small>要同時做好幾件事時用。寫 <code>multitask=True</code>，之後每個功能前面都要加 <code>await</code>。</small></button>
+            <button type="button" class="opt" id="mt-on" aria-pressed="false"><b>開啟多工</b><small>要同時做好幾件事時用。不用填 True，函式庫會自動判斷多工（需要 Pybricks 3.4 以上；舊寫法填 True 照樣能用），之後每個功能前面都要加 <code>await</code>。</small></button>
           </div>
           <p class="small"><code>mode=</code> 後面的數字是第 1 步選的模式編號；<b>相機選單也要切到同一個模式</b>（SPIKE 讀不到相機現在是哪個模式，不一樣時數字會亂掉）。</p>
 
@@ -836,7 +836,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       function ctor() {
         var args = portRef();
         if (!(EV3 && S.auto)) args += ', mode=' + S.mode;
-        if (!EV3 && S.multi) args += ', multitask=True';
+        // 2026-11-20 起 MBC_UniCam.py v1.1 自動判斷多工：同步、多工都寫 UniCam(Port.C, mode=13)，不填 True（需要 Pybricks 3.4 以上）
         return S.name + ' = UniCam(' + args + ')';
       }
       function bodyOf(f, name) { return f.body.map(function (b) { return b.replace(/\{n\}\./g, (S.multi ? 'await ' : '') + name + '.'); }); }
@@ -876,7 +876,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         outLabel: ('模擬畫面上會印出：'),
         bubble: function (step, f) {
           if (step === 1) return ('第 1 步：程式最上面先匯入。前兩行是 Pybricks 內建的孔位 Port 和等待 wait，第 3 行才是 MBC 的函式庫；最後一行註解提醒相機選單切到模式 ') + S.mode + ('。');
-          if (step === 2) return ('第 2 步：建立物件。等號左邊的 ') + S.name + (' 是你取的名字，右邊告訴程式相機接在 ') + portRef() + (EV3 && S.auto ? ('，沒寫 mode，第一次讀值時自動問相機。') : ('、模式 ') + S.mode + ('。')) + (S.multi ? ('multitask=True 開啟多工，所以第 2 行多匯入了 run_task。') : '');
+          if (step === 2) return ('第 2 步：建立物件。等號左邊的 ') + S.name + (' 是你取的名字，右邊告訴程式相機接在 ') + portRef() + (EV3 && S.auto ? ('，沒寫 mode，第一次讀值時自動問相機。') : ('、模式 ') + S.mode + ('。')) + (S.multi ? ('開了多工也是這樣寫，不用填 True：函式庫會自動判斷多工（需要 Pybricks 3.4 以上），第 2 行多匯入了 run_task。') : '');
           return S.multi ? ('第 3 步（多工）：程式放在 async def main() 裡，每個功能和 wait 前面都要加 await，最後 run_task(main()) 讓它開始跑。')
             : ('第 3 步：用「') + S.name + ('.功能()」讀值。') + (f.once ? ('這個功能放在迴圈外面讀一次就好。') : ('while True 會一直重複，wait(100) 讓它每 0.1 秒讀一次。'));
         },

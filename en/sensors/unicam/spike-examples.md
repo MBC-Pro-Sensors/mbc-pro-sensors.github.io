@@ -48,7 +48,7 @@ This page has **6 Pybricks examples** (with the MBC library `MBC_UniCam.py`) and
 
 ## MBC_UniCam.py methods
 
-`cam = UniCam(Port.C, mode=13)` (port can also be 1~6; `UniCam(Port.C, 13, True)` = multitask, `await` every method)
+`cam = UniCam(Port.C, mode=13)` (port can also be 1~6). Write it the same way for normal and multitask programs: the library detects multitasking by itself (needs Pybricks 3.4 or later). Create the object before `run_task()`, and inside `run_task` put `await` before every method. The old way `UniCam(Port.C, 13, True)` + `await cam.set_mode(13)` still works.
 
 | Method | Returns | Modes |
 |---|---|---|

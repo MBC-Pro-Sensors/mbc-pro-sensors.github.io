@@ -30,6 +30,8 @@ How many colors each way gets in the other camera modes: see [colors per host](/
 
 Mode 9 reads 7 int16 = 14 bytes at once, one value per byte; coordinates are 160×120 pixels (Y: small at top), 0 = no target. The MBC library decodes everything from the mode number (it splits the 14-color cell numbers into X, Y and reads counts from mode 6); the library download and full programs are in the [SPIKE examples](/en/sensors/unicam/spike-examples.md).
 
+**Write `cam = UniCam(Port.C, 13)` for both normal and multitask programs**: the library detects multitasking by itself (since 2026-11-20, needs Pybricks 3.4 or later). Create the object before `run_task()`, and inside `run_task` put `await` before every method (e.g. `x, y = await cam.xy(1)`). The old way `UniCam(Port.C, 13, True)` + `await cam.set_mode(13)` still works.
+
 > [!IMPORTANT]
 > This generation's mode 9 layout is **different from the legacy School / Kito edition**; the Kito `camLibForKitoMode9` cannot be reused.
 
@@ -96,7 +98,7 @@ With the MBC library your program can change the camera's settings. Each command
 - Command codes not in the table (EA, EC–EF, F8) are not supported by the SPIKE edition and return `3`.
 - **The same command with the same parameters is not done again** (except `white_cal()`, which runs every time). To repeat it write `cam.cmd(0xE2, 50, again=True)`.
 - `cam.cmd(code, params…)` sends without waiting; check with `cam.busy()` and `cam.wait_done()` afterwards.
-- Waiting for a command adds about 40–60 ms, so **do not call commands inside a line-following loop**; set things up once at the start. With multitasking (`multitask=True`) put `await` in front.
+- Waiting for a command adds about 40–60 ms, so **do not call commands inside a line-following loop**; set things up once at the start. With multitasking (inside `run_task`) put `await` in front.
 - Camera firmware from before 2026-10-29 cannot take commands: the library prints a hint to use the camera menu, and readings work as before. The official app and the Pybricks built-in blocks cannot send commands either.
 
 ### Plugged into the EXP6 expander

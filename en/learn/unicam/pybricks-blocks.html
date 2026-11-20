@@ -312,7 +312,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
           <p class="small">Use multitasking? (the green true/false in the last slot)</p>
           <div class="choice" role="group" aria-label="Multitasking">
             <button type="button" class="opt" id="mt-off" aria-pressed="true"><b>false: no</b><small>Pick <b>call</b> in the middle of each function block. You get a plain while True loop, easiest to follow.</small></button>
-            <button type="button" class="opt" id="mt-on" aria-pressed="false"><b>true: multitask</b><small>Pick <b>await</b> in each function block. The program goes in async def main() and can run alongside other tasks.</small></button>
+            <button type="button" class="opt" id="mt-on" aria-pressed="false"><b>true: multitask</b><small>Pick <b>await</b> in each function block. The program goes in async def main() and can run alongside other tasks. The library detects multitasking by itself (needs Pybricks 3.4 or later), so true or false both work in this slot.</small></button>
           </div>
           <p class="small">The port slot takes a number: SPIKE 1–6 = A–F, so <code id="portnum">3</code> is port <span id="portletter">C</span>. The mode slot must match the camera menu (SPIKE cannot read the camera's mode, so a mismatch gives nonsense numbers).</p>
 
@@ -414,7 +414,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
     <h2 id="tiph">Good to know</h2>
     <ol>
       <li><b>Import the library file first.</b> Without <code>MBC_UniCam.py</code> in the project, the red blocks do not offer <code>UniCam</code>.</li>
-      <li><b>await or call must match multitasking:</b> true needs await, false needs call. Mixing them makes the program fail on the hub.</li>
+      <li><b>Use await or call for the whole program:</b> a multitask program uses await in every function block, a normal one uses call; mixing them makes the program fail on the hub. The true/false in the last slot of the object block does not matter: the library detects multitasking by itself (needs Pybricks 3.4 or later; the old way still works).</li>
       <li><b>The mode number must match the camera menu.</b> A function the mode does not have raises <code>ValueError</code> (the message says which mode to use).</li>
       <li><b>Unplugging does not stop the program.</b> Readings keep the last value (or <code>None</code> if never read) and one warning line is printed; use <code>sensor_ok</code> to check.</li>
       <li><b>Directions:</b> X 0–159 left→right, Y 0–119 top→bottom (top = small); line offset: left = negative, right = positive (looking forward from behind the robot). Colors are taught on the camera; the program cannot change them.</li>
@@ -829,7 +829,6 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       function ctor() {
         var args = portRef();
         if (!(EV3 && S.auto)) args += ', mode=' + S.mode;
-        if (!EV3 && S.multi) args += ', multitask=True';
         return S.name + ' = UniCam(' + args + ')';
       }
       function bodyOf(f, name) { return f.body.map(function (b) { return b.replace(/\{n\}\./g, (S.multi ? 'await ' : '') + name + '.'); }); }
@@ -869,7 +868,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         outLabel: ('The simulator prints: '),
         bubble: function (step, f) {
           if (step === 1) return ('Step 1: imports go at the top. The first lines are Pybricks\' own Port and wait, then the MBC library; the comment reminds you to set the camera menu to mode ') + S.mode + ('.');
-          if (step === 2) return ('Step 2: create the object. ') + S.name + (' (left of =) is your name; the right side says the camera is on ') + portRef() + (EV3 && S.auto ? (', with no mode, so the first reading asks the camera.') : (', mode ') + S.mode + ('.')) + (S.multi ? (' multitask=True turns on multitasking, so run_task is imported too.') : '');
+          if (step === 2) return ('Step 2: create the object. ') + S.name + (' (left of =) is your name; the right side says the camera is on ') + portRef() + (EV3 && S.auto ? (', with no mode, so the first reading asks the camera.') : (', mode ') + S.mode + ('.')) + (S.multi ? (' Multitasking uses the same line, no need to write True: the library detects it automatically (needs Pybricks 3.4 or later); run_task is imported too.') : '');
           return S.multi ? ('Step 3 (multitasking): code goes in async def main(), every function and wait gets await, and run_task(main()) starts it.')
             : ('Step 3: use "') + S.name + ('.function()" to read. ') + (f.once ? ('This one runs once, outside the loop.') : ('while True repeats forever; wait(100) reads every 0.1 s.'));
         },
@@ -1112,7 +1111,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
   HOST.place = function (f) { return f.once ? ('under program, read once') : ('inside the repeat while true loop'); };
   HOST.bubble = function (step, f) {
     if (step === 1) return ('Step 1: under "set up", attach the red import block from MBC_UniCam import UniCam. Set the camera menu to mode ') + S.mode + ('.');
-    if (step === 2) return ('Step 2: create the object. ') + S.name + (' is the name; the three slots are port number ') + (S.port + 1) + (' (port ' + CFG.ports[S.port] + '), mode number ') + S.mode + (', multitask ') + (S.multi ? 'true' : 'false') + ('.');
+    if (step === 2) return ('Step 2: create the object. ') + S.name + (' is the name; the three slots are port number ') + (S.port + 1) + (' (port ' + CFG.ports[S.port] + '), mode number ') + S.mode + (', multitask ') + (S.multi ? 'true' : 'false') + (' (with Pybricks 3.4 or later the library detects multitasking by itself, so true or false both work here).');
     return ('Step 3: put the red function block under "program": pick ') + S.name + (' first, ') + (S.multi ? 'await' : 'call') + (' in the middle, then the function. ') + (f.once ? ('This one runs once, no loop needed.') : ('"repeat while true" repeats; wait 100 ms reads every 0.1 s.'));
   };
   HOST.valid = function () { return true; };

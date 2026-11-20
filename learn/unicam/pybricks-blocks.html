@@ -312,7 +312,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
           <p class="small">要不要開啟多工？（積木最後一格綠色的 true／false）</p>
           <div class="choice" role="group" aria-label="多工">
             <button type="button" class="opt" id="mt-off" aria-pressed="true"><b>false：不開</b><small>功能積木中間的下拉選單選 <b>call</b>。產生一般的 while True 迴圈，最好懂。</small></button>
-            <button type="button" class="opt" id="mt-on" aria-pressed="false"><b>true：開啟多工</b><small>功能積木中間選 <b>await</b>。程式會放進 async def main()，可以跟其他工作同時跑。</small></button>
+            <button type="button" class="opt" id="mt-on" aria-pressed="false"><b>true：開啟多工</b><small>功能積木中間選 <b>await</b>。程式會放進 async def main()，可以跟其他工作同時跑。函式庫會自動判斷多工（需要 Pybricks 3.4 以上），這一格填 true 或 false 都可以。</small></button>
           </div>
           <p class="small">孔位那格填的是編號：SPIKE 1～6 ＝ A～F，<code id="portnum">3</code> 就是 <span id="portletter">C</span> 孔。模式那格要跟相機選單一樣（SPIKE 讀不到相機現在的模式，不一樣時數字會亂掉）。</p>
 
@@ -414,7 +414,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
     <h2 id="tiph">使用注意</h2>
     <ol>
       <li><b>函式庫檔要先匯入專案。</b>沒有匯入 <code>MBC_UniCam.py</code>，紅色積木裡選不到 <code>UniCam</code>。</li>
-      <li><b>await 和 call 要跟多工一致：</b>多工 true 就選 await，多工 false 就選 call。混著用，程式會在主機上出錯。</li>
+      <li><b>await 和 call 整支程式要一樣：</b>多工程式每顆功能積木都選 await，一般程式都選 call，混著用程式會在主機上出錯。物件積木最後一格的 true／false 不影響：函式庫會自動判斷多工（需要 Pybricks 3.4 以上；舊寫法照樣能用）。</li>
       <li><b>模式編號一定要跟相機選單一樣。</b>用了這個模式沒有的功能會出現 <code>ValueError</code>（訊息會寫要用哪個模式）。</li>
       <li><b>拔線不會讓程式停。</b>讀不到時回傳上一次讀到的值，從來沒讀到過就回傳 <code>None</code>，電腦畫面印一行提醒；用 <code>sensor_ok</code> 可以知道有沒有接好。</li>
       <li><b>座標方向：</b>X 0～159 左→右，Y 0～119 上→下（上＝小）；循線偏移：線在左＝負、在右＝正（站在車後面往前看）。顏色要在相機上教，程式改不了目標色。</li>
@@ -851,7 +851,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
       function ctor() {
         var args = portRef();
         if (!(EV3 && S.auto)) args += ', mode=' + S.mode;
-        if (!EV3 && S.multi) args += ', multitask=True';
+        // 2026-11-20 起 MBC_UniCam.py v1.1 自動判斷多工：同步、多工都寫 UniCam(Port.C, mode=13)，不填 True（需要 Pybricks 3.4 以上）
         return S.name + ' = UniCam(' + args + ')';
       }
       function bodyOf(f, name) { return f.body.map(function (b) { return b.replace(/\{n\}\./g, (S.multi ? 'await ' : '') + name + '.'); }); }
@@ -891,7 +891,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
         outLabel: ('模擬畫面上會印出：'),
         bubble: function (step, f) {
           if (step === 1) return ('第 1 步：程式最上面先匯入。前兩行是 Pybricks 內建的孔位 Port 和等待 wait，第 3 行才是 MBC 的函式庫；最後一行註解提醒相機選單切到模式 ') + S.mode + ('。');
-          if (step === 2) return ('第 2 步：建立物件。等號左邊的 ') + S.name + (' 是你取的名字，右邊告訴程式相機接在 ') + portRef() + (EV3 && S.auto ? ('，沒寫 mode，第一次讀值時自動問相機。') : ('、模式 ') + S.mode + ('。')) + (S.multi ? ('multitask=True 開啟多工，所以第 2 行多匯入了 run_task。') : '');
+          if (step === 2) return ('第 2 步：建立物件。等號左邊的 ') + S.name + (' 是你取的名字，右邊告訴程式相機接在 ') + portRef() + (EV3 && S.auto ? ('，沒寫 mode，第一次讀值時自動問相機。') : ('、模式 ') + S.mode + ('。')) + (S.multi ? ('開了多工也是這樣寫，不用填 True：函式庫會自動判斷多工（需要 Pybricks 3.4 以上），第 2 行多匯入了 run_task。') : '');
           return S.multi ? ('第 3 步（多工）：程式放在 async def main() 裡，每個功能和 wait 前面都要加 await，最後 run_task(main()) 讓它開始跑。')
             : ('第 3 步：用「') + S.name + ('.功能()」讀值。') + (f.once ? ('這個功能放在迴圈外面讀一次就好。') : ('while True 會一直重複，wait(100) 讓它每 0.1 秒讀一次。'));
         },
@@ -1142,7 +1142,7 @@ function T(zh, en) { return PAGE.lang === "en" ? en : zh; }
   HOST.place = function (f) { return f.once ? ('program 下面，讀一次') : ('repeat while true 迴圈裡'); };
   HOST.bubble = function (step, f) {
     if (step === 1) return ('第 1 步：「set up」下面先接紅色的匯入積木 from MBC_UniCam import UniCam。相機選單切到模式 ') + S.mode + ('。');
-    if (step === 2) return ('第 2 步：建立物件。') + S.name + (' 是名字，後面三格依序是孔位編號 ') + (S.port + 1) + ('（' + CFG.ports[S.port] + ' 埠）、模式編號 ') + S.mode + ('、多工 ') + (S.multi ? 'true' : 'false') + ('。');
+    if (step === 2) return ('第 2 步：建立物件。') + S.name + (' 是名字，後面三格依序是孔位編號 ') + (S.port + 1) + ('（' + CFG.ports[S.port] + ' 埠）、模式編號 ') + S.mode + ('、多工 ') + (S.multi ? 'true' : 'false') + ('（Pybricks 3.4 以上函式庫會自動判斷多工，這格填 true 或 false 都可以）。');
     return ('第 3 步：在「program」下面放紅色的功能積木：第一格選 ') + S.name + ('，中間選 ') + (S.multi ? 'await' : 'call') + ('，最後一格選功能。') + (f.once ? ('這個功能讀一次就好，不用放進迴圈。') : ('「repeat while true」一直重複，wait 100 ms 讓它每 0.1 秒讀一次。'));
   };
   HOST.valid = function () { return true; };
