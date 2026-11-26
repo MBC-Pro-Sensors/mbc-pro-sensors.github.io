@@ -116,6 +116,18 @@ SPIKE 官方 App（.llsp3）、MBC 積木網站（.abp）與 EV3 官方軟體（
 | 神攝手 | [頁面](/sensors/unicam/spike-examples.md) | [頁面](/sensors/unicam/ev3-examples.md) |
 | MBC EXP6 六路馬達擴充器（適用 SPIKE™） | [頁面](/sensors/exp6/spike-examples.md) | — |
 
+## 🧩 3D 列印外殼（STL／STEP／工程圖）
+
+循行者 8 路、16 路的樂高外殼免費下載，用自己的 3D 印表機就能印。**上殼依上位機選版本**（插座開口不同，不能互換）；**下殼各版本共用**，只要印一個。STL 直接切片列印，STEP 給要改外形的人，工程圖 PDF 列出每層座標。組裝方式與列印說明見產品頁：[循行者 8 路](/sensors/line8/index.md)、[循行者 16 路](/sensors/line16/index.md)。
+
+| 版本 | 循行者 8 路 | 循行者 16 路 |
+| :--- | :--- | :--- |
+| SPIKE 版上殼（LPF2 扁平插座） | [STL](/downloads/enclosure/line8/line8_SPIKE_lid.stl) · [STEP](/downloads/enclosure/line8/line8_SPIKE_lid.step) · [工程圖](/downloads/enclosure/line8/line8_SPIKE_lid_drawing.pdf) | [STL](/downloads/enclosure/line16/line16_SPIKE_lid.stl) · [STEP](/downloads/enclosure/line16/line16_SPIKE_lid.step) · [工程圖](/downloads/enclosure/line16/line16_SPIKE_lid_drawing.pdf) |
+| EV3 版上殼（RJ12 插座） | [STL](/downloads/enclosure/line8/line8_EV3_lid.stl) · [STEP](/downloads/enclosure/line8/line8_EV3_lid.step) · [工程圖](/downloads/enclosure/line8/line8_EV3_lid_drawing.pdf) | [STL](/downloads/enclosure/line16/line16_EV3_lid.stl) · [STEP](/downloads/enclosure/line16/line16_EV3_lid.step) · [工程圖](/downloads/enclosure/line16/line16_EV3_lid_drawing.pdf) |
+| mBot 版上殼（RJ25 插座） | [STL](/downloads/enclosure/line8/line8_mBot_lid.stl) · [STEP](/downloads/enclosure/line8/line8_mBot_lid.step) · [工程圖](/downloads/enclosure/line8/line8_mBot_lid_drawing.pdf) | [STL](/downloads/enclosure/line16/line16_mBot_lid.stl) · [STEP](/downloads/enclosure/line16/line16_mBot_lid.step) · [工程圖](/downloads/enclosure/line16/line16_mBot_lid_drawing.pdf) |
+| R4 版上殼（MATRIX Mini R4 白色 4Pin 插座） | [STL](/downloads/enclosure/line8/line8_R4_lid.stl) · [STEP](/downloads/enclosure/line8/line8_R4_lid.step) · [工程圖](/downloads/enclosure/line8/line8_R4_lid_drawing.pdf) | [STL](/downloads/enclosure/line16/line16_R4_lid.stl) · [STEP](/downloads/enclosure/line16/line16_R4_lid.step) · [工程圖](/downloads/enclosure/line16/line16_R4_lid_drawing.pdf) |
+| **下殼（各版本共用）** | [STL](/downloads/enclosure/line8/line8_base_all_versions.stl) · [STEP](/downloads/enclosure/line8/line8_base_all_versions.step) · [工程圖](/downloads/enclosure/line8/line8_base_all_versions_drawing.pdf) | [STL](/downloads/enclosure/line16/line16_base_all_versions.stl) · [STEP](/downloads/enclosure/line16/line16_base_all_versions.step) · [工程圖](/downloads/enclosure/line16/line16_base_all_versions_drawing.pdf) |
+
 ## 📄 型錄與說明書
 
 | 檔案 | 說明 |

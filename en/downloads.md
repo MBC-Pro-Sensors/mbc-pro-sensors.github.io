@@ -116,6 +116,18 @@ The beginner examples for the official SPIKE App (.llsp3), the MBC blocks site (
 | SharpShot Vision | [page](/en/sensors/unicam/spike-examples.md) | [page](/en/sensors/unicam/ev3-examples.md) |
 | MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) | [page (zh)](/sensors/exp6/spike-examples.md) | — |
 
+## 🧩 3D-printable enclosures (STL / STEP / drawings)
+
+Free LEGO-compatible enclosures for the Pathfinder 8-Way and 16-Way: print them on your own 3D printer. **Pick the top shell that matches your controller** (each has a different socket opening, so they are not interchangeable); **the bottom shell is shared by all editions**, so you only need to print one. STL goes straight into your slicer, STEP is for modifying the shape, and the drawing PDF lists the coordinates of every layer. Assembly and printing notes are on the product pages: [Pathfinder 8-Way](/en/sensors/line8/index.md), [Pathfinder 16-Way](/en/sensors/line16/index.md).
+
+| Edition | Pathfinder 8-Way | Pathfinder 16-Way |
+| :--- | :--- | :--- |
+| SPIKE top shell (LPF2 flat socket) | [STL](/downloads/enclosure/line8/line8_SPIKE_lid.stl) · [STEP](/downloads/enclosure/line8/line8_SPIKE_lid.step) · [Drawing](/downloads/enclosure/line8/line8_SPIKE_lid_drawing.pdf) | [STL](/downloads/enclosure/line16/line16_SPIKE_lid.stl) · [STEP](/downloads/enclosure/line16/line16_SPIKE_lid.step) · [Drawing](/downloads/enclosure/line16/line16_SPIKE_lid_drawing.pdf) |
+| EV3 top shell (RJ12 socket) | [STL](/downloads/enclosure/line8/line8_EV3_lid.stl) · [STEP](/downloads/enclosure/line8/line8_EV3_lid.step) · [Drawing](/downloads/enclosure/line8/line8_EV3_lid_drawing.pdf) | [STL](/downloads/enclosure/line16/line16_EV3_lid.stl) · [STEP](/downloads/enclosure/line16/line16_EV3_lid.step) · [Drawing](/downloads/enclosure/line16/line16_EV3_lid_drawing.pdf) |
+| mBot top shell (RJ25 socket) | [STL](/downloads/enclosure/line8/line8_mBot_lid.stl) · [STEP](/downloads/enclosure/line8/line8_mBot_lid.step) · [Drawing](/downloads/enclosure/line8/line8_mBot_lid_drawing.pdf) | [STL](/downloads/enclosure/line16/line16_mBot_lid.stl) · [STEP](/downloads/enclosure/line16/line16_mBot_lid.step) · [Drawing](/downloads/enclosure/line16/line16_mBot_lid_drawing.pdf) |
+| R4 top shell (MATRIX Mini R4 white 4-pin socket) | [STL](/downloads/enclosure/line8/line8_R4_lid.stl) · [STEP](/downloads/enclosure/line8/line8_R4_lid.step) · [Drawing](/downloads/enclosure/line8/line8_R4_lid_drawing.pdf) | [STL](/downloads/enclosure/line16/line16_R4_lid.stl) · [STEP](/downloads/enclosure/line16/line16_R4_lid.step) · [Drawing](/downloads/enclosure/line16/line16_R4_lid_drawing.pdf) |
+| **Bottom shell (all editions)** | [STL](/downloads/enclosure/line8/line8_base_all_versions.stl) · [STEP](/downloads/enclosure/line8/line8_base_all_versions.step) · [Drawing](/downloads/enclosure/line8/line8_base_all_versions_drawing.pdf) | [STL](/downloads/enclosure/line16/line16_base_all_versions.stl) · [STEP](/downloads/enclosure/line16/line16_base_all_versions.step) · [Drawing](/downloads/enclosure/line16/line16_base_all_versions_drawing.pdf) |
+
 ## 📄 Catalog and manuals
 
 | File | Notes |
