@@ -167,6 +167,28 @@ Default is **Black Line Mode** (tracking dark lines). After switching, it become
 
 ---
 
+## 📥 3D-Printable Enclosure Downloads
+
+Want to protect the circuit board? The LEGO-compatible enclosure for the Pathfinder 16-Way is a free download: print it on your own 3D printer.
+
+1. **Pick the edition**: choose the one with the **same socket as your controller** (SPIKE / EV3 / mBot / R4). Each top shell has a different socket opening, so they are not interchangeable. The bottom shell is identical for all 4 editions, so you only need one.
+2. **Pick the file**: `.stl` goes straight into your slicer for printing; `.step` is for anyone who wants to modify the shape (opens in Fusion 360, Onshape, FreeCAD); the **drawing PDF** is for anyone who wants to redraw it, with the coordinates of every layer listed.
+3. **Assemble**: put the board into the bottom shell, then press the top shell on. Both ends snap shut like a tin-box lid. Then push LEGO axles through the cross holes on the board to mount it on your robot.
+
+| Edition | Socket | Files (print / modify) | Drawing |
+|---|---|---|---|
+| SPIKE | LPF2 flat socket (SPIKE Prime / Robot Inventor) | [STL](/downloads/enclosure/line16/line16_SPIKE_lid.stl) · [STEP](/downloads/enclosure/line16/line16_SPIKE_lid.step) | [PDF](/downloads/enclosure/line16/line16_SPIKE_lid_drawing.pdf) |
+| EV3 | RJ12 socket (EV3) | [STL](/downloads/enclosure/line16/line16_EV3_lid.stl) · [STEP](/downloads/enclosure/line16/line16_EV3_lid.step) | [PDF](/downloads/enclosure/line16/line16_EV3_lid_drawing.pdf) |
+| mBot | RJ25 socket (mBot socket board) | [STL](/downloads/enclosure/line16/line16_mBot_lid.stl) · [STEP](/downloads/enclosure/line16/line16_mBot_lid.step) | [PDF](/downloads/enclosure/line16/line16_mBot_lid_drawing.pdf) |
+| R4 | MATRIX Mini R4 white 4-pin socket | [STL](/downloads/enclosure/line16/line16_R4_lid.stl) · [STEP](/downloads/enclosure/line16/line16_R4_lid.step) | [PDF](/downloads/enclosure/line16/line16_R4_lid_drawing.pdf) |
+| **Bottom shell (all editions)** | Same for all 4 editions | [STL](/downloads/enclosure/line16/line16_base_all_versions.stl) · [STEP](/downloads/enclosure/line16/line16_base_all_versions.step) | [PDF](/downloads/enclosure/line16/line16_base_all_versions_drawing.pdf) |
+
+> 💡 **Printing notes**: PLA (FDM 3D printing). The cross holes are calibrated from real FDM test prints (tolerance 0.00 mm). Every printer is a little different; if the fit is too tight or too loose, adjust it in the STEP file.
+>
+> 🔍 **View in 3D online**: [open the Pathfinder 16-Way enclosure in Onshape](https://cad.onshape.com/documents/af0dd39c9d7266a140a91f23) to rotate and measure it in your browser with no software to install (Onshape asks you to sign in with a free account).
+
+---
+
 ## ❓ Frequently Asked Questions (FAQ)
 
 - **❓ Sensor plugged in but no response?**

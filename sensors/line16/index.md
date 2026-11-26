@@ -171,6 +171,28 @@ MBC 16路循線感應器是一款專為樂高 (LEGO) 及各式高階機器人競
 
 ---
 
+## 📥 3D 列印外殼下載
+
+想把電路板保護起來？循行者 16 路的樂高外殼檔案免費下載，用自己的 3D 印表機就能印。
+
+1. **選版本**：選跟你**主機插座相同**的版本（SPIKE／EV3／mBot／R4）。每版上殼的插座開口不同，不能混用；下殼 4 個版本都一樣，印一份就好。
+2. **選檔案**：`.stl` 直接放進切片軟體列印；`.step` 給要修改外形的人（Fusion 360、Onshape、FreeCAD 都能開）；**工程圖 PDF** 給想自己重畫的人，每一層的座標都列出來。
+3. **組裝**：電路板放進下殼、蓋上上殼，左右兩端像鐵盒蓋一樣扣合；再用板上的十字孔穿樂高十字軸，固定在你的機器人上。
+
+| 版本 | 插座 | 檔案（列印／修改） | 工程圖 |
+|---|---|---|---|
+| SPIKE 版 | LPF2 扁平插座（SPIKE Prime／Robot Inventor） | [STL](/downloads/enclosure/line16/line16_SPIKE_lid.stl) · [STEP](/downloads/enclosure/line16/line16_SPIKE_lid.step) | [PDF](/downloads/enclosure/line16/line16_SPIKE_lid_drawing.pdf) |
+| EV3 版 | RJ12 插座（EV3） | [STL](/downloads/enclosure/line16/line16_EV3_lid.stl) · [STEP](/downloads/enclosure/line16/line16_EV3_lid.step) | [PDF](/downloads/enclosure/line16/line16_EV3_lid_drawing.pdf) |
+| mBot 版 | RJ25 插座（mBot 插座片） | [STL](/downloads/enclosure/line16/line16_mBot_lid.stl) · [STEP](/downloads/enclosure/line16/line16_mBot_lid.step) | [PDF](/downloads/enclosure/line16/line16_mBot_lid_drawing.pdf) |
+| R4 版 | MATRIX Mini R4 白色 4Pin 插座 | [STL](/downloads/enclosure/line16/line16_R4_lid.stl) · [STEP](/downloads/enclosure/line16/line16_R4_lid.step) | [PDF](/downloads/enclosure/line16/line16_R4_lid_drawing.pdf) |
+| **下殼（各版本共用）** | 4 個版本都一樣 | [STL](/downloads/enclosure/line16/line16_base_all_versions.stl) · [STEP](/downloads/enclosure/line16/line16_base_all_versions.step) | [PDF](/downloads/enclosure/line16/line16_base_all_versions_drawing.pdf) |
+
+> 💡 **列印說明**：材料 PLA（FDM 3D 列印）。十字孔尺寸已用 FDM 列印實測校正（公差 0.00 mm）；每台印表機誤差不同，太緊或太鬆可以用 STEP 檔微調。
+>
+> 🔍 **線上看 3D**：[在 Onshape 開啟循行者 16 路外殼](https://cad.onshape.com/documents/af0dd39c9d7266a140a91f23)，瀏覽器就能旋轉、量尺寸，不用安裝軟體（Onshape 要先登入免費帳號）。
+
+---
+
 ## ❓ 常見問題 FAQ
 
 - **❓ 感應器插上去沒反應？**
