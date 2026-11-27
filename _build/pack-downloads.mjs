@@ -90,6 +90,10 @@ for (const it of spec.items) {
     }
   } else if (ONLY && !ONLY.has(path.basename(it.out)) && fs.existsSync(outAbs)) {
     entry.size = fs.statSync(outAbs).size;   // --only 沒列到的包：不動
+    // 清單也沿用上一次產生的（正本多了未上機的檔，不能寫進 generated/downloads.json）
+    const prevGen = fs.existsSync(path.join(BUILD, 'generated', 'downloads.json')) ? JSON.parse(fs.readFileSync(path.join(BUILD, 'generated', 'downloads.json'), 'utf8')) : null;
+    const prev = prevGen?.items?.find((x) => x.out === entry.out);
+    if (prev?.files) entry.files = prev.files;
   } else if (fs.existsSync(outAbs) && zipDiff(outAbs, files, src, srcOf)?.length === 0) {
     // 內容跟正本完全一樣就不重打（重打只會改時間戳，git 會多一筆無意義的變更）
     entry.size = fs.statSync(outAbs).size;

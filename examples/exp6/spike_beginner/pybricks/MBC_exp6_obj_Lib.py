@@ -1,6 +1,6 @@
 # ════════════════════════════════════════════════════════════════
-#  EXP6 智能擴充板 Python 函式庫（Pybricks SPIKE Prime 版）2026.11
-#  EXP6 Smart Expansion Board Library for Pybricks SPIKE Prime, 2026.11
+#  MBC EXP6 六路馬達擴充器（適用 SPIKE™）Python 函式庫（Pybricks SPIKE Prime 版）2026.11
+#  MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™) library for Pybricks SPIKE Prime, 2026.11
 #  Author: MBC robotics    Date: 2026.11
 #  ⚠ 需搭配 EXP6 韌體 2026-11-03 以後（組模式＋命令轉送）。以前的函式全部保留、用法不變；舊韌體的板子請先更新 EXP6 韌體。
 #  ⚠ Requires EXP6 firmware dated 2026-11-03 or later. All earlier functions are unchanged; boards with older firmware need a firmware update.

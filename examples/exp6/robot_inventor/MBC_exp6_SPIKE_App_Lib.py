@@ -1,4 +1,4 @@
-# Python Library for EXP6 Smart Expansion Board for LEGO MINDSTORMS Robot Inventor (51515)
+# Python Library for the MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™), LEGO MINDSTORMS Robot Inventor (51515) edition
 # Author : MBC robotics
 #
 # !! 此函式庫專供 LEGO MINDSTORMS Robot Inventor 10.x／SPIKE App 2.x（玩具版）使用 !!
