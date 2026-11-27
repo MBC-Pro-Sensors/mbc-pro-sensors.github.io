@@ -1077,7 +1077,7 @@
   "exp6": {
     "specs": {
       "zh": {
-        "power": "馬達由外接 2S 鋰電池供電（電池需自備，不要接 3S 以上）",
+        "power": "馬達由外接鋰電池供電，建議 2S；3S 可用，馬達爆發力較大，但會限制感應器啟動（不含電池，附一條 XT60 轉 XT30 轉接線（航模電池多為 XT60 接頭））",
         "extra": [
           [
             "適用主機",
@@ -1086,7 +1086,7 @@
         ]
       },
       "en": {
-        "power": "Motors powered by an external 2S LiPo battery (not included; do not use 3S or higher)",
+        "power": "Motors powered by an external LiPo battery, 2S recommended; 3S works and gives the motors more punch, but limits sensor start-up (battery not included; an XT60-to-XT30 adapter cable comes in the box, since most RC/LiPo packs use XT60)",
         "extra": [
           [
             "Controller",
@@ -1328,12 +1328,12 @@
       "en": "WRO RoboMission: allowed in all age groups; servos count toward the motor limit"
     },
     "zh": {
-      "badge": "SRV-06 · 即將推出",
-      "pitch": "一個 SPIKE 孔接 6 顆舵機：角度、速度、電流回報與堵轉保護都由擴充器處理，舵機電源直接取自主機，不用外接電池。",
+      "badge": "SRV-04 · 開發中",
+      "pitch": "一個 SPIKE 孔接 4 顆舵機：角度、速度、電流回報與堵轉保護都由擴充器處理，舵機電源直接取自主機，不用外接電池。",
       "stats": [
         [
-          "1 → 6",
-          "一孔接六顆舵機"
+          "1 → 4",
+          "一孔接四顆舵機"
         ],
         [
           "堵轉保護",
@@ -1356,11 +1356,11 @@
       ]
     },
     "en": {
-      "badge": "SRV-06 · COMING SOON",
-      "pitch": "Six servos on one SPIKE port: angle, speed, current readback and stall protection are handled on the board, and the servos draw power from the hub, no battery needed.",
+      "badge": "SRV-04 · IN DEVELOPMENT",
+      "pitch": "Four servos on one SPIKE port: angle, speed, current readback and stall protection are handled on the board, and the servos draw power from the hub, no battery needed.",
       "stats": [
         [
-          "1 → 6",
+          "1 → 4",
           "servos on one port"
         ],
         [
@@ -1384,8 +1384,8 @@
       ]
     },
     "name": {
-      "zh": "MBC Servo6 舵機擴充器（適用 SPIKE™）",
-      "en": "MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™)"
+      "zh": "MBC Servo4 舵機擴充器（適用 SPIKE™）",
+      "en": "MBC Servo4 4-Port Servo Expander (for LEGO® SPIKE™)"
     },
     "routes": {
       "spike": {

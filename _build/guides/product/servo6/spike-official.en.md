@@ -1,10 +1,10 @@
 > [!NOTE]
-> Servo6 is **coming soon**: circuit and firmware are done and final hub testing is under way; specifications follow the release version. **SPIKE Prime only** (not Robot Inventor or EV3).
+> Servo4 is **in development**: the new version has 4 ports and its hardware is still being built; specifications and examples follow the release version. **SPIKE Prime only** (not Robot Inventor or EV3).
 
 ### Wiring and power
 
 1. **Host cable**: plug the expander's SPIKE cable into any hub port (A~F).
-2. **Servos**: plug the 3-wire servo connectors into **CN1~CN6** following the board markings (signal / VCC / GND). Servos with 500~2500 µs signals such as SG90 and MG996R work.
+2. **Servos**: plug the 3-wire servo connectors into **CN1~CN4** following the board markings (signal / VCC / GND). Servos with 500~2500 µs signals such as SG90 and MG996R work.
 3. **No battery needed**: after the handshake the hub sends battery voltage to the expander and the green LED changes from fast blinking to steady. Total servo current is limited to **about 0.75 A**; check the working current of high-torque servos first.
 
 > [!TIP]
@@ -27,7 +27,7 @@ time.sleep_ms(1000)
 sv.stop_all()
 ```
 
-The expander pretends to be a **SPIKE ultrasonic sensor**: commands go out through the ultrasonic sensor's "4 light values", and status comes back through `device.data()`. Each command waits one system polling cycle (about 20~50 ms), so controlling 6 servos in a row takes about 6 cycles.
+The expander pretends to be a **SPIKE ultrasonic sensor**: commands go out through the ultrasonic sensor's "4 light values", and status comes back through `device.data()`. Each command waits one system polling cycle (about 20~50 ms), so controlling 4 servos in a row takes about 4 cycles.
 
 > [!TIP]
 > When an official App program ends, the servos are not released (they hold their last position and do not run away); call `stop_all()` at the end of the program to release them.

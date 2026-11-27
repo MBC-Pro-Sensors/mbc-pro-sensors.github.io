@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/learn/servo6/pybricks-blocks.html">
 <link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/servo6/pybricks-blocks.html">
 <link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/servo6/pybricks-blocks.html">
-<title>Servo6 多路舵機擴充器 Pybricks 積木教學 | MBC-Pro Sensors</title>
+<title>Servo4 多路舵機擴充器 Pybricks 積木教學 | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -253,10 +253,10 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/learn/">全部互動教學</a><a class="back" href="/sensors/servo6/spike/">← Servo6 SPIKE 說明</a><a class="lang" href="/en/learn/servo6/pybricks-blocks.html" hreflang="en">EN</a><div class="tabs"><a href="/learn/servo6/micropython.html">MicroPython（Pybricks）</a><a href="/learn/servo6/pybricks-blocks.html" aria-current="page">Pybricks 積木</a><a href="/learn/servo6/spike-app.html">樂高官方 SPIKE App</a></div></div></nav>
+<nav class="learn-nav" aria-label="互動教學"><div class="in"><a class="brand" href="/">MBC-Pro Sensors</a><a class="back" href="/learn/">全部互動教學</a><a class="back" href="/sensors/servo6/spike/">← Servo4 SPIKE 說明</a><a class="lang" href="/en/learn/servo6/pybricks-blocks.html" hreflang="en">EN</a><div class="tabs"><a href="/learn/servo6/micropython.html">MicroPython（Pybricks）</a><a href="/learn/servo6/pybricks-blocks.html" aria-current="page">Pybricks 積木</a><a href="/learn/servo6/spike-app.html">樂高官方 SPIKE App</a></div></div></nav>
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">MBC Servo6 多路舵機擴充器 × Pybricks 積木</span>
+    <span class="eyebrow">MBC Servo4 多路舵機擴充器 × Pybricks 積木</span>
     <h1>三個步驟用 Pybricks 積木控制 6 顆舵機</h1>
     <p class="lead">積木跟 MicroPython 一樣照這個順序：先在「set up」下面<b>匯入函式庫</b>，再<b>建立物件、幫擴充板取名字</b>，最後在「program」下面用這個名字<b>呼叫功能</b>。左邊一步一步做，右邊的積木會跟著長出來；這些積木圖是直接從 Pybricks Code 拼好匯出的，跟你在畫面上看到的一樣。</p>
     <p class="lic"><b>先確認：</b>Pybricks 的積木模式要授權碼或 Patreon 贊助才能用。沒有授權可以改寫 MicroPython，寫法一模一樣（右邊切到「對應的 MicroPython」就看得到）。這塊擴充板只能接 SPIKE Prime，主機的 Pybricks 韌體要 v4.0 以上。</p>
@@ -267,7 +267,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
       <article class="step current" id="step1">
         <div class="step-head"><span class="num">1</span><h2>匯入函式庫</h2></div>
         <div class="step-body">
-          <p class="why">積木程式的<b>第一件事</b>，是在黃色「set up」下面接一塊紅色的「from … import …」積木，告訴 Pybricks 要用 Servo6 的函式庫。</p>
+          <p class="why">積木程式的<b>第一件事</b>，是在黃色「set up」下面接一塊紅色的「from … import …」積木，告訴 Pybricks 要用 Servo4 的函式庫。</p>
           <ol class="howto">
             <li>下載函式庫（存成檔案，檔名不要改）：<a href="/examples/servo6/pybricks/MBC_servo6_Lib.py" download>MBC_servo6_Lib.py</a>；檔名是 <code id="libfile">MBC_servo6_Lib.py</code>。</li>
             <li>在 Pybricks Code 左邊檔案區按「Import a file」，把它匯入<b>同一個專案</b>，檔名不要改。</li>
@@ -311,7 +311,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
           <div class="sim-box">
             <div class="sim-title">模擬擴充板（6 個舵機孔各接一顆舵機）：看程式怎麼轉舵臂，也可以用滑鼠拖舵臂</div>
             <div class="sim">
-              <svg id="field" viewBox="0 0 460 200" role="group" aria-label="Servo6 擴充板示意：6 顆舵機，可以用滑鼠拖動舵臂" style="touch-action: none"></svg>
+              <svg id="field" viewBox="0 0 460 200" role="group" aria-label="Servo4 擴充板示意：6 顆舵機，可以用滑鼠拖動舵臂" style="touch-action: none"></svg>
               <div class="ctrl">
                 <div class="toggles">
                   <label><input autocomplete="off" type="checkbox" id="hold1"> 把 1 號舵臂扳開、用手擋住</label>
@@ -729,7 +729,7 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
     PH.forEach(function (p) { total += fault || un ? 0 : Math.round(p.cur); });
     var h = '<rect x="0" y="0" width="460" height="200" fill="#f7f7f2"/>';
     h += '<rect x="8" y="8" width="444" height="26" rx="6" fill="#1b2422"/>';
-    h += '<text x="18" y="25" font-size="13" fill="#e3ece9">Servo6 擴充板（接主機 ' + hubLetter() + ' 埠）</text>';
+    h += '<text x="18" y="25" font-size="13" fill="#e3ece9">Servo4 擴充板（接主機 ' + hubLetter() + ' 埠）</text>';
     h += '<text x="442" y="25" text-anchor="end" font-size="13" fill="' + (un || fault ? '#ff8f6b' : '#9ad98a') + '">' + (un ? '拔掉了' : fault ? '電源過載：舵機都沒力' : '總電流 ' + total + ' mA') + '</text>';
     for (var i = 0; i < 6; i++) {
       var p = PH[i], c = B ? B.ch[i] : null, cx = CX0 + i * GAP, on = !!(c && c.on), st = !!(c && c.stall);

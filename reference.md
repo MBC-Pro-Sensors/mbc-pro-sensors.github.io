@@ -15,7 +15,7 @@
 | [神攝手](/sensors/unicam/reference.md) | — | [SPIKE](/sensors/unicam/reference.md) | [EV3](/sensors/unicam/reference.md) | [Arduino I2C](/sensors/unicam/reference.md) | [mBlock](/sensors/unicam/reference.md) | [MATRIX](/sensors/unicam/reference.md) | [micro:bit](/sensors/unicam/reference.md) |
 | [MBC EXP6 六路馬達擴充器（適用 SPIKE™）](/sensors/exp6/index.md) | — | [SPIKE](/sensors/exp6/spike-pybricks.md) | — | — | — | — | — |
 | [陀螺儀 IMU 九軸](/sensors/imu/reference.md) | `0x6A` | — | [EV3](/sensors/imu/reference.md) | [Arduino I2C](/sensors/imu/arduino-i2c.md) | [mBlock](/sensors/imu/mblock.md) | [MATRIX](/sensors/imu/matrix.md) | [micro:bit](/sensors/imu/microbit.md) |
-| [MBC Servo6 舵機擴充器（適用 SPIKE™）](/sensors/servo6/index.md) | — | [SPIKE](/sensors/servo6/spike-pybricks.md) | — | — | — | — | — |
+| [MBC Servo4 舵機擴充器（適用 SPIKE™）](/sensors/servo6/index.md) | — | [SPIKE](/sensors/servo6/spike-pybricks.md) | — | — | — | — | — |
 | [遠距離顏色感應器 OV3660](/sensors/ov3660/index.md) | — | — | — | — | — | — | — |
 
 ## 共用規則

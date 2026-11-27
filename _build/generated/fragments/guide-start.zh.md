@@ -9,5 +9,5 @@
 | [神攝手](/sensors/unicam/index.md) | [讀值教學](/sensors/unicam/spike/index.md) | [讀值教學](/sensors/unicam/ev3/index.md) | [讀值教學](/sensors/unicam/arduino/index.md) | [讀值教學](/sensors/unicam/mblock/index.md) | [讀值教學](/sensors/unicam/matrix/mvision.md) | [讀值教學](/sensors/unicam/microbit/index.md) |
 | [MBC EXP6 六路馬達擴充器（適用 SPIKE™）](/sensors/exp6/index.md) | [樂高官方 App](/sensors/exp6/spike/official.md)・[MBC 積木網站](/sensors/exp6/spike/mbcblocks.md)・[Pybricks](/sensors/exp6/spike/pybricks.md) | — | — | — | — | — |
 | [陀螺儀 IMU 九軸](/sensors/imu/index.md) | — | [EV3-G 官方軟體](/sensors/imu/ev3/ev3g.md)・[EV3 Classroom](/sensors/imu/ev3/classroom.md)・[Pybricks](/sensors/imu/ev3/pybricks.md)・[clev3r](/sensors/imu/ev3/clev3r.md) | [Arduino IDE](/sensors/imu/arduino/ide.md) | [mBlock 5](/sensors/imu/mblock/mblock5.md) | [MATRIXblock 原廠積木](/sensors/imu/matrix/matrixblock.md) | [MakeCode](/sensors/imu/microbit/makecode.md) |
-| [MBC Servo6 舵機擴充器（適用 SPIKE™）](/sensors/servo6/index.md) | [樂高官方 App](/sensors/servo6/spike/official.md)・[Pybricks](/sensors/servo6/spike/pybricks.md) | — | — | — | — | — |
+| [MBC Servo4 舵機擴充器（適用 SPIKE™）](/sensors/servo6/index.md) | [樂高官方 App](/sensors/servo6/spike/official.md)・[Pybricks](/sensors/servo6/spike/pybricks.md) | — | — | — | — | — |
 | [遠距離顏色感應器 OV3660](/sensors/ov3660/index.md) | — | — | — | — | — | — |

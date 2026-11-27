@@ -51,7 +51,7 @@ The LEGO 6-pin socket on EXP6 that connects to the controller is called the **Ho
 | Pin 6 (EXP6 sends) | D0 (RX) | 19 (RX1) | GPIO16 (RX2) |
 | Pins 1, 2 | Not connected | Not connected | Not connected |
 
-**Power:** the XT30 power socket on EXP6 must be connected to a **2S lithium battery** (not 3S or higher). The motors and sensors get their power from it.
+**Power:** the XT30 power socket on EXP6 takes a lithium battery, **2S recommended**; 3S works and gives the motors more punch, but limits sensor start-up. The battery is not included; an XT60-to-XT30 adapter cable comes in the box (most RC/LiPo packs use XT60). The motors and sensors get their power from it.
 
 > [!IMPORTANT]
 > - **TX goes to "EXP6 receives", RX goes to "EXP6 sends"**: Arduino's TX (send) connects to EXP6's "receive" (pin 5). The two wires cross over.

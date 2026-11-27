@@ -29,13 +29,13 @@ To import the library:
 3. Open the example and press **▶** to run.
 
 > [!IMPORTANT]
-> **New projects: use `MBC_sensors.py`. Old projects: just replace the one file they already use.** `MBC_sensors.py` is one file for every MBC sensor (the EXP6 and Servo6 expander libraries are separate downloads); write `from MBC_sensors import MBC_LINE8`, with the same class names as in the old files. The old file names (such as `{{lib}}` used by the examples on this page) are kept for existing programs: swap in the new file with the same name and the program needs no changes. But every old-name file is the whole shared library, so **importing 3 or more of them in one program goes over the SPIKE program slot limit of about 51 KB**; to mix several sensors, import only `MBC_sensors.py`.
+> **New projects: use `MBC_sensors.py`. Old projects: just replace the one file they already use.** `MBC_sensors.py` is one file for every MBC sensor (the EXP6 and Servo4 expander libraries are separate downloads); write `from MBC_sensors import MBC_LINE8`, with the same class names as in the old files. The old file names (such as `{{lib}}` used by the examples on this page) are kept for existing programs: swap in the new file with the same name and the program needs no changes. But every old-name file is the whole shared library, so **importing 3 or more of them in one program goes over the SPIKE program slot limit of about 51 KB**; to mix several sensors, import only `MBC_sensors.py`.
 
 > [!TIP]
 > **The file name must match the name in the program's `import` exactly**, or you will get an `ImportError`. The library files on this site have no version suffix, so you do not need to rename them.
 
 > [!TIP]
-> The MBC sensor library (`MBC_sensors.py` and the old-name copies) no longer needs a `multitask` argument: with Pybricks 3.4 or later it detects normal or multitask mode automatically. In a multitask program (`async def main()` + `run_task`) every call needs `await` in front so the robot can do several things at once; the old way with `True`/`False` still works. The EXP6 and Servo6 expander libraries still take `True`/`False` as described on their pages.
+> The MBC sensor library (`MBC_sensors.py` and the old-name copies) no longer needs a `multitask` argument: with Pybricks 3.4 or later it detects normal or multitask mode automatically. In a multitask program (`async def main()` + `run_task`) every call needs `await` in front so the robot can do several things at once; the old way with `True`/`False` still works. The EXP6 and Servo4 expander libraries still take `True`/`False` as described on their pages.
 
 ### Wiring
 

@@ -837,12 +837,12 @@
   },
   "servo6": {
    "name": {
-    "zh": "MBC Servo6 舵機擴充器（適用 SPIKE™）",
-    "en": "MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™)"
+    "zh": "MBC Servo4 舵機擴充器（適用 SPIKE™）",
+    "en": "MBC Servo4 4-Port Servo Expander (for LEGO® SPIKE™)"
    },
    "short": {
-    "zh": "MBC Servo6 舵機擴充器",
-    "en": "MBC Servo6 6-Port Servo Expander"
+    "zh": "MBC Servo4 舵機擴充器",
+    "en": "MBC Servo4 4-Port Servo Expander"
    },
    "image": null,
    "color": "#ff9f43",

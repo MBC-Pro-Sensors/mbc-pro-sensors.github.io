@@ -29,13 +29,13 @@ Pybricks 有兩種讀法，挑一種就好：
 3. 點開範例，按 **▶** 執行。
 
 > [!IMPORTANT]
-> **新專案用 `MBC_sensors.py`；舊專案只換掉原本那一個檔。** `MBC_sensors.py` 一個檔適用全部 MBC 感應器（EXP6、Servo6 擴充器的函式庫另外下載），寫法是 `from MBC_sensors import MBC_LINE8`，類別名稱跟舊檔名裡的一樣。舊檔名（例如本頁範例用的 `{{lib}}`）保留給舊程式：用新版的同名檔換掉原本那個檔就好，程式不用改。但每個舊檔名都是整份共用檔，**一個程式匯入 3 個以上舊檔名，會超過 SPIKE 程式槽約 51 KB 的上限**；要混用多款感應器，就只匯入 `MBC_sensors.py`。
+> **新專案用 `MBC_sensors.py`；舊專案只換掉原本那一個檔。** `MBC_sensors.py` 一個檔適用全部 MBC 感應器（EXP6、Servo4 擴充器的函式庫另外下載），寫法是 `from MBC_sensors import MBC_LINE8`，類別名稱跟舊檔名裡的一樣。舊檔名（例如本頁範例用的 `{{lib}}`）保留給舊程式：用新版的同名檔換掉原本那個檔就好，程式不用改。但每個舊檔名都是整份共用檔，**一個程式匯入 3 個以上舊檔名，會超過 SPIKE 程式槽約 51 KB 的上限**；要混用多款感應器，就只匯入 `MBC_sensors.py`。
 
 > [!TIP]
 > **檔名要跟程式裡 `import` 的名字完全一樣**，函式庫才載得進來，否則會出現 `ImportError`。本站下載的函式庫檔名都沒有版本字尾，不用改名。
 
 > [!TIP]
-> MBC 感應器函式庫（`MBC_sensors.py` 和舊檔名版）建立物件時不用填 `multitask`：Pybricks 3.4 以上會自動判斷一般／多工，多工程式（`async def main()`＋`run_task`）每個呼叫前要加 `await`，可以同時做很多件事；舊寫法填 `True`／`False` 照樣能用。EXP6、Servo6 擴充器的函式庫照各自說明填 `True`／`False`。
+> MBC 感應器函式庫（`MBC_sensors.py` 和舊檔名版）建立物件時不用填 `multitask`：Pybricks 3.4 以上會自動判斷一般／多工，多工程式（`async def main()`＋`run_task`）每個呼叫前要加 `await`，可以同時做很多件事；舊寫法填 `True`／`False` 照樣能用。EXP6、Servo4 擴充器的函式庫照各自說明填 `True`／`False`。
 
 ### 接線
 

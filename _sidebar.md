@@ -45,7 +45,7 @@
 
 - **🔌 擴充模組**
   - [MBC EXP6 六路馬達擴充器（適用 SPIKE™）](/sensors/exp6/index.md)
-  - [MBC Servo6 舵機擴充器（適用 SPIKE™）（即將推出）](/sensors/servo6/index.md)
+  - [MBC Servo4 舵機擴充器（適用 SPIKE™）（開發中）](/sensors/servo6/index.md)
 
 - **📝 教學文章**
   - [全部文章](/articles/index.md)

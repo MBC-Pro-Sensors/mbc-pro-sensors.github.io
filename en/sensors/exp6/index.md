@@ -54,7 +54,7 @@ grid-template-columns: 1fr !important;
 ## 🔌 Hardware Wiring & Startup
 
 1. **Hub Communication Connection**: Plug the "Host Comm Cable" of the expander into any port (Port A~F) of the SPIKE hub.
-2. **Connect a 2S LiPo Battery**: The expander must have a **2S LiPo** (7.4 V, 8.4 V fully charged, XT30 connector). Both the motors and the LEGO sensors are powered by this battery, not by the hub. **Do not use 3S or higher, or a wall adapter**: above 9 V, EXP6 cuts power to LEGO Color / Ultrasonic sensors.
+2. **Connect a LiPo Battery**: The expander needs a LiPo battery (XT30 connector). Both the motors and the LEGO sensors are powered by this battery, not by the hub. The battery is not included; an **XT60-to-XT30 adapter cable** comes in the box (most RC/LiPo packs use XT60). **2S is recommended** (7.4 V, 8.4 V fully charged). **3S also works** and gives the motors more punch, but it limits sensor start-up: above 9 V, EXP6 cuts power to LEGO Color / Ultrasonic sensors. Do not use a wall adapter.
 3. **Connect Devices**: Plug your LEGO sensors (color, ultrasonic, force) and motors into any of the ports 1~6 on the expander.
 4. **Ready to Code!**
 

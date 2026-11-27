@@ -96,10 +96,10 @@
       "src": null,
       "legacy": true,
       "version": "1.0",
-      "firmware": "Servo6",
+      "firmware": "Servo4",
       "label": {
-        "zh": "MBC Servo6 舵機擴充器（適用 SPIKE™）：Pybricks 函式庫",
-        "en": "MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™): Pybricks library"
+        "zh": "MBC Servo4 舵機擴充器（適用 SPIKE™）：Pybricks 函式庫",
+        "en": "MBC Servo4 4-Port Servo Expander (for LEGO® SPIKE™): Pybricks library"
       }
     },
     {
@@ -107,10 +107,10 @@
       "src": null,
       "legacy": true,
       "version": "1.0",
-      "firmware": "Servo6",
+      "firmware": "Servo4",
       "label": {
-        "zh": "MBC Servo6 舵機擴充器（適用 SPIKE™）：官方 SPIKE App 函式庫",
-        "en": "MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™): official SPIKE App library"
+        "zh": "MBC Servo4 舵機擴充器（適用 SPIKE™）：官方 SPIKE App 函式庫",
+        "en": "MBC Servo4 4-Port Servo Expander (for LEGO® SPIKE™): official SPIKE App library"
       }
     },
     {

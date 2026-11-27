@@ -45,7 +45,7 @@
 
 - **🔌 Expansion Modules**
   - [MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™)](/en/sensors/exp6/index.md)
-  - [MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™) (Coming Soon)](/en/sensors/servo6/index.md)
+  - [MBC Servo4 4-Port Servo Expander (for LEGO® SPIKE™) (In Development)](/en/sensors/servo6/index.md)
 
 - **📞 Contact Us**
   - [🛒 Where to Buy](/en/where-to-buy.md)

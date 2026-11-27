@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://mbc-pro-sensors.github.io/en/learn/servo6/spike-app.html">
 <link rel="alternate" hreflang="en" href="https://mbc-pro-sensors.github.io/en/learn/servo6/spike-app.html">
 <link rel="alternate" hreflang="zh-Hant" href="https://mbc-pro-sensors.github.io/learn/servo6/spike-app.html">
-<title>MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™) LEGO SPIKE App Notes | MBC-Pro Sensors</title>
+<title>MBC Servo4 4-Port Servo Expander (for LEGO® SPIKE™) LEGO SPIKE App Notes | MBC-Pro Sensors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -238,12 +238,12 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 </style>
 </head>
 <body>
-<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/servo6/spike/">← Servo6 SPIKE guide</a><a class="lang" href="/learn/servo6/spike-app.html" hreflang="zh-Hant">中文</a><div class="tabs"><a href="/en/learn/servo6/micropython.html">MicroPython (Pybricks)</a><a href="/en/learn/servo6/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/servo6/spike-app.html" aria-current="page">LEGO SPIKE App</a></div></div></nav>
+<nav class="learn-nav" aria-label="Interactive tutorial"><div class="in"><a class="brand" href="/en/">MBC-Pro Sensors</a><a class="back" href="/en/learn/">All tutorials</a><a class="back" href="/en/sensors/servo6/spike/">← Servo4 SPIKE guide</a><a class="lang" href="/learn/servo6/spike-app.html" hreflang="zh-Hant">中文</a><div class="tabs"><a href="/en/learn/servo6/micropython.html">MicroPython (Pybricks)</a><a href="/en/learn/servo6/pybricks-blocks.html">Pybricks blocks</a><a href="/en/learn/servo6/spike-app.html" aria-current="page">LEGO SPIKE App</a></div></div></nav>
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™) × LEGO SPIKE App</span>
-    <h1>LEGO SPIKE App: control the Servo6 with Python</h1>
-    <p class="lead">The <b>blocks</b> in the LEGO SPIKE App only cover LEGO's own motors and sensors. They have no servo commands, and they cannot read the current and status that the Servo6 reports. So use the app's <b>Python</b> instead. The SPIKE App library uses the same function names as the Pybricks library. These three steps get you started.</p>
+    <span class="eyebrow">MBC Servo4 4-Port Servo Expander (for LEGO® SPIKE™) × LEGO SPIKE App</span>
+    <h1>LEGO SPIKE App: control the Servo4 with Python</h1>
+    <p class="lead">The <b>blocks</b> in the LEGO SPIKE App only cover LEGO's own motors and sensors. They have no servo commands, and they cannot read the current and status that the Servo4 reports. So use the app's <b>Python</b> instead. The SPIKE App library uses the same function names as the Pybricks library. These three steps get you started.</p>
   </header>
 
   <section class="note-grid">
@@ -271,15 +271,15 @@ sv.stop_all()                  # release all at the end</pre>
       <h2>3. What is different from the Pybricks library</h2>
       <ol class="dl-list">
         <li>To create the object, write <code>MBC_SERVO6(port.C)</code>. Inside the brackets goes <code>port.A</code> to <code>port.F</code>. There is no multitask value.</li>
-        <li>Each command waits for one hub update (about 20 to 50 milliseconds) before it goes out. So controlling 6 servos in a row takes about 6 updates.</li>
+        <li>Each command waits for one hub update (about 20 to 50 milliseconds) before it goes out. So controlling 4 servos in a row takes about 4 updates.</li>
         <li>The servos do not release by themselves when the program ends. They stay at their last angle. To release them, call <code>stop_all()</code> at the end of the program.</li>
-        <li>The other functions (<code>servo_run</code>, <code>servo_release</code>, <code>servo_stall_config</code>, <code>is_stalled</code>, <code>get_total_current</code>…) work the same as in the Pybricks library. To see what each one does, read the <a href="/en/learn/servo6/micropython.html">Pybricks (MicroPython) tutorial</a>. The full list is in the <a href="/en/sensors/servo6/spike-official.html">Servo6 official SPIKE App guide</a>.</li>
+        <li>The other functions (<code>servo_run</code>, <code>servo_release</code>, <code>servo_stall_config</code>, <code>is_stalled</code>, <code>get_total_current</code>…) work the same as in the Pybricks library. To see what each one does, read the <a href="/en/learn/servo6/micropython.html">Pybricks (MicroPython) tutorial</a>. The full list is in the <a href="/en/sensors/servo6/spike-official.html">Servo4 official SPIKE App guide</a>.</li>
       </ol>
     </article>
     <article class="note-card">
       <h2>Want to use blocks?</h2>
-      <p>For now, the Servo6 can only be programmed with <a href="/en/learn/servo6/pybricks-blocks.html">Pybricks blocks</a> (the hub needs Pybricks firmware v4.0 or later, and block coding needs a Pybricks licence), or by writing <a href="/en/learn/servo6/micropython.html">Pybricks (MicroPython)</a>. The MBC Blocks website does not have Servo6 blocks yet.</p>
-      <p class="small">The Servo6 is still being tested before release. The SPIKE App library has not yet been tried on every version of the app and hub. If something goes wrong, please tell us.</p>
+      <p>For now, the Servo4 can only be programmed with <a href="/en/learn/servo6/pybricks-blocks.html">Pybricks blocks</a> (the hub needs Pybricks firmware v4.0 or later, and block coding needs a Pybricks licence), or by writing <a href="/en/learn/servo6/micropython.html">Pybricks (MicroPython)</a>. The MBC Blocks website does not have Servo4 blocks yet.</p>
+      <p class="small">The Servo4 is still in development. The SPIKE App library has not yet been tried on every version of the app and hub. If something goes wrong, please tell us.</p>
     </article>
   </section>
 </div>

@@ -278,4 +278,4 @@ MATRIXblock 的攝影機積木只有 mVision（Serial1 115200）和 HuskyLens，
 | 神攝手 | [神攝手 × MATRIX（mVision）](/sensors/unicam/matrix/mvision.md) |
 | 神攝手舊版（停止支援） | [esp32cam × MATRIX（mVision）](/sensors/esp32cam/matrix.md) |
 
-EXP6／Servo6 沒有 MATRIX 版。函式庫下載與其他平台的檔案：[下載專區](/downloads.md)。
+EXP6／Servo4 沒有 MATRIX 版。函式庫下載與其他平台的檔案：[下載專區](/downloads.md)。

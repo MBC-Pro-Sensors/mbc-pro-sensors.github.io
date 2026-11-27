@@ -278,4 +278,4 @@ One page per product: wiring figure, the 0x22 seven-slot map (linked to each val
 | SharpShot Vision | [SharpShot Vision × MATRIX (mVision)](/en/sensors/unicam/matrix/mvision.md) |
 | SharpShot Vision legacy (no longer supported) | [esp32cam × MATRIX (mVision)](/en/sensors/esp32cam/matrix.md) |
 
-The EXP6 and Servo6 have no MATRIX edition. Library downloads and files for the other platforms: [Downloads](/en/downloads.md).
+The EXP6 and Servo4 have no MATRIX edition. Library downloads and files for the other platforms: [Downloads](/en/downloads.md).

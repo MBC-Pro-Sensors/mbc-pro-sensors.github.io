@@ -1,10 +1,10 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- moved: /en/sensors/servo6/spike/pybricks.md -->
-<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/servo6/spike/pybricks.md">MBC Servo6 6-Port Servo Expander › SPIKE › Pybricks</a></p>
+<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/servo6/spike/pybricks.md">MBC Servo4 4-Port Servo Expander › SPIKE › Pybricks</a></p>
 
-# Pybricks Environment (Servo6)
+# Pybricks Environment (Servo4)
 
-[🔙 Back to Servo6](/en/sensors/servo6/index.md)
+[🔙 Back to Servo4](/en/sensors/servo6/index.md)
 
 > [!WARNING]
 > **You are reading the Pybricks guide**, for SPIKE Prime hubs running Pybricks firmware **v4.0 or later**. Using the official SPIKE App instead? [Switch to the official app guide](/en/sensors/servo6/spike-official.md).

@@ -1,14 +1,14 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
-# MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™) (Coming Soon)
+# MBC Servo4 4-Port Servo Expander (for LEGO® SPIKE™) (In Development)
+
+> [!WARNING]
+> **🚧 In development**: the new Servo4 has 4 ports and its hardware is still being built; it is not on sale yet. Pin-outs, examples and specifications on this page follow the release version. [Contact us](/en/contact.md) for early access or a quote.
 
 <!-- product-hero -->
 
 <!-- platform-grid -->
 
 ---
-
-> [!NOTE]
-> Circuit and firmware are done; final tests with the hub are in progress, so specifications may change at launch. [Contact us](/en/contact.md) for early access or a quote.
 
 > [!WARNING]
 > **⚠️ Check before you buy**
@@ -26,12 +26,12 @@
 
 LEGO SPIKE Prime has no servo motors, yet grippers, turntables and arms that "turn to an angle and hold" are smallest and cheapest with hobby servos.
 
-The **MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™)** plugs into any hub port and drives **six standard 3-wire servos** (SG90, MG996R and similar, 500-2500 µs signal). Angle, speed, current readback and stall protection are computed on the expander; the hub only sends commands.
+The **MBC Servo4 4-Port Servo Expander (for LEGO® SPIKE™)** plugs into any hub port and drives **four standard 3-wire servos** (SG90, MG996R and similar, 500-2500 µs signal). Angle, speed, current readback and stall protection are computed on the expander; the hub only sends commands.
 
 ## 🧠 Hardware highlights
 
 - ⚡ **No external battery**: servo power comes from the hub battery (M1/M2 supply line) through a rectifier and an electronic fuse (eFuse), so there is no battery box to carry.
-- 🛡️ **Per-channel current sensing**: each of the six channels has its own shunt; read every servo's current at any time. Current above a threshold for a set time counts as a stall and can release that channel automatically to protect servo and gears.
+- 🛡️ **Per-channel current sensing**: each of the four channels has its own shunt; read every servo's current at any time. Current above a threshold for a set time counts as a stall and can release that channel automatically to protect servo and gears.
 - 🔌 **Isolated from the hub**: digital isolator on the signal line and an isolated DC-DC for the controller; a short or spike on the servo side cannot reach the hub.
 - 🎯 **Both servo types**: positional servos use "move to angle" (speed 1-99 = 6-594 °/s, 100 = immediate); 360° continuous servos use "run" (-100 to 100).
 - 🔧 **Calibratable**: min/max pulse width and angle range per channel (default 500-2500 µs, 180°), or send a raw pulse width.
@@ -40,7 +40,7 @@ The **MBC Servo6 6-Port Servo Expander (for LEGO® SPIKE™)** plugs into any hu
 ## 🔌 Wiring and start-up
 
 1. **Hub cable**: plug the expander's SPIKE cable into any hub port (A-F).
-2. **Servos**: plug the 3-pin servo connectors into CN1-CN6 as marked (signal / VCC / GND).
+2. **Servos**: plug the 3-pin servo connectors into CN1-CN4 as marked (signal / VCC / GND).
 3. **No battery**: once the hub finishes the handshake it sends battery voltage to the expander; the green LED changes from fast blinking to steady.
 4. **Program it**: see [Official SPIKE App](/en/sensors/servo6/spike-official.md) or [Pybricks](/en/sensors/servo6/spike-pybricks.md).
 

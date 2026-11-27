@@ -1,10 +1,10 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- moved: /sensors/servo6/spike/pybricks.md -->
-<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/servo6/spike/pybricks.md">MBC Servo6 舵機擴充器 › SPIKE › Pybricks</a></p>
+<p class="moved-note">這頁內容已整合到新的說明頁：<a href="/sensors/servo6/spike/pybricks.md">MBC Servo4 舵機擴充器 › SPIKE › Pybricks</a></p>
 
-# Pybricks 專業環境專區 (Servo6)
+# Pybricks 專業環境專區 (Servo4)
 
-[🔙 回到 Servo6 首頁](/sensors/servo6/index.md)
+[🔙 回到 Servo4 首頁](/sensors/servo6/index.md)
 
 > [!WARNING]
 > **您目前觀看的是 【Pybricks 專業環境】 教學。** 適用於刷入 Pybricks 韌體（**v4.0 以上**）的 SPIKE Prime。如果您使用的是官方 SPIKE App，請點擊 [這裡切換至官方教學](/sensors/servo6/spike-official.md)。

@@ -467,7 +467,7 @@ The WRO edition's mVision data **keeps the original HUE12 packing** (12 colour-s
 ### Wiring and power
 
 1. **Host cable**: plug the expander's **Host cable** into any SPIKE hub port (A~F).
-2. **Separate power**: the expander must have a **2S LiPo battery** (7.4 V, 8.4 V fully charged, XT30 connector), which powers the motors and LEGO sensors; motor current is not drawn from the hub, and the hub signal lines go through an isolator. **Do not use 3S or higher**: above 9 V, EXP6 cuts power to LEGO Color / Ultrasonic sensors.
+2. **Separate power**: the expander needs a LiPo battery (XT30 connector; battery not included, an XT60-to-XT30 adapter cable comes in the box), which powers the motors and LEGO sensors; motor current is not drawn from the hub, and the hub signal lines go through an isolator. **2S is recommended** (7.4 V, 8.4 V fully charged). **3S also works** and gives the motors more punch, but it limits sensor start-up: above 9 V, EXP6 cuts power to LEGO Color / Ultrasonic sensors.
 3. **Devices**: plug LEGO sensors (colour, ultrasonic, force) and motors into any of the expander's ports **1~6**.
 
 > [!WARNING]
@@ -564,7 +564,7 @@ Connect the EXP6 **Host port** to the Arduino with a "LEGO 6-pin to Dupont" cabl
 | pins 1, 2 | not connected | not connected | not connected |
 
 > [!IMPORTANT]
-> - The EXP6 XT30 power socket must have a **2S lithium battery** (not 3S or higher); motors and sensors run from it. The EXP6 **does not power the Arduino**.
+> - The EXP6 XT30 power socket takes a lithium battery, **2S recommended** (3S works and gives the motors more punch, but limits sensor start-up; battery not included, XT60-to-XT30 adapter cable in the box); motors and sensors run from it. The EXP6 **does not power the Arduino**.
 > - **TX to EXP6 receive, RX to EXP6 send**: the two wires cross.
 > - **Pin 4 must match the board's signal voltage** (UNO R4, Mega: 5V; ESP32: 3V3). This pin is also the EXP6 "ignition key": without it the EXP6 does not start.
 > - Unplug USB and the battery before wiring.
@@ -576,7 +576,7 @@ Connect the EXP6 **Host port** to the Arduino with a "LEGO 6-pin to Dupont" cabl
 ### Wiring and power
 
 1. Plug the EXP6 **Host cable** into any SPIKE Prime port (A~F).
-2. The EXP6 must have a **2S LiPo battery** (XT30 connector) to power the motors and LEGO sensors; do not use 3S or higher (above 9 V, it cuts power to LEGO Color / Ultrasonic sensors).
+2. The EXP6 needs a LiPo battery (XT30 connector; battery not included, XT60-to-XT30 adapter cable in the box) to power the motors and LEGO sensors, **2S recommended**; 3S works and gives the motors more punch, but limits sensor start-up (above 9 V, it cuts power to LEGO Color / Ultrasonic sensors).
 3. Plug LEGO sensors and motors into the expander's ports 1~6.
 
 > [!WARNING]
@@ -584,12 +584,12 @@ Connect the EXP6 **Host port** to the Arduino with a "LEGO 6-pin to Dupont" cabl
 
 @@@ servo6-common
 > [!NOTE]
-> Servo6 is **coming soon**: circuit and firmware are done and final hub testing is under way; specifications follow the release version. **SPIKE Prime only** (not Robot Inventor or EV3).
+> Servo4 is **in development**: the new version has 4 ports and its hardware is still being built; specifications and examples follow the release version. **SPIKE Prime only** (not Robot Inventor or EV3).
 
 ### Wiring and power
 
 1. **Host cable**: plug the expander's SPIKE cable into any hub port (A~F).
-2. **Servos**: plug the 3-wire servo connectors into **CN1~CN6** following the board markings (signal / VCC / GND). Servos with 500~2500 µs signals such as SG90 and MG996R work.
+2. **Servos**: plug the 3-wire servo connectors into **CN1~CN4** following the board markings (signal / VCC / GND). Servos with 500~2500 µs signals such as SG90 and MG996R work.
 3. **No battery needed**: after the handshake the hub sends battery voltage to the expander and the green LED changes from fast blinking to steady. Total servo current is limited to **about 0.75 A**; check the working current of high-torque servos first.
 
 > [!TIP]
@@ -613,7 +613,7 @@ time.sleep_ms(1000)
 sv.stop_all()
 ```
 
-The expander pretends to be a **SPIKE ultrasonic sensor**: commands go out through the ultrasonic sensor's "4 light values", and status comes back through `device.data()`. Each command waits one system polling cycle (about 20~50 ms), so controlling 6 servos in a row takes about 6 cycles.
+The expander pretends to be a **SPIKE ultrasonic sensor**: commands go out through the ultrasonic sensor's "4 light values", and status comes back through `device.data()`. Each command waits one system polling cycle (about 20~50 ms), so controlling 4 servos in a row takes about 4 cycles.
 
 > [!TIP]
 > When an official App program ends, the servos are not released (they hold their last position and do not run away); call `stop_all()` at the end of the program to release them.

@@ -29,7 +29,7 @@ This page is written for people who have **never written a program before**. EXP
 ### 1. You must connect a battery
 
 - The motors on EXP6 are **powered entirely by EXP6's own battery**. With only the Host cable and no battery, **nothing will move**.
-- Battery: **2S LiPo only** (7.4 V, 8.4 V fully charged), with an **XT30** connector. **Do not use 3S or higher**: above 9 V, EXP6 completely cuts power to LEGO Color / Ultrasonic sensors (their lights stay off and the readings mean nothing) while the motors keep working, and the library prints a one-time warning. The battery LEDs are also scaled for 2S, so a 3S pack always shows full.
+- Battery: **2S LiPo recommended** (7.4 V, 8.4 V fully charged), with an **XT30** connector (battery not included; an XT60-to-XT30 adapter cable comes in the box, since most RC/LiPo packs use XT60). **3S also works** and gives the motors more punch, but it limits sensor start-up: above 9 V, EXP6 completely cuts power to LEGO Color / Ultrasonic sensors (their lights stay off and the readings mean nothing) while the motors keep working, and the library prints a one-time warning. The battery LEDs are also scaled for 2S, so a 3S pack always shows full.
 - EXP6's power is controlled by the hub: **EXP6 powers on when the hub turns on; when the hub turns off, the whole EXP6 board loses power and the motors stop at once**, so you do not need to unplug the battery (confirmed by measuring a real board). Exception: once a Pybricks program has connected, EXP6 stays in Pybricks mode; to go back to the official App, **unplug the battery and plug it back in**.
 
 ### 2. Wiring

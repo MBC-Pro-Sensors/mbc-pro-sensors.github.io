@@ -1,10 +1,10 @@
 <!-- AI 注意：在此專案的 Markdown 檔案中，直接插入的 HTML 程式碼請勿使用任何縮排，否則會被 Markdown 解析器誤認為程式碼區塊（變成文本視窗）。 -->
 <!-- moved: /en/sensors/servo6/spike/official.md -->
-<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/servo6/spike/official.md">MBC Servo6 6-Port Servo Expander › SPIKE › Official LEGO App</a></p>
+<p class="moved-note">This page has moved into the new guide: <a href="/en/sensors/servo6/spike/official.md">MBC Servo4 4-Port Servo Expander › SPIKE › Official LEGO App</a></p>
 
-# Official SPIKE App (Servo6)
+# Official SPIKE App (Servo4)
 
-[🔙 Back to Servo6](/en/sensors/servo6/index.md)
+[🔙 Back to Servo4](/en/sensors/servo6/index.md)
 
 > [!WARNING]
 > **You are reading the official SPIKE App guide**, for the SPIKE Prime official software (SPIKE 3) in **Python text mode**; block coding is not supported. Running Pybricks instead? [Switch to the Pybricks guide](/en/sensors/servo6/spike-pybricks.md).
