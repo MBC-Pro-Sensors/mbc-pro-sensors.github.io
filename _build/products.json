@@ -1304,7 +1304,7 @@
   "servo6": {
     "specs": {
       "zh": {
-        "power": "舵機電源由 SPIKE 主機經擴充器供電（總電流上限約 0.75 A），不需外接電池",
+        "power": "舵機電源直接取自 SPIKE 主機電池、經擴充器供電（不降壓，約 6.4～7.6 V；總電流上限約 0.7 A），不需外接電池；舵機要耐約 8.4 V（例如高壓 HV 舵機）",
         "extra": [
           [
             "適用主機",
@@ -1313,7 +1313,7 @@
         ]
       },
       "en": {
-        "power": "Servos are powered by the SPIKE hub through the expander (about 0.75 A total), no external battery",
+        "power": "Servo power is taken directly from the SPIKE hub battery through the expander (no regulator, about 6.4-7.6 V; about 0.7 A total), no external battery; servos must tolerate about 8.4 V (e.g. high-voltage HV servos)",
         "extra": [
           [
             "Controller",

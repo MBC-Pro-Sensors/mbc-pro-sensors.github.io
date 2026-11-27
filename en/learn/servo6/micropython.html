@@ -354,7 +354,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <div class="panel">
         <div class="panel-head"><span>Move 6 servos one by one</span><button type="button" class="copy" data-copy="six">Copy</button></div>
         <pre class="code" id="ex-six"></pre>
-        <p class="bubble"><i>!</i><span>Moving them one at a time keeps the total current from jumping too high (the expander's power protection limits the current at about 750 mA). Do not plug a 360-degree servo into the ports this example uses: an angle command makes it spin forever.</span></p>
+        <p class="bubble"><i>!</i><span>Moving them one at a time keeps the total current from jumping too high (the expander's power protection limits the current at about 700 mA). Do not plug a 360-degree servo into the ports this example uses: an angle command makes it spin forever.</span></p>
       </div>
     </div>
   </section>
@@ -366,7 +366,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <li><b>Release the servos before the program ends.</b> The expander has no watchdog, so after the program ends, the servos stay at their last angle. In a normal program, call <code>stop_all()</code> at the end. In a multitask program, write <code>from MBC_servo6_Lib import MBC_SERVO6, run_task</code> instead (on the line under <code>pybricks.tools</code>). Then the servos release when the program ends, hits an error, or you press the stop button.</li>
       <li><b>The exact same command only counts once.</b> The expander skips a command that is exactly the same as the one before, so sending the same angle again and again in a loop is fine. But after a servo stalls and is released automatically, sending the same angle in the loop does <b>not</b> make it push again. Send a different angle, or call <code>servo_release()</code> first and then send it.</li>
       <li><b>Only speed 1 to 99 turns slowly.</b> The servo turns "speed × 6" degrees per second. No speed, or 100, turns there at the servo's top speed. The first angle command at the start, or after this port was released, always jumps straight there (the expander does not know where the arm was). <code>is_moving()</code> and <code>servo_wait()</code> use the expander's own count of the progress. The servo has no position sensor, so it cannot tell if it is blocked.</li>
-      <li><b>Power:</b> the servos get their power from the hub, through the expander. All 6 together are limited at about 750 mA. When many servos move at once, or one is stalled, check <code>get_total_current()</code> and <code>is_power_fault()</code>. Servo port 1 is on the far left of the expander (on the simulator too).</li>
+      <li><b>Power:</b> the servos get their power from the hub, through the expander. All 6 together are limited at about 700 mA. When many servos move at once, or one is stalled, check <code>get_total_current()</code> and <code>is_power_fault()</code>. Servo port 1 is on the far left of the expander (on the simulator too).</li>
     </ol>
   </section>
 </div>
@@ -458,7 +458,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       run: { loop: [C('servo_angle', 1, 90), P(function (r) { return 'Is servo 1 active? ' + py(r('is_active', 1)); })] },
       sample: 'Is servo 1 active? True' },
     { id: 'get_total_current', zh: 'Total current', grp: 'Read the status', ret: 'Whole number (mA)',
-      what: 'The current of all 6 ports added together (mA). The expander\'s power protection limits the current at about 750 mA. When many servos move at once, use this to check that you are not too close.',
+      what: 'The current of all 6 ports added together (mA). The expander\'s power protection limits the current at about 700 mA. When many servos move at once, use this to check that you are not too close.',
       body: ['{n}.servo_angle(1, 90)', '{n}.servo_run(2, 50)', 'print("Total current:", {n}.get_total_current(), "mA")'],
       run: { loop: [C('servo_angle', 1, 90), C('servo_run', 2, 50), P(function (r) { return 'Total current: ' + py(r('get_total_current')) + ' mA'; })] },
       sample: 'Total current: 158 mA' },

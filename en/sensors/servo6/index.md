@@ -18,7 +18,7 @@
 > | **Compatible hub** | SPIKE™ Prime only (not Robot Inventor or EV3) |
 > | **Official SPIKE App** | Python text mode only, no block coding |
 > | **Pybricks** | Requires Pybricks firmware **v4.0 or later**; on the first run press **Y** in the console to allow power |
-> | **Servo power** | Supplied by the hub battery through the expander, **about 0.75 A total**; check the running current of high-torque servos first |
+> | **Servo power** | Taken directly from the hub battery through the expander (no regulator, about 6.4-7.6 V), **about 0.7 A total**; check the running current of high-torque servos first |
 
 ---
 
@@ -26,11 +26,11 @@
 
 LEGO SPIKE Prime has no servo motors, yet grippers, turntables and arms that "turn to an angle and hold" are smallest and cheapest with hobby servos.
 
-The **MBC Servo4 4-Port Servo Expander (for LEGO® SPIKE™)** plugs into any hub port and drives **four standard 3-wire servos** (SG90, MG996R and similar, 500-2500 µs signal). Angle, speed, current readback and stall protection are computed on the expander; the hub only sends commands.
+The **MBC Servo4 4-Port Servo Expander (for LEGO® SPIKE™)** plugs into any hub port and drives **four 3-wire servos** (they must tolerate the hub battery voltage, about 8.4 V fully charged, e.g. high-voltage HV servos; 4.8-6 V servos such as the SG90 would be over-volted and must not be used; 500-2500 µs signal). Angle, speed, current readback and stall protection are computed on the expander; the hub only sends commands.
 
 ## 🧠 Hardware highlights
 
-- ⚡ **No external battery**: servo power comes from the hub battery (M1/M2 supply line) through a rectifier and an electronic fuse (eFuse), so there is no battery box to carry.
+- ⚡ **No external battery**: servo power comes from the hub battery (M1/M2 supply line) through a rectifier and an electronic fuse (eFuse, about 0.7 A) with no regulator, so there is no battery box to carry.
 - 🛡️ **Per-channel current sensing**: each of the four channels has its own shunt; read every servo's current at any time. Current above a threshold for a set time counts as a stall and can release that channel automatically to protect servo and gears.
 - 🔌 **Isolated from the hub**: digital isolator on the signal line and an isolated DC-DC for the controller; a short or spike on the servo side cannot reach the hub.
 - 🎯 **Both servo types**: positional servos use "move to angle" (speed 1-99 = 6-594 °/s, 100 = immediate); 360° continuous servos use "run" (-100 to 100).

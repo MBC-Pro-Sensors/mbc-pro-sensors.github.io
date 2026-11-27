@@ -354,7 +354,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <div class="panel">
         <div class="panel-head"><span>6 顆舵機輪流動</span><button type="button" class="copy" data-copy="six">複製</button></div>
         <pre class="code" id="ex-six"></pre>
-        <p class="bubble"><i>!</i><span>一顆一顆輪流動，總電流比較不會一下衝太高（擴充板的電源保護大約在 750 mA 限流）。360 度舵機不要接在這個範例用到的孔：它收到角度指令會一直轉。</span></p>
+        <p class="bubble"><i>!</i><span>一顆一顆輪流動，總電流比較不會一下衝太高（擴充板的電源保護大約在 700 mA 限流）。360 度舵機不要接在這個範例用到的孔：它收到角度指令會一直轉。</span></p>
       </div>
     </div>
   </section>
@@ -366,7 +366,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <li><b>程式結束前要放鬆舵機。</b>擴充板沒有看門狗，程式結束後舵機會停在最後的角度。一般寫法在程式最後呼叫 <code>stop_all()</code>；多工寫法改成 <code>from MBC_servo6_Lib import MBC_SERVO6, run_task</code>（寫在 <code>pybricks.tools</code> 那行下面），結束、出錯、按停止鍵都會自動放鬆。</li>
       <li><b>一模一樣的指令只算一次。</b>擴充板會略過跟上一包完全相同的指令，所以迴圈裡一直送同一個角度不會怎樣。但舵機卡住、被自動放鬆之後，迴圈一直送同一個角度<b>不會</b>重新出力：要送一個不同的角度，或先 <code>servo_release()</code> 再送。</li>
       <li><b>速度 1 ~ 99 才會「慢慢轉」。</b>速度 = 每秒轉「速度 × 6」度；不寫或寫 100 就用舵機最快的速度直接轉過去。剛開始、或這個孔放鬆過之後的第一個角度指令，一律直接轉過去（擴充板不知道舵臂原本停在哪）。<code>is_moving()</code>、<code>servo_wait()</code> 看的是擴充板自己算的進度，舵機沒有位置感應器，被擋住了也不會知道。</li>
-      <li><b>電源：</b>舵機的電從主機經過擴充板供應，6 顆加起來大約 750 mA 會限流。很多顆同時動、或有舵機卡住時，用 <code>get_total_current()</code>、<code>is_power_fault()</code> 看看。擴充板上 1 號在最左邊（模擬畫面也是）。</li>
+      <li><b>電源：</b>舵機的電從主機經過擴充板供應，6 顆加起來大約 700 mA 會限流。很多顆同時動、或有舵機卡住時，用 <code>get_total_current()</code>、<code>is_power_fault()</code> 看看。擴充板上 1 號在最左邊（模擬畫面也是）。</li>
     </ol>
   </section>
 </div>
@@ -458,7 +458,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       run: { loop: [C('servo_angle', 1, 90), P(function (r) { return '1 號有出力嗎？ ' + py(r('is_active', 1)); })] },
       sample: '1 號有出力嗎？ True' },
     { id: 'get_total_current', zh: '總電流', grp: '讀狀態', ret: '整數（mA）',
-      what: '6 個孔加起來的總電流（mA）。擴充板的電源保護大約在 750 mA 限流，同時動很多顆舵機時，用它看看有沒有太接近。',
+      what: '6 個孔加起來的總電流（mA）。擴充板的電源保護大約在 700 mA 限流，同時動很多顆舵機時，用它看看有沒有太接近。',
       body: ['{n}.servo_angle(1, 90)', '{n}.servo_run(2, 50)', 'print("總電流:", {n}.get_total_current(), "mA")'],
       run: { loop: [C('servo_angle', 1, 90), C('servo_run', 2, 50), P(function (r) { return '總電流: ' + py(r('get_total_current')) + ' mA'; })] },
       sample: '總電流: 158 mA' },

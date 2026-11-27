@@ -589,8 +589,8 @@ Connect the EXP6 **Host port** to the Arduino with a "LEGO 6-pin to Dupont" cabl
 ### Wiring and power
 
 1. **Host cable**: plug the expander's SPIKE cable into any hub port (A~F).
-2. **Servos**: plug the 3-wire servo connectors into **CN1~CN4** following the board markings (signal / VCC / GND). Servos with 500~2500 µs signals such as SG90 and MG996R work.
-3. **No battery needed**: after the handshake the hub sends battery voltage to the expander and the green LED changes from fast blinking to steady. Total servo current is limited to **about 0.75 A**; check the working current of high-torque servos first.
+2. **Servos**: plug the 3-wire servo connectors into **CN1~CN4** following the board markings (signal / VCC / GND). Servos must tolerate the hub battery voltage (about 8.4 V fully charged, e.g. high-voltage HV servos); 4.8-6 V servos such as the SG90 would be over-volted and must not be used.
+3. **No battery needed**: after the handshake the hub sends battery voltage to the expander and the green LED changes from fast blinking to steady. Servo power is taken directly from the hub battery (no regulator, about 6.4-7.6 V), **about 0.7 A total**; check the working current of high-torque servos first.
 
 > [!TIP]
 > At power-on the expander outputs no pulses, so servos do not twitch. The first angle command moves straight to position (no speed ramp); later commands use the speed you set.

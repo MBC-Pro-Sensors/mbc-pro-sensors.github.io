@@ -413,7 +413,7 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
       run: { loop: [P(function (r) { return '還在轉嗎？ ' + py(r('is_moving', 1)); }), C('servo_angle', 1, 0, 10), SW(1), C('servo_angle', 1, 180, 10)] }, sample: '還在轉嗎？ True' },
     { id: 'is_active', zh: '有沒有出力', grp: '讀狀態', ret: 'True／False', what: '某個孔現在有沒有送訊號給舵機（有出力）。剛開始、放鬆之後、卡住被自動放鬆之後都是 False。',
       run: { loop: [C('servo_angle', 1, 90), P(function (r) { return '1 號有出力嗎？ ' + py(r('is_active', 1)); })] }, sample: '1 號有出力嗎？ True' },
-    { id: 'get_total_current', zh: '總電流', grp: '讀狀態', ret: '整數（mA）', what: '6 個孔加起來的總電流。擴充板的電源保護大約在 750 mA 限流。',
+    { id: 'get_total_current', zh: '總電流', grp: '讀狀態', ret: '整數（mA）', what: '6 個孔加起來的總電流。擴充板的電源保護大約在 700 mA 限流。',
       run: { loop: [C('servo_angle', 1, 90), C('servo_run', 2, 50), P(function (r) { return '總電流 ' + py(r('get_total_current')) + ' mA'; })] }, sample: '總電流 158 mA' },
     { id: 'is_power_fault', zh: '電源有沒有出問題', grp: '讀狀態', ret: 'True／False', what: '舵機電源有沒有出問題（電流太大或太熱，電源保護把電切掉了）。故障時所有舵機都沒力，排除後自動恢復。勾「電源過載」試試看。',
       run: { loop: [C('servo_angle', 1, 90), P(function (r) { return r('is_power_fault') ? '舵機電源過載！' : '電源正常'; })] }, sample: '電源正常' }
