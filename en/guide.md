@@ -47,7 +47,7 @@ Pick your product and controller to go straight to setup steps, blocks and examp
 | [Pathfinder 16-Way](/en/sensors/line16/index.md) | Fast lines, intersections | Official app blocks, Pybricks |
 | [Ranger 2-Way](/en/sensors/tof2/index.md) | Left/right ranging | |
 | [Ranger 8-Way](/en/sensors/tof8/index.md) | 180° avoidance, sumo | |
-| [MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™)](/en/sensors/exp6/index.md) | More ports | **SPIKE Prime only**; official app requires Python text mode |
+| [MBC EXP6 6-Port Motor Expander (for LEGO® SPIKE™)](/en/sensors/exp6/index.md) | More ports | Works with **SPIKE Prime**; Robot Inventor (51515) through Python in the Robot Inventor App only; not EV3; official app requires Python text mode |
 | [MBC Servo4 4-Port Servo Expander (for LEGO® SPIKE™)](/en/sensors/servo6/index.md) (in development) | Servos on your robot (gripper, turntable, arm) | **SPIKE Prime only**; servos powered by the hub, no battery |
 | [Controller PS4/PS5](/en/sensors/ps4/index.md) | Bluetooth gamepad control | Best for big events |
 | [Controller PS2](/en/sensors/ps2/index.md) (Taiwan only) | 2.4G gamepad control | Classes, projects |

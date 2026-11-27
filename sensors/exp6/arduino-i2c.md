@@ -4,6 +4,10 @@
 
 # ∿ EXP6 × Arduino：請改用序列埠（UART）
 
+> [!WARNING]
+> **EXP6 × Arduino（UART）開發與驗證中，尚未支援。** 這頁先保留給參考，請先用 [SPIKE Prime 或 Robot Inventor](/sensors/exp6/index.md) 主機。
+<!-- exp6-arduino-dev -->
+
 [🔙 回到 EXP6 產品介紹](/sensors/exp6/index.md)
 
 > [!IMPORTANT]

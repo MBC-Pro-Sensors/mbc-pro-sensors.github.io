@@ -8,8 +8,10 @@
 
 > [!IMPORTANT]
 > **⚠️ Important Notice on Purchase and Compatibility**
-> This expander is designed **EXCLUSIVELY for the SPIKE series**, featuring the LPF2 (Lego 6-pin) interface.
+> This expander uses the LPF2 (LEGO 6-pin) interface.
 > It works with the **SPIKE Prime** hub, and with the **Robot Inventor (51515)** hub through Python in the Robot Inventor App only ([guide](/en/sensors/exp6/spike/official.md), [interactive tutorial](/en/learn/exp6/robot-inventor.html)). **It DOES NOT support EV3 hubs!**
+> In the official SPIKE App it works in Python text mode only (no block mode). Pybricks and the MBC block website support SPIKE Prime only.
+> **Arduino (UART): under development — not yet supported** ([details](/en/sensors/exp6/arduino-examples.md)).
 
 ---
 
@@ -89,9 +91,9 @@ grid-template-columns: 1fr !important;
 
 ---
 
-## 🎮 Choose Your Software Environment (Dual Ecosystem Support)
+## 🎮 Choose Your Software Environment
 
-The greatest feature of the EXP6 expander is its **"Perfect Dual Ecosystem Support"**. Please select the software platform you are currently using to view the dedicated connection guide and API documentation:
+The EXP6 works with **SPIKE Prime** in both the official SPIKE App (Python text mode) and Pybricks; the Robot Inventor (51515) hub works through Python in the Robot Inventor App only; EV3 is not supported; Arduino (UART) is under development and not yet supported. Please select the software platform you are currently using to view the dedicated connection guide and API documentation:
 
 <div class="env-hub-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
 <a href="/en/sensors/exp6/spike-official.md" class="env-card spike" style="padding: 40px 20px;">

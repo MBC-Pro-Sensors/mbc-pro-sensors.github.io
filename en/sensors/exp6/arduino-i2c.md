@@ -4,6 +4,10 @@
 
 # ∿ EXP6 × Arduino: Please Use Serial (UART)
 
+
+> [!WARNING]
+> **EXP6 × Arduino (UART): Under development — not yet supported.** This page is kept for reference while we develop and test it; for now please use the EXP6 with [SPIKE Prime or Robot Inventor](/en/sensors/exp6/index.md).
+<!-- exp6-arduino-dev -->
 [🔙 Back to EXP6 overview](/en/sensors/exp6/index.md)
 
 > [!IMPORTANT]

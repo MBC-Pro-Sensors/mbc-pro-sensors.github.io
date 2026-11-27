@@ -14,6 +14,8 @@
 > | :--- | :--- |
 > | **相容主機** | SPIKE Prime；Robot Inventor（51515）只能用 Robot Inventor App 的 Python（👉 [說明](/sensors/exp6/spike/official.md)、[互動教學](/learn/exp6/robot-inventor.html)）；不支援 EV3 |
 > | **SPIKE 官方軟體** | 僅支援 Python 文字模式，不支援圖控積木模式（👉 [SPIKE 新手範例：官方 App／MBC 積木網站／Pybricks 各 5 個](/sensors/exp6/spike-examples.md)） |
+> | **Pybricks／MBC 積木網站** | 只支援 SPIKE Prime |
+> | **Arduino** | UART 開發與驗證中，尚未支援（👉 [說明](/sensors/exp6/arduino-examples.md)） |
 
 ---
 
@@ -93,9 +95,9 @@ grid-template-columns: 1fr !important;
 
 ---
 
-## 🎮 選擇你的軟體環境 (雙生態支援)
+## 🎮 選擇你的軟體環境
 
-EXP6 擴充器最大的特色在於**「雙生態系完美支援」**。請選擇您目前使用的軟體平台，查看專屬的連線指南與 API 文件：
+EXP6 支援 **SPIKE Prime**：官方 SPIKE App（Python 文字模式）和 Pybricks 都能用；Robot Inventor（51515）只能用 Robot Inventor App 的 Python；不支援 EV3；Arduino（UART）開發與驗證中，尚未支援。請選擇您目前使用的軟體平台，查看專屬的連線指南與 API 文件：
 
 <div class="env-hub-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
 <a href="/sensors/exp6/spike-official.md" class="env-card spike" style="padding: 40px 20px;">

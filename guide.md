@@ -47,7 +47,7 @@
 | [循行者 16 路](/sensors/line16/index.md) | 高速循線、十字路口 | 官方 App 積木、Pybricks |
 | [測距者 2 路](/sensors/tof2/index.md) | 左右測距、物體方向 | |
 | [測距者 8 路](/sensors/tof8/index.md) | 180° 避障、相撲 | |
-| [MBC EXP6 六路馬達擴充器（適用 SPIKE™）](/sensors/exp6/index.md) | 孔位不夠時擴充 | **僅限 SPIKE Prime**；官方 App 需用 Python 文字模式 |
+| [MBC EXP6 六路馬達擴充器（適用 SPIKE™）](/sensors/exp6/index.md) | 孔位不夠時擴充 | 支援 **SPIKE Prime**；Robot Inventor（51515）只能用 Robot Inventor App 的 Python；不支援 EV3；官方 App 需用 Python 文字模式 |
 | [MBC Servo4 舵機擴充器（適用 SPIKE™）](/sensors/servo6/index.md)（開發中） | 機器人要用舵機（夾爪、轉盤、擺臂） | **僅限 SPIKE Prime**；舵機電源由主機供給，不用電池 |
 | [掌控者 PS4/PS5](/sensors/ps4/index.md) | 藍牙手把遙控 | 大型比賽場地推薦 |
 | [掌控者 PS2](/sensors/ps2/index.md) | 2.4G 手把遙控 | 教學、專題 |
