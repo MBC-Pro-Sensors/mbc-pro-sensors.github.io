@@ -257,7 +257,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
 <div class="wrap">
   <header class="top">
     <span class="eyebrow">MBC Servo4 多路舵機擴充器 × Pybricks 積木</span>
-    <h1>三個步驟用 Pybricks 積木控制 6 顆舵機</h1>
+    <h1>三個步驟用 Pybricks 積木控制 4 顆舵機</h1>
     <p class="lead">積木跟 MicroPython 一樣照這個順序：先在「set up」下面<b>匯入函式庫</b>，再<b>建立物件、幫擴充板取名字</b>，最後在「program」下面用這個名字<b>呼叫功能</b>。左邊一步一步做，右邊的積木會跟著長出來；這些積木圖是直接從 Pybricks Code 拼好匯出的，跟你在畫面上看到的一樣。</p>
     <p class="lic"><b>先確認：</b>Pybricks 的積木模式要授權碼或 Patreon 贊助才能用。沒有授權可以改寫 MicroPython，寫法一模一樣（右邊切到「對應的 MicroPython」就看得到）。這塊擴充板只能接 SPIKE Prime，主機的 Pybricks 韌體要 v4.0 以上。</p>
   </header>
@@ -304,14 +304,14 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
       <article class="step locked" id="step3">
         <div class="step-head"><span class="num">3</span><h2>使用功能</h2></div>
         <div class="step-body">
-          <p class="why">在「program」下面放紅色的功能積木：第一格選名字 <code id="nm1">servo6</code>，中間選 <code id="ct1">await</code>，最後一格選功能，後面的數字格第一個是擴充板上的<b>舵機孔 1 ~ 6</b>（CN1 ~ CN6，不是主機的孔位）。點一個功能，積木和輸出會換成它的範例。</p>
+          <p class="why">在「program」下面放紅色的功能積木：第一格選名字 <code id="nm1">servo6</code>，中間選 <code id="ct1">await</code>，最後一格選功能，後面的數字格第一個是擴充板上的<b>舵機孔 1 ~ 4</b>（CN1 ~ CN4，不是主機的孔位）。點一個功能，積木和輸出會換成它的範例。</p>
           <div id="picker" class="ref"></div>
           <div class="explain" id="explain" aria-live="polite"></div>
           <div class="mini" id="mini3" aria-live="polite"></div>
           <div class="sim-box">
-            <div class="sim-title">模擬擴充板（6 個舵機孔各接一顆舵機）：看程式怎麼轉舵臂，也可以用滑鼠拖舵臂</div>
+            <div class="sim-title">模擬擴充板（4 個舵機孔各接一顆舵機）：看程式怎麼轉舵臂，也可以用滑鼠拖舵臂</div>
             <div class="sim">
-              <svg id="field" viewBox="0 0 460 200" role="group" aria-label="Servo4 擴充板示意：6 顆舵機，可以用滑鼠拖動舵臂" style="touch-action: none"></svg>
+              <svg id="field" viewBox="0 0 460 200" role="group" aria-label="Servo4 擴充板示意：4 顆舵機，可以用滑鼠拖動舵臂" style="touch-action: none"></svg>
               <div class="ctrl">
                 <div class="toggles">
                   <label><input autocomplete="off" type="checkbox" id="hold1"> 把 1 號舵臂扳開、用手擋住</label>
@@ -320,7 +320,7 @@ svg.pyb .blocklyDropdownText { fill: #fff !important; }
                   <button type="button" class="copy" id="rerun">重新執行程式</button>
                 </div>
               </div>
-              <p class="note">模擬畫面是示意：轉動速度、電流大小都簡化過，實際數字看舵機型號。1 號、3 ~ 6 號是一般 180 度舵機，2 號是 360 度連續旋轉舵機。舵臂橘色 = 有出力、灰色 = 放鬆、紅色 = 判定卡住。有出力時拖它，舵機會頂住、電流變大，放開會轉回去；放鬆時拖到哪就停在哪。</p>
+              <p class="note">模擬畫面是示意：轉動速度、電流大小都簡化過，實際數字看舵機型號。1 號、3 號、4 號是一般 180 度舵機，2 號是 360 度連續旋轉舵機。舵臂橘色 = 有出力、灰色 = 放鬆、紅色 = 判定卡住。有出力時拖它，舵機會頂住、電流變大，放開會轉回去；放鬆時拖到哪就停在哪。</p>
             </div>
           </div>
         </div>
@@ -387,7 +387,7 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
   // ───── 15 個功能（積木跟 spec.js 的 pyb.P 一一對應；run 是模擬器照著跑的步驟） ─────
   // Pybricks 印多個值時用空格隔開，所以輸出沒有冒號
   var FNS = [
-    { id: 'servo_angle', zh: '轉到角度', grp: '定點模式（一般舵機）', ret: '沒有回傳值', what: '叫某個孔的舵機轉到指定角度：數字格依序是孔（1 ~ 6）、角度（一般舵機 0 ~ 180）、速度。速度可以不填：不填或 100 = 直接轉過去；1 ~ 99 = 每秒轉「速度 × 6」度。範例用速度 30 來回擺，servo_wait 等它轉到。',
+    { id: 'servo_angle', zh: '轉到角度', grp: '定點模式（一般舵機）', ret: '沒有回傳值', what: '叫某個孔的舵機轉到指定角度：數字格依序是孔（1 ~ 4）、角度（一般舵機 0 ~ 180）、速度。速度可以不填：不填或 100 = 直接轉過去；1 ~ 99 = 每秒轉「速度 × 6」度。範例用速度 30 來回擺，servo_wait 等它轉到。',
       run: { loop: [C('servo_angle', 1, 30, 30), SW(1), C('servo_angle', 1, 150, 30), SW(1), P('1 號舵機來回一次')] }, sample: '1 號舵機來回一次' },
     { id: 'servo_wait', zh: '等它轉到', grp: '定點模式（一般舵機）', ret: '沒有回傳值（轉完才往下）', once: true, what: '等某個孔「慢慢轉」走完才往下一塊積木。只有速度填 1 ~ 99 時才需要等。第 2 格可以填最多等幾毫秒，不填就是 10000（10 秒）。範例先直接轉到 0 度，再每秒 60 度慢慢轉到 180 度。',
       run: { pre: [C('servo_angle', 1, 0), C('servo_angle', 1, 180, 10), P('慢慢轉，等它轉到…'), SW(1), P('轉到 180 度了！')] }, sample: '慢慢轉，等它轉到…\n轉到 180 度了！' },
@@ -401,7 +401,7 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
       run: { loop: [C('servo_pulse', 1, 1500), P('1 號舵機：1500 µs')] }, sample: '1 號舵機：1500 µs' },
     { id: 'servo_release', zh: '放鬆一顆', grp: '直接控制與放鬆', ret: '沒有回傳值', what: '讓某個孔的舵機放鬆：不再出力、可以用手轉，也會清掉卡住的記號。到下面拖 1 號舵臂試試看：放鬆時拖到哪就停在哪。',
       run: { loop: [C('servo_release', 1), P(function (r) { return '1 號有出力嗎？ ' + py(r('is_active', 1)); })] }, sample: '1 號有出力嗎？ False' },
-    { id: 'stop_all', zh: '全部放鬆', grp: '直接控制與放鬆', ret: '沒有回傳值', what: '6 個孔全部放鬆（校正和卡住保護的設定會留著）。程式停下來時舵機不會自己放鬆，要放鬆就在程式最後放一塊。',
+    { id: 'stop_all', zh: '全部放鬆', grp: '直接控制與放鬆', ret: '沒有回傳值', what: '4 個孔全部放鬆（校正和卡住保護的設定會留著）。程式停下來時舵機不會自己放鬆，要放鬆就在程式最後放一塊。',
       run: { loop: [C('stop_all'), P(function (r) { return '全部放鬆了，總電流 ' + py(r('get_total_current')) + ' mA'; })] }, sample: '全部放鬆了，總電流 0 mA' },
     { id: 'servo_stall_config', zh: '卡住保護設定', grp: '卡住保護', ret: '沒有回傳值', once: true, what: '設定「多大電流、持續多久算卡住」：孔、電流 mA、時間 ms（第 4 格自動放鬆不填 = true）。預設 400 mA、300 ms；電流填 0 = 關掉偵測。範例跑一次就結束，但擴充板會一直保護：勾「把 1 號舵臂扳開、用手擋住」，0.5 秒後 1 號就會放鬆。',
       run: { pre: [C('servo_stall_config', 1, 300, 500), C('servo_angle', 1, 90), P('1 號設定好了：超過 300 mA 持續 0.5 秒就放鬆')] }, sample: '1 號設定好了：超過 300 mA 持續 0.5 秒就放鬆' },
@@ -413,7 +413,7 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
       run: { loop: [P(function (r) { return '還在轉嗎？ ' + py(r('is_moving', 1)); }), C('servo_angle', 1, 0, 10), SW(1), C('servo_angle', 1, 180, 10)] }, sample: '還在轉嗎？ True' },
     { id: 'is_active', zh: '有沒有出力', grp: '讀狀態', ret: 'True／False', what: '某個孔現在有沒有送訊號給舵機（有出力）。剛開始、放鬆之後、卡住被自動放鬆之後都是 False。',
       run: { loop: [C('servo_angle', 1, 90), P(function (r) { return '1 號有出力嗎？ ' + py(r('is_active', 1)); })] }, sample: '1 號有出力嗎？ True' },
-    { id: 'get_total_current', zh: '總電流', grp: '讀狀態', ret: '整數（mA）', what: '6 個孔加起來的總電流。擴充板的電源保護大約在 700 mA 限流。',
+    { id: 'get_total_current', zh: '總電流', grp: '讀狀態', ret: '整數（mA）', what: '4 個孔加起來的總電流。擴充板的電源保護大約在 700 mA 限流。',
       run: { loop: [C('servo_angle', 1, 90), C('servo_run', 2, 50), P(function (r) { return '總電流 ' + py(r('get_total_current')) + ' mA'; })] }, sample: '總電流 158 mA' },
     { id: 'is_power_fault', zh: '電源有沒有出問題', grp: '讀狀態', ret: 'True／False', what: '舵機電源有沒有出問題（電流太大或太熱，電源保護把電切掉了）。故障時所有舵機都沒力，排除後自動恢復。勾「電源過載」試試看。',
       run: { loop: [C('servo_angle', 1, 90), P(function (r) { return r('is_power_fault') ? '舵機電源過載！' : '電源正常'; })] }, sample: '電源正常' }
@@ -542,13 +542,13 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
   }
 
   // ───── 模擬擴充板 ─────
-  // 三層：PH = 6 顆舵機實際的樣子（拔線、重跑程式都留著）；B = 擴充板（拔掉 = null）；H = 主機上的函式庫。
+  // 三層：PH = 4 顆舵機實際的樣子（拔線、重跑程式都留著）；B = 擴充板（拔掉 = null）；H = 主機上的函式庫。
   // 只用畫面上的示意換算（角度、電流都是示意值），不是擴充板韌體的算法。
   var HUB = ['A', 'B', 'C', 'D', 'E', 'F'];
   var NEUTRAL = 1520;              // 模擬的 2 號 360 度舵機要 1520 µs 才停（示意）
-  var CX0 = 42, GAP = 75, CY = 92;  // 畫面上 1 號舵機的位置、間距
+  var CX0 = 80, GAP = 100, CY = 92;  // 畫面上 1 號舵機的位置、間距
   var T = 0, B = null, H = null, RUN = null, log = [], logDirty = true, DRAG = -1, HOLD = null;
-  var PH = [{ a: 90, t: 180 }, { a: 0, t: 360 }, { a: 60, t: 180 }, { a: 120, t: 180 }, { a: 90, t: 180 }, { a: 150, t: 180 }];
+  var PH = [{ a: 90, t: 180 }, { a: 0, t: 360 }, { a: 60, t: 180 }, { a: 120, t: 180 }];
   PH.forEach(function (p) { p.cur = 0; p.rate = 0; });
   function hubLetter() { return HUB[S.port - 1]; }
   function plugged() { return !$('unplug').checked; }
@@ -561,13 +561,13 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
 
   // ── 擴充板 ──
   function boardCh() { return { on: false, fresh: true, mode: '', set: 90, ramp: 90, rate: 0, us: 1500, stall: false, over: 0, cal: [500, 2500, 180], st: [400, 300, true] }; }
-  function boardReset() { B = { ch: [], last: '' }; for (var i = 0; i < 6; i++) B.ch.push(boardCh()); }
+  function boardReset() { B = { ch: [], last: '' }; for (var i = 0; i < 4; i++) B.ch.push(boardCh()); }
   function boardApply(k) {
     if (!B) return;
     var key = k.join(',');
     if (key === B.last) return;            // 跟上一包一模一樣：擴充板不執行
     B.last = key;
-    if (k[0] === 0) { for (var i = 0; i < 6; i++) B.ch[i] = boardCh(); return; }   // 全部放鬆、設定回預設
+    if (k[0] === 0) { for (var i = 0; i < 4; i++) B.ch[i] = boardCh(); return; }   // 全部放鬆、設定回預設
     var p = Math.floor(k[0] / 10), f = k[0] % 10, c = B.ch[p - 1];
     if (!c || f > 4) return;
     c.stall = false; c.over = 0;          // 這個孔收到新的指令：清掉卡住記號
@@ -589,7 +589,7 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
   function chMoving(c) { return c.mode === 'pos' && c.ramp !== c.set; }
   function snap() {
     var s = { ch: [], total: 0, fault: faulted() };
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < 4; i++) {
       var c = B.ch[i], cur = s.fault ? 0 : Math.min(4095, Math.round(PH[i].cur));
       s.ch.push({ cur: cur, stall: c.stall, moving: chMoving(c), active: c.on });
       s.total += cur;
@@ -600,7 +600,7 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
   // ── 主機上的函式庫（照 MBC_servo6_Lib.py 的行為） ──
   function newHost() {
     H = { connected: false, cache: null, cacheT: 0, errLast: -1000, calib: {}, stall: {}, spd: {} };
-    for (var p = 1; p <= 6; p++) H.spd[p] = [1500, 1000];
+    for (var p = 1; p <= 4; p++) H.spd[p] = [1500, 1000];
     if (plugged()) { H.connected = true; H.cache = snap(); H.cacheT = T; send([0, 0, 0, 0]); }
     else warnNoBoard();
   }
@@ -639,7 +639,7 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
     servo_speed_config: function (p, st, sp) { H.spd[p] = [clamp(dflt(st, 1500), 500, 2500), clamp(dflt(sp, 1000), 0, 1000)]; if (S.multi) cmd([]); },
     servo_pulse: function (p, us) { cmd([pktPulse(p, us)]); },
     servo_release: function (p) { cmd([[p * 10 + 2, 0, 0, 0]]); },
-    stop_all: function () { cmd([1, 2, 3, 4, 5, 6].map(function (p) { return [p * 10 + 2, 0, 0, 0]; })); },
+    stop_all: function () { cmd([1, 2, 3, 4].map(function (p) { return [p * 10 + 2, 0, 0, 0]; })); },
     servo_stall_config: function (p, cur, ms, auto) { var s = [dflt(cur, 400), dflt(ms, 300), dflt(auto, true)]; H.stall[p] = s; cmd([pktStall(p, s)]); }
   };
   var READ = {
@@ -689,7 +689,7 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
   // ── 舵機怎麼動（示意） ──
   function physics(dt) {
     var fault = faulted();
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < 4; i++) {
       var p = PH[i], c = B ? B.ch[i] : null;
       if (c && chMoving(c)) { var d = c.set - c.ramp, stp = c.rate * dt / 1000; c.ramp = Math.abs(d) <= stp ? c.set : c.ramp + (d > 0 ? stp : -stp); }
       var us = usOut(c), power = us != null && !fault;
@@ -731,12 +731,13 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
     h += '<rect x="8" y="8" width="444" height="26" rx="6" fill="#1b2422"/>';
     h += '<text x="18" y="25" font-size="13" fill="#e3ece9">Servo4 擴充板（接主機 ' + hubLetter() + ' 埠）</text>';
     h += '<text x="442" y="25" text-anchor="end" font-size="13" fill="' + (un || fault ? '#ff8f6b' : '#9ad98a') + '">' + (un ? '拔掉了' : fault ? '電源過載：舵機都沒力' : '總電流 ' + total + ' mA') + '</text>';
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < 4; i++) {
       var p = PH[i], c = B ? B.ch[i] : null, cx = CX0 + i * GAP, on = !!(c && c.on), st = !!(c && c.stall);
       var col = st ? ir : on && !fault && !un ? '#e08a2c' : '#9aa5a2';
       if (p.t === 180) h += '<path d="M' + (cx - 32) + ' ' + CY + ' A32 32 0 0 1 ' + (cx + 32) + ' ' + CY + '" fill="none" stroke="#c9d2cf" stroke-width="2" stroke-dasharray="3 4"/>';
       else h += '<circle cx="' + cx + '" cy="' + CY + '" r="32" fill="none" stroke="#c9d2cf" stroke-width="2" stroke-dasharray="3 4"/>';
       h += '<rect x="' + (cx - 20) + '" y="' + (CY - 10) + '" width="40" height="36" rx="5" fill="#1b2422"/>';
+      h += '<text x="' + cx + '" y="' + (CY + 20) + '" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#e3ece9">CN' + (i + 1) + '</text>';
       var th = (180 - p.a) * Math.PI / 180, ex = cx + 28 * Math.cos(th), ey = CY - 28 * Math.sin(th);
       var bx = p.t === 360 ? cx - 18 * Math.cos(th) : cx, by = p.t === 360 ? CY + 18 * Math.sin(th) : CY;
       h += '<line x1="' + bx.toFixed(1) + '" y1="' + by.toFixed(1) + '" x2="' + ex.toFixed(1) + '" y2="' + ey.toFixed(1) + '" stroke="' + col + '" stroke-width="8" stroke-linecap="round"/>';
@@ -784,7 +785,7 @@ var PYB = {"img":["data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1
     f.addEventListener('pointerdown', function (e) {
       var q = svgXY(e); if (!q) return;
       var i = Math.round((q.x - CX0) / GAP);
-      if (i < 0 || i > 5 || Math.abs(q.y - CY) > 48) return;
+      if (i < 0 || i > 3 || Math.abs(q.y - CY) > 48) return;
       DRAG = i; PH[i].a = angleAt(i, q);
       try { f.setPointerCapture(e.pointerId); } catch (x) { /* 舊瀏覽器沒有也沒關係 */ }
       e.preventDefault();

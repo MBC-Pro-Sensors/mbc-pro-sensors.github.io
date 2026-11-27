@@ -236,7 +236,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 <div class="wrap">
   <header class="top">
     <span class="eyebrow">MBC Servo4 4-Port Servo Expander (for LEGO® SPIKE™) × Pybricks</span>
-    <h1>Control 6 servos with MicroPython in three steps</h1>
+    <h1>Control 4 servos with MicroPython in three steps</h1>
     <p class="lead">A Pybricks program always goes in this order: first <b>import the library</b>, then <b>create an object and give the expander a name</b>, and only then use that name to <b>call functions</b>. Work through the steps on the left, and the program on the right grows with you. The servo arms on the simulated expander turn as the program says. You can also drag an arm with the mouse and see what the program prints.</p>
     <div class="hostbar">
       <span class="small">Your hub:</span>
@@ -295,14 +295,14 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <article class="step locked" id="step3">
         <div class="step-head"><span class="num">3</span><h2>Use the functions</h2></div>
         <div class="step-body">
-          <p class="why">Every function is written as "<code><span id="nm1">servo6</span>.function_name(servo, …)</code>": the name, a dot, then the function. The first number in the brackets is the <b>servo port 1 to 6</b> on the expander (printed CN1 to CN6 on the board). It is not the same as the hub port. Click a function, and the program and output switch to its example.</p>
+          <p class="why">Every function is written as "<code><span id="nm1">servo6</span>.function_name(servo, …)</code>": the name, a dot, then the function. The first number in the brackets is the <b>servo port 1 to 4</b> on the expander (printed CN1 to CN4 on the board). It is not the same as the hub port. Click a function, and the program and output switch to its example.</p>
           <div id="picker" class="ref"></div>
           <div class="explain" id="explain" aria-live="polite"></div>
           <div class="mini" id="mini3" aria-live="polite"></div>
           <div class="sim-box">
-        <div class="sim-title">Simulated expander (one servo on each of the 6 servo ports): watch the program turn the arms, or drag an arm with the mouse</div>
+        <div class="sim-title">Simulated expander (one servo on each of the 4 servo ports): watch the program turn the arms, or drag an arm with the mouse</div>
         <div class="sim">
-          <svg id="field" viewBox="0 0 460 200" role="group" aria-label="Servo4 expander diagram: 6 servos; drag an arm with the mouse" style="touch-action: none"></svg>
+          <svg id="field" viewBox="0 0 460 200" role="group" aria-label="Servo4 expander diagram: 4 servos; drag an arm with the mouse" style="touch-action: none"></svg>
           <div class="ctrl">
             <div class="toggles">
               <label><input autocomplete="off" type="checkbox" id="hold1"> Push servo 1's arm aside and hold it</label>
@@ -311,7 +311,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
               <button type="button" class="copy" id="rerun">Run the program again</button>
             </div>
           </div>
-          <p class="note">The simulator is only a sketch: turning speed and current are simplified, and real numbers depend on the servo model. Servos 1 and 3 to 6 are standard 180-degree servos. Servo 2 is a 360-degree continuous rotation servo (this one needs 1520 µs to stop). Orange arm = active (pushing), grey = released, red = stalled. Drag an active arm and the servo pushes back, so the current goes up; let go and it turns back. A released arm stays wherever you drag it.</p>
+          <p class="note">The simulator is only a sketch: turning speed and current are simplified, and real numbers depend on the servo model. Servos 1, 3 and 4 are standard 180-degree servos. Servo 2 is a 360-degree continuous rotation servo (this one needs 1520 µs to stop). Orange arm = active (pushing), grey = released, red = stalled. Drag an active arm and the servo pushes back, so the current goes up; let go and it turns back. A released arm stays wherever you drag it.</p>
         </div>
           </div>
         </div>
@@ -349,10 +349,10 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <div class="panel">
         <div class="panel-head"><span>Multitask version (advanced)</span><button type="button" class="copy" data-copy="multi">Copy</button></div>
         <pre class="code" id="ex-multi"></pre>
-        <p class="bubble"><i>!</i><span>When you create the object, write <code>True</code> as the second value. Create the object outside <code>run_task()</code>, and put <code>await</code> in front of every function. Import the library's <code>run_task</code> on the line under <code>pybricks.tools</code>. Then all 6 servos release by themselves when the program ends, hits an error, or you press the stop button.</span></p>
+        <p class="bubble"><i>!</i><span>When you create the object, write <code>True</code> as the second value. Create the object outside <code>run_task()</code>, and put <code>await</code> in front of every function. Import the library's <code>run_task</code> on the line under <code>pybricks.tools</code>. Then all 4 servos release by themselves when the program ends, hits an error, or you press the stop button.</span></p>
       </div>
       <div class="panel">
-        <div class="panel-head"><span>Move 6 servos one by one</span><button type="button" class="copy" data-copy="six">Copy</button></div>
+        <div class="panel-head"><span>Move 4 servos one by one</span><button type="button" class="copy" data-copy="six">Copy</button></div>
         <pre class="code" id="ex-six"></pre>
         <p class="bubble"><i>!</i><span>Moving them one at a time keeps the total current from jumping too high (the expander's power protection limits the current at about 700 mA). Do not plug a 360-degree servo into the ports this example uses: an angle command makes it spin forever.</span></p>
       </div>
@@ -366,7 +366,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <li><b>Release the servos before the program ends.</b> The expander has no watchdog, so after the program ends, the servos stay at their last angle. In a normal program, call <code>stop_all()</code> at the end. In a multitask program, write <code>from MBC_servo6_Lib import MBC_SERVO6, run_task</code> instead (on the line under <code>pybricks.tools</code>). Then the servos release when the program ends, hits an error, or you press the stop button.</li>
       <li><b>The exact same command only counts once.</b> The expander skips a command that is exactly the same as the one before, so sending the same angle again and again in a loop is fine. But after a servo stalls and is released automatically, sending the same angle in the loop does <b>not</b> make it push again. Send a different angle, or call <code>servo_release()</code> first and then send it.</li>
       <li><b>Only speed 1 to 99 turns slowly.</b> The servo turns "speed × 6" degrees per second. No speed, or 100, turns there at the servo's top speed. The first angle command at the start, or after this port was released, always jumps straight there (the expander does not know where the arm was). <code>is_moving()</code> and <code>servo_wait()</code> use the expander's own count of the progress. The servo has no position sensor, so it cannot tell if it is blocked.</li>
-      <li><b>Power:</b> the servos get their power from the hub, through the expander. All 6 together are limited at about 700 mA. When many servos move at once, or one is stalled, check <code>get_total_current()</code> and <code>is_power_fault()</code>. Servo port 1 is on the far left of the expander (on the simulator too).</li>
+      <li><b>Power:</b> the servos take their power directly from the hub battery, through the expander (no regulator, about 6.4-7.6 V). All 4 together are limited at about 700 mA, and the servos must tolerate about 8.4 V (e.g. high-voltage HV servos). When many servos move at once, or one is stalled, check <code>get_total_current()</code> and <code>is_power_fault()</code>. Servo port 1 is on the far left of the expander (on the simulator too).</li>
     </ol>
   </section>
 </div>
@@ -389,7 +389,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
   // {n} becomes the object name (with await in multitask), {w} becomes await in multitask; run: what the simulator runs; sample: example output on the card
   var FNS = [
     { id: 'servo_angle', zh: 'Turn to an angle', grp: 'Position mode (standard servos)', ret: 'Nothing',
-      what: 'Turns the servo on one port to an angle: servo_angle(servo, angle, speed). servo is the servo port, 1 to 6. For a standard servo, the angle is 0 to 180. You can leave out the speed: no speed or 100 = turn there at the servo\'s top speed. 1 to 99 = turn "speed × 6" degrees per second, so 30 = 180 degrees per second. When it gets there, the servo keeps pushing to hold that angle. Drag servo 1\'s arm on the right: let go, and it turns back by itself.',
+      what: 'Turns the servo on one port to an angle: servo_angle(servo, angle, speed). servo is the servo port, 1 to 4. For a standard servo, the angle is 0 to 180. You can leave out the speed: no speed or 100 = turn there at the servo\'s top speed. 1 to 99 = turn "speed × 6" degrees per second, so 30 = 180 degrees per second. When it gets there, the servo keeps pushing to hold that angle. Drag servo 1\'s arm on the right: let go, and it turns back by itself.',
       body: ['{n}.servo_angle(1, 30, 30)    # servo 1 to 30 degrees (180 degrees per second)', '{n}.servo_wait(1)    # wait until it gets there', '{n}.servo_angle(1, 150, 30)    # then to 150 degrees', '{n}.servo_wait(1)', 'print("Servo 1 swung back and forth")'],
       run: { loop: [C('servo_angle', 1, 30, 30), SW(1), C('servo_angle', 1, 150, 30), SW(1), P('Servo 1 swung back and forth')] },
       sample: 'Servo 1 swung back and forth' },
@@ -426,8 +426,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       run: { loop: [C('servo_release', 1), P(function (r) { return 'Is servo 1 active? ' + py(r('is_active', 1)); })] },
       sample: 'Is servo 1 active? False' },
     { id: 'stop_all', zh: 'Release all', grp: 'Direct control and release', ret: 'Nothing', once: true,
-      what: 'Releases all 6 ports (the calibration and stall protection settings are kept). The expander has no watchdog, so after the program ends, the servos stay at their last angle. In a normal program, remember to call this once at the end. In a multitask program, use the library\'s run_task instead: it does this for you when the program ends.',
-      body: ['{n}.servo_angle(1, 45)', '{n}.servo_angle(3, 135)', '{w}wait(2000)    # wait 2 seconds to see the arms move', '{n}.stop_all()    # release all 6 ports', 'print("All released")'],
+      what: 'Releases all 4 ports (the calibration and stall protection settings are kept). The expander has no watchdog, so after the program ends, the servos stay at their last angle. In a normal program, remember to call this once at the end. In a multitask program, use the library\'s run_task instead: it does this for you when the program ends.',
+      body: ['{n}.servo_angle(1, 45)', '{n}.servo_angle(3, 135)', '{w}wait(2000)    # wait 2 seconds to see the arms move', '{n}.stop_all()    # release all 4 ports', 'print("All released")'],
       run: { pre: [C('servo_angle', 1, 45), C('servo_angle', 3, 135), W(2000), C('stop_all'), P('All released')] },
       sample: 'All released' },
     { id: 'servo_stall_config', zh: 'Stall protection settings', grp: 'Stall protection', ret: 'Nothing',
@@ -458,7 +458,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       run: { loop: [C('servo_angle', 1, 90), P(function (r) { return 'Is servo 1 active? ' + py(r('is_active', 1)); })] },
       sample: 'Is servo 1 active? True' },
     { id: 'get_total_current', zh: 'Total current', grp: 'Read the status', ret: 'Whole number (mA)',
-      what: 'The current of all 6 ports added together (mA). The expander\'s power protection limits the current at about 700 mA. When many servos move at once, use this to check that you are not too close.',
+      what: 'The current of all 4 ports added together (mA). The expander\'s power protection limits the current at about 700 mA. When many servos move at once, use this to check that you are not too close.',
       body: ['{n}.servo_angle(1, 90)', '{n}.servo_run(2, 50)', 'print("Total current:", {n}.get_total_current(), "mA")'],
       run: { loop: [C('servo_angle', 1, 90), C('servo_run', 2, 50), P(function (r) { return 'Total current: ' + py(r('get_total_current')) + ' mA'; })] },
       sample: 'Total current: 158 mA' },
@@ -739,7 +739,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       'async def main():',
       '    await multitask(swing(), watch())',
       '',
-      'run_task(main())                # ends or you press stop: all 6 servos release'
+      'run_task(main())                # ends or you press stop: all 4 servos release'
     ];
     EX.six = [
       'from pybricks.tools import wait',
@@ -747,11 +747,11 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       '',
       'servo6 = MBC_SERVO6(3)',
       '',
-      'for ch in range(1, 7):              # servos 1 to 6 go to 0 degrees, one by one',
+      'for ch in range(1, 5):              # servos 1 to 4 go to 0 degrees, one by one',
       '    servo6.servo_angle(ch, 0)',
       '    wait(300)',
       '',
-      'for ch in range(1, 7):              # then turn slowly to 180 degrees, one at a time',
+      'for ch in range(1, 5):              # then turn slowly to 180 degrees, one at a time',
       '    servo6.servo_angle(ch, 180, 30)',
       '    servo6.servo_wait(ch)',
       '',
@@ -765,13 +765,13 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
   }
 
   // ───── Simulated expander ─────
-  // Three layers: PH = how the 6 servos really are (kept when unplugging or rerunning); B = the expander (unplugged = null); H = the library on the hub.
+  // Three layers: PH = how the 4 servos really are (kept when unplugging or rerunning); B = the expander (unplugged = null); H = the library on the hub.
   // Only a sketch of what the screen shows (angles and currents are example values), not the expander firmware.
   var HUB = ['A', 'B', 'C', 'D', 'E', 'F'];
   var NEUTRAL = 1520;              // the simulated 360-degree servo 2 needs 1520 µs to stop (example value)
-  var CX0 = 42, GAP = 75, CY = 92;  // position of servo 1 on the screen, and the spacing
+  var CX0 = 80, GAP = 100, CY = 92;  // position of servo 1 on the screen, and the spacing
   var T = 0, B = null, H = null, RUN = null, log = [], logDirty = true, DRAG = -1, HOLD = null;
-  var PH = [{ a: 90, t: 180 }, { a: 0, t: 360 }, { a: 60, t: 180 }, { a: 120, t: 180 }, { a: 90, t: 180 }, { a: 150, t: 180 }];
+  var PH = [{ a: 90, t: 180 }, { a: 0, t: 360 }, { a: 60, t: 180 }, { a: 120, t: 180 }];
   PH.forEach(function (p) { p.cur = 0; p.rate = 0; });
   function hubLetter() { return HUB[S.port - 1]; }
   function plugged() { return !$('unplug').checked; }
@@ -785,13 +785,13 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 
   // ── Expander ──
   function boardCh() { return { on: false, fresh: true, mode: '', set: 90, ramp: 90, rate: 0, us: 1500, stall: false, over: 0, cal: [500, 2500, 180], st: [400, 300, true] }; }
-  function boardReset() { B = { ch: [], last: '' }; for (var i = 0; i < 6; i++) B.ch.push(boardCh()); }
+  function boardReset() { B = { ch: [], last: '' }; for (var i = 0; i < 4; i++) B.ch.push(boardCh()); }
   function boardApply(k) {
     if (!B) return;
     var key = k.join(',');
     if (key === B.last) return;            // exactly the same as the last packet: the expander skips it
     B.last = key;
-    if (k[0] === 0) { for (var i = 0; i < 6; i++) B.ch[i] = boardCh(); return; }   // release all, settings back to default
+    if (k[0] === 0) { for (var i = 0; i < 4; i++) B.ch[i] = boardCh(); return; }   // release all, settings back to default
     var p = Math.floor(k[0] / 10), f = k[0] % 10, c = B.ch[p - 1];
     if (!c || f > 4) return;
     c.stall = false; c.over = 0;          // this port got a new command: clear the stalled flag
@@ -813,7 +813,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
   function chMoving(c) { return c.mode === 'pos' && c.ramp !== c.set; }
   function snap() {
     var s = { ch: [], total: 0, fault: faulted() };
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < 4; i++) {
       var c = B.ch[i], cur = s.fault ? 0 : Math.min(4095, Math.round(PH[i].cur));
       s.ch.push({ cur: cur, stall: c.stall, moving: chMoving(c), active: c.on });
       s.total += cur;
@@ -824,7 +824,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
   // ── The library on the hub (behaves like MBC_servo6_Lib.py) ──
   function newHost() {
     H = { connected: false, cache: null, cacheT: 0, errLast: -1000, calib: {}, stall: {}, spd: {} };
-    for (var p = 1; p <= 6; p++) H.spd[p] = [1500, 1000];
+    for (var p = 1; p <= 4; p++) H.spd[p] = [1500, 1000];
     if (plugged()) { H.connected = true; H.cache = snap(); H.cacheT = T; send([0, 0, 0, 0]); }
     else warnNoBoard();
   }
@@ -863,7 +863,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     servo_speed_config: function (p, st, sp) { H.spd[p] = [clamp(dflt(st, 1500), 500, 2500), clamp(dflt(sp, 1000), 0, 1000)]; if (S.multi) cmd([]); },
     servo_pulse: function (p, us) { cmd([pktPulse(p, us)]); },
     servo_release: function (p) { cmd([[p * 10 + 2, 0, 0, 0]]); },
-    stop_all: function () { cmd([1, 2, 3, 4, 5, 6].map(function (p) { return [p * 10 + 2, 0, 0, 0]; })); },
+    stop_all: function () { cmd([1, 2, 3, 4].map(function (p) { return [p * 10 + 2, 0, 0, 0]; })); },
     servo_stall_config: function (p, cur, ms, auto) { var s = [dflt(cur, 400), dflt(ms, 300), dflt(auto, true)]; H.stall[p] = s; cmd([pktStall(p, s)]); }
   };
   var READ = {
@@ -913,7 +913,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
   // ── How the servos move (sketch) ──
   function physics(dt) {
     var fault = faulted();
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < 4; i++) {
       var p = PH[i], c = B ? B.ch[i] : null;
       if (c && chMoving(c)) { var d = c.set - c.ramp, stp = c.rate * dt / 1000; c.ramp = Math.abs(d) <= stp ? c.set : c.ramp + (d > 0 ? stp : -stp); }
       var us = usOut(c), power = us != null && !fault;
@@ -955,12 +955,13 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     h += '<rect x="8" y="8" width="444" height="26" rx="6" fill="#1b2422"/>';
     h += '<text x="18" y="25" font-size="13" fill="#e3ece9">Servo4 on hub Port ' + hubLetter() + '</text>';
     h += '<text x="442" y="25" text-anchor="end" font-size="13" fill="' + (un || fault ? '#ff8f6b' : '#9ad98a') + '">' + (un ? 'Unplugged' : fault ? 'Overload: servos have no power' : 'Total current ' + total + ' mA') + '</text>';
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < 4; i++) {
       var p = PH[i], c = B ? B.ch[i] : null, cx = CX0 + i * GAP, on = !!(c && c.on), st = !!(c && c.stall);
       var col = st ? ir : on && !fault && !un ? '#e08a2c' : '#9aa5a2';
       if (p.t === 180) h += '<path d="M' + (cx - 32) + ' ' + CY + ' A32 32 0 0 1 ' + (cx + 32) + ' ' + CY + '" fill="none" stroke="#c9d2cf" stroke-width="2" stroke-dasharray="3 4"/>';
       else h += '<circle cx="' + cx + '" cy="' + CY + '" r="32" fill="none" stroke="#c9d2cf" stroke-width="2" stroke-dasharray="3 4"/>';
       h += '<rect x="' + (cx - 20) + '" y="' + (CY - 10) + '" width="40" height="36" rx="5" fill="#1b2422"/>';
+      h += '<text x="' + cx + '" y="' + (CY + 20) + '" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#e3ece9">CN' + (i + 1) + '</text>';
       var th = (180 - p.a) * Math.PI / 180, ex = cx + 28 * Math.cos(th), ey = CY - 28 * Math.sin(th);
       var bx = p.t === 360 ? cx - 18 * Math.cos(th) : cx, by = p.t === 360 ? CY + 18 * Math.sin(th) : CY;
       h += '<line x1="' + bx.toFixed(1) + '" y1="' + by.toFixed(1) + '" x2="' + ex.toFixed(1) + '" y2="' + ey.toFixed(1) + '" stroke="' + col + '" stroke-width="8" stroke-linecap="round"/>';
@@ -1008,7 +1009,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     f.addEventListener('pointerdown', function (e) {
       var q = svgXY(e); if (!q) return;
       var i = Math.round((q.x - CX0) / GAP);
-      if (i < 0 || i > 5 || Math.abs(q.y - CY) > 48) return;
+      if (i < 0 || i > 3 || Math.abs(q.y - CY) > 48) return;
       DRAG = i; PH[i].a = angleAt(i, q);
       try { f.setPointerCapture(e.pointerId); } catch (x) { /* fine if an old browser does not have it */ }
       e.preventDefault();

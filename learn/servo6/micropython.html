@@ -236,7 +236,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 <div class="wrap">
   <header class="top">
     <span class="eyebrow">MBC Servo4 多路舵機擴充器 × Pybricks</span>
-    <h1>三個步驟用 MicroPython 控制 6 顆舵機</h1>
+    <h1>三個步驟用 MicroPython 控制 4 顆舵機</h1>
     <p class="lead">寫 Pybricks 程式一定照這個順序：先<b>匯入函式庫</b>，再<b>建立物件、幫擴充板取名字</b>，最後才用這個名字去<b>呼叫功能</b>。左邊一步一步做，右邊的程式會跟著長出來；模擬擴充板上的舵臂會照程式轉動，也可以用滑鼠拖動舵臂，看程式會印出什麼。</p>
     <div class="hostbar">
       <span class="small">你的主機：</span>
@@ -295,14 +295,14 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <article class="step locked" id="step3">
         <div class="step-head"><span class="num">3</span><h2>使用功能</h2></div>
         <div class="step-body">
-          <p class="why">寫法都是「<code><span id="nm1">servo6</span>.功能名稱(孔, …)</code>」：名字＋小數點＋功能。括號裡第一個數字是擴充板上的<b>舵機孔 1 ~ 6</b>（板子上印 CN1 ~ CN6），跟主機的孔位是兩回事。點一個功能，程式和輸出會換成它的範例。</p>
+          <p class="why">寫法都是「<code><span id="nm1">servo6</span>.功能名稱(孔, …)</code>」：名字＋小數點＋功能。括號裡第一個數字是擴充板上的<b>舵機孔 1 ~ 4</b>（板子上印 CN1 ~ CN4），跟主機的孔位是兩回事。點一個功能，程式和輸出會換成它的範例。</p>
           <div id="picker" class="ref"></div>
           <div class="explain" id="explain" aria-live="polite"></div>
           <div class="mini" id="mini3" aria-live="polite"></div>
           <div class="sim-box">
-        <div class="sim-title">模擬擴充板（6 個舵機孔各接一顆舵機）：看程式怎麼轉舵臂，也可以用滑鼠拖舵臂</div>
+        <div class="sim-title">模擬擴充板（4 個舵機孔各接一顆舵機）：看程式怎麼轉舵臂，也可以用滑鼠拖舵臂</div>
         <div class="sim">
-          <svg id="field" viewBox="0 0 460 200" role="group" aria-label="Servo4 擴充板示意：6 顆舵機，可以用滑鼠拖動舵臂" style="touch-action: none"></svg>
+          <svg id="field" viewBox="0 0 460 200" role="group" aria-label="Servo4 擴充板示意：4 顆舵機，可以用滑鼠拖動舵臂" style="touch-action: none"></svg>
           <div class="ctrl">
             <div class="toggles">
               <label><input autocomplete="off" type="checkbox" id="hold1"> 把 1 號舵臂扳開、用手擋住</label>
@@ -311,7 +311,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
               <button type="button" class="copy" id="rerun">重新執行程式</button>
             </div>
           </div>
-          <p class="note">模擬畫面是示意：轉動速度、電流大小都簡化過，實際數字看舵機型號。1 號、3 ~ 6 號是一般 180 度舵機，2 號是 360 度連續旋轉舵機（這顆要 1520 µs 才會停）。舵臂橘色 = 有出力、灰色 = 放鬆、紅色 = 判定卡住。有出力時拖它，舵機會頂住、電流變大，放開會轉回去；放鬆時拖到哪就停在哪。</p>
+          <p class="note">模擬畫面是示意：轉動速度、電流大小都簡化過，實際數字看舵機型號。1 號、3 號、4 號是一般 180 度舵機，2 號是 360 度連續旋轉舵機（這顆要 1520 µs 才會停）。舵臂橘色 = 有出力、灰色 = 放鬆、紅色 = 判定卡住。有出力時拖它，舵機會頂住、電流變大，放開會轉回去；放鬆時拖到哪就停在哪。</p>
         </div>
           </div>
         </div>
@@ -349,10 +349,10 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <div class="panel">
         <div class="panel-head"><span>多工寫法（進階）</span><button type="button" class="copy" data-copy="multi">複製</button></div>
         <pre class="code" id="ex-multi"></pre>
-        <p class="bubble"><i>!</i><span>建立物件時第 2 個參數寫 <code>True</code>，物件要放在 <code>run_task()</code> 外面；每個功能前面都要加 <code>await</code>。函式庫的 <code>run_task</code> 要寫在 <code>pybricks.tools</code> 那行下面，程式結束、出錯、按停止鍵時 6 顆舵機都會自動放鬆。</span></p>
+        <p class="bubble"><i>!</i><span>建立物件時第 2 個參數寫 <code>True</code>，物件要放在 <code>run_task()</code> 外面；每個功能前面都要加 <code>await</code>。函式庫的 <code>run_task</code> 要寫在 <code>pybricks.tools</code> 那行下面，程式結束、出錯、按停止鍵時 4 顆舵機都會自動放鬆。</span></p>
       </div>
       <div class="panel">
-        <div class="panel-head"><span>6 顆舵機輪流動</span><button type="button" class="copy" data-copy="six">複製</button></div>
+        <div class="panel-head"><span>4 顆舵機輪流動</span><button type="button" class="copy" data-copy="six">複製</button></div>
         <pre class="code" id="ex-six"></pre>
         <p class="bubble"><i>!</i><span>一顆一顆輪流動，總電流比較不會一下衝太高（擴充板的電源保護大約在 700 mA 限流）。360 度舵機不要接在這個範例用到的孔：它收到角度指令會一直轉。</span></p>
       </div>
@@ -366,7 +366,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       <li><b>程式結束前要放鬆舵機。</b>擴充板沒有看門狗，程式結束後舵機會停在最後的角度。一般寫法在程式最後呼叫 <code>stop_all()</code>；多工寫法改成 <code>from MBC_servo6_Lib import MBC_SERVO6, run_task</code>（寫在 <code>pybricks.tools</code> 那行下面），結束、出錯、按停止鍵都會自動放鬆。</li>
       <li><b>一模一樣的指令只算一次。</b>擴充板會略過跟上一包完全相同的指令，所以迴圈裡一直送同一個角度不會怎樣。但舵機卡住、被自動放鬆之後，迴圈一直送同一個角度<b>不會</b>重新出力：要送一個不同的角度，或先 <code>servo_release()</code> 再送。</li>
       <li><b>速度 1 ~ 99 才會「慢慢轉」。</b>速度 = 每秒轉「速度 × 6」度；不寫或寫 100 就用舵機最快的速度直接轉過去。剛開始、或這個孔放鬆過之後的第一個角度指令，一律直接轉過去（擴充板不知道舵臂原本停在哪）。<code>is_moving()</code>、<code>servo_wait()</code> 看的是擴充板自己算的進度，舵機沒有位置感應器，被擋住了也不會知道。</li>
-      <li><b>電源：</b>舵機的電從主機經過擴充板供應，6 顆加起來大約 700 mA 會限流。很多顆同時動、或有舵機卡住時，用 <code>get_total_current()</code>、<code>is_power_fault()</code> 看看。擴充板上 1 號在最左邊（模擬畫面也是）。</li>
+      <li><b>電源：</b>舵機的電直接取自主機電池、經過擴充板供應（不降壓，約 6.4 ～ 7.6 V），4 顆加起來大約 700 mA 會限流；舵機要耐約 8.4 V（例如高壓 HV 舵機）。很多顆同時動、或有舵機卡住時，用 <code>get_total_current()</code>、<code>is_power_fault()</code> 看看。擴充板上 1 號在最左邊（模擬畫面也是）。</li>
     </ol>
   </section>
 </div>
@@ -389,7 +389,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
   // {n} 換成物件名稱（多工時前面加 await），{w} 多工時換成 await；run：模擬器照這個跑；sample：範例卡上的示意輸出
   var FNS = [
     { id: 'servo_angle', zh: '轉到角度', grp: '定點模式（一般舵機）', ret: '沒有回傳值',
-      what: '叫某個孔的舵機轉到指定角度：servo_angle(孔, 角度, 速度)。孔填 1 ~ 6，角度一般舵機是 0 ~ 180。速度可以不寫：不寫或 100 = 用舵機最快的速度直接轉過去；1 ~ 99 = 每秒轉「速度 × 6」度，例如 30 = 每秒 180 度。轉到之後舵機會一直出力、保持在這個角度：到右邊拖 1 號舵臂，放開它會自己轉回來。',
+      what: '叫某個孔的舵機轉到指定角度：servo_angle(孔, 角度, 速度)。孔填 1 ~ 4，角度一般舵機是 0 ~ 180。速度可以不寫：不寫或 100 = 用舵機最快的速度直接轉過去；1 ~ 99 = 每秒轉「速度 × 6」度，例如 30 = 每秒 180 度。轉到之後舵機會一直出力、保持在這個角度：到右邊拖 1 號舵臂，放開它會自己轉回來。',
       body: ['{n}.servo_angle(1, 30, 30)    # 1 號轉到 30 度（每秒 180 度）', '{n}.servo_wait(1)    # 等它轉到', '{n}.servo_angle(1, 150, 30)    # 再轉到 150 度', '{n}.servo_wait(1)', 'print("1 號舵機來回一次")'],
       run: { loop: [C('servo_angle', 1, 30, 30), SW(1), C('servo_angle', 1, 150, 30), SW(1), P('1 號舵機來回一次')] },
       sample: '1 號舵機來回一次' },
@@ -426,8 +426,8 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       run: { loop: [C('servo_release', 1), P(function (r) { return '1 號有出力嗎？ ' + py(r('is_active', 1)); })] },
       sample: '1 號有出力嗎？ False' },
     { id: 'stop_all', zh: '全部放鬆', grp: '直接控制與放鬆', ret: '沒有回傳值', once: true,
-      what: '6 個孔全部放鬆（校正和卡住保護的設定會留著）。擴充板沒有看門狗，程式結束後舵機會停在最後的角度；一般寫法的程式最後記得呼叫一次。多工寫法改用函式庫的 run_task，程式結束會自動做。',
-      body: ['{n}.servo_angle(1, 45)', '{n}.servo_angle(3, 135)', '{w}wait(2000)    # 等 2 秒，看舵臂轉好', '{n}.stop_all()    # 6 個孔全部放鬆', 'print("全部放鬆了")'],
+      what: '4 個孔全部放鬆（校正和卡住保護的設定會留著）。擴充板沒有看門狗，程式結束後舵機會停在最後的角度；一般寫法的程式最後記得呼叫一次。多工寫法改用函式庫的 run_task，程式結束會自動做。',
+      body: ['{n}.servo_angle(1, 45)', '{n}.servo_angle(3, 135)', '{w}wait(2000)    # 等 2 秒，看舵臂轉好', '{n}.stop_all()    # 4 個孔全部放鬆', 'print("全部放鬆了")'],
       run: { pre: [C('servo_angle', 1, 45), C('servo_angle', 3, 135), W(2000), C('stop_all'), P('全部放鬆了')] },
       sample: '全部放鬆了' },
     { id: 'servo_stall_config', zh: '卡住保護設定', grp: '卡住保護', ret: '沒有回傳值',
@@ -458,7 +458,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       run: { loop: [C('servo_angle', 1, 90), P(function (r) { return '1 號有出力嗎？ ' + py(r('is_active', 1)); })] },
       sample: '1 號有出力嗎？ True' },
     { id: 'get_total_current', zh: '總電流', grp: '讀狀態', ret: '整數（mA）',
-      what: '6 個孔加起來的總電流（mA）。擴充板的電源保護大約在 700 mA 限流，同時動很多顆舵機時，用它看看有沒有太接近。',
+      what: '4 個孔加起來的總電流（mA）。擴充板的電源保護大約在 700 mA 限流，同時動很多顆舵機時，用它看看有沒有太接近。',
       body: ['{n}.servo_angle(1, 90)', '{n}.servo_run(2, 50)', 'print("總電流:", {n}.get_total_current(), "mA")'],
       run: { loop: [C('servo_angle', 1, 90), C('servo_run', 2, 50), P(function (r) { return '總電流: ' + py(r('get_total_current')) + ' mA'; })] },
       sample: '總電流: 158 mA' },
@@ -739,7 +739,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       'async def main():',
       '    await multitask(swing(), watch())',
       '',
-      'run_task(main())                # 結束或按停止鍵，6 顆自動放鬆'
+      'run_task(main())                # 結束或按停止鍵，4 顆自動放鬆'
     ];
     EX.six = [
       'from pybricks.tools import wait',
@@ -747,11 +747,11 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
       '',
       'servo6 = MBC_SERVO6(3)',
       '',
-      'for ch in range(1, 7):              # 1 號到 6 號輪流轉到 0 度',
+      'for ch in range(1, 5):              # 1 號到 4 號輪流轉到 0 度',
       '    servo6.servo_angle(ch, 0)',
       '    wait(300)',
       '',
-      'for ch in range(1, 7):              # 再一顆一顆慢慢轉到 180 度',
+      'for ch in range(1, 5):              # 再一顆一顆慢慢轉到 180 度',
       '    servo6.servo_angle(ch, 180, 30)',
       '    servo6.servo_wait(ch)',
       '',
@@ -765,13 +765,13 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
   }
 
   // ───── 模擬擴充板 ─────
-  // 三層：PH = 6 顆舵機實際的樣子（拔線、重跑程式都留著）；B = 擴充板（拔掉 = null）；H = 主機上的函式庫。
+  // 三層：PH = 4 顆舵機實際的樣子（拔線、重跑程式都留著）；B = 擴充板（拔掉 = null）；H = 主機上的函式庫。
   // 只用畫面上的示意換算（角度、電流都是示意值），不是擴充板韌體的算法。
   var HUB = ['A', 'B', 'C', 'D', 'E', 'F'];
   var NEUTRAL = 1520;              // 模擬的 2 號 360 度舵機要 1520 µs 才停（示意）
-  var CX0 = 42, GAP = 75, CY = 92;  // 畫面上 1 號舵機的位置、間距
+  var CX0 = 80, GAP = 100, CY = 92;  // 畫面上 1 號舵機的位置、間距
   var T = 0, B = null, H = null, RUN = null, log = [], logDirty = true, DRAG = -1, HOLD = null;
-  var PH = [{ a: 90, t: 180 }, { a: 0, t: 360 }, { a: 60, t: 180 }, { a: 120, t: 180 }, { a: 90, t: 180 }, { a: 150, t: 180 }];
+  var PH = [{ a: 90, t: 180 }, { a: 0, t: 360 }, { a: 60, t: 180 }, { a: 120, t: 180 }];
   PH.forEach(function (p) { p.cur = 0; p.rate = 0; });
   function hubLetter() { return HUB[S.port - 1]; }
   function plugged() { return !$('unplug').checked; }
@@ -784,13 +784,13 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
 
   // ── 擴充板 ──
   function boardCh() { return { on: false, fresh: true, mode: '', set: 90, ramp: 90, rate: 0, us: 1500, stall: false, over: 0, cal: [500, 2500, 180], st: [400, 300, true] }; }
-  function boardReset() { B = { ch: [], last: '' }; for (var i = 0; i < 6; i++) B.ch.push(boardCh()); }
+  function boardReset() { B = { ch: [], last: '' }; for (var i = 0; i < 4; i++) B.ch.push(boardCh()); }
   function boardApply(k) {
     if (!B) return;
     var key = k.join(',');
     if (key === B.last) return;            // 跟上一包一模一樣：擴充板不執行
     B.last = key;
-    if (k[0] === 0) { for (var i = 0; i < 6; i++) B.ch[i] = boardCh(); return; }   // 全部放鬆、設定回預設
+    if (k[0] === 0) { for (var i = 0; i < 4; i++) B.ch[i] = boardCh(); return; }   // 全部放鬆、設定回預設
     var p = Math.floor(k[0] / 10), f = k[0] % 10, c = B.ch[p - 1];
     if (!c || f > 4) return;
     c.stall = false; c.over = 0;          // 這個孔收到新的指令：清掉卡住記號
@@ -812,7 +812,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
   function chMoving(c) { return c.mode === 'pos' && c.ramp !== c.set; }
   function snap() {
     var s = { ch: [], total: 0, fault: faulted() };
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < 4; i++) {
       var c = B.ch[i], cur = s.fault ? 0 : Math.min(4095, Math.round(PH[i].cur));
       s.ch.push({ cur: cur, stall: c.stall, moving: chMoving(c), active: c.on });
       s.total += cur;
@@ -823,7 +823,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
   // ── 主機上的函式庫（照 MBC_servo6_Lib.py 的行為） ──
   function newHost() {
     H = { connected: false, cache: null, cacheT: 0, errLast: -1000, calib: {}, stall: {}, spd: {} };
-    for (var p = 1; p <= 6; p++) H.spd[p] = [1500, 1000];
+    for (var p = 1; p <= 4; p++) H.spd[p] = [1500, 1000];
     if (plugged()) { H.connected = true; H.cache = snap(); H.cacheT = T; send([0, 0, 0, 0]); }
     else warnNoBoard();
   }
@@ -862,7 +862,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     servo_speed_config: function (p, st, sp) { H.spd[p] = [clamp(dflt(st, 1500), 500, 2500), clamp(dflt(sp, 1000), 0, 1000)]; if (S.multi) cmd([]); },
     servo_pulse: function (p, us) { cmd([pktPulse(p, us)]); },
     servo_release: function (p) { cmd([[p * 10 + 2, 0, 0, 0]]); },
-    stop_all: function () { cmd([1, 2, 3, 4, 5, 6].map(function (p) { return [p * 10 + 2, 0, 0, 0]; })); },
+    stop_all: function () { cmd([1, 2, 3, 4].map(function (p) { return [p * 10 + 2, 0, 0, 0]; })); },
     servo_stall_config: function (p, cur, ms, auto) { var s = [dflt(cur, 400), dflt(ms, 300), dflt(auto, true)]; H.stall[p] = s; cmd([pktStall(p, s)]); }
   };
   var READ = {
@@ -912,7 +912,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
   // ── 舵機怎麼動（示意） ──
   function physics(dt) {
     var fault = faulted();
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < 4; i++) {
       var p = PH[i], c = B ? B.ch[i] : null;
       if (c && chMoving(c)) { var d = c.set - c.ramp, stp = c.rate * dt / 1000; c.ramp = Math.abs(d) <= stp ? c.set : c.ramp + (d > 0 ? stp : -stp); }
       var us = usOut(c), power = us != null && !fault;
@@ -954,12 +954,13 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     h += '<rect x="8" y="8" width="444" height="26" rx="6" fill="#1b2422"/>';
     h += '<text x="18" y="25" font-size="13" fill="#e3ece9">Servo4 擴充板（接主機 ' + hubLetter() + ' 埠）</text>';
     h += '<text x="442" y="25" text-anchor="end" font-size="13" fill="' + (un || fault ? '#ff8f6b' : '#9ad98a') + '">' + (un ? '拔掉了' : fault ? '電源過載：舵機都沒力' : '總電流 ' + total + ' mA') + '</text>';
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < 4; i++) {
       var p = PH[i], c = B ? B.ch[i] : null, cx = CX0 + i * GAP, on = !!(c && c.on), st = !!(c && c.stall);
       var col = st ? ir : on && !fault && !un ? '#e08a2c' : '#9aa5a2';
       if (p.t === 180) h += '<path d="M' + (cx - 32) + ' ' + CY + ' A32 32 0 0 1 ' + (cx + 32) + ' ' + CY + '" fill="none" stroke="#c9d2cf" stroke-width="2" stroke-dasharray="3 4"/>';
       else h += '<circle cx="' + cx + '" cy="' + CY + '" r="32" fill="none" stroke="#c9d2cf" stroke-width="2" stroke-dasharray="3 4"/>';
       h += '<rect x="' + (cx - 20) + '" y="' + (CY - 10) + '" width="40" height="36" rx="5" fill="#1b2422"/>';
+      h += '<text x="' + cx + '" y="' + (CY + 20) + '" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#e3ece9">CN' + (i + 1) + '</text>';
       var th = (180 - p.a) * Math.PI / 180, ex = cx + 28 * Math.cos(th), ey = CY - 28 * Math.sin(th);
       var bx = p.t === 360 ? cx - 18 * Math.cos(th) : cx, by = p.t === 360 ? CY + 18 * Math.sin(th) : CY;
       h += '<line x1="' + bx.toFixed(1) + '" y1="' + by.toFixed(1) + '" x2="' + ex.toFixed(1) + '" y2="' + ey.toFixed(1) + '" stroke="' + col + '" stroke-width="8" stroke-linecap="round"/>';
@@ -1007,7 +1008,7 @@ input[type="text"] { font: inherit; font-family: var(--font-code); padding: 7px 
     f.addEventListener('pointerdown', function (e) {
       var q = svgXY(e); if (!q) return;
       var i = Math.round((q.x - CX0) / GAP);
-      if (i < 0 || i > 5 || Math.abs(q.y - CY) > 48) return;
+      if (i < 0 || i > 3 || Math.abs(q.y - CY) > 48) return;
       DRAG = i; PH[i].a = angleAt(i, q);
       try { f.setPointerCapture(e.pointerId); } catch (x) { /* 舊瀏覽器沒有也沒關係 */ }
       e.preventDefault();
