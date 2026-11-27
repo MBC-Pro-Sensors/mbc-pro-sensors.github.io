@@ -17,8 +17,8 @@ This page has **4 EV3 Python examples**: turn to follow a blob, colour at a spot
 
 > [!IMPORTANT]
 > - The camera must run the **EV3 firmware**. On EV3 it shows up as a **LEGO infrared sensor**: mode 0 proximity = mode number, mode 1 seeker = 8 values, mode 2 remote = 4 values, mode 5 = device ID.
-> - **EV3 can read the camera's current mode**: with `UniCam(Port.S1)` (no mode) the library reads mode 0 the first time (about 0.5 s more); the examples check the mode first and beep with a message if it is wrong.
-> - **Every EV3 mode switch takes about 0.5 s**: in one loop use values of one EV3 mode when you can (the table below shows where each value is).
+> - **EV3 can read the camera's current mode**: with `UniCam(Port.S1)` (no mode) the library reads mode 0 the first time (about 1.1 s more); the examples check the mode first and beep with a message if it is wrong.
+> - **Every EV3 mode switch takes about 1.1 s (measured)**: in one loop use values of one EV3 mode when you can (the table below shows where each value is).
 
 📦 All host libraries in one download: [MBC_UniCam_v1_Host_Libraries.zip](/downloads/MBC_UniCam_v1_Host_Libraries.zip)
 
@@ -59,7 +59,7 @@ This page has **4 EV3 Python examples**: turn to follow a blob, colour at a spot
 | `hue(i)`, `sat(i)`, `val(i)`, `hsv(i)`, `color(i)` | hue code, saturation, value, colour name | 21~23 |
 | `order()`, `total()` | hue codes from the left (≤11), total blocks | 30 |
 | `near()` `mid()` `far()` `angle()` `width()` `junction()` `flags()` `junction_dist()` | line values (mode 1) | 41~43 |
-| `edges()`, `far_width()`, `marker()`, `line_all()` | line values (need mode 2, +0.5 s) | 41~43 |
+| `edges()`, `far_width()`, `marker()`, `line_all()` | line values (need mode 2, +1.1 s) | 41~43 |
 | `max_object()`, `object_count()` | objects in this mode (51 → 5, 52 → 2), objects in view 0~8 (51, reads mode 2) | 51, 52 / 51 |
 | `object(i)`, `object_found(i)`, `object_color(i)`, `object_shape(i)` | object code (0 = none), found, colour 1~8, shape 0~9 | 51, 52 |
 | `object_xy(i)`, `object_grid(i)` | centroid (pixels ±10), raw 8×6 cell (Y bottom = small) | 51, 52 |
@@ -211,7 +211,7 @@ while True:
 **What you should see**: two lines every 0.3 s, for example `S1 色相碼 hue 5 飽和 sat 80 明度 val 70 → 紅 red`.
 
 **Common problems**
-- **More spots?** → mode 21 gives 12 spot hues (±2), but spots 9~12 are in mode 2 (+0.5 s).
+- **More spots?** → mode 21 gives 12 spot hues (±2), but spots 9~12 are in mode 2 (+1.1 s).
 - **Saturation and value only in tens?** → that is mode 22 (EV3 packs two numbers into one value); use mode 23 for exact values.
 
 ---
@@ -239,7 +239,7 @@ while True:
 # 準備：相機裝在車頭、斜斜往前下方看線 / camera at the front, looking down and forward
 # 接線 Wiring：相機 → 1 號孔；左輪 B、右輪 C / camera → port 1; left wheel B, right wheel C
 # 方向：站在車後往前看，線在左＝負 / standing behind the robot: line on the left = negative
-# EV3 每換一次模式約 0.5 秒：這支只用模式 1 的值（近、遠、旗標、路口）/ only mode-1 values (no mode switch)
+# EV3 每換一次模式約 1.1 秒：這支只用模式 1 的值（近、遠、旗標、路口）/ only mode-1 values (no mode switch)
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor
 from pybricks.parameters import Port
@@ -295,7 +295,7 @@ while True:
 **What you should see**: the robot follows the line and turns early before curves; at the cross junction it stops, beeps and the program ends.
 
 **Common problems**
-- **Slow and jerky?** → `edges()`, `far_width()`, `marker()` and `line_all()` switch to mode 2 (0.5 s each time); do not use them in the line loop.
+- **Slow and jerky?** → `edges()`, `far_width()`, `marker()` and `line_all()` switch to mode 2 (about 1.1 s each time); do not use them in the line loop.
 - **Wobbles a lot?** → smaller `KP`, bigger `KD`, or a slower `SPEED`.
 
 ---
@@ -325,9 +325,9 @@ while True:
 # 同一個資料夾要有 MBC_UniCam_EV3.py / put MBC_UniCam_EV3.py in the same folder
 #
 # 物體代碼＝色號×10＋形狀：目標 1 的正方形＝1×10＋4＝14。EV3 模式 52 給 2 個物體（面積大的是物體 1），
-# 代碼、位置、面積、角度都在 EV3 模式 1，不用換模式（不會多等 0.5 秒）。
+# 代碼、位置、面積、角度都在 EV3 模式 1，不用換模式（不會多等約 1.1 秒）。
 # Object code = colour × 10 + shape: target 1 square = 14. EV3 mode 52 gives 2 objects (object 1 = largest);
-# code, position, area and angle are all in EV3 mode 1, so there is no 0.5 s mode switch.
+# code, position, area and angle are all in EV3 mode 1, so there is no 1.1 s mode switch.
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor
 from pybricks.parameters import Port
@@ -393,7 +393,7 @@ while True:
 **Common problems**
 - **Beeps and ends right away?** → the camera is not in mode 52: MODE → "5 Object detection → 2"; the top right of the camera screen must show `5-2`.
 - **Square not found?** → look at the "colour shape" label next to each object on the camera screen; if it reads rectangle (5) or other (0), set `Target 1 shape` to Square or adjust **ShapeTol** in the SET menu.
-- **Need 5 objects or the object count?** → use mode 51 (`object_count()`; object 5 is in EV3 mode 2, +0.5 s).
+- **Need 5 objects or the object count?** → use mode 51 (`object_count()`; object 5 is in EV3 mode 2, +1.1 s).
 
 ## Please note
 

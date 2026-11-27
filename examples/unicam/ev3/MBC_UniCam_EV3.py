@@ -1,6 +1,6 @@
 # MBC 神攝手（韌體 v1）：EV3 函式庫（Pybricks v4 與 樂高官方 EV3 MicroPython v2 共用）
 # MBC SharpShot Vision Camera Sensor (firmware v1): EV3 library (Pybricks v4 and LEGO EV3 MicroPython v2)
-# 作者 Author：MBC Robot　日期 Date：2026-10-28　版本 Version：v1.0（v1 尚未上機驗證 / not yet hardware-verified）
+# 作者 Author：MBC Robot　日期 Date：2026-10-28　版本 Version：v1.0（EV3 原廠／Pybricks 已上機驗證（2026-11-03） / hardware-verified on EV3 stock firmware and Pybricks (2026-11-03)）
 #
 # ！！把 MBC_UniCam_EV3.py 跟你的程式放在同一個資料夾！！ / put this file next to your program
 #
@@ -10,11 +10,11 @@
 #    模式 1 信標 seeker   ＝ 8 個值 / 8 values
 #    模式 2 遙控 remote   ＝ 4 個值（只有模式 11、21、30、4x、51 用到）/ 4 values
 #    模式 5 校正 cal      ＝ [裝置 ID 0x034C, 韌體版 100]
-#  每換一次模式約 0.5 秒 / every mode switch takes about 0.5 s.
+#  每換一次模式約 1.1 秒（實測）/ every mode switch takes about 1.1 s (measured).
 #
 #  用法 Usage：
 #      from MBC_UniCam_EV3 import UniCam
-#      cam = UniCam(Port.S1)            # 不填 mode：第一次用時讀模式 0 自動取得（多 0.5 秒）
+#      cam = UniCam(Port.S1)            # 不填 mode：第一次用時讀模式 0 自動取得（多約 1.1 秒）
 #      cam = UniCam(Port.S1, mode=13)   # 填 mode：省下讀模式 0 的時間（要跟相機選單一樣）
 #      x, y = cam.xy(1)
 #

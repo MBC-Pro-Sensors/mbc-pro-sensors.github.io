@@ -728,8 +728,10 @@ _STOP_DRAIN_MS = 30
 _STOP_GAP_MS   = 2
 _FEED_MS    = 50
 _SILENCE_MS = 100
-# 2026-11-04：電池超過這個電壓（3S 以上），EXP6 韌體（2026-11-04 以後）會停止對樂高顏色／超音波感應器供電，
-# 函式庫印一次中英文警告（跟韌體 SENSOR_SUPPLY_CUT_MV 9000 一致）
+# 電池建議 2S（7.4 V）；3S 可用、馬達爆發力較大，但電池超過這個電壓時 EXP6 韌體（2026-11-04 以後）會停止對
+# 樂高顏色／超音波感應器供電（會限制感應器啟動），函式庫印一次中英文提示（跟韌體 SENSOR_SUPPLY_CUT_MV 9000 一致）
+# Battery: 2S recommended; 3S works (more motor punch) but above this voltage the firmware cuts power to LEGO
+# color/ultrasonic sensors, so they will not start. (2026-11-27 wording per user decision)
 _SENSOR_CUT_V = 9.0
 
 # 開機偵測擴充板：策反成功的板子會每 10ms 送一包上行串流，在此時間內
@@ -858,7 +860,7 @@ class MBC_EXP6:
         self._port_mode_cache = {}
         self._inverted        = {i: False for i in range(1, 7)}   # 各孔正/反裝，預設全部正裝；斷線重連時據此重送給韌體
         self._mbc_warn_ms     = {}      # 各孔「讀不到 MBC 感應器」提示的上次時間（限流）
-        self._batt_warned     = False   # 電池超過 2S 安全電壓的警告印過了沒（每個物件印一次）
+        self._batt_warned     = False   # 電池超過 9 V（3S）的提示印過了沒（每個物件印一次）
         self._grp_ids         = {}      # 2026-11-03 組模式：組 → 組編號 1~31（已在 EXP6 定義）
         self._grp_act         = {}      # 　　　　　　　　　 孔 → (第 1 組, 第 2 組) 目前的輪流清單
         self._uart_busy      = False
@@ -1137,16 +1139,16 @@ class MBC_EXP6:
             self._check_battery(latest)
 
     def _check_battery(self, raw):
-        # 2026-11-04：接 3S 時樂高顏色／超音波感應器會嚴重發燙 → 韌體超過 9V 就停止對它們供電；這裡提醒使用者一次
+        # 2026-11-04 實測接 3S 時樂高顏色／超音波感應器會嚴重發燙 → 韌體超過 9V 就停止對它們供電（馬達照常）；這裡提醒使用者一次
         if self._batt_warned:
             return
         v = _parse_voltage(raw)
         if v > _SENSOR_CUT_V:
             self._batt_warned = True
-            print("[EXP6] 電池電壓 %.1f V 超過 2S 鋰電池的安全電壓（%.0f V）：已停止對樂高顏色／超音波感應器供電，"
-                  "保護感應器（馬達照常）。請改用 2S 鋰電池（7.4 V）。/ Battery %.1f V is above the 2S Li-ion safe "
-                  "voltage (%.0f V): power to LEGO color/ultrasonic sensors is cut to protect them (motors still "
-                  "work). Please use a 2S Li-ion battery (7.4 V)." % (v, _SENSOR_CUT_V, v, _SENSOR_CUT_V))
+            print("[EXP6] 電池電壓 %.1f V 超過 %.0f V（3S）：馬達照常（爆發力較大），但已停止對樂高顏色／超音波感應器供電、"
+                  "保護感應器。要用這些感應器請接 2S 鋰電池（7.4 V，建議）。/ Battery %.1f V is above %.0f V (3S): motors "
+                  "work (with more punch), but power to LEGO color/ultrasonic sensors is cut to protect them. To use those "
+                  "sensors, use a 2S Li-ion battery (7.4 V, recommended)." % (v, _SENSOR_CUT_V, v, _SENSOR_CUT_V))
 
     def _maybe_heartbeat_sync(self):
         if _watch.time() - self._last_tx_ms > _HEARTBEAT_MS:

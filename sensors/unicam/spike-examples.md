@@ -48,7 +48,7 @@
 
 ## 函式庫 MBC_UniCam.py 的方法
 
-`cam = UniCam(Port.C, mode=13)`（孔位也可以寫 1～6）。同步、多工都這樣寫：函式庫會自動判斷多工（需要 Pybricks 3.4 以上），物件在 `run_task()` 之前建立，在 `run_task` 裡每個方法都要 `await`。舊寫法 `UniCam(Port.C, 13, True)`＋`await cam.set_mode(13)` 照樣能用。
+`cam = UniCam(Port.C, 13)`（孔位也可以寫 1～6；同步、多工程式都這樣寫，函式庫自動判斷；多工程式要在 `run_task()` 之前建立物件，每個方法都要 `await`。舊寫法 `UniCam(Port.C, 13, True)` 照樣能用）
 
 | 方法 | 回傳 | 哪些模式 |
 |---|---|---|

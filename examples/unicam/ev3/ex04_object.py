@@ -9,9 +9,9 @@
 # 同一個資料夾要有 MBC_UniCam_EV3.py / put MBC_UniCam_EV3.py in the same folder
 #
 # 物體代碼＝色號×10＋形狀：目標 1 的正方形＝1×10＋4＝14。EV3 模式 52 給 2 個物體（面積大的是物體 1），
-# 代碼、位置、面積、角度都在 EV3 模式 1，不用換模式（不會多等 0.5 秒）。
+# 代碼、位置、面積、角度都在 EV3 模式 1，不用換模式（不會多等約 1.1 秒）。
 # Object code = colour × 10 + shape: target 1 square = 14. EV3 mode 52 gives 2 objects (object 1 = largest);
-# code, position, area and angle are all in EV3 mode 1, so there is no 0.5 s mode switch.
+# code, position, area and angle are all in EV3 mode 1, so there is no 1.1 s mode switch.
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor
 from pybricks.parameters import Port

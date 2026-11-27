@@ -7,7 +7,7 @@
 # 準備：相機裝在車頭、斜斜往前下方看線 / camera at the front, looking down and forward
 # 接線 Wiring：相機 → 1 號孔；左輪 B、右輪 C / camera → port 1; left wheel B, right wheel C
 # 方向：站在車後往前看，線在左＝負 / standing behind the robot: line on the left = negative
-# EV3 每換一次模式約 0.5 秒：這支只用模式 1 的值（近、遠、旗標、路口）/ only mode-1 values (no mode switch)
+# EV3 每換一次模式約 1.1 秒：這支只用模式 1 的值（近、遠、旗標、路口）/ only mode-1 values (no mode switch)
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor
 from pybricks.parameters import Port

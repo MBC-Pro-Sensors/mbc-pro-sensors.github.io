@@ -15,7 +15,7 @@
 # Uses the raw protocol (same as the Pybricks library): in LEGO mode the toy hub turns readings outside 0~2500 into None.
 #   A background timer sends the heartbeat; after 10 s without library calls it stops, so motors stop after the program ends.
 #   Use exp.keep_alive_wait(ms) for longer waits with motors running. Power-cycle EXP6 to return it to LEGO mode.
-#   電池超過 9 V（比 2S 鋰電池高）時 EXP6 韌體會停止對樂高顏色／超音波感應器供電，函式庫會印一次中英文提示。
+#   電池建議 2S；3S 可用、馬達爆發力較大，但電池超過 9 V 時 EXP6 韌體會停止對樂高顏色／超音波感應器供電（會限制感應器啟動），函式庫會印一次中英文提示。
 
 _instances = []
 
@@ -356,7 +356,7 @@ class MBC_EXP6:
         self._port_mode_cache = {}
         self._mbc_win = {}        # 各孔目前要求的 (mode, 起始 byte)
         self._mbc_warn_ms = {}    # 讀不到感應器提示的上次時間（限流）
-        self._batt_warned = False # 電池超過 2S 安全電壓的提示只印一次
+        self._batt_warned = False # 電池超過 9 V（3S）的提示只印一次
         self._inverted = {i: False for i in range(1, 7)}   # 各孔正/反裝，預設全部正裝
         self._last_send_time = time.ticks_ms()
         self._last_cmd = None
@@ -759,11 +759,11 @@ class MBC_EXP6:
         return r if (r and len(r) >= 8) else None
 
     def _check_battery(self):
-        # 電池超過 2S 鋰電池的安全電壓：EXP6 韌體 2026-11-04 起停止對樂高感應器供電，印一次提示
+        # 電池超過 9 V（3S）：EXP6 韌體 2026-11-04 起停止對樂高感應器供電（馬達照常），印一次提示
         if self._batt_warned or self.v <= _SENSOR_CUT_V:
             return
         self._batt_warned = True
-        print("[EXP6] 電池電壓 %.1f V 超過 2S 鋰電池的安全電壓（%.0f V）：已停止對樂高顏色／超音波感應器供電，保護感應器（馬達照常）。請改用 2S 鋰電池（7.4 V）。/ Battery %.1f V is above the 2S Li-ion safe voltage (%.0f V): power to LEGO color/ultrasonic sensors is cut to protect them (motors still work). Please use a 2S Li-ion battery (7.4 V)." % (self.v, _SENSOR_CUT_V, self.v, _SENSOR_CUT_V))
+        print("[EXP6] 電池電壓 %.1f V 超過 %.0f V（3S）：馬達照常（爆發力較大），但已停止對樂高顏色／超音波感應器供電、保護感應器。要用這些感應器請接 2S 鋰電池（7.4 V，建議）。/ Battery %.1f V is above %.0f V (3S): motors work (with more punch), but power to LEGO color/ultrasonic sensors is cut to protect them. To use those sensors, use a 2S Li-ion battery (7.4 V, recommended)." % (self.v, _SENSOR_CUT_V, self.v, _SENSOR_CUT_V))
 
     def get_voltage(self):
         self.update()

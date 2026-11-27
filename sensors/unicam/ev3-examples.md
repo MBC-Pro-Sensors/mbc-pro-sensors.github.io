@@ -17,8 +17,8 @@
 
 > [!IMPORTANT]
 > - 相機要用 **EV3 版韌體**。相機在 EV3 上顯示成**樂高紅外線感應器**：模式 0 近距＝模式編號、模式 1 信標＝8 個值、模式 2 遙控＝4 個值、模式 5＝裝置 ID。
-> - **EV3 讀得到相機目前的模式**：`UniCam(Port.S1)` 不填 mode，第一次用時自動讀模式 0（多約 0.5 秒）；範例會先檢查模式對不對，切錯了會嗶一聲、印提醒。
-> - **EV3 每換一次模式約 0.5 秒**：同一個迴圈盡量只用同一個 EV3 模式的值（下面的表有寫每個值在哪個模式）。
+> - **EV3 讀得到相機目前的模式**：`UniCam(Port.S1)` 不填 mode，第一次用時自動讀模式 0（多約 1.1 秒）；範例會先檢查模式對不對，切錯了會嗶一聲、印提醒。
+> - **EV3 每換一次模式約 1.1 秒（實測）**：同一個迴圈盡量只用同一個 EV3 模式的值（下面的表有寫每個值在哪個模式）。
 
 📦 全部平台的函式庫一包下載：[MBC_UniCam_v1_Host_Libraries.zip](/downloads/MBC_UniCam_v1_Host_Libraries.zip)
 
@@ -59,7 +59,7 @@
 | `hue(i)`、`sat(i)`、`val(i)`、`hsv(i)`、`color(i)` | 色相碼、飽和、明度、顏色名稱 | 21～23 |
 | `order()`、`total()` | 左起每塊色相碼（≤11）、總塊數 | 30 |
 | `near()` `mid()` `far()` `angle()` `width()` `junction()` `flags()` `junction_dist()` | 循線（模式 1） | 41～43 |
-| `edges()`、`far_width()`、`marker()`、`line_all()` | 循線（要讀模式 2，會多 0.5 秒） | 41～43 |
+| `edges()`、`far_width()`、`marker()`、`line_all()` | 循線（要讀模式 2，會多約 1.1 秒） | 41～43 |
 | `max_object()`、`object_count()` | 這個模式給幾個物體（51→5、52→2）、畫面裡幾個物體 0～8（51，讀模式 2） | 51、52／51 |
 | `object(i)`、`object_found(i)`、`object_color(i)`、`object_shape(i)` | 物體代碼（0＝沒有）、有沒有、色號 1～8、形狀 0～9 | 51、52 |
 | `object_xy(i)`、`object_grid(i)` | 質心（像素 ±10）、原始 8×6 格（Y 下＝小） | 51、52 |
@@ -211,7 +211,7 @@ while True:
 **跑起來應該看到什麼**：每 0.3 秒印兩行，例如 `S1 色相碼 hue 5 飽和 sat 80 明度 val 70 → 紅 red`。
 
 **常見問題**
-- **想看更多點？** → 模式 21 給 12 點色相（±2），但點 9～12 在模式 2，要多 0.5 秒。
+- **想看更多點？** → 模式 21 給 12 點色相（±2），但點 9～12 在模式 2，要多約 1.1 秒。
 - **飽和、明度只有 10 的倍數？** → 那是模式 22（EV3 把兩個數字壓在一格）；要原始值用模式 23。
 
 ---
@@ -239,7 +239,7 @@ while True:
 # 準備：相機裝在車頭、斜斜往前下方看線 / camera at the front, looking down and forward
 # 接線 Wiring：相機 → 1 號孔；左輪 B、右輪 C / camera → port 1; left wheel B, right wheel C
 # 方向：站在車後往前看，線在左＝負 / standing behind the robot: line on the left = negative
-# EV3 每換一次模式約 0.5 秒：這支只用模式 1 的值（近、遠、旗標、路口）/ only mode-1 values (no mode switch)
+# EV3 每換一次模式約 1.1 秒：這支只用模式 1 的值（近、遠、旗標、路口）/ only mode-1 values (no mode switch)
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor
 from pybricks.parameters import Port
@@ -295,7 +295,7 @@ while True:
 **跑起來應該看到什麼**：車子沿線走，彎道前提早轉；到十字路口停車嗶一聲，程式結束。
 
 **常見問題**
-- **很慢、一頓一頓？** → 迴圈裡用到 `edges()`、`far_width()`、`marker()`、`line_all()` 會換到模式 2（每次 0.5 秒），循線迴圈不要用。
+- **很慢、一頓一頓？** → 迴圈裡用到 `edges()`、`far_width()`、`marker()`、`line_all()` 會換到模式 2（每次約 1.1 秒），循線迴圈不要用。
 - **晃得厲害？** → `KP` 改小、`KD` 改大，或 `SPEED` 改慢。
 
 ---
@@ -325,9 +325,9 @@ while True:
 # 同一個資料夾要有 MBC_UniCam_EV3.py / put MBC_UniCam_EV3.py in the same folder
 #
 # 物體代碼＝色號×10＋形狀：目標 1 的正方形＝1×10＋4＝14。EV3 模式 52 給 2 個物體（面積大的是物體 1），
-# 代碼、位置、面積、角度都在 EV3 模式 1，不用換模式（不會多等 0.5 秒）。
+# 代碼、位置、面積、角度都在 EV3 模式 1，不用換模式（不會多等約 1.1 秒）。
 # Object code = colour × 10 + shape: target 1 square = 14. EV3 mode 52 gives 2 objects (object 1 = largest);
-# code, position, area and angle are all in EV3 mode 1, so there is no 0.5 s mode switch.
+# code, position, area and angle are all in EV3 mode 1, so there is no 1.1 s mode switch.
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor
 from pybricks.parameters import Port
@@ -393,7 +393,7 @@ while True:
 **常見問題**
 - **一開始就嗶一聲結束？** → 相機不在模式 52：MODE 切到「5 物體偵測 → ②」，螢幕右上要顯示 `5-2`。
 - **找不到正方形？** → 看相機畫面每個物體旁邊的「色號 形狀」；判成長方（5）或其他（0）就到 `Target 1 shape` 指定 Square，或調 SET 選單的 **ShapeTol**。
-- **要 5 個物體、物體數？** → 用模式 51（`object_count()`、物體 5 在 EV3 模式 2，會多 0.5 秒）。
+- **要 5 個物體、物體數？** → 用模式 51（`object_count()`、物體 5 在 EV3 模式 2，會多約 1.1 秒）。
 
 ## 要注意的事
 
