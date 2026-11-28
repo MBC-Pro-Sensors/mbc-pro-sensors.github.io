@@ -48,7 +48,7 @@ A few fixed sample points on the frame (S1, S2 …) each give a hue; higher leve
 
 <figure class="ref-fig"><img src="/images/sensors/unicam/sample-points.svg" alt="Color at points: sample points 1 to 20 on the frame" loading="lazy"></figure>
 
-Default layout: up to 8 points in one row, more than 8 in two rows (20 points above). Each point averages the 3×3 pixels around it.
+Default layout: up to 8 points in one row, more than 8 in two rows (20 points above). SPIKE / EV3 (firmware v1.0-261105 and later): each point sends the average colour of the same-colour region grown from the sample point (within 40×40 centred on it); other platforms (I2C / MATRIX / mBlock): the average of the 3×3 pixels around the point.
 
 | Sub-option | Per point |
 | :--- | :--- |

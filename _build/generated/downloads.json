@@ -237,11 +237,18 @@
         "pybricks/examples/ex04_color_order.py",
         "pybricks/examples/ex05_line_follow.py",
         "pybricks/examples/ex06_object_pick.py",
+        "pybricks/examples/ex07_set_mode.py",
+        "pybricks/examples/ex08_spot_points.py",
+        "pybricks/examples/ex09_light.py",
+        "pybricks/examples/ex10_teach_clear.py",
+        "pybricks/examples/ex11_target_tuning.py",
+        "pybricks/examples/ex12_camera_setting.py",
+        "pybricks/examples/ex13_power.py",
         "spike_app/MBC_UniCam_App_helper.py",
         "spike_app/examples/ex01_track_turn.py",
         "spike_app/examples/ex02_line_follow.py"
       ],
-      "size": 64519
+      "size": 75780
     },
     {
       "out": "/downloads/MBC_Pro_Sensors_mBlock5_v1.0.0.mext",

@@ -212,6 +212,8 @@
     {
       "out": "downloads/MBC_UniCam_v1_Host_Libraries.zip",
       "src": "${MBC}/02_相機感應器/06_通用版/通用版v1/上位機函式庫",
+      "keepOld": ["README.md", "arduino/MBC_UniCam.h", "microbit/MBC_UniCam_microbit.ts"],
+      "_keepOld說明": "2026-11-28：這三檔正本含未上機的 Arduino／micro:bit 命令版（#103），內容沿用舊 zip；#103 通過後刪掉 keepOld 重打",
       "include": [
         "README.md",
         "pybricks",

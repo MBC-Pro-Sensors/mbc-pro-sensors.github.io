@@ -94,13 +94,21 @@ for (const it of spec.items) {
     const prevGen = fs.existsSync(path.join(BUILD, 'generated', 'downloads.json')) ? JSON.parse(fs.readFileSync(path.join(BUILD, 'generated', 'downloads.json'), 'utf8')) : null;
     const prev = prevGen?.items?.find((x) => x.out === entry.out);
     if (prev?.files) entry.files = prev.files;
-  } else if (fs.existsSync(outAbs) && zipDiff(outAbs, files, src, srcOf)?.length === 0) {
+  } else if (fs.existsSync(outAbs) && (zipDiff(outAbs, files, src, srcOf) || [null]).every((f) => (it.keepOld || []).includes(f))) {
+    // keepOld 的檔不同也算一樣（那些檔刻意沿用舊 zip 的內容）
     // 內容跟正本完全一樣就不重打（重打只會改時間戳，git 會多一筆無意義的變更）
     entry.size = fs.statSync(outAbs).size;
   } else {
     // 先複製到暫存（排除備份檔），再打包，zip 裡只有乾淨的檔案
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mbc-pack-'));
-    for (const f of files) { const d = path.join(tmp, f); fs.mkdirSync(path.dirname(d), { recursive: true }); fs.copyFileSync(srcOf[f], d); }
+    // keepOld：正本已改、但新內容還沒准上線的檔 → 內容沿用現有 zip 裡那一份（例：UniCam 包的 arduino／microbit 命令版等 #103）
+    const keep = new Set(it.keepOld || []);
+    if (keep.size && !fs.existsSync(outAbs)) throw new Error(`keepOld 需要現有 zip：${it.out}`);
+    for (const f of files) {
+      const d = path.join(tmp, f); fs.mkdirSync(path.dirname(d), { recursive: true });
+      if (keep.has(f)) fs.writeFileSync(d, execFileSync(TAR, ['-x', '-O', '-f', outAbs, f], { maxBuffer: 64 << 20 }));
+      else fs.copyFileSync(srcOf[f], d);
+    }
     fs.mkdirSync(path.dirname(outAbs), { recursive: true });
     fs.rmSync(outAbs, { force: true });
     const top = [...new Set(files.map((f) => f.split('/')[0]))];

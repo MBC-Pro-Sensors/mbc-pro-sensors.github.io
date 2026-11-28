@@ -6,9 +6,9 @@
 [🔙 Back to SharpShot](/en/sensors/unicam/index.md)　｜　[How SPIKE reads it](/en/sensors/unicam/spike/index.md)　｜　[📋 Value reference](/en/sensors/unicam/reference.md)
 
 > [!NOTE]
-> **SPIKE hardware-verified (2026-11-01, release v1.0-261101)**: the official App (Education and Robot Inventor), the Pybricks library, Pybricks built-in blocks and the examples on this page all ran on real hubs.
+> **SPIKE hardware-verified (2026-11-01, release v1.0-261101)**: the official App (Education and Robot Inventor), the Pybricks library, Pybricks built-in blocks and examples 1–6 on this page all ran on real hubs. **Command examples 7–13: the commands are hardware-verified; the example programs themselves have not been run on a hub yet.**
 
-This page has **6 Pybricks examples** (with the MBC library `MBC_UniCam.py`) and **2 LEGO SPIKE App (Education) Python examples**, plus a table for the official App blocks (Education and Robot Inventor). The tasks are the ones students use most: turn to follow a blob, find several colours, read the colour at a spot, colour order (WRO), PD line following with a stop at a junction, object detection (find the biggest red triangle).
+This page has **13 Pybricks examples** (with the MBC library `MBC_UniCam.py`; examples 7–13 are command examples that set up the camera from your program) and **2 LEGO SPIKE App (Education) Python examples**, plus a table for the official App blocks (Education and Robot Inventor). The tasks are the ones students use most: turn to follow a blob, find several colours, read the colour at a spot, colour order (WRO), PD line following with a stop at a junction, object detection (find the biggest red triangle).
 
 | Way | For whom | How |
 |---|---|---|
@@ -522,6 +522,412 @@ while True:
 - **Keeps spinning?** → the camera screen must show `5-1` at the top right; look at the "colour shape" label next to each object on the camera screen. If the triangle is read as another shape, set `Target 1 shape` to Tri, or raise **ShapeTol** in the SET menu.
 - **Too many things in view?** → SPIKE only gets the 4 largest; a small red triangle may not make the list, so clear the background.
 - **Want size and area?** → use mode 52: `cam.object_size(i)`, `cam.object_area(i)` (2 objects only).
+
+---
+
+## Command examples 7–13: set up the camera from your program (Pybricks only)
+
+No camera menu needed: the program can switch modes, place spots, use the lamp, teach colours, tune ranges, run white calibration and put the camera in standby. Needs camera firmware 2026-10-29 or later (shipping v1.0-261105); the official SPIKE App cannot send commands. All of these were tested on a real SPIKE hub (2026-11-01: library commands 10/10 passed; spot command E1 was used in the example 3 hardware test).
+
+> **Commands hardware-verified; example programs not yet run on a hub**: every command used in examples 7–13 was tested on a real SPIKE hub, but these 7 example programs have not yet been run end-to-end on a hub.
+
+**Return value (same for every command)**: `0` done, `2` failed (out of range, target not taught, camera in standby), `3` rejected, `None` timeout or old firmware / unplugged. The same command with the same parameters sent twice in a row is not redone (except `teach()` and `white_cal()`, which run every time).
+
+**Stored or not**: "stored" = kept in the camera after power-off (keep it powered 3 s after the last change); "not stored" = back to normal when the camera restarts.
+
+| Example | Command | Range | Stored |
+|---|---|---|---|
+| 7 line to a junction, then colour | `cam.set_mode(13)` (E0) | 11–14, 21–23, 30, 41–43, 51, 52 | stored |
+| 8 place spots | `cam.cmd(0xE1, spot, X, Y)` + `cam.wait_done()` | spot 1–20, X 0–159, Y 0–119; X = Y = 255 clears the spot, spot 0 clears all | stored |
+| 9 lamp | `cam.light(60)` / `cam.light()` | 0–100 % (0 = off); nothing = camera menu Flash setting | **not stored** |
+| 10 teach, clear | `cam.teach(1)`, `cam.clear(2)` | target 1–16 (SPIKE cannot clear all at once) | stored |
+| 11 tune range and shape | `cam.target_range(1, hue, sat, size, search)`, `cam.shape_tolerance(4)`, `cam.target_shape(1, 4)` | Hue 1–119, Sta 0–31, min area 4–254 (255 = keep); search 1 locked / 2 largest / 0 keep; shape tolerance 1–5 (3 factory, bigger = looser); target 1–8, shape 0–9 | stored |
+| 12 white cal + camera settings | `cam.white_cal()`, `cam.camera_setting(0, 1)` | item 0–12 in the camera Setup menu order: 0 brightness, 1 contrast, 2 saturation, 3 AE (−2–2), 4 gain ceiling 0–6, 5 WB mode 0–5, 6 AWB, 7 auto exposure, 9 flip, 10 mirror, 11 Flash, 12 Light Hz (0/1), 8 effect 0–6 | stored |
+| 13 standby | `cam.power(2)` / `cam.power(0)` | 0 full, 1 save (25 fps), 2 standby (camera off); standby → full about 1–2.5 s | **not stored** |
+
+### Example 7: follow the line to a junction, then switch to colour tracking (set_mode)
+
+**What it does**: starts in mode 41 (line), stops at a cross / T junction, `set_mode(13)` switches to colour tracking, then turns on the spot until target 1 is in the middle, stops and beeps. **When to use**: one program that needs two camera modes (line + colour, objects). The next reading after the switch is already the new mode.
+
+**Download**: [ex07_set_mode.py](/examples/unicam/pybricks/ex07_set_mode.py) + [MBC_UniCam.py](/examples/unicam/pybricks/MBC_UniCam.py)
+
+<details>
+<summary>🐍 Pybricks code</summary>
+
+```python
+# 神攝手 × Pybricks（SPIKE）範例 7：程式裡切相機模式（set_mode，命令 E0）——循線到路口，改追色找目標
+# SharpShot × Pybricks (SPIKE) example 7: switch the camera mode from the program (set_mode, command E0)
+#   follow the line to a junction, then switch to colour tracking and turn to target 1
+# 相機模式：一開始 41 循線黑線，路口後程式切成 13 顏色追蹤標準（不用動相機選單）
+# Camera mode: starts at 41 (black line); after the junction the program switches to 13 (colour tracking, standard)
+# 準備：目標 1 先教好（相機選單或範例 10）；相機韌體 2026-10-29 以後（出貨版 v1.0-261105 有命令）
+# Before: teach target 1 (camera menu or example 10); camera firmware 2026-10-29 or later
+# 接線 Wiring：相機 → C 孔；左輪 E、右輪 F / camera → port C; left wheel E, right wheel F
+# 同一個資料夾要有 MBC_UniCam.py / MBC_UniCam.py must be imported too
+# set_mode 會存進相機：斷電重開還是最後切的模式 / stored in the camera: it keeps the last mode after power-off
+from pybricks.hubs import PrimeHub
+from pybricks.pupdevices import Motor
+from pybricks.parameters import Port, Direction
+from pybricks.robotics import DriveBase
+from pybricks.tools import wait
+from MBC_UniCam import UniCam
+
+hub = PrimeHub()
+cam = UniCam(Port.C, mode=41)                    # 建立時自動切到 41 / switched to 41 when created
+left = Motor(Port.E, Direction.COUNTERCLOCKWISE)
+right = Motor(Port.F)
+robot = DriveBase(left, right, 56, 112)
+
+SPEED = 120        # 👉 可以改：循線速度 mm/s / line speed
+KP = 1.5           # 👉 可以改：循線比例 / line gain
+TURN_KP = 2        # 👉 可以改：追色時偏 1 像素轉幾度／秒 / turn rate per pixel
+
+# ── 第 1 段：循線到十字或 T 字路口 / part 1: follow the line to a cross or T junction ──
+while True:
+    v = cam.line_all()
+    if v is None:                                # 讀不到相機：停車 / no camera: stop
+        robot.stop()
+        wait(50)
+        continue
+    near, flags, junction = v[0], v[5], v[6]
+    if junction in (1, 2):
+        robot.stop()
+        break
+    robot.drive(SPEED if flags else 0, KP * near if flags else 120)
+    wait(10)
+
+# ── 切模式：回 0＝切好（函式庫已多等一幀，下一次讀到的就是新模式）/ switch: 0 = done ──
+r = cam.set_mode(13)                             # 13＝相機模式 1 顏色追蹤 ・③ 標準 / colour tracking, standard
+print('set_mode(13) →', r, ' 模式 mode', cam.mode_number())
+if r != 0:                                       # 2 失敗、3 拒絕、None 舊韌體或沒接 / failed, rejected, old firmware
+    print('切模式失敗，請在相機選單切到 13 / switch failed: use the camera menu')
+    raise SystemExit
+
+# ── 第 2 段：原地轉，把目標 1 轉到畫面中間就停 / part 2: turn until target 1 is in the middle ──
+while True:
+    p = cam.xy(1)
+    if p is None or p == (0, 0):                 # 還沒看到：原地慢慢轉 / not seen yet: turn slowly
+        robot.drive(0, 60)
+    elif abs(p[0] - 80) < 15:                    # 在中間了：停車嗶一聲 / centred: stop and beep
+        robot.stop()
+        hub.speaker.beep()
+        break
+    else:
+        robot.drive(0, TURN_KP * (p[0] - 80))   # 在右是正的 → 往右轉 / right = positive → turn right
+    wait(10)
+```
+
+</details>
+
+### Example 8: place 3 spots from the program (command E1)
+
+**What it does**: puts spots 1, 2, 3 at the left, centre and right of the picture, then keeps printing the three colours. There is no E1 method: send it with `cam.cmd(0xE1, spot, X, Y)` and wait with `cam.wait_done()`. **When to use**: colours at fixed places (e.g. WRO colour zones) without moving spots in the camera menu. Spots never set read 0.
+
+**Download**: [ex08_spot_points.py](/examples/unicam/pybricks/ex08_spot_points.py)
+
+<details>
+<summary>🐍 Pybricks code</summary>
+
+```python
+# 神攝手 × Pybricks（SPIKE）範例 8：用程式擺取樣點（命令 E1）——左、中、右三點同時看顏色
+# SharpShot × Pybricks (SPIKE) example 8: place the spots from the program (command E1)
+#   read the colour at left, centre and right at the same time
+# 相機模式：22 座標取色 ・② 色相＋飽和（SPIKE 給 7 點）/ mode 22 Spot colour Hue + saturation (7 spots)
+# 相機韌體 2026-10-29 以後 / camera firmware 2026-10-29 or later
+# 接線 Wiring：相機 → C 孔 / camera → port C
+# 同一個資料夾要有 MBC_UniCam.py / MBC_UniCam.py must be imported too
+#
+# 函式庫沒有 E1 專用方法，用 cam.cmd(0xE1, 第幾點, X, Y) 送、cam.wait_done() 等結果（0＝好了）
+# There is no E1 method: send cam.cmd(0xE1, spot, X, Y) and wait with cam.wait_done() (0 = done)
+#   第幾點 spot 1~20、X 0~159（左→右）、Y 0~119（上→下）；X、Y 都填 255＝清掉這一點，第幾點填 0＝全部清掉
+#   spot 1~20, X 0~159, Y 0~119; X = Y = 255 clears the spot, spot 0 with 255, 255 clears all
+#   沒設定過的點 H、S、V 都是 0；取樣點位置存進相機，斷電後還在
+#   spots never set read 0; positions are stored in the camera (kept after power-off)
+from pybricks.hubs import PrimeHub
+from pybricks.parameters import Port
+from pybricks.tools import wait
+from MBC_UniCam import UniCam
+
+hub = PrimeHub()
+cam = UniCam(Port.C, mode=22)
+
+SPOTS = [(1, 30, 60), (2, 80, 60), (3, 130, 60)]  # 👉 可以改：(第幾點, X, Y) 左、中、右 / left, centre, right
+NAME = {'red': '紅', 'orange': '橙', 'yellow': '黃', 'green': '綠', 'cyan': '青',
+        'blue': '藍', 'purple': '紫', 'white': '白／灰', 'black': '黑'}
+
+for n, x, y in SPOTS:
+    cam.cmd(0xE1, n, x, y)                       # 送出、不等 / send without waiting
+    r = cam.wait_done()                          # 0 好了、2 失敗（超出範圍）、None 逾時 / 0 done, 2 failed
+    print('取樣點 spot', n, '→ (%d, %d)' % (x, y), '結果 result', r)
+
+# cam.cmd(0xE1, 0, 255, 255); cam.wait_done()   # 想全部清掉就打開這行 / uncomment to clear all spots
+
+while True:
+    names = []
+    for n, x, y in SPOTS:
+        c = cam.color(n)                         # 這一點的顏色名稱 / colour name at the spot
+        names.append(NAME.get(c, '?') if c else '?')
+    print('左 left', names[0], '  中 centre', names[1], '  右 right', names[2])
+    wait(300)
+```
+
+</details>
+
+### Example 9: the lamp (light)
+
+**What it does**: reads the value (V) of spot 1 with the lamp off, turns the lamp on at 60 % and reads again (V goes up), then `cam.light()` returns to the camera menu setting. **When to use**: dark fields, unreliable colours. **Not stored**: back to the menu setting after a restart; changing Flash in the camera menu also overrides it.
+
+**Download**: [ex09_light.py](/examples/unicam/pybricks/ex09_light.py)
+
+<details>
+<summary>🐍 Pybricks code</summary>
+
+```python
+# 神攝手 × Pybricks（SPIKE）範例 9：補光燈 light()（命令 E2）——暗的地方開燈讀色，讀完關回去
+# SharpShot × Pybricks (SPIKE) example 9: the lamp, light() (command E2): turn it on in the dark, then back off
+# 相機模式：23 座標取色 ・③ 色相＋飽和＋明度（看明度 V 變亮）/ mode 23 Spot colour H+S+V (watch V go up)
+# 相機韌體 2026-10-29 以後 / camera firmware 2026-10-29 or later
+# 接線 Wiring：相機 → C 孔 / camera → port C
+# 同一個資料夾要有 MBC_UniCam.py / MBC_UniCam.py must be imported too
+#
+# cam.light(亮度 0~100 %)：0＝關；cam.light()（不填）＝回到相機選單 Flash 的設定（出廠＝關）
+# cam.light(0~100 %): 0 = off; cam.light() with nothing = back to the camera menu Flash setting (factory = off)
+# 不存：相機重開機回選單設定 / not stored: back to the menu setting after a restart
+from pybricks.hubs import PrimeHub
+from pybricks.parameters import Port
+from pybricks.tools import wait
+from MBC_UniCam import UniCam
+
+hub = PrimeHub()
+cam = UniCam(Port.C, mode=23)
+
+LAMP = 60          # 👉 可以改：補光燈亮度 0~100 % / lamp brightness
+
+def show(text):
+    p = cam.hsv(1)                               # 取樣點 1 的 (色相, 飽和, 明度) / (hue, sat, val) of spot 1
+    print(text, '色相 hue', p[0], ' 飽和 sat', p[1], ' 明度 val', p[2]) if p else print(text, '讀不到 no camera')
+
+show('關燈 lamp off  :')
+r = cam.light(LAMP)                              # 0＝好了 / 0 = done
+print('light(%d) →' % LAMP, r)
+hub.display.number(LAMP)
+wait(300)                                        # 等畫面亮起來（自動曝光）/ let the picture settle
+show('開燈 lamp %d %%:' % LAMP)
+r = cam.light()                                  # 回到選單設定 / back to the menu setting
+print('light() →', r)
+hub.display.off()
+```
+
+</details>
+
+### Example 10: teach a colour and clear an old target (teach / clear)
+
+**What it does**: counts down 3, 2, 1 on the hub, teaches the colour in the **centre** of the picture as target 1 (beeps on success), clears target 2, then shows target 1's X. **When to use**: different light at a competition: reteach without the camera menu. White / grey and black can be taught; it returns 2 only when the centre has no colour at all. Stored in the camera.
+
+**Download**: [ex10_teach_clear.py](/examples/unicam/pybricks/ex10_teach_clear.py)
+
+<details>
+<summary>🐍 Pybricks code</summary>
+
+```python
+# 神攝手 × Pybricks（SPIKE）範例 10：用程式教色、清掉目標（teach 命令 E3、clear 命令 E4）
+# SharpShot × Pybricks (SPIKE) example 10: teach and clear targets from the program (teach E3, clear E4)
+# 相機模式：13 顏色追蹤 ・③ 標準 / mode 13 Colour tracking, standard
+# 相機韌體 2026-10-29 以後 / camera firmware 2026-10-29 or later
+# 準備：把要教的顏色（色卡、球）放在相機畫面「正中央」/ put the colour in the CENTRE of the picture
+# 接線 Wiring：相機 → C 孔 / camera → port C
+# 同一個資料夾要有 MBC_UniCam.py / MBC_UniCam.py must be imported too
+#
+# cam.teach(目標 1~16)：用畫面中央的顏色登錄成這個目標（同在相機上按住 OK 教色），每次叫都會重教
+# cam.teach(target 1~16): the colour in the centre becomes this target (like holding OK on the camera); teaches every call
+# cam.clear(目標 1~16)：清掉這個目標（SPIKE 不能一次全部清）/ clears one target (SPIKE cannot clear all at once)
+# 回 0 成功、2 失敗（中央完全分不出顏色）、None 舊韌體或沒接；教的結果存進相機，斷電後還在
+# 0 ok, 2 failed (no colour in the centre), None old firmware / unplugged; stored in the camera (kept after power-off)
+from pybricks.hubs import PrimeHub
+from pybricks.parameters import Port
+from pybricks.tools import wait
+from MBC_UniCam import UniCam
+
+hub = PrimeHub()
+cam = UniCam(Port.C, mode=13)
+
+TARGET = 1         # 👉 可以改：教成第幾個目標 1~16 / which target to teach
+OLD = 2            # 👉 可以改：要清掉的舊目標 / an old target to clear
+
+for n in (3, 2, 1):                              # 倒數 3 秒，把顏色擺到中央 / 3 s countdown
+    hub.display.number(n)
+    wait(1000)
+r = cam.teach(TARGET)
+if r == 0:
+    print('教色成功 taught target', TARGET)
+    hub.speaker.beep()
+elif r == 2:
+    print('教色失敗：中央看不出顏色，換個顏色或開補光燈 / teach failed: nothing in the centre')
+else:
+    print('沒有回應：相機韌體太舊或沒接 / no answer: old firmware or unplugged', r)
+print('clear(%d) →' % OLD, cam.clear(OLD))     # 清掉不要的舊目標 / clear an old target
+
+while True:                                      # 看剛教的目標在哪裡 / where is the new target?
+    p = cam.xy(TARGET)
+    if p is None or p == (0, 0):
+        hub.display.char('-')
+    else:
+        hub.display.number(p[0])                 # 螢幕顯示 X / show X
+    wait(100)
+```
+
+</details>
+
+### Example 11: tune a target's range and shape (target_range / shape_tolerance / target_shape)
+
+**What it does**: in mode 51, widens target 1's hue range to ±20, minimum area 30, largest blob every frame, shape tolerance 4, target 1 counts only squares, then looks for target 1 squares (code 14). **When to use**: one object split into several blobs, or wrong shapes. The target must be taught first, otherwise 2. All three are stored in the camera.
+
+**Download**: [ex11_target_tuning.py](/examples/unicam/pybricks/ex11_target_tuning.py)
+
+<details>
+<summary>🐍 Pybricks code</summary>
+
+```python
+# 神攝手 × Pybricks（SPIKE）範例 11：調目標範圍與形狀（target_range E5、shape_tolerance E6、target_shape E7）
+# SharpShot × Pybricks (SPIKE) example 11: tune a target (target_range E5, shape_tolerance E6, target_shape E7)
+# 相機模式：51 物體偵測 ・① 物體清單 / mode 51 Object detection, object list
+# 相機韌體 2026-10-29 以後；目標 1 要先教過（範例 10 或相機選單）
+# camera firmware 2026-10-29 or later; teach target 1 first (example 10 or the camera menu)
+# 接線 Wiring：相機 → C 孔 / camera → port C
+# 同一個資料夾要有 MBC_UniCam.py / MBC_UniCam.py must be imported too
+#
+# cam.target_range(目標, hue=1~119, sat=0~31, size=4~254, search=0/1/2)：色相、飽和容許範圍、最小面積；
+#     255＝不改；search 1＝鎖住上次那塊、2＝每幀選最大塊、0＝不改
+# cam.shape_tolerance(1~5)：形狀判斷的寬鬆度（3＝出廠，越大越寬鬆）/ shape tolerance (3 = factory, bigger = looser)
+# cam.target_shape(目標 1~8, 形狀 0~9)：這個目標只算這個形狀（0＝不指定、1 圓、3 三角、4 正方…）
+# 回 0 好了、2 失敗（超出範圍或目標沒教過）；三個都存進相機，斷電後還在
+# 0 done, 2 failed (out of range or target not taught); all three are stored in the camera
+from pybricks.hubs import PrimeHub
+from pybricks.parameters import Port
+from pybricks.tools import wait
+from MBC_UniCam import UniCam, shape_name
+
+hub = PrimeHub()
+cam = UniCam(Port.C, mode=51)
+
+r = [cam.target_range(1, hue=20, sat=10, size=30, search=2),   # 👉 可以改：色相 ±20、飽和 10、最小面積 30、每幀選最大
+     cam.shape_tolerance(4),                                    # 👉 可以改：比出廠寬鬆一點 / a bit looser
+     cam.target_shape(1, 4)]                                    # 👉 可以改：目標 1 只算正方形 / only squares
+print('target_range, shape_tolerance, target_shape →', r)
+if r != [0, 0, 0]:
+    print('有設定沒成功：2＝超出範圍或目標 1 沒教過 / a setting failed: 2 = out of range or target 1 not taught')
+
+WANT = 1 * 10 + 4                                # 目標 1 的正方形＝代碼 14 / target 1 square = code 14
+while True:
+    hub.display.number(cam.object_count() or 0)  # 畫面裡幾個物體 / objects in view
+    for i in range(1, cam.max_object() + 1):
+        if cam.object(i) == WANT:
+            print('找到 found', shape_name(4, zh=True), shape_name(4), '在 at', cam.object_xy(i))
+            break
+    wait(200)
+```
+
+</details>
+
+### Example 12: white calibration + camera settings (white_cal / camera_setting)
+
+**What it does**: counts down 3 s, runs white calibration with white paper over the centre (about 3 s), then brightness +1 and saturation +1. **When to use**: new place or new lights. Returns 2 in standby (call `power(0)` first). Both are stored in the camera.
+
+**Download**: [ex12_camera_setting.py](/examples/unicam/pybricks/ex12_camera_setting.py)
+
+<details>
+<summary>🐍 Pybricks code</summary>
+
+```python
+# 神攝手 × Pybricks（SPIKE）範例 12：白色校正＋鏡頭設定（white_cal 命令 E9、camera_setting 命令 E8）
+# SharpShot × Pybricks (SPIKE) example 12: white calibration + camera settings (white_cal E9, camera_setting E8)
+# 相機模式：13 顏色追蹤 ・③ 標準（任何模式都可以）/ mode 13 (any mode works)
+# 相機韌體 2026-10-29 以後 / camera firmware 2026-10-29 or later
+# 準備：白紙蓋滿相機畫面中央 / cover the centre of the picture with white paper
+# 接線 Wiring：相機 → C 孔 / camera → port C
+# 同一個資料夾要有 MBC_UniCam.py / MBC_UniCam.py must be imported too
+#
+# cam.white_cal()：白色校正（約 3 秒），換場地、換燈光時做一次；每次叫都會重做
+# cam.white_cal(): white calibration (about 3 s), once per new place or light; runs again on every call
+# cam.camera_setting(項目, 值)：項目照相機 MENU → Setup 的順序 / items in the camera Setup menu order
+#   0 亮度 Brightness −2~2   1 對比 Contrast −2~2   2 飽和度 Saturation −2~2   3 AE Level −2~2
+#   4 增益上限 GainCeil 0~6   5 白平衡 WB Mode 0~5   6 AWB 0/1   7 自動曝光 AutoExp 0/1
+#   8 特效 Effect 0~6   9 翻轉 Flip 0/1   10 鏡像 Mirror 0/1   11 Flash 0/1   12 Light Hz 0/1
+# 回 0 好了、2 失敗（超出範圍、或相機在待機）；兩個都存進相機，斷電後還在（改完 3 秒內別斷電）
+# 0 done, 2 failed (out of range, or camera in standby); both are stored in the camera (keep power on 3 s after)
+from pybricks.hubs import PrimeHub
+from pybricks.parameters import Port
+from pybricks.tools import wait
+from MBC_UniCam import UniCam
+
+hub = PrimeHub()
+cam = UniCam(Port.C, mode=13)
+
+for n in (3, 2, 1):                              # 倒數 3 秒，把白紙擺好 / 3 s to place the white paper
+    hub.display.number(n)
+    wait(1000)
+r = cam.white_cal()
+print('white_cal() →', r, '（0＝好了 done）')
+r = [cam.camera_setting(0, 1),                   # 👉 可以改：亮度 +1 / brightness +1
+     cam.camera_setting(2, 1)]                   # 👉 可以改：飽和度 +1（顏色更鮮豔）/ saturation +1
+print('camera_setting →', r)
+if r != [0, 0]:
+    print('有設定沒成功：值超出範圍，或相機在待機（先 power(0)）/ out of range, or the camera is in standby')
+hub.speaker.beep()
+```
+
+</details>
+
+### Example 13: standby when the camera is not needed (power)
+
+**What it does**: `power(2)` standby (camera and lamp off), drives straight for 2 s, `power(0)` wakes it up, waits 2.5 s and looks for target 1. **When to use**: long programs, saving power and heat. In standby every reading is "nothing". **Not stored**: a camera restart, unplugging the SPIKE or any camera key returns to full speed.
+
+**Download**: [ex13_power.py](/examples/unicam/pybricks/ex13_power.py)
+
+<details>
+<summary>🐍 Pybricks code</summary>
+
+```python
+# 神攝手 × Pybricks（SPIKE）範例 13：工作模式 power()（命令 EB）——不用相機時待機省電，要用再叫醒
+# SharpShot × Pybricks (SPIKE) example 13: power() (command EB): standby while the camera is not needed
+# 相機模式：13 顏色追蹤 ・③ 標準 / mode 13 Colour tracking, standard
+# 相機韌體 2026-10-29 以後 / camera firmware 2026-10-29 or later
+# 接線 Wiring：相機 → C 孔；左輪 E、右輪 F / camera → port C; left wheel E, right wheel F
+# 同一個資料夾要有 MBC_UniCam.py / MBC_UniCam.py must be imported too
+#
+# cam.power(0)＝全速 full、1＝省電 save（25 fps）、2＝待機 standby（鏡頭關、補光燈關，讀到的都是「沒有」）
+# 待機 → 全速要等約 1～2.5 秒才有畫面；不存：相機重開機、SPIKE 斷線、按相機任何鍵都回全速
+# standby -> full takes about 1~2.5 s; not stored: a restart, unplugging or any camera key returns to full speed
+from pybricks.hubs import PrimeHub
+from pybricks.pupdevices import Motor
+from pybricks.parameters import Port, Direction
+from pybricks.robotics import DriveBase
+from pybricks.tools import wait
+from MBC_UniCam import UniCam
+
+hub = PrimeHub()
+cam = UniCam(Port.C, mode=13)
+left = Motor(Port.E, Direction.COUNTERCLOCKWISE)
+right = Motor(Port.F)
+robot = DriveBase(left, right, 56, 112)
+
+print('power(2) 待機 standby →', cam.power(2))
+robot.drive(150, 0)                              # 👉 可以改：這段不用相機，先直走 2 秒 / no camera needed here
+wait(2000)
+robot.stop()
+print('power(0) 全速 full →', cam.power(0))
+wait(2500)                                       # 等鏡頭開好（約 1～2.5 秒）/ wait for the camera to start
+
+for i in range(20):                              # 醒來後看目標 1 / look for target 1 again
+    p = cam.xy(1)
+    print('目標 1 target 1', p)
+    if p and p != (0, 0):
+        hub.speaker.beep()
+        break
+    wait(100)
+```
+
+</details>
 
 ---
 
